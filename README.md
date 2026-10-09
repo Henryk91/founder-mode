@@ -23,12 +23,12 @@ pnpm bots --runs 1000   # balancing report from headless bot players
 
 ## How it is organised
 
-| Path | What it holds |
-|---|---|
-| `packages/engine` | Pure, deterministic TypeScript simulation. No React, DOM or Node APIs. |
-| `packages/content` | YAML scenario data (segments, features, events) and zod schemas |
-| `packages/bots` | Headless strategies and the balancing report |
-| `apps/web` | React UI, phone layout first |
+| Path               | What it holds                                                          |
+| ------------------ | ---------------------------------------------------------------------- |
+| `packages/engine`  | Pure, deterministic TypeScript simulation. No React, DOM or Node APIs. |
+| `packages/content` | YAML scenario data (segments, features, events) and zod schemas        |
+| `packages/bots`    | Headless strategies and the balancing report                           |
+| `apps/web`         | React UI, phone layout first                                           |
 
 A few rules shape the code:
 
