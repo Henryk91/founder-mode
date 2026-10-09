@@ -235,11 +235,6 @@ const labels = {
   'plan.presale.batches.other': '{n} batches',
   'plan.presale.leads.one': '{n} open lead. A batch needs at least {min}.',
   'plan.presale.leads.other': '{n} open leads. A batch needs at least {min}.',
-  'plan.section.books': 'The books',
-  'plan.section.booksHint':
-    'The books need {required} each week. What you skip piles up, and above {limit} the accountant sends a fine and takes some of your time.',
-  'plan.books.backlog': 'Open: {backlog}. Planned this week: {planned}.',
-  'plan.books.warn': 'Skip them again and the fine arrives this week.',
   'plan.chase.booked.one': '{n} invoice chased ({hours})',
   'plan.chase.booked.other': '{n} invoices chased ({hours})',
   'plan.forced':
@@ -248,7 +243,6 @@ const labels = {
   'plan.team': 'Team',
   'plan.teamSummary': 'Searching for a {role} costs {hours}. Set it on the Team tab.',
   'plan.issue.presale_needs_leads': 'A pre-sale needs more open leads in that market.',
-  'plan.issue.bookkeeping_exceeds_backlog': 'There are not that many hours of books to do.',
   'market.landing.title': 'Landing page tests',
   'market.landing.result':
     'Week {week}: {signups} of {visitors} visitors signed up ({budget} of ads).',
@@ -261,8 +255,6 @@ const labels = {
   'results.entry.invoices_issued.other': '{n} invoices sent, {amount} in total.',
   'results.entry.invoice_written_off': '{name} never paid their {amount}. Written off.',
   'results.entry.ad_spend': 'Ads for landing page tests cost {amount}.',
-  'results.entry.bookkeeping_penalty':
-    'The books were a mess. The accountant sent a fine of {fee} and took {hours} of next week.',
   'results.entry.landing_result':
     'Landing page test for {segment}: {signups} of {visitors} visitors signed up.',
   'results.entry.presale_result':

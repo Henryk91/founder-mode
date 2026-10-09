@@ -10,7 +10,7 @@ function makeRandom(id: string, answers: boolean): Strategy {
   return {
     id,
     description:
-      'Spends a random 30 to 65 h on random actions in random markets, including books, tests, pre-sales and invoice chasing' +
+      'Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing' +
       (answers
         ? ', and answers about half of the messages with a random choice.'
         : ', and never answers a message.'),
@@ -32,8 +32,7 @@ function makeRandom(id: string, answers: boolean): Strategy {
         },
         plan(view) {
           const b = new PlanBuilder(view, rng.int(30, 65))
-          // Sometimes does the books, a test, a pre-sale or a chase, like everything else at random.
-          if (rng.next() < 0.5) b.bookkeeping()
+          // Sometimes runs a test, a pre-sale or a chase, like everything else at random.
           if (rng.next() < 0.3) b.landing(rng.pick(view.segments).id)
           if (rng.next() < 0.3) b.presale(rng.pick(view.segments).id)
           if (rng.next() < 0.5) b.chase(rng.int(1, 3))

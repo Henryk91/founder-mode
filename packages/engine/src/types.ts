@@ -84,8 +84,6 @@ export type CompanyState = {
   cashCents: number
   priceCentsPerMonth: number
   fixedCosts: FixedCost[]
-  /** Bookkeeping hours not yet done. Above the scenario limit a penalty fires. */
-  bookkeepingBacklogHours: number
   uiStage: UiStage
 }
 
@@ -291,8 +289,7 @@ export type LoggedAction =
   | { type: 'respond'; week: number; messageId: string; choiceId: string }
   | { type: 'shutDown'; week: number }
 
-export type LoggedEvent =
-  InterviewEvent | ExperimentEvent | MoneyEvent | BookkeepingEvent | MessageEvent
+export type LoggedEvent = InterviewEvent | ExperimentEvent | MoneyEvent | MessageEvent
 
 export type InterviewEvent = {
   kind: 'interview'
@@ -310,8 +307,6 @@ export type ExperimentEvent = {
   expected: number
   observed: number
 }
-
-export type BookkeepingEvent = { kind: 'bookkeeping_penalty'; week: number; feeCents: number }
 
 export type MessageEvent = {
   kind: 'message'
@@ -358,8 +353,6 @@ export type WeekPlan = {
   presales: Record<SegmentId, number>
   /** Ids of open leads to follow up with this week. */
   followUps: string[]
-  /** Hours spent on the books. */
-  bookkeepingHours: number
   /** Ids of overdue invoices to chase. */
   chase: string[]
   /** Start looking for someone in this role. */
@@ -390,7 +383,6 @@ export type PlanIssue =
   | { code: 'invalid_follow_up'; leadId: string }
   | { code: 'invalid_budget'; segmentId: string }
   | { code: 'presale_needs_leads'; segmentId: string; leads: number }
-  | { code: 'bookkeeping_exceeds_backlog'; maxHours: number }
   | { code: 'invalid_chase'; invoiceId: string }
   | { code: 'search_not_allowed' }
   | { code: 'invalid_hire'; candidateId: string }
@@ -456,13 +448,6 @@ export type PlayerView = {
   /** Hours already spent this week by answers to messages, and by earlier penalties. */
   committedHours: number
   forcedHours: number
-  bookkeeping: {
-    requiredHoursPerWeek: number
-    backlogHours: number
-    limitHours: number
-    /** Most hours that can be booked this week. */
-    maxHours: number
-  }
   invoices: InvoiceView[]
   /** Sum of invoices that are issued and not yet paid or written off. */
   receivablesCents: number
@@ -554,6 +539,8 @@ export type InvoiceView = {
 
 export type MessageView = {
   id: string
+  /** Which scenario event the message is, so the same kind of message can be recognised. */
+  eventId: string
   week: number
   expiresWeek: number
   fromRole: string
@@ -652,7 +639,6 @@ export type ReportEntry =
   | { kind: 'invoices_issued'; amountCents: number; count: number }
   | { kind: 'invoice_written_off'; amountCents: number; name: string }
   | { kind: 'ad_spend'; amountCents: number }
-  | { kind: 'bookkeeping_penalty'; feeCents: number; lostHours: number }
   | { kind: 'landing_result'; segmentId: SegmentId; visitors: number; signups: number }
   | { kind: 'presale_result'; segmentId: SegmentId; prospects: number; commits: number }
   | { kind: 'candidates_ready'; role: TeamRoleId; count: number }

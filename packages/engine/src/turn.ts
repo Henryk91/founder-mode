@@ -1,6 +1,5 @@
 import { clonePlan, validatePlan } from './plan'
 import { Rng } from './rng'
-import { applyBookkeeping } from './systems/bookkeeping'
 import { resolveExperiments, runInterviews, startExperiments } from './systems/experiments'
 import { applyFinanceWeek, noExtras } from './systems/finance'
 import { applyFounderWeek, plannedHours } from './systems/founder'
@@ -46,25 +45,11 @@ export function endWeek(
     state = { ...state, company: { ...state.company, priceCentsPerMonth: plan.priceCentsPerMonth } }
   }
 
-  // 3. Founder: hours, energy, and the books
+  // 3. Founder: hours and energy
   const energyBefore = input.founder.energy
   state = {
     ...state,
     founder: applyFounderWeek(state.founder, state.scenario, hours, plan.restHours),
-  }
-  const books = applyBookkeeping(state, plan)
-  state = { ...state, company: { ...state.company, bookkeepingBacklogHours: books.backlogHours } }
-  if (books.penalty) {
-    extras.otherCostsCents += books.penalty.feeCents
-    forcedNextWeek += books.penalty.lostHours
-    entries.push({ kind: 'bookkeeping_penalty', ...books.penalty })
-    state = {
-      ...state,
-      eventLog: [
-        ...state.eventLog,
-        { kind: 'bookkeeping_penalty', week: state.week, feeCents: books.penalty.feeCents },
-      ],
-    }
   }
 
   // 4. Experiments: interviews now, landing page tests and pre-sales start and report when due

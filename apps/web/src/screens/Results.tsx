@@ -47,11 +47,6 @@ function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'ad_spend':
       return label('results.entry.ad_spend', stage, { amount: formatEuro(entry.amountCents) })
-    case 'bookkeeping_penalty':
-      return label('results.entry.bookkeeping_penalty', stage, {
-        fee: formatEuro(entry.feeCents),
-        hours: label('unit.hours', stage, { n: entry.lostHours }),
-      })
     case 'landing_result':
       return label('results.entry.landing_result', stage, {
         segment: segment(entry.segmentId),

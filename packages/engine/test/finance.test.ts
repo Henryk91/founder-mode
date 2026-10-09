@@ -33,7 +33,7 @@ describe('finance', () => {
     let s = newGame('fixed', quietKantino())
     const fixed: number[] = []
     for (let i = 0; i < 8; i++) {
-      const r = endWeek(s, plan({ bookkeepingHours: 2 }))
+      const r = endWeek(s, plan())
       fixed.push(r.report.ledger.fixedCostsCents)
       s = r.state
     }
@@ -91,7 +91,7 @@ describe('finance', () => {
 
   it('totals the private money put in, manual and automatic, but not founder draws', () => {
     // Little cash and plenty of savings: cash runs dry first (top ups), then savings (draws).
-    const s = play(withMoney(newGame('private'), 30_000, 700_000), 200, (x) =>
+    const s = play(withMoney(newGame('private', quietKantino()), 30_000, 700_000), 200, (x) =>
       plan({ transferToCompanyCents: x.week === 2 ? 10_000 : 0 }),
     )
     expect(s.ending).toBe('bankrupt')

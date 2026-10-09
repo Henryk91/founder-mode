@@ -70,7 +70,6 @@ export type UiActions = {
   /** Ad budget in cents for a landing page test, 0 for none. */
   setLanding(segmentId: string, budgetCents: number): void
   setPresales(segmentId: string, batches: number): void
-  setBookkeepingHours(hours: number): void
   toggleChase(invoiceId: string): void
   toggleFollowUp(leadId: string): void
   setSearchRole(role: TeamRoleId | null): void
@@ -244,7 +243,6 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         editPlan((p) => ({ ...p, landing: { ...p.landing, [segmentId]: budgetCents } })),
       setPresales: (segmentId, batches) =>
         editPlan((p) => ({ ...p, presales: { ...p.presales, [segmentId]: batches } })),
-      setBookkeepingHours: (hours) => editPlan((p) => ({ ...p, bookkeepingHours: hours })),
       toggleFollowUp: (leadId) =>
         editPlan((p) => ({
           ...p,

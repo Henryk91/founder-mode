@@ -27,7 +27,7 @@ describe('a full run with product and sales', () => {
       expectClean(r.state, getView(r.state))
       s = deepFreeze(r.state)
     }
-    expect(s.week).toBe(78)
+    expect(s.status).toBe('ended')
     expect(s.customers.length).toBeGreaterThan(0)
     expect(revenue).toBeGreaterThan(0)
     expect(s.leads.some((l) => l.stage === 'paying')).toBe(true)

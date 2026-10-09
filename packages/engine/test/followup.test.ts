@@ -25,10 +25,7 @@ describe('follow up', () => {
       ])
     }
     expect(validatePlan(s, plan({ followUps: ['lead_1', 'lead_1'] }))).toHaveLength(1)
-    expect(
-      endWeek(s, plan({ followUps: ['lead_1', 'lead_4'], bookkeepingHours: 2 })).report
-        .plannedHours,
-    ).toBe(4)
+    expect(endWeek(s, plan({ followUps: ['lead_1', 'lead_4'] })).report.plannedHours).toBe(2)
     const view = getView(s)
     expect(view.leads.map((l) => l.canFollowUp)).toEqual([true, false, false, true])
     expect(view.costs.followUpHours).toBe(1)
@@ -37,14 +34,14 @@ describe('follow up', () => {
   it('brings a silent lead back and keeps it from going silent again this week', () => {
     for (let i = 0; i < 40; i++) {
       const s = withLeads(`silent${i}`, [openLead(1, 'coworking', { silentSinceWeek: 1 })])
-      const r = endWeek(s, plan({ followUps: ['lead_1'], bookkeepingHours: 2 }))
+      const r = endWeek(s, plan({ followUps: ['lead_1'] }))
       expect(r.state.leads[0]!.silentSinceWeek).toBeNull()
       expect(r.state.leads[0]!.lastContactWeek).toBe(1)
     }
     // Without it, a silent lead stays silent.
     const idle = endWeek(
       withLeads('idle', [openLead(1, 'coworking', { silentSinceWeek: 1 })]),
-      plan({ bookkeepingHours: 2 }),
+      plan(),
     )
     expect(idle.state.leads[0]!.silentSinceWeek).toBe(1)
   })

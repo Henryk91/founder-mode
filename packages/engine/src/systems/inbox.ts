@@ -226,12 +226,12 @@ function sender(state: GameState, event: ScenarioEvent, rng: Rng) {
 
 /** Events that may arrive now: conditions hold, a sender exists, and not used up or cooling. */
 function eligibleEvents(state: GameState, taken: ReadonlySet<string>): ScenarioEvent[] {
-  const { cooldownWeeks } = state.scenario.inbox
   return state.scenario.events.filter((e) => {
     if (taken.has(e.id)) return false
     const drawn = state.drawnEvents.filter((d) => d.eventId === e.id)
     if (e.once && drawn.length > 0) return false
-    if (drawn.some((d) => state.week + 1 - d.week < cooldownWeeks)) return false
+    const cooldown = e.cooldownWeeks ?? state.scenario.inbox.cooldownWeeks
+    if (drawn.some((d) => state.week + 1 - d.week < cooldown)) return false
     if (e.from === 'customer' && activeCustomers(state).length === 0) return false
     if (e.from === 'lead' && !state.leads.some(isOpenLead)) return false
     return conditionsHold(state, e.when)

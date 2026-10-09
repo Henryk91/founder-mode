@@ -56,7 +56,7 @@ describe('endings', () => {
 
   describe('shut down', () => {
     it('ends the run on purpose, in the week the player is in', () => {
-      const s = play(newGame('quit'), 5, () => plan({ bookkeepingHours: 2 }))
+      const s = play(newGame('quit'), 5, () => plan())
       const end = shutDown(s)
       expect(end.status).toBe('ended')
       expect(end.ending).toBe('shut_down')
@@ -76,14 +76,14 @@ describe('endings', () => {
     })
 
     it('keeps the money as it is, whatever it was', () => {
-      const s = play(newGame('quit3'), 3, () => plan({ bookkeepingHours: 2 }))
+      const s = play(newGame('quit3'), 3, () => plan())
       const end = shutDown(s)
       expect(end.company.cashCents).toBe(s.company.cashCents)
       expect(end.founder.savingsCents).toBe(s.founder.savingsCents)
     })
 
     it('is saved and replays to the same ending', () => {
-      const end = shutDown(play(newGame('quit4'), 4, () => plan({ bookkeepingHours: 2 })))
+      const end = shutDown(play(newGame('quit4'), 4, () => plan()))
       expect(replay(end.scenario, toSave(end))).toEqual(end)
       expect(replay(end.scenario, JSON.parse(JSON.stringify(toSave(end)))).ending).toBe('shut_down')
     })

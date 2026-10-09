@@ -42,11 +42,6 @@ finance:
   writeOffWeeks: 12
   chaseHours: 1
   chaseBoost: 0.3
-  bookkeeping:
-    hoursPerWeek: 2
-    backlogLimit: 12
-    lateFeeCents: 15000
-    lostHours: 4
 
 experiments:
   interview:
