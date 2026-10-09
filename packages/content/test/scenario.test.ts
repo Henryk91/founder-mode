@@ -43,13 +43,13 @@ describe('content', () => {
     })
     expect(s.experiments.presale).toMatchObject({ hoursPerBatch: 6, batchSize: 5, weeks: 1 })
     expect(s.finance.chaseBoost).toBe(0.3)
-    expect(s.team.roles.developer.monthlyCents).toBe(420_000)
-    expect(s.team.roles.salesperson.monthlyCents).toBe(380_000)
+    expect(s.team.roles.developer.monthlyCents).toBe(260_000)
+    expect(s.team.roles.salesperson.monthlyCents).toBe(220_000)
     expect(s.team).toMatchObject({
       searchHours: 6,
       searchWeeks: 2,
       candidates: 3,
-      startWeeks: 4,
+      startWeeks: 2,
       severanceWeeks: 4,
     })
     expect(s.events.length).toBeGreaterThanOrEqual(25)

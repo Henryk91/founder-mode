@@ -137,6 +137,8 @@ export const TeamRoleSchema = z.object({
   // Developer: build hours. Salesperson: outreach and demo hours. Multiplied by true skill.
   weeklyHours: z.number().int().positive(),
   skill: rangeOf(z.number().positive()),
+  // Selling skill of their own outreach. Without it, outreach uses the founder's skill.
+  selling: Share.optional(),
 })
 
 export const TeamConfigSchema = z.object({

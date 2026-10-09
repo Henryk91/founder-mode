@@ -408,7 +408,7 @@ describe('phase 4 screens', () => {
     store.getState().setTab('team')
     const page = html(store)
     expect(page).toContain('Look for a Developer')
-    expect(page).toContain('€4,200 per month')
+    expect(page).toContain('€2,600 per month')
     store.getState().setSearchRole('developer')
     expect(store.getState().plannedHours).toBe(6)
     expect(html(store)).toContain('Search booked (6 h). Tap to cancel.')

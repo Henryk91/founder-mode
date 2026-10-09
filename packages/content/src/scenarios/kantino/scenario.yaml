@@ -105,7 +105,7 @@ team:
   searchHours: 6
   searchWeeks: 2
   candidates: 3
-  startWeeks: 4
+  startWeeks: 2
   severanceWeeks: 4
   impressionSd: 0.25
   impressions:
@@ -114,16 +114,18 @@ team:
     - { id: strong, name: Strong, below: 1.1 }
     - { id: outstanding, name: Outstanding }
   roles:
+    # A junior or part time hire: cheaper, fewer hours.
     developer:
       name: Developer
-      monthlyCents: 420000
-      weeklyHours: 30
+      monthlyCents: 260000
+      weeklyHours: 25
       skill: { min: 0.5, max: 1.2 }
     salesperson:
       name: Salesperson
-      monthlyCents: 380000
-      weeklyHours: 25
+      monthlyCents: 220000
+      weeklyHours: 20
       skill: { min: 0.5, max: 1.2 }
+      selling: 0.3
   candidateNames:
     - Anselm Brandt
     - Berit Kowalczyk
