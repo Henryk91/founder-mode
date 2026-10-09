@@ -1,6 +1,6 @@
 import { loadScenario } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
-import { buildReport, evaluateTargets, median } from '../src/report'
+import { buildReport, evaluateTargets, marketSpread, median, winRateByMarket } from '../src/report'
 import { runGame } from '../src/simulate'
 import { STRATEGIES } from '../src/strategies'
 
@@ -13,6 +13,7 @@ describe('bots', () => {
       'build_only',
       'sell_first',
       'validate_then_build',
+      'price_aware',
       'overworker',
       'playtest',
     ])
@@ -57,11 +58,53 @@ describe('bots', () => {
       seconds: 0.1,
     }))
     const input = { engineVersion: 'x', runs: 2, seedPrefix: 'r', strategies }
-    expect(evaluateTargets(input).map((t) => t.id)).toEqual([1, 2, 3, 4, 5])
+    const targets = evaluateTargets(input)
+    expect(targets.map((t) => t.id)).toEqual([1, 2, 3, 4, 5, 6, 7])
+    expect(targets.filter((t) => !t.tuned).map((t) => t.id)).toEqual([6, 7])
     const md = buildReport(input)
     expect(md).toContain('# Balancing report')
+    for (const heading of [
+      '## Price aware against plain',
+      '## Week the run ended',
+      '## Losing runs: what they earned',
+      '## First paying customer',
+    ]) {
+      expect(md).toContain(heading)
+    }
+    expect(md).toContain('(not tuned yet)')
     expect(md).toContain('| validate_then_build |')
     expect(md).not.toContain('NaN')
+  })
+
+  it('the price aware bot raises its price when trials convert, and never below one step', () => {
+    const strategy = STRATEGIES.find((s) => s.id === 'price_aware')!
+    const prices = Array.from({ length: 20 }, (_, i) => runGame(scenario, strategy, `p${i}`)).map(
+      (r) => r.finalPriceCents,
+    )
+    expect(Math.max(...prices)).toBeGreaterThan(scenario.start.priceCentsPerMonth)
+    expect(Math.min(...prices)).toBeGreaterThan(0)
+  })
+
+  it('records the first customer week and what a run earned', () => {
+    const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
+    const runs = Array.from({ length: 10 }, (_, i) => runGame(scenario, strategy, `f${i}`))
+    for (const r of runs) {
+      if (r.firstCustomerWeek === null) expect(r.peakCustomers).toBe(0)
+      else expect(r.peakCustomers).toBeGreaterThan(0)
+      if (r.revenueReceivedCents > 0) expect(r.firstCustomerWeek).not.toBeNull()
+    }
+  })
+
+  it('measures the spread of win rates across viable markets', () => {
+    const base = runGame(scenario, STRATEGIES[0]!, 'x')
+    const run = (viableSegment: string, ending: 'sustainable' | 'bankrupt') => ({
+      ...base,
+      viableSegment,
+      ending,
+    })
+    const results = [run('a', 'sustainable'), run('a', 'bankrupt'), run('b', 'bankrupt')]
+    expect(winRateByMarket(results, ['a', 'b']).map((x) => x.rate)).toEqual([50, 0])
+    expect(marketSpread(results)).toBe(50)
   })
 
   it('computes medians', () => {

@@ -1,5 +1,6 @@
 import type { Scenario } from '@founder-mode/content'
 import type { PlayerView, WeekPlan } from '@founder-mode/engine'
+import { PriceSearch, type PricingRule } from '../pricing'
 import {
   bookableLeads,
   ChannelLog,
@@ -28,8 +29,14 @@ function score(notes: ReturnType<typeof segmentNotes>): number {
  * builds what its interviewees asked for, then sells there on the channel that finds the most
  * leads per hour. Moves to the next market after a long stretch without a customer.
  */
-export function validatingPlayer(scenario: Scenario, budget: number): Player {
+export function validatingPlayer(
+  scenario: Scenario,
+  budget: number,
+  pricing: PricingRule | null = null,
+): Player {
   const channels = new ChannelLog()
+  const prices = pricing ? new PriceSearch(pricing) : null
+  let lastView: PlayerView | null = null
   const abandoned = new Set<string>()
   let target: string | null = null
   let sellingSince: number | null = null
@@ -44,6 +51,8 @@ export function validatingPlayer(scenario: Scenario, budget: number): Player {
     plan(view) {
       const b = new PlanBuilder(view, budget)
       const ids = view.segments.map((s) => s.id)
+      lastView = view
+      if (prices) b.price(prices.price(view))
 
       // Weeks 1 and 2: interviews only, plus building the feature everyone asks for.
       if (view.week === 1) {
@@ -100,6 +109,7 @@ export function validatingPlayer(scenario: Scenario, budget: number): Player {
     },
     observe(report) {
       if (lastPlan) channels.record(lastPlan, report)
+      if (prices && lastView) prices.observe(lastView, report)
     },
   }
 }
@@ -109,6 +119,15 @@ export const validateThenBuild: Strategy = {
   description:
     'Interviews every market, builds what the most promising one asks for, sells there on its best channel, and moves on after 12 weeks without a customer.',
   create: (scenario) => validatingPlayer(scenario, 50),
+}
+
+export const PRICE_RULE: PricingRule = { stepCents: 10_000, window: 4, threshold: 0.4 }
+
+export const priceAware: Strategy = {
+  id: 'price_aware',
+  description:
+    'Plays like validate_then_build and raises the price by 100 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays.',
+  create: (scenario) => validatingPlayer(scenario, 50, PRICE_RULE),
 }
 
 export const overworker: Strategy = {

@@ -462,6 +462,8 @@ Targets for the early MVP:
 3. No strategy exceeds 60%
 4. Median run length for losing runs is between week 20 and week 50
 5. 1000 runs complete in under 60 seconds
+6. `validate_then_build` win rates across the three viable markets lie within 15 points of each other (added after the Phase 3 review)
+7. `validate_then_build` gets its first paying customer between week 8 and week 14 in the median winning run (added after the Phase 3 review)
 
 If a target fails, tune scenario values first and formulas second, and record the change in `docs/decisions.md`.
 

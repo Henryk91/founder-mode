@@ -33,7 +33,28 @@ const fmtEur = (cents: number | null) =>
 
 export const isLoss = (r: RunResult) => r.ending !== 'sustainable'
 
-export type Target = { id: number; text: string; value: string; pass: boolean }
+/** Targets 6 and 7 were added after the Phase 3 review; nothing has been tuned toward them. */
+export type Target = { id: number; text: string; value: string; pass: boolean; tuned: boolean }
+
+const wins = (rs: readonly RunResult[]) => rs.filter((r) => r.ending === 'sustainable')
+
+/** Win rate in percent per viable market, in the given market order. */
+export function winRateByMarket(results: readonly RunResult[], markets: readonly string[]) {
+  return markets.map((m) => {
+    const runs = results.filter((r) => r.viableSegment === m)
+    return { market: m, runs: runs.length, rate: pct(wins(runs).length, runs.length) }
+  })
+}
+
+/** Largest minus smallest win rate across viable markets, in percentage points. */
+export function marketSpread(results: readonly RunResult[]): number {
+  const markets = [...new Set(results.map((r) => r.viableSegment))]
+  const rates = winRateByMarket(results, markets).map((x) => x.rate)
+  return rates.length ? Math.max(...rates) - Math.min(...rates) : 0
+}
+
+const firstCustomerWeeks = (rs: readonly RunResult[]) =>
+  rs.flatMap((r) => (r.firstCustomerWeek === null ? [] : [r.firstCustomerWeek]))
 
 export function evaluateTargets(input: ReportInput): Target[] {
   const winRate = (id: string) => {
@@ -48,7 +69,10 @@ export function evaluateTargets(input: ReportInput): Target[] {
   const losing = input.strategies.flatMap((s) => s.results.filter(isLoss).map((r) => r.weeks))
   const losingMedian = median(losing)
   const slowest = Math.max(...input.strategies.map((s) => (s.seconds * 1000) / s.results.length))
-  return [
+  const vtbRuns = input.strategies.find((s) => s.id === 'validate_then_build')?.results ?? []
+  const spread = marketSpread(vtbRuns)
+  const firstWin = median(firstCustomerWeeks(wins(vtbRuns)))
+  const targets: Omit<Target, 'tuned'>[] = [
     {
       id: 1,
       text: 'build_only reaches Sustainable business in under 5% of runs',
@@ -79,7 +103,20 @@ export function evaluateTargets(input: ReportInput): Target[] {
       value: `${slowest.toFixed(1)} s per 1000 runs`,
       pass: slowest < 60,
     },
+    {
+      id: 6,
+      text: 'validate_then_build win rates across the three viable markets lie within 15 points',
+      value: `${spread.toFixed(1)} points`,
+      pass: vtbRuns.length > 0 && spread <= 15,
+    },
+    {
+      id: 7,
+      text: 'validate_then_build gets its first paying customer between week 8 and 14 in the median winning run',
+      value: `week ${fmtNum(firstWin, 1)}`,
+      pass: firstWin !== null && firstWin >= 8 && firstWin <= 14,
+    },
   ]
+  return targets.map((t) => ({ ...t, tuned: t.id <= 5 }))
 }
 
 export function buildReport(input: ReportInput): string {
@@ -99,7 +136,8 @@ export function buildReport(input: ReportInput): string {
     '| # | Target | Value | Met |',
     '|---|---|---|---|',
     ...evaluateTargets(input).map(
-      (t) => `| ${t.id} | ${t.text} | ${t.value} | ${t.pass ? 'yes' : 'no'} |`,
+      (t) =>
+        `| ${t.id} | ${t.text} | ${t.value} | ${t.pass ? 'yes' : 'no'}${t.tuned ? '' : ' (not tuned yet)'} |`,
     ),
     '',
     '## Endings',
@@ -122,15 +160,105 @@ export function buildReport(input: ReportInput): string {
     '',
     'Share of runs ending Sustainable, split by which market was secretly viable in that run.',
     '',
-    `| Strategy | ${segments.join(' | ')} |`,
-    `|---|${segments.map(() => '---').join('|')}|`,
+    `| Strategy | ${segments.join(' | ')} | Spread |`,
+    `|---|${segments.map(() => '---').join('|')}|---|`,
   )
   for (const s of input.strategies) {
-    const cells = segments.map((seg) => {
-      const runs = s.results.filter((r) => r.viableSegment === seg)
-      return fmtPct(pct(runs.filter((r) => r.ending === 'sustainable').length, runs.length))
-    })
+    const cells = winRateByMarket(s.results, segments).map((x) => fmtPct(x.rate))
+    push(`| ${s.id} | ${cells.join(' | ')} | ${marketSpread(s.results).toFixed(1)} |`)
+  }
+
+  const plain = input.strategies.find((s) => s.id === 'validate_then_build')
+  const priced = input.strategies.find((s) => s.id === 'price_aware')
+  if (plain && priced) {
+    const a = winRateByMarket(plain.results, segments)
+    const b = winRateByMarket(priced.results, segments)
+    push(
+      '',
+      '## Price aware against plain',
+      '',
+      '`price_aware` plays like `validate_then_build` and raises the price while trials keep converting. Win rates by viable market, and the price it ended on.',
+      '',
+      '| Viable market | validate_then_build | price_aware | Difference | price_aware median final price | price_aware median final price in winning runs |',
+      '|---|---|---|---|---|---|',
+      ...segments.map((m, i) => {
+        const runs = priced.results.filter((r) => r.viableSegment === m)
+        return `| ${m} | ${fmtPct(a[i]!.rate)} | ${fmtPct(b[i]!.rate)} | ${(b[i]!.rate - a[i]!.rate).toFixed(1)} points | ${fmtEur(median(runs.map((r) => r.finalPriceCents)))} | ${fmtEur(median(wins(runs).map((r) => r.finalPriceCents)))} |`
+      }),
+    )
+  }
+
+  const weekBins: [number, number][] = [
+    [1, 10],
+    [11, 20],
+    [21, 30],
+    [31, 40],
+    [41, 50],
+    [51, 60],
+    [61, 70],
+    [71, 78],
+  ]
+  push(
+    '',
+    '## Week the run ended',
+    '',
+    'Share of all runs per strategy, by the week the run ended. Runs that reach the last week end in week 78, won or not.',
+    '',
+    `| Strategy | ${weekBins.map(([a, b]) => `${a} to ${b}`).join(' | ')} |`,
+    `|---|${weekBins.map(() => '---').join('|')}|`,
+  )
+  for (const s of input.strategies) {
+    const cells = weekBins.map(([a, b]) =>
+      fmtPct(pct(s.results.filter((r) => r.weeks >= a && r.weeks <= b).length, s.results.length)),
+    )
     push(`| ${s.id} | ${cells.join(' | ')} |`)
+  }
+
+  const revenueBins: [string, (c: number) => boolean][] = [
+    ['0', (c) => c === 0],
+    ['1 to 599', (c) => c > 0 && c < 60_000],
+    ['600 to 1,199', (c) => c >= 60_000 && c < 120_000],
+    ['1,200 to 2,069', (c) => c >= 120_000 && c < 207_000],
+    ['2,070 or more', (c) => c >= 207_000],
+  ]
+  const customerBins: [string, (n: number) => boolean][] = [
+    ['0', (n) => n === 0],
+    ['1', (n) => n === 1],
+    ['2 to 3', (n) => n >= 2 && n <= 3],
+    ['4 to 6', (n) => n >= 4 && n <= 6],
+    ['7 or more', (n) => n >= 7],
+  ]
+  push(
+    '',
+    '## Losing runs: what they earned',
+    '',
+    'Losing runs only (bankrupt, burnout, still searching). "Never paid" means no customer payment arrived in the whole run. Peak monthly revenue is the most the active customers paid per month at any point; 2,070 EUR covers fixed and living costs. Peak customers is the most active customers at once.',
+    '',
+    `| Strategy | Losing runs | Never paid | Peak monthly revenue (EUR): ${revenueBins.map(([l]) => l).join(' / ')} | Peak customers: ${customerBins.map(([l]) => l).join(' / ')} |`,
+    '|---|---|---|---|---|',
+  )
+  for (const s of input.strategies) {
+    const lost = s.results.filter(isLoss)
+    const share = (f: (r: RunResult) => boolean) => fmtPct(pct(lost.filter(f).length, lost.length))
+    push(
+      `| ${s.id} | ${lost.length} | ${share((r) => r.revenueReceivedCents === 0)} | ${revenueBins.map(([, f]) => share((r) => f(r.peakMonthlyRevenueCents))).join(' / ')} | ${customerBins.map(([, f]) => share((r) => f(r.peakCustomers))).join(' / ')} |`,
+    )
+  }
+
+  push(
+    '',
+    '## First paying customer',
+    '',
+    'Week in which the first customer signed. Medians count only runs that had one.',
+    '',
+    '| Strategy | Runs with a customer | Median week, all such runs | Median week, winning runs | Median week, losing runs |',
+    '|---|---|---|---|---|',
+  )
+  for (const s of input.strategies) {
+    const all = firstCustomerWeeks(s.results)
+    push(
+      `| ${s.id} | ${fmtPct(pct(all.length, s.results.length))} | ${fmtNum(median(all), 1)} | ${fmtNum(median(firstCustomerWeeks(wins(s.results))), 1)} | ${fmtNum(median(firstCustomerWeeks(s.results.filter(isLoss))), 1)} |`,
+    )
   }
 
   push(
