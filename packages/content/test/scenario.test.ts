@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   companyNameCombinations,
+  EVENT_AREAS,
+  eventsIn,
   FOUNDER_NOTE_IDS,
   loadScenario,
   parseCondition,
@@ -52,7 +54,6 @@ describe('content', () => {
       startWeeks: 2,
       severanceWeeks: 4,
     })
-    expect(s.events.length).toBeGreaterThanOrEqual(25)
   })
 
   it('parses event conditions into data, not code', () => {
@@ -66,10 +67,11 @@ describe('content', () => {
     expect(parseCondition('constructor.prototype > 1')).toBeNull()
   })
 
-  it('game text has no em dashes', () => {
+  it('game text has no em dashes, in any file', () => {
     const { scenario, features, interviewQuotes, companyNames, intro, events } =
       scenarioSources('kantino')
-    expect(scenario + features + interviewQuotes + companyNames + intro + events).not.toContain('—')
+    const all = [scenario, features, interviewQuotes, companyNames, intro, ...Object.values(events)]
+    for (const text of all) expect(text).not.toContain('—')
   })
 
   it('has at least 400 company names for every segment, none ending in a number', () => {
@@ -79,6 +81,74 @@ describe('content', () => {
       expect(names.length).toBeGreaterThanOrEqual(400)
       for (const name of names) expect(name).not.toMatch(/\d$/)
     }
+  })
+
+  it('has more distinctive name words per segment than a market ever has open leads', () => {
+    // Bots peak at 36 open leads in one market; two open leads never share this word.
+    const s = loadScenario('kantino')
+    for (const seg of s.segments) {
+      const parts = s.companyNames[seg.id]!
+      const words = parts.distinct === 'second' ? parts.second : parts.first
+      expect(new Set(words).size).toBe(words.length)
+      expect(words.length).toBeGreaterThanOrEqual(45)
+    }
+    expect(s.companyNames.medical?.distinct).toBe('second')
+  })
+
+  describe('events', () => {
+    const s = loadScenario('kantino')
+    const { events: files } = scenarioSources('kantino')
+
+    it('has at least 105 events, at least 10 in every area', () => {
+      expect(s.events.length).toBeGreaterThanOrEqual(105)
+      for (const area of EVENT_AREAS) {
+        expect(s.events.filter((e) => e.area === area).length).toBeGreaterThanOrEqual(10)
+      }
+    })
+
+    it.each(EVENT_AREAS)('the %s file holds only events of its area', (area) => {
+      const list = eventsIn(files[area]) as { area: string }[]
+      expect(list.length).toBeGreaterThanOrEqual(10)
+      for (const e of list) expect(e.area).toBe(area)
+    })
+
+    it('arrives once each, except the books, which recur on purpose', () => {
+      expect(s.events.filter((e) => !e.once).map((e) => e.id)).toEqual(['receipts_pile'])
+    })
+
+    it('keeps every message to 2 to 4 sentences', () => {
+      for (const e of s.events) {
+        const sentences = e.text.match(/[.!?]["”]?(?=\s|$)/g)?.length ?? 0
+        expect([e.id, sentences >= 2 && sentences <= 4]).toEqual([e.id, true])
+      }
+    })
+
+    it('names only amounts of money that a choice actually costs or pays', () => {
+      const eur = (cents: number) => `${(Math.abs(cents) / 100).toLocaleString('en-GB')} EUR`
+      for (const e of s.events) {
+        const amounts = new Set(
+          e.choices.flatMap((c) =>
+            c.effects.flatMap((fx) =>
+              fx.type === 'cash'
+                ? [eur(fx.amountCents)]
+                : fx.type === 'fixedCost'
+                  ? [eur(fx.monthlyCents)]
+                  : [],
+            ),
+          ),
+        )
+        for (const m of e.text.matchAll(/[\d,.]+ EUR/g)) {
+          expect([e.id, amounts.has(m[0])]).toEqual([e.id, true])
+        }
+      }
+    })
+
+    it('parses effect conditions into data', () => {
+      const podcast = s.events.find((e) => e.id === 'podcast_invite')!
+      const leads = podcast.choices[0]!.effects.find((fx) => fx.type === 'newLeads')!
+      expect(leads.when).toEqual([{ path: 'leads.open', op: '<=', value: 8 }])
+      expect(podcast.choices[0]!.effects.find((fx) => fx.type === 'energy')!.when).toEqual([])
+    })
   })
 
   it('has the four intro cards and a note for every rule, without naming a segment', () => {
@@ -93,6 +163,11 @@ describe('content', () => {
 
   describe('rejects broken content', () => {
     const base = scenarioSources('kantino')
+    /** The sources with the validation events file changed. */
+    const withValidation = (edit: (text: string) => string) => ({
+      ...base,
+      events: { ...base.events, validation: edit(base.events.validation) },
+    })
 
     it('unknown must have feature', () => {
       const scenario = base.scenario.replace('invoice_export, chat', 'invoice_exprot, chat')
@@ -136,43 +211,56 @@ describe('content', () => {
 
     it('an event condition outside the closed grammar', () => {
       for (const bad of ['week >= soon', 'moonPhase > 1', 'week >= 2 and cashEur > 3']) {
-        const events = base.events.replace('week >= 2', bad)
-        expect(() => parseScenario({ ...base, events })).toThrow(/unknown condition/)
+        const events = withValidation((t) => t.replace('week >= 2', bad))
+        expect(() => parseScenario(events)).toThrow(/unknown condition/)
       }
     })
 
     it('an event whose default choice does not exist or costs hours', () => {
-      const missing = base.events.replace('defaultChoice: pass', 'defaultChoice: nope')
-      expect(() => parseScenario({ ...base, events: missing })).toThrow(
-        /unknown default choice nope/,
-      )
-      const costly = base.events.replace('defaultChoice: pass', 'defaultChoice: buy')
-      expect(() => parseScenario({ ...base, events: costly })).toThrow(/must cost no hours/)
+      const missing = withValidation((t) => t.replace('defaultChoice: pass', 'defaultChoice: nope'))
+      expect(() => parseScenario(missing)).toThrow(/unknown default choice nope/)
+      const costly = withValidation((t) => t.replace('defaultChoice: pass', 'defaultChoice: buy'))
+      expect(() => parseScenario(costly)).toThrow(/must cost no hours/)
     })
 
     it('an effect type that does not exist', () => {
-      const events = base.events.replace(
-        'type: skill, skill: interviewing, delta: 0.03',
-        'type: teleport',
+      const events = withValidation((t) =>
+        t.replace('type: skill, skill: interviewing, delta: 0.03', 'type: teleport'),
       )
-      expect(() => parseScenario({ ...base, events })).toThrow()
+      expect(() => parseScenario(events)).toThrow()
     })
 
     it('a sender effect without that sender, and {name} without a sender', () => {
-      const churn = base.events.replace(
-        'type: skill, skill: interviewing, delta: 0.03',
-        'type: churnChance, delta: 0.3',
+      const churn = withValidation((t) =>
+        t.replace('type: skill, skill: interviewing, delta: 0.03', 'type: churnChance, delta: 0.3'),
       )
-      expect(() => parseScenario({ ...base, events: churn })).toThrow(/needs a customer sender/)
-      const name = base.events.replace('A market research firm', '{name} is a market research firm')
-      expect(() => parseScenario({ ...base, events: name })).toThrow(
-        /needs a sender that is a customer/,
+      expect(() => parseScenario(churn)).toThrow(/needs a customer sender/)
+      const name = withValidation((t) =>
+        t.replace('A market research firm', '{name} is a market research firm'),
       )
+      expect(() => parseScenario(name)).toThrow(/needs a sender that is a customer/)
     })
 
     it('two events with the same id', () => {
-      const events = base.events.replace('id: friend_of_friend', 'id: survey_offer')
-      expect(() => parseScenario({ ...base, events })).toThrow(/duplicate event survey_offer/)
+      const events = withValidation((t) => t.replace('id: friend_of_friend', 'id: survey_offer'))
+      expect(() => parseScenario(events)).toThrow(/duplicate event survey_offer/)
+    })
+
+    it('an effect condition outside the closed grammar', () => {
+      const bad = withValidation((t) =>
+        t.replace('when: [leads.open <= 8]', 'when: [leads.open <= lots]'),
+      )
+      expect(() => parseScenario(bad)).toThrow(/unknown condition/)
+    })
+
+    it('an event that may repeat without choosing to', () => {
+      const repeats = withValidation((t) => t.replace('once: true', 'once: false'))
+      expect(() => parseScenario(repeats)).toThrow(/recur on purpose/)
+    })
+
+    it('an event in the file of another area', () => {
+      const moved = withValidation((t) => t.replace('area: validation', 'area: sales'))
+      expect(() => parseScenario(moved)).toThrow(/is in the validation file but has area sales/)
     })
 
     it('inverted range', () => {

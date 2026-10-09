@@ -6,6 +6,8 @@ import { STRATEGIES } from '../src/strategies'
 import { randomNoInbox } from '../src/strategies/random'
 import {
   answerInbox,
+  cheapestInbox,
+  READER_EVENT_IDS,
   BEHAVIOUR_NAMES,
   hirePayback,
   withoutBehaviours,
@@ -70,7 +72,7 @@ describe('bots', () => {
     }))
     const input = { engineVersion: 'x', runs: 2, seedPrefix: 'r', strategies }
     const targets = evaluateTargets(input)
-    expect(targets.map((t) => t.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15])
+    expect(targets.map((t) => t.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16])
     // Without the extra runs, the targets that need them are not measured.
     expect(targets.find((t) => t.id === 10)!.value).toBe('-')
     const md = buildReport(input)
@@ -85,6 +87,7 @@ describe('bots', () => {
     }
     expect(md).toContain('not measured')
     expect(md).toContain('| validate_then_build |')
+    expect(md).toContain('## Inbox pool')
     expect(md).not.toContain('NaN')
   })
 
@@ -213,6 +216,26 @@ describe('bots', () => {
       const v = view([choice('skip', 0), choice('a', 5)])
       v.inbox.push({ ...v.inbox[0]!, id: 'message_2' })
       expect(answerInbox(v)).toEqual([{ messageId: 'message_1', choiceId: 'a' }])
+    })
+
+    it('always cheapest takes the fewest hours, then the least money, even when free', () => {
+      expect(
+        cheapestInbox(
+          view([choice('long', 3), choice('pay', 0, 22_500), choice('later', 0, 60_000)]),
+        ),
+      ).toEqual([{ messageId: 'message_1', choiceId: 'pay' }])
+      expect(cheapestInbox(view([choice('sub', 0, 0, 6_000), choice('no', 0)]))).toEqual([
+        { messageId: 'message_1', choiceId: 'no' },
+      ])
+    })
+
+    it('the reader has an answer for every event, and only for events that exist', () => {
+      // The books are their own behaviour, answered before the reader looks.
+      const ids = scenario.events.map((e) => e.id).filter((id) => id !== 'receipts_pile')
+      expect([...READER_EVENT_IDS].sort()).toEqual([...ids].sort())
+      for (const e of scenario.events) {
+        expect(e.choices.length).toBeGreaterThanOrEqual(2)
+      }
     })
   })
 

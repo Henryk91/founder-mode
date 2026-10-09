@@ -1,0 +1,599 @@
+# Inbox events, sales area. Text is 2 to 4 sentences. {name} is the customer or lead the
+# message is from. Conditions: <path> <op> <number>, paths from CONDITION_PATHS in schema.ts. All
+# must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
+# conditions hold when the week ends. Choices show their hours to the player, never their odds.
+# An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
+events:
+  - id: referral
+    area: sales
+    weight: 3
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} mentioned Kantino to a neighbour. The neighbour would like to hear from you, and
+      has apparently never heard of the word "later".
+    defaultChoice: ignore
+    choices:
+      - id: follow_up
+        label: Follow up today
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1 }
+      - id: ignore
+        label: Let it sit
+        hours: 0
+
+  - id: discount_demand
+    area: sales
+    weight: 2
+    once: true
+    when: [customers.count >= 1, week >= 8]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says a competitor charges half as much. They have not named the competitor. They
+      would like a discount.
+    defaultChoice: hold
+    choices:
+      - id: free_month
+        label: Give them a month free
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -45000 }
+      - id: call
+        label: Call and explain the value
+        hours: 2
+        effects:
+          - { type: churnChance, delta: 0.05 }
+      - id: hold
+        label: Hold the price
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.05 }
+
+  - id: slow_lead
+    area: sales
+    weight: 3
+    once: true
+    when: [leads.open >= 2]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} says they will decide after the summer. It is currently February.
+    defaultChoice: wait
+    choices:
+      - id: call
+        label: Call them
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.2 }
+      - id: wait
+        label: Wait
+        hours: 0
+
+  - id: food_fair
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 4, cashEur >= 3000]
+    from: none
+    sender: Trade fair
+    text: >-
+      A food tech fair offers a booth for 1,350 EUR. Visitors will mostly be caterers. You do sell
+      lunch software, so it is technically relevant.
+    defaultChoice: pass
+    choices:
+      - id: booth
+        label: Take the booth
+        hours: 8
+        effects:
+          - { type: cash, amountCents: -135000 }
+          - { type: newLeads, count: 3 }
+          - { type: energy, delta: -4 }
+      - id: pass
+        label: Pass
+        hours: 0
+
+  - id: sales_coach
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Sales coach
+    text: >-
+      A sales coach offers a two hour crash course for 375 EUR. He uses the word synergy twice
+      in the pitch for the course.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Book the course
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -37500 }
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: integration_question
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.waitingForDemo >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} asks whether Kantino can connect to their cafeteria system. You have no idea what
+      that system is. They sound confident that you do.
+    defaultChoice: ignore
+    choices:
+      - id: promise
+        label: Say yes and work it out later
+        hours: 3
+        effects:
+          - { type: touchLead }
+          - { type: bugs, delta: 2 }
+          - { type: lostHours, hours: 3 }
+      - id: honest
+        label: Be honest about it
+        hours: 1
+        effects:
+          - { type: touchLead }
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: ignore
+        label: Do not answer yet
+        hours: 0
+
+  - id: competitor_launch
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: Newsletter
+    text: >-
+      A competitor has launched a lunch app. The screenshots are impressive. The sign up page
+      returns an error.
+    defaultChoice: ignore
+    choices:
+      - id: study
+        label: Study it properly
+        hours: 3
+        effects:
+          - { type: energy, delta: -3 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+
+  - id: supplier_form
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.waitingForDemo >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} would like you to register as a supplier first. The form is 31 pages long and asks
+      for your ISO certificates. You have a laptop and strong opinions about lunch.
+    defaultChoice: leave
+    choices:
+      - id: fill
+        label: Fill it in
+        hours: 4
+        effects:
+          - { type: touchLead }
+      - id: short
+        label: Ask for the short version
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.5 }
+      - id: leave
+        label: Leave it for now
+        hours: 0
+
+  - id: chamber_breakfast
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Chamber of commerce
+    text: >-
+      The chamber of commerce invites you to a networking breakfast at half past seven. There
+      will be name badges, filter coffee and forty people selling insurance to each other. Worth
+      the alarm only if your pipeline needs filling.
+    defaultChoice: skip
+    choices:
+      - id: go
+        label: Set an alarm
+        hours: 3
+        effects:
+          - { type: newLeads, count: 1, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 2, when: [leads.open > 8] }
+          - { type: energy, delta: -3 }
+      - id: skip
+        label: Sleep in
+        hours: 0
+
+  - id: colleague_intro
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Former colleague
+    text: >-
+      A former colleague offers to introduce you to her company's facilities manager. She adds
+      that he hates being introduced to people. Worth it if you have room for another lead.
+    defaultChoice: later
+    choices:
+      - id: intro
+        label: Take the introduction
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1, when: [leads.open <= 12] }
+          - { type: lostHours, hours: 2, when: [leads.open > 12] }
+      - id: later
+        label: Maybe later
+        hours: 0
+
+  - id: coworking_open_day
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: Coworking space
+    text: >-
+      A coworking space holds an open day and offers you a table by the coffee machine for the
+      afternoon. Good for meeting people. Less good if you already have more people than
+      afternoons.
+    defaultChoice: skip
+    choices:
+      - id: go
+        label: Take the table
+        hours: 4
+        effects:
+          - { type: newLeads, count: 2, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 3, when: [leads.open > 8] }
+          - { type: energy, delta: -3 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: seven_questions
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} has replied to your first email with questions. Seven of them, numbered, with
+      sub-points.
+    defaultChoice: later
+    choices:
+      - id: answer
+        label: Answer all seven
+        hours: 2
+        effects:
+          - { type: touchLead }
+      - id: later
+        label: Answer later
+        hours: 0
+
+  - id: suspicious_price
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.open >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} says your price looks suspiciously low and asks what the catch is. There is no
+      catch, which turns out to be hard to prove.
+    defaultChoice: ignore
+    choices:
+      - id: explain
+        label: Call and explain
+        hours: 1
+        effects:
+          - { type: touchLead }
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: ignore
+        label: Let the price speak
+        hours: 0
+
+  - id: demo_no_show
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} missed the demo. Their calendar entry just said "Kantino", and they thought it was
+      a restaurant booking.
+    defaultChoice: drop
+    choices:
+      - id: rebook
+        label: Offer a new slot
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.6 }
+      - id: drop
+        label: Let it go
+        hours: 0
+
+  - id: reseller_offer
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: IT reseller
+    text: >-
+      An IT reseller wants to sell Kantino to its clients for a share of the first year. They
+      have sold printers for twenty years and say lunch is basically the same. They will need a
+      finished product to show.
+    defaultChoice: decline
+    choices:
+      - id: sign
+        label: Train their team
+        hours: 5
+        effects:
+          - { type: newLeads, count: 2, when: [features.shipped >= 3] }
+          - { type: lostHours, hours: 3, when: [features.shipped <= 2] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: trial_extension
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 5]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} would like two more weeks to decide. Their decision maker is on a sailing holiday
+      and unreachable, by design.
+    defaultChoice: refuse
+    choices:
+      - id: extend
+        label: Agree and check in
+        hours: 1
+        effects:
+          - { type: touchLead }
+      - id: refuse
+        label: Say no
+        hours: 0
+
+  - id: big_tender
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 5]
+    from: none
+    sender: Procurement office
+    text: >-
+      A company with 2,000 staff invites you to bid for its lunch system. The bid needs forty
+      pages and a reference customer with at least 500 users.
+    defaultChoice: decline
+    choices:
+      - id: bid
+        label: Write the bid
+        hours: 6
+        effects:
+          - { type: energy, delta: -4 }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: newsletter_paragraph
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Business newsletter
+    text: >-
+      A local business newsletter wants a short paragraph about Kantino by Thursday. They would
+      like it shorter than that. Readers will call, which helps only if you have time to call
+      back.
+    defaultChoice: skip
+    choices:
+      - id: write
+        label: Write the paragraph
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1, chance: 0.5, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 2, when: [leads.open > 8] }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: referral_reward
+    area: sales
+    weight: 2
+    once: true
+    when: [customers.count >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} asks whether there is a reward for recommending you. Nobody has asked before, so
+      there is not, yet. They suggest a voucher for 150 EUR.
+    defaultChoice: thanks
+    choices:
+      - id: voucher
+        label: Send the voucher
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -15000 }
+          - { type: newLeads, count: 1, chance: 0.7 }
+      - id: thanks
+        label: Thank them warmly
+        hours: 0
+
+  - id: returning_prospect
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: Office manager
+    text: >-
+      A company that said no earlier this year writes again. They have a new office manager,
+      with opinions about lunch and a budget.
+    defaultChoice: later
+    choices:
+      - id: call
+        label: Call them this week
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1 }
+      - id: later
+        label: Reply later
+        hours: 0
+
+  - id: pilot_request
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} would buy, they say, after a free three month pilot. They have a history of three
+      month pilots, and a drawer full of tools nobody uses.
+    defaultChoice: decline
+    choices:
+      - id: agree
+        label: Agree to the pilot
+        hours: 1
+        effects:
+          - { type: touchLead }
+          - { type: lostHours, hours: 4 }
+      - id: counter
+        label: Offer a normal trial instead
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.6 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: wedding_fair
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Your cousin
+    text: >-
+      Your cousin offers you a corner of their stand at a wedding fair. Nobody at a wedding fair
+      is buying office lunch software. Your cousin disagrees.
+    defaultChoice: decline
+    choices:
+      - id: go
+        label: Take the corner
+        hours: 5
+        effects:
+          - { type: energy, delta: -3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: ballpark_call
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.waitingForDemo >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} wants to skip the demo and talk money on the phone. They talk fast and say
+      "ballpark" a lot.
+    defaultChoice: demo
+    choices:
+      - id: call
+        label: Take the call
+        hours: 1
+        effects:
+          - { type: touchLead }
+      - id: demo
+        label: Stick to the demo
+        hours: 0
+
+  - id: business_park_flyers
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Business park
+    text: >-
+      The manager of a business park offers to put your flyer in 60 letterboxes, for a box of
+      good chocolates. Handy when the pipeline is thin. Pointless when you cannot call back the
+      leads you already have.
+    defaultChoice: skip
+    choices:
+      - id: flyers
+        label: Print the flyers
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -3000 }
+          - { type: newLeads, count: 1, when: [leads.open <= 8] }
+          - { type: newLeads, count: 1, chance: 0.5, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 3, when: [leads.open > 8] }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: frequent_emails
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} says your follow up emails feel "quite frequent". You have sent two. They would like
+      a break of unspecified length.
+    defaultChoice: back_off
+    choices:
+      - id: call
+        label: Call to smooth it over
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.3 }
+      - id: back_off
+        label: Give them space
+        hours: 0
+
+  - id: letterhead_quote
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.open >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} needs a formal quote on letterhead. You do not have letterhead. You have a logo you
+      made at two in the morning.
+    defaultChoice: pdf
+    choices:
+      - id: letterhead
+        label: Design proper letterhead
+        hours: 3
+        effects:
+          - { type: touchLead }
+      - id: pdf
+        label: Send a plain PDF
+        hours: 0
+        effects:
+          - { type: touchLead, chance: 0.5 }

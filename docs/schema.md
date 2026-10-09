@@ -83,7 +83,7 @@ type LeadStage = 'lead' | 'demo' | 'trial' | 'paying' | 'lost'
 
 type Lead = {
   id: string
-  name: string                  // one word from each list in scenario.companyNames[segmentId], unique per run
+  name: string                  // one word from each list in scenario.companyNames[segmentId], unique per run; its distinctive word is not shared with another open lead (stage not lost or paying) of the segment
   segmentId: SegmentId
   stage: LeadStage              // 'demo' means: asked for a demo, waiting for the founder
   stageSinceWeek: number
@@ -415,6 +415,7 @@ zod schema `ScenarioSchema` in `packages/content/src/schema.ts`; `Scenario = z.i
 | `scenarios/<id>/messages/interview_quotes.yaml` | `interviewQuotes` |
 | `scenarios/<id>/messages/company_names.yaml` | `companyNames` |
 | `scenarios/<id>/messages/intro.yaml` | `intro` and `founderNotes` |
+| `scenarios/<id>/messages/events/<area>.yaml` | `events`, one file per event area, concatenated in `EVENT_AREAS` order |
 
 ```ts
 type Range = { min: number; max: number }   // min <= max; IntRange requires integers
@@ -479,7 +480,11 @@ type Scenario = {
   sales: SalesConfig
   features: Feature[]
   interviewQuotes: Record<SegmentId, Record<BucketId, string[]>>
-  companyNames: Record<SegmentId, { first: string[]; second: string[] }>   // name = `${first} ${second}`
+  companyNames: Record<SegmentId, {   // name = `${first} ${second}`, unique across all segments
+    first: string[]
+    second: string[]
+    distinct: 'first' | 'second'       // default 'first'; two open leads of a segment never share this word
+  }>
   intro: { cards: { id: string; title: string; body: string }[] }   // must include a card with id 'goal'
   founderNotes: Record<FounderNoteId, string>  // one text per rule, see below
 }
@@ -556,7 +561,25 @@ Autosave: a `SaveFile` is written under one localStorage key when a run starts a
 
 ## Content: Event
 
-Arrives in Phase 4. See plan section 4.10.
+Plan section 4.10, with these rules (Phase 5, engine 0.8.0):
+
+```ts
+type ScenarioEvent = {
+  id: string
+  area: 'validation' | 'sales' | 'product' | 'finance' | 'founder' | 'team'  // must match its file
+  weight: number
+  once: boolean                 // every event except those that recur on purpose
+  cooldownWeeks?: number        // required when once is false
+  when: Condition[]             // all must hold for the event to arrive
+  from: 'none' | 'customer' | 'lead'
+  sender: string
+  text: string                  // 2 to 4 sentences; EUR amounts must be amounts a choice costs or pays
+  defaultChoice: string         // costs no hours
+  choices: { id: string; label: string; hours: number; effects: Effect[] }[]
+}
+// Every effect has `chance` (default 1) and `when: Condition[]` (default []). The effect lands only
+// if its conditions hold when the message resolves (week end, step 2), checked before any roll.
+```
 
 ## Phase 4 additions (engine 0.5.0)
 
@@ -572,10 +595,15 @@ Arrives in Phase 4. See plan section 4.10.
 
 `WeekPlan.followUps: string[]`, `PlanIssue` `invalid_follow_up`, `LeadView.canFollowUp`, `MessageChoice.costCents` and `monthlyCostCents`, `costs.presaleMinLeads`, `costs.followUpHours`. Scenario: `sales.followUpHours`, `sales.followUpDemoBoost`, `experiments.presale.minLeads`.
 
+### Phase 5 content (engine 0.8.0)
+
+- Effects gained `when`. Events are split into one file per area and must be `once` unless they set `cooldownWeeks` (only `receipts_pile` does). `ScenarioSources.events` is a record of area to file text; `eventsIn(text)` reads one file.
+- `companyNames[segment].distinct` names the word that tells companies apart (medical: the surname). `pickName(parts, used, busy, rng)` skips names whose distinctive word an open lead holds; `namePicker(state, leads)` hands out a week's names; `distinctWord(parts, name)` reads the word back.
+
 ### Design fixes (engine 0.7.0)
 
 - Books: removed `WeekPlan.bookkeepingHours`, `company.bookkeepingBacklogHours`, `PlayerView.bookkeeping`, the `bookkeeping_penalty` report entry and log event, the `bookkeeping_exceeds_backlog` issue, the condition path `bookkeepingBacklog`, and `finance.bookkeeping` in the scenario. The books are the recurring inbox event `receipts_pile`.
-- Events may set their own `cooldownWeeks`, replacing the inbox cooldown for that event.
+- Events may set their own `cooldownWeeks`, replacing the inbox cooldown for that event. (From 0.8.0 an event without `once` must set it.)
 - `MessageView.eventId`: the scenario event a message comes from, so the same kind of message can be recognised. Not a hidden value.
 - Invoices: `hidden.waitsForChase` lists invoices whose customer pays only once chased (their pay week is null until a chase works). Scenario segments gained `waitsForChaseShare`; `finance.writeOffWeeks` is 8.
 - Landing tests report after 1 week (`experiments.landing.weeks` 1). The sign up chance is `(signupBase + signupPerPain * pain) * priceFactor` at the price when the test starts. Every `signupsPerLead` (5) sign ups become one open lead; `landing_result` entries carry `leads`.

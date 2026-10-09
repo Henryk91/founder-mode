@@ -1,0 +1,247 @@
+# Inbox events, team area. Text is 2 to 4 sentences. {name} is the customer or lead the
+# message is from. Conditions: <path> <op> <number>, paths from CONDITION_PATHS in schema.ts. All
+# must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
+# conditions hold when the week ends. Choices show their hours to the player, never their odds.
+# An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
+events:
+  - id: team_plan
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire politely asks whether there is a plan. They add that it would be nice if the plan
+      were also written down somewhere.
+    defaultChoice: wave_off
+    choices:
+      - id: session
+        label: Run a planning session
+        hours: 3
+        effects:
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: wave_off
+        label: Wave it off
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 3 }
+
+  - id: raise_request
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1, week >= 12]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire would like a raise. They have, to be fair, now worked for you for several
+      weeks without a single dramatic exit.
+    defaultChoice: decline
+    choices:
+      - id: give
+        label: Give the raise
+        hours: 0
+        effects:
+          - { type: fixedCost, id: raise, name: Raise, monthlyCents: 45000 }
+      - id: decline
+        label: Decline
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 4 }
+
+  - id: second_monitor
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire would like a second monitor. At the moment they work in a window the size of a
+      beer mat. It costs 225 EUR.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Buy the monitor
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -22500 }
+      - id: decline
+        label: Suggest squinting
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 2 }
+
+  - id: hire_holiday
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire would like a week off in August. They booked the flights in January, before
+      they had heard of you.
+    defaultChoice: approve
+    choices:
+      - id: approve
+        label: Approve it
+        hours: 0
+      - id: refuse
+        label: Ask them to move it
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 4 }
+
+  - id: hire_idea
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire has an idea for the product. It is a good idea, which is slightly annoying.
+    defaultChoice: later
+    choices:
+      - id: listen
+        label: Talk it through
+        hours: 2
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: later
+        label: Later
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 2 }
+
+  - id: hire_laptop
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire's laptop is older than your company and slower than your bank. A new one costs
+      1,200 EUR.
+    defaultChoice: keep
+    choices:
+      - id: buy
+        label: Buy a new one
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -120000 }
+      - id: keep
+        label: Ask them to be patient
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 3 }
+
+  - id: hire_feedback
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1, week >= 14]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire asks for feedback. They have prepared a document for you to write the feedback
+      in.
+    defaultChoice: wave_off
+    choices:
+      - id: session
+        label: Sit down properly
+        hours: 2
+      - id: wave_off
+        label: Say it is all fine
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 3 }
+
+  - id: team_lunch
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1, features.shipped >= 1]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire suggests a team lunch, ordered through Kantino. It would be the first time the
+      product has been used by its own team.
+    defaultChoice: skip
+    choices:
+      - id: order
+        label: Order lunch
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -4000 }
+          - { type: bugs, delta: -1 }
+      - id: skip
+        label: Eat at your desks
+        hours: 0
+
+  - id: recruiter_call
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1, week >= 16]
+    from: none
+    sender: Your hire
+    text: >-
+      A recruiter has been writing to your hire. Your hire mentions this in a way that is
+      clearly meant to be mentioned.
+    defaultChoice: ignore
+    choices:
+      - id: talk
+        label: Have a proper talk
+        hours: 2
+      - id: ignore
+        label: Change the subject
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 4 }
+
+  - id: design_tool
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire asks for a design tool at 25 EUR a month. They show you what they made with the
+      free version. It is persuasive.
+    defaultChoice: decline
+    choices:
+      - id: subscribe
+        label: Pay for it
+        hours: 0
+        effects:
+          - { type: fixedCost, id: design_tool, name: Design tool, monthlyCents: 2500 }
+      - id: decline
+        label: Decline
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 1 }
+
+  - id: office_question
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1]
+    from: none
+    sender: Your hire
+    text: >-
+      Your hire asks whether the company will ever have an office. You are both on a video
+      call, from your respective kitchens.
+    defaultChoice: not_yet
+    choices:
+      - id: look
+        label: Look at a few offices
+        hours: 3
+      - id: not_yet
+        label: Say not yet
+        hours: 0

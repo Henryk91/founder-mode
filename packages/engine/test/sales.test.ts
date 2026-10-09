@@ -2,9 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { companyNameCombinations } from '@founder-mode/content'
 import { endWeek, getView, validatePlan } from '../src/index'
 import { Rng, seedRng } from '../src/rng'
-import { churnChance, effectiveHours, pickName, recentOutreach } from '../src/systems/sales'
+import {
+  churnChance,
+  distinctWord,
+  effectiveHours,
+  pickName,
+  recentOutreach,
+} from '../src/systems/sales'
 import type { GameState, Lead } from '../src/types'
-import { newGame, plan, richKantino } from './helpers'
+import { informedPlan, newGame, plan, richKantino } from './helpers'
 
 const lead = (over: Partial<Lead> = {}): Lead => ({
   id: 'lead_1',
@@ -107,9 +113,49 @@ describe('outreach', () => {
     const rng = new Rng(seedRng('pick'))
     const parts = { first: ['A', 'B'], second: ['x', 'y'] }
     const used = new Set<string>()
-    for (let i = 0; i < 4; i++) used.add(pickName(parts, used, rng))
+    for (let i = 0; i < 4; i++) used.add(pickName(parts, used, new Set(), rng))
     expect([...used].sort()).toEqual(['A x', 'A y', 'B x', 'B y'])
-    expect(pickName(parts, used, rng)).toMatch(/^[AB] [xy] 2$/)
+    expect(pickName(parts, used, new Set(), rng)).toMatch(/^[AB] [xy] 2$/)
+  })
+
+  it('never picks a distinctive word that an open lead still carries', () => {
+    const rng = new Rng(seedRng('busy'))
+    const parts = { first: ['A', 'B'], second: ['x', 'y'] }
+    for (let i = 0; i < 20; i++) {
+      expect(pickName(parts, new Set(), new Set(['A']), rng)).toMatch(/^B /)
+      expect(pickName({ ...parts, distinct: 'second' }, new Set(), new Set(['x']), rng)).toMatch(
+        / y$/,
+      )
+    }
+    // With every word held by an open lead, a fresh name still comes out.
+    expect(pickName(parts, new Set(['A x']), new Set(['A', 'B']), rng)).not.toBe('A x')
+    expect(
+      distinctWord({ first: ['Praxis Dr.', 'Praxis'], second: ['Lorenz'] }, 'Praxis Dr. Lorenz'),
+    ).toBe('Praxis Dr.')
+    expect(
+      distinctWord(
+        { first: ['Praxis Dr.'], second: ['Lorenz'], distinct: 'second' },
+        'Praxis Dr. Lorenz',
+      ),
+    ).toBe('Lorenz')
+  })
+
+  it('keeps open leads of a market apart by their distinctive word over a long run', () => {
+    let s = newGame('names', richKantino())
+    let checked = 0
+    while (s.status === 'running' && s.week <= 40) {
+      s = endWeek(s, informedPlan(s)).state
+      for (const seg of s.scenario.segments) {
+        const parts = s.scenario.companyNames[seg.id]!
+        const words = s.leads
+          .filter((l) => l.segmentId === seg.id && l.stage !== 'lost' && l.stage !== 'paying')
+          .map((l) => distinctWord(parts, l.name))
+        expect(words).not.toContain(null)
+        expect(new Set(words).size).toBe(words.length)
+        checked += words.length
+      }
+    }
+    expect(checked).toBeGreaterThan(100)
   })
 
   it('does not run without hours', () => {

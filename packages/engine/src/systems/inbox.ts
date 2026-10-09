@@ -106,7 +106,9 @@ function applyEffect(
   rng: Rng,
   out: MessageOutcome,
 ): GameState {
-  // A chance of 1 needs no roll, so certain effects do not move the random sequence.
+  // The situation is checked first, so an effect that does not apply never rolls. A chance of 1
+  // needs no roll either, so certain effects do not move the random sequence.
+  if (!conditionsHold(state, effect.when)) return state
   if (effect.chance < 1 && !rng.chance(effect.chance)) return state
   const week = state.week
   switch (effect.type) {

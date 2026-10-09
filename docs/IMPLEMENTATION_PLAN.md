@@ -35,7 +35,7 @@ These are defaults. Change them here before starting and Claude Code will follow
 6. Finance: cash, invoices with late payers, fixed costs, bookkeeping backlog
 7. Founder: hours, energy, personal savings, two skills that improve with use
 8. One hire (developer or salesperson)
-9. Inbox with events and choices (target 60 events)
+9. Inbox with events and choices (target about 105 events)
 10. Endings, post-mortem screen, milestones, best runs
 11. Phone layout (primary) and desktop desk layout
 12. "Scrappy" visual style, plus one visible UI upgrade step at a milestone
@@ -392,7 +392,7 @@ Built only from `eventLog`, `knowledge`, and `hidden`:
 | Scenario | 1 (Kantino) |
 | Segments | 3: small offices, coworking spaces, medical practices |
 | Features | 8, of which each segment requires 2 or 3 |
-| Events | 60, spread over validation, sales, product, finance, founder, team |
+| Events | About 105, spread over validation, sales, product, finance, founder, team (was 60; a 60 week run draws up to about 86 messages, and no event may arrive twice unless it recurs on purpose) |
 | Interview quotes | 10 per segment per bucket band (low, mid, high) |
 | Company name pool | 80 fictional names |
 
@@ -564,10 +564,10 @@ Plain styling stays. All text goes through the label table or the content files.
 
 ### Phase 5: Content (about 2 weeks, parallel to phase 6)
 
-- Remaining events up to 60, interview quotes, name pools
+- Remaining events up to about 105, interview quotes, name pools
 - Content validation tests
 
-**Done when:** content counts in section 5 are reached and 20 consecutive manual weeks show no repeated event.
+**Done when:** content counts in section 5 are reached and no 60 week run shows a repeated event, apart from events that recur on purpose.
 
 ### Phase 6: Scrappy UI and desktop layout (about 2 weeks)
 

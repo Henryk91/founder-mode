@@ -522,8 +522,15 @@ describe('follow ups, costs and plurals', () => {
             label: 'Act',
             hours: 2,
             effects: [
-              { type: 'cash' as const, amountCents: -40_000, chance: 1 },
-              { type: 'fixedCost' as const, id: 'x', name: 'X', monthlyCents: 4_000, chance: 1 },
+              { type: 'cash' as const, amountCents: -40_000, chance: 1, when: [] },
+              {
+                type: 'fixedCost' as const,
+                id: 'x',
+                name: 'X',
+                monthlyCents: 4_000,
+                chance: 1,
+                when: [],
+              },
             ],
           },
         ],
