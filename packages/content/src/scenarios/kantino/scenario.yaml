@@ -1,0 +1,102 @@
+# Kantino: shared lunch ordering for workplaces. Source: docs/scenario-kantino.md
+# All values are untested starting points. Money in cents, time in hours.
+
+id: kantino
+name: Kantino
+maxWeeks: 78
+
+start:
+  cashCents: 1500000
+  savingsCents: 1200000
+  livingCostCentsPerWeek: 45000
+  priceCentsPerMonth: 30000
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: tools_hosting
+      name: Tools and hosting
+      monthlyCents: 12000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 15000
+
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -2
+    perRestHour: 1.5
+    weekWithinBase: 3
+
+finance:
+  weeksPerMonth: 4
+
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.2
+    skillGain: 0.02
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.5
+    buckets:
+      - { id: not_a_problem, name: Not a problem, below: 0.2 }
+      - { id: mild, name: Mild, below: 0.4 }
+      - { id: noticeable, name: Noticeable, below: 0.6 }
+      - { id: painful, name: Painful, below: 0.8 }
+      - { id: urgent, name: Urgent }
+
+# Shuffled across the segments at game creation, one role each.
+roles:
+  - id: viable
+    pain: { min: 0.65, max: 0.9 }
+    politeness: { min: 0.1, max: 0.2 }
+  - id: mediocre
+    pain: { min: 0.35, max: 0.55 }
+    politeness: { min: 0.15, max: 0.3 }
+  - id: trap
+    pain: { min: 0.1, max: 0.25 }
+    politeness: { min: 0.28, max: 0.35 }
+
+segments:
+  - id: small_offices
+    name: Small offices
+    description: Agencies and firms with 10 to 50 staff
+    size: { min: 800, max: 2000 }
+    wtpCents: { min: 15000, max: 40000 }
+    mustHave: [basic_ordering, invoice_export, chat_integration]
+    channelResponse:
+      cold_email: { min: 0.1, max: 0.2 }
+      phone: { min: 0.08, max: 0.15 }
+      in_person: { min: 0.05, max: 0.25 }
+    paymentDelayDaysMean: 5
+    neverPaysShare: 0.05
+
+  - id: coworking
+    name: Coworking spaces
+    description: Shared workspaces with many small tenants
+    size: { min: 100, max: 300 }
+    wtpCents: { min: 60000, max: 150000 }
+    mustHave: [basic_ordering, multi_site, member_billing]
+    channelResponse:
+      cold_email: { min: 0.05, max: 0.12 }
+      phone: { min: 0.1, max: 0.22 }
+      in_person: { min: 0.15, max: 0.3 }
+    paymentDelayDaysMean: 12
+    neverPaysShare: 0.03
+
+  - id: medical
+    name: Medical practices
+    description: Doctors and dentists with shift based teams
+    size: { min: 400, max: 1200 }
+    wtpCents: { min: 10000, max: 25000 }
+    mustHave: [basic_ordering, allergy_filter, shift_schedule]
+    channelResponse:
+      cold_email: { min: 0.02, max: 0.06 }
+      phone: { min: 0.12, max: 0.25 }
+      in_person: { min: 0.1, max: 0.2 }
+    paymentDelayDaysMean: 20
+    neverPaysShare: 0.08

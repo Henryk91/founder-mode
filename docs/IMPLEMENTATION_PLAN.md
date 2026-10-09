@@ -265,12 +265,15 @@ Leads show only observable facts (company name, size, last contact, what they sa
 
 ### 4.7 Finance
 
-- Weekly: founder living costs are deducted from personal savings.
+- Weekly: founder living costs are deducted from personal savings. When savings are empty, the company pays the rest of the living costs from its cash (a founder draw).
 - Every 4th week: fixed costs (tools, coworking seat, salaries) are deducted from company cash.
+- If company cash is below zero after the week's costs, personal savings cover the gap automatically, as far as they reach (an automatic top up).
+- Order within the week: manual transfer, living costs, fixed costs, revenue, automatic top up.
 - Customers are invoiced monthly. Each invoice gets a due week and an actual payment week drawn from the segment's delay distribution. Some pay late, a few never pay.
 - `chaseInvoice` hours raise the chance of payment in the following week.
 - Bookkeeping needs 2 h per week. Unspent hours accumulate in `bookkeepingBacklogHours`. Above 12 h a penalty event fires (late fee, lost time).
-- The founder can move money from personal savings into the company as an action.
+- The founder can move money from personal savings into the company as an action (`transferToCompanyCents` in the week plan), up to the current savings.
+- Every manual transfer, founder draw, and automatic top up appears as an entry in `WeekReport.entries` and is written to `eventLog` with its amount, so the post-mortem can total the private money put in (manual transfers plus top ups).
 - Runway shown to the player = weeks until cash reaches zero at the average net change of the last 4 weeks.
 
 ### 4.8 Founder
@@ -350,7 +353,7 @@ Milestones: first interview, first sign up, first paying customer, 1,000 EUR mon
 
 | Ending | Condition |
 |---|---|
-| Bankrupt | Company cash below zero and no savings left to inject |
+| Bankrupt | Company cash still below zero after the automatic top up, i.e. savings are used up and cannot cover the gap |
 | Burnout | Energy at 0 for 3 consecutive weeks |
 | Shut down | Player chooses to stop |
 | Still searching | Week 78 reached, not profitable |

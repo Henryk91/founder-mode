@@ -1,0 +1,49 @@
+# Which segment needs which feature lives in scenario.yaml (segments[].mustHave) and stays hidden.
+
+- id: basic_ordering
+  name: Daily group order
+  buildHours: 40
+  bugsOnShip: { min: 2, max: 3 }
+  mention: Honestly, just one list where everyone adds their lunch would already be a miracle.
+
+- id: invoice_export
+  name: Invoice export for accounting
+  buildHours: 25
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Our accountant would need a proper invoice at the end of the month, or she will hunt me down.
+
+- id: chat_integration
+  name: Order reminders in team chat
+  buildHours: 20
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Nobody reads email here. If it does not ping them in the team chat, it does not exist.
+
+- id: multi_site
+  name: Several locations in one account
+  buildHours: 45
+  bugsOnShip: { min: 2, max: 3 }
+  mention: We run three buildings. I am not logging into three accounts every morning.
+
+- id: member_billing
+  name: Charge each member separately
+  buildHours: 50
+  bugsOnShip: { min: 2, max: 3 }
+  mention: Each tenant has to pay for their own lunch. We are a coworking space, not a charity.
+
+- id: allergy_filter
+  name: Allergy and diet filter
+  buildHours: 30
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Half the team has an allergy and the other half has opinions. It needs to filter for that.
+
+- id: shift_schedule
+  name: Orders by shift
+  buildHours: 35
+  bugsOnShip: { min: 1, max: 2 }
+  mention: The early shift eats at eleven and the late shift at two. One order a day does not work for us.
+
+- id: supplier_portal
+  name: Portal for restaurants
+  buildHours: 60
+  bugsOnShip: { min: 2, max: 3 }
+  mention: It would be nice if the restaurants could log in too, I suppose. Not that I would pay for it.
