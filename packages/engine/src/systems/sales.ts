@@ -26,28 +26,90 @@ export function canFollowUp(lead: Lead): boolean {
   return lead.stage === 'lead' || lead.stage === 'demo'
 }
 
-type NameParts = { first: readonly string[]; second: readonly string[] }
+type NameParts = {
+  first: readonly string[]
+  second: readonly string[]
+  /** Which word tells the segment's companies apart. Defaults to the first. */
+  distinct?: 'first' | 'second'
+}
+
+/** The word of a lead name that tells companies apart, or null if the name is not from `parts`. */
+export function distinctWord(parts: NameParts, name: string): string | null {
+  const second = parts.distinct === 'second'
+  let best: string | null = null
+  for (const w of second ? parts.second : parts.first) {
+    const match = second ? name.endsWith(` ${w}`) : name.startsWith(`${w} `)
+    if (match && (best === null || w.length > best.length)) best = w
+  }
+  return best
+}
 
 /**
- * A company name no lead has yet: one word from each list, joined by a space. A few random
- * tries find a free one while most are free; after that, a pick among all free combinations.
+ * A company name no lead has had yet, whose distinctive word no open lead uses (`busy`): one word
+ * from each list, joined by a space. A few random tries find one while most are free; after that,
+ * a pick among all that qualify. If open leads hold every distinctive word, any unused name.
  */
-export function pickName(parts: NameParts, used: ReadonlySet<string>, rng: Rng): string {
+export function pickName(
+  parts: NameParts,
+  used: ReadonlySet<string>,
+  busy: ReadonlySet<string>,
+  rng: Rng,
+): string {
   const { first, second } = parts
   if (first.length === 0 || second.length === 0) {
     throw new Error('No company names for this segment')
   }
+  const fresh = (a: string, b: string) =>
+    !used.has(`${a} ${b}`) && !busy.has(parts.distinct === 'second' ? b : a)
   for (let tries = 0; tries < 8; tries++) {
-    const name = `${rng.pick(first)} ${rng.pick(second)}`
-    if (!used.has(name)) return name
+    const a = rng.pick(first)
+    const b = rng.pick(second)
+    if (fresh(a, b)) return `${a} ${b}`
   }
-  const free = first.flatMap((a) => second.map((b) => `${a} ${b}`)).filter((n) => !used.has(n))
-  if (free.length > 0) return rng.pick(free)
+  const all = first.flatMap((a) => second.map((b) => [a, b] as const))
+  const free = all.filter(([a, b]) => fresh(a, b))
+  const pick = free.length > 0 ? rng.pick(free) : null
+  if (pick) return `${pick[0]} ${pick[1]}`
+  const unused = all.map(([a, b]) => `${a} ${b}`).filter((n) => !used.has(n))
+  if (unused.length > 0) return rng.pick(unused)
   // Every combination is taken, far beyond what a run produces. Stay distinguishable anyway.
   const base = `${rng.pick(first)} ${rng.pick(second)}`
   let n = 2
   while (used.has(`${base} ${n}`)) n++
   return `${base} ${n}`
+}
+
+const holdsName = (l: Lead) => l.stage !== 'lost' && l.stage !== 'paying'
+
+/**
+ * Hands out fresh lead names for one week's new leads: never a name any lead has had, and never
+ * a distinctive word that an open lead of the same segment still carries.
+ */
+export function namePicker(
+  state: GameState,
+  leads: readonly Lead[],
+): (segmentId: SegmentId, rng: Rng) => string {
+  const used = new Set(leads.map((l) => l.name))
+  const busy = new Map<SegmentId, Set<string>>()
+  const partsOf = (id: SegmentId): NameParts =>
+    state.scenario.companyNames[id] ?? { first: [], second: [] }
+  return (segmentId, rng) => {
+    const parts = partsOf(segmentId)
+    let words = busy.get(segmentId)
+    if (!words) {
+      words = new Set(
+        leads
+          .filter((l) => l.segmentId === segmentId && holdsName(l))
+          .flatMap((l) => distinctWord(parts, l.name) ?? []),
+      )
+      busy.set(segmentId, words)
+    }
+    const name = pickName(parts, used, words, rng)
+    used.add(name)
+    const word = distinctWord(parts, name)
+    if (word !== null) words.add(word)
+    return name
+  }
 }
 
 /** Adds `count` new open leads in a segment, with fresh company names, found by `source`. */
@@ -60,11 +122,9 @@ export function addLeads(
 ): GameState {
   if (count <= 0) return state
   const leads = [...state.leads]
-  const used = new Set(leads.map((l) => l.name))
-  const parts = state.scenario.companyNames[segmentId] ?? { first: [], second: [] }
+  const nextName = namePicker(state, leads)
   for (let i = 0; i < count; i++) {
-    const name = pickName(parts, used, rng)
-    used.add(name)
+    const name = nextName(segmentId, rng)
     leads.push({
       id: `lead_${leads.length + 1}`,
       name,
@@ -272,7 +332,7 @@ export function applySales(
   }
 
   // 5. Outreach, segments in scenario order, then the salesperson
-  const used = new Set(leads.map((l) => l.name))
+  const nextName = namePicker(state, leads)
   const items: {
     segmentId: SegmentId
     channel: ChannelId
@@ -305,9 +365,7 @@ export function applySales(
     const hours = effectiveHours(before, item.hours, limit, cfg.saturatedFactor)
     const count = randomRound(hours * response * (cfg.sellingBase + item.selling) * tired, rng)
     for (let i = 0; i < count; i++) {
-      const parts = state.scenario.companyNames[item.segmentId] ?? { first: [], second: [] }
-      const name = pickName(parts, used, rng)
-      used.add(name)
+      const name = nextName(item.segmentId, rng)
       leads.push({
         id: `lead_${leads.length + 1}`,
         name,

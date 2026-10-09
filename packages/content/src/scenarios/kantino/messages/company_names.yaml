@@ -1,6 +1,8 @@
 # Fictional company names for leads, by segment. A lead's name is one word from `first` and one
 # from `second`, joined by a space, so each segment has several hundred distinct names.
-# Every combination must be unique across all segments.
+# Every combination must be unique across all segments. Two open leads of a segment never share
+# its distinctive word: the first word, or the second where `distinct: second` says so. Each list
+# of distinctive words is longer than the most leads a market has open at once.
 small_offices:
   first:
     - Nordlicht
@@ -9,7 +11,7 @@ small_offices:
     - Ahorn
     - Quellwerk
     - Tannenhof
-    - Birkenau
+    - Birkenweg
     - Rautenberg
     - Sonnenkamp
     - Eichhorn
@@ -33,6 +35,21 @@ small_offices:
     - Ziegler
     - Brückner
     - Uhland
+    - Lindenhof
+    - Wiesengrund
+    - Talblick
+    - Holunder
+    - Schwalbe
+    - Mondschein
+    - Silberstreif
+    - Ginster
+    - Lerchenfeld
+    - Kornblume
+    - Morgentau
+    - Seerose
+    - Steinbock
+    - Wegweiser
+    - Fernsicht
   second:
     - Medien
     - Digital
@@ -92,6 +109,21 @@ coworking:
     - Lagerhaus
     - Mühlenhof
     - Hopfenspeicher
+    - Dampfkessel
+    - Malzfabrik
+    - Zollhaus
+    - Kohlenhof
+    - Druckerei
+    - Weberei
+    - Seifenfabrik
+    - Gasometer
+    - Wäscherei
+    - Kornspeicher
+    - Schmiede
+    - Werftgelände
+    - Papierfabrik
+    - Uhrenfabrik
+    - Bootshaus
   second:
     - Cowork
     - Coworking
@@ -119,6 +151,8 @@ coworking:
     - Labor
 
 medical:
+  # Practice types repeat, so the surname is what tells two practices apart.
+  distinct: second
   first:
     - Praxis Dr.
     - Zahnarztpraxis Dr.

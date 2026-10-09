@@ -222,39 +222,44 @@ const ConditionSchema = z.string().transform((text, ctx): Condition => {
 })
 
 // Effects are a closed union. Adding a type means adding it here and in the engine.
-// `chance` (default 1) makes an effect succeed only some of the time.
+// `chance` (default 1) makes an effect succeed only some of the time. `when` (default none) makes
+// it happen only if the conditions hold when the week ends, so an answer can pay off in one
+// situation and be wasted in another.
 const Chance = Share.default(1)
+const EffectWhen = z.array(ConditionSchema).default([])
+const fx = { chance: Chance, when: EffectWhen }
 export const EffectSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('cash'), amountCents: Cents, chance: Chance }),
-  z.object({ type: z.literal('energy'), delta: z.number(), chance: Chance }),
-  z.object({ type: z.literal('bugs'), delta: z.number().int(), chance: Chance }),
+  z.object({ type: z.literal('cash'), amountCents: Cents, ...fx }),
+  z.object({ type: z.literal('energy'), delta: z.number(), ...fx }),
+  z.object({ type: z.literal('bugs'), delta: z.number().int(), ...fx }),
   z.object({
     type: z.literal('skill'),
     skill: z.enum(['interviewing', 'selling']),
     delta: z.number(),
-    chance: Chance,
+    ...fx,
   }),
   // Overdue invoices of the sender get paid in the following week with this chance.
-  z.object({ type: z.literal('invoicePayChance'), delta: Share, chance: Chance }),
+  z.object({ type: z.literal('invoicePayChance'), delta: Share, ...fx }),
   // The sender (a customer) leaves with this chance.
-  z.object({ type: z.literal('churnChance'), delta: Share, chance: Chance }),
+  z.object({ type: z.literal('churnChance'), delta: Share, ...fx }),
   // New leads in the sender's segment, else a random one.
-  z.object({ type: z.literal('newLeads'), count: z.number().int().positive(), chance: Chance }),
+  z.object({ type: z.literal('newLeads'), count: z.number().int().positive(), ...fx }),
   // The sender (a lead) answers again.
-  z.object({ type: z.literal('touchLead'), chance: Chance }),
+  z.object({ type: z.literal('touchLead'), ...fx }),
   // Hours taken out of next week.
-  z.object({ type: z.literal('lostHours'), hours: z.number().int().positive(), chance: Chance }),
+  z.object({ type: z.literal('lostHours'), hours: z.number().int().positive(), ...fx }),
   z.object({
     type: z.literal('fixedCost'),
     id: Id,
     name: z.string().min(1),
     monthlyCents: Cents.positive(),
-    chance: Chance,
+    ...fx,
   }),
 ])
 export type Effect = z.infer<typeof EffectSchema>
 
 export const EVENT_AREAS = ['validation', 'sales', 'product', 'finance', 'founder', 'team'] as const
+export type EventArea = (typeof EVENT_AREAS)[number]
 
 export const EventChoiceSchema = z.object({
   id: Id,
@@ -315,6 +320,8 @@ export const FeatureSchema = z.object({
 export const CompanyNamePartsSchema = z.object({
   first: z.array(z.string().min(1)).min(1),
   second: z.array(z.string().min(1)).min(1),
+  // The word that tells the segment's companies apart. Two open leads never share it.
+  distinct: z.enum(['first', 'second']).default('first'),
 })
 
 /** Every company name a segment's word lists can produce, in list order. */
@@ -468,6 +475,10 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     checkText(e.text, EVENT_PLACEHOLDERS, at('text'))
     if (e.from === 'none' && e.text.includes('{name}')) {
       issue('{name} needs a sender that is a customer or a lead', at('text'))
+    }
+    // Runs are long enough to exhaust a small pool, so repeats must be chosen on purpose.
+    if (!e.once && e.cooldownWeeks === undefined) {
+      issue('an event must be once, or recur on purpose with its own cooldownWeeks', at('once'))
     }
     const choice = e.choices.find((c) => c.id === e.defaultChoice)
     if (!choice) issue(`unknown default choice ${e.defaultChoice}`, at('defaultChoice'))

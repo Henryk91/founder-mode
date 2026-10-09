@@ -1,0 +1,461 @@
+# Inbox events, product area. Text is 2 to 4 sentences. {name} is the customer or lead the
+# message is from. Conditions: <path> <op> <number>, paths from CONDITION_PATHS in schema.ts. All
+# must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
+# conditions hold when the week ends. Choices show their hours to the player, never their odds.
+# An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
+events:
+  - id: crash_report
+    area: product
+    weight: 3
+    once: true
+    when: [customers.count >= 1, bugs >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} reports that the daily order failed twice this week. One lunch went to the wrong
+      floor. Nobody is happy about the lunch or about you.
+    defaultChoice: nothing
+    choices:
+      - id: patch
+        label: Drop everything and patch it
+        hours: 4
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: apologise
+        label: Send a careful apology
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.05 }
+      - id: nothing
+        label: Do nothing
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.1 }
+
+  - id: restaurant_portal
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Restaurant owner
+    text: >-
+      A restaurant owner suggests you build a portal for restaurants. He would use it. He is also
+      the only one who has asked.
+    defaultChoice: decline
+    choices:
+      - id: promise
+        label: Promise to look into it
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 6 }
+      - id: chat
+        label: Hear him out
+        hours: 2
+        effects:
+          - { type: lostHours, hours: 3 }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: security_notice
+    area: product
+    weight: 2
+    once: true
+    when: [features.shipped >= 1]
+    from: none
+    sender: Forum thread
+    text: >-
+      A forum thread says a library you rely on has a security notice. Fixing it takes an
+      afternoon. Not fixing it takes longer, later.
+    defaultChoice: ignore
+    choices:
+      - id: patch
+        label: Patch it now
+        hours: 4
+      - id: ignore
+        label: Read it again tomorrow
+        hours: 0
+        effects:
+          - { type: bugs, delta: 2 }
+
+  - id: hosting_pricing
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Hosting provider
+    text: >-
+      Your hosting provider has changed its pricing. The new price is higher. The old plan is now
+      described as "legacy".
+    defaultChoice: accept
+    choices:
+      - id: migrate
+        label: Migrate it yourself
+        hours: 6
+      - id: accept
+        label: Accept the new price
+        hours: 0
+        effects:
+          - { type: fixedCost, id: hosting_upgrade, name: Hosting upgrade, monthlyCents: 3000 }
+
+  - id: font_complaint
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} finds the menu font "a bit much". They attached a screenshot with the font circled
+      three times in red. Everything else is fine, they add.
+    defaultChoice: thank
+    choices:
+      - id: redesign
+        label: Rework the menu design
+        hours: 4
+      - id: thank
+        label: Thank them for the feedback
+        hours: 0
+
+  - id: reception_browser
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says Kantino does not load on the reception computer. The reception computer runs a
+      browser from 2014. Nobody knows the password to update it.
+    defaultChoice: ignore
+    choices:
+      - id: support
+        label: Make it work on the old browser
+        hours: 5
+      - id: explain
+        label: Explain and suggest a phone
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.03 }
+      - id: ignore
+        label: Hope they find the password
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.1 }
+
+  - id: dark_mode
+    area: product
+    weight: 2
+    once: true
+    when: [features.shipped >= 1]
+    from: none
+    sender: User
+    text: >-
+      A user asks for dark mode. They use Kantino for about forty seconds a day, at lunchtime,
+      in daylight.
+    defaultChoice: later
+    choices:
+      - id: build
+        label: Build dark mode
+        hours: 5
+      - id: later
+        label: Add it to the list
+        hours: 0
+
+  - id: slow_order_page
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says the order page takes eight seconds to load. They timed it twice. With a long
+      bug list that is a symptom. With a short one it is their office wifi.
+    defaultChoice: reply
+    choices:
+      - id: optimise
+        label: Profile and fix it
+        hours: 3
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: reply
+        label: Suggest a restart
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.15, when: [bugs >= 3] }
+
+  - id: missing_backups
+    area: product
+    weight: 2
+    once: true
+    when: [features.shipped >= 2]
+    from: none
+    sender: Your conscience
+    text: >-
+      You realise the database has not been backed up since the day you set it up. Nothing has
+      gone wrong. Nothing has gone wrong yet.
+    defaultChoice: later
+    choices:
+      - id: backup
+        label: Set up backups
+        hours: 2
+      - id: later
+        label: Later, surely
+        hours: 0
+        effects:
+          - { type: bugs, delta: 3, chance: 0.25 }
+          - { type: lostHours, hours: 6, chance: 0.25 }
+
+  - id: framework_upgrade
+    area: product
+    weight: 2
+    once: true
+    when: [features.shipped >= 1, week >= 6]
+    from: none
+    sender: Release notes
+    text: >-
+      The framework you use has a new major version. The release notes say upgrading is easy,
+      in a tone that suggests otherwise.
+    defaultChoice: stay
+    choices:
+      - id: upgrade
+        label: Upgrade now
+        hours: 6
+        effects:
+          - { type: bugs, delta: 2, chance: 0.5 }
+      - id: stay
+        label: Stay on the old one
+        hours: 0
+
+  - id: screen_reader
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says a colleague who uses a screen reader cannot place orders. That is a fair
+      point, and an uncomfortable one.
+    defaultChoice: later
+    choices:
+      - id: fix
+        label: Fix the order form
+        hours: 4
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: later
+        label: Promise to look at it
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.08 }
+
+  - id: bounty_hunter
+    area: product
+    weight: 2
+    once: true
+    when: [features.shipped >= 1]
+    from: none
+    sender: Security researcher
+    text: >-
+      A stranger reports a security hole and asks for a bug bounty of 150 EUR. The hole is
+      real. The stranger's name is probably not.
+    defaultChoice: ignore
+    choices:
+      - id: pay
+        label: Pay and fix it
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -15000 }
+      - id: fix
+        label: Fix it yourself
+        hours: 3
+      - id: ignore
+        label: Ignore it
+        hours: 0
+        effects:
+          - { type: bugs, delta: 2 }
+
+  - id: french_translation
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: Freelance translator
+    text: >-
+      A freelancer offers to translate Kantino into French for 600 EUR. You have no French
+      customers. You have no French.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Commission it
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -60000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: bug_weekend
+    area: product
+    weight: 2
+    once: true
+    when: [bugs >= 3]
+    from: none
+    sender: Your bug list
+    text: >-
+      Your bug list is now long enough to need a table of contents. A focused day would clear
+      the worst of it, which matters most to the people who pay you.
+    defaultChoice: carry_on
+    choices:
+      - id: sprint
+        label: Spend a day on bugs
+        hours: 6
+        effects:
+          - { type: bugs, delta: -3 }
+      - id: carry_on
+        label: Carry on
+        hours: 0
+
+  - id: unused_feature
+    area: product
+    weight: 2
+    once: true
+    when: [features.shipped >= 3]
+    from: none
+    sender: Usage statistics
+    text: >-
+      Nobody has used one of your features in five weeks. You remember building it. You
+      remember it fondly.
+    defaultChoice: keep
+    choices:
+      - id: remove
+        label: Remove it
+        hours: 2
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: keep
+        label: Keep it for sentimental reasons
+        hours: 0
+
+  - id: partner_directory
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Calendar app
+    text: >-
+      A calendar app offers an integration partnership. You would be listed among 400 partners,
+      sorted alphabetically, under K.
+    defaultChoice: decline
+    choices:
+      - id: integrate
+        label: Build the integration
+        hours: 6
+        effects:
+          - { type: newLeads, count: 1, chance: 0.3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: company_phones
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1, features.shipped >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says the app crashes on one particular phone model. It is the phone model their
+      whole office was given last month.
+    defaultChoice: ignore
+    choices:
+      - id: fix
+        label: Borrow one and fix it
+        hours: 4
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: workaround
+        label: Send a workaround
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.04 }
+      - id: ignore
+        label: Hope it passes
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.15 }
+
+  - id: whiteboard_menus
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} would like to upload menus as photos instead of typing them. The photos are of a
+      whiteboard, taken at an angle, in a hurry.
+    defaultChoice: type_once
+    choices:
+      - id: build
+        label: Build photo upload
+        hours: 5
+        effects:
+          - { type: bugs, delta: 1 }
+      - id: type_once
+        label: Offer to type them in once
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 1 }
+
+  - id: uptime_monitor
+    area: product
+    weight: 2
+    once: true
+    when: [features.shipped >= 1]
+    from: none
+    sender: Monitoring service
+    text: >-
+      A monitoring service offers outage alerts for 15 EUR a month. Without it you hear about
+      outages from customers, who are faster but less polite. With few customers, there is
+      hardly anyone to hear it from.
+    defaultChoice: skip
+    choices:
+      - id: subscribe
+        label: Subscribe
+        hours: 1
+        effects:
+          - { type: fixedCost, id: monitoring, name: Uptime monitoring, monthlyCents: 1500 }
+      - id: skip
+        label: Skip it
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 4, chance: 0.5, when: [customers.count >= 3] }
+
+  - id: export_request
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} asks for a monthly spreadsheet of every order. They plan to print it. They do not
+      say why, and you decide not to ask.
+    defaultChoice: by_hand
+    choices:
+      - id: build
+        label: Build the export
+        hours: 4
+      - id: by_hand
+        label: Send one by hand
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 1 }

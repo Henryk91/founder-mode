@@ -1,0 +1,412 @@
+# Inbox events, finance area. Text is 2 to 4 sentences. {name} is the customer or lead the
+# message is from. Conditions: <path> <op> <number>, paths from CONDITION_PATHS in schema.ts. All
+# must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
+# conditions hold when the week ends. Choices show their hours to the player, never their odds.
+# An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
+events:
+  - id: late_payer_first
+    area: finance
+    weight: 4
+    once: true
+    when: [customers.count >= 1, invoices.overdueDays >= 14]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} has still not paid. Their accounts department has, they say, "a process". Nobody
+      has been able to describe the process.
+    defaultChoice: wait
+    choices:
+      - id: reminder
+        label: Send a friendly reminder
+        hours: 1
+        effects:
+          - { type: invoicePayChance, delta: 0.5 }
+      - id: call
+        label: Call their accounting team
+        hours: 2
+        effects:
+          - { type: invoicePayChance, delta: 0.55 }
+      - id: pause
+        label: Pause their account
+        hours: 0
+        effects:
+          - { type: invoicePayChance, delta: 0.6 }
+          - { type: churnChance, delta: 0.35 }
+      - id: wait
+        label: Wait
+        hours: 0
+
+  - id: filing_deadline
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: Accountant
+    text: >-
+      Your accountant found a form that should have been filed last month. It is short and mildly
+      urgent. The fee for filing it late is not short.
+    defaultChoice: late
+    choices:
+      - id: file
+        label: File it now
+        hours: 2
+      - id: late
+        label: File it later
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -45000 }
+
+  - id: regional_grant
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 2, cashEur <= 12000]
+    from: none
+    sender: Regional programme
+    text: >-
+      A regional programme offers startups a small grant. The application is nine pages long.
+      Page six asks for your vision of the year 2035.
+    defaultChoice: skip
+    choices:
+      - id: apply
+        label: Apply
+        hours: 5
+        effects:
+          - { type: cash, amountCents: 225000, chance: 0.5 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: laptop_fan
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Your laptop
+    text: >-
+      The fan in your laptop now sounds like a small aircraft. A new laptop costs 2,100 EUR. The
+      old one still technically works.
+    defaultChoice: live_with_it
+    choices:
+      - id: buy
+        label: Buy a new one
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -210000 }
+      - id: live_with_it
+        label: Live with it
+        hours: 0
+        effects:
+          - { type: energy, delta: -4 }
+
+  # The books arrive as a recurring message instead of a weekly chore.
+  - id: receipts_pile
+    area: finance
+    weight: 40
+    cooldownWeeks: 5
+    when: [week >= 3]
+    from: none
+    sender: Accountant
+    text: >-
+      Your accountant would like the receipts for the last few weeks. Some are in a shoebox.
+      One is on the back of a lunch menu.
+    defaultChoice: later
+    choices:
+      - id: sort
+        label: Sort them tonight
+        hours: 3
+      - id: send
+        label: Pay the accountant to sort them
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -22500 }
+      - id: later
+        label: Later
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -60000, chance: 0.5 }
+          - { type: lostHours, hours: 4, chance: 0.5 }
+
+  - id: bank_fee
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Bank
+    text: >-
+      The bank is introducing an account fee for accounts that are used. Yours is used. The letter
+      is friendly about it.
+    defaultChoice: accept
+    choices:
+      - id: switch
+        label: Switch to an online bank
+        hours: 3
+      - id: accept
+        label: Accept the fee
+        hours: 0
+        effects:
+          - { type: fixedCost, id: bank_fee, name: Bank fee, monthlyCents: 1500 }
+
+  - id: insurance_broker
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Insurance broker
+    text: >-
+      A broker offers a startup package covering cyber risk, legal costs and "unforeseen catering
+      incidents". It costs 60 EUR a month. The broker calls it peace of mind, twice.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Sign up
+        hours: 1
+        effects:
+          - { type: fixedCost, id: insurance, name: Startup insurance, monthlyCents: 6000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: tax_letter
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 5]
+    from: none
+    sender: Tax office
+    text: >-
+      The tax office has one question about your VAT number. The question arrived in a letter of
+      four pages. The answer is due in two weeks.
+    defaultChoice: pile
+    choices:
+      - id: answer
+        label: Answer it properly
+        hours: 2
+      - id: pile
+        label: Put it on the pile
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -30000, chance: 0.5 }
+          - { type: lostHours, hours: 3, chance: 0.5 }
+
+  - id: invoice_app
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Invoicing app
+    text: >-
+      An invoicing app promises to make your invoices look more professional, for 20 EUR a
+      month. It also sends a motivational quote every Monday, which cannot be turned off.
+    defaultChoice: pass
+    choices:
+      - id: subscribe
+        label: Subscribe
+        hours: 1
+        effects:
+          - { type: fixedCost, id: invoicing_app, name: Invoicing app, monthlyCents: 2000 }
+      - id: pass
+        label: Pass
+        hours: 0
+
+  - id: overdue_again
+    area: finance
+    weight: 3
+    once: true
+    when: [customers.count >= 1, invoices.overdueDays >= 21]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} asks whether they still owe you anything. Their accountant has lost track. Your
+      list of open invoices has not.
+    defaultChoice: wait
+    choices:
+      - id: reminder
+        label: Send a reminder
+        hours: 1
+        effects:
+          - { type: invoicePayChance, delta: 0.4 }
+      - id: call
+        label: Call their accountant
+        hours: 2
+        effects:
+          - { type: invoicePayChance, delta: 0.6 }
+      - id: wait
+        label: Wait
+        hours: 0
+
+  - id: old_bike
+    area: finance
+    weight: 2
+    once: true
+    when: [cashEur <= 6000]
+    from: none
+    sender: Your hallway
+    text: >-
+      Your old road bike could sell for about 450 EUR. You last rode it in a previous life, and
+      the tyres have gone flat in sympathy.
+    defaultChoice: keep
+    choices:
+      - id: sell
+        label: Sell it
+        hours: 2
+        effects:
+          - { type: cash, amountCents: 45000 }
+      - id: keep
+        label: Keep it
+        hours: 0
+
+  - id: growth_package
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: Accountant
+    text: >-
+      Your accountant offers a "growth package" for 90 EUR a month. It includes a quarterly call
+      in which they ask how growth is going.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Sign up
+        hours: 0
+        effects:
+          - { type: fixedCost, id: growth_package, name: Growth package, monthlyCents: 9000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: forgotten_subscriptions
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 5]
+    from: none
+    sender: Bank statement
+    text: >-
+      Your bank statement shows nine software subscriptions, and you have logged into seven of
+      them. Two offer refunds if you ask nicely and fill in a form.
+    defaultChoice: ignore
+    choices:
+      - id: cancel
+        label: Cancel and claim refunds
+        hours: 2
+        effects:
+          - { type: cash, amountCents: 18000 }
+      - id: ignore
+        label: Leave them
+        hours: 0
+
+  - id: parking_fine
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: City council
+    text: >-
+      A parking fine of 35 EUR arrives from the day of your best demo. Contesting it would take
+      a morning and a photo you do not have.
+    defaultChoice: pay
+    choices:
+      - id: pay
+        label: Pay it
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -3500 }
+      - id: contest
+        label: Contest it
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -3500, chance: 0.5 }
+
+  - id: vat_return
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: Accountant
+    text: >-
+      The quarterly VAT return is due. Your accountant can do it for 180 EUR, or you can do it
+      yourself and learn several new words.
+    defaultChoice: accountant
+    choices:
+      - id: self
+        label: Do it yourself
+        hours: 3
+      - id: accountant
+        label: Let the accountant do it
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -18000 }
+
+  - id: address_change
+    area: finance
+    weight: 2
+    once: true
+    when: [customers.count >= 1, invoices.open >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} needs their invoices reissued with their new address, which is 200 metres from the
+      old one. Until then their accounts team will not pay anything that is late.
+    defaultChoice: later
+    choices:
+      - id: reissue
+        label: Reissue the invoices
+        hours: 2
+        effects:
+          - { type: invoicePayChance, delta: 0.5 }
+      - id: later
+        label: Do it at month end
+        hours: 0
+
+  - id: equipment_grant
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 5, cashEur <= 9000]
+    from: none
+    sender: City programme
+    text: >-
+      A city programme refunds half the cost of new office equipment. You have no office, but
+      you do have a receipt for a chair that squeaks.
+    defaultChoice: skip
+    choices:
+      - id: apply
+        label: Apply
+        hours: 3
+        effects:
+          - { type: cash, amountCents: 22500, chance: 0.6 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: double_charge
+    area: finance
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      Your payment provider charged {name} twice this month. They have not noticed yet. Your
+      conscience has.
+    defaultChoice: wait
+    choices:
+      - id: refund
+        label: Refund and apologise
+        hours: 1
+      - id: wait
+        label: Wait for them to notice
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.12, chance: 0.5 }

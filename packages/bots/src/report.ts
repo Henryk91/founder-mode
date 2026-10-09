@@ -90,6 +90,8 @@ export type EventRow = {
   cheapest: string
   /** The cheapest choice (fewest hours, then least money) has the highest win rate. */
   favoursCheap: boolean
+  /** Win rate of plain validate_then_build, which reads each arrival, on the same seeds. */
+  reading: number
 }
 
 /** Seeds with this few arrivals are too noisy to say which answer is best. */
@@ -118,6 +120,7 @@ export function eventRows(
     })
     const best = [...choices].sort((x, y) => y.rate - x.rate)[0]
     const cheapest = [...choices].sort((x, y) => x.hours - y.hours || x.costCents - y.costCents)[0]
+    const read = [...seen].flatMap((i) => (base[i] ? [base[i]] : []))
     return {
       eventId,
       seeds: seen.size,
@@ -125,6 +128,7 @@ export function eventRows(
       best: best?.choiceId ?? '-',
       cheapest: cheapest?.choiceId ?? '-',
       favoursCheap: !!best && !!cheapest && cheapest.rate >= best.rate,
+      reading: pct(wins(read).length, read.length),
     }
   })
 }
@@ -205,6 +209,11 @@ export function evaluateTargets(
   const cheapShare = pct(measured.filter((r) => r.favoursCheap).length, measured.length)
   const none = winRate('validate_then_build inbox:none')
   const effort = winRate('validate_then_build inbox:effort')
+  const cheapest = winRate('validate_then_build inbox:cheapest')
+  const repeated = input.strategies.reduce(
+    (t, st) => t + st.results.reduce((u, r) => u + r.repeatedEvents, 0),
+    0,
+  )
   const behaviour = (name: string) => {
     const v = find(input, `validate_then_build -${name}`)
     return v ? paired(plainRuns, v.results) : null
@@ -279,17 +288,19 @@ export function evaluateTargets(
     },
     {
       id: 11,
-      text: 'Blind effort inbox policy beats leaving messages alone by at most 4 points; reading beats it by at least 4',
+      text: 'Blind inbox policies (most effort, always cheapest) each lie within 4 points of leaving messages alone; reading beats all three by at least 4',
       value:
-        none === null || effort === null || plain === null
+        none === null || effort === null || cheapest === null || plain === null
           ? '-'
-          : `effort ${signed(effort - none)}, reading ${signed(plain - none)}`,
+          : `effort ${signed(effort - none)}, cheapest ${signed(cheapest - none)}, reading ${signed(plain - none)}`,
       pass:
         none !== null &&
         effort !== null &&
+        cheapest !== null &&
         plain !== null &&
-        effort - none <= 4 &&
-        plain - none >= 4,
+        Math.abs(effort - none) <= 4 &&
+        Math.abs(cheapest - none) <= 4 &&
+        plain - Math.max(none, effort, cheapest) >= 4,
     },
     {
       id: 13,
@@ -312,6 +323,12 @@ export function evaluateTargets(
       text: 'No single action (outreach counted per channel) finds more than 40% of the customers in winning validate_then_build runs',
       value: topShare ? `${topShare.key} ${fmtPct(topShare.share)}` : '-',
       pass: !!topShare && topShare.share <= 40,
+    },
+    {
+      id: 16,
+      text: 'No run of any strategy brings an event twice, except events that recur on purpose',
+      value: `${repeated} repeats`,
+      pass: repeated === 0,
     },
   ]
 }
@@ -652,7 +669,7 @@ export function buildReport(input: ReportInput): string {
 
   const plainAll = find(input, 'validate_then_build')
   if (plainAll) {
-    const variants = ['inbox:none', 'inbox:effort'].flatMap((v) => {
+    const variants = ['inbox:none', 'inbox:effort', 'inbox:cheapest'].flatMap((v) => {
       const x = find(input, `validate_then_build ${v}`)
       return x ? [{ label: v.slice(6), runs: x }] : []
     })
@@ -662,7 +679,7 @@ export function buildReport(input: ReportInput): string {
         '',
         '## Inbox policies',
         '',
-        '`validate_then_build` with three ways of answering the inbox, same seeds. Reading picks the answer each message deserves (`readInbox`); blind effort takes the most effortful affordable choice without reading (`answerInbox`); none leaves every message to its default.',
+        '`validate_then_build` with four ways of answering the inbox, same seeds. Reading picks the answer each message deserves in the situation it arrives in (`readInbox`); blind effort takes the most effortful affordable choice without reading (`answerInbox`); always cheapest takes the choice with the fewest hours, then the least money (`cheapestInbox`); none leaves every message to its default.',
         '',
         '| Policy | Win rate | Against none (points) | Won only with this policy | Won only with none |',
         '|---|---|---|---|---|',
@@ -674,6 +691,22 @@ export function buildReport(input: ReportInput): string {
     }
   }
 
+  push(
+    '',
+    '## Inbox pool',
+    '',
+    `A dry week is one where the inbox should have brought a message (nothing new, fewer than two open) but no event was eligible any more. Repeats count arrivals of an event that had already arrived, apart from events that recur on purpose.`,
+    '',
+    '| Strategy | Mean weeks | Mean messages | Runs with a dry week | Mean dry weeks | Median first dry week | Repeats |',
+    '|---|---|---|---|---|---|---|',
+    ...input.strategies.map(({ id, results: rs }) => {
+      const n = Math.max(1, rs.length)
+      const dry = rs.filter((r) => r.dryWeeks > 0)
+      const first = median(dry.flatMap((r) => (r.firstDryWeek === null ? [] : [r.firstDryWeek])))
+      return `| ${id} | ${fmtNum(rs.reduce((t, r) => t + r.weeks, 0) / n, 1)} | ${fmtNum(rs.reduce((t, r) => t + r.eventsSeen.length, 0) / n, 1)} | ${fmtPct(pct(dry.length, rs.length))} | ${fmtNum(rs.reduce((t, r) => t + r.dryWeeks, 0) / n, 2)} | ${fmtNum(first)} | ${rs.reduce((t, r) => t + r.repeatedEvents, 0)} |`
+    }),
+  )
+
   if (input.events && plainAll) {
     const rows = eventRows(plainAll.results, input.events)
     push(
@@ -682,12 +715,18 @@ export function buildReport(input: ReportInput): string {
       '',
       `\`validate_then_build\` answering one event the same way every time it arrives, everything else by reading. Win rates on the seeds where the event arrived; differences of a few points are noise. Events seen in fewer than ${EVENT_MIN_SEEDS} seeds are not judged.`,
       '',
-      '| Event | Seeds | Win rate per answer (hours, money) | Best | Cheapest | Cheapest wins |',
-      '|---|---|---|---|---|---|',
+      '| Event | Seeds | Win rate per answer (hours, money) | Reading | Best fixed | Cheapest | Cheapest wins |',
+      '|---|---|---|---|---|---|---|',
       ...rows.map(
         (r) =>
-          `| ${r.eventId} | ${r.seeds} | ${r.choices.map((c) => `${c.choiceId} (${c.hours} h${c.costCents ? `, ${fmtEur(c.costCents)}` : ''}) ${fmtPct(c.rate)}`).join('; ')} | ${r.best} | ${r.cheapest} | ${r.seeds < EVENT_MIN_SEEDS ? 'not judged' : r.favoursCheap ? 'yes' : 'no'} |`,
+          `| ${r.eventId} | ${r.seeds} | ${r.choices.map((c) => `${c.choiceId} (${c.hours} h${c.costCents ? `, ${fmtEur(c.costCents)}` : ''}) ${fmtPct(c.rate)}`).join('; ')} | ${fmtPct(r.reading)} | ${r.best} | ${r.cheapest} | ${r.seeds < EVENT_MIN_SEEDS ? 'not judged' : r.favoursCheap ? 'yes' : 'no'} |`,
       ),
+    )
+    const judged = rows.filter((r) => r.seeds >= EVENT_MIN_SEEDS)
+    const effortWins = judged.filter((r) => !r.favoursCheap).length
+    push(
+      '',
+      `Of ${judged.length} judged events, ${judged.length - effortWins} favour the cheapest answer and ${effortWins} favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.`,
     )
   }
 

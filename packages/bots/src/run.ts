@@ -59,7 +59,9 @@ const ablations = full
       ])
       .map(play)
   : []
-const extras = full ? [randomNoInbox, withInbox('none'), withInbox('effort')].map(play) : []
+const extras = full
+  ? [randomNoInbox, withInbox('none'), withInbox('effort'), withInbox('cheapest')].map(play)
+  : []
 
 // Every answer of every event, forced, on validate_then_build. Slow, so only on request.
 const events = args.events

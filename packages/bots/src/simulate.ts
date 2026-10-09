@@ -87,6 +87,14 @@ export type RunResult = {
   /** Ids of the inbox events that arrived, in order. */
   eventsSeen: string[]
   /**
+   * Weeks in which the inbox should have brought a message (nothing new, fewer open than the
+   * guarantee) but no event was eligible any more, and the first such week, or null.
+   */
+  dryWeeks: number
+  firstDryWeek: number | null
+  /** Arrivals of an event that had already arrived, not counting events that recur on purpose. */
+  repeatedEvents: number
+  /**
    * By EVIDENCE_WEEK: a paying customer, or the player's focus moved off a market that is not
    * viable. Null for players without a focus.
    */
@@ -144,6 +152,12 @@ function firstWeekSignal(
   }
 }
 
+function repeats(scenario: Scenario, drawn: readonly { eventId: string }[]): number {
+  const once = new Set(scenario.events.filter((e) => e.once).map((e) => e.id))
+  const ids = drawn.map((d) => d.eventId).filter((id) => once.has(id))
+  return ids.length - new Set(ids).size
+}
+
 const monthlyRevenue = (s: GameState) =>
   s.customers.filter((c) => c.churnedWeek === null).reduce((t, c) => t + c.priceCentsPerMonth, 0)
 
@@ -166,6 +180,8 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
   let noteworthyWeeks = 0
   let decisionWeeks = 0
   let messageWeeks = 0
+  let dryWeeks = 0
+  let firstDryWeek: number | null = null
 
   while (state.status === 'running') {
     for (const answer of player.respond?.(getView(state)) ?? []) {
@@ -193,6 +209,13 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
       if (result.report.entries.some(isNoteworthy) || arrived) noteworthyWeeks++
       if (arrived) messageWeeks++
       if (arrived || result.report.entries.some(isDecisive)) decisionWeeks++
+    }
+    if (state.status === 'running') {
+      const open = state.inbox.filter((m) => m.status === 'open').length
+      if (state.inbox.length === inboxBefore && open < scenario.inbox.guaranteeBelowOpen) {
+        dryWeeks++
+        firstDryWeek ??= result.report.week
+      }
     }
     firstReport ??= result.report
     hours += result.report.plannedHours
@@ -249,6 +272,9 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     decisionWeeks,
     messageWeeks,
     eventsSeen: state.drawnEvents.map((d) => d.eventId),
+    dryWeeks,
+    firstDryWeek,
+    repeatedEvents: repeats(scenario, state.drawnEvents),
     evidenceByCheck,
     customersBySource,
     hire: hireEconomics(state),

@@ -1,5 +1,5 @@
 import type { Scenario } from '@founder-mode/content'
-import type { PlayerView, WeekPlan } from '@founder-mode/engine'
+import type { MessageView, PlayerView, WeekPlan } from '@founder-mode/engine'
 import { PriceSearch, type PricingRule } from '../pricing'
 import {
   bookableLeads,
@@ -56,18 +56,53 @@ const MESSAGE_CASH_FLOOR_CENTS = 450_000
 /**
  * How the inbox is answered: `reader` reads each message and picks the answer that suits it
  * (`READER_CHOICES`), `effort` takes the most effortful affordable choice without reading
- * (`answerInbox`), `none` leaves every message to its default.
+ * (`answerInbox`), `cheapest` always takes the choice with the fewest hours and then the least
+ * money (`cheapestInbox`), `none` leaves every message to its default.
  */
-export type InboxPolicy = 'reader' | 'effort' | 'none'
+export type InboxPolicy = 'reader' | 'effort' | 'cheapest' | 'none'
+
+/** Open leads as the Pipeline shows them, the same count the scenario's `leads.open` reads. */
+const openLeads = (v: PlayerView) =>
+  v.leads.filter((l) => l.stage !== 'lost' && l.stage !== 'paying').length
+/** A pipeline thin enough that one more lead is worth an afternoon, as the messages hint. */
+const THIN_PIPELINE = 8
+const ROOMY_PIPELINE = 12
+const thin = (v: PlayerView) => openLeads(v) <= THIN_PIPELINE
+const tired = (v: PlayerView) => v.founder.energy < v.founder.tiredBelow
+const shipped = (v: PlayerView) => v.product.features.filter((f) => f.shipped).length
+/** The lead a message is from, by its name, which no two leads share. */
+const senderLead = (v: PlayerView, m: MessageView) => v.leads.find((l) => l.name === m.fromName)
+const senderSilent = (v: PlayerView, m: MessageView) => senderLead(v, m)?.silent === true
+const senderOverdue = (v: PlayerView, m: MessageView) =>
+  v.invoices.some((i) => i.customerName === m.fromName && i.status === 'overdue')
+/** Cash below which a careful founder spends hours instead of money. */
+const TIGHT_CASH_CENTS = 600_000
+const tight = (v: PlayerView) => v.company.cashCents < TIGHT_CASH_CENTS
+
+type ReaderRule = string | ((view: PlayerView, message: MessageView) => string)
 
 /**
- * What a careful reader answers, per kind of message. A function gets the view for answers that
- * depend on the founder's state. Messages not listed are left to their default.
+ * What a careful reader answers, per kind of message. A function reads the situation the message
+ * hints at: the pipeline, the sender, energy, cash, bugs. Messages not listed take their default.
  */
-const READER_CHOICES: Record<string, string | ((view: PlayerView) => string)> = {
+const READER_CHOICES: Record<string, ReaderRule> = {
+  // validation
   survey_offer: 'pass',
   friend_of_friend: 'decline',
   startup_meetup: 'skip',
+  student_thesis: 'decline',
+  office_manager_forum: (v) => (thin(v) ? 'post' : 'skip'),
+  lunch_diary: 'decline',
+  visitor_list: 'pass',
+  university_pilot: (v) => (v.customers.length <= 1 ? 'pilot' : 'decline'),
+  rival_customer: (v) => (thin(v) ? 'coffee' : 'skip'),
+  focus_group: 'pass',
+  online_poll: 'ignore',
+  podcast_invite: (v) => (thin(v) ? 'record' : 'decline'),
+  tenant_survey: 'pass',
+  catering_inquiry: 'decline',
+  expert_interview: (v) => (v.customers.length === 0 ? 'meet' : 'decline'),
+  // sales
   referral: 'follow_up',
   discount_demand: 'hold',
   slow_lead: 'wait',
@@ -75,22 +110,99 @@ const READER_CHOICES: Record<string, string | ((view: PlayerView) => string)> = 
   sales_coach: 'decline',
   integration_question: 'honest',
   competitor_launch: 'ignore',
+  supplier_form: (v, m) => (senderSilent(v, m) ? 'short' : 'leave'),
+  chamber_breakfast: (v) => (thin(v) ? 'go' : 'skip'),
+  colleague_intro: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'intro' : 'later'),
+  coworking_open_day: (v) => (thin(v) ? 'go' : 'skip'),
+  seven_questions: (v, m) => (senderSilent(v, m) ? 'answer' : 'later'),
+  suspicious_price: (v, m) => (senderSilent(v, m) ? 'explain' : 'ignore'),
+  demo_no_show: (v, m) => (senderSilent(v, m) ? 'rebook' : 'drop'),
+  reseller_offer: (v) => (shipped(v) >= 3 ? 'sign' : 'decline'),
+  trial_extension: (v, m) => (senderSilent(v, m) ? 'extend' : 'refuse'),
+  big_tender: 'decline',
+  newsletter_paragraph: (v) => (thin(v) ? 'write' : 'skip'),
+  referral_reward: (v) => (thin(v) ? 'voucher' : 'thanks'),
+  returning_prospect: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'call' : 'later'),
+  pilot_request: (v, m) => (senderSilent(v, m) ? 'counter' : 'decline'),
+  wedding_fair: 'decline',
+  ballpark_call: (v, m) => (senderSilent(v, m) ? 'call' : 'demo'),
+  business_park_flyers: (v) => (thin(v) ? 'flyers' : 'skip'),
+  frequent_emails: 'back_off',
+  letterhead_quote: 'pdf',
+  // product
   crash_report: 'patch',
   restaurant_portal: 'decline',
   security_notice: 'patch',
-  hosting_pricing: 'accept',
+  hosting_pricing: 'migrate',
+  font_complaint: 'thank',
+  reception_browser: 'explain',
+  dark_mode: 'later',
+  slow_order_page: (v) => (v.product.bugs >= 3 ? 'optimise' : 'reply'),
+  missing_backups: 'backup',
+  framework_upgrade: 'stay',
+  screen_reader: 'fix',
+  bounty_hunter: (v) => (tight(v) ? 'fix' : 'pay'),
+  french_translation: 'decline',
+  bug_weekend: (v) => (v.customers.length >= 1 ? 'sprint' : 'carry_on'),
+  unused_feature: 'keep',
+  partner_directory: 'decline',
+  company_phones: 'fix',
+  whiteboard_menus: 'type_once',
+  uptime_monitor: 'skip',
+  export_request: 'by_hand',
+  // finance
   late_payer_first: 'reminder',
   filing_deadline: 'file',
   regional_grant: 'apply',
   laptop_fan: 'live_with_it',
-  bank_fee: 'accept',
+  bank_fee: 'switch',
+  insurance_broker: 'decline',
+  tax_letter: 'answer',
+  invoice_app: 'pass',
+  overdue_again: (v, m) => (senderOverdue(v, m) ? 'reminder' : 'wait'),
+  old_bike: 'sell',
+  growth_package: 'decline',
+  forgotten_subscriptions: (v) => (tight(v) ? 'cancel' : 'ignore'),
+  parking_fine: 'pay',
+  vat_return: (v) => (tight(v) ? 'self' : 'accountant'),
+  address_change: (v, m) => (senderOverdue(v, m) ? 'reissue' : 'later'),
+  equipment_grant: 'apply',
+  double_charge: 'refund',
+  // founder
   bad_sleep: 'nap',
-  family_lunch: (v) => (v.founder.energy < v.founder.tiredBelow ? 'go' : 'stay'),
+  family_lunch: (v) => (tired(v) ? 'go' : 'stay'),
   flu: (v) => (v.founder.energy - 10 < v.founder.tiredBelow ? 'rest' : 'work_through'),
   old_boss: 'freelance',
+  ten_k_run: (v) => (tired(v) ? 'train' : 'back_out'),
+  birthday_party: (v) => (tired(v) ? 'go' : 'card'),
+  dentist: 'go',
+  four_am_idea: (v) => (tired(v) ? 'sleep_in' : 'get_up'),
+  lake_weekend: (v) => (tired(v) ? 'go' : 'stay'),
+  sister_dinner: (v) => (tired(v) ? 'go' : 'reschedule'),
+  coffee_machine: (v) => (tight(v) ? 'cafe' : 'buy'),
+  mentor_offer: 'accept',
+  burnout_article: 'day_off',
+  cracked_phone: 'live_with_it',
+  parents_visit: (v) => (tired(v) ? 'day' : 'coffee'),
+  personal_tax: 'file',
+  back_pain: (v) => (v.founder.energy <= 60 ? 'physio' : 'stretch'),
+  founder_dinner: (v) => (thin(v) ? 'go' : 'skip'),
+  // team
   team_plan: 'session',
   raise_request: 'decline',
+  second_monitor: 'buy',
+  hire_holiday: 'approve',
+  hire_idea: 'listen',
+  hire_laptop: (v) => (tight(v) ? 'keep' : 'buy'),
+  hire_feedback: 'session',
+  team_lunch: 'order',
+  recruiter_call: 'talk',
+  design_tool: 'decline',
+  office_question: 'not_yet',
 }
+
+/** Events the reader has an answer for. Every scenario event should be here. */
+export const READER_EVENT_IDS: readonly string[] = Object.keys(READER_CHOICES)
 
 /** The reader's answers: the listed choice when its hours fit and its money leaves a cushion. */
 export function readInbox(view: PlayerView): { messageId: string; choiceId: string }[] {
@@ -100,7 +212,7 @@ export function readInbox(view: PlayerView): { messageId: string; choiceId: stri
     if (m.answeredChoiceId !== null) continue
     const rule = READER_CHOICES[m.eventId]
     if (!rule) continue
-    const id = typeof rule === 'function' ? rule(view) : rule
+    const id = typeof rule === 'function' ? rule(view, m) : rule
     const c = m.choices.find((x) => x.id === id)
     if (!c) continue
     if (used + c.hours + view.forcedHours > view.founder.maxHoursPerWeek) continue
@@ -229,6 +341,21 @@ export function answerInbox(view: PlayerView): { messageId: string; choiceId: st
     if (!best || (best.hours === 0 && best.costCents === 0)) continue
     answers.push({ messageId: m.id, choiceId: best.id })
     used += best.hours
+  }
+  return answers
+}
+
+/**
+ * The other blind policy: for each open message, the choice with the fewest hours, then the least
+ * money now and per month, without reading. Ties go to the first choice listed.
+ */
+export function cheapestInbox(view: PlayerView): { messageId: string; choiceId: string }[] {
+  const answers: { messageId: string; choiceId: string }[] = []
+  for (const m of view.inbox) {
+    if (m.answeredChoiceId !== null) continue
+    const cost = (c: MessageView['choices'][number]) => c.costCents + c.monthlyCostCents
+    const best = [...m.choices].sort((a, b) => a.hours - b.hours || cost(a) - cost(b))[0]
+    if (best) answers.push({ messageId: m.id, choiceId: best.id })
   }
   return answers
 }
@@ -416,7 +543,11 @@ export function validatingPlayer(
       return [
         ...forcedAnswers,
         ...answers,
-        ...(behaviours.inbox === 'reader' ? readInbox(rest) : answerInbox(rest)),
+        ...(behaviours.inbox === 'reader'
+          ? readInbox(rest)
+          : behaviours.inbox === 'cheapest'
+            ? cheapestInbox(rest)
+            : answerInbox(rest)),
       ]
     },
     plan(view) {

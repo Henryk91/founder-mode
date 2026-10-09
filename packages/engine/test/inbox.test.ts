@@ -113,10 +113,10 @@ describe('the inbox', () => {
   it('shows what a choice certainly costs, in money, but never gains or odds', () => {
     const s = withMessage(
       effects('act', [
-        { type: 'cash', amountCents: -60_000, chance: 1 },
-        { type: 'cash', amountCents: -15_000, chance: 0.5 },
-        { type: 'cash', amountCents: 135_000, chance: 0.4 },
-        { type: 'fixedCost', id: 'sub', name: 'Sub', monthlyCents: 6_000, chance: 1 },
+        { type: 'cash', amountCents: -60_000, chance: 1, when: [] },
+        { type: 'cash', amountCents: -15_000, chance: 0.5, when: [] },
+        { type: 'cash', amountCents: 135_000, chance: 0.4, when: [] },
+        { type: 'fixedCost', id: 'sub', name: 'Sub', monthlyCents: 6_000, chance: 1, when: [] },
       ]),
     )
     const act = getView(s).inbox[0]!.choices.find((c) => c.id === 'act')!
@@ -125,7 +125,9 @@ describe('the inbox', () => {
   })
 
   it('shows choices with hours and never any effect or chance', () => {
-    const s = withMessage(effects('act', [{ type: 'cash', amountCents: 150_000, chance: 0.4 }]))
+    const s = withMessage(
+      effects('act', [{ type: 'cash', amountCents: 150_000, chance: 0.4, when: [] }]),
+    )
     const json = JSON.stringify(getView(s).inbox)
     expect(json).not.toContain('chance')
     expect(json).not.toContain('amountCents')
@@ -217,7 +219,7 @@ describe('the inbox', () => {
 
 describe('answering', () => {
   it('counts the hours at once and applies the effects when the week ends', () => {
-    const s = withMessage(effects('act', [{ type: 'energy', delta: 20, chance: 1 }]))
+    const s = withMessage(effects('act', [{ type: 'energy', delta: 20, chance: 1, when: [] }]))
     const answered = respond(s, 'message_1', 'act')
     expect(getView(answered).committedHours).toBe(2)
     expect(getView(answered).inbox[0]!.answeredChoiceId).toBe('act')
@@ -250,7 +252,7 @@ describe('answering', () => {
           id: 'skip',
           label: 'Skip',
           hours: 0,
-          effects: [{ type: 'energy', delta: -10, chance: 1 }],
+          effects: [{ type: 'energy', delta: -10, chance: 1, when: [] }],
         },
         { id: 'act', label: 'Act', hours: 2, effects: [] },
       ],
@@ -290,7 +292,7 @@ describe('answering', () => {
 
   it('is part of the save and replays exactly, with a shut down too', () => {
     const scenario = withEvents(
-      [effects('act', [{ type: 'cash', amountCents: 7_500, chance: 1 }])],
+      [effects('act', [{ type: 'cash', amountCents: 7_500, chance: 1, when: [] }])],
       { maxPerWeek: 1 },
     )
     let s = endWeek(newGame('replay', scenario), book).state
@@ -321,48 +323,76 @@ describe('effects', () => {
   })
 
   it('moves money through the ledger', () => {
-    const gain = run([{ type: 'cash', amountCents: 225_000, chance: 1 }])
+    const gain = run([{ type: 'cash', amountCents: 225_000, chance: 1, when: [] }])
     expect(gain.report.ledger.otherIncomeCents).toBe(225_000)
     expect(gain.report.entries).toContainEqual({ kind: 'cash_effect', amountCents: 225_000 })
-    const loss = run([{ type: 'cash', amountCents: -60_000, chance: 1 }])
+    const loss = run([{ type: 'cash', amountCents: -60_000, chance: 1, when: [] }])
     expect(loss.report.ledger.otherCostsCents).toBe(60_000)
     expect(loss.state.company.cashCents).toBe(gain.state.company.cashCents - 225_000 - 60_000)
   })
 
   it('changes bugs and quality, and skills up to their caps', () => {
-    const bugs = run([{ type: 'bugs', delta: 2, chance: 1 }])
+    const bugs = run([{ type: 'bugs', delta: 2, chance: 1, when: [] }])
     expect(bugs.state.product.bugs).toBe(2)
     expect(bugs.state.product.quality).toBe(64)
-    expect(run([{ type: 'bugs', delta: -3, chance: 1 }]).state.product.bugs).toBe(0)
+    expect(run([{ type: 'bugs', delta: -3, chance: 1, when: [] }]).state.product.bugs).toBe(0)
     expect(
-      run([{ type: 'skill', skill: 'selling', delta: 0.05, chance: 1 }]).state.founder.skills
-        .selling,
+      run([{ type: 'skill', skill: 'selling', delta: 0.05, chance: 1, when: [] }]).state.founder
+        .skills.selling,
     ).toBeCloseTo(0.15)
     expect(
-      run([{ type: 'skill', skill: 'interviewing', delta: 5, chance: 1 }]).state.founder.skills
-        .interviewing,
+      run([{ type: 'skill', skill: 'interviewing', delta: 5, chance: 1, when: [] }]).state.founder
+        .skills.interviewing,
     ).toBe(0.8)
   })
 
   it('takes hours out of next week, and adds a fixed cost once', () => {
-    const lost = run([{ type: 'lostHours', hours: 6, chance: 1 }])
+    const lost = run([{ type: 'lostHours', hours: 6, chance: 1, when: [] }])
     expect(getView(lost.state).forcedHours).toBe(6)
     const cost = run([
-      { type: 'fixedCost', id: 'sub', name: 'Subscription', monthlyCents: 6_000, chance: 1 },
-      { type: 'fixedCost', id: 'sub', name: 'Subscription', monthlyCents: 6_000, chance: 1 },
+      {
+        type: 'fixedCost',
+        id: 'sub',
+        name: 'Subscription',
+        monthlyCents: 6_000,
+        chance: 1,
+        when: [],
+      },
+      {
+        type: 'fixedCost',
+        id: 'sub',
+        name: 'Subscription',
+        monthlyCents: 6_000,
+        chance: 1,
+        when: [],
+      },
     ])
     expect(cost.state.company.fixedCosts.filter((c) => c.id === 'sub')).toHaveLength(1)
   })
 
   it('adds leads in the sender segment, or a random one without a sender', () => {
-    const referral = run([{ type: 'newLeads', count: 2, chance: 1 }], 'customer', withCustomer)
+    const referral = run(
+      [{ type: 'newLeads', count: 2, chance: 1, when: [] }],
+      'customer',
+      withCustomer,
+    )
     expect(referral.state.leads).toHaveLength(2)
     expect(referral.state.leads.every((l) => l.segmentId === 'coworking')).toBe(true)
-    expect(run([{ type: 'newLeads', count: 3, chance: 1 }]).state.leads).toHaveLength(3)
+    expect(run([{ type: 'newLeads', count: 3, chance: 1, when: [] }]).state.leads).toHaveLength(3)
+  })
+
+  it('applies an effect only in the situation its conditions name, without a roll otherwise', () => {
+    const thin = [cond('leads.open <= 0')]
+    const leads = { type: 'newLeads' as const, count: 2, chance: 1, when: thin }
+    expect(run([leads]).state.leads).toHaveLength(2)
+    expect(run([leads], 'none', withLead).state.leads).toHaveLength(1)
+    // A chance that never gets rolled leaves the random sequence as if the effect were absent.
+    const skipped = run([{ ...leads, chance: 0.5 }], 'none', withLead)
+    expect(skipped.state.rng).toEqual(run([], 'none', withLead).state.rng)
   })
 
   it('brings a silent lead back', () => {
-    const r = run([{ type: 'touchLead', chance: 1 }], 'lead', withLead)
+    const r = run([{ type: 'touchLead', chance: 1, when: [] }], 'lead', withLead)
     expect(r.state.leads[0]!.silentSinceWeek).toBeNull()
   })
 
@@ -393,8 +423,8 @@ describe('effects', () => {
           effects(
             'act',
             [
-              { type: 'invoicePayChance', delta: 0.45, chance: 1 },
-              { type: 'churnChance', delta: 0.35, chance: 1 },
+              { type: 'invoicePayChance', delta: 0.45, chance: 1, when: [] },
+              { type: 'churnChance', delta: 0.35, chance: 1, when: [] },
             ],
             'customer',
           ),
@@ -416,7 +446,7 @@ describe('effects', () => {
     let hits = 0
     for (let i = 0; i < 200; i++) {
       const scenario = withEvents(
-        [effects('act', [{ type: 'cash', amountCents: 1_500, chance: 0.4 }])],
+        [effects('act', [{ type: 'cash', amountCents: 1_500, chance: 0.4, when: [] }])],
         { maxPerWeek: 1 },
       )
       let s = endWeek(newGame(`ch${i}`, scenario), book).state
