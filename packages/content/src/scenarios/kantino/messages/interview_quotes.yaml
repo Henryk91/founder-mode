@@ -1,52 +1,173 @@
-# segment -> interview bucket -> quotes. Phase 1 has 2 per bucket; Phase 5 raises this to 10.
+# segment -> interview bucket -> quotes. At least 10 per bucket. Within a run a quote is not
+# repeated until every quote of its bucket has been heard.
 
 small_offices:
   not_a_problem:
     - We just each bring something. It works.
     - There is a bakery downstairs. That is our whole lunch strategy.
+    - Half the team eats at their desks and the other half goes for a run. Nobody orders.
+    - Lunch has never come up in a team meeting. Parking has, every single time.
+    - We tried ordering together once. Everybody wanted something different, so now we do not.
+    - Our kitchen has a microwave and a queue. People seem happy with both.
+    - Honestly, I have not thought about lunch since 2019.
+    - Most of us work from home on Fridays anyway. The other days sort themselves out.
+    - The canteen next door is cheap and nobody has to organise anything. Hard to beat.
+    - I asked the team. The only complaint was the coffee machine.
   mild:
     - It is a bit chaotic some days, I suppose.
     - Sometimes we argue about pizza for twenty minutes. I would not call it a crisis.
+    - Someone occasionally forgets to pay back. It is a few euros, not a scandal.
+    - The juniors like ordering together. The seniors like complaining about it.
+    - It would be nice if it were easier, but I would not buy software for it.
+    - On busy days lunch happens at three. That is more of a workload problem.
+    - We have a group chat for lunch. It is mostly memes, but it works.
+    - I suppose it takes a bit of time. I have never measured it.
+    - Our intern usually sorts it out. Interns are cheaper than software.
+    - A few people grumble. A few people always grumble.
   noticeable:
     - Someone always ends up collecting money. It is annoying.
     - Our office manager keeps a spreadsheet of who owes what. Nobody likes the spreadsheet.
+    - Every Monday we spend ten minutes deciding where to order from. Every Monday.
+    - Somebody always orders late and then the whole order is late.
+    - Our office manager says lunch is the most thankless part of her job. She has a list.
+    - We pay each other back with apps, cash and promises. Mostly promises.
+    - The ordering is fine. Splitting the bill takes longer than eating.
+    - I have three receipts in my wallet from lunches nobody has paid back yet.
+    - Client deadlines and lunch orders collide about twice a week.
+    - It is not a disaster, but it eats an hour of somebody's week. Every week.
   painful:
     - I lose half an hour every day on this.
     - Last Friday the order went in late and twelve designers went feral.
+    - We had to hire a part time assistant, and half her job is lunch.
+    - Our accountant wants receipts for every team lunch. I cannot find any of them.
+    - People leave the office to eat and come back an hour later. Productivity drops off a cliff.
+    - The lunch chat has more messages than our project channel. I checked.
+    - Two people nearly quit over who pays for the shared order. I wish I were joking.
+    - I spend my lunch break organising other people's lunch. Mine comes last.
+    - Every month the expense report for lunches is wrong and I fix it by hand.
+    - Our clients notice when the team is hungry and cranky. So do I.
   urgent:
     - If you can fix this I want it next week.
     - Please do not leave without telling me when I can sign up.
+    - I have a budget for this and nobody to spend it on. Can you start tomorrow?
+    - Send me the contract. I will read it later.
+    - We tried three apps and all of them were for restaurants, not offices. Is yours for us?
+    - The partners asked me to sort lunch by the end of the month. You are my plan.
+    - I would pay for this out of my own pocket just to stop the spreadsheet.
+    - Give me a date and I will block it in the calendar for the whole team.
+    - If this handles invoices for our accountant, you can have my card number now.
+    - Our office manager said she would hug you. Please do not make me tell her no.
 
 coworking:
   not_a_problem:
     - Our members sort themselves out. They are adults, mostly.
     - We have a café on the ground floor. Problem solved, as far as I can tell.
+    - Members come and go at all hours. Nobody eats at the same time anyway.
+    - Lunch is the members' business. Our business is desks and Wi-Fi.
+    - We have a food truck on Thursdays. The rest of the week nobody mentions it.
+    - Most of our members are freelancers. They eat crisps and work. It is a lifestyle.
+    - We put a fridge in the kitchen. That was our food strategy and it is finished.
+    - I cannot remember the last time anyone asked me about lunch.
+    - We are next to a market hall. Lunch is the one thing we never worry about.
+    - Our members value being left alone. Including at lunch.
   mild:
     - Members do ask about lunch now and then. I nod politely.
     - A shared order would be nice, I guess, if it ran itself.
+    - Some members organise group orders on their own. It seems to work for them.
+    - We could offer it as a perk, I suppose. It is low on the list.
+    - Lunch comes up in feedback forms, somewhere between the plants and the printer.
+    - Our community manager tried a lunch club once. Four people came.
+    - It would be nice. Lots of things would be nice.
+    - If it cost us nothing, sure. If it cost us something, probably not.
+    - A few members asked for it last spring. They have since moved to another space.
+    - Lunch is fine. The printer is the real problem, if you have software for that.
   noticeable:
     - The community manager spends Mondays chasing lunch money. She has better things to do.
     - Members keep asking for a group order and we keep improvising one.
+    - We run a weekly lunch for members. Collecting the money is a small nightmare.
+    - Each of our sites does lunch differently, and none of them well.
+    - Members want to order together but not pay together. That is where it falls apart.
+    - Our events team spends an afternoon a week on food orders. That adds up.
+    - We tried a sign up sheet on the fridge. It got lost under a pizza menu.
+    - Tenants mention lunch in about a third of our exit surveys.
+    - Splitting one order across thirty small companies is harder than it sounds.
+    - Our front desk has become the lunch desk. Visitors are confused.
   painful:
     - Lunch logistics is the number one complaint in our member survey. Again.
     - We lost two tenants last year who said the building felt dead at lunch.
+    - Our community manager quit and lunch was in her exit interview. Twice.
+    - Members compare us with the space across the road, which has a lunch service.
+    - Billing members for lunch takes our finance person two days a month.
+    - We run three sites and three spreadsheets for lunch. None of them agree.
+    - Every week someone pays for a group order and never gets their money back. They notice.
+    - Our members are lovely until lunch goes wrong. Then they write reviews.
+    - We tried to outsource it to a caterer. The invoices alone nearly broke us.
+    - Lunch is now an agenda item at our board meeting. That is not a good sign.
   urgent:
     - I would pay for this today if it handled all our sites.
     - Our board asked me to fix lunch by next quarter. Can you start on Monday?
+    - If members can pay for their own share, I will sign before you finish the sentence.
+    - We are opening a fourth site in spring. I need this before then.
+    - Name a price. I have a budget line called lunch and no idea what to do with it.
+    - Our biggest tenant threatened to leave over this. Please tell me it works already.
+    - Can I put you in front of our other site managers this week?
+    - I have been doing this by hand for three years. I am ready to stop.
+    - If it bills each member separately, you have a customer. Several, in fact.
+    - Our competitor launched a lunch service last month. I need an answer by Friday.
 
 medical:
   not_a_problem:
     - The team brings food from home. Nobody has time to order anything anyway.
     - Lunch? We eat standing up between patients. It is fine.
+    - We have a canteen in the building. It is not good, but it is there.
+    - Our staff are used to it. Patients come first, sandwiches second.
+    - Nobody here would trust a group order. Everyone has a different diet.
+    - We close for lunch and everybody goes home. Problem solved for decades.
+    - I asked at the team meeting. Silence, then someone asked about holidays.
+    - Food is not the issue. Staffing is the issue. Do you have software for that?
+    - Our receptionist brings cake on Fridays. That is our entire food culture.
+    - The pharmacy next door sells sandwiches. That seems to cover it.
   mild:
     - The nurses do grumble about food sometimes. They grumble about everything.
     - It would be a nice perk. I am not sure anyone would notice.
+    - Sometimes the late shift orders pizza. It is a bit of a scramble.
+    - Our trainees like ordering together. The rest of us are too tired.
+    - It would be pleasant. I would not pay much for pleasant.
+    - The team asked for a lunch option once. Then flu season started.
+    - Ordering takes a few minutes. We have bigger worries, frankly.
+    - I suppose the allergy talk gets a bit long sometimes.
+    - We could try it. I would not lose sleep if we did not.
+    - Our practice manager sorts it out when needed. She sorts everything out.
   noticeable:
     - Ordering for the late shift is always a mess. Someone forgets every time.
     - We tried a group order once. The allergy discussion took longer than lunch.
+    - The early shift eats, the late shift starves. Nobody has fixed it.
+    - Someone has to collect the money, and it is always the youngest nurse.
+    - Half the team is gluten free and the other half is suspicious of it.
+    - Our shifts change every week, so a fixed lunch plan never survives.
+    - We lose some time every day to lunch. Not huge, but it adds up.
+    - The receptionist keeps a list of who eats what. It is in pencil and it is wrong.
+    - Orders get mixed up and someone with an allergy ends up with toast.
+    - Our practice manager says lunch is the thing staff mention after pay.
   painful:
     - My staff skip lunch because ordering takes too long. Then they make mistakes.
     - Every week someone gets the wrong food and it ends with a sick note.
+    - We had a nut allergy incident last year. Nobody wants to organise lunch since.
+    - Our night staff have nowhere to eat and no one to order for them.
+    - I lose good nurses to the hospital, and they say the hospital feeds them.
+    - The shift handover always runs into lunch. Then nobody eats.
+    - We order every day and it goes wrong about every other day.
+    - Our practice manager spends an hour a day on meals. That is an hour without patients.
+    - Two of my staff have diabetes. Irregular lunches are a real problem for them.
+    - Lunch is a fight every day. The patients can hear it through the wall.
   urgent:
     - Fix this and you have my signature. I mean it.
     - I have been looking for something like this for two years. Where do I pay?
+    - If it knows about allergies and shifts, I will take it this week.
+    - Can you come by on Thursday and show the whole team? I will order biscuits.
+    - My partners agreed to pay for staff lunches. We just need a way to run it.
+    - I have three practices and the same problem in all three. When can we start?
+    - We will be your first customer. Please make that happen soon.
+    - Our staff survey said lunch, lunch, and then lunch. I need this now.
+    - Tell me what you need from us and I will send it tonight.
+    - I would rather pay for this than hire another assistant. Much rather.

@@ -170,7 +170,7 @@ export function Plan() {
         <p className={styles.hint}>{label('plan.section.sellHint', stage)}</p>
         {view.segments.map((seg) => {
           const out = plan.outreach[seg.id]
-          const channel: ChannelId = out?.channel ?? view.channels[0] ?? 'phone'
+          const channel: ChannelId = out?.channel ?? seg.lastChannel ?? view.channels[0] ?? 'phone'
           const hours = out?.hours ?? 0
           return (
             <div key={seg.id} className={styles.row}>

@@ -85,4 +85,16 @@ describe('hidden boundary', () => {
     const v = getView(play(newGame(), 10))
     expect(JSON.parse(JSON.stringify(v))).toEqual(v)
   })
+
+  it('remembers the outreach channel last picked for each segment', () => {
+    let s = newGame()
+    expect(getView(s).segments.every((x) => x.lastChannel === null)).toBe(true)
+    s = endWeek(s, plan({ outreach: { coworking: { channel: 'in_person', hours: 10 } } })).state
+    s = endWeek(s, plan({ outreach: { medical: { channel: 'phone', hours: 0 } } })).state
+    s = endWeek(s, plan()).state
+    const channel = (id: string) => getView(s).segments.find((x) => x.id === id)!.lastChannel
+    expect(channel('coworking')).toBe('in_person')
+    expect(channel('medical')).toBe('phone')
+    expect(channel('small_offices')).toBeNull()
+  })
 })

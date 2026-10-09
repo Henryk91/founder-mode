@@ -36,6 +36,15 @@ describe('validatePlan', () => {
     ])
   })
 
+  it('accepts a positive whole price and rejects anything else', () => {
+    expect(validatePlan(state, plan({ priceCentsPerMonth: 45_000 }))).toEqual([])
+    for (const price of [0, -100, 12.5]) {
+      expect(validatePlan(state, plan({ priceCentsPerMonth: price }))).toEqual([
+        { code: 'invalid_price' },
+      ])
+    }
+  })
+
   it('rejects any plan once the run has ended, and endWeek throws', () => {
     const ended = play(state, 200, () => plan())
     expect(ended.status).toBe('ended')

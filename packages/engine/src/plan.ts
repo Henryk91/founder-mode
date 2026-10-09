@@ -12,6 +12,7 @@ export function emptyPlan(): WeekPlan {
     demos: [],
     restHours: 0,
     transferToCompanyCents: 0,
+    priceCentsPerMonth: null,
   }
 }
 
@@ -94,6 +95,13 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
     issues.push({ code: 'invalid_number', field: 'transferToCompanyCents' })
   } else if (plan.transferToCompanyCents > Math.max(0, state.founder.savingsCents)) {
     issues.push({ code: 'transfer_exceeds_savings', savingsCents: state.founder.savingsCents })
+  }
+
+  if (
+    plan.priceCentsPerMonth !== null &&
+    (!Number.isInteger(plan.priceCentsPerMonth) || plan.priceCentsPerMonth <= 0)
+  ) {
+    issues.push({ code: 'invalid_price' })
   }
 
   // Hours only make sense once every number is valid.

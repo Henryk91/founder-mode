@@ -72,4 +72,30 @@ describe('interviews', () => {
     expect(result.state).toBe(s)
     expect(rng.state()).toEqual(s.rng)
   })
+
+  it('never repeats a quote within a week while the bucket has enough quotes', () => {
+    for (let i = 0; i < 30; i++) {
+      const s = newGame(`quotes${i}`)
+      const r = endWeek(s, plan({ interviews: { small_offices: 8, coworking: 8, medical: 8 } }))
+      const seen = new Set<string>()
+      for (const iv of r.report.interviews) {
+        const key = `${iv.segmentId}/${iv.quote}`
+        expect(seen.has(key)).toBe(false)
+        seen.add(key)
+      }
+    }
+  })
+
+  it('goes through every quote of a bucket before repeating one', () => {
+    let s = newGame('all-quotes')
+    for (let w = 0; w < 6; w++) s = endWeek(s, plan({ interviews: { coworking: 5 } })).state
+    const evidence = s.knowledge.coworking!
+    for (const bucketId of new Set(evidence.map((e) => e.bucketId))) {
+      const indices = evidence.filter((e) => e.bucketId === bucketId).map((e) => e.quoteIndex)
+      const total = s.scenario.interviewQuotes.coworking![bucketId]!.length
+      // The first `total` quotes heard in a bucket are all different.
+      const first = indices.slice(0, total)
+      expect(new Set(first).size).toBe(first.length)
+    }
+  })
 })

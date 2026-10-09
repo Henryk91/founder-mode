@@ -62,6 +62,8 @@ export type UiActions = {
   toggleDemo(leadId: string): void
   setRestHours(hours: number): void
   setTransferCents(cents: number): void
+  /** Null keeps the current price. */
+  setPriceCents(cents: number | null): void
   endWeek(): void
   dismissReport(): void
 }
@@ -207,6 +209,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         })),
       setRestHours: (hours) => editPlan((p) => ({ ...p, restHours: hours })),
       setTransferCents: (cents) => editPlan((p) => ({ ...p, transferToCompanyCents: cents })),
+      setPriceCents: (cents) => editPlan((p) => ({ ...p, priceCentsPerMonth: cents })),
 
       endWeek() {
         if (!game || game.status !== 'running') return

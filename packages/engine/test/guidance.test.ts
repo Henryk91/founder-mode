@@ -60,6 +60,7 @@ describe('founder note rules', () => {
           segmentId: 'coworking',
           sinceWeek: 2,
           churnedWeek: null,
+          priceCentsPerMonth: 30_000,
         },
       ],
     }

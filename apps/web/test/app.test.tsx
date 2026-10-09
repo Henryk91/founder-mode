@@ -27,7 +27,7 @@ describe('app smoke test', () => {
     expect(plan).toContain('Week 1 of 78')
     expect(plan).toContain('End week')
     expect(plan).toContain('Talk to people')
-    expect(plan).toContain('Runway: not enough history yet')
+    expect(plan).toContain('Runway: 52 weeks')
 
     for (let i = 0; i < 3; i++) {
       store.getState().setInterviews('coworking', 2)
@@ -174,7 +174,7 @@ describe('onboarding', () => {
     expect(html(store)).not.toContain('Got it')
     // The terms are tappable on screen.
     const page = html(store)
-    expect(page).toContain('Runway: not enough history yet')
+    expect(page).toContain('Runway: 52 weeks')
     expect(page).toMatch(/aria-label="Energy: What does this mean\?"/)
     expect(page).toMatch(/aria-label="Hours: What does this mean\?"/)
   })
@@ -247,8 +247,51 @@ describe('onboarding', () => {
     expect(at('What happened')).toBeGreaterThan(-1)
     expect(at('You spoke to someone at Medical practices')).toBeGreaterThan(at('What happened'))
     expect(at('The numbers')).toBeGreaterThan(at('You spoke to someone at Medical practices'))
-    expect(at('Received')).toBeGreaterThan(at('The numbers'))
+    expect(at('Company received')).toBeGreaterThan(at('The numbers'))
     expect(page).toContain('<blockquote')
     expect(page).not.toMatch(/[{}]/)
+  })
+})
+
+describe('playtest fixes', () => {
+  const fresh = (seed: string) => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => seed })
+    begin(store)
+    return store
+  }
+
+  it('shows living costs paid from savings and the savings left in the week report', () => {
+    const store = fresh('living')
+    store.getState().endWeek()
+    const page = html(store)
+    expect(page).toContain('Living costs from your savings')
+    expect(page).toMatch(/Living costs from your savings<\/span><span[^>]*>€450</)
+    expect(page).toMatch(/Your savings now<\/span><span[^>]*>€11,550</)
+  })
+
+  it('has a price control on the Money tab that applies from the next resolved week', () => {
+    const store = fresh('price')
+    store.getState().setTab('money')
+    expect(html(store)).toContain('Price per customer')
+    expect(html(store)).toContain('Now: €300 per month')
+    store.getState().setPriceCents(45_000)
+    expect(html(store)).toContain('From this week: €450 per month')
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    expect(store.getState().view?.company.priceCentsPerMonth).toBe(45_000)
+    expect(store.getState().plan.priceCentsPerMonth).toBeNull()
+    expect(html(store)).toContain('Now: €450 per month')
+  })
+
+  it('keeps the outreach channel from week to week', () => {
+    const store = fresh('channel')
+    store.getState().setOutreach('coworking', 'in_person', 5)
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    expect(store.getState().plan.outreach).toEqual({})
+    const page = html(store)
+    // The coworking row shows In person selected, the others the first channel.
+    const pressed = [...page.matchAll(/aria-pressed="true"[^>]*>([^<]+)</g)].map((m) => m[1])
+    expect(pressed).toEqual(['Cold email', 'In person', 'Cold email'])
   })
 })

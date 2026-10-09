@@ -1,56 +1,188 @@
-# Fictional company names for leads, by segment. Phase 5 grows each pool to about 27.
+# Fictional company names for leads, by segment. A lead's name is one word from `first` and one
+# from `second`, joined by a space, so each segment has several hundred distinct names.
+# Every combination must be unique across all segments.
 small_offices:
-  - Brandl & Söhne Grafik
-  - Nordlicht Medien
-  - Kreuzberger Kollektiv
-  - Hopfen Digital
-  - Lindner Planungsbüro
-  - Veltins Hof Architekten
-  - Sattler Kommunikation
-  - Blaupause Studio
-  - Ahorn Werbeagentur
-  - Mühlbach Consulting
-  - Feldmann & Partner
-  - Quellwerk Design
-  - Tannenhof Software
-  - Birkenau Beratung
-  - Rautenberg IT
-  - Weidner Projekte
-  - Kiefer & Kaiser
-  - Sonnenkamp Marketing
-  - Paulsen Ingenieure
-  - Eichhorn Labs
+  first:
+    - Nordlicht
+    - Hopfen
+    - Blaupause
+    - Ahorn
+    - Quellwerk
+    - Tannenhof
+    - Birkenau
+    - Rautenberg
+    - Sonnenkamp
+    - Eichhorn
+    - Lindner
+    - Brandl
+    - Sattler
+    - Mühlbach
+    - Feldmann
+    - Weidner
+    - Paulsen
+    - Kranich
+    - Morgenrot
+    - Falkenstein
+    - Isarblick
+    - Kastanie
+    - Fuchsbau
+    - Wendel
+    - Hirschberg
+    - Lichtung
+    - Seeufer
+    - Ziegler
+    - Brückner
+    - Uhland
+  second:
+    - Medien
+    - Digital
+    - Design
+    - Consulting
+    - Architekten
+    - Kommunikation
+    - Studio
+    - '& Partner'
+    - Labs
+    - Beratung
+    - IT
+    - Planungsbüro
+    - Werbeagentur
+    - Software
+    - Ingenieure
+    - Projekte
+    - Grafik
+    - Kanzlei
+    - Marketing
+    - Agentur
+    - Werkstatt
+    - Übersetzungen
+    - Immobilien
+    - Steuerberatung
+    - Verlag
 
 coworking:
-  - Alpenrose Cowork
-  - Werkbank Offenbach
-  - Schreibtisch Süd
-  - Hinterhof Hub
-  - Gleis 7 Cowork
-  - Drehkreuz Spaces
-  - Mittelbau Cowork
-  - Zwischenraum
-  - Dachgeschoss Collective
-  - Fabrikhalle 3
-  - Kaffeesatz Cowork
-  - Laterne Workspaces
-  - Hafenkran Office Club
-  - Sprossen Cowork
-  - Backsteinhof Spaces
+  first:
+    - Alpenrose
+    - Werkbank
+    - Hinterhof
+    - Drehkreuz
+    - Mittelbau
+    - Zwischenraum
+    - Dachgeschoss
+    - Fabrikhalle
+    - Kaffeesatz
+    - Laterne
+    - Hafenkran
+    - Sprossen
+    - Backsteinhof
+    - Schreibtisch
+    - Gleisdreieck
+    - Kesselhaus
+    - Lokschuppen
+    - Glashaus
+    - Spinnerei
+    - Brauhof
+    - Seidenfaden
+    - Kranhalle
+    - Stellwerk
+    - Ziegelei
+    - Wasserturm
+    - Tuchfabrik
+    - Pumpwerk
+    - Lagerhaus
+    - Mühlenhof
+    - Hopfenspeicher
+  second:
+    - Cowork
+    - Coworking
+    - Spaces
+    - Workspaces
+    - Hub
+    - Collective
+    - Office Club
+    - Studios
+    - Desks
+    - Commons
+    - Loft
+    - Campus
+    - Werkraum
+    - Arbeitswelt
+    - Schreibstube
+    - Community
+    - Ateliers
+    - Basecamp
+    - Quartier
+    - Werkhaus
+    - Kontor
+    - Zentrale
+    - Garage
+    - Labor
 
 medical:
-  - Praxis Dr. Albers
-  - Zahnarztpraxis Winkler
-  - Praxisgemeinschaft Lindenhof
-  - Dr. Brinkmann und Kollegen
-  - Kieferorthopädie Sonnenallee
-  - Hausärzte am Markt
-  - Praxis Dr. Seidel
-  - Zahnärzte Isartor
-  - Orthopädie Rosenberg
-  - Gemeinschaftspraxis Nordend
-  - Praxis Dr. Kaltenbach
-  - Hautarztpraxis Elbblick
-  - Kinderärzte Rosengarten
-  - Zahnärztin Dr. Lorenz
-  - Physiopraxis Feldweg
+  first:
+    - Praxis Dr.
+    - Zahnarztpraxis Dr.
+    - Hausarztpraxis Dr.
+    - Kinderarztpraxis Dr.
+    - Hautarztpraxis Dr.
+    - Augenarztpraxis Dr.
+    - Orthopädie Dr.
+    - Frauenarztpraxis Dr.
+    - Praxisgemeinschaft
+    - Gemeinschaftspraxis
+    - Physiopraxis
+    - Zahnärzte
+    - Hausärzte
+    - Kieferorthopädie
+    - Radiologie
+  second:
+    - Albers
+    - Winkler
+    - Brinkmann
+    - Seidel
+    - Rosenberg
+    - Kaltenbach
+    - Lorenz
+    - Hartmann
+    - Vogt
+    - Engel
+    - Kessler
+    - Baumgart
+    - Pohl
+    - Reuter
+    - Stein
+    - Haas
+    - Wolff
+    - Fischer
+    - Lindemann
+    - Krämer
+    - Oberle
+    - Sommerfeld
+    - Thalberg
+    - Ackermann
+    - Brenner
+    - Dietz
+    - Gerlach
+    - Hofstetter
+    - Jansen
+    - Kuhlmann
+    - Marquardt
+    - Nolte
+    - Petersen
+    - Riedel
+    - Schuster
+    - Weidemann
+    - Albrecht
+    - Bauer
+    - Clausen
+    - Dreher
+    - Eckert
+    - Frick
+    - Göbel
+    - Holzer
+    - Imhof
+    - Jäger
+    - Kunze
+    - Lechner
+    - Maurer
+    - Neubauer

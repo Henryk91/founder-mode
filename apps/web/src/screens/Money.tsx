@@ -6,14 +6,21 @@ import styles from '../components/ui.module.css'
 
 const SMALL_STEP_CENTS = 10_000
 const BIG_STEP_CENTS = 100_000
+const PRICE_STEP_CENTS = 1_000
+const PRICE_BIG_STEP_CENTS = 10_000
+const PRICE_MIN_CENTS = 1_000
+const PRICE_MAX_CENTS = 500_000
 
 export function Money() {
   const view = useGame((s) => s.view)
   const transfer = useGame((s) => s.plan.transferToCompanyCents)
   const setTransfer = useGame((s) => s.setTransferCents)
+  const draftPrice = useGame((s) => s.plan.priceCentsPerMonth)
+  const setPrice = useGame((s) => s.setPriceCents)
   if (!view) return null
   const stage = view.company.uiStage
   const { company, founder } = view
+  const price = draftPrice ?? company.priceCentsPerMonth
   const stat = (key: Parameters<typeof label>[0], cents: number) => (
     <div className={styles.rowHead}>
       <span>{label(key, stage)}</span>
@@ -30,6 +37,31 @@ export function Money() {
         {stat('money.monthlyRevenue', view.monthlyRevenueCents)}
         {stat('money.fixedCosts', company.monthlyFixedCostsCents)}
         {stat('money.living', founder.livingCostCentsPerWeek)}
+      </section>
+
+      <section className={styles.card}>
+        <h2 className={styles.title}>{label('money.price', stage)}</h2>
+        <p className={styles.hint}>{label('money.priceHint', stage)}</p>
+        <span>
+          {label(
+            price === company.priceCentsPerMonth ? 'money.priceNow' : 'money.priceNew',
+            stage,
+            {
+              price: formatEuro(price),
+            },
+          )}
+        </span>
+        <Stepper
+          stage={stage}
+          value={price}
+          step={PRICE_STEP_CENTS}
+          bigStep={PRICE_BIG_STEP_CENTS}
+          min={PRICE_MIN_CENTS}
+          max={PRICE_MAX_CENTS}
+          display={formatEuro(price)}
+          formatStep={formatEuro}
+          onChange={(cents) => setPrice(cents === company.priceCentsPerMonth ? null : cents)}
+        />
       </section>
 
       <section className={styles.card}>

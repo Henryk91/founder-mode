@@ -2,7 +2,7 @@
 
 Source of truth for the shapes shared between engine, content, bots, and UI. Update this file in the same change as any type change.
 
-Status: Phase 2. Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
+Status: Phase 2b plus playtest fixes (engine 0.3.0). Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
 
 ## Conventions
 
@@ -82,7 +82,7 @@ type LeadStage = 'lead' | 'demo' | 'trial' | 'paying' | 'lost'
 
 type Lead = {
   id: string
-  name: string                  // from scenario.companyNames[segmentId]
+  name: string                  // one word from each list in scenario.companyNames[segmentId], unique per run
   segmentId: SegmentId
   stage: LeadStage              // 'demo' means: asked for a demo, waiting for the founder
   stageSinceWeek: number
@@ -98,6 +98,7 @@ type Customer = {
   segmentId: SegmentId
   sinceWeek: number
   churnedWeek: number | null    // null while active
+  priceCentsPerMonth: number    // the price when they signed; later price changes do not touch it
 }
 ```
 
@@ -141,7 +142,7 @@ type InterviewEvidence = {
   week: number
   segmentId: SegmentId
   bucketId: BucketId                  // from scenario.experiments.interview.buckets
-  quoteIndex: number                  // into scenario.interviewQuotes[segmentId][bucketId]
+  quoteIndex: number                  // into scenario.interviewQuotes[segmentId][bucketId]; unheard quotes first
   mentionedFeatureId: FeatureId | null   // a must have the interviewee asked for, if any
 }
 ```
@@ -211,6 +212,7 @@ type WeekPlan = {
   demos: string[]                         // lead ids in stage 'demo', demoHours each
   restHours: number                       // counts as planned hours
   transferToCompanyCents: number          // from personal savings
+  priceCentsPerMonth: number | null       // new price for customers signing from this week on; null keeps it
 }
 
 type ChannelId = 'cold_email' | 'phone' | 'in_person'
@@ -227,7 +229,10 @@ type PlanIssue =
   | { code: 'invalid_demo'; leadId: string }                  // unknown, not in stage 'demo', silent, or listed twice
   | { code: 'too_many_hours'; plannedHours: number; maxHours: number }
   | { code: 'transfer_exceeds_savings'; savingsCents: number }
+  | { code: 'invalid_price' }                                 // not a positive whole number of cents
 ```
+
+A price change applies at the start of week resolution, so trials converting that week sign at the new price. Revenue at a month end is the sum of each paying customer's own price.
 
 Planned hours = interviews * 2 + build + bug fixing + outreach + demos * `demoHours` + rest.
 
@@ -259,8 +264,7 @@ type PlayerView = {
     priceCentsPerMonth: number
     fixedCosts: { id: string; name: string; monthlyCents: number }[]
     monthlyFixedCostsCents: number
-    runwayWeeks: number | null    // null while runwayKnown is false, or when cash is not shrinking
-    runwayKnown: boolean          // false until a full month (4 weeks) has been played
+    runwayWeeks: number | null    // weeks until cash plus savings reach zero; null when not shrinking
     uiStage: 'scrappy' | 'organised'
   }
   costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number; trialWeeks: number }
@@ -269,7 +273,7 @@ type PlayerView = {
   product: ProductView
   leads: LeadView[]
   customers: CustomerView[]       // active customers only
-  monthlyRevenueCents: number     // active customers * monthly price
+  monthlyRevenueCents: number     // sum of active customers' own prices
   segments: SegmentView[]         // in scenario order
   history: { week: number; cashCents: number; savingsCents: number }[]
 }
@@ -316,13 +320,20 @@ type LeadView = {
   canBookDemo: boolean            // stage 'demo' and still answering
 }
 
-type CustomerView = { id: string; name: string; segmentId: SegmentId; sinceWeek: number }
+type CustomerView = {
+  id: string
+  name: string
+  segmentId: SegmentId
+  sinceWeek: number
+  priceCentsPerMonth: number
+}
 
 type SegmentView = {
   id: SegmentId
   name: string
   description: string
   interviews: InterviewView[]     // sample size = interviews.length
+  lastChannel: ChannelId | null   // outreach channel of the latest plan that had one for this segment
 }
 
 type InterviewView = {
@@ -335,7 +346,7 @@ type InterviewView = {
 }
 ```
 
-Runway is `floor(cash / (-sum(operatingNet) / n))` over the last 4 weeks, where `operatingNet = revenue - fixedCosts - founderDraw` (transfers excluded). It is unknown (`runwayKnown: false`) until 4 weeks have been played, so a month end with its fixed costs is always in the window.
+Runway is `floor((cash + savings) / (-net / 4))`, where `net` is the change in cash plus savings over one month: `sum(revenue - fixedCosts - livingCosts)` over the last 4 ledger weeks once 4 weeks have been played. Before that it uses known costs: active customers' prices minus monthly fixed costs minus 4 weeks of living costs. Transfers, draws, and top ups move money between cash and savings and cancel out. Null when `net >= 0`.
 
 Lead names and company names are scenario text, not hidden values. Must have features, pain, and willingness to pay never appear in the view; the product view shows only what was built.
 
@@ -449,7 +460,7 @@ type Scenario = {
   sales: SalesConfig
   features: Feature[]
   interviewQuotes: Record<SegmentId, Record<BucketId, string[]>>
-  companyNames: Record<SegmentId, string[]>   // fictional lead names per segment
+  companyNames: Record<SegmentId, { first: string[]; second: string[] }>   // name = `${first} ${second}`
   intro: { cards: { id: string; title: string; body: string }[] }   // must include a card with id 'goal'
   founderNotes: Record<FounderNoteId, string>  // one text per rule, see below
 }
@@ -472,7 +483,7 @@ type SalesConfig = {
 }
 ```
 
-Cross checks in `superRefine`: unique ids, one role per segment, `maxHoursPerWeek >= baseHoursPerWeek`, start energy within max, every `mustHave` id is a feature, bucket bounds ascend with only the last unbounded, and every segment has quotes for every bucket, every segment has company names, company names are unique across segments, the intro has a `goal` card, and every placeholder in the intro (`cash`, `savings`, `living`, `maxWeeks`) and the notes (`week`, `n`, `living`) is a known one.
+Cross checks in `superRefine`: unique ids, one role per segment, `maxHoursPerWeek >= baseHoursPerWeek`, start energy within max, every `mustHave` id is a feature, bucket bounds ascend with only the last unbounded, and every segment has quotes for every bucket, every segment has company name lists, every name combination is unique across segments, the intro has a `goal` card, and every placeholder in the intro (`cash`, `savings`, `living`, `maxWeeks`) and the notes (`week`, `n`, `living`) is a known one.
 
 ## Founder's note rules
 

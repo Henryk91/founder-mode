@@ -21,8 +21,7 @@ const labels = {
   'bar.week': 'Week {week} of {max}',
   'bar.endWeek': 'End week',
   'bar.cash': 'Cash',
-  'bar.runway.none': 'Runway: not enough history yet',
-  'bar.runway.safe': 'Runway: cash is not shrinking',
+  'bar.runway.safe': 'Runway: money is not shrinking',
   'bar.runway.weeks.one': 'Runway: {n} week',
   'bar.runway.weeks.other': 'Runway: {n} weeks',
 
@@ -103,14 +102,21 @@ const labels = {
   'money.transferHint':
     'Happens first this week. Savings also top up the company automatically if it goes negative.',
   'money.transferAmount': 'Amount',
+  'money.price': 'Price per customer',
+  'money.priceHint':
+    'Monthly price for customers who sign from this week on. Customers who already pay keep the price they signed at.',
+  'money.priceNow': 'Now: {price} per month',
+  'money.priceNew': 'From this week: {price} per month',
 
   'results.title': 'Week {week}',
   'results.hours': '{hours} h planned. Energy {before} to {after}.',
   'results.quiet': 'A quiet week.',
   'results.money': 'Money this week',
   'results.cashNow': 'Company cash now',
-  'results.in': 'Received',
-  'results.out': 'Paid',
+  'results.in': 'Company received',
+  'results.out': 'Company paid',
+  'results.living': 'Living costs from your savings',
+  'results.savingsNow': 'Your savings now',
   'results.continue': 'Next week',
   'results.finish': 'See how it ended',
   'results.entry.savings_transfer': 'You moved {amount} from savings into the company.',
@@ -161,7 +167,7 @@ const labels = {
   'explain.button': 'What does this mean?',
   'explain.runway.title': 'Runway',
   'explain.runway.text':
-    'Runway is how many weeks the company cash lasts at the pace of the last four weeks. It says nothing until four weeks have been played, and your savings stretch it further.',
+    'Runway is how many weeks company cash and your savings last together, at the pace of the last four weeks. In the first weeks it uses your known costs instead.',
   'explain.cash.title': 'Cash',
   'explain.cash.text':
     'Cash is the money in the company account. Fixed costs leave it and customer payments arrive at every month end, and your savings top it up if it goes negative.',
