@@ -17,6 +17,17 @@ describe('endings', () => {
     expect(s.company.cashCents).toBeLessThan(0)
   })
 
+  it('burns out after 3 weeks in a row at 0 energy', () => {
+    const s = play(newGame('burn', richKantino()), 20, () =>
+      plan({ interviews: { coworking: 32 } }),
+    )
+    // 80 energy, -28 a week at 64 h: 0 after week 3, burnout at the end of week 5.
+    expect(s.ending).toBe('burnout')
+    expect(s.week).toBe(5)
+    expect(s.founder.weeksAtZeroEnergy).toBe(3)
+    expect(checkEnding(s)).toBe('burnout')
+  })
+
   it('ends at the week limit as still searching without revenue', () => {
     const s = play(newGame('limit', richKantino()), 200, () => plan())
     expect(s.ending).toBe('still_searching')

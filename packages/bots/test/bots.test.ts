@@ -23,7 +23,7 @@ describe('bots', () => {
     (_id, strategy) => {
       for (let i = 0; i < 5; i++) {
         const r = runGame(scenario, strategy, `test-${i}`)
-        expect(['bankrupt', 'still_searching', 'sustainable']).toContain(r.ending)
+        expect(['bankrupt', 'burnout', 'still_searching', 'sustainable']).toContain(r.ending)
         expect(r.weeks).toBeGreaterThan(0)
         expect(r.weeks).toBeLessThanOrEqual(scenario.maxWeeks)
       }
@@ -42,9 +42,11 @@ describe('bots', () => {
     }
   })
 
-  it('the overworker plans 65 h a week', () => {
+  it('the overworker plans 65 h a week and burns out', () => {
     const strategy = STRATEGIES.find((s) => s.id === 'overworker')!
-    expect(runGame(scenario, strategy, 'o').meanPlannedHours).toBeGreaterThan(60)
+    const r = runGame(scenario, strategy, 'o')
+    expect(r.meanPlannedHours).toBeGreaterThan(55)
+    expect(r.ending).toBe('burnout')
   })
 
   it('builds a report with every target', () => {

@@ -9,6 +9,7 @@ import type {
   WeekPlan,
 } from '../types'
 import { isMonthEnd } from './finance'
+import { energyFactor } from './founder'
 import { fit, priceFactor } from './market'
 
 /** A lead can take part in a demo when it asked for one and is still answering. */
@@ -68,6 +69,8 @@ export function applySales(
   const touched = new Set<string>()
   let selling = state.founder.skills.selling
   const sellingAtStart = selling
+  // Energy after this week's hours (step 3 runs first): a tired founder sells worse.
+  const tired = energyFactor(state.founder, state.scenario)
 
   const update = (lead: Lead, change: LeadChange) =>
     entries.push({
@@ -89,7 +92,8 @@ export function applySales(
     selling = Math.min(cfg.skillCap, selling + cfg.skillGainPerDemo)
     lead.lastContactWeek = week
     touched.add(lead.id)
-    if (rng.chance(cfg.demoToTrialBase + cfg.demoToTrialPerFit * fit(state, lead.segmentId))) {
+    const p = (cfg.demoToTrialBase + cfg.demoToTrialPerFit * fit(state, lead.segmentId)) * tired
+    if (rng.chance(p)) {
       lead.stage = 'trial'
       lead.stageSinceWeek = week
       update(lead, 'trial_started')
@@ -102,7 +106,7 @@ export function applySales(
   // 2. Trials
   for (const lead of leads) {
     if (lead.stage !== 'trial' || week - lead.stageSinceWeek < cfg.trialWeeks) continue
-    const p = fit(state, lead.segmentId) * priceFactor(state, lead.segmentId)
+    const p = fit(state, lead.segmentId) * priceFactor(state, lead.segmentId) * tired
     if (rng.chance(p)) {
       lead.stage = 'paying'
       lead.stageSinceWeek = week
@@ -127,7 +131,8 @@ export function applySales(
   for (const lead of leads) {
     if (lead.stage !== 'lead' || lead.silentSinceWeek !== null) continue
     const pain = state.hidden.segments[lead.segmentId]?.pain ?? 0
-    if (rng.chance(cfg.leadToDemoBase * (cfg.leadToDemoOffset + cfg.leadToDemoPerPain * pain))) {
+    const p = cfg.leadToDemoBase * (cfg.leadToDemoOffset + cfg.leadToDemoPerPain * pain) * tired
+    if (rng.chance(p)) {
       lead.stage = 'demo'
       lead.stageSinceWeek = week
       lead.lastContactWeek = week
@@ -156,7 +161,10 @@ export function applySales(
     const out = plan.outreach[seg.id]
     if (!out || out.hours <= 0) continue
     const response = state.hidden.segments[seg.id]?.channelResponse[out.channel] ?? 0
-    const count = randomRound(out.hours * response * (cfg.sellingBase + sellingAtStart), rng)
+    const count = randomRound(
+      out.hours * response * (cfg.sellingBase + sellingAtStart) * tired,
+      rng,
+    )
     for (let i = 0; i < count; i++) {
       const parts = state.scenario.companyNames[seg.id] ?? { first: [], second: [] }
       const name = pickName(parts, used, rng)

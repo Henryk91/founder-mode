@@ -104,15 +104,15 @@ export function buildReport(input: ReportInput): string {
     '',
     '## Endings',
     '',
-    '| Strategy | Sustainable | Still searching | Bankrupt | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |',
-    '|---|---|---|---|---|---|---|---|',
+    '| Strategy | Sustainable | Still searching | Bankrupt | Burnout | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |',
+    '|---|---|---|---|---|---|---|---|---|',
   )
   for (const s of input.strategies) {
     const n = s.results.length
     const count = (e: string) => s.results.filter((r) => r.ending === e).length
     const bankrupt = s.results.filter((r) => r.ending === 'bankrupt').map((r) => r.weeks)
     push(
-      `| ${s.id} | ${fmtPct(pct(count('sustainable'), n))} | ${fmtPct(pct(count('still_searching'), n))} | ${fmtPct(pct(count('bankrupt'), n))} | ${fmtNum(median(bankrupt))} | ${fmtNum(median(s.results.filter(isLoss).map((r) => r.weeks)))} | ${fmtEur(median(s.results.map((r) => r.peakMonthlyRevenueCents)))} | ${fmtNum(median(s.results.map((r) => r.customersEnd)))} |`,
+      `| ${s.id} | ${fmtPct(pct(count('sustainable'), n))} | ${fmtPct(pct(count('still_searching'), n))} | ${fmtPct(pct(count('bankrupt'), n))} | ${fmtPct(pct(count('burnout'), n))} | ${fmtNum(median(bankrupt))} | ${fmtNum(median(s.results.filter(isLoss).map((r) => r.weeks)))} | ${fmtEur(median(s.results.map((r) => r.peakMonthlyRevenueCents)))} | ${fmtNum(median(s.results.map((r) => r.customersEnd)))} |`,
     )
   }
 

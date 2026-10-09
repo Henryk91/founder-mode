@@ -22,6 +22,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       baseHoursPerWeek: scenario.founder.baseHoursPerWeek,
       maxHoursPerWeek: scenario.founder.maxHoursPerWeek,
       energy: start.energy,
+      weeksAtZeroEnergy: 0,
       savingsCents: start.savingsCents,
       livingCostCentsPerWeek: start.livingCostCentsPerWeek,
       skills: { ...start.skills },

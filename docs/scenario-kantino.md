@@ -134,6 +134,8 @@ Reason: a bot that found the viable market ended with about 19 customers when 7 
 | Energy below 30 | All success probabilities x 0.85 |
 | Energy at 0 for 3 weeks in a row | Burnout ending |
 
+"All success probabilities" means the sales chances: leads found, lead to demo, demo to trial, trial to paying. These two rules were planned for Phase 4 and arrived in Phase 3 tuning, because without them planning 65 h every week had no cost and was the best strategy.
+
 ## 8. The one hire
 
 | | Developer | Salesperson |

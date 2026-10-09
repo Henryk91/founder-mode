@@ -68,6 +68,17 @@ export function Plan() {
           </span>
           <ExplainButton term="energy" />
         </div>
+        {founder.energy === 0 ? (
+          <p className={styles.warn}>
+            {count('plan.energyZero', stage, founder.burnoutWeeks - founder.weeksAtZeroEnergy)}
+          </p>
+        ) : (
+          founder.energy < founder.lowEnergyBelow && (
+            <p className={styles.warn}>
+              {label('plan.energyLow', stage, { low: founder.lowEnergyBelow })}
+            </p>
+          )
+        )}
         {issues.map((issue) => (
           <p key={issue.code + JSON.stringify(issue)} className={styles.warn} role="alert">
             {issue.code === 'too_many_hours' || issue.code === 'transfer_exceeds_savings'

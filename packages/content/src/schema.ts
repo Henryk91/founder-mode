@@ -144,6 +144,11 @@ export const ScenarioFileSchema = z.object({
       perHourOverBase: z.number(),
       perRestHour: z.number(),
       weekWithinBase: z.number(),
+      // Below this energy every sales chance is multiplied by lowFactor.
+      lowBelow: z.number().nonnegative(),
+      lowFactor: Share,
+      // Weeks in a row at 0 energy that end the run with burnout.
+      burnoutWeeks: z.number().int().positive(),
     }),
   }),
   finance: z.object({
