@@ -181,7 +181,7 @@ const labels = {
   'help.week.4':
     'Every fourth week is a month end. Fixed costs go out and every customer gets an invoice. Invoices are paid later, by some of them very much later.',
   'help.week.5':
-    'Use what you learned. The Market tab keeps your interview notes and the Pipeline tab keeps your leads.',
+    'Use what you learned. The {market} tab keeps your interview notes and the {pipeline} tab keeps your leads.',
   'help.close': 'Back to the game',
   'explain.close': 'Got it',
   'explain.button': 'What does this mean?',
@@ -215,6 +215,10 @@ const labels = {
     'Costs {hours} per demo. A good demo starts a trial that runs {weeks}, and a trial can turn into a paying customer. The verdict on the demo arrives this week, the trial result {weeks} later.',
   'plan.section.restHint': 'Costs the hours you set. Restores energy this week.',
   'market.based.zero': 'No interviews yet. Plan some on the Plan tab and the answers collect here.',
+  'market.answersTitle': 'What people answered',
+  'market.answer': '{bucket} {n}',
+  'market.quotes.show': 'Show the quotes, newest first',
+  'market.quotes.hide': 'Hide the quotes',
   'market.tallyTitle': 'Features people asked for',
   'market.tally': '{feature}: asked for by {k} of {n}',
   'pipeline.empty':
@@ -245,7 +249,7 @@ const labels = {
     '{hours} of this week are already gone, thanks to a fine or something you promised.',
   'plan.committed': '{hours} are already spent on answers in your inbox.',
   'plan.team': 'Team',
-  'plan.teamSummary': 'Searching for a {role} costs {hours}. Set it on the Team tab.',
+  'plan.teamSummary': 'Searching for a {role} costs {hours}. Set it under Hiring on the Plan tab.',
   'plan.issue.presale_cap': 'No pre-sale batches left in that market.',
   'market.landing.title': 'Landing page tests',
   'market.landing.result':

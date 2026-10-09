@@ -129,6 +129,7 @@
   box-shadow: var(--paper-shadow);
   transform: rotate(-1.5deg);
   font-family: var(--font-hand);
+  font-weight: 500;
   font-size: 23px;
   line-height: 1.15;
 }

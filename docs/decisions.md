@@ -159,3 +159,4 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - `uiStage` sets `data-stage` on the layout; `theme/organised.css` restyles only the pipeline board tokens. The switch itself is Phase 7.
 
 - Deployment: GitHub Pages via Actions, Vite `base` is `/founder-mode/` for builds only. Results screen shows one interview summary line per market, quotes behind a tap. Empty hours bar is a thin dashed strip with no text.
+- UI review pass: sticky notes and calendar notes always tilt, letters only once answered. Planner sections live inside the notebook. Market shows answer counts first, quotes behind a tap, newest first. Help names tabs from `labels.ts`. Money steppers use short step labels and stay on one row in the desk right column.

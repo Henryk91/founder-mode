@@ -53,7 +53,7 @@ export function StickyNote(props: Props) {
   const { message: m } = props
   const named = m.fromName !== m.fromRole
   return (
-    <article className={styles.sticky} style={tiltStyle(props)}>
+    <article className={styles.sticky} style={stickyTilt(props)}>
       <p className={styles.hand}>{m.text}</p>
       <p className={styles.signature}>
         {named
@@ -127,6 +127,11 @@ function tiltStyle(props: Props): React.CSSProperties | undefined {
   // Paper only tilts once it has no buttons left (docs/design/design.md, shape and effects).
   if (!props.tilt || props.message.answeredChoiceId === null) return undefined
   return { transform: `rotate(${props.tilt}deg)` }
+}
+
+/** Sticky notes always sit at their fixed small angle, as on the desk mockup. */
+function stickyTilt(props: Props): React.CSSProperties | undefined {
+  return props.tilt ? { transform: `rotate(${props.tilt}deg)` } : undefined
 }
 
 function initials(name: string): string {

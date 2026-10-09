@@ -267,8 +267,8 @@ function WeekSummary({ report, view }: { report: WeekReport; view: PlayerView })
           className={styles.card}
           aria-label={label(`results.group.${group}`, stage)}
         >
-          <h3 className={styles.caps}>{label(`results.group.${group}`, stage)}</h3>
-          <ul className={styles.list}>
+          <h3 className={styles.paperHead}>{label(`results.group.${group}`, stage)}</h3>
+          <ul className={`${styles.list} ${group === 'money' ? styles.moneyLines : ''}`}>
             {lines.map((l) => (
               <li key={l.key} className={styles.row}>
                 {l.node}

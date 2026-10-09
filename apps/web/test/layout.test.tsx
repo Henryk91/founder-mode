@@ -2,7 +2,14 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { renderToString } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import type { PlayerView, WeekReport } from '@founder-mode/engine'
+import { loadScenario } from '@founder-mode/content'
+import {
+  checkPlan,
+  createGame,
+  getView,
+  type PlayerView,
+  type WeekReport,
+} from '@founder-mode/engine'
 import { App } from '../src/App'
 import { headlineStats } from '../src/components/Headline'
 import { Scene } from '../src/components/Scene'
@@ -413,3 +420,61 @@ function openingTag(code: string, start: number): string {
   }
   return code.slice(start)
 }
+
+describe('planner header hours', () => {
+  it('counts booked demos, follow ups, chasing and bug fixing in the h planned total', () => {
+    const store = run('header-hours')
+    const scenario = loadScenario('kantino')
+    const base = createGame(scenario, 'header-hours-state')
+    const lead = (i: number, stage: 'lead' | 'demo') => ({
+      id: `lead_${i}`,
+      name: `Firma ${i}`,
+      segmentId: scenario.segments[0]!.id,
+      stage,
+      source: 'outreach' as const,
+      stageSinceWeek: 1,
+      lastContactWeek: 1,
+      silentSinceWeek: null,
+      lostReason: null,
+    })
+    const game = {
+      ...base,
+      week: 9,
+      leads: [lead(1, 'demo'), lead(2, 'lead')],
+      product: { ...base.product, bugs: 3 },
+      invoices: [
+        {
+          id: 'invoice_1',
+          customerId: 'customer_1',
+          customerName: 'Kunde Eins',
+          segmentId: scenario.segments[0]!.id,
+          amountCents: 30_000,
+          issuedWeek: 4,
+          dueWeek: 6,
+          paidWeek: null,
+          writtenOffWeek: null,
+        },
+      ],
+    }
+    const plan = {
+      ...store.getState().plan,
+      demos: ['lead_1'],
+      followUps: ['lead_2'],
+      chase: ['invoice_1'],
+      bugFixHours: 2,
+    }
+    const check = checkPlan(game, plan)
+    expect(check.issues).toEqual([])
+    const expected =
+      scenario.sales.demoHours +
+      scenario.sales.followUpHours +
+      scenario.finance.chaseHours +
+      plan.bugFixHours
+    expect(expected).toBe(3 + 1 + 1 + 2)
+    expect(check.plannedHours).toBe(expected)
+
+    store.setState({ view: getView(game), plan, plannedHours: check.plannedHours })
+    store.getState().setTab('plan')
+    expect(text(store)).toContain(`${expected} h planned of a normal 50 h week`)
+  })
+})

@@ -26,7 +26,10 @@ export function Inbox(props: { desk?: boolean }) {
       </h2>
       {!props.desk && <NeedsYou view={view} free={free} />}
       {view.inbox.length === 0 && (
-        <section className={`${styles.card} ${styles.sticky}`}>
+        <section
+          className={`${styles.card} ${styles.sticky}`}
+          style={{ transform: `rotate(${TILTS[0]}deg)` }}
+        >
           <p className={styles.handText}>{label('inbox.empty', stage)}</p>
         </section>
       )}

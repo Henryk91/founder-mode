@@ -12,6 +12,12 @@ const PRICE_BIG_STEP_CENTS = 10_000
 const PRICE_MIN_CENTS = 1_000
 const PRICE_MAX_CENTS = 500_000
 
+/** Short step labels such as "10", "100" or "1k" next to the euro sign, so buttons stay narrow. */
+function formatStepCents(cents: number): string {
+  const euros = Math.round(cents / 100)
+  return euros >= 1000 && euros % 1000 === 0 ? `€${euros / 1000}k` : `€${euros}`
+}
+
 export function Money() {
   const view = useGame((s) => s.view)
   const transfer = useGame((s) => s.plan.transferToCompanyCents)
@@ -77,7 +83,7 @@ export function Money() {
           min={PRICE_MIN_CENTS}
           max={PRICE_MAX_CENTS}
           display={formatEuro(price)}
-          formatStep={formatEuro}
+          formatStep={formatStepCents}
           onChange={(cents) => setPrice(cents === company.priceCentsPerMonth ? null : cents)}
         />
       </section>
@@ -93,7 +99,7 @@ export function Money() {
           bigStep={BIG_STEP_CENTS}
           max={Math.max(0, founder.savingsCents)}
           display={formatEuro(transfer)}
-          formatStep={formatEuro}
+          formatStep={formatStepCents}
           onChange={setTransfer}
         />
       </section>

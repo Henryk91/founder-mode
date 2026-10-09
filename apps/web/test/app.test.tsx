@@ -253,6 +253,10 @@ describe('onboarding', () => {
     const page = html(store)
     expect(page).toContain('Shared workspaces with many small tenants')
     expect(page).toContain('Based on 6 interviews.')
+    // Counts by answer type come first; the quotes wait behind a tap.
+    expect(page).toContain('What people answered')
+    expect(page).toContain('Show the quotes, newest first')
+    expect(page).not.toContain('<blockquote')
     expect(page).toContain('Features people asked for')
     expect(page).toMatch(/asked for by \d of 6/)
     expect(page).toContain('Agencies and firms with 10 to 50 staff')

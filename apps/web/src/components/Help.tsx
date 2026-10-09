@@ -39,7 +39,12 @@ export function Help() {
         <h2 className={styles.title}>{label('help.weekTitle', stage)}</h2>
         <ol className={styles.list}>
           {WEEK_STEPS.map((key) => (
-            <li key={key}>{label(key, stage)}</li>
+            <li key={key}>
+              {label(key, stage, {
+                market: label('tab.market', stage),
+                pipeline: label('tab.pipeline', stage),
+              })}
+            </li>
           ))}
         </ol>
       </section>

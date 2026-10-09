@@ -145,41 +145,42 @@ export function Plan() {
   return (
     <>
       <FounderNote />
-      <PlanHeader />
-      <div className={plan.sections}>
-        {SECTIONS.map(({ id, title }) => {
-          const isOpen = open.includes(id)
-          if (id === 'demos' && !hasDemosSection(view, draft)) return null
-          const Body = bodies[id]
-          return (
-            <section key={id} className={plan.section} aria-label={label(title, stage)}>
-              <button
-                type="button"
-                className={plan.sectionHead}
-                aria-expanded={isOpen}
-                aria-controls={`plan-${id}`}
-                onClick={() => toggle(id)}
-              >
-                <span className={plan.chevron} aria-hidden="true">
-                  {isOpen ? '▾' : '▸'}
-                </span>
-                <span className={plan.headText}>
-                  <span className={plan.sectionTitle}>{label(title, stage)}</span>
-                  <span className={plan.summary}>{lines[id]}</span>
-                </span>
-                <span className={plan.sectionHours}>
-                  {hours[id] > 0 ? label('unit.hours', stage, { n: hours[id] }) : ''}
-                </span>
-              </button>
-              {isOpen && (
-                <div id={`plan-${id}`} className={plan.body}>
-                  <Body />
-                </div>
-              )}
-            </section>
-          )
-        })}
-      </div>
+      <PlanHeader>
+        <div className={plan.sections}>
+          {SECTIONS.map(({ id, title }) => {
+            const isOpen = open.includes(id)
+            if (id === 'demos' && !hasDemosSection(view, draft)) return null
+            const Body = bodies[id]
+            return (
+              <section key={id} className={plan.section} aria-label={label(title, stage)}>
+                <button
+                  type="button"
+                  className={plan.sectionHead}
+                  aria-expanded={isOpen}
+                  aria-controls={`plan-${id}`}
+                  onClick={() => toggle(id)}
+                >
+                  <span className={plan.chevron} aria-hidden="true">
+                    {isOpen ? '▾' : '▸'}
+                  </span>
+                  <span className={plan.headText}>
+                    <span className={plan.sectionTitle}>{label(title, stage)}</span>
+                    <span className={plan.summary}>{lines[id]}</span>
+                  </span>
+                  <span className={plan.sectionHours}>
+                    {hours[id] > 0 ? label('unit.hours', stage, { n: hours[id] }) : ''}
+                  </span>
+                </button>
+                {isOpen && (
+                  <div id={`plan-${id}`} className={plan.body}>
+                    <Body />
+                  </div>
+                )}
+              </section>
+            )
+          })}
+        </div>
+      </PlanHeader>
     </>
   )
 }
@@ -202,7 +203,7 @@ const ACTIVITIES: { id: Activity; key: LabelKey }[] = [
 ]
 
 /** "My week": hours used and free, the hours bar by activity, energy, and what is already booked. */
-function PlanHeader() {
+function PlanHeader({ children }: { children?: React.ReactNode }) {
   const view = useGame((s) => s.view)
   const draft = useGame((s) => s.plan)
   const planned = useGame((s) => s.plannedHours)
@@ -313,6 +314,7 @@ function PlanHeader() {
           {label('plan.repeat', stage)}
         </button>
       )}
+      {children}
     </section>
   )
 }
