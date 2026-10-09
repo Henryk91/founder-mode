@@ -154,11 +154,11 @@ Same seeds, one behaviour switched off at a time. "Won only with" counts seeds t
 | Variant | Win rate | Change (points) | Won only with | Won only without | Bankrupt | Median losing run length |
 |---|---|---|---|---|---|---|
 | all four behaviours | 26.7% | 0.0 | 0 | 0 | 70.1% | 46 |
-| without -inbox | 18.4% | -8.3 | 154 | 71 | 75.3% | 46 |
-| without -chase | 29.2% | 2.5 | 50 | 75 | 68.5% | 45 |
-| without -landing | 28.3% | 1.6 | 117 | 133 | 66.7% | 46 |
-| without -books | 25.5% | -1.2 | 119 | 107 | 71.9% | 44 |
-| without -inbox -chase -landing -books | 21.8% | -4.9 | 151 | 102 | 74.4% | 44 |
+| without inbox | 18.4% | -8.3 | 154 | 71 | 75.3% | 46 |
+| without chase | 29.2% | 2.5 | 50 | 75 | 68.5% | 45 |
+| without landing | 28.3% | 1.6 | 117 | 133 | 66.7% | 46 |
+| without books | 25.5% | -1.2 | 119 | 107 | 71.9% | 44 |
+| without all four | 21.8% | -4.9 | 151 | 102 | 74.4% | 44 |
 
 ## What each behaviour changed: validate_then_build_hire
 
@@ -167,11 +167,11 @@ Same seeds, one behaviour switched off at a time. "Won only with" counts seeds t
 | Variant | Win rate | Change (points) | Won only with | Won only without | Bankrupt | Median losing run length |
 |---|---|---|---|---|---|---|
 | all four behaviours | 12.8% | 0.0 | 0 | 0 | 73.6% | 47 |
-| without -inbox | 8.0% | -4.8 | 106 | 58 | 77.8% | 47 |
-| without -chase | 13.4% | 0.6 | 77 | 83 | 74.0% | 46 |
-| without -landing | 15.1% | 2.3 | 94 | 117 | 71.4% | 47 |
-| without -books | 12.7% | -0.1 | 96 | 95 | 76.7% | 45 |
-| without -inbox -chase -landing -books | 8.9% | -3.9 | 108 | 69 | 78.7% | 45 |
+| without inbox | 8.0% | -4.8 | 106 | 58 | 77.8% | 47 |
+| without chase | 13.4% | 0.6 | 77 | 83 | 74.0% | 46 |
+| without landing | 15.1% | 2.3 | 94 | 117 | 71.4% | 47 |
+| without books | 12.7% | -0.1 | 96 | 95 | 76.7% | 45 |
+| without all four | 8.9% | -3.9 | 108 | 69 | 78.7% | 45 |
 
 ## The hire
 
@@ -196,11 +196,11 @@ Runs where answering made the run last longer: 293, shorter: 592, same length: 1
 - `random`: Spends a random 30 to 65 h on random actions in random markets, including books, tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (1.6 s for 1000 runs)
 - `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. Does the books. (0.5 s for 1000 runs)
 - `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Does the books and chases three late invoices a week. (1.2 s for 1000 runs)
-- `validate_then_build`: Interviews every market, runs one landing page test on the market its interviews favour (and drops it below 7% sign ups), builds what that market asks for, sells on its best channel, runs up to two pre-sale batches, and moves on after 12 weeks without a customer or two pre-sale batches without a commitment. Does the books, chases three late invoices a week, and answers the inbox by the policy in `answerInbox`. (3.5 s for 1000 runs)
+- `validate_then_build`: Interviews every market, runs one landing page test on the market its interviews favour (and drops it below 7% sign ups), builds what that market asks for, sells on its best channel, runs up to two pre-sale batches, and moves on after 12 weeks without a customer or two pre-sale batches without a commitment. Does the books, chases three late invoices a week, and answers the inbox by the policy in `answerInbox`. (3.6 s for 1000 runs)
 - `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (3.6 s for 1000 runs)
 - `price_aware`: Plays like validate_then_build and raises the price by 100 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays. (3.5 s for 1000 runs)
 - `overworker`: Plays like validate_then_build, but plans 65 h every week. (0.2 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (0.8 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (0.9 s for 1000 runs)
 
 ## Tuning notes
 
@@ -254,3 +254,7 @@ Engine 0.5.0, seeds `test`. Invoices, bookkeeping, landing tests, pre-sales, hir
 - Target 6 spread is 25.1 points (was 30.8). Coworking still wins most often. Not tuned toward.
 - Target 7 holds at week 13.
 - Bots ignore the inbox (default choices happen), except `random`. Event balance is therefore unmeasured.
+
+### Careful bot report (engine 0.6.0, no tuning)
+
+`validate_then_build` was redefined to play the Phase 4 systems competently (see `docs/decisions.md`, "Careful bot"). Its win rate returned to 26.7% (17.5% for the previous bot) and the hire variant is at 12.8%. No scenario value or formula changed; the follow up action and the 3 lead pre-sale are engine 0.6.0 changes made before this run. Targets 6 and 7 are still not tuned toward.
