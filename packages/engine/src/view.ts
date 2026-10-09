@@ -1,4 +1,4 @@
-import { monthlyFixedCostsCents, runwayKnown, runwayWeeks } from './systems/finance'
+import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
 import { activeCustomers } from './systems/customers'
 import { selectFounderNote } from './systems/guidance'
 import { maxBugFixHours } from './systems/product'
@@ -43,7 +43,6 @@ export function getView(state: GameState): PlayerView {
       })),
       monthlyFixedCostsCents: monthlyFixedCostsCents(state),
       runwayWeeks: runwayWeeks(state),
-      runwayKnown: runwayKnown(state),
       uiStage: company.uiStage,
     },
     costs: {
@@ -91,13 +90,15 @@ export function getView(state: GameState): PlayerView {
       name: c.name,
       segmentId: c.segmentId,
       sinceWeek: c.sinceWeek,
+      priceCentsPerMonth: c.priceCentsPerMonth,
     })),
-    monthlyRevenueCents: activeCustomers(state).length * company.priceCentsPerMonth,
+    monthlyRevenueCents: activeCustomers(state).reduce((sum, c) => sum + c.priceCentsPerMonth, 0),
     segments: scenario.segments.map((seg) => ({
       id: seg.id,
       name: seg.name,
       description: seg.description,
       interviews: (state.knowledge[seg.id] ?? []).map((e) => interviewView(state, e)),
+      lastChannel: lastChannel(state, seg.id),
     })),
     history: state.ledger.map((l) => ({
       week: l.week,
@@ -105,6 +106,15 @@ export function getView(state: GameState): PlayerView {
       savingsCents: l.savingsEndCents,
     })),
   }
+}
+
+/** The outreach channel of the latest plan that had one for this segment. */
+function lastChannel(state: GameState, segmentId: string): ChannelId | null {
+  for (let i = state.actionLog.length - 1; i >= 0; i--) {
+    const out = state.actionLog[i]?.plan.outreach[segmentId]
+    if (out) return out.channel
+  }
+  return null
 }
 
 export function interviewView(state: GameState, e: InterviewEvidence): InterviewView {

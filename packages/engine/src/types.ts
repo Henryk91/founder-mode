@@ -108,6 +108,8 @@ export type Customer = {
   segmentId: SegmentId
   sinceWeek: number
   churnedWeek: number | null
+  /** The monthly price agreed when the customer signed. Later price changes do not touch it. */
+  priceCentsPerMonth: number
 }
 
 export type HiddenSegment = {
@@ -191,6 +193,8 @@ export type WeekPlan = {
   restHours: number
   /** Personal savings to move into the company this week. */
   transferToCompanyCents: number
+  /** New monthly price for customers who sign from this week on, or null to keep it. */
+  priceCentsPerMonth: number | null
 }
 
 export type PlanIssue =
@@ -205,6 +209,7 @@ export type PlanIssue =
   | { code: 'invalid_demo'; leadId: string }
   | { code: 'too_many_hours'; plannedHours: number; maxHours: number }
   | { code: 'transfer_exceeds_savings'; savingsCents: number }
+  | { code: 'invalid_price' }
 
 // ---------------------------------------------------------------------------
 // What the UI receives. Contains no hidden values.
@@ -230,10 +235,11 @@ export type PlayerView = {
     priceCentsPerMonth: number
     fixedCosts: FixedCost[]
     monthlyFixedCostsCents: number
-    /** Whole weeks until cash reaches zero at the recent burn. Null when not burning cash. */
+    /**
+     * Whole weeks until company cash plus personal savings reach zero at the recent net weekly
+     * change. Null when that total is not shrinking.
+     */
     runwayWeeks: number | null
-    /** False until a full month has been played; runway is meaningless before that. */
-    runwayKnown: boolean
     uiStage: UiStage
   }
   costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number; trialWeeks: number }
@@ -242,7 +248,7 @@ export type PlayerView = {
   product: ProductView
   leads: LeadView[]
   customers: CustomerView[]
-  /** Active customers times the monthly price. */
+  /** Sum of the monthly prices of active customers. */
   monthlyRevenueCents: number
   segments: SegmentView[]
   history: { week: number; cashCents: number; savingsCents: number }[]
@@ -298,6 +304,7 @@ export type CustomerView = {
   name: string
   segmentId: SegmentId
   sinceWeek: number
+  priceCentsPerMonth: number
 }
 
 export type SegmentView = {
@@ -305,6 +312,8 @@ export type SegmentView = {
   name: string
   description: string
   interviews: InterviewView[]
+  /** Outreach channel picked for this segment in the latest plan that had one, else null. */
+  lastChannel: ChannelId | null
 }
 
 export type InterviewView = {

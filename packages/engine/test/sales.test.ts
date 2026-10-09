@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { endWeek, validatePlan } from '../src/index'
-import { churnChance } from '../src/systems/sales'
+import { companyNameCombinations } from '@founder-mode/content'
+import { endWeek, getView, validatePlan } from '../src/index'
+import { Rng, seedRng } from '../src/rng'
+import { churnChance, pickName } from '../src/systems/sales'
 import type { GameState, Lead } from '../src/types'
-import { newGame, plan } from './helpers'
+import { newGame, plan, richKantino } from './helpers'
 
 const lead = (over: Partial<Lead> = {}): Lead => ({
   id: 'lead_1',
@@ -60,22 +62,24 @@ describe('outreach', () => {
     expect(total / runs).toBeLessThan(2.3)
   })
 
-  it('gives every lead a distinct name, even beyond the name pool', () => {
-    let s = newGame('names')
-    s = {
-      ...s,
-      scenario: {
-        ...s.scenario,
-        companyNames: { ...s.scenario.companyNames, coworking: ['Alpha', 'Beta'] },
-      },
+  it('gives every lead a distinct name without a number, even in a long run', () => {
+    let s = newGame('names', richKantino())
+    for (let i = 0; i < 78; i++) {
+      s = endWeek(s, plan({ outreach: { coworking: { channel: 'in_person', hours: 50 } } })).state
     }
-    const names = new Set<string>()
-    for (let i = 0; i < 6; i++) {
-      s = endWeek(s, plan({ outreach: { coworking: { channel: 'in_person', hours: 40 } } })).state
-    }
-    for (const l of s.leads) names.add(l.name)
-    expect(names.size).toBe(s.leads.length)
-    expect(s.leads.length).toBeGreaterThan(2)
+    const names = s.leads.map((l) => l.name)
+    expect(new Set(names).size).toBe(names.length)
+    expect(names.length).toBeGreaterThan(150)
+    for (const name of names) expect(name).not.toMatch(/ \d+$/)
+  })
+
+  it('uses every combination before falling back to a number', () => {
+    const rng = new Rng(seedRng('pick'))
+    const parts = { first: ['A', 'B'], second: ['x', 'y'] }
+    const used = new Set<string>()
+    for (let i = 0; i < 4; i++) used.add(pickName(parts, used, rng))
+    expect([...used].sort()).toEqual(['A x', 'A y', 'B x', 'B y'])
+    expect(pickName(parts, used, rng)).toMatch(/^[AB] [xy] 2$/)
   })
 
   it('does not run without hours', () => {
@@ -144,6 +148,7 @@ describe('demos and trials', () => {
             segmentId: 'small_offices',
             sinceWeek: 3,
             churnedWeek: null,
+            priceCentsPerMonth: 30_000,
           },
         ])
       } else {
@@ -198,6 +203,7 @@ describe('customers, revenue and churn', () => {
     segmentId: 'small_offices',
     sinceWeek,
     churnedWeek: null,
+    priceCentsPerMonth: 30_000,
   })
 
   it('pays the monthly price at month end for customers won before that week', () => {
@@ -207,6 +213,42 @@ describe('customers, revenue and churn', () => {
     expect(r.report.ledger.revenueCents).toBe(30_000)
     expect(r.report.entries).toContainEqual({ kind: 'revenue', amountCents: 30_000, customers: 1 })
     expect(r.state.company.cashCents).toBe(1_500_000 + 30_000 - 27_000)
+  })
+
+  it('charges every customer the price agreed when they signed', () => {
+    const s = {
+      ...newGame(),
+      week: 4,
+      customers: [
+        customer('customer_1', 1),
+        { ...customer('customer_2', 2), priceCentsPerMonth: 45_000 },
+      ],
+    }
+    // A price change this week applies to new customers only.
+    const r = endWeek(s, plan({ priceCentsPerMonth: 90_000 }))
+    expect(r.report.ledger.revenueCents).toBe(75_000)
+    expect(r.state.company.priceCentsPerMonth).toBe(90_000)
+    const active = r.state.customers.filter((c) => c.churnedWeek === null)
+    expect(getView(r.state).monthlyRevenueCents).toBe(
+      active.reduce((sum, c) => sum + c.priceCentsPerMonth, 0),
+    )
+  })
+
+  it('signs new customers at the price set in the same week', () => {
+    // Pain 1 with everything shipped: fit is high enough that some trial converts.
+    const base = {
+      ...withLeads([lead({ stage: 'trial', stageSinceWeek: 1 })], { pain: 1, shipped: true }),
+      week: 3,
+    }
+    let won = 0
+    for (let i = 0; i < 20; i++) {
+      const s = { ...base, rng: seedRng(`price${i}`) }
+      const customer = endWeek(s, plan({ priceCentsPerMonth: 100 })).state.customers[0]
+      if (!customer) continue
+      expect(customer.priceCentsPerMonth).toBe(100)
+      won++
+    }
+    expect(won).toBeGreaterThan(5)
   })
 
   it('has no revenue outside month ends', () => {
@@ -260,9 +302,8 @@ describe('lead names', () => {
     }
     expect(s.leads.length).toBeGreaterThan(10)
     for (const l of s.leads) {
-      // A reused name gets a number appended, but a pool name may also end in a digit.
-      const pool = s.scenario.companyNames[l.segmentId]!
-      expect(pool.includes(l.name) || pool.includes(l.name.replace(/ \d+$/, ''))).toBe(true)
+      const parts = s.scenario.companyNames[l.segmentId]!
+      expect(companyNameCombinations(parts)).toContain(l.name)
     }
   })
 })

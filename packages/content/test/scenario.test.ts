@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  companyNameCombinations,
   FOUNDER_NOTE_IDS,
   loadScenario,
   parseScenario,
@@ -21,11 +22,13 @@ describe('content', () => {
     expect(s.maxWeeks).toBe(78)
   })
 
-  it('every bucket of every segment has quotes', () => {
+  it('every bucket of every segment has at least 10 distinct quotes', () => {
     const s = loadScenario('kantino')
     for (const seg of s.segments) {
       for (const b of s.experiments.interview.buckets) {
-        expect(s.interviewQuotes[seg.id]?.[b.id]?.length ?? 0).toBeGreaterThanOrEqual(2)
+        const quotes = s.interviewQuotes[seg.id]?.[b.id] ?? []
+        expect(quotes.length).toBeGreaterThanOrEqual(10)
+        expect(new Set(quotes).size).toBe(quotes.length)
       }
     }
   })
@@ -35,10 +38,12 @@ describe('content', () => {
     expect(scenario + features + interviewQuotes + companyNames + intro).not.toContain('—')
   })
 
-  it('has company names for every segment', () => {
+  it('has at least 400 company names for every segment, none ending in a number', () => {
     const s = loadScenario('kantino')
     for (const seg of s.segments) {
-      expect(s.companyNames[seg.id]?.length ?? 0).toBeGreaterThanOrEqual(10)
+      const names = companyNameCombinations(s.companyNames[seg.id]!)
+      expect(names.length).toBeGreaterThanOrEqual(400)
+      for (const name of names) expect(name).not.toMatch(/\d$/)
     }
   })
 
@@ -68,6 +73,14 @@ describe('content', () => {
     it('role count differs from segment count', () => {
       const scenario = base.scenario.replace(/ {2}- id: trap[\s\S]*?\n\n/, '\n')
       expect(() => parseScenario({ ...base, scenario })).toThrow(/one role per segment/)
+    })
+
+    it('a company name that two segments can produce', () => {
+      const companyNames = base.companyNames.replace('    - Hausärzte\n', '    - Nordlicht\n')
+      const withDigital = companyNames.replace('    - Albers\n', '    - Digital\n')
+      expect(() => parseScenario({ ...base, companyNames: withDigital })).toThrow(
+        /duplicate company name Nordlicht Digital/,
+      )
     })
 
     it('a segment without company names', () => {

@@ -130,6 +130,14 @@ function WeekSection({ report, view }: { report: WeekReport; view: PlayerView })
           <span>{label('results.cashNow', stage)}</span>
           <span className={styles.mono}>{formatEuro(l.cashEndCents)}</span>
         </div>
+        <div className={styles.rowHead}>
+          <span>{label('results.living', stage)}</span>
+          <span className={styles.mono}>{formatEuro(l.livingCostsCents - l.founderDrawCents)}</span>
+        </div>
+        <div className={styles.rowHead}>
+          <span>{label('results.savingsNow', stage)}</span>
+          <span className={styles.mono}>{formatEuro(l.savingsEndCents)}</span>
+        </div>
       </section>
     </>
   )

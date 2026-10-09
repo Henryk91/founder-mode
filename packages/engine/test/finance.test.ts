@@ -111,21 +111,43 @@ describe('finance', () => {
     }
   })
 
-  it('computes runway from the operating burn of the last 4 weeks', () => {
+  it('estimates runway from known costs before a month has been played', () => {
     const s = newGame()
-    expect(runwayWeeks(s)).toBeNull()
-    // Weeks 1 to 4: one month of fixed costs (27,000), no draws. Burn 6,750 a week.
-    const after = play(s, 4, () => plan())
-    expect(after.company.cashCents).toBe(1_473_000)
-    expect(runwayWeeks(after)).toBe(Math.floor(1_473_000 / 6_750))
-    expect(getView(after).company.runwayWeeks).toBe(218)
+    // 15,000 cash + 12,000 savings. Per month: 270 fixed + 4 * 450 living = 2,070.
+    expect(runwayWeeks(s)).toBe(Math.floor((2_700_000 * 4) / 207_000))
+    expect(getView(s).company.runwayWeeks).toBe(52)
+    const withCustomer = {
+      ...s,
+      customers: [
+        {
+          id: 'customer_1',
+          leadId: 'lead_1',
+          name: 'X',
+          segmentId: 'coworking',
+          sinceWeek: 1,
+          churnedWeek: null,
+          priceCentsPerMonth: 300_000,
+        },
+      ],
+    }
+    expect(runwayWeeks(withCustomer)).toBeNull()
   })
 
-  it('reports no runway until a full month has been played', () => {
-    const s = play(newGame(), 3, () => plan())
-    expect(getView(s).company.runwayKnown).toBe(false)
-    expect(getView(s).company.runwayWeeks).toBeNull()
-    expect(getView(play(s, 1, () => plan())).company.runwayKnown).toBe(true)
+  it('computes runway on cash plus savings from the net change of the last 4 weeks', () => {
+    // Weeks 1 to 4: 270 fixed costs and 4 * 450 living costs from savings.
+    const after = play(newGame(), 4, () => plan())
+    expect(after.company.cashCents).toBe(1_473_000)
+    expect(after.founder.savingsCents).toBe(1_020_000)
+    expect(runwayWeeks(after)).toBe(Math.floor(((1_473_000 + 1_020_000) * 4) / 207_000))
+    expect(getView(after).company.runwayWeeks).toBe(48)
+  })
+
+  it('is not changed by moving savings into the company', () => {
+    const plain = play(newGame(), 5, () => plan())
+    const moved = play(newGame(), 5, (s) =>
+      plan({ transferToCompanyCents: s.week === 5 ? 500_000 : 0 }),
+    )
+    expect(runwayWeeks(moved)).toBe(runwayWeeks(plain))
   })
 
   it('treats a month as profitable when revenue covers fixed and living costs', () => {

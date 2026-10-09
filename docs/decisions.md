@@ -50,3 +50,13 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Explanations for Runway, Cash, Energy and hours are label table text, opened by tapping the term (the runway and cash in the top band, `?` buttons at hours and energy). The band is now 44 px high so those are real tap targets.
 - Plan action lines say cost, product and timing, in one or two sentences. Numbers that come from the scenario (interview hours, bug fix hours, demo hours, trial weeks) are passed in, not written into labels.
 - The Market tab gains a per segment tally of features people asked for ("asked for by 2 of 5"), an observable fact with its sample size.
+
+## Playtest fixes (before Phase 3)
+
+- Engine version 0.3.0: `WeekPlan` gained `priceCentsPerMonth`, and name and quote draws changed, so 0.2.0 saves cannot be replayed.
+- Runway covers company cash plus personal savings, at the net change of the last 4 weeks (revenue minus fixed and living costs). Before 4 weeks it uses known costs. The playtest showed 218 weeks while savings drained, because living costs were left out.
+- The week report splits the numbers into company money and the founder's: living costs paid from savings and savings left are now shown.
+- Price is a week plan field (null keeps it), applied at the start of the week, with a stepper on the Money tab (10 to 5,000 EUR, UI limits). Customers keep the price they signed at, so raising the price cannot squeeze existing customers without any churn effect.
+- The outreach channel is remembered per segment as `SegmentView.lastChannel`, read from the action log, so it also survives a reload.
+- Company names are built from two word lists per segment (`first` x `second`, 720 to 750 combinations each), drawn from the unused ones. A numbered name remains only as a fallback once every combination is used.
+- 10 interview quotes per segment and bucket. A quote not yet heard in that segment and bucket is picked first, so nothing repeats within a week and a run hears every quote before any repeat.

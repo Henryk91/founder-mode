@@ -15,6 +15,27 @@ export function bucketFor(state: GameState, observed: number): string {
 }
 
 /**
+ * Index of a quote for a new interview: one not heard before in this segment and bucket, else
+ * one not heard this week, else any. So no quote repeats within a week while the bucket has
+ * enough of them, and a run goes through every quote before repeating.
+ */
+function pickQuote(
+  count: number,
+  heard: readonly InterviewEvidence[],
+  segmentId: string,
+  bucketId: string,
+  week: number,
+  rng: Rng,
+): number {
+  const same = heard.filter((e) => e.segmentId === segmentId && e.bucketId === bucketId)
+  const all = Array.from({ length: count }, (_, i) => i)
+  const unheard = all.filter((i) => !same.some((e) => e.quoteIndex === i))
+  if (unheard.length > 0) return rng.pick(unheard)
+  const notThisWeek = all.filter((i) => !same.some((e) => e.week === week && e.quoteIndex === i))
+  return rng.pick(notThisWeek.length > 0 ? notThisWeek : all)
+}
+
+/**
  * Runs the planned interviews (plan section 4.4). Each interview reads
  * `pain + politeness * (1 - interviewing) + N(0, sd)`, shows only the bucket and a quote, and
  * raises the interviewing skill. Segments run in scenario order, so the plan's key order does
@@ -38,7 +59,14 @@ export function runInterviews(
       const observed = expected + rng.normal(cfg.noiseSd)
       const bucketId = bucketFor(state, observed)
       const quotes = state.scenario.interviewQuotes[seg.id]?.[bucketId] ?? []
-      const quoteIndex = rng.int(0, quotes.length - 1)
+      const quoteIndex = pickQuote(
+        quotes.length,
+        [...(state.knowledge[seg.id] ?? []), ...outcomes.map((o) => o.evidence)],
+        seg.id,
+        bucketId,
+        state.week,
+        rng,
+      )
       const mentions = rng.chance(cfg.mentionBase + cfg.mentionPerPain * hidden.pain)
       const mentionedFeatureId = mentions ? rng.pick(hidden.mustHave) : null
 

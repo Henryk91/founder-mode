@@ -16,9 +16,7 @@ export function TopBar() {
   const runway =
     view.company.runwayWeeks !== null
       ? count('bar.runway.weeks', stage, view.company.runwayWeeks)
-      : !view.company.runwayKnown
-        ? label('bar.runway.none', stage)
-        : label('bar.runway.safe', stage)
+      : label('bar.runway.safe', stage)
 
   return (
     <header className={styles.header}>

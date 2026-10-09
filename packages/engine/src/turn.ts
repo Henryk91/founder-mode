@@ -27,7 +27,10 @@ export function endWeek(
   let state = input
   const entries: ReportEntry[] = []
 
-  // 2. Inbox responses: later (Phase 4)
+  // 2. Inbox responses: later (Phase 4). A price change applies before anything else.
+  if (plan.priceCentsPerMonth !== null) {
+    state = { ...state, company: { ...state.company, priceCentsPerMonth: plan.priceCentsPerMonth } }
+  }
 
   // 3. Founder: hours, energy
   const hours = plannedHours(state.scenario, plan)

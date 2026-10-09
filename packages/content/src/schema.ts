@@ -113,6 +113,16 @@ export const FeatureSchema = z.object({
   mention: z.string().min(1),
 })
 
+export const CompanyNamePartsSchema = z.object({
+  first: z.array(z.string().min(1)).min(1),
+  second: z.array(z.string().min(1)).min(1),
+})
+
+/** Every company name a segment's word lists can produce, in list order. */
+export function companyNameCombinations(parts: { first: string[]; second: string[] }): string[] {
+  return parts.first.flatMap((a) => parts.second.map((b) => `${a} ${b}`))
+}
+
 export const ScenarioFileSchema = z.object({
   id: Id,
   name: z.string().min(1),
@@ -162,8 +172,8 @@ export const InterviewQuotesSchema = z.record(Id, z.record(Id, z.array(z.string(
 export const ScenarioSchema = ScenarioFileSchema.extend({
   features: z.array(FeatureSchema).min(1),
   interviewQuotes: InterviewQuotesSchema,
-  // segment id -> fictional company names for leads of that segment
-  companyNames: z.record(Id, z.array(z.string().min(1)).min(1)),
+  // segment id -> two word lists; a lead's name is one word from each, joined by a space
+  companyNames: z.record(Id, CompanyNamePartsSchema),
   intro: z.object({ cards: z.array(IntroCardSchema).min(1) }),
   founderNotes: z.object({
     first_week: z.string().min(1),
@@ -243,11 +253,12 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     checkText(text, NOTE_PLACEHOLDERS, ['founderNotes', id])
   }
 
-  for (const name of dupes(Object.values(s.companyNames).flat())) {
+  const allNames = Object.values(s.companyNames).flatMap(companyNameCombinations)
+  for (const name of new Set(dupes(allNames))) {
     issue(`duplicate company name ${name}`, ['companyNames'])
   }
   for (const seg of s.segments) {
-    if (!s.companyNames[seg.id]?.length) issue(`no company names for ${seg.id}`, ['companyNames'])
+    if (!s.companyNames[seg.id]) issue(`no company names for ${seg.id}`, ['companyNames'])
   }
   for (const segId of Object.keys(s.companyNames)) {
     if (!s.segments.some((x) => x.id === segId)) {

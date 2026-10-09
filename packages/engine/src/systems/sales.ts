@@ -16,12 +16,25 @@ export function canBookDemo(lead: Lead): boolean {
   return lead.stage === 'demo' && lead.silentSinceWeek === null
 }
 
-function pickName(pool: readonly string[], used: ReadonlySet<string>, rng: Rng): string {
-  const free = pool.filter((n) => !used.has(n))
+type NameParts = { first: readonly string[]; second: readonly string[] }
+
+/**
+ * A company name no lead has yet: one word from each list, joined by a space. A few random
+ * tries find a free one while most are free; after that, a pick among all free combinations.
+ */
+export function pickName(parts: NameParts, used: ReadonlySet<string>, rng: Rng): string {
+  const { first, second } = parts
+  if (first.length === 0 || second.length === 0) {
+    throw new Error('No company names for this segment')
+  }
+  for (let tries = 0; tries < 8; tries++) {
+    const name = `${rng.pick(first)} ${rng.pick(second)}`
+    if (!used.has(name)) return name
+  }
+  const free = first.flatMap((a) => second.map((b) => `${a} ${b}`)).filter((n) => !used.has(n))
   if (free.length > 0) return rng.pick(free)
-  // Pool exhausted: reuse a name with a number so every lead stays distinguishable.
-  if (pool.length === 0) throw new Error('No company names for this segment')
-  const base = rng.pick(pool)
+  // Every combination is taken, far beyond what a run produces. Stay distinguishable anyway.
+  const base = `${rng.pick(first)} ${rng.pick(second)}`
   let n = 2
   while (used.has(`${base} ${n}`)) n++
   return `${base} ${n}`
@@ -101,6 +114,7 @@ export function applySales(
         segmentId: lead.segmentId,
         sinceWeek: week,
         churnedWeek: null,
+        priceCentsPerMonth: state.company.priceCentsPerMonth,
       })
       update(lead, 'won')
     } else {
@@ -144,7 +158,8 @@ export function applySales(
     const response = state.hidden.segments[seg.id]?.channelResponse[out.channel] ?? 0
     const count = randomRound(out.hours * response * (cfg.sellingBase + sellingAtStart), rng)
     for (let i = 0; i < count; i++) {
-      const name = pickName(state.scenario.companyNames[seg.id] ?? [], used, rng)
+      const parts = state.scenario.companyNames[seg.id] ?? { first: [], second: [] }
+      const name = pickName(parts, used, rng)
       used.add(name)
       leads.push({
         id: `lead_${leads.length + 1}`,

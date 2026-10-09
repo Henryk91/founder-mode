@@ -18,7 +18,7 @@ The player is a solo founder in Munich building Kantino, software that lets a wo
 | Personal savings | 12,000 |
 | Founder living costs | 450 per week, paid from personal savings |
 | Company fixed costs | Tools and hosting 120 per month, accountant 150 per month |
-| Default price | 300 per month per customer (player can change it at any time) |
+| Default price | 300 per month per customer (player can change it at any time; customers keep the price they signed at) |
 | Founder hours | 50 per week, up to 65 can be planned |
 | Energy | 80 of 100 |
 | Skill: interviewing | 0.10 |
