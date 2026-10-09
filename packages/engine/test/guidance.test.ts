@@ -11,6 +11,7 @@ const lead = (): Lead => ({
   name: 'Testfirma',
   segmentId: 'coworking',
   stage: 'lead',
+  source: 'outreach',
   stageSinceWeek: 1,
   lastContactWeek: 1,
   silentSinceWeek: null,

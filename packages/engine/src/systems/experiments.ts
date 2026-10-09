@@ -10,6 +10,7 @@ import type {
   WeekPlan,
 } from '../types'
 import { priceFactor } from './market'
+import { addLeads } from './sales'
 
 export const interviewsOf = (list: readonly Evidence[]): InterviewEvidence[] =>
   list.filter((e): e is InterviewEvidence => e.kind === 'interview')
@@ -141,7 +142,7 @@ export function startExperiments(state: GameState, plan: WeekPlan): GameState {
         startWeek: state.week,
         resolveWeek: state.week + landing.weeks,
         trials: Math.floor(budget / landing.centsPerVisitor),
-        p: landing.signupBase + landing.signupPerPain * hidden.pain,
+        p: (landing.signupBase + landing.signupPerPain * hidden.pain) * priceFactor(state, seg.id),
         budgetCents: budget,
         priceCents: state.company.priceCentsPerMonth,
       })
@@ -178,8 +179,15 @@ export function resolveExperiments(
   const entries: ReportEntry[] = []
   const events: ExperimentEvent[] = []
   const knowledge = { ...state.knowledge }
+  let withLeads = state
   for (const e of due) {
     const observed = rng.binomial(e.trials, e.p)
+    // Sign ups who leave their details become leads, a few per test.
+    const leads =
+      e.kind === 'landing'
+        ? Math.floor(observed / state.scenario.experiments.landing.signupsPerLead)
+        : 0
+    withLeads = addLeads(withLeads, e.segmentId, leads, rng, 'landing')
     events.push({
       kind: e.kind,
       week: state.week,
@@ -208,7 +216,13 @@ export function resolveExperiments(
     knowledge[e.segmentId] = [...(knowledge[e.segmentId] ?? []), evidence]
     entries.push(
       e.kind === 'landing'
-        ? { kind: 'landing_result', segmentId: e.segmentId, visitors: e.trials, signups: observed }
+        ? {
+            kind: 'landing_result',
+            segmentId: e.segmentId,
+            visitors: e.trials,
+            signups: observed,
+            leads,
+          }
         : {
             kind: 'presale_result',
             segmentId: e.segmentId,
@@ -220,6 +234,7 @@ export function resolveExperiments(
   return {
     state: {
       ...state,
+      leads: withLeads.leads,
       knowledge,
       hidden: {
         ...state.hidden,

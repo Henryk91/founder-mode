@@ -6,7 +6,7 @@ import { openLead, withPain } from './helpers2'
 const quiet = (seed: string) => newGame(seed, quietKantino())
 
 describe('landing page tests', () => {
-  it('costs 8 h and the ad budget, and reports after 2 weeks', () => {
+  it('costs 8 h and the ad budget, and reports after 1 week', () => {
     let s = quiet('landing')
     const week1 = endWeek(s, plan({ landing: { coworking: 20_000 } }))
     expect(week1.report.plannedHours).toBe(8)
@@ -14,28 +14,58 @@ describe('landing page tests', () => {
     expect(week1.report.entries).toContainEqual({ kind: 'ad_spend', amountCents: 20_000 })
     expect(week1.state.company.cashCents).toBe(1_000_000 - 20_000)
     expect(getView(week1.state).pendingExperiments).toEqual([
-      { kind: 'landing', segmentId: 'coworking', resolveWeek: 3 },
+      { kind: 'landing', segmentId: 'coworking', resolveWeek: 2 },
     ])
     expect(getView(week1.state).segments.find((x) => x.id === 'coworking')!.landingTests).toEqual(
       [],
     )
 
-    s = endWeek(week1.state, plan()).state
-    expect(getView(s).segments.find((x) => x.id === 'coworking')!.landingTests).toEqual([])
-    const week3 = endWeek(s, plan())
-    const test = getView(week3.state).segments.find((x) => x.id === 'coworking')!.landingTests
+    s = week1.state
+    const week2 = endWeek(s, plan())
+    const test = getView(week2.state).segments.find((x) => x.id === 'coworking')!.landingTests
     expect(test).toHaveLength(1)
-    expect(test[0]).toMatchObject({ week: 3, budgetCents: 20_000, visitors: 133 })
-    expect(week3.report.entries).toContainEqual(
+    expect(test[0]).toMatchObject({ week: 2, budgetCents: 20_000, visitors: 133 })
+    expect(week2.report.entries).toContainEqual(
       expect.objectContaining({ kind: 'landing_result', segmentId: 'coworking', visitors: 133 }),
     )
-    expect(getView(week3.state).pendingExperiments).toEqual([])
+    expect(getView(week2.state).pendingExperiments).toEqual([])
+  })
+
+  it('turns every 5 sign ups into one open lead in that market', () => {
+    for (let i = 0; i < 10; i++) {
+      let s = withPain(quiet(`lead${i}`), 'coworking', 0.8)
+      s = endWeek(s, plan({ landing: { coworking: 50_000 } })).state
+      const r = endWeek(s, plan())
+      const result = r.report.entries.find((e) => e.kind === 'landing_result')!
+      if (result.kind !== 'landing_result') throw new Error('no result')
+      expect(result.leads).toBe(Math.floor(result.signups / 5))
+      const leads = r.state.leads.filter((l) => l.segmentId === 'coworking')
+      expect(leads).toHaveLength(result.leads)
+      for (const l of leads) expect(l.source).toBe('landing')
+    }
+  })
+
+  it('signs up fewer visitors when the price on the page is above what the market pays', () => {
+    const rate = (factor: number) => {
+      let signups = 0
+      for (let i = 0; i < 60; i++) {
+        let s = withPain(quiet(`price${i}`), 'medical', 0.8)
+        const wtp = s.hidden.segments.medical!.wtpCents
+        s = endWeek(
+          s,
+          plan({ landing: { medical: 50_000 }, priceCentsPerMonth: Math.round(wtp * factor) }),
+        ).state
+        s = endWeek(s, plan()).state
+        signups += getView(s).segments.find((x) => x.id === 'medical')!.landingTests[0]!.signups
+      }
+      return signups
+    }
+    expect(rate(2)).toBeLessThan(rate(1) * 0.3)
   })
 
   it('buys 333 visitors with the larger budget', () => {
     let s = quiet('landing-big')
     s = endWeek(s, plan({ landing: { medical: 50_000 } })).state
-    s = endWeek(s, plan()).state
     s = endWeek(s, plan()).state
     expect(getView(s).segments.find((x) => x.id === 'medical')!.landingTests[0]!.visitors).toBe(333)
   })
@@ -47,7 +77,6 @@ describe('landing page tests', () => {
       for (let i = 0; i < 60; i++) {
         let s = withPain(quiet(`rate${i}`), 'coworking', pain)
         s = endWeek(s, plan({ landing: { coworking: 50_000 } })).state
-        s = endWeek(s, plan()).state
         s = endWeek(s, plan()).state
         const t = getView(s).segments.find((x) => x.id === 'coworking')!.landingTests[0]!
         signups += t.signups
@@ -62,7 +91,7 @@ describe('landing page tests', () => {
 
   it('logs each result with its expected value for the post-mortem', () => {
     let s = withPain(quiet('landing-log'), 'coworking', 0.5)
-    for (const p of [plan({ landing: { coworking: 20_000 } }), plan(), plan()]) {
+    for (const p of [plan({ landing: { coworking: 20_000 } }), plan()]) {
       s = endWeek(s, p).state
     }
     const logged = s.eventLog.filter((e) => e.kind === 'landing')

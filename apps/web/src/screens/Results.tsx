@@ -48,7 +48,7 @@ function entryText(entry: ReportEntry, view: PlayerView): string {
     case 'ad_spend':
       return label('results.entry.ad_spend', stage, { amount: formatEuro(entry.amountCents) })
     case 'landing_result':
-      return label('results.entry.landing_result', stage, {
+      return count('results.entry.landing_result', stage, entry.leads, {
         segment: segment(entry.segmentId),
         signups: entry.signups,
         visitors: entry.visitors,

@@ -5,6 +5,7 @@ import type {
   GameState,
   Lead,
   LeadChange,
+  LeadSource,
   ReportEntry,
   SegmentId,
   WeekPlan,
@@ -46,6 +47,36 @@ export function pickName(parts: NameParts, used: ReadonlySet<string>, rng: Rng):
   let n = 2
   while (used.has(`${base} ${n}`)) n++
   return `${base} ${n}`
+}
+
+/** Adds `count` new open leads in a segment, with fresh company names, found by `source`. */
+export function addLeads(
+  state: GameState,
+  segmentId: SegmentId,
+  count: number,
+  rng: Rng,
+  source: LeadSource,
+): GameState {
+  if (count <= 0) return state
+  const leads = [...state.leads]
+  const used = new Set(leads.map((l) => l.name))
+  const parts = state.scenario.companyNames[segmentId] ?? { first: [], second: [] }
+  for (let i = 0; i < count; i++) {
+    const name = pickName(parts, used, rng)
+    used.add(name)
+    leads.push({
+      id: `lead_${leads.length + 1}`,
+      name,
+      segmentId,
+      stage: 'lead',
+      source,
+      stageSinceWeek: state.week,
+      lastContactWeek: state.week,
+      silentSinceWeek: null,
+      lostReason: null,
+    })
+  }
+  return { ...state, leads }
 }
 
 /** floor(x), plus one more with probability equal to the fraction. */
@@ -181,20 +212,30 @@ export function applySales(
 
   // 5. Outreach, segments in scenario order, then the salesperson
   const used = new Set(leads.map((l) => l.name))
-  const items: { segmentId: SegmentId; channel: ChannelId; hours: number }[] = []
+  const items: {
+    segmentId: SegmentId
+    channel: ChannelId
+    hours: number
+    source: LeadSource
+    selling: number
+  }[] = []
   for (const seg of state.scenario.segments) {
     const out = plan.outreach[seg.id]
-    if (out && out.hours > 0) items.push({ segmentId: seg.id, ...out })
+    if (out && out.hours > 0) {
+      items.push({ segmentId: seg.id, ...out, source: 'outreach', selling: sellingAtStart })
+    }
   }
   if (team?.outreach) {
-    items.push({ ...team.outreach, channel: team.outreach.channel as ChannelId })
+    items.push({
+      ...team.outreach,
+      channel: team.outreach.channel as ChannelId,
+      source: 'team',
+      selling: team.selling,
+    })
   }
   for (const item of items) {
     const response = state.hidden.segments[item.segmentId]?.channelResponse[item.channel] ?? 0
-    const count = randomRound(
-      item.hours * response * (cfg.sellingBase + sellingAtStart) * tired,
-      rng,
-    )
+    const count = randomRound(item.hours * response * (cfg.sellingBase + item.selling) * tired, rng)
     for (let i = 0; i < count; i++) {
       const parts = state.scenario.companyNames[item.segmentId] ?? { first: [], second: [] }
       const name = pickName(parts, used, rng)
@@ -204,6 +245,7 @@ export function applySales(
         name,
         segmentId: item.segmentId,
         stage: 'lead',
+        source: item.source,
         stageSinceWeek: week,
         lastContactWeek: week,
         silentSinceWeek: null,

@@ -110,12 +110,16 @@ export type ProductState = {
 
 export type LeadStage = 'lead' | 'demo' | 'trial' | 'paying' | 'lost'
 
+/** How a lead was found: outreach, a landing page sign up, an inbox message, or the salesperson. */
+export type LeadSource = 'outreach' | 'landing' | 'inbox' | 'team'
+
 /** Observable facts only. */
 export type Lead = {
   id: string
   name: string
   segmentId: SegmentId
   stage: LeadStage
+  source: LeadSource
   stageSinceWeek: number
   lastContactWeek: number
   /** Week in which the lead stopped answering, or null. Silent leads cannot progress. */
@@ -645,7 +649,14 @@ export type ReportEntry =
   | { kind: 'invoices_issued'; amountCents: number; count: number }
   | { kind: 'invoice_written_off'; amountCents: number; name: string }
   | { kind: 'ad_spend'; amountCents: number }
-  | { kind: 'landing_result'; segmentId: SegmentId; visitors: number; signups: number }
+  | {
+      kind: 'landing_result'
+      segmentId: SegmentId
+      visitors: number
+      signups: number
+      /** Sign ups that became open leads. */
+      leads: number
+    }
   | { kind: 'presale_result'; segmentId: SegmentId; prospects: number; commits: number }
   | { kind: 'candidates_ready'; role: TeamRoleId; count: number }
   | { kind: 'hire_started'; name: string; role: TeamRoleId }

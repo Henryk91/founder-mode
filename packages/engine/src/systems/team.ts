@@ -26,6 +26,8 @@ export type TeamOutput = {
   /** Leads the member holds a demo with. */
   demos: string[]
   outreach: OutreachItem | null
+  /** Selling skill used for the member's outreach. */
+  selling: number
 }
 
 /**
@@ -40,7 +42,14 @@ export function teamOutput(state: GameState, plan: WeekPlan): TeamOutput | null 
   const cfg = state.scenario.team.roles[member.role]
   const skill = state.hidden.teamSkills[member.id] ?? 0
   const hours = Math.floor(cfg.weeklyHours * skill)
-  const out: TeamOutput = { role: member.role, hours, build: {}, demos: [], outreach: null }
+  const out: TeamOutput = {
+    role: member.role,
+    hours,
+    build: {},
+    demos: [],
+    outreach: null,
+    selling: state.founder.skills.selling,
+  }
 
   if (member.role === 'developer') {
     const target = plan.teamBuild

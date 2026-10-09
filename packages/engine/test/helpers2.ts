@@ -36,6 +36,7 @@ export function openLead(i: number, segmentId: string, over: Partial<Lead> = {})
     name: `Firma ${i}`,
     segmentId,
     stage: 'lead',
+    source: 'outreach',
     stageSinceWeek: 1,
     lastContactWeek: 1,
     silentSinceWeek: null,
