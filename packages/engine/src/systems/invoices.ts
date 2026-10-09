@@ -21,13 +21,14 @@ export function isOverdue(invoice: Invoice, week: number): boolean {
 /**
  * Invoices every active customer won in an earlier week (plan section 4.7). Each invoice is due
  * `invoiceDueDays` later and is paid after a lateness drawn from the segment's mean, uniform
- * from 0 to twice the mean in days, or never with the segment's never-pays share. The payment
- * week is hidden.
+ * from 0 to twice the mean in days; never with the segment's never-pays share; or only once
+ * chased with its waits-for-chase share. The payment week is hidden.
  */
 export function issueInvoices(state: GameState, rng: Rng): { state: GameState; issued: Invoice[] } {
   const dueDays = state.scenario.finance.invoiceDueDays
   const issued: Invoice[] = []
   const payWeeks = { ...state.hidden.payWeeks }
+  const waitsForChase = [...state.hidden.waitsForChase]
   for (const customer of activeCustomers(state)) {
     if (customer.sinceWeek >= state.week) continue
     const hidden = state.hidden.segments[customer.segmentId]
@@ -35,6 +36,7 @@ export function issueInvoices(state: GameState, rng: Rng): { state: GameState; i
     const id = `invoice_${state.invoices.length + issued.length + 1}`
     const never = rng.chance(hidden.neverPaysShare)
     const lateDays = Math.round(rng.range(0, 2 * hidden.paymentDelayDaysMean))
+    const waits = rng.chance(hidden.waitsForChaseShare)
     issued.push({
       id,
       customerId: customer.id,
@@ -46,16 +48,37 @@ export function issueInvoices(state: GameState, rng: Rng): { state: GameState; i
       paidWeek: null,
       writtenOffWeek: null,
     })
-    payWeeks[id] = never ? null : state.week + weeksFor(dueDays + lateDays)
+    payWeeks[id] = never || waits ? null : state.week + weeksFor(dueDays + lateDays)
+    if (!never && waits) waitsForChase.push(id)
   }
   if (issued.length === 0) return { state, issued }
   return {
     state: {
       ...state,
       invoices: [...state.invoices, ...issued],
-      hidden: { ...state.hidden, payWeeks },
+      hidden: { ...state.hidden, payWeeks, waitsForChase },
     },
     issued,
+  }
+}
+
+/**
+ * A nudge that worked: the invoice is paid next week, or earlier if it was due to be paid anyway.
+ * A customer who waits to be chased now pays too. A never payer does not.
+ */
+export function nudgeInvoice(
+  hidden: Pick<GameState['hidden'], 'payWeeks' | 'waitsForChase'>,
+  id: string,
+  week: number,
+): Pick<GameState['hidden'], 'payWeeks' | 'waitsForChase'> {
+  const planned = hidden.payWeeks[id]
+  if (planned !== null && planned !== undefined) {
+    return { ...hidden, payWeeks: { ...hidden.payWeeks, [id]: Math.min(planned, week + 1) } }
+  }
+  if (!hidden.waitsForChase.includes(id)) return hidden
+  return {
+    payWeeks: { ...hidden.payWeeks, [id]: week + 1 },
+    waitsForChase: hidden.waitsForChase.filter((x) => x !== id),
   }
 }
 
@@ -65,16 +88,12 @@ export function issueInvoices(state: GameState, rng: Rng): { state: GameState; i
  */
 export function chaseInvoices(state: GameState, plan: WeekPlan, rng: Rng): GameState {
   if (plan.chase.length === 0) return state
-  const payWeeks = { ...state.hidden.payWeeks }
+  let money = { payWeeks: state.hidden.payWeeks, waitsForChase: state.hidden.waitsForChase }
   for (const id of plan.chase) {
-    const planned = payWeeks[id]
     // The roll is always made, so a never payer does not change the random sequence.
-    const hit = rng.chance(state.scenario.finance.chaseBoost)
-    if (hit && planned !== null && planned !== undefined) {
-      payWeeks[id] = Math.min(planned, state.week + 1)
-    }
+    if (rng.chance(state.scenario.finance.chaseBoost)) money = nudgeInvoice(money, id, state.week)
   }
-  return { ...state, hidden: { ...state.hidden, payWeeks } }
+  return { ...state, hidden: { ...state.hidden, ...money } }
 }
 
 /** Marks invoices due for payment this week as paid, and writes off very old unpaid ones. */

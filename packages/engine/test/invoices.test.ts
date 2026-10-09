@@ -30,7 +30,7 @@ function withInvoice(week: number, payWeek: number | null, over: Partial<Invoice
     week,
     customers: [customer('customer_1')],
     invoices: [inv],
-    hidden: { ...s.hidden, payWeeks: { [inv.id]: payWeek } },
+    hidden: { ...s.hidden, payWeeks: { [inv.id]: payWeek }, waitsForChase: [] },
   }
 }
 
@@ -53,8 +53,9 @@ describe('invoices', () => {
         .map((i) => state.hidden.payWeeks[i.id])
         .filter((w): w is number => w !== null && w !== undefined)
         .map((w) => w - 4)
-      const never = 1 - weeks.length / state.invoices.length
-      return { mean: weeks.reduce((a, b) => a + b, 0) / weeks.length, never }
+      const waits = state.hidden.waitsForChase.length / state.invoices.length
+      const never = 1 - weeks.length / state.invoices.length - waits
+      return { mean: weeks.reduce((a, b) => a + b, 0) / weeks.length, never, waits }
     }
     const small = lateness('small_offices')
     const coworking = lateness('coworking')
@@ -67,6 +68,25 @@ describe('invoices', () => {
     expect(medical.never).toBeGreaterThan(small.never)
     expect(small.never).toBeCloseTo(0.05, 1)
     expect(medical.never).toBeCloseTo(0.08, 1)
+    // A quarter of the rest waits to be chased.
+    expect(small.waits).toBeCloseTo(0.25 * 0.95, 1)
+  })
+
+  it('wait for a chase when the customer waits to be asked, and are written off without one', () => {
+    const waiting = (seed: string) => {
+      const s = withInvoice(9, null)
+      return { ...s, rng: newGame(seed).rng, hidden: { ...s.hidden, waitsForChase: ['invoice_1'] } }
+    }
+    let paid = 0
+    for (let i = 0; i < 200; i++) {
+      const r = endWeek(endWeek(waiting(`w${i}`), plan({ chase: ['invoice_1'] })).state, book)
+      if (r.state.invoices[0]!.paidWeek === 10) paid++
+    }
+    expect(paid / 200).toBeCloseTo(0.3, 1)
+    let s = waiting('w-none')
+    for (let w = 9; w <= 14; w++) s = endWeek(s, book).state
+    expect(s.invoices[0]!.paidWeek).toBeNull()
+    expect(s.invoices[0]!.writtenOffWeek).toBe(14)
   })
 
   it('bring the money in only in the week they are paid, never before', () => {
@@ -134,13 +154,13 @@ describe('invoices', () => {
     }
   })
 
-  it('are written off 12 weeks after they were due', () => {
-    let s = withInvoice(17, null)
+  it('are written off 8 weeks after they were due', () => {
+    let s = withInvoice(13, null)
     const before = endWeek(s, book)
     expect(before.state.invoices[0]!.writtenOffWeek).toBeNull()
     s = { ...before.state }
     const r = endWeek(s, book)
-    expect(r.state.invoices[0]!.writtenOffWeek).toBe(18)
+    expect(r.state.invoices[0]!.writtenOffWeek).toBe(14)
     expect(r.report.entries).toContainEqual({
       kind: 'invoice_written_off',
       amountCents: 30_000,

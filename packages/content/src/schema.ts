@@ -33,6 +33,9 @@ export const SegmentSchema = z.object({
   channelResponse: z.record(Channel, ShareRange),
   paymentDelayDaysMean: z.number().int().nonnegative(),
   neverPaysShare: Share,
+  // Share of invoices that are only paid once the player chases them (the customer waits to be
+  // asked). Unchased, they are written off like any unpaid invoice.
+  waitsForChaseShare: Share,
 })
 
 // A role sets hidden pain and politeness. Roles are shuffled across segments per run.
