@@ -421,8 +421,8 @@ Pinned on every screen: week, cash, runway, End week button.
 
 ### 6.2 Layouts
 
-- **PhoneLayout** (under 900 px): one screen at a time, bottom tab bar with 5 tabs: Inbox, Plan, Pipeline, Market, Money.
-- **DeskLayout** (900 px and up): inbox left, scene image plus plan and pipeline centre, money and upcoming right. Same screen components, arranged side by side.
+- **PhoneLayout** (under 1200 px): one screen at a time, bottom tab bar with 5 tabs: Inbox, Plan, Pipeline, Market, Money.
+- **DeskLayout** (1200 px and up): inbox left, scene image plus plan and pipeline centre, money and upcoming right. Same screen components, arranged side by side.
 
 Reference mockups, tokens, and component mapping are in `docs/design/` (start with `design.md`). The established desk mockup is out of scope and shown only as a direction.
 
