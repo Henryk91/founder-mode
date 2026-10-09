@@ -1,7 +1,10 @@
 import { useSyncExternalStore } from 'react'
 
-/** Width from which the desk layout replaces the phone layout, see docs/design/design.md. */
-export const DESK_MIN_WIDTH = 900
+/**
+ * Width from which the desk layout replaces the phone layout. Below it the centre column would be
+ * too narrow for steppers and the corkboard, so the phone layout carries on (see docs/decisions.md).
+ */
+export const DESK_MIN_WIDTH = 1200
 const QUERY = `(min-width: ${DESK_MIN_WIDTH}px)`
 
 function subscribe(onChange: () => void): () => void {

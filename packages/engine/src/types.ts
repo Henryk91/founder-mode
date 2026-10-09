@@ -223,13 +223,15 @@ export type Invoice = {
 
 /**
  * `costCents` is what the choice certainly costs now (cash going out), `monthlyCostCents` what it
- * adds to the fixed costs. Gains and chances are never shown.
+ * adds to the fixed costs. `possibleCostCents` is cash that may go out but not for sure (an effect
+ * with a chance below 1 or a `when`), shown as a risk, never with its odds. Gains are never shown.
  */
 export type MessageChoice = {
   id: string
   label: string
   hours: number
   costCents: number
+  possibleCostCents: number
   monthlyCostCents: number
 }
 

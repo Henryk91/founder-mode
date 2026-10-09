@@ -33,7 +33,7 @@ Aylin (the hired developer) and the open "Sales hire" seat do match the MVP's si
 
 ## Layout
 
-### Desktop (900 px and wider), from `desk-scrappy.html`
+### Desktop (1200 px and wider), from `desk-scrappy.html`
 
 | Region | Width | Content, top to bottom |
 |---|---|---|
@@ -42,7 +42,7 @@ Aylin (the hired developer) and the open "Sales hire" seat do match the MVP's si
 | Centre column | flexible | Scene image (about 330 px high), milestone progress bar, "My week" notebook planner, corkboard pipeline |
 | Right column | about 290 px | Bank statement with balance trend, "Coming up" calendar notes, a worry note, best runs |
 
-### Phone (below 900 px), from `phone-inbox.html`
+### Phone (below 1200 px), from `phone-inbox.html`
 
 1. Top bar, 60 px: company and week on the left, End week button on the right
 2. Runway band, 32 px: runway text and cash, visible on every tab

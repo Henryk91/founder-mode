@@ -105,12 +105,26 @@ describe('the inbox', () => {
       answeredChoiceId: null,
     })
     expect(view[0]!.choices).toEqual([
-      { id: 'skip', label: 'Skip', hours: 0, costCents: 0, monthlyCostCents: 0 },
-      { id: 'act', label: 'Act', hours: 2, costCents: 0, monthlyCostCents: 0 },
+      {
+        id: 'skip',
+        label: 'Skip',
+        hours: 0,
+        costCents: 0,
+        possibleCostCents: 0,
+        monthlyCostCents: 0,
+      },
+      {
+        id: 'act',
+        label: 'Act',
+        hours: 2,
+        costCents: 0,
+        possibleCostCents: 0,
+        monthlyCostCents: 0,
+      },
     ])
   })
 
-  it('shows what a choice certainly costs, in money, but never gains or odds', () => {
+  it('shows what a choice certainly costs, apart from what it might cost, never gains or odds', () => {
     const s = withMessage(
       effects('act', [
         { type: 'cash', amountCents: -60_000, chance: 1, when: [] },
@@ -120,7 +134,12 @@ describe('the inbox', () => {
       ]),
     )
     const act = getView(s).inbox[0]!.choices.find((c) => c.id === 'act')!
-    expect(act).toMatchObject({ costCents: 75_000, monthlyCostCents: 6_000 })
+    // The 50% cost is a risk, not a certain cost, and is kept apart.
+    expect(act).toMatchObject({
+      costCents: 60_000,
+      possibleCostCents: 15_000,
+      monthlyCostCents: 6_000,
+    })
     expect(JSON.stringify(getView(s).inbox)).not.toContain('90000')
   })
 

@@ -242,15 +242,17 @@ export function Results() {
           <p>{label('end.stats', stage, { weeks: view.week, customers: view.customers.length })}</p>
         </section>
       )}
-      {finished ? (
-        <button type="button" className={`${styles.button} ${styles.primary}`} onClick={leave}>
-          {label('end.backToStart', stage)}
-        </button>
-      ) : (
-        <button type="button" className={`${styles.button} ${styles.primary}`} onClick={dismiss}>
-          {label('results.continue', stage)}
-        </button>
-      )}
+      <div className={styles.stickyBottom}>
+        {finished ? (
+          <button type="button" className={`${styles.button} ${styles.primary}`} onClick={leave}>
+            {label('end.backToStart', stage)}
+          </button>
+        ) : (
+          <button type="button" className={`${styles.button} ${styles.primary}`} onClick={dismiss}>
+            {label('results.continue', stage)}
+          </button>
+        )}
+      </div>
     </>
   )
 }
@@ -355,10 +357,13 @@ function InterviewSummary({
       </div>
       <button
         type="button"
-        className={styles.linkRow}
+        className={styles.reveal}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
+        <span className={styles.revealArrow} aria-hidden="true">
+          {open ? '▾' : '▸'}
+        </span>
         <span>{label(open ? 'results.quotes.hide' : 'results.quotes.show', stage)}</span>
       </button>
       {open &&

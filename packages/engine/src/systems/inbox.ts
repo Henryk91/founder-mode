@@ -34,6 +34,10 @@ function eventById(state: GameState, id: string): ScenarioEvent {
   return event
 }
 
+/** An effect that always lands: no chance roll and no condition at the end of the week. */
+const isSure = (e: { chance: number; when: readonly unknown[] }) =>
+  e.chance >= 1 && e.when.length === 0
+
 /**
  * Answers a message. The hours count against this week at once, and the effects land when the
  * week ends (plan section 4.11 step 2). Throws if the message is not open, the choice does not
@@ -288,7 +292,13 @@ function makeMessage(
       label: c.label,
       hours: c.hours,
       costCents: c.effects.reduce(
-        (sum, e) => sum + (e.type === 'cash' && e.amountCents < 0 ? -e.amountCents : 0),
+        (sum, e) =>
+          sum + (e.type === 'cash' && e.amountCents < 0 && isSure(e) ? -e.amountCents : 0),
+        0,
+      ),
+      possibleCostCents: c.effects.reduce(
+        (sum, e) =>
+          sum + (e.type === 'cash' && e.amountCents < 0 && !isSure(e) ? -e.amountCents : 0),
         0,
       ),
       monthlyCostCents: c.effects.reduce(

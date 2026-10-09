@@ -184,7 +184,7 @@ function CustomerCards(props: { x: number; y: number; names: string[]; ui: UiSta
 
 function KitchenTable({ data, ui }: { data: SceneData; ui: UiStage }) {
   return (
-    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMidYMid slice">
+    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
       <rect className={s.wall} x="0" y="0" width="732" height="250" />
       <rect className={s.floor} x="0" y="250" width="732" height="80" />
       <rect className={s.skirting} x="0" y="246" width="732" height="6" />
@@ -227,7 +227,7 @@ function KitchenTable({ data, ui }: { data: SceneData; ui: UiStage }) {
 
 function CoworkingDesk({ data, ui }: { data: SceneData; ui: UiStage }) {
   return (
-    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMidYMid slice">
+    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
       <rect className={s.wall} x="0" y="0" width="732" height="250" />
       <rect className={s.floor} x="0" y="250" width="732" height="80" />
       <rect className={s.skirting} x="0" y="246" width="732" height="6" />
