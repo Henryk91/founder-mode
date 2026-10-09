@@ -1,0 +1,29 @@
+{
+  "name": "founder-mode",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.29.2",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @founder-mode/web dev",
+    "build": "pnpm --filter @founder-mode/web build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . && prettier --check . && pnpm -r typecheck",
+    "format": "prettier --write .",
+    "typecheck": "pnpm -r typecheck",
+    "bots": "pnpm --filter @founder-mode/bots bots"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.0",
+    "vitest": "^3.2.4"
+  }
+}
