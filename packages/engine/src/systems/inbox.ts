@@ -272,7 +272,19 @@ export function drawMessages(state: GameState, rng: Rng): GameState {
       fromName: from.name,
       targetId: from.targetId,
       text: event.text.replaceAll('{name}', from.name),
-      choices: event.choices.map((c) => ({ id: c.id, label: c.label, hours: c.hours })),
+      choices: event.choices.map((c) => ({
+        id: c.id,
+        label: c.label,
+        hours: c.hours,
+        costCents: c.effects.reduce(
+          (sum, e) => sum + (e.type === 'cash' && e.amountCents < 0 ? -e.amountCents : 0),
+          0,
+        ),
+        monthlyCostCents: c.effects.reduce(
+          (sum, e) => sum + (e.type === 'fixedCost' ? e.monthlyCents : 0),
+          0,
+        ),
+      })),
       status: 'open',
       choiceId: null,
     })

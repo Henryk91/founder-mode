@@ -72,6 +72,7 @@ export type UiActions = {
   setPresales(segmentId: string, batches: number): void
   setBookkeepingHours(hours: number): void
   toggleChase(invoiceId: string): void
+  toggleFollowUp(leadId: string): void
   setSearchRole(role: TeamRoleId | null): void
   setHire(candidateId: string | null): void
   setLetGo(letGo: boolean): void
@@ -244,6 +245,13 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       setPresales: (segmentId, batches) =>
         editPlan((p) => ({ ...p, presales: { ...p.presales, [segmentId]: batches } })),
       setBookkeepingHours: (hours) => editPlan((p) => ({ ...p, bookkeepingHours: hours })),
+      toggleFollowUp: (leadId) =>
+        editPlan((p) => ({
+          ...p,
+          followUps: p.followUps.includes(leadId)
+            ? p.followUps.filter((id) => id !== leadId)
+            : [...p.followUps, leadId],
+        })),
       toggleChase: (invoiceId) =>
         editPlan((p) => ({
           ...p,

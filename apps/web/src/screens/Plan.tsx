@@ -133,7 +133,8 @@ export function Plan() {
         <p className={styles.hint}>
           {label('plan.section.testHint', stage, {
             hours: label('unit.hours', stage, { n: costs.landingHours }),
-            weeks: costs.landingWeeks,
+            weeks: count('unit.weeks', stage, costs.landingWeeks),
+            presaleWeeks: count('unit.weeks', stage, costs.presaleWeeks),
             presale: label('unit.hours', stage, { n: costs.presaleHoursPerBatch }),
             size: costs.presaleBatchSize,
           })}
@@ -184,24 +185,21 @@ export function Plan() {
                 <span>{label('plan.presale', stage, { segment: seg.name })}</span>
               </div>
               <span className={styles.hint}>
-                {label('plan.presale.leads', stage, {
-                  n: seg.openLeads,
-                  size: costs.presaleBatchSize,
+                {count('plan.presale.leads', stage, seg.openLeads, {
+                  min: costs.presaleMinLeads,
                 })}
               </span>
               <Stepper
                 stage={stage}
                 value={batches}
                 max={Math.min(
-                  Math.floor(seg.openLeads / costs.presaleBatchSize),
+                  Math.floor(seg.openLeads / costs.presaleMinLeads),
                   capFor(batches, free, costs.presaleHoursPerBatch, 10),
                 )}
                 display={
                   batches === 0
                     ? label('plan.presale.none', stage)
-                    : count('plan.presale.batches', stage, batches, {
-                        prospects: batches * costs.presaleBatchSize,
-                      })
+                    : count('plan.presale.batches', stage, batches)
                 }
                 onChange={(n) => actions.setPresales(seg.id, n)}
               />
@@ -338,7 +336,7 @@ export function Plan() {
           onChange={actions.setBookkeepingHours}
         />
       </section>
-      {(plan.chase.length > 0 || plan.searchRole !== null) && (
+      {(plan.chase.length > 0 || plan.searchRole !== null || plan.followUps.length > 0) && (
         <section className={styles.card}>
           <h2 className={styles.title}>{label('plan.team', stage)}</h2>
           {plan.searchRole !== null && (
@@ -346,6 +344,15 @@ export function Plan() {
               {label('plan.teamSummary', stage, {
                 role: label(`team.role.${plan.searchRole}`, stage),
                 hours: label('unit.hours', stage, { n: costs.searchHours }),
+              })}
+            </p>
+          )}
+          {plan.followUps.length > 0 && (
+            <p>
+              {count('plan.followUps.booked', stage, plan.followUps.length, {
+                hours: label('unit.hours', stage, {
+                  n: plan.followUps.length * costs.followUpHours,
+                }),
               })}
             </p>
           )}
@@ -409,7 +416,7 @@ function DemoSummary(props: {
       <p className={styles.hint}>
         {label('plan.section.demosHint', stage, {
           hours: label('unit.hours', stage, { n: view.costs.demoHours }),
-          weeks: view.costs.trialWeeks,
+          weeks: count('unit.weeks', stage, view.costs.trialWeeks),
         })}
       </p>
       <p>

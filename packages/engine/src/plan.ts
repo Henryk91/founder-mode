@@ -2,7 +2,7 @@ import { maxBookkeepingHours } from './systems/bookkeeping'
 import { openLeadCount } from './systems/experiments'
 import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
-import { canBookDemo } from './systems/sales'
+import { canBookDemo, canFollowUp } from './systems/sales'
 import { plannedHours } from './systems/founder'
 import type { GameState, PlanIssue, WeekPlan } from './types'
 
@@ -18,6 +18,7 @@ export function emptyPlan(): WeekPlan {
     priceCentsPerMonth: null,
     landing: {},
     presales: {},
+    followUps: [],
     bookkeepingHours: 0,
     chase: [],
     searchRole: null,
@@ -38,6 +39,7 @@ export function clonePlan(plan: WeekPlan): WeekPlan {
     landing: { ...plan.landing },
     presales: { ...plan.presales },
     chase: [...plan.chase],
+    followUps: [...plan.followUps],
     teamOutreach: plan.teamOutreach ? { ...plan.teamOutreach } : null,
   }
 }
@@ -135,11 +137,11 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
       issues.push({ code: 'unknown_segment', segmentId })
     } else if (!isCount(batches)) {
       issues.push({ code: 'invalid_number', field: `presales.${segmentId}` })
-    } else if (batches * presale.batchSize > openLeadCount(state, segmentId)) {
+    } else if (batches * presale.minLeads > openLeadCount(state, segmentId)) {
       issues.push({
         code: 'presale_needs_leads',
         segmentId,
-        leads: batches * presale.batchSize,
+        leads: batches * presale.minLeads,
       })
     }
   }
@@ -148,6 +150,15 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
     issues.push({ code: 'invalid_number', field: 'bookkeepingHours' })
   } else if (plan.bookkeepingHours > maxBookkeepingHours(state)) {
     issues.push({ code: 'bookkeeping_exceeds_backlog', maxHours: maxBookkeepingHours(state) })
+  }
+
+  const followed = new Set<string>()
+  for (const leadId of plan.followUps) {
+    const lead = state.leads.find((l) => l.id === leadId)
+    if (!lead || !canFollowUp(lead) || followed.has(leadId)) {
+      issues.push({ code: 'invalid_follow_up', leadId })
+    }
+    followed.add(leadId)
   }
 
   const chased = new Set<string>()

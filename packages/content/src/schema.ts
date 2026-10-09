@@ -67,6 +67,10 @@ export const SalesConfigSchema = z.object({
   leadToDemoOffset: Share,
   leadToDemoPerPain: Share,
   demoHours: z.number().int().positive(),
+  // Following up with an open lead: its silence timer resets and it is a bit more likely to
+  // ask for a demo this week (added to the weekly chance before the energy factor).
+  followUpHours: z.number().int().positive(),
+  followUpDemoBoost: Share,
   // Chance that a held demo becomes a trial: base + perFit * fit
   demoToTrialBase: Share,
   demoToTrialPerFit: Share,
@@ -99,6 +103,8 @@ export const LandingConfigSchema = z.object({
 export const PresaleConfigSchema = z.object({
   hoursPerBatch: z.number().int().positive(),
   batchSize: z.number().int().positive(),
+  // Open leads a batch needs. With fewer than batchSize leads, the batch has that many prospects.
+  minLeads: z.number().int().positive(),
   weeks: z.number().int().positive(),
   // Each prospect commits with probability commitRate * pain * priceFactor.
   commitRate: Share,

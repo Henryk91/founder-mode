@@ -72,6 +72,7 @@ experiments:
   presale:
     hoursPerBatch: 6
     batchSize: 5
+    minLeads: 3
     weeks: 1
     commitRate: 0.5
 
@@ -88,6 +89,8 @@ sales:
   leadToDemoOffset: 0.4
   leadToDemoPerPain: 0.6
   demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
   demoToTrialBase: 0.05
   demoToTrialPerFit: 0.4
   trialWeeks: 2

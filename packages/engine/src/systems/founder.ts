@@ -26,6 +26,7 @@ export function plannedHours(
     plan.bugFixHours +
     sum(Object.values(plan.outreach).map((o) => o.hours)) +
     plan.demos.length * scenario.sales.demoHours +
+    plan.followUps.length * scenario.sales.followUpHours +
     plan.restHours +
     Object.values(plan.landing).filter((budget) => budget > 0).length *
       scenario.experiments.landing.hours +

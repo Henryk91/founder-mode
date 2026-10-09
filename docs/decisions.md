@@ -91,3 +91,10 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Inbox: answering counts hours at once, effects land when the week ends, unanswered messages take their free default choice after 2 weeks. Events are 25 YAML entries; conditions are parsed by zod into data (no eval).
 - Left out on purpose: the coworking desk office stage (needs persistent modifiers) and the `organised` UI switch (Phase 7).
 - Shut down: `shutDown` ends the run with `shut_down`. The Money tab asks first; the store ignores a shut down that was not asked for.
+
+## After Phase 4 (engine 0.6.0)
+
+- Follow up: `WeekPlan.followUps`, 1 h per open lead (stage lead or demo). It clears the silence timer, protects the lead from ghosting that week, and adds 0.05 to the weekly chance of asking for a demo (before the energy factor). Scenario: `sales.followUpHours`, `sales.followUpDemoBoost`.
+- Pre-sale: a batch needs 3 open leads (`presale.minLeads`, was 5). Prospects per pre-sale are `min(batches x 5, open leads)`, and the result records that count, so it scales with the batch.
+- Inbox choices carry `costCents` (cash that certainly goes out) and `monthlyCostCents` (fixed costs added); the UI shows them next to the hours. Gains and chances stay hidden.
+- Counts of weeks in label text use a plural-aware `unit.weeks`; "1 open lead" instead of "1 leads".

@@ -13,6 +13,9 @@ export function Pipeline() {
   const view = useGame((s) => s.view)
   const demos = useGame((s) => s.plan.demos)
   const toggleDemo = useGame((s) => s.toggleDemo)
+  const followUps = useGame((s) => s.plan.followUps)
+  const toggleFollowUp = useGame((s) => s.toggleFollowUp)
+  const planned = useGame((s) => s.plannedHours)
   if (!view) return null
   const stage = view.company.uiStage
   const segmentName = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
@@ -32,6 +35,24 @@ export function Pipeline() {
           {label('pipeline.lastContact', stage, { week: l.lastContactWeek })}
           {l.stage === 'trial' && ` · ${count('pipeline.trialWeeks', stage, l.weeksInStage)}`}
         </span>
+        {l.canFollowUp && (
+          <button
+            type="button"
+            aria-pressed={followUps.includes(l.id)}
+            disabled={
+              !followUps.includes(l.id) &&
+              planned + view.costs.followUpHours > view.founder.maxHoursPerWeek
+            }
+            className={`${styles.button} ${followUps.includes(l.id) ? styles.primary : ''}`}
+            onClick={() => toggleFollowUp(l.id)}
+          >
+            {followUps.includes(l.id)
+              ? label('pipeline.followUpBooked', stage)
+              : label('pipeline.followUp', stage, {
+                  hours: label('unit.hours', stage, { n: view.costs.followUpHours }),
+                })}
+          </button>
+        )}
         {l.canBookDemo && (
           <button
             type="button"

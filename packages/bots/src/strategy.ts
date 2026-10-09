@@ -49,6 +49,20 @@ export class PlanBuilder {
     return h
   }
 
+  /** Follows up with open leads, silent ones first, up to `max` of them. */
+  followUp(max: number): number {
+    const open = this.view.leads.filter((l) => l.canFollowUp && !this.plan.followUps.includes(l.id))
+    open.sort((a, b) => Number(b.silent) - Number(a.silent))
+    let n = 0
+    for (const lead of open) {
+      if (n >= max || this.free < this.view.costs.followUpHours) break
+      this.plan.followUps.push(lead.id)
+      this.free -= this.view.costs.followUpHours
+      n++
+    }
+    return n
+  }
+
   /** Chases overdue invoices, oldest first, up to `max` of them. */
   chase(max: number): number {
     let n = 0
@@ -76,7 +90,7 @@ export class PlanBuilder {
     const seg = this.view.segments.find((x) => x.id === segmentId)
     const c = this.view.costs
     const batches = this.plan.presales[segmentId] ?? 0
-    if (!seg || seg.openLeads < (batches + 1) * c.presaleBatchSize) return false
+    if (!seg || seg.openLeads < (batches + 1) * c.presaleMinLeads) return false
     if (this.free < c.presaleHoursPerBatch) return false
     this.plan.presales[segmentId] = batches + 1
     this.free -= c.presaleHoursPerBatch

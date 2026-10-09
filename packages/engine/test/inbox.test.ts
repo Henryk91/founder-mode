@@ -105,9 +105,23 @@ describe('the inbox', () => {
       answeredChoiceId: null,
     })
     expect(view[0]!.choices).toEqual([
-      { id: 'skip', label: 'Skip', hours: 0 },
-      { id: 'act', label: 'Act', hours: 2 },
+      { id: 'skip', label: 'Skip', hours: 0, costCents: 0, monthlyCostCents: 0 },
+      { id: 'act', label: 'Act', hours: 2, costCents: 0, monthlyCostCents: 0 },
     ])
+  })
+
+  it('shows what a choice certainly costs, in money, but never gains or odds', () => {
+    const s = withMessage(
+      effects('act', [
+        { type: 'cash', amountCents: -40_000, chance: 1 },
+        { type: 'cash', amountCents: -10_000, chance: 0.5 },
+        { type: 'cash', amountCents: 90_000, chance: 0.4 },
+        { type: 'fixedCost', id: 'sub', name: 'Sub', monthlyCents: 4_000, chance: 1 },
+      ]),
+    )
+    const act = getView(s).inbox[0]!.choices.find((c) => c.id === 'act')!
+    expect(act).toMatchObject({ costCents: 50_000, monthlyCostCents: 4_000 })
+    expect(JSON.stringify(getView(s).inbox)).not.toContain('90000')
   })
 
   it('shows choices with hours and never any effect or chance', () => {

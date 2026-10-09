@@ -153,7 +153,8 @@ export function startExperiments(state: GameState, plan: WeekPlan): GameState {
         segmentId: seg.id,
         startWeek: state.week,
         resolveWeek: state.week + presale.weeks,
-        trials: batches * presale.batchSize,
+        // A batch with fewer leads than its size has that many prospects.
+        trials: Math.min(batches * presale.batchSize, openLeadCount(state, seg.id)),
         p: presale.commitRate * hidden.pain * priceFactor(state, seg.id),
         budgetCents: 0,
         priceCents: state.company.priceCentsPerMonth,
