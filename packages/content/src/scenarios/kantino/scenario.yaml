@@ -200,7 +200,7 @@ segments:
     channelResponse:
       cold_email: { min: 0.025, max: 0.06 }
       phone: { min: 0.05, max: 0.11 }
-      in_person: { min: 0.075, max: 0.15 }
+      in_person: { min: 0.06, max: 0.12 }
     paymentDelayDaysMean: 12
     neverPaysShare: 0.03
     waitsForChaseShare: 0.25
@@ -212,9 +212,9 @@ segments:
     wtpCents: { min: 26000, max: 42000 }
     mustHave: [basic_ordering, allergy_filter, shift_schedule]
     channelResponse:
-      cold_email: { min: 0.01, max: 0.03 }
+      cold_email: { min: 0.04, max: 0.08 }
       phone: { min: 0.06, max: 0.125 }
-      in_person: { min: 0.05, max: 0.1 }
+      in_person: { min: 0.06, max: 0.12 }
     paymentDelayDaysMean: 20
     neverPaysShare: 0.08
     waitsForChaseShare: 0.25

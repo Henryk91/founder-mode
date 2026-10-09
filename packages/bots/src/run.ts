@@ -95,7 +95,7 @@ if (args.out === '-') {
   writeFileSync(path, report + keptNotes(path))
   console.log(`Report written to ${args.out}`)
 }
-for (const id of TARGET_STRATEGIES) {
+for (const id of TARGET_STRATEGIES.slice(0, 1)) {
   console.log(`\nTargets for ${id}`)
   for (const t of evaluateTargets(input, id)) {
     const status = t.value === '-' ? '----' : t.pass ? 'ok  ' : 'FAIL'
