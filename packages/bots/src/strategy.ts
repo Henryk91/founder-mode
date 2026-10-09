@@ -49,9 +49,14 @@ export class PlanBuilder {
     return h
   }
 
-  /** Follows up with open leads, silent ones first, up to `max` of them. */
-  followUp(max: number): number {
-    const open = this.view.leads.filter((l) => l.canFollowUp && !this.plan.followUps.includes(l.id))
+  /** Follows up with open leads, silent ones first, up to `max` of them, optionally in one market. */
+  followUp(max: number, segmentId?: string): number {
+    const open = this.view.leads.filter(
+      (l) =>
+        l.canFollowUp &&
+        !this.plan.followUps.includes(l.id) &&
+        (segmentId === undefined || l.segmentId === segmentId),
+    )
     open.sort((a, b) => Number(b.silent) - Number(a.silent))
     let n = 0
     for (const lead of open) {
@@ -227,6 +232,16 @@ export class ChannelLog {
 
   hours(segmentId: string, channel: ChannelId): number {
     return this.stats.get(`${segmentId}/${channel}`)?.hours ?? 0
+  }
+
+  /** Leads per hour on the best channel tried in a segment, 0 before any outreach there. */
+  bestRate(segmentId: string, channels: readonly ChannelId[]): number {
+    let best = 0
+    for (const c of channels) {
+      const s = this.stats.get(`${segmentId}/${c}`)
+      if (s && s.hours > 0) best = Math.max(best, s.leads / s.hours)
+    }
+    return best
   }
 
   /** The channel to use next: any channel tried for less than `minHours` first, else the best. */

@@ -7,6 +7,7 @@ import {
   overworker,
   priceAware,
   validateThenBuild,
+  validateThenBuildEarlyHire,
   validateThenBuildHire,
 } from './validateThenBuild'
 
@@ -16,6 +17,7 @@ export const STRATEGIES: Strategy[] = [
   sellFirst,
   validateThenBuild,
   validateThenBuildHire,
+  validateThenBuildEarlyHire,
   priceAware,
   overworker,
   playtest,
