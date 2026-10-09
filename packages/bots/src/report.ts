@@ -148,6 +148,23 @@ export function buildReport(input: ReportInput): string {
     )
   }
 
+  push(
+    '',
+    '## Interview signal in week 1',
+    '',
+    'Strategies that interview every market in week 1. How often the secretly viable market sounded most in pain (strictly highest mean answer), and the share of its answers in the top bucket.',
+    '',
+    '| Strategy | Interviews per market | Viable market ranked first | Viable answers in the top bucket |',
+    '|---|---|---|---|',
+  )
+  for (const s of input.strategies) {
+    const signals = s.results.flatMap((r) => (r.firstWeekSignal ? [r.firstWeekSignal] : []))
+    if (signals.length < s.results.length / 2) continue
+    push(
+      `| ${s.id} | ${s.id === 'playtest' ? 5 : 6} | ${fmtPct(pct(signals.filter((x) => x.viableRankedFirst).length, signals.length))} | ${fmtPct((100 * signals.reduce((t, x) => t + x.viableTopShare, 0)) / signals.length)} |`,
+    )
+  }
+
   const playtest = input.strategies.find((s) => s.id === 'playtest')
   if (playtest) {
     const viable = playtest.results.filter((r) => r.viableSegment === 'coworking')
