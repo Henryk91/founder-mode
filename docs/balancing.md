@@ -27,15 +27,15 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 
 | Strategy | Sustainable | Still searching | Bankrupt | Burnout | Shut down | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |
 |---|---|---|---|---|---|---|---|---|---|
-| random | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 27 | 27 | 300 EUR | 0 |
+| random | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 27 | 27 | 450 EUR | 0 |
 | build_only | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 28 | 28 | 0 EUR | 0 |
 | sell_first | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 29 | 29 | 0 EUR | 0 |
-| validate_then_build | 26.7% | 19.2% | 54.1% | 0.0% | 0.0% | 41 | 45 | 2,100 EUR | 6 |
-| validate_then_build_hire | 1.2% | 8.5% | 90.3% | 0.0% | 0.0% | 44 | 45 | 2,100 EUR | 6 |
-| validate_then_build_early_hire | 9.3% | 5.9% | 84.8% | 0.0% | 0.0% | 28 | 28 | 1,500 EUR | 4 |
-| presale_max | 26.3% | 22.1% | 51.6% | 0.0% | 0.0% | 41 | 46 | 2,100 EUR | 5 |
-| price_aware | 26.8% | 16.4% | 56.8% | 0.0% | 0.0% | 41 | 44 | 2,000 EUR | 5 |
-| overworker | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | - | 7 | 300 EUR | 1 |
+| validate_then_build | 26.7% | 19.2% | 54.1% | 0.0% | 0.0% | 41 | 45 | 3,150 EUR | 6 |
+| validate_then_build_hire | 1.2% | 8.5% | 90.3% | 0.0% | 0.0% | 44 | 45 | 3,150 EUR | 6 |
+| validate_then_build_early_hire | 9.3% | 5.9% | 84.8% | 0.0% | 0.0% | 28 | 28 | 2,250 EUR | 4 |
+| presale_max | 26.3% | 22.1% | 51.6% | 0.0% | 0.0% | 41 | 46 | 3,150 EUR | 5 |
+| price_aware | 26.8% | 16.4% | 56.8% | 0.0% | 0.0% | 41 | 44 | 3,000 EUR | 5 |
+| overworker | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | - | 7 | 450 EUR | 1 |
 | playtest | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 28 | 28 | 0 EUR | 0 |
 
 ## Wins by viable market
@@ -61,9 +61,9 @@ Share of runs ending Sustainable, split by which market was secretly viable in t
 
 | Viable market | validate_then_build | price_aware | Difference | price_aware median final price | price_aware median final price in winning runs |
 |---|---|---|---|---|---|
-| coworking | 26.4% | 37.4% | 11.0 points | 400 EUR | 800 EUR |
-| medical | 26.2% | 21.0% | -5.2 points | 300 EUR | 400 EUR |
-| small_offices | 27.4% | 22.7% | -4.7 points | 300 EUR | 400 EUR |
+| coworking | 26.4% | 37.4% | 11.0 points | 600 EUR | 1,200 EUR |
+| medical | 26.2% | 21.0% | -5.2 points | 450 EUR | 600 EUR |
+| small_offices | 27.4% | 22.7% | -4.7 points | 450 EUR | 600 EUR |
 
 ## Week the run ended
 
@@ -84,9 +84,9 @@ Share of all runs per strategy, by the week the run ended. Runs that reach the l
 
 ## Losing runs: what they earned
 
-Losing runs only (bankrupt, burnout, still searching). "Never paid" means no customer payment arrived in the whole run. Peak monthly revenue is the most the active customers paid per month at any point; 2,070 EUR covers fixed and living costs. Peak customers is the most active customers at once.
+Losing runs only (bankrupt, burnout, still searching). "Never paid" means no customer payment arrived in the whole run. Peak monthly revenue is the most the active customers paid per month at any point; 3,105 EUR covers company and living costs. Peak customers is the most active customers at once.
 
-| Strategy | Losing runs | Never paid | Peak monthly revenue (EUR): 0 / 1 to 599 / 600 to 1,199 / 1,200 to 2,069 / 2,070 or more | Peak customers: 0 / 1 / 2 to 3 / 4 to 6 / 7 or more |
+| Strategy | Losing runs | Never paid | Peak monthly revenue (EUR): 0 / 1 to 899 / 900 to 1,799 / 1,800 to 3,104 / 3,105 or more | Peak customers: 0 / 1 / 2 to 3 / 4 to 6 / 7 or more |
 |---|---|---|---|---|
 | random | 1000 | 3.1% | 43.1% / 25.5% / 23.3% / 7.7% / 0.4% | 43.1% / 25.5% / 23.3% / 7.7% / 0.4% |
 | build_only | 1000 | 100.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
@@ -123,11 +123,11 @@ Week in which the first customer signed. Medians count only runs that had one.
 | random | 0 | 0 EUR | 0.129 | 47.4 | 73.0 | 1.0% |
 | build_only | 0 | 0 EUR | - | 14.2 | 80.0 | 0.0% |
 | sell_first | 0 | 0 EUR | 0.021 | 50.0 | 80.0 | 0.0% |
-| validate_then_build | 2 | 600 EUR | 0.059 | 49.9 | 80.0 | 0.0% |
-| validate_then_build_hire | 2 | 600 EUR | 0.059 | 49.9 | 80.0 | 0.0% |
-| validate_then_build_early_hire | 2 | 600 EUR | 0.060 | 49.8 | 80.0 | 0.0% |
-| presale_max | 2 | 600 EUR | 0.057 | 49.9 | 80.0 | 0.0% |
-| price_aware | 2 | 600 EUR | 0.059 | 49.9 | 80.0 | 0.0% |
+| validate_then_build | 2 | 900 EUR | 0.059 | 49.9 | 80.0 | 0.0% |
+| validate_then_build_hire | 2 | 900 EUR | 0.059 | 49.9 | 80.0 | 0.0% |
+| validate_then_build_early_hire | 2 | 900 EUR | 0.060 | 49.8 | 80.0 | 0.0% |
+| presale_max | 2 | 900 EUR | 0.057 | 49.9 | 80.0 | 0.0% |
+| price_aware | 2 | 900 EUR | 0.059 | 49.9 | 80.0 | 0.0% |
 | overworker | 0 | 0 EUR | 0.068 | 61.8 | 0.0 | 100.0% |
 | playtest | 0 | 0 EUR | 0.030 | 22.8 | 80.0 | 0.0% |
 
@@ -190,8 +190,8 @@ Each hire variant plays like `validate_then_build` until its hire rule fires, so
 
 | Variant | Runs with a hire | Developer / salesperson | Median offer week | Win rate | Win rate with a hire | Win rate without | Same seeds, plain | Won only with the hire | Won only without | Median cost per customer the hire found | Median value of a customer |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| validate_then_build_hire | 430 (43.0%) | 0 / 430 | 39 | 1.2% | 2.3% | 0.4% | 61.6% | 0 | 255 | 5,133 EUR | 810 EUR |
-| validate_then_build_early_hire | 532 (53.2%) | 0 / 532 | 10 | 9.3% | 0.0% | 19.9% | 33.3% | 0 | 177 | 6,600 EUR | 450 EUR |
+| validate_then_build_hire | 430 (43.0%) | 0 / 430 | 39 | 1.2% | 2.3% | 0.4% | 61.6% | 0 | 255 | 7,700 EUR | 1,215 EUR |
+| validate_then_build_early_hire | 532 (53.2%) | 0 / 532 | 10 | 9.3% | 0.0% | 19.9% | 33.3% | 0 | 177 | 9,900 EUR | 675 EUR |
 
 Offer week of `validate_then_build_early_hire`, and the win rate of the runs that hired in that window:
 
@@ -216,14 +216,14 @@ Offer week of `validate_then_build_early_hire`, and the win rate of the runs tha
 
 | Event | Seeds | Win rate per answer (hours, money) | Best | Cheapest | Cheapest wins |
 |---|---|---|---|---|---|
-| survey_offer | 1000 | buy (1 h, 400 EUR) 24.7%; pass (0 h) 26.7% | pass | pass | yes |
-| friend_of_friend | 1000 | call (2 h) 26.0%; decline (0 h) 26.7% | decline | decline | yes |
+| survey_offer | 1000 | buy (1 h, 600 EUR) 24.7%; pass (0 h) 26.7% | pass | pass | yes |
+| friend_of_friend | 1000 | call (2 h) 26.1%; decline (0 h) 26.7% | decline | decline | yes |
 | startup_meetup | 1000 | go (4 h) 25.2%; skip (0 h) 26.7% | skip | skip | yes |
 | referral | 978 | follow_up (1 h) 27.3%; ignore (0 h) 24.8% | follow_up | ignore | no |
-| discount_demand | 979 | free_month (0 h, 300 EUR) 26.0%; call (2 h) 26.6%; hold (0 h) 27.3% | hold | hold | yes |
+| discount_demand | 979 | free_month (0 h, 450 EUR) 26.0%; call (2 h) 26.6%; hold (0 h) 27.3% | hold | hold | yes |
 | slow_lead | 1000 | call (1 h) 27.0%; wait (0 h) 26.7% | call | wait | no |
-| food_fair | 997 | booth (8 h, 900 EUR) 26.5%; pass (0 h) 26.8% | pass | pass | yes |
-| sales_coach | 999 | buy (2 h, 250 EUR) 26.8%; decline (0 h) 26.7% | buy | decline | no |
+| food_fair | 997 | booth (8 h, 1,350 EUR) 26.5%; pass (0 h) 26.8% | pass | pass | yes |
+| sales_coach | 999 | buy (2 h, 375 EUR) 26.8%; decline (0 h) 26.7% | buy | decline | no |
 | integration_question | 1000 | promise (3 h) 23.3%; honest (1 h) 26.7%; ignore (0 h) 24.3% | honest | ignore | no |
 | competitor_launch | 996 | study (3 h) 26.8%; ignore (0 h) 26.8% | study | ignore | yes |
 | crash_report | 638 | patch (4 h) 27.1%; apologise (1 h) 23.7%; nothing (0 h) 22.7% | patch | nothing | no |
@@ -231,11 +231,11 @@ Offer week of `validate_then_build_early_hire`, and the win rate of the runs tha
 | security_notice | 1000 | patch (4 h) 26.7%; ignore (0 h) 25.1% | patch | ignore | no |
 | hosting_pricing | 1000 | migrate (6 h) 26.7%; accept (0 h) 26.7% | migrate | accept | yes |
 | late_payer_first | 901 | reminder (1 h) 29.6%; call (2 h) 29.5%; pause (0 h) 25.2%; wait (0 h) 28.1% | reminder | pause | no |
-| filing_deadline | 1000 | file (2 h) 26.7%; late (0 h, 300 EUR) 26.3% | file | late | no |
+| filing_deadline | 1000 | file (2 h) 26.7%; late (0 h, 450 EUR) 26.3% | file | late | no |
 | regional_grant | 996 | apply (5 h) 26.7%; skip (0 h) 24.8% | apply | skip | no |
-| laptop_fan | 1000 | buy (1 h, 1,400 EUR) 22.8%; live_with_it (0 h) 26.7% | live_with_it | live_with_it | yes |
-| receipts_pile | 1000 | sort (3 h) 26.7%; send (0 h, 150 EUR) 26.6%; later (0 h, 400 EUR) 23.3% | sort | send | no |
-| bank_fee | 998 | switch (3 h) 26.3%; accept (0 h) 26.8% | accept | accept | yes |
+| laptop_fan | 1000 | buy (1 h, 2,100 EUR) 22.8%; live_with_it (0 h) 26.7% | live_with_it | live_with_it | yes |
+| receipts_pile | 1000 | sort (3 h) 26.7%; send (0 h, 225 EUR) 26.6%; later (0 h, 600 EUR) 23.3% | sort | send | no |
+| bank_fee | 998 | switch (3 h) 26.4%; accept (0 h) 26.8% | accept | accept | yes |
 | bad_sleep | 0 | nap (3 h) 0.0%; push_through (0 h) 0.0% | nap | push_through | not judged |
 | family_lunch | 1000 | go (4 h) 27.0%; stay (0 h) 26.7% | go | stay | no |
 | old_boss | 930 | freelance (8 h) 22.9%; decline (0 h) 19.5% | freelance | decline | no |
@@ -286,8 +286,8 @@ The same random bot with and without answering messages. Its answers are random 
 
 | Variant | Sustainable | Still searching | Bankrupt | Burnout | Mean run length | Mean cash plus savings at the end (EUR) | Mean customers at the end | Messages answered |
 |---|---|---|---|---|---|---|---|---|
-| random_no_inbox | 0.0% | 0.0% | 100.0% | 0.0% | 26.7 | -337 | 1.03 | 0.0% |
-| random | 0.0% | 0.0% | 100.0% | 0.0% | 26.8 | -345 | 0.99 | 74.2% |
+| random_no_inbox | 0.0% | 0.0% | 100.0% | 0.0% | 26.7 | -506 | 1.03 | 0.0% |
+| random | 0.0% | 0.0% | 100.0% | 0.0% | 26.8 | -517 | 0.99 | 74.2% |
 
 Runs where answering made the run last longer: 441, shorter: 410, same length: 149.
 
@@ -297,10 +297,10 @@ Runs where answering made the run last longer: 441, shorter: 410, same length: 1
 - `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (0.4 s for 1000 runs)
 - `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (0.5 s for 1000 runs)
 - `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. Drops a market below 7% landing sign ups, or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (3.2 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (2.8 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (2.0 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (3.1 s for 1000 runs)
-- `price_aware`: Plays like validate_then_build and raises the price by 100 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays. (3.1 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (2.9 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (2.1 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (3.2 s for 1000 runs)
+- `price_aware`: Plays like validate_then_build and raises the price by 150 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays. (3.2 s for 1000 runs)
 - `overworker`: Plays like validate_then_build, but plans 65 h every week. (0.2 s for 1000 runs)
 - `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (0.5 s for 1000 runs)
 
@@ -380,3 +380,26 @@ Design changes as agreed in review (books as a message, invoices that wait for a
 - Round 2: doing nothing about a crash report risks churn 0.1 (was 0.25), an apology 0.05 (was 0.1). Blind effort +6.7, almost no change.
 - Round 3: a referral brings 1 lead (was 2); promising the cafeteria integration also loses 3 h. Blind effort +3.7, reading +13.3. All targets hold: validate_then_build 26.7%, spread 1.2 points, first customer week 5, evidence by week 10 in 93.4% of runs, 10 of 23 events favour the cheap answer, in person outreach finds 34.3% of customers.
 - Target 12 (hires pay back) was dropped after review. Hire variants are shown for information: they win far less than plain play, as intended for a choice that rarely pays.
+
+### Money scaled by 1.5 (engine 0.7.0)
+
+Every monetary constant was multiplied by 1.5 (see `docs/decisions.md`), and the developer works 20 h instead of 25. Seeds `test`, before and after:
+
+| # | Target | Before | After |
+|---|---|---|---|
+| 1 | build_only wins under 5% | 0.0% | 0.0% |
+| 2 | validate_then_build wins 25 to 45% | 26.7% | 26.7% |
+| 3 | No strategy above 60% | price_aware 26.8% | price_aware 26.8% |
+| 4 | Losing runs median week 20 to 40 | week 29 | week 29 |
+| 5 | 1000 runs under 60 s | 3.2 s | 3.2 s |
+| 6 | Market spread within 15 points | 1.2 | 1.2 |
+| 7 | First paying customer week 4 to 10 | week 5 | week 5 |
+| 8 | Evidence by week 10 in 70% | 93.4% | 93.4% |
+| 9 | Decision news in 85% of weeks 1 to 20 | 100.0% and 96.4% | 100.0% and 96.4% |
+| 10 | A third of events favour the cheap answer | 10 of 23 | 10 of 23 |
+| 11 | Blind effort at most +4, reading at least +4 | +3.7, +13.3 | +3.7, +13.3 |
+| 13 | Chase, landing, books each worth 2 points | -8.9, -3.1, -3.1 | -8.9, -3.1, -3.1 |
+| 14 | presale_max at most 3 points better | -0.4 | -0.4 |
+| 15 | No action above 40% of customers | in person 34.3% | in person 34.3% |
+
+The hire variants moved slightly (the developer's hours changed): validate_then_build_hire 1.2% and validate_then_build_early_hire 9.3% wins.

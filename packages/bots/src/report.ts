@@ -464,10 +464,10 @@ export function buildReport(input: ReportInput): string {
 
   const revenueBins: [string, (c: number) => boolean][] = [
     ['0', (c) => c === 0],
-    ['1 to 599', (c) => c > 0 && c < 60_000],
-    ['600 to 1,199', (c) => c >= 60_000 && c < 120_000],
-    ['1,200 to 2,069', (c) => c >= 120_000 && c < 207_000],
-    ['2,070 or more', (c) => c >= 207_000],
+    ['1 to 899', (c) => c > 0 && c < 90_000],
+    ['900 to 1,799', (c) => c >= 90_000 && c < 180_000],
+    ['1,800 to 3,104', (c) => c >= 180_000 && c < 310_500],
+    ['3,105 or more', (c) => c >= 310_500],
   ]
   const customerBins: [string, (n: number) => boolean][] = [
     ['0', (n) => n === 0],
@@ -480,7 +480,7 @@ export function buildReport(input: ReportInput): string {
     '',
     '## Losing runs: what they earned',
     '',
-    'Losing runs only (bankrupt, burnout, still searching). "Never paid" means no customer payment arrived in the whole run. Peak monthly revenue is the most the active customers paid per month at any point; 2,070 EUR covers fixed and living costs. Peak customers is the most active customers at once.',
+    'Losing runs only (bankrupt, burnout, still searching). "Never paid" means no customer payment arrived in the whole run. Peak monthly revenue is the most the active customers paid per month at any point; 3,105 EUR covers company and living costs. Peak customers is the most active customers at once.',
     '',
     `| Strategy | Losing runs | Never paid | Peak monthly revenue (EUR): ${revenueBins.map(([l]) => l).join(' / ')} | Peak customers: ${customerBins.map(([l]) => l).join(' / ')} |`,
     '|---|---|---|---|---|',

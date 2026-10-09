@@ -48,6 +48,7 @@ export function getView(state: GameState): PlayerView {
       weeksAtZeroEnergy: founder.weeksAtZeroEnergy,
       savingsCents: founder.savingsCents,
       livingCostCentsPerWeek: founder.livingCostCentsPerWeek,
+      livingCostCentsPerMonth: founder.livingCostCentsPerWeek * scenario.finance.weeksPerMonth,
     },
     company: {
       cashCents: company.cashCents,
@@ -220,6 +221,7 @@ function teamView(state: GameState): TeamView {
       id,
       name: cfg.roles[id].name,
       monthlyCents: monthly(id),
+      weeklyHours: cfg.roles[id].weeklyHours,
     })),
     search: team.search ? { role: team.search.role, readyWeek: team.search.readyWeek } : null,
     candidates: team.candidates.map((c) => ({

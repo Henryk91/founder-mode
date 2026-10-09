@@ -28,7 +28,7 @@ describe('founder note rules', () => {
     expect(note(s)).toEqual({
       id: 'no_evidence',
       template: s.scenario.founderNotes.no_evidence,
-      values: { week: 2, living: 45_000 },
+      values: { week: 2, living: 67_500 },
     })
   })
 
@@ -61,7 +61,7 @@ describe('founder note rules', () => {
           segmentId: 'coworking',
           sinceWeek: 2,
           churnedWeek: null,
-          priceCentsPerMonth: 30_000,
+          priceCentsPerMonth: 45_000,
         },
       ],
     }

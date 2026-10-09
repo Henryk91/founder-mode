@@ -94,21 +94,21 @@ describe('a hire', () => {
     expect(s.week).toBe(6)
     const start = endWeek(s, plan(book))
     expect(start.state.company.fixedCosts).toHaveLength(3)
-    expect(start.state.company.fixedCosts.at(-1)!.monthlyCents).toBe(260_000)
+    expect(start.state.company.fixedCosts.at(-1)!.monthlyCents).toBe(390_000)
     expect(start.report.entries).toContainEqual(
       expect.objectContaining({ kind: 'hire_started', role: 'developer' }),
     )
-    expect(getView(start.state).company.monthlyFixedCostsCents).toBe(27_000 + 260_000)
+    expect(getView(start.state).company.monthlyFixedCostsCents).toBe(40_500 + 390_000)
     expect(hasOne(start.state)).toBe(true)
   })
 
-  it('has a developer build 25 h x true skill on the chosen feature', () => {
+  it('has a developer build 20 h x true skill on the chosen feature', () => {
     let s = hired('dev', 'developer')
     const skill = s.hidden.teamSkills[s.team.members[0]!.id]!
     for (let i = 0; i < 3; i++) s = endWeek(s, plan(book)).state
     expect(s.week).toBe(8)
     const r = endWeek(s, plan({ teamBuild: 'basic_ordering', ...book }))
-    const built = Math.floor(25 * skill)
+    const built = Math.floor(20 * skill)
     expect(r.report.entries).toContainEqual({
       kind: 'team_output',
       role: 'developer',
@@ -177,11 +177,11 @@ describe('a hire', () => {
     expect(r.report.entries).toContainEqual({
       kind: 'member_let_go',
       name: s.team.members[0]!.name,
-      costCents: 260_000,
+      costCents: 390_000,
     })
-    expect(r.report.ledger.otherCostsCents).toBe(260_000)
+    expect(r.report.ledger.otherCostsCents).toBe(390_000)
     expect(r.state.company.cashCents).toBe(
-      before - 260_000 - r.report.ledger.fixedCostsCents - r.report.ledger.founderDrawCents,
+      before - 390_000 - r.report.ledger.fixedCostsCents - r.report.ledger.founderDrawCents,
     )
     expect(r.state.company.fixedCosts).toHaveLength(2)
     expect(getView(r.state).team.member).toBeNull()
@@ -219,7 +219,7 @@ describe('hire economics for the post-mortem', () => {
     for (let i = 0; i < 12; i++) s = endWeek(s, plan(book)).state
     const e = hireEconomics(s)!
     // Started in week 6; month ends 8, 12 and 16 have charged the salary.
-    expect(e).toMatchObject({ role: 'salesperson', costCents: 3 * 220_000, customersGained: 0 })
+    expect(e).toMatchObject({ role: 'salesperson', costCents: 3 * 330_000, customersGained: 0 })
     expect(e.costPerCustomerCents).toBeNull()
     expect(e.lifetimeValueCents).toBeNull()
   })

@@ -80,7 +80,7 @@ describe('hidden boundary', () => {
       const v = getView(s)
       const p = plan({
         interviews: i < 3 ? { [seg[i % 3]!]: 2 } : {},
-        landing: i === 1 ? { [seg[0]!]: 20_000 } : {},
+        landing: i === 1 ? { [seg[0]!]: 30_000 } : {},
         outreach: { [seg[1]!]: { channel: 'in_person', hours: 20 } },
         searchRole: i === 2 ? 'developer' : null,
         hire: v.team.candidates[0]?.id ?? null,
@@ -114,8 +114,8 @@ describe('hidden boundary', () => {
     const interviews = v.segments.find((x) => x.id === 'coworking')!.interviews
     expect(interviews).toHaveLength(2)
     expect(interviews[0]!.bucketName.length).toBeGreaterThan(0)
-    expect(v.company.monthlyFixedCostsCents).toBe(27_000)
-    expect(v.history).toEqual([{ week: 1, cashCents: 600_000, savingsCents: 905_000 }])
+    expect(v.company.monthlyFixedCostsCents).toBe(40_500)
+    expect(v.history).toEqual([{ week: 1, cashCents: 900_000, savingsCents: 1_357_500 }])
   })
 
   it('is a plain serialisable object', () => {

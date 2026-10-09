@@ -51,7 +51,7 @@ const BOOKS_CHOICE = 'sort'
 const MESSAGE_HOURS_MAX = 6
 const MESSAGE_HOURS_PER_WEEK = 8
 const MESSAGE_CASH_SHARE = 0.1
-const MESSAGE_CASH_FLOOR_CENTS = 300_000
+const MESSAGE_CASH_FLOOR_CENTS = 450_000
 
 /**
  * How the inbox is answered: `reader` reads each message and picks the answer that suits it
@@ -205,7 +205,7 @@ function score(
  * The inbox policy, using only what the message shows: hours, money now and money per month.
  * For each open message, take the eligible choice that asks the most effort, where eligible means
  * no monthly cost, at most 6 h (8 h a week in all), and money only while it is at most a tenth of
- * the cash and leaves 3,000 EUR. A message whose best choice costs nothing is left alone, so its
+ * the cash and leaves 4,500 EUR. A message whose best choice costs nothing is left alone, so its
  * free default happens.
  */
 export function answerInbox(view: PlayerView): { messageId: string; choiceId: string }[] {
@@ -605,12 +605,12 @@ export function withInbox(inbox: InboxPolicy): Strategy {
   }
 }
 
-export const PRICE_RULE: PricingRule = { stepCents: 10_000, window: 4, threshold: 0.4 }
+export const PRICE_RULE: PricingRule = { stepCents: 15_000, window: 4, threshold: 0.4 }
 
 export const priceAware: Strategy = {
   id: 'price_aware',
   description:
-    'Plays like validate_then_build and raises the price by 100 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays.',
+    'Plays like validate_then_build and raises the price by 150 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays.',
   create: (scenario) => validatingPlayer(scenario, 50, PRICE_RULE),
 }
 
