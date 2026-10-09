@@ -38,7 +38,7 @@ The player is a solo founder in Munich building Kantino, software that lets a wo
 | Id | `small_offices` | `coworking` | `medical` |
 | Description shown to player | Agencies and firms with 10 to 50 staff | Shared workspaces with many small tenants | Doctors and dentists with shift based teams |
 | Size (reachable companies) | 800 to 2000 | 100 to 300 | 400 to 1200 |
-| Willingness to pay per month | 150 to 400 | 600 to 1500 | 100 to 250 |
+| Willingness to pay per month | 200 to 450 | 600 to 1500 | 180 to 320 |
 | Must have features | `basic_ordering`, `invoice_export`, `chat_integration` | `basic_ordering`, `multi_site`, `member_billing` | `basic_ordering`, `allergy_filter`, `shift_schedule` |
 | Channel response: cold email | 0.05 to 0.10 | 0.025 to 0.06 | 0.01 to 0.03 |
 | Channel response: phone | 0.04 to 0.075 | 0.05 to 0.11 | 0.06 to 0.125 |
@@ -48,7 +48,7 @@ The player is a solo founder in Munich building Kantino, software that lets a wo
 
 Each value given as a range is drawn uniformly at game creation from the seed.
 
-Phase 3 tuning: every channel response was halved, so the best channel finds about 0.07 leads per hour at the starting selling skill (one lead per 15 h, as in section 10). Before, 45 h of in person outreach found 7 to 8 leads a week.
+Phase 3 tuning: willingness to pay was 150 to 400 for small offices and 100 to 250 for medical practices. At the default price of 300 the medical market converted at a quarter of the rate, so a run where it was viable was nearly unwinnable (11% for the best bot against 75% for coworking). Every channel response was also halved, so the best channel finds about 0.07 leads per hour at the starting selling skill (one lead per 15 h, as in section 10). Before, 45 h of in person outreach found 7 to 8 leads a week.
 
 ### 3.2 Roles, assigned randomly per run
 
