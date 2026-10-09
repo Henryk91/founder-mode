@@ -9,7 +9,7 @@ describe('createGame', () => {
     const s = createGame(scenario, 'start')
     expect(s.week).toBe(1)
     expect(s.status).toBe('running')
-    expect(s.company.cashCents).toBe(1_500_000)
+    expect(s.company.cashCents).toBe(1_000_000)
     expect(s.founder.savingsCents).toBe(1_200_000)
     expect(s.founder.energy).toBe(80)
     expect(s.company.uiStage).toBe('scrappy')

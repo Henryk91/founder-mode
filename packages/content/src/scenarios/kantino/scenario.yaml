@@ -6,7 +6,7 @@ name: Kantino
 maxWeeks: 78
 
 start:
-  cashCents: 1500000
+  cashCents: 1000000
   savingsCents: 1200000
   livingCostCentsPerWeek: 45000
   priceCentsPerMonth: 30000

@@ -27,7 +27,7 @@ describe('app smoke test', () => {
     expect(plan).toContain('Week 1 of 78')
     expect(plan).toContain('End week')
     expect(plan).toContain('Talk to people')
-    expect(plan).toContain('Runway: 52 weeks')
+    expect(plan).toContain('Runway: 42 weeks')
 
     for (let i = 0; i < 3; i++) {
       store.getState().setInterviews('coworking', 2)
@@ -99,7 +99,7 @@ describe('onboarding', () => {
       store.getState().nextIntro()
     }
     expect(seen[0]).toContain('You are a founder in Munich')
-    expect(seen[0]).toContain('€15,000')
+    expect(seen[0]).toContain('€10,000')
     expect(seen[0]).toContain('€12,000')
     expect(seen[0]).toContain('€450')
     expect(seen[1]).toContain('Kantino is software')
@@ -174,7 +174,7 @@ describe('onboarding', () => {
     expect(html(store)).not.toContain('Got it')
     // The terms are tappable on screen.
     const page = html(store)
-    expect(page).toContain('Runway: 52 weeks')
+    expect(page).toContain('Runway: 42 weeks')
     expect(page).toMatch(/aria-label="Energy: What does this mean\?"/)
     expect(page).toMatch(/aria-label="Hours: What does this mean\?"/)
   })

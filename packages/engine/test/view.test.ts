@@ -78,7 +78,7 @@ describe('hidden boundary', () => {
     expect(interviews).toHaveLength(2)
     expect(interviews[0]!.bucketName.length).toBeGreaterThan(0)
     expect(v.company.monthlyFixedCostsCents).toBe(27_000)
-    expect(v.history).toEqual([{ week: 1, cashCents: 1_500_000, savingsCents: 1_155_000 }])
+    expect(v.history).toEqual([{ week: 1, cashCents: 1_000_000, savingsCents: 1_155_000 }])
   })
 
   it('is a plain serialisable object', () => {

@@ -215,7 +215,7 @@ describe('customers, revenue and churn', () => {
     const r = endWeek(s, plan())
     expect(r.report.ledger.revenueCents).toBe(30_000)
     expect(r.report.entries).toContainEqual({ kind: 'revenue', amountCents: 30_000, customers: 1 })
-    expect(r.state.company.cashCents).toBe(1_500_000 + 30_000 - 27_000)
+    expect(r.state.company.cashCents).toBe(1_000_000 + 30_000 - 27_000)
   })
 
   it('charges every customer the price agreed when they signed', () => {

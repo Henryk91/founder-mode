@@ -9,7 +9,8 @@ function expectClean(state: GameState, value: unknown) {
   for (const k of FORBIDDEN_KEYS) expect(json).not.toContain(`"${k}"`)
   for (const h of Object.values(state.hidden.segments)) {
     expect(json).not.toContain(String(h.pain))
-    expect(json).not.toContain(String(h.wtpCents))
+    // As a whole number, so an amount like 1399000 does not match a wtp of 13990.
+    expect(json).not.toMatch(new RegExp(`(?<![0-9.])${h.wtpCents}(?![0-9.])`))
   }
 }
 

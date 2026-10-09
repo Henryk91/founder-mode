@@ -14,7 +14,7 @@ The player is a solo founder in Munich building Kantino, software that lets a wo
 
 | Value | Start |
 |---|---|
-| Company cash | 15,000 |
+| Company cash | 10,000 (Phase 3 tuning, was 15,000) |
 | Personal savings | 12,000 |
 | Founder living costs | 450 per week, paid from personal savings |
 | Company fixed costs | Tools and hosting 120 per month, accountant 150 per month |
