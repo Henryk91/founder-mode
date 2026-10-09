@@ -85,7 +85,7 @@ describe('conditions', () => {
         cond('invoices.open == 1'),
         cond('leads.waitingForDemo == 1'),
         cond('monthlyRevenueEur == 300'),
-        cond('cashEur == 10000'),
+        cond('cashEur == 6000'),
       ]),
     ).toBe(true)
   })

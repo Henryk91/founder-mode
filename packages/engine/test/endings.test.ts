@@ -31,23 +31,23 @@ describe('endings', () => {
   it('ends at the week limit as still searching without revenue', () => {
     const s = play(newGame('limit', richKantino()), 200, () => plan())
     expect(s.ending).toBe('still_searching')
-    expect(s.week).toBe(78)
-    expect(s.ledger).toHaveLength(78)
+    expect(s.week).toBe(60)
+    expect(s.ledger).toHaveLength(60)
   })
 
   it('reports the ending in the week it happens and stops the week counter', () => {
-    const s = play(newGame('limit', richKantino()), 77, () => plan())
-    expect(s.week).toBe(78)
+    const s = play(newGame('limit', richKantino()), 59, () => plan())
+    expect(s.week).toBe(60)
     const { state, report } = endWeek(s, plan())
     expect(report.ending).toBe('still_searching')
-    expect(report.week).toBe(78)
-    expect(state.week).toBe(78)
+    expect(report.week).toBe(60)
+    expect(state.week).toBe(60)
   })
 
   it('reaches sustainable at the limit when the last two months were profitable', () => {
-    const s = play(newGame('limit', richKantino()), 77, () => plan())
+    const s = play(newGame('limit', richKantino()), 59, () => plan())
     const ledger = s.ledger.map((l) => ({ ...l, revenueCents: 100_000 }))
-    expect(checkEnding({ ...s, week: 78, ledger: [...ledger, ledger[0]!] })).toBe('sustainable')
+    expect(checkEnding({ ...s, week: 60, ledger: [...ledger, ledger[0]!] })).toBe('sustainable')
   })
 
   it('does not end a healthy run early', () => {

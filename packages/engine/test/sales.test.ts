@@ -69,12 +69,12 @@ describe('outreach', () => {
 
   it('gives every lead a distinct name without a number, even in a long run', () => {
     let s = newGame('names', richKantino())
-    for (let i = 0; i < 78; i++) {
+    for (let i = 0; i < 59; i++) {
       s = endWeek(s, plan({ outreach: { coworking: { channel: 'in_person', hours: 50 } } })).state
     }
     const names = s.leads.map((l) => l.name)
     expect(new Set(names).size).toBe(names.length)
-    expect(names.length).toBeGreaterThan(150)
+    expect(names.length).toBeGreaterThan(100)
     for (const name of names) expect(name).not.toMatch(/ \d+$/)
   })
 
@@ -231,7 +231,7 @@ describe('customers, revenue and churn', () => {
     })
     // No money yet: an invoice is paid in a later week.
     expect(r.report.ledger.revenueCents).toBe(0)
-    expect(r.state.company.cashCents).toBe(1_000_000 - 27_000)
+    expect(r.state.company.cashCents).toBe(600_000 - 27_000)
   })
 
   it('invoices every customer the price agreed when they signed', () => {

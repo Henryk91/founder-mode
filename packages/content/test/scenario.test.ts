@@ -19,8 +19,8 @@ describe('content', () => {
     expect(s.segments.map((x) => x.id)).toEqual(['small_offices', 'coworking', 'medical'])
     expect(s.roles.map((x) => x.id)).toEqual(['viable', 'mediocre', 'trap'])
     expect(s.features).toHaveLength(8)
-    expect(s.start.cashCents).toBe(1_000_000)
-    expect(s.maxWeeks).toBe(78)
+    expect(s.start.cashCents).toBe(600_000)
+    expect(s.maxWeeks).toBe(60)
   })
 
   it('every bucket of every segment has at least 10 distinct quotes', () => {
