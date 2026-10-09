@@ -164,3 +164,7 @@ The player may decline. The scene image follows the stage.
 A founder who identifies a viable small offices segment, ships its three must have features (85 h), and then spends about 15 h per week on outreach should get roughly one new lead per week early on and a new paying customer every two to three weeks, reaching profitability somewhere in the second half of the run. A founder who builds for the trap segment should get friendly interviews and almost no paying customers.
 
 This estimate is a back of the envelope calculation. Treat the bot report as the real answer.
+
+## 11. Phase 4 values
+
+Landing test 8 h, ads 200 or 500 EUR, 150 cents per visitor, 2 weeks. Pre-sale 6 h per batch of 5, 1 week, commit rate 0.5 x pain x price factor. Invoices due after 14 days, written off 12 weeks later, chase 1 h for +0.3. Bookkeeping 2 h a week, limit 12 h, fine 150 EUR, 4 h lost. Hire as in section 8, candidates impression labels weak below 0.7, solid below 0.95, strong below 1.1. Inbox: up to 3 draws a week at 0.4 each, open 2 weeks, cooldown 8 weeks, at most 4 open. The coworking desk (section 9) is not built yet.

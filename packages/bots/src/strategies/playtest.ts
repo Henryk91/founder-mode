@@ -14,6 +14,8 @@ export const playtest: Strategy = {
   create: () => ({
     plan(view) {
       const b = new PlanBuilder(view, 65)
+      b.bookkeeping()
+      b.chase(3)
       if (view.week === 1) {
         for (const s of view.segments) b.interviews(s.id, 5)
       } else if (view.week <= 4) {

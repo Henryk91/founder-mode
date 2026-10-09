@@ -1,7 +1,8 @@
 import { createGame } from './create'
 import { scenarioHash } from './hash'
 import { clonePlan } from './plan'
-import { endWeek } from './turn'
+import { respond } from './systems/inbox'
+import { endWeek, shutDown } from './turn'
 import type { GameState, SaveFile, SaveProblem, Scenario } from './types'
 import { ENGINE_VERSION } from './version'
 
@@ -11,7 +12,9 @@ export function toSave(state: GameState): SaveFile {
     scenarioId: state.scenarioId,
     scenarioHash: scenarioHash(state.scenario),
     seed: state.seed,
-    actions: state.actionLog.map((a) => ({ ...a, plan: clonePlan(a.plan) })),
+    actions: state.actionLog.map((a) =>
+      a.type === 'endWeek' ? { ...a, plan: clonePlan(a.plan) } : { ...a },
+    ),
   }
 }
 
@@ -45,7 +48,9 @@ export function replay(scenario: Scenario, save: SaveFile): GameState {
     if (action.week !== state.week) {
       throw new Error(`Save action for week ${action.week} does not match week ${state.week}`)
     }
-    state = endWeek(state, action.plan).state
+    if (action.type === 'endWeek') state = endWeek(state, action.plan).state
+    else if (action.type === 'respond') state = respond(state, action.messageId, action.choiceId)
+    else state = shutDown(state)
   }
   return state
 }

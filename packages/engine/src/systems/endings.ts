@@ -7,7 +7,7 @@ const SUSTAINABLE_MONTHS = 2
 /**
  * Checks the endings available so far (plan section 4.13). Finance has already moved savings
  * into the company where it could, so negative cash means the savings are gone too.
- * Shut down arrives with the player action that triggers it.
+ * Shut down is the player's own action (`shutDown`), never checked here.
  */
 export function checkEnding(state: GameState): EndingId | null {
   if (state.company.cashCents < 0) return 'bankrupt'

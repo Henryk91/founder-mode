@@ -7,6 +7,7 @@ import kantinoScenario from './scenarios/kantino/scenario.yaml?raw'
 import kantinoFeatures from './scenarios/kantino/features.yaml?raw'
 import kantinoQuotes from './scenarios/kantino/messages/interview_quotes.yaml?raw'
 import kantinoIntro from './scenarios/kantino/messages/intro.yaml?raw'
+import kantinoEvents from './scenarios/kantino/messages/events.yaml?raw'
 import kantinoNames from './scenarios/kantino/messages/company_names.yaml?raw'
 
 export const SCENARIO_IDS = ['kantino'] as const
@@ -18,6 +19,7 @@ export type ScenarioSources = {
   interviewQuotes: string
   companyNames: string
   intro: string
+  events: string
 }
 
 const SOURCES: Record<ScenarioId, ScenarioSources> = {
@@ -27,6 +29,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
     interviewQuotes: kantinoQuotes,
     companyNames: kantinoNames,
     intro: kantinoIntro,
+    events: kantinoEvents,
   },
 }
 
@@ -34,9 +37,11 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
 export function parseScenario(sources: ScenarioSources): Scenario {
   const file: unknown = parse(sources.scenario)
   const intro: unknown = parse(sources.intro)
+  const events: unknown = parse(sources.events)
   return ScenarioSchema.parse({
     ...(typeof file === 'object' && file !== null ? file : {}),
     ...(typeof intro === 'object' && intro !== null ? intro : {}),
+    ...(typeof events === 'object' && events !== null ? events : {}),
     features: parse(sources.features),
     interviewQuotes: parse(sources.interviewQuotes),
     companyNames: parse(sources.companyNames),

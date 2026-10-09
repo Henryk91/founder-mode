@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { endWeek } from '../src/index'
+import { endWeek, getView, replay, shutDown, toSave, validatePlan } from '../src/index'
 import { checkEnding } from '../src/systems/endings'
 import { newGame, plan, play, richKantino } from './helpers'
 
@@ -52,5 +52,40 @@ describe('endings', () => {
 
   it('does not end a healthy run early', () => {
     expect(checkEnding(newGame())).toBeNull()
+  })
+
+  describe('shut down', () => {
+    it('ends the run on purpose, in the week the player is in', () => {
+      const s = play(newGame('quit'), 5, () => plan({ bookkeepingHours: 2 }))
+      const end = shutDown(s)
+      expect(end.status).toBe('ended')
+      expect(end.ending).toBe('shut_down')
+      expect(end.week).toBe(s.week)
+      expect(getView(end)).toMatchObject({ status: 'ended', ending: 'shut_down' })
+      expect(end.actionLog.at(-1)).toEqual({ type: 'shutDown', week: 6 })
+    })
+
+    it('does not mutate its input, and cannot end a finished run', () => {
+      const s = newGame('quit2')
+      const before = JSON.stringify(s)
+      const end = shutDown(s)
+      expect(JSON.stringify(s)).toBe(before)
+      expect(() => shutDown(end)).toThrow()
+      expect(validatePlan(end, plan())).toEqual([{ code: 'game_over' }])
+      expect(() => endWeek(end, plan())).toThrow()
+    })
+
+    it('keeps the money as it is, whatever it was', () => {
+      const s = play(newGame('quit3'), 3, () => plan({ bookkeepingHours: 2 }))
+      const end = shutDown(s)
+      expect(end.company.cashCents).toBe(s.company.cashCents)
+      expect(end.founder.savingsCents).toBe(s.founder.savingsCents)
+    })
+
+    it('is saved and replays to the same ending', () => {
+      const end = shutDown(play(newGame('quit4'), 4, () => plan({ bookkeepingHours: 2 })))
+      expect(replay(end.scenario, toSave(end))).toEqual(end)
+      expect(replay(end.scenario, JSON.parse(JSON.stringify(toSave(end)))).ending).toBe('shut_down')
+    })
   })
 })

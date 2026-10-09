@@ -25,6 +25,14 @@ const FORBIDDEN_KEYS = [
   'mentionBase',
   'mentionPerPain',
   'noiseSd',
+  'payWeeks',
+  'teamSkills',
+  'trueSkill',
+  'experiments',
+  'effects',
+  'chance',
+  'p',
+  'trials',
 ]
 
 function keysOf(value: unknown, out = new Set<string>()): Set<string> {
@@ -63,6 +71,36 @@ describe('hidden boundary', () => {
       s = r.state
     }
     expect(getView(s).segments.some((x) => x.interviews.length > 0)).toBe(true)
+  })
+
+  it('contains no hidden data through searches, hires, experiments, invoices and messages', () => {
+    let s = newGame('boundary-all')
+    const seg = s.scenario.segments.map((x) => x.id)
+    for (let i = 0; i < 40 && s.status === 'running'; i++) {
+      const v = getView(s)
+      const p = plan({
+        bookkeepingHours: 2,
+        interviews: i < 3 ? { [seg[i % 3]!]: 2 } : {},
+        landing: i === 1 ? { [seg[0]!]: 20_000 } : {},
+        outreach: { [seg[1]!]: { channel: 'in_person', hours: 20 } },
+        searchRole: i === 2 ? 'developer' : null,
+        hire: v.team.candidates[0]?.id ?? null,
+        chase: v.invoices
+          .filter((x) => x.canChase)
+          .map((x) => x.id)
+          .slice(0, 2),
+        demos: v.leads
+          .filter((l) => l.canBookDemo)
+          .map((l) => l.id)
+          .slice(0, 3),
+      })
+      const r = endWeek(s, p)
+      expectNoHidden(r.state, r.report)
+      expectNoHidden(r.state, getView(r.state))
+      s = r.state
+    }
+    expect(s.team.members.length + s.team.candidates.length).toBeGreaterThan(0)
+    expect(s.inbox.length).toBeGreaterThan(0)
   })
 
   it('shows what the player observed', () => {

@@ -142,15 +142,15 @@ export function buildReport(input: ReportInput): string {
     '',
     '## Endings',
     '',
-    '| Strategy | Sustainable | Still searching | Bankrupt | Burnout | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |',
-    '|---|---|---|---|---|---|---|---|---|',
+    '| Strategy | Sustainable | Still searching | Bankrupt | Burnout | Shut down | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |',
+    '|---|---|---|---|---|---|---|---|---|---|',
   )
   for (const s of input.strategies) {
     const n = s.results.length
     const count = (e: string) => s.results.filter((r) => r.ending === e).length
     const bankrupt = s.results.filter((r) => r.ending === 'bankrupt').map((r) => r.weeks)
     push(
-      `| ${s.id} | ${fmtPct(pct(count('sustainable'), n))} | ${fmtPct(pct(count('still_searching'), n))} | ${fmtPct(pct(count('bankrupt'), n))} | ${fmtPct(pct(count('burnout'), n))} | ${fmtNum(median(bankrupt))} | ${fmtNum(median(s.results.filter(isLoss).map((r) => r.weeks)))} | ${fmtEur(median(s.results.map((r) => r.peakMonthlyRevenueCents)))} | ${fmtNum(median(s.results.map((r) => r.customersEnd)))} |`,
+      `| ${s.id} | ${fmtPct(pct(count('sustainable'), n))} | ${fmtPct(pct(count('still_searching'), n))} | ${fmtPct(pct(count('bankrupt'), n))} | ${fmtPct(pct(count('burnout'), n))} | ${fmtPct(pct(count('shut_down'), n))} | ${fmtNum(median(bankrupt))} | ${fmtNum(median(s.results.filter(isLoss).map((r) => r.weeks)))} | ${fmtEur(median(s.results.map((r) => r.peakMonthlyRevenueCents)))} | ${fmtNum(median(s.results.map((r) => r.customersEnd)))} |`,
     )
   }
 
@@ -289,7 +289,7 @@ export function buildReport(input: ReportInput): string {
     const signals = s.results.flatMap((r) => (r.firstWeekSignal ? [r.firstWeekSignal] : []))
     if (signals.length < s.results.length / 2) continue
     push(
-      `| ${s.id} | ${s.id === 'playtest' ? 5 : 6} | ${fmtPct(pct(signals.filter((x) => x.viableRankedFirst).length, signals.length))} | ${fmtPct((100 * signals.reduce((t, x) => t + x.viableTopShare, 0)) / signals.length)} |`,
+      `| ${s.id} | ${fmtNum(median(s.results.flatMap((r) => (r.firstWeekInterviews === null ? [] : [r.firstWeekInterviews]))))} | ${fmtPct(pct(signals.filter((x) => x.viableRankedFirst).length, signals.length))} | ${fmtPct((100 * signals.reduce((t, x) => t + x.viableTopShare, 0)) / signals.length)} |`,
     )
   }
 
@@ -305,6 +305,27 @@ export function buildReport(input: ReportInput): string {
       `- Median customers at week ${CHECK_WEEK}: ${fmtNum(median(viable.map((r) => r.customersAtCheck)))}`,
       `- Median monthly revenue at week ${CHECK_WEEK}: ${fmtEur(median(viable.map((r) => r.monthlyRevenueAtCheckCents)))}`,
       `- Sustainable: ${fmtPct(pct(viable.filter((r) => r.ending === 'sustainable').length, viable.length))}`,
+    )
+  }
+
+  push(
+    '',
+    '## Phase 4 systems in use',
+    '',
+    'Per run, averaged over all runs of a strategy. Penalties are bookkeeping penalties (backlog over 12 h). Written off is the share of invoices never paid. Messages answered is the share of inbox messages the strategy answered instead of leaving to its default.',
+    '',
+    '| Strategy | Landing tests | Pre-sale batches | Invoices issued | Written off | Bookkeeping penalties | Messages | Messages answered |',
+    '|---|---|---|---|---|---|---|---|',
+  )
+  for (const s of input.strategies) {
+    const n = s.results.length
+    const mean = (f: (r: RunResult) => number) => s.results.reduce((t, r) => t + f(r), 0) / n
+    const issued = s.results.reduce((t, r) => t + r.invoicesIssued, 0)
+    const lost = s.results.reduce((t, r) => t + r.writtenOffInvoices, 0)
+    const messages = s.results.reduce((t, r) => t + r.messages, 0)
+    const answered = s.results.reduce((t, r) => t + r.messagesAnswered, 0)
+    push(
+      `| ${s.id} | ${mean((r) => r.landingTests).toFixed(1)} | ${mean((r) => r.presaleBatches).toFixed(1)} | ${mean((r) => r.invoicesIssued).toFixed(1)} | ${fmtPct(pct(lost, issued))} | ${mean((r) => r.bookkeepingPenalties).toFixed(2)} | ${mean((r) => r.messages).toFixed(1)} | ${fmtPct(pct(answered, messages))} |`,
     )
   }
 

@@ -1,13 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { endWeek, getView } from '../src/index'
+import { Rng } from '../src/rng'
 import {
-  applyFinanceWeek,
+  applyFinanceWeek as applyFinance,
+  noExtras,
   privateMoneyInCents,
   profitableForMonths,
   runwayWeeks,
 } from '../src/systems/finance'
-import type { GameState, WeekLedger } from '../src/types'
-import { newGame, plan, play } from './helpers'
+import type { GameState, WeekLedger, WeekPlan } from '../src/types'
+import { newGame, plan, play, quietKantino } from './helpers'
 
 const withMoney = (s: GameState, cashCents: number, savingsCents: number, week = s.week) => ({
   ...s,
@@ -15,6 +17,9 @@ const withMoney = (s: GameState, cashCents: number, savingsCents: number, week =
   company: { ...s.company, cashCents },
   founder: { ...s.founder, savingsCents },
 })
+
+const applyFinanceWeek = (s: GameState, p: WeekPlan) =>
+  applyFinance(s, p, noExtras(), new Rng(s.rng))
 
 describe('finance', () => {
   it('takes living costs from savings every week', () => {
@@ -25,10 +30,10 @@ describe('finance', () => {
   })
 
   it('charges fixed costs only at month end, every 4th week', () => {
-    let s = newGame()
+    let s = newGame('fixed', quietKantino())
     const fixed: number[] = []
     for (let i = 0; i < 8; i++) {
-      const r = endWeek(s, plan())
+      const r = endWeek(s, plan({ bookkeepingHours: 2 }))
       fixed.push(r.report.ledger.fixedCostsCents)
       s = r.state
     }
@@ -159,6 +164,9 @@ describe('finance', () => {
       founderDrawCents: 0,
       transferCents: 0,
       autoTransferCents: 0,
+      adSpendCents: 0,
+      otherCostsCents: 0,
+      otherIncomeCents: 0,
       cashEndCents: 0,
       savingsEndCents: 0,
     })

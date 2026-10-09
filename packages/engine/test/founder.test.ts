@@ -10,7 +10,7 @@ describe('founder', () => {
     applyFounderWeek({ ...founder, energy }, scenario, hours, rest).energy
 
   it('counts interview and rest hours', () => {
-    expect(plannedHours(scenario, plan({ interviews: { a: 3, b: 2 }, restHours: 4 }))).toBe(14)
+    expect(plannedHours(newGame(), plan({ interviews: { a: 3, b: 2 }, restHours: 4 }))).toBe(14)
   })
 
   it('gives +3 for a week within 50 hours', () => {

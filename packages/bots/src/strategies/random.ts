@@ -4,12 +4,29 @@ import { bookableLeads, PlanBuilder, type Strategy } from '../strategy'
 
 export const random: Strategy = {
   id: 'random',
-  description: 'Spends a random 30 to 65 h on random actions in random markets.',
+  description:
+    'Spends a random 30 to 65 h on random actions in random markets, including books, tests, pre-sales and invoice chasing, and answers about half of the messages at random.',
   create(_scenario, seed) {
     const rng = new BotRng(`random/${seed}`)
     return {
+      respond(view) {
+        // Answers about half of the messages with a random choice that fits the week.
+        const fits = (hours: number) =>
+          view.committedHours + view.forcedHours + hours <= view.founder.maxHoursPerWeek
+        return view.inbox
+          .filter((m) => m.answeredChoiceId === null && rng.next() < 0.5)
+          .flatMap((m) => {
+            const choice = rng.pick(m.choices)
+            return fits(choice.hours) ? [{ messageId: m.id, choiceId: choice.id }] : []
+          })
+      },
       plan(view) {
         const b = new PlanBuilder(view, rng.int(30, 65))
+        // Sometimes does the books, a test, a pre-sale or a chase, like everything else at random.
+        if (rng.next() < 0.5) b.bookkeeping()
+        if (rng.next() < 0.3) b.landing(rng.pick(view.segments).id)
+        if (rng.next() < 0.3) b.presale(rng.pick(view.segments).id)
+        if (rng.next() < 0.5) b.chase(rng.int(1, 3))
         const segments = view.segments.map((s) => s.id)
         const leads = bookableLeads(view).filter(() => rng.next() < 0.5)
         b.demos(leads)

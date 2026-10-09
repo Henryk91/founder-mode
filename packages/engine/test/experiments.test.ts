@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { endWeek, getView } from '../src/index'
 import { Rng } from '../src/rng'
-import { bucketFor, runInterviews } from '../src/systems/experiments'
+import { bucketFor, interviewsOf, runInterviews } from '../src/systems/experiments'
 import type { GameState } from '../src/types'
 import { kantino, newGame, plan } from './helpers'
 
@@ -34,7 +34,10 @@ describe('interviews', () => {
     const base = kantino()
     const scenario = {
       ...base,
-      experiments: { interview: { ...base.experiments.interview, skillGain: 0.02 } },
+      experiments: {
+        ...base.experiments,
+        interview: { ...base.experiments.interview, skillGain: 0.02 },
+      },
     }
     const s = newGame('cap', scenario)
     // 0.10 + 35 x 0.02 would be 0.80; 36 interviews over two weeks must stop there.
@@ -95,7 +98,7 @@ describe('interviews', () => {
   it('goes through every quote of a bucket before repeating one', () => {
     let s = newGame('all-quotes')
     for (let w = 0; w < 6; w++) s = endWeek(s, plan({ interviews: { coworking: 5 } })).state
-    const evidence = s.knowledge.coworking!
+    const evidence = interviewsOf(s.knowledge.coworking!)
     for (const bucketId of new Set(evidence.map((e) => e.bucketId))) {
       const indices = evidence.filter((e) => e.bucketId === bucketId).map((e) => e.quoteIndex)
       const total = s.scenario.interviewQuotes.coworking![bucketId]!.length

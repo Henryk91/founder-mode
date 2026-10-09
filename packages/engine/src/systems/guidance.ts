@@ -11,7 +11,10 @@ export const FOUNDER_NOTE_LAST_WEEK = 4
 export function selectFounderNote(state: GameState): FounderNoteView | null {
   if (state.week > FOUNDER_NOTE_LAST_WEEK) return null
   const notes = state.scenario.founderNotes
-  const interviews = Object.values(state.knowledge).reduce((sum, list) => sum + list.length, 0)
+  const interviews = Object.values(state.knowledge).reduce(
+    (sum, list) => sum + list.filter((e) => e.kind === 'interview').length,
+    0,
+  )
   const shipped = state.product.features.some((f) => f.shippedWeek !== null)
   const leads = state.leads.length
   const living = state.founder.livingCostCentsPerWeek

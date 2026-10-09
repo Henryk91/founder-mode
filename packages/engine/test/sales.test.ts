@@ -26,6 +26,7 @@ function withLeads(leads: Lead[], over: { pain?: number; shipped?: boolean } = {
     ...s,
     leads,
     hidden: {
+      ...s.hidden,
       segments: {
         ...s.hidden.segments,
         small_offices: { ...seg, pain: over.pain ?? seg.pain },
@@ -211,16 +212,28 @@ describe('customers, revenue and churn', () => {
     priceCentsPerMonth: 30_000,
   })
 
-  it('pays the monthly price at month end for customers won before that week', () => {
+  it('invoices at month end the customers won before that week, and is paid later', () => {
     let s = newGame()
     s = { ...s, week: 4, customers: [customer('customer_1', 2), customer('customer_2', 4)] }
-    const r = endWeek(s, plan())
-    expect(r.report.ledger.revenueCents).toBe(30_000)
-    expect(r.report.entries).toContainEqual({ kind: 'revenue', amountCents: 30_000, customers: 1 })
-    expect(r.state.company.cashCents).toBe(1_000_000 + 30_000 - 27_000)
+    const r = endWeek(s, plan({ bookkeepingHours: 2 }))
+    expect(r.state.invoices).toHaveLength(1)
+    expect(r.state.invoices[0]).toMatchObject({
+      customerId: 'customer_1',
+      amountCents: 30_000,
+      issuedWeek: 4,
+      dueWeek: 6,
+    })
+    expect(r.report.entries).toContainEqual({
+      kind: 'invoices_issued',
+      amountCents: 30_000,
+      count: 1,
+    })
+    // No money yet: an invoice is paid in a later week.
+    expect(r.report.ledger.revenueCents).toBe(0)
+    expect(r.state.company.cashCents).toBe(1_000_000 - 27_000)
   })
 
-  it('charges every customer the price agreed when they signed', () => {
+  it('invoices every customer the price agreed when they signed', () => {
     const s = {
       ...newGame(),
       week: 4,
@@ -230,8 +243,8 @@ describe('customers, revenue and churn', () => {
       ],
     }
     // A price change this week applies to new customers only.
-    const r = endWeek(s, plan({ priceCentsPerMonth: 90_000 }))
-    expect(r.report.ledger.revenueCents).toBe(75_000)
+    const r = endWeek(s, plan({ priceCentsPerMonth: 90_000, bookkeepingHours: 2 }))
+    expect(r.state.invoices.map((i) => i.amountCents)).toEqual([30_000, 45_000])
     expect(r.state.company.priceCentsPerMonth).toBe(90_000)
     const active = r.state.customers.filter((c) => c.churnedWeek === null)
     expect(getView(r.state).monthlyRevenueCents).toBe(
@@ -256,9 +269,9 @@ describe('customers, revenue and churn', () => {
     expect(won).toBeGreaterThan(5)
   })
 
-  it('has no revenue outside month ends', () => {
+  it('issues no invoices outside month ends', () => {
     const s = { ...newGame(), week: 3, customers: [customer('customer_1', 1)] }
-    expect(endWeek(s, plan()).report.ledger.revenueCents).toBe(0)
+    expect(endWeek(s, plan({ bookkeepingHours: 2 })).state.invoices).toEqual([])
   })
 
   it('computes churn from fit and bugs, capped', () => {
@@ -284,8 +297,8 @@ describe('customers, revenue and churn', () => {
         expect(end.report.entries).toContainEqual(
           expect.objectContaining({ kind: 'customer_churned', name: 'customer_1' }),
         )
-        // The month's revenue was still received.
-        expect(end.report.ledger.revenueCents).toBe(30_000)
+        // The month was still invoiced.
+        expect(end.state.invoices).toHaveLength(1)
       }
     }
     expect(churned).toBeGreaterThan(10)

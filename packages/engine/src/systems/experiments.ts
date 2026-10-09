@@ -1,5 +1,18 @@
 import type { Rng } from '../rng'
-import type { GameState, InterviewEvent, InterviewEvidence, WeekPlan } from '../types'
+import type {
+  Evidence,
+  ExperimentEvent,
+  GameState,
+  InterviewEvent,
+  InterviewEvidence,
+  PendingExperiment,
+  ReportEntry,
+  WeekPlan,
+} from '../types'
+import { priceFactor } from './market'
+
+export const interviewsOf = (list: readonly Evidence[]): InterviewEvidence[] =>
+  list.filter((e): e is InterviewEvidence => e.kind === 'interview')
 
 export type InterviewOutcome = {
   evidence: InterviewEvidence
@@ -61,7 +74,7 @@ export function runInterviews(
       const quotes = state.scenario.interviewQuotes[seg.id]?.[bucketId] ?? []
       const quoteIndex = pickQuote(
         quotes.length,
-        [...(state.knowledge[seg.id] ?? []), ...outcomes.map((o) => o.evidence)],
+        [...interviewsOf(state.knowledge[seg.id] ?? []), ...outcomes.map((o) => o.evidence)],
         seg.id,
         bucketId,
         state.week,
@@ -99,5 +112,120 @@ export function runInterviews(
       eventLog: [...state.eventLog, ...outcomes.map((o) => o.event)],
     },
     outcomes,
+  }
+}
+
+/** Leads of a segment that are still in play: not lost and not yet customers. */
+export function openLeadCount(state: GameState, segmentId: string): number {
+  return state.leads.filter(
+    (l) => l.segmentId === segmentId && l.stage !== 'lost' && l.stage !== 'paying',
+  ).length
+}
+
+/**
+ * Starts the planned landing page tests and pre-sales (plan section 4.4). The chance per visitor
+ * or prospect is fixed now, at today's price, and the draws happen when the result is due.
+ * Segments run in scenario order. The ad budget is paid by the finance step.
+ */
+export function startExperiments(state: GameState, plan: WeekPlan): GameState {
+  const { landing, presale } = state.scenario.experiments
+  const started: PendingExperiment[] = []
+  for (const seg of state.scenario.segments) {
+    const hidden = state.hidden.segments[seg.id]
+    if (!hidden) throw new Error(`Unknown segment ${seg.id}`)
+    const budget = plan.landing[seg.id] ?? 0
+    if (budget > 0) {
+      started.push({
+        kind: 'landing',
+        segmentId: seg.id,
+        startWeek: state.week,
+        resolveWeek: state.week + landing.weeks,
+        trials: Math.floor(budget / landing.centsPerVisitor),
+        p: landing.signupBase + landing.signupPerPain * hidden.pain,
+        budgetCents: budget,
+        priceCents: state.company.priceCentsPerMonth,
+      })
+    }
+    const batches = plan.presales[seg.id] ?? 0
+    if (batches > 0) {
+      started.push({
+        kind: 'presale',
+        segmentId: seg.id,
+        startWeek: state.week,
+        resolveWeek: state.week + presale.weeks,
+        trials: batches * presale.batchSize,
+        p: presale.commitRate * hidden.pain * priceFactor(state, seg.id),
+        budgetCents: 0,
+        priceCents: state.company.priceCentsPerMonth,
+      })
+    }
+  }
+  if (started.length === 0) return state
+  return {
+    ...state,
+    hidden: { ...state.hidden, experiments: [...state.hidden.experiments, ...started] },
+  }
+}
+
+/** Draws the result of every experiment due this week and files it as evidence. */
+export function resolveExperiments(
+  state: GameState,
+  rng: Rng,
+): { state: GameState; entries: ReportEntry[] } {
+  const due = state.hidden.experiments.filter((e) => e.resolveWeek <= state.week)
+  if (due.length === 0) return { state, entries: [] }
+  const entries: ReportEntry[] = []
+  const events: ExperimentEvent[] = []
+  const knowledge = { ...state.knowledge }
+  for (const e of due) {
+    const observed = rng.binomial(e.trials, e.p)
+    events.push({
+      kind: e.kind,
+      week: state.week,
+      segmentId: e.segmentId,
+      expected: e.trials * e.p,
+      observed,
+    })
+    const evidence: Evidence =
+      e.kind === 'landing'
+        ? {
+            kind: 'landing',
+            week: state.week,
+            segmentId: e.segmentId,
+            budgetCents: e.budgetCents,
+            visitors: e.trials,
+            signups: observed,
+          }
+        : {
+            kind: 'presale',
+            week: state.week,
+            segmentId: e.segmentId,
+            prospects: e.trials,
+            commits: observed,
+            priceCents: e.priceCents,
+          }
+    knowledge[e.segmentId] = [...(knowledge[e.segmentId] ?? []), evidence]
+    entries.push(
+      e.kind === 'landing'
+        ? { kind: 'landing_result', segmentId: e.segmentId, visitors: e.trials, signups: observed }
+        : {
+            kind: 'presale_result',
+            segmentId: e.segmentId,
+            prospects: e.trials,
+            commits: observed,
+          },
+    )
+  }
+  return {
+    state: {
+      ...state,
+      knowledge,
+      hidden: {
+        ...state.hidden,
+        experiments: state.hidden.experiments.filter((e) => e.resolveWeek > state.week),
+      },
+      eventLog: [...state.eventLog, ...events],
+    },
+    entries,
   }
 }

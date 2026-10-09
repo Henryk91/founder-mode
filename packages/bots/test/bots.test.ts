@@ -107,6 +107,47 @@ describe('bots', () => {
     expect(marketSpread(results)).toBe(50)
   })
 
+  it('validate_then_build tests demand, runs pre-sales, and keeps the books and the invoices tidy', () => {
+    const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
+    const runs = Array.from({ length: 20 }, (_, i) => runGame(scenario, strategy, `p4-${i}`))
+    for (const r of runs) {
+      expect(r.landingTests).toBe(3)
+      expect(r.bookkeepingPenalties).toBe(0)
+    }
+    expect(runs.some((r) => r.presaleBatches > 0)).toBe(true)
+    expect(runs.some((r) => r.invoicesIssued > 0)).toBe(true)
+  })
+
+  it('random answers about half of its messages, the others ignore the inbox', () => {
+    const random = runGame(
+      scenario,
+      STRATEGIES.find((s) => s.id === 'random')!,
+      'inbox',
+    )
+    expect(random.messages).toBeGreaterThan(5)
+    expect(random.messagesAnswered).toBeGreaterThan(0)
+    expect(random.messagesAnswered).toBeLessThan(random.messages)
+    const buildOnly = runGame(
+      scenario,
+      STRATEGIES.find((s) => s.id === 'build_only')!,
+      'inbox',
+    )
+    expect(buildOnly.messagesAnswered).toBe(0)
+  })
+
+  it('reports the Phase 4 systems and the shut down ending', () => {
+    const strategies = STRATEGIES.map((s) => ({
+      id: s.id,
+      description: s.description,
+      results: [runGame(scenario, s, 'q1'), runGame(scenario, s, 'q2')],
+      seconds: 0.1,
+    }))
+    const md = buildReport({ engineVersion: 'x', runs: 2, seedPrefix: 'q', strategies })
+    expect(md).toContain('## Phase 4 systems in use')
+    expect(md).toContain('| Shut down |')
+    expect(md).not.toContain('NaN')
+  })
+
   it('computes medians', () => {
     expect(median([])).toBeNull()
     expect(median([3, 1, 2])).toBe(2)

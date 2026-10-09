@@ -1,8 +1,8 @@
-import type { ChannelId, PlayerView } from '@founder-mode/engine'
+import type { ChannelId, PlanIssue, PlayerView } from '@founder-mode/engine'
 import { ExplainButton } from '../components/Explain'
 import { FounderNote } from '../components/FounderNote'
 import { Stepper } from '../components/Stepper'
-import { formatEnergy } from '../format'
+import { formatEnergy, formatEuro } from '../format'
 import { count, label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
@@ -23,6 +23,9 @@ export function Plan() {
     setBugFixHours: useGame((s) => s.setBugFixHours),
     setOutreach: useGame((s) => s.setOutreach),
     setRestHours: useGame((s) => s.setRestHours),
+    setLanding: useGame((s) => s.setLanding),
+    setPresales: useGame((s) => s.setPresales),
+    setBookkeepingHours: useGame((s) => s.setBookkeepingHours),
     setTab: useGame((s) => s.setTab),
   }
   if (!view) return null
@@ -79,13 +82,23 @@ export function Plan() {
             </p>
           )
         )}
+        {view.forcedHours > 0 && (
+          <p className={styles.warn}>
+            {label('plan.forced', stage, {
+              hours: label('unit.hours', stage, { n: view.forcedHours }),
+            })}
+          </p>
+        )}
+        {view.committedHours > 0 && (
+          <p className={styles.hint}>
+            {label('plan.committed', stage, {
+              hours: label('unit.hours', stage, { n: view.committedHours }),
+            })}
+          </p>
+        )}
         {issues.map((issue) => (
           <p key={issue.code + JSON.stringify(issue)} className={styles.warn} role="alert">
-            {issue.code === 'too_many_hours' || issue.code === 'transfer_exceeds_savings'
-              ? label(`plan.issue.${issue.code}`, stage, {
-                  max: founder.maxHoursPerWeek,
-                })
-              : label('plan.issue.other', stage)}
+            {issueText(issue.code, stage, founder.maxHoursPerWeek)}
           </p>
         ))}
       </section>
@@ -115,6 +128,87 @@ export function Plan() {
         })}
       </section>
 
+      <section className={styles.card}>
+        <h2 className={styles.title}>{label('plan.section.test', stage)}</h2>
+        <p className={styles.hint}>
+          {label('plan.section.testHint', stage, {
+            hours: label('unit.hours', stage, { n: costs.landingHours }),
+            weeks: costs.landingWeeks,
+            presale: label('unit.hours', stage, { n: costs.presaleHoursPerBatch }),
+            size: costs.presaleBatchSize,
+          })}
+        </p>
+        {view.segments.map((seg) => {
+          const budget = plan.landing[seg.id] ?? 0
+          const batches = plan.presales[seg.id] ?? 0
+          const options = costs.landingBudgetsCents
+          return (
+            <div key={seg.id} className={styles.row}>
+              <div className={styles.rowHead}>
+                <span>{label('plan.landing', stage, { segment: seg.name })}</span>
+              </div>
+              <div className={styles.chips}>
+                <button
+                  type="button"
+                  aria-pressed={budget === 0}
+                  className={`${styles.chip} ${budget === 0 ? styles.chipOn : ''}`}
+                  onClick={() => actions.setLanding(seg.id, 0)}
+                >
+                  {label('plan.landing.none', stage)}
+                </button>
+                {options.map((cents) => {
+                  const on = budget === cents
+                  return (
+                    <button
+                      key={cents}
+                      type="button"
+                      aria-pressed={on}
+                      disabled={!on && budget === 0 && free < costs.landingHours}
+                      className={`${styles.chip} ${on ? styles.chipOn : ''}`}
+                      onClick={() => actions.setLanding(seg.id, cents)}
+                    >
+                      {formatEuro(cents)}
+                    </button>
+                  )
+                })}
+              </div>
+              {budget > 0 && (
+                <span className={styles.hint}>
+                  {label('plan.landing.budget', stage, {
+                    budget: formatEuro(budget),
+                    visitors: Math.floor(budget / costs.landingVisitorCents),
+                  })}
+                </span>
+              )}
+              <div className={styles.rowHead}>
+                <span>{label('plan.presale', stage, { segment: seg.name })}</span>
+              </div>
+              <span className={styles.hint}>
+                {label('plan.presale.leads', stage, {
+                  n: seg.openLeads,
+                  size: costs.presaleBatchSize,
+                })}
+              </span>
+              <Stepper
+                stage={stage}
+                value={batches}
+                max={Math.min(
+                  Math.floor(seg.openLeads / costs.presaleBatchSize),
+                  capFor(batches, free, costs.presaleHoursPerBatch, 10),
+                )}
+                display={
+                  batches === 0
+                    ? label('plan.presale.none', stage)
+                    : count('plan.presale.batches', stage, batches, {
+                        prospects: batches * costs.presaleBatchSize,
+                      })
+                }
+                onChange={(n) => actions.setPresales(seg.id, n)}
+              />
+            </div>
+          )
+        })}
+      </section>
       <section className={styles.card}>
         <h2 className={styles.title}>{label('plan.section.build', stage)}</h2>
         <p className={styles.hint}>{label('plan.section.buildHint', stage)}</p>
@@ -218,6 +312,53 @@ export function Plan() {
       />
 
       <section className={styles.card}>
+        <h2 className={styles.title}>{label('plan.section.books', stage)}</h2>
+        <p className={styles.hint}>
+          {label('plan.section.booksHint', stage, {
+            required: label('unit.hours', stage, { n: view.bookkeeping.requiredHoursPerWeek }),
+            limit: label('unit.hours', stage, { n: view.bookkeeping.limitHours }),
+          })}
+        </p>
+        <span>
+          {label('plan.books.backlog', stage, {
+            backlog: label('unit.hours', stage, { n: view.bookkeeping.backlogHours }),
+            planned: label('unit.hours', stage, { n: plan.bookkeepingHours }),
+          })}
+        </span>
+        {view.bookkeeping.backlogHours +
+          view.bookkeeping.requiredHoursPerWeek -
+          plan.bookkeepingHours >
+          view.bookkeeping.limitHours && (
+          <p className={styles.warn}>{label('plan.books.warn', stage)}</p>
+        )}
+        <Stepper
+          stage={stage}
+          value={plan.bookkeepingHours}
+          max={Math.min(view.bookkeeping.maxHours, plan.bookkeepingHours + free)}
+          onChange={actions.setBookkeepingHours}
+        />
+      </section>
+      {(plan.chase.length > 0 || plan.searchRole !== null) && (
+        <section className={styles.card}>
+          <h2 className={styles.title}>{label('plan.team', stage)}</h2>
+          {plan.searchRole !== null && (
+            <p>
+              {label('plan.teamSummary', stage, {
+                role: label(`team.role.${plan.searchRole}`, stage),
+                hours: label('unit.hours', stage, { n: costs.searchHours }),
+              })}
+            </p>
+          )}
+          {plan.chase.length > 0 && (
+            <p>
+              {count('plan.chase.booked', stage, plan.chase.length, {
+                hours: label('unit.hours', stage, { n: plan.chase.length * costs.chaseHours }),
+              })}
+            </p>
+          )}
+        </section>
+      )}
+      <section className={styles.card}>
         <h2 className={styles.title}>{label('plan.section.rest', stage)}</h2>
         <p className={styles.hint}>{label('plan.section.restHint', stage)}</p>
         <Stepper
@@ -283,4 +424,17 @@ function DemoSummary(props: {
       </button>
     </section>
   )
+}
+
+function issueText(code: PlanIssue['code'], stage: UiStage, max: number): string {
+  switch (code) {
+    case 'too_many_hours':
+    case 'transfer_exceeds_savings':
+      return label(`plan.issue.${code}`, stage, { max })
+    case 'presale_needs_leads':
+    case 'bookkeeping_exceeds_backlog':
+      return label(`plan.issue.${code}`, stage)
+    default:
+      return label('plan.issue.other', stage)
+  }
 }
