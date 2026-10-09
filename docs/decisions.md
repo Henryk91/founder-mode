@@ -74,3 +74,7 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Tuning 4, willingness to pay: small offices 200 to 450 EUR, medical 180 to 320 EUR. At the default price a viable medical market was almost unwinnable (11% against 75% for coworking). Coworking stays high (600 to 1,500); a player who raises the price there gains, and the bots never change the price.
 - Tuning 5, funnel: lead to demo base 0.18, demo to trial 0.05 + 0.40 x fit, selling skill +0.005 per demo, viable pain 0.60 to 0.85, churn 0.03 + 0.20 x misfit. Winners overshot (19 customers for a 7 customer target). Higher churn was rejected: it met the targets but gave 20 to 30% monthly churn for good products.
 - Tuning 6 (formula), energy: the low energy penalty (x0.85 on sales chances below 30) and burnout (3 weeks at 0) from scenario section 7 were pulled forward from Phase 4. Without them 65 h weeks were free and the overworker was the best strategy. Engine 0.4.0. Energy rules reach the UI only as the scenario thresholds, in the explanation and a Plan tab warning.
+
+## After the Phase 3 review
+
+- Saves carry `scenarioHash`, a fingerprint of the whole scenario (numbers and texts). A save made under other scenario values is refused with its own notice ("the game has been retuned since"), instead of replaying into a different game. Texts are included because quote and name counts change random draws. The engine version stays 0.4.0: the replay itself did not change.
