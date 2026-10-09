@@ -37,8 +37,13 @@ export type GameState = {
     segments: Record<SegmentId, HiddenSegment>
     /** Landing page tests and pre-sales that have not reported yet. */
     experiments: PendingExperiment[]
-    /** Week in which each invoice will be paid, or null if it never will. Keyed by invoice id. */
+    /**
+     * Week in which each invoice will be paid, or null if it will not be paid on its own. Keyed
+     * by invoice id.
+     */
     payWeeks: Record<string, number | null>
+    /** Invoices whose customer pays only once chased. Their pay week is null until then. */
+    waitsForChase: string[]
     /** True skill of every candidate and team member. Keyed by candidate id. */
     teamSkills: Record<string, number>
   }
@@ -139,6 +144,7 @@ export type HiddenSegment = {
   channelResponse: Record<ChannelId, number>
   paymentDelayDaysMean: number
   neverPaysShare: number
+  waitsForChaseShare: number
 }
 
 export type InterviewEvidence = {

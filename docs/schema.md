@@ -577,3 +577,4 @@ Arrives in Phase 4. See plan section 4.10.
 - Books: removed `WeekPlan.bookkeepingHours`, `company.bookkeepingBacklogHours`, `PlayerView.bookkeeping`, the `bookkeeping_penalty` report entry and log event, the `bookkeeping_exceeds_backlog` issue, the condition path `bookkeepingBacklog`, and `finance.bookkeeping` in the scenario. The books are the recurring inbox event `receipts_pile`.
 - Events may set their own `cooldownWeeks`, replacing the inbox cooldown for that event.
 - `MessageView.eventId`: the scenario event a message comes from, so the same kind of message can be recognised. Not a hidden value.
+- Invoices: `hidden.waitsForChase` lists invoices whose customer pays only once chased (their pay week is null until a chase works). Scenario segments gained `waitsForChaseShare`; `finance.writeOffWeeks` is 8.

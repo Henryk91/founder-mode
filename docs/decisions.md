@@ -116,3 +116,4 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 ## Design fixes and tuning (engine 0.7.0)
 
 - Books: the weekly 2 h chore paid the player to skip it (14 h saved per 7 weeks against a 150 EUR fine and 4 h). It is now the recurring message `receipts_pile` (from week 4, its own cooldown of 5 weeks): sort them (3 h), pay the accountant (150 EUR), or later (half the time a 400 EUR fine, half the time 4 h lost).
+- Chasing only moved a payment that was coming anyway. Now a quarter of invoices (`waitsForChaseShare` 0.25 per segment) are paid only after a chase works (0.3 per chase, as before), and unpaid invoices are written off 8 weeks after due (was 12). Never payers stay unreachable. The Money tab hint says so, without numbers.

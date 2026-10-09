@@ -310,7 +310,7 @@ const labels = {
     'They hold every demo they can first, and spend the rest of their hours on outreach here.',
   'money.invoices': 'Invoices',
   'money.invoicesHint':
-    'Customers are invoiced at every month end. Some pay on time, some do not, a few never will. Chasing an overdue invoice costs {hours} and may get it paid next week.',
+    'Customers are invoiced at every month end. Some pay on time, some only once asked, a few never will. Chasing an overdue invoice costs {hours} and may get it paid next week. Unpaid invoices are written off two months after they were due.',
   'money.invoicesNone':
     'No invoices yet. They start once a customer has been with you for a month.',
   'money.receivables': 'Waiting to be paid',

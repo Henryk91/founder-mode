@@ -12,7 +12,7 @@ import type {
 import { conditionsHold } from './conditions'
 import { activeCustomers } from './customers'
 import { committedHours } from './founder'
-import { isOverdue } from './invoices'
+import { isOverdue, nudgeInvoice } from './invoices'
 import { qualityFor } from './product'
 import { pickName } from './sales'
 
@@ -139,15 +139,12 @@ function applyEffect(
       }
     }
     case 'invoicePayChance': {
-      const payWeeks = { ...state.hidden.payWeeks }
+      let money = { payWeeks: state.hidden.payWeeks, waitsForChase: state.hidden.waitsForChase }
       for (const inv of state.invoices) {
         if (inv.customerId !== message.targetId || !isOverdue(inv, week)) continue
-        const planned = payWeeks[inv.id]
-        if (rng.chance(effect.delta) && planned !== null && planned !== undefined) {
-          payWeeks[inv.id] = Math.min(planned, week + 1)
-        }
+        if (rng.chance(effect.delta)) money = nudgeInvoice(money, inv.id, week)
       }
-      return { ...state, hidden: { ...state.hidden, payWeeks } }
+      return { ...state, hidden: { ...state.hidden, ...money } }
     }
     case 'churnChance': {
       const target = state.customers.find((c) => c.id === message.targetId)

@@ -29,6 +29,7 @@ export function drawHiddenSegments(scenario: Scenario, rng: Rng): Record<Segment
       channelResponse,
       paymentDelayDaysMean: seg.paymentDelayDaysMean,
       neverPaysShare: seg.neverPaysShare,
+      waitsForChaseShare: seg.waitsForChaseShare,
     }
   })
   return out

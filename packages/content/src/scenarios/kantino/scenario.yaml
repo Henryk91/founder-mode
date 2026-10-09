@@ -37,9 +37,9 @@ founder:
 finance:
   weeksPerMonth: 4
   # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
-  # late by a segment dependent number of days, or never.
+  # late by a segment dependent number of days, only once chased, or never.
   invoiceDueDays: 14
-  writeOffWeeks: 12
+  writeOffWeeks: 8
   chaseHours: 1
   chaseBoost: 0.3
 
@@ -180,6 +180,7 @@ segments:
       in_person: { min: 0.025, max: 0.125 }
     paymentDelayDaysMean: 5
     neverPaysShare: 0.05
+    waitsForChaseShare: 0.25
 
   - id: coworking
     name: Coworking spaces
@@ -193,6 +194,7 @@ segments:
       in_person: { min: 0.075, max: 0.15 }
     paymentDelayDaysMean: 12
     neverPaysShare: 0.03
+    waitsForChaseShare: 0.25
 
   - id: medical
     name: Medical practices
@@ -206,3 +208,4 @@ segments:
       in_person: { min: 0.05, max: 0.1 }
     paymentDelayDaysMean: 20
     neverPaysShare: 0.08
+    waitsForChaseShare: 0.25
