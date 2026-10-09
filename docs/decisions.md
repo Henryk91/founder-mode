@@ -98,3 +98,11 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Pre-sale: a batch needs 3 open leads (`presale.minLeads`, was 5). Prospects per pre-sale are `min(batches x 5, open leads)`, and the result records that count, so it scales with the batch.
 - Inbox choices carry `costCents` (cash that certainly goes out) and `monthlyCostCents` (fixed costs added); the UI shows them next to the hours. Gains and chances stay hidden.
 - Counts of weeks in label text use a plural-aware `unit.weeks`; "1 open lead" instead of "1 leads".
+
+## Careful bot (after the Phase 4 review)
+
+- `validate_then_build` now plays the Phase 4 systems like a careful human, from `PlayerView` only: 8 interviews per market in week 1; in week 2 one landing test on the market the interviews favour; drops a market whose landing test has under 7% sign ups; books and chases (3 a week) every week.
+- Inbox policy (`answerInbox`): per open message take the choice that asks the most effort, if it has no monthly cost, takes at most 6 h (8 h a week in all), and costs money only when that is at most a tenth of the cash and leaves 3,000 EUR. If the best choice is free, leave the message so its free default happens. It reads hours and money, never text, so it cannot know whether effort pays.
+- `validate_then_build_hire` also makes the one hire once monthly revenue covers the salary (developer while wanted features are unbuilt, else salesperson), picks the best impression, and sends the developer to unbuilt wanted features and the salesperson to the chosen market.
+- The report runs both variants through the seven targets and switches each of inbox, chase, landing, books off in turn (same seeds), plus all four off. The random bot is also run without answering the inbox. None of these extra runs enter the targets.
+- The bots do not use follow ups yet.

@@ -32,6 +32,10 @@ export type RunResult = {
   /** Monthly price at the end of the run. */
   finalPriceCents: number
   customersEnd: number
+  /** Company cash plus personal savings at the end. */
+  finalWealthCents: number
+  /** Week of the offer to the one hire, or null when nobody was hired. */
+  hiredWeek: number | null
   customersAtCheck: number
   monthlyRevenueAtCheckCents: number
   minEnergy: number
@@ -147,6 +151,8 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     firstCustomerWeek: state.customers[0]?.sinceWeek ?? null,
     finalPriceCents: state.company.priceCentsPerMonth,
     customersEnd: state.customers.filter((c) => c.churnedWeek === null).length,
+    finalWealthCents: state.company.cashCents + state.founder.savingsCents,
+    hiredWeek: state.team.members[0]?.offerWeek ?? null,
     customersAtCheck,
     monthlyRevenueAtCheckCents: revenueAtCheck,
     minEnergy,
