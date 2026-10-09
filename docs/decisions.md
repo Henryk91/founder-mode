@@ -157,3 +157,5 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Office stage: the engine has none yet, so the kitchen table always shows; the coworking desk scene is drawn and tested and waits for its event.
 - Fonts are bundled with `@fontsource` (Plex Sans, Plex Mono, Caveat), so the static build makes no outside requests.
 - `uiStage` sets `data-stage` on the layout; `theme/organised.css` restyles only the pipeline board tokens. The switch itself is Phase 7.
+
+- Deployment: GitHub Pages via Actions, Vite `base` is `/founder-mode/` for builds only. Results screen shows one interview summary line per market, quotes behind a tap. Empty hours bar is a thin dashed strip with no text.

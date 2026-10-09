@@ -223,7 +223,10 @@ const labels = {
   'money.historyNone': 'Nothing yet. A line appears here after every week you end.',
   'results.account': 'What happened',
   'results.numbers': 'The numbers',
-  'results.interview': 'You spoke to someone at {segment}. Their view: {bucket}.',
+  'results.interview.one': 'You spoke to {n} person at {segment}. Their view: {bucket}.',
+  'results.interview.other': 'You spoke to {n} people at {segment}. Most common view: {bucket}.',
+  'results.quotes.show': 'Show what they said',
+  'results.quotes.hide': 'Hide quotes',
   'plan.section.test': 'Test the demand',
   'plan.section.testHint':
     'A landing page test costs {hours} and the ad budget, and reports {weeks} later with visitors and sign ups. The page shows your current price, and a few people who sign up become leads. A pre-sale costs {presale} per batch and pitches {size} companies you have not met. Those who say yes pay a deposit of one month and become customers once the product does what they need. If it does not within {refund}, they get their money back. It reports {presaleWeeks} later, and each market allows {max} batches.',
