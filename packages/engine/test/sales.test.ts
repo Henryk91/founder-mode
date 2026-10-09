@@ -108,13 +108,14 @@ describe('demos and trials', () => {
     const s = withLeads([lead({ stage: 'demo' })])
     const r = endWeek(s, plan({ demos: ['lead_1'] }))
     expect(r.report.plannedHours).toBe(3)
-    expect(r.state.founder.skills.selling).toBeCloseTo(0.11, 10)
+    expect(r.state.founder.skills.selling).toBeCloseTo(0.1 + s.scenario.sales.skillGainPerDemo, 10)
     expect(r.state.leads[0]!.lastContactWeek).toBe(1)
   })
 
   it('moves held demos to a trial or loses the lead, depending on the fit', () => {
     let trials = 0
     let lost = 0
+    const cfg = newGame().scenario.sales
     for (let i = 0; i < 200; i++) {
       const s = {
         ...withLeads([lead({ stage: 'demo' })], { pain: 0.9, shipped: true }),
@@ -127,9 +128,10 @@ describe('demos and trials', () => {
         lost++
       }
     }
-    // fit = 0.9 * 1 * 0.85 = 0.765, so p(trial) = 0.2 + 0.6 * 0.765 = 0.66
-    expect(trials / 200).toBeGreaterThan(0.55)
-    expect(trials / 200).toBeLessThan(0.77)
+    // fit = 0.9 * 1 * 0.85 = 0.765, so p(trial) = base + perFit * 0.765
+    const p = cfg.demoToTrialBase + cfg.demoToTrialPerFit * 0.765
+    expect(trials / 200).toBeGreaterThan(p - 0.11)
+    expect(trials / 200).toBeLessThan(p + 0.11)
     expect(lost).toBeGreaterThan(0)
   })
 
@@ -262,7 +264,9 @@ describe('customers, revenue and churn', () => {
   it('computes churn from fit and bugs, capped', () => {
     let s = newGame('churn')
     const seg = s.hidden.segments.small_offices!
-    expect(churnChance(s, 'small_offices')).toBeCloseTo(0.02 + 0.25, 10) // nothing shipped, fit 0
+    const churn = s.scenario.sales.churn
+    // nothing shipped, so fit is 0
+    expect(churnChance(s, 'small_offices')).toBeCloseTo(churn.base + churn.perMisfit, 10)
     s = { ...s, product: { ...s.product, bugs: 100 } }
     expect(churnChance(s, 'small_offices')).toBe(0.6)
     expect(seg.pain).toBeGreaterThan(0)
