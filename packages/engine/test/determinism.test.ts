@@ -85,16 +85,16 @@ describe('purity', () => {
 })
 
 describe('full run', () => {
-  it('a scripted game plays all 78 weeks', () => {
+  it('a scripted game plays all 60 weeks', () => {
     let s: GameState = createGame(richKantino(), 'full-run')
     let weeks = 0
     while (s.status === 'running') {
       s = endWeek(s, scriptedPlan(s)).state
       weeks++
     }
-    expect(weeks).toBe(78)
+    expect(weeks).toBe(60)
     expect(s.ending).toBe('still_searching')
-    expect(s.actionLog).toHaveLength(78)
+    expect(s.actionLog).toHaveLength(60)
     expect(replay(richKantino(), toSave(s))).toEqual(s)
   })
 

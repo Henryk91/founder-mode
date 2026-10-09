@@ -3,11 +3,11 @@
 
 id: kantino
 name: Kantino
-maxWeeks: 78
+maxWeeks: 60
 
 start:
-  cashCents: 1000000
-  savingsCents: 1200000
+  cashCents: 600000
+  savingsCents: 950000
   livingCostCentsPerWeek: 45000
   priceCentsPerMonth: 30000
   energy: 80
@@ -178,7 +178,7 @@ segments:
     name: Small offices
     description: Agencies and firms with 10 to 50 staff
     size: { min: 800, max: 2000 }
-    wtpCents: { min: 20000, max: 45000 }
+    wtpCents: { min: 25000, max: 48000 }
     mustHave: [basic_ordering, invoice_export, chat_integration]
     channelResponse:
       cold_email: { min: 0.05, max: 0.1 }
@@ -206,7 +206,7 @@ segments:
     name: Medical practices
     description: Doctors and dentists with shift based teams
     size: { min: 400, max: 1200 }
-    wtpCents: { min: 18000, max: 32000 }
+    wtpCents: { min: 26000, max: 42000 }
     mustHave: [basic_ordering, allergy_filter, shift_schedule]
     channelResponse:
       cold_email: { min: 0.01, max: 0.03 }

@@ -25,8 +25,8 @@ describe('finance', () => {
   it('takes living costs from savings every week', () => {
     const { ledger, state } = applyFinanceWeek(newGame(), plan())
     expect(ledger.livingCostsCents).toBe(45_000)
-    expect(state.founder.savingsCents).toBe(1_155_000)
-    expect(state.company.cashCents).toBe(1_000_000)
+    expect(state.founder.savingsCents).toBe(905_000)
+    expect(state.company.cashCents).toBe(600_000)
   })
 
   it('charges fixed costs only at month end, every 4th week', () => {
@@ -38,14 +38,14 @@ describe('finance', () => {
       s = r.state
     }
     expect(fixed).toEqual([0, 0, 0, 27_000, 0, 0, 0, 27_000])
-    expect(s.company.cashCents).toBe(1_000_000 - 2 * 27_000)
+    expect(s.company.cashCents).toBe(600_000 - 2 * 27_000)
   })
 
   it('moves a planned transfer from savings into the company', () => {
     const { state, ledger } = applyFinanceWeek(newGame(), plan({ transferToCompanyCents: 200_000 }))
     expect(ledger.transferCents).toBe(200_000)
-    expect(state.company.cashCents).toBe(1_200_000)
-    expect(state.founder.savingsCents).toBe(1_200_000 - 200_000 - 45_000)
+    expect(state.company.cashCents).toBe(800_000)
+    expect(state.founder.savingsCents).toBe(950_000 - 200_000 - 45_000)
   })
 
   it('draws living costs from the company when savings run out', () => {
@@ -118,9 +118,9 @@ describe('finance', () => {
 
   it('estimates runway from known costs before a month has been played', () => {
     const s = newGame()
-    // 10,000 cash + 12,000 savings. Per month: 270 fixed + 4 * 450 living = 2,070.
-    expect(runwayWeeks(s)).toBe(Math.floor((2_200_000 * 4) / 207_000))
-    expect(getView(s).company.runwayWeeks).toBe(42)
+    // 6,000 cash + 9,500 savings. Per month: 270 fixed + 4 * 450 living = 2,070.
+    expect(runwayWeeks(s)).toBe(Math.floor((1_550_000 * 4) / 207_000))
+    expect(getView(s).company.runwayWeeks).toBe(29)
     const withCustomer = {
       ...s,
       customers: [
@@ -141,10 +141,10 @@ describe('finance', () => {
   it('computes runway on cash plus savings from the net change of the last 4 weeks', () => {
     // Weeks 1 to 4: 270 fixed costs and 4 * 450 living costs from savings.
     const after = play(newGame(), 4, () => plan())
-    expect(after.company.cashCents).toBe(973_000)
-    expect(after.founder.savingsCents).toBe(1_020_000)
-    expect(runwayWeeks(after)).toBe(Math.floor(((973_000 + 1_020_000) * 4) / 207_000))
-    expect(getView(after).company.runwayWeeks).toBe(38)
+    expect(after.company.cashCents).toBe(573_000)
+    expect(after.founder.savingsCents).toBe(770_000)
+    expect(runwayWeeks(after)).toBe(Math.floor(((573_000 + 770_000) * 4) / 207_000))
+    expect(getView(after).company.runwayWeeks).toBe(25)
   })
 
   it('is not changed by moving savings into the company', () => {

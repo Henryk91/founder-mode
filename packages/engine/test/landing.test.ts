@@ -13,7 +13,7 @@ describe('landing page tests', () => {
     expect(week1.report.plannedHours).toBe(8)
     expect(week1.report.ledger.adSpendCents).toBe(20_000)
     expect(week1.report.entries).toContainEqual({ kind: 'ad_spend', amountCents: 20_000 })
-    expect(week1.state.company.cashCents).toBe(1_000_000 - 20_000)
+    expect(week1.state.company.cashCents).toBe(600_000 - 20_000)
     expect(getView(week1.state).pendingExperiments).toEqual([
       { kind: 'landing', segmentId: 'coworking', resolveWeek: 2 },
     ])

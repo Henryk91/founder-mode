@@ -25,10 +25,10 @@ describe('app smoke test', () => {
 
     begin(store)
     const plan = html(store)
-    expect(plan).toContain('Week 1 of 78')
+    expect(plan).toContain('Week 1 of 60')
     expect(plan).toContain('End week')
     expect(plan).toContain('Talk to people')
-    expect(plan).toContain('Runway: 42 weeks')
+    expect(plan).toContain('Runway: 29 weeks')
 
     for (let i = 0; i < 3; i++) {
       store.getState().setInterviews('coworking', 2)
@@ -41,7 +41,7 @@ describe('app smoke test', () => {
       expect(results).not.toContain('End week')
       store.getState().dismissReport()
     }
-    expect(html(store)).toContain('Week 4 of 78')
+    expect(html(store)).toContain('Week 4 of 60')
   })
 
   it('renders every tab, with leads in the pipeline', () => {
@@ -100,14 +100,14 @@ describe('onboarding', () => {
       store.getState().nextIntro()
     }
     expect(seen[0]).toContain('You are a founder in Munich')
-    expect(seen[0]).toContain('€10,000')
-    expect(seen[0]).toContain('€12,000')
+    expect(seen[0]).toContain('€6,000')
+    expect(seen[0]).toContain('€9,500')
     expect(seen[0]).toContain('€450')
     expect(seen[1]).toContain('Kantino is software')
     expect(seen[2]).toContain('small offices, coworking spaces and medical practices')
-    expect(seen[3]).toContain('Last 78 weeks')
+    expect(seen[3]).toContain('Last 60 weeks')
     expect(seen[3]).toContain('Start week 1')
-    expect(html(store)).toContain('Week 1 of 78')
+    expect(html(store)).toContain('Week 1 of 60')
   })
 
   it('does not say which market is viable, whatever the seed', () => {
@@ -152,7 +152,7 @@ describe('onboarding', () => {
     store.getState().openHelp()
     const page = html(store)
     expect(page).toContain('The goal')
-    expect(page).toContain('Last 78 weeks')
+    expect(page).toContain('Last 60 weeks')
     expect(page).toContain('How a week works')
     expect(page).toContain('Back to the game')
     store.getState().closeHelp()
@@ -175,7 +175,7 @@ describe('onboarding', () => {
     expect(html(store)).not.toContain('Got it')
     // The terms are tappable on screen.
     const page = html(store)
-    expect(page).toContain('Runway: 42 weeks')
+    expect(page).toContain('Runway: 29 weeks')
     expect(page).toMatch(/aria-label="Energy: What does this mean\?"/)
     expect(page).toMatch(/aria-label="Hours: What does this mean\?"/)
   })
@@ -267,7 +267,7 @@ describe('playtest fixes', () => {
     const page = html(store)
     expect(page).toContain('Living costs from your savings')
     expect(page).toMatch(/Living costs from your savings<\/span><span[^>]*>€450</)
-    expect(page).toMatch(/Your savings now<\/span><span[^>]*>€11,550</)
+    expect(page).toMatch(/Your savings now<\/span><span[^>]*>€9,050</)
   })
 
   it('has a price control on the Money tab that applies from the next resolved week', () => {

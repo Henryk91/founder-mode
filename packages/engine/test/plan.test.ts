@@ -32,7 +32,7 @@ describe('validatePlan', () => {
 
   it('rejects transfers above savings', () => {
     expect(validatePlan(state, plan({ transferToCompanyCents: 1_200_001 }))).toEqual([
-      { code: 'transfer_exceeds_savings', savingsCents: 1_200_000 },
+      { code: 'transfer_exceeds_savings', savingsCents: 950_000 },
     ])
   })
 
