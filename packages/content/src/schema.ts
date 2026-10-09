@@ -110,15 +110,6 @@ export const PresaleConfigSchema = z.object({
   commitRate: Share,
 })
 
-export const BookkeepingConfigSchema = z.object({
-  hoursPerWeek: z.number().int().nonnegative(),
-  // Above this many open hours the penalty fires.
-  backlogLimit: z.number().int().positive(),
-  lateFeeCents: Cents.nonnegative(),
-  // Hours taken out of the next week by the penalty.
-  lostHours: z.number().int().nonnegative(),
-})
-
 export const FinanceConfigSchema = z.object({
   weeksPerMonth: z.number().int().positive(),
   // Invoices are due this many days after they are issued.
@@ -128,7 +119,6 @@ export const FinanceConfigSchema = z.object({
   chaseHours: z.number().int().positive(),
   // Chance that chasing an overdue invoice gets it paid in the following week.
   chaseBoost: Share,
-  bookkeeping: BookkeepingConfigSchema,
 })
 
 export const ROLE_IDS = ['developer', 'salesperson'] as const
@@ -187,7 +177,6 @@ export const CONDITION_PATHS = [
   'features.shipped',
   'hasHire',
   'monthlyRevenueEur',
-  'bookkeepingBacklog',
 ] as const
 export type ConditionPath = (typeof CONDITION_PATHS)[number]
 export const CONDITION_OPS = ['>=', '<=', '>', '<', '==', '!='] as const
@@ -259,6 +248,8 @@ export const EventSchema = z.object({
   area: z.enum(EVENT_AREAS),
   weight: z.number().positive(),
   once: z.boolean().default(false),
+  // Weeks before a repeatable event can come back, instead of the inbox cooldown.
+  cooldownWeeks: z.number().int().nonnegative().optional(),
   when: z.array(ConditionSchema).default([]),
   // Who the message is from. A customer or lead is a real one, picked when the message arrives.
   from: z.enum(['none', 'customer', 'lead']).default('none'),

@@ -571,3 +571,9 @@ Arrives in Phase 4. See plan section 4.10.
 ### After Phase 4 (engine 0.6.0)
 
 `WeekPlan.followUps: string[]`, `PlanIssue` `invalid_follow_up`, `LeadView.canFollowUp`, `MessageChoice.costCents` and `monthlyCostCents`, `costs.presaleMinLeads`, `costs.followUpHours`. Scenario: `sales.followUpHours`, `sales.followUpDemoBoost`, `experiments.presale.minLeads`.
+
+### Design fixes (engine 0.7.0)
+
+- Books: removed `WeekPlan.bookkeepingHours`, `company.bookkeepingBacklogHours`, `PlayerView.bookkeeping`, the `bookkeeping_penalty` report entry and log event, the `bookkeeping_exceeds_backlog` issue, the condition path `bookkeepingBacklog`, and `finance.bookkeeping` in the scenario. The books are the recurring inbox event `receipts_pile`.
+- Events may set their own `cooldownWeeks`, replacing the inbox cooldown for that event.
+- `MessageView.eventId`: the scenario event a message comes from, so the same kind of message can be recognised. Not a hidden value.

@@ -65,12 +65,12 @@ export function informedPlan(state: GameState): WeekPlan {
     (a, b) => b[1].pain - a[1].pain,
   )[0]!
   const demoHours = state.scenario.sales.demoHours
-  // Two hours of bookkeeping, and a chase for each overdue invoice (at most three).
+  // A chase for each overdue invoice (at most three).
   const chase = state.invoices
     .filter((i) => i.paidWeek === null && i.writtenOffWeek === null && state.week > i.dueWeek)
     .slice(0, 3)
     .map((i) => i.id)
-  let free = 50 - 2 - chase.length
+  let free = 50 - chase.length
   const build: Record<string, number> = {}
   for (const id of hidden.mustHave) {
     const f = state.product.features.find((x) => x.id === id)!
@@ -97,7 +97,6 @@ export function informedPlan(state: GameState): WeekPlan {
     build,
     demos,
     bugFixHours,
-    bookkeepingHours: 2,
     chase,
     outreach:
       shipped || state.week > 3 ? { [segId]: { channel: 'phone', hours: Math.max(0, free) } } : {},

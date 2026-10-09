@@ -34,7 +34,7 @@ function withInvoice(week: number, payWeek: number | null, over: Partial<Invoice
   }
 }
 
-const book = plan({ bookkeepingHours: 2 })
+const book = plan()
 
 describe('invoices', () => {
   it('are issued to every active customer at month end, due in 14 days', () => {
@@ -107,9 +107,7 @@ describe('invoices', () => {
       { code: 'invalid_chase', invoiceId: 'invoice_9' },
     ])
     expect(validatePlan(withInvoice(5, 12), plan({ chase: ['invoice_1'] }))).toHaveLength(1)
-    expect(
-      endWeek(s, plan({ chase: ['invoice_1'], bookkeepingHours: 2 })).report.plannedHours,
-    ).toBe(3)
+    expect(endWeek(s, plan({ chase: ['invoice_1'] })).report.plannedHours).toBe(1)
   })
 
   it('get paid the following week about 30% of the time when chased', () => {
@@ -118,8 +116,8 @@ describe('invoices', () => {
     for (let i = 0; i < 400; i++) {
       const base = { ...withInvoice(9, 15), rng: newGame(`chase${i}`).rng }
       if (
-        endWeek(endWeek(base, plan({ chase: ['invoice_1'], bookkeepingHours: 2 })).state, book)
-          .state.invoices[0]!.paidWeek === 10
+        endWeek(endWeek(base, plan({ chase: ['invoice_1'] })).state, book).state.invoices[0]!
+          .paidWeek === 10
       )
         paidNext++
       if (endWeek(endWeek(base, book).state, book).state.invoices[0]!.paidWeek === 10) paidPlain++
@@ -131,10 +129,7 @@ describe('invoices', () => {
   it('are not helped by chasing when the customer never pays', () => {
     for (let i = 0; i < 40; i++) {
       const base = { ...withInvoice(9, null), rng: newGame(`never${i}`).rng }
-      const r = endWeek(
-        endWeek(base, plan({ chase: ['invoice_1'], bookkeepingHours: 2 })).state,
-        book,
-      )
+      const r = endWeek(endWeek(base, plan({ chase: ['invoice_1'] })).state, book)
       expect(r.state.invoices[0]!.paidWeek).toBeNull()
     }
   })

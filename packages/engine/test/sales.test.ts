@@ -215,7 +215,7 @@ describe('customers, revenue and churn', () => {
   it('invoices at month end the customers won before that week, and is paid later', () => {
     let s = newGame()
     s = { ...s, week: 4, customers: [customer('customer_1', 2), customer('customer_2', 4)] }
-    const r = endWeek(s, plan({ bookkeepingHours: 2 }))
+    const r = endWeek(s, plan())
     expect(r.state.invoices).toHaveLength(1)
     expect(r.state.invoices[0]).toMatchObject({
       customerId: 'customer_1',
@@ -243,7 +243,7 @@ describe('customers, revenue and churn', () => {
       ],
     }
     // A price change this week applies to new customers only.
-    const r = endWeek(s, plan({ priceCentsPerMonth: 90_000, bookkeepingHours: 2 }))
+    const r = endWeek(s, plan({ priceCentsPerMonth: 90_000 }))
     expect(r.state.invoices.map((i) => i.amountCents)).toEqual([30_000, 45_000])
     expect(r.state.company.priceCentsPerMonth).toBe(90_000)
     const active = r.state.customers.filter((c) => c.churnedWeek === null)
@@ -271,7 +271,7 @@ describe('customers, revenue and churn', () => {
 
   it('issues no invoices outside month ends', () => {
     const s = { ...newGame(), week: 3, customers: [customer('customer_1', 1)] }
-    expect(endWeek(s, plan({ bookkeepingHours: 2 })).state.invoices).toEqual([])
+    expect(endWeek(s, plan()).state.invoices).toEqual([])
   })
 
   it('computes churn from fit and bugs, capped', () => {

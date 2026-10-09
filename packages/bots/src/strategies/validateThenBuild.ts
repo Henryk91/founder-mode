@@ -38,6 +38,10 @@ const PAYBACK_LAG_WEEKS = 8
 const ASSUMED_SKILL = 0.85
 const PAYBACK_CASH_MONTHS = 2
 
+/** The books arrive as this message; sorting them yourself is the careful answer. */
+const BOOKS_EVENT = 'receipts_pile'
+const BOOKS_CHOICE = 'sort'
+
 /** Inbox policy limits: hours per message, hours per week, and how much cash may be spent. */
 const MESSAGE_HOURS_MAX = 6
 const MESSAGE_HOURS_PER_WEEK = 8
@@ -154,7 +158,7 @@ export function answerInbox(view: PlayerView): { messageId: string; choiceId: st
  * and drops that market if too few visitors sign up. Picks the market that sounds most in pain,
  * signs up visitors and asks for features most, builds what its interviewees asked for, then sells
  * there on the channel that finds the most leads per hour. Runs pre-sales once it has enough
- * leads. Answers the inbox by `answerInbox`, does the books, and chases late invoices. Moves to
+ * leads. Answers the inbox by `answerInbox`, sorts the books when the accountant asks, and chases late invoices. Moves to
  * the next market after a long stretch without a customer, or when pre-sales find nobody who
  * pays. Follows up with open leads in that market. `behaviours.hire` sets when it makes the one
  * hire.
@@ -282,13 +286,38 @@ export function validatingPlayer(
   }
 
   return {
-    respond: (view) => (behaviours.inbox ? answerInbox(view) : []),
+    respond(view) {
+      // The books are their own behaviour: sorted by hand, or left to the default.
+      const books = view.inbox.filter(
+        (m) => m.eventId === BOOKS_EVENT && m.answeredChoiceId === null,
+      )
+      const answers = behaviours.books
+        ? books.flatMap((m) => {
+            const c = m.choices.find((x) => x.id === BOOKS_CHOICE)
+            const fits =
+              c && view.committedHours + view.forcedHours + c.hours <= view.founder.maxHoursPerWeek
+            return fits ? [{ messageId: m.id, choiceId: BOOKS_CHOICE }] : []
+          })
+        : []
+      if (!behaviours.inbox) return answers
+      const used = answers.reduce(
+        (t, a) =>
+          t +
+          (books.find((m) => m.id === a.messageId)?.choices.find((c) => c.id === a.choiceId)
+            ?.hours ?? 0),
+        0,
+      )
+      const rest = view.inbox.filter((m) => m.eventId !== BOOKS_EVENT)
+      return [
+        ...answers,
+        ...answerInbox({ ...view, committedHours: view.committedHours + used, inbox: rest }),
+      ]
+    },
     plan(view) {
       const b = new PlanBuilder(view, budget)
       const ids = view.segments.map((s) => s.id)
       lastView = view
       if (prices) b.price(prices.price(view))
-      if (behaviours.books) b.bookkeeping()
       if (behaviours.chase) b.chase(CHASE_PER_WEEK)
 
       // Week 1: interviews only. Week 2: a landing page test where the interviews point, more
@@ -385,7 +414,7 @@ export function validatingPlayer(
 }
 
 const DESCRIPTION =
-  'Interviews every market, runs one landing page test on the market its interviews favour (and drops it below 7% sign ups), builds what that market asks for, sells on its best channel, follows up with up to six open leads there a week, runs up to two pre-sale batches, and moves on after 12 weeks without a customer or two pre-sale batches without a commitment. Does the books, chases three late invoices a week, and answers the inbox by the policy in `answerInbox`.'
+  'Interviews every market, runs one landing page test on the market its interviews favour (and drops it below 7% sign ups), builds what that market asks for, sells on its best channel, follows up with up to six open leads there a week, runs up to two pre-sale batches, and moves on after 12 weeks without a customer or two pre-sale batches without a commitment. Sorts the books when the accountant asks, chases three late invoices a week, and answers the inbox by the policy in `answerInbox`.'
 
 export const validateThenBuild: Strategy = {
   id: 'validate_then_build',

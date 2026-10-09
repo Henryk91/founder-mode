@@ -79,7 +79,6 @@ describe('hidden boundary', () => {
     for (let i = 0; i < 40 && s.status === 'running'; i++) {
       const v = getView(s)
       const p = plan({
-        bookkeepingHours: 2,
         interviews: i < 3 ? { [seg[i % 3]!]: 2 } : {},
         landing: i === 1 ? { [seg[0]!]: 20_000 } : {},
         outreach: { [seg[1]!]: { channel: 'in_person', hours: 20 } },

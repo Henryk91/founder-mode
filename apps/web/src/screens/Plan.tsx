@@ -25,7 +25,6 @@ export function Plan() {
     setRestHours: useGame((s) => s.setRestHours),
     setLanding: useGame((s) => s.setLanding),
     setPresales: useGame((s) => s.setPresales),
-    setBookkeepingHours: useGame((s) => s.setBookkeepingHours),
     setTab: useGame((s) => s.setTab),
   }
   if (!view) return null
@@ -309,33 +308,6 @@ export function Plan() {
         onOpen={() => actions.setTab('pipeline')}
       />
 
-      <section className={styles.card}>
-        <h2 className={styles.title}>{label('plan.section.books', stage)}</h2>
-        <p className={styles.hint}>
-          {label('plan.section.booksHint', stage, {
-            required: label('unit.hours', stage, { n: view.bookkeeping.requiredHoursPerWeek }),
-            limit: label('unit.hours', stage, { n: view.bookkeeping.limitHours }),
-          })}
-        </p>
-        <span>
-          {label('plan.books.backlog', stage, {
-            backlog: label('unit.hours', stage, { n: view.bookkeeping.backlogHours }),
-            planned: label('unit.hours', stage, { n: plan.bookkeepingHours }),
-          })}
-        </span>
-        {view.bookkeeping.backlogHours +
-          view.bookkeeping.requiredHoursPerWeek -
-          plan.bookkeepingHours >
-          view.bookkeeping.limitHours && (
-          <p className={styles.warn}>{label('plan.books.warn', stage)}</p>
-        )}
-        <Stepper
-          stage={stage}
-          value={plan.bookkeepingHours}
-          max={Math.min(view.bookkeeping.maxHours, plan.bookkeepingHours + free)}
-          onChange={actions.setBookkeepingHours}
-        />
-      </section>
       {(plan.chase.length > 0 || plan.searchRole !== null || plan.followUps.length > 0) && (
         <section className={styles.card}>
           <h2 className={styles.title}>{label('plan.team', stage)}</h2>
@@ -439,7 +411,6 @@ function issueText(code: PlanIssue['code'], stage: UiStage, max: number): string
     case 'transfer_exceeds_savings':
       return label(`plan.issue.${code}`, stage, { max })
     case 'presale_needs_leads':
-    case 'bookkeeping_exceeds_backlog':
       return label(`plan.issue.${code}`, stage)
     default:
       return label('plan.issue.other', stage)

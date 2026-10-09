@@ -41,14 +41,6 @@ export class PlanBuilder {
     this.free = Math.max(0, Math.min(budget, view.founder.maxHoursPerWeek) - taken)
   }
 
-  /** Brings the books up to date. Always the first thing a sensible founder books. */
-  bookkeeping(): number {
-    const h = Math.max(0, Math.min(this.view.bookkeeping.maxHours, this.free))
-    this.plan.bookkeepingHours = h
-    this.free -= h
-    return h
-  }
-
   /** Follows up with open leads, silent ones first, up to `max` of them, optionally in one market. */
   followUp(max: number, segmentId?: string): number {
     const open = this.view.leads.filter(

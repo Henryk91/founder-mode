@@ -122,7 +122,6 @@ describe('bots', () => {
     const runs = Array.from({ length: 20 }, (_, i) => runGame(scenario, strategy, `p4-${i}`))
     for (const r of runs) {
       expect(r.landingTests).toBe(1)
-      expect(r.bookkeepingPenalties).toBe(0)
     }
     expect(runs.some((r) => r.presaleBatches > 0)).toBe(true)
     expect(runs.some((r) => r.invoicesIssued > 0)).toBe(true)
@@ -217,7 +216,7 @@ describe('bots', () => {
     const noBooks = withoutBehaviours({ id: 'validate_then_build', hire: 'none' }, ['books'])
     expect(noBooks.id).toBe('validate_then_build -books')
     const r = runGame(scenario, noBooks, 'nb')
-    expect(r.bookkeepingPenalties).toBeGreaterThan(0)
+    expect(r.booksLeft).toBeGreaterThan(0)
     const noLanding = runGame(
       scenario,
       withoutBehaviours({ id: 'v', hire: 'none' }, ['landing']),

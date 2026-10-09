@@ -1,4 +1,3 @@
-import { maxBookkeepingHours } from './systems/bookkeeping'
 import { openLeadCount } from './systems/experiments'
 import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
@@ -19,7 +18,6 @@ export function emptyPlan(): WeekPlan {
     landing: {},
     presales: {},
     followUps: [],
-    bookkeepingHours: 0,
     chase: [],
     searchRole: null,
     hire: null,
@@ -144,12 +142,6 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
         leads: batches * presale.minLeads,
       })
     }
-  }
-
-  if (!isCount(plan.bookkeepingHours)) {
-    issues.push({ code: 'invalid_number', field: 'bookkeepingHours' })
-  } else if (plan.bookkeepingHours > maxBookkeepingHours(state)) {
-    issues.push({ code: 'bookkeeping_exceeds_backlog', maxHours: maxBookkeepingHours(state) })
   }
 
   const followed = new Set<string>()

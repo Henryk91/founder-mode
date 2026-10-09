@@ -376,9 +376,9 @@ export function buildReport(input: ReportInput): string {
     '',
     '## Phase 4 systems in use',
     '',
-    'Per run, averaged over all runs of a strategy. Penalties are bookkeeping penalties (backlog over 12 h). Written off is the share of invoices never paid. Messages answered is the share of inbox messages the strategy answered instead of leaving to its default.',
+    "Per run, averaged over all runs of a strategy. Books left is the number of accountant requests left to their default ('later'). Written off is the share of invoices never paid. Messages answered is the share of inbox messages the strategy answered instead of leaving to its default.",
     '',
-    '| Strategy | Landing tests | Pre-sale batches | Invoices issued | Written off | Bookkeeping penalties | Messages | Messages answered |',
+    '| Strategy | Landing tests | Pre-sale batches | Invoices issued | Written off | Books left | Messages | Messages answered |',
     '|---|---|---|---|---|---|---|---|',
   )
   for (const s of input.strategies) {
@@ -389,7 +389,7 @@ export function buildReport(input: ReportInput): string {
     const messages = s.results.reduce((t, r) => t + r.messages, 0)
     const answered = s.results.reduce((t, r) => t + r.messagesAnswered, 0)
     push(
-      `| ${s.id} | ${mean((r) => r.landingTests).toFixed(1)} | ${mean((r) => r.presaleBatches).toFixed(1)} | ${mean((r) => r.invoicesIssued).toFixed(1)} | ${fmtPct(pct(lost, issued))} | ${mean((r) => r.bookkeepingPenalties).toFixed(2)} | ${mean((r) => r.messages).toFixed(1)} | ${fmtPct(pct(answered, messages))} |`,
+      `| ${s.id} | ${mean((r) => r.landingTests).toFixed(1)} | ${mean((r) => r.presaleBatches).toFixed(1)} | ${mean((r) => r.invoicesIssued).toFixed(1)} | ${fmtPct(pct(lost, issued))} | ${mean((r) => r.booksLeft).toFixed(2)} | ${mean((r) => r.messages).toFixed(1)} | ${fmtPct(pct(answered, messages))} |`,
     )
   }
 
@@ -470,7 +470,7 @@ export function buildReport(input: ReportInput): string {
     '',
     `## Pacing in weeks 1 to ${PACING_WEEKS}`,
     '',
-    "Share of weeks with at least one noteworthy thing: a new message, new leads, a lead that moved, an experiment result, a shipped feature, a payment, a churned customer, a fine, or candidates. Interviews and the player's own spending do not count. The stricter column counts only news that asks for a decision: a new message, a lead that moved stage, an experiment result, a lost customer or invoice, or candidates.",
+    "Share of weeks with at least one noteworthy thing: a new message, new leads, a lead that moved, an experiment result, a shipped feature, a payment, a churned customer, or candidates. Interviews and the player's own spending do not count. The stricter column counts only news that asks for a decision: a new message, a lead that moved stage, an experiment result, a lost customer or invoice, or candidates.",
     '',
     '| Strategy | Weeks with something noteworthy | Weeks with decision news (stricter) | Weeks with a new message | Median noteworthy weeks per run | Runs with 5 or more weeks without decision news |',
     '|---|---|---|---|---|---|',

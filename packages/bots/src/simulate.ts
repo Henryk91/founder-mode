@@ -38,7 +38,6 @@ export function isNoteworthy(e: WeekReport['entries'][number]): boolean {
       return e.count > 0
     case 'revenue':
     case 'invoice_written_off':
-    case 'bookkeeping_penalty':
     case 'landing_result':
     case 'presale_result':
     case 'candidates_ready':
@@ -81,6 +80,8 @@ export type RunResult = {
   /** Weeks with a new message, a lead that moved, an experiment result, or a lost customer. */
   decisionWeeks: number
   messageWeeks: number
+  /** Ids of the inbox events that arrived, in order. */
+  eventsSeen: string[]
   customersAtCheck: number
   monthlyRevenueAtCheckCents: number
   minEnergy: number
@@ -90,8 +91,8 @@ export type RunResult = {
   /** Landing page tests and pre-sale batches the run paid for. */
   landingTests: number
   presaleBatches: number
-  /** Bookkeeping penalties, and invoices written off, over the run. */
-  bookkeepingPenalties: number
+  /** Book requests left to their gamble ('later'), and invoices written off, over the run. */
+  booksLeft: number
   writtenOffInvoices: number
   invoicesIssued: number
   /** Messages in the inbox over the run, and how many the player answered. */
@@ -216,6 +217,7 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     noteworthyWeeks,
     decisionWeeks,
     messageWeeks,
+    eventsSeen: state.drawnEvents.map((d) => d.eventId),
     customersAtCheck,
     monthlyRevenueAtCheckCents: revenueAtCheck,
     minEnergy,
@@ -232,7 +234,9 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
         t + (a.type === 'endWeek' ? Object.values(a.plan.presales).reduce((x, y) => x + y, 0) : 0),
       0,
     ),
-    bookkeepingPenalties: state.eventLog.filter((e) => e.kind === 'bookkeeping_penalty').length,
+    booksLeft: state.eventLog.filter(
+      (e) => e.kind === 'message' && e.eventId === 'receipts_pile' && e.choiceId === 'later',
+    ).length,
     writtenOffInvoices: state.invoices.filter((i) => i.writtenOffWeek !== null).length,
     invoicesIssued: state.invoices.length,
     messages: state.inbox.length,

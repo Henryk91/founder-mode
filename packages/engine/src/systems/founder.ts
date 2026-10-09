@@ -31,7 +31,6 @@ export function plannedHours(
     Object.values(plan.landing).filter((budget) => budget > 0).length *
       scenario.experiments.landing.hours +
     sum(Object.values(plan.presales)) * scenario.experiments.presale.hoursPerBatch +
-    plan.bookkeepingHours +
     plan.chase.length * scenario.finance.chaseHours +
     (plan.searchRole === null ? 0 : scenario.team.searchHours) +
     committedHours(state) +

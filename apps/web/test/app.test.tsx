@@ -321,10 +321,9 @@ describe('energy', () => {
   })
 })
 
-/** Ends weeks with the books done until a message is in the inbox. */
+/** Ends weeks until a message is in the inbox. */
 function untilMessage(store: Store, maxWeeks = 30) {
   for (let i = 0; i < maxWeeks && store.getState().view!.inbox.length === 0; i++) {
-    store.getState().setBookkeepingHours(2)
     store.getState().endWeek()
     store.getState().dismissReport()
   }
@@ -342,8 +341,6 @@ describe('phase 4 screens', () => {
     expect(page).toContain('€500')
     expect(page).toContain('Pre-sale: Medical practices')
     expect(page).toContain('0 open leads. A batch needs at least 3.')
-    expect(page).toContain('The books')
-    expect(page).toContain('Open: 0 h. Planned this week: 0 h.')
     expect(page).not.toMatch(/[{}]/)
   })
 
@@ -358,7 +355,6 @@ describe('phase 4 screens', () => {
     store.getState().setTab('market')
     expect(html(store)).toContain('Landing page test running. Result in week 3.')
     for (let i = 0; i < 2; i++) {
-      store.getState().setBookkeepingHours(2)
       store.getState().endWeek()
       if (i === 1) expect(html(store)).toMatch(/Landing page test for Coworking spaces: \d+ of 133/)
       store.getState().dismissReport()
@@ -420,7 +416,6 @@ describe('phase 4 screens', () => {
     store.getState().dismissReport()
     expect(html(store)).toContain('Looking for a Developer. Candidates arrive in week 3.')
     for (let i = 0; i < 2; i++) {
-      store.getState().setBookkeepingHours(2)
       store.getState().endWeek()
       store.getState().dismissReport()
     }
@@ -547,7 +542,6 @@ describe('follow ups, costs and plurals', () => {
     begin(store)
     for (let i = 0; i < 6 && !store.getState().view!.leads.some((l) => l.canFollowUp); i++) {
       store.getState().setOutreach('coworking', 'in_person', 40)
-      store.getState().setBookkeepingHours(2)
       store.getState().endWeek()
       store.getState().dismissReport()
     }

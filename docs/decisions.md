@@ -112,3 +112,7 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - `validate_then_build` follows up with up to 6 open leads in its chosen market a week, silent ones first, after demos. Follow ups join the switchable behaviours of the ablation table.
 - `validate_then_build_early_hire` (hire rule `payback`): searches when observed leads per hour x share of closed leads won x price, over the weeks left after search, start, and 8 weeks to payment, exceeds the salary to week 78, with no churn assumed, and while cash plus savings hold 2 months of salary. Picks the role that pays back more; hires the best impression if it still pays back at that impression's skill band middle. Role output hours (`team.roles.*.weeklyHours`) are read from the scenario as the job description.
 - Report: a third target column, a hire table compared on the same seeds with plain play, and pacing in weeks 1 to 20 (noteworthy weeks, and a stricter count of weeks with decision news).
+
+## Design fixes and tuning (engine 0.7.0)
+
+- Books: the weekly 2 h chore paid the player to skip it (14 h saved per 7 weeks against a 150 EUR fine and 4 h). It is now the recurring message `receipts_pile` (from week 4, its own cooldown of 5 weeks): sort them (3 h), pay the accountant (150 EUR), or later (half the time a 400 EUR fine, half the time 4 h lost).

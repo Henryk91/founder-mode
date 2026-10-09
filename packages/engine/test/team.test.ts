@@ -5,7 +5,7 @@ import { newGame, plan, quietKantino } from './helpers'
 import { openLead } from './helpers2'
 
 const quiet = (seed = 'team') => newGame(seed, quietKantino())
-const book = { bookkeepingHours: 2 }
+const book = {}
 
 /** Searches for `role`, waits for the candidates and hires the one with the best true skill. */
 function hired(seed: string, role: TeamRoleId, pick: 'best' | 'worst' = 'best'): GameState {
@@ -23,7 +23,7 @@ describe('team search', () => {
   it('costs 6 h and produces 3 candidates after 2 weeks', () => {
     const s = quiet()
     const r = endWeek(s, plan({ searchRole: 'developer', ...book }))
-    expect(r.report.plannedHours).toBe(8)
+    expect(r.report.plannedHours).toBe(6)
     expect(getView(r.state).team.search).toEqual({ role: 'developer', readyWeek: 3 })
     expect(getView(r.state).team.candidates).toEqual([])
     expect(getView(r.state).team.canSearch).toBe(false)
@@ -168,7 +168,7 @@ describe('a hire', () => {
     expect(outreach).toBeDefined()
     expect(capacity).toBeGreaterThan(2 * 3)
     // The founder's own hours stay free.
-    expect(r.report.plannedHours).toBe(2)
+    expect(r.report.plannedHours).toBe(0)
   })
 
   it('costs one month of salary to let go, and only one hire is ever allowed', () => {

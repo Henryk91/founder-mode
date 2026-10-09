@@ -42,7 +42,6 @@ describe('content', () => {
       centsPerVisitor: 150,
     })
     expect(s.experiments.presale).toMatchObject({ hoursPerBatch: 6, batchSize: 5, weeks: 1 })
-    expect(s.finance.bookkeeping).toMatchObject({ hoursPerWeek: 2, backlogLimit: 12 })
     expect(s.finance.chaseBoost).toBe(0.3)
     expect(s.team.roles.developer.monthlyCents).toBe(420_000)
     expect(s.team.roles.salesperson.monthlyCents).toBe(380_000)

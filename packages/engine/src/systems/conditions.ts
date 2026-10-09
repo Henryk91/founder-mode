@@ -27,7 +27,6 @@ const METRICS: Record<ConditionPath, (state: GameState) => number> = {
   hasHire: (s) => (hasHire(s) ? 1 : 0),
   monthlyRevenueEur: (s) =>
     Math.floor(activeCustomers(s).reduce((sum, c) => sum + c.priceCentsPerMonth, 0) / 100),
-  bookkeepingBacklog: (s) => s.company.bookkeepingBacklogHours,
 }
 
 function holds(value: number, c: Condition): boolean {

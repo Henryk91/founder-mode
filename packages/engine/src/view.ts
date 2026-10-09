@@ -1,4 +1,3 @@
-import { maxBookkeepingHours } from './systems/bookkeeping'
 import { interviewsOf, openLeadCount } from './systems/experiments'
 import { monthlyFixedCostsCents, receivablesCents, runwayWeeks } from './systems/finance'
 import { committedHours } from './systems/founder'
@@ -82,12 +81,6 @@ export function getView(state: GameState): PlayerView {
     },
     committedHours: committedHours(state),
     forcedHours: founder.forcedHours,
-    bookkeeping: {
-      requiredHoursPerWeek: scenario.finance.bookkeeping.hoursPerWeek,
-      backlogHours: company.bookkeepingBacklogHours,
-      limitHours: scenario.finance.bookkeeping.backlogLimit,
-      maxHours: maxBookkeepingHours(state),
-    },
     invoices: state.invoices.map((inv) => {
       const status: InvoiceStatus =
         inv.paidWeek !== null
@@ -115,6 +108,7 @@ export function getView(state: GameState): PlayerView {
       .filter((m) => m.status === 'open' || m.status === 'answered')
       .map((m) => ({
         id: m.id,
+        eventId: m.eventId,
         week: m.week,
         expiresWeek: m.expiresWeek,
         fromRole: m.fromRole,

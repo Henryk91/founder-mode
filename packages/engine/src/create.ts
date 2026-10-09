@@ -32,7 +32,6 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       cashCents: start.cashCents,
       priceCentsPerMonth: start.priceCentsPerMonth,
       fixedCosts: start.fixedCosts.map((c) => ({ ...c })),
-      bookkeepingBacklogHours: 0,
       uiStage: 'scrappy',
     },
     hidden: { segments: hiddenSegments, experiments: [], payWeeks: {}, teamSkills: {} },

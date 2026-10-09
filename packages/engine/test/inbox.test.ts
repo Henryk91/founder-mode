@@ -6,7 +6,7 @@ import type { GameState, Invoice } from '../src/types'
 import { kantino, newGame, plan } from './helpers'
 import { customer, event, openLead, withEvents } from './helpers2'
 
-const book = plan({ bookkeepingHours: 2 })
+const book = plan()
 const cond = (text: string) => {
   const c = parseCondition(text)
   if (!c) throw new Error(`bad condition ${text}`)
@@ -227,8 +227,8 @@ describe('answering', () => {
       plannedHours: 66,
       maxHours: 65,
     })
-    const r = endWeek(answered, plan({ bookkeepingHours: 2, restHours: 5 }))
-    expect(r.report.plannedHours).toBe(2 + 2 + 5)
+    const r = endWeek(answered, plan({ restHours: 5 }))
+    expect(r.report.plannedHours).toBe(2 + 5)
     // 80 + 3 + 20 (message) + 7.5 rest, capped at 100; the answer took effect before the week's energy.
     expect(r.state.founder.energy).toBe(100)
     expect(r.report.entries).toContainEqual({
@@ -455,14 +455,16 @@ describe('the Kantino events', () => {
     for (let i = 0; i < 20; i++) {
       let s = newGame(`real${i}`)
       for (let w = 0; w < 40 && s.status === 'running'; w++)
-        s = endWeek(s, plan({ bookkeepingHours: 2, interviews: { coworking: 1 } })).state
+        s = endWeek(s, plan({ interviews: { coworking: 1 } })).state
       const byEvent = new Map<string, number[]>()
       for (const m of s.inbox) byEvent.set(m.eventId, [...(byEvent.get(m.eventId) ?? []), m.week])
       for (const [id, weeks] of byEvent) {
         const ev = s.scenario.events.find((e) => e.id === id)!
         if (ev.once) expect(weeks).toHaveLength(1)
         for (let k = 1; k < weeks.length; k++)
-          expect(weeks[k]! - weeks[k - 1]!).toBeGreaterThanOrEqual(s.scenario.inbox.cooldownWeeks)
+          expect(weeks[k]! - weeks[k - 1]!).toBeGreaterThanOrEqual(
+            ev.cooldownWeeks ?? s.scenario.inbox.cooldownWeeks,
+          )
       }
       total += s.inbox.length
     }

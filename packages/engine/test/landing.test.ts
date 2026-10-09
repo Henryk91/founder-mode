@@ -8,8 +8,8 @@ const quiet = (seed: string) => newGame(seed, quietKantino())
 describe('landing page tests', () => {
   it('costs 8 h and the ad budget, and reports after 2 weeks', () => {
     let s = quiet('landing')
-    const week1 = endWeek(s, plan({ landing: { coworking: 20_000 }, bookkeepingHours: 2 }))
-    expect(week1.report.plannedHours).toBe(8 + 2)
+    const week1 = endWeek(s, plan({ landing: { coworking: 20_000 } }))
+    expect(week1.report.plannedHours).toBe(8)
     expect(week1.report.ledger.adSpendCents).toBe(20_000)
     expect(week1.report.entries).toContainEqual({ kind: 'ad_spend', amountCents: 20_000 })
     expect(week1.state.company.cashCents).toBe(1_000_000 - 20_000)
@@ -20,9 +20,9 @@ describe('landing page tests', () => {
       [],
     )
 
-    s = endWeek(week1.state, plan({ bookkeepingHours: 2 })).state
+    s = endWeek(week1.state, plan()).state
     expect(getView(s).segments.find((x) => x.id === 'coworking')!.landingTests).toEqual([])
-    const week3 = endWeek(s, plan({ bookkeepingHours: 2 }))
+    const week3 = endWeek(s, plan())
     const test = getView(week3.state).segments.find((x) => x.id === 'coworking')!.landingTests
     expect(test).toHaveLength(1)
     expect(test[0]).toMatchObject({ week: 3, budgetCents: 20_000, visitors: 133 })
