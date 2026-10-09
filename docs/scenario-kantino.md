@@ -40,13 +40,15 @@ The player is a solo founder in Munich building Kantino, software that lets a wo
 | Size (reachable companies) | 800 to 2000 | 100 to 300 | 400 to 1200 |
 | Willingness to pay per month | 150 to 400 | 600 to 1500 | 100 to 250 |
 | Must have features | `basic_ordering`, `invoice_export`, `chat_integration` | `basic_ordering`, `multi_site`, `member_billing` | `basic_ordering`, `allergy_filter`, `shift_schedule` |
-| Channel response: cold email | 0.10 to 0.20 | 0.05 to 0.12 | 0.02 to 0.06 |
-| Channel response: phone | 0.08 to 0.15 | 0.10 to 0.22 | 0.12 to 0.25 |
-| Channel response: in person | 0.05 to 0.25 | 0.15 to 0.30 | 0.10 to 0.20 |
+| Channel response: cold email | 0.05 to 0.10 | 0.025 to 0.06 | 0.01 to 0.03 |
+| Channel response: phone | 0.04 to 0.075 | 0.05 to 0.11 | 0.06 to 0.125 |
+| Channel response: in person | 0.025 to 0.125 | 0.075 to 0.15 | 0.05 to 0.10 |
 | Invoice lateness, mean days | 5 | 12 | 20 |
 | Share that never pays | 5% | 3% | 8% |
 
 Each value given as a range is drawn uniformly at game creation from the seed.
+
+Phase 3 tuning: every channel response was halved, so the best channel finds about 0.07 leads per hour at the starting selling skill (one lead per 15 h, as in section 10). Before, 45 h of in person outreach found 7 to 8 leads a week.
 
 ### 3.2 Roles, assigned randomly per run
 
