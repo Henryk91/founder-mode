@@ -14,7 +14,7 @@ import { activeCustomers } from './customers'
 import { committedHours } from './founder'
 import { isOverdue, nudgeInvoice } from './invoices'
 import { qualityFor } from './product'
-import { pickName } from './sales'
+import { addLeads } from './sales'
 
 /** What resolving messages adds to the week besides changes to the state. */
 export type MessageOutcome = {
@@ -159,7 +159,7 @@ function applyEffect(
       return { ...state, customers }
     }
     case 'newLeads':
-      return addLeads(state, segmentOf(state, message, rng), effect.count, rng)
+      return addLeads(state, segmentOf(state, message, rng), effect.count, rng, 'inbox')
     case 'touchLead': {
       const leads = state.leads.map((l) =>
         l.id === message.targetId && isOpenLead(l)
@@ -188,27 +188,6 @@ function segmentOf(state: GameState, message: Message, rng: Rng): SegmentId {
     state.customers.find((c) => c.id === message.targetId) ??
     state.leads.find((l) => l.id === message.targetId)
   return target?.segmentId ?? rng.pick(state.scenario.segments).id
-}
-
-function addLeads(state: GameState, segmentId: SegmentId, count: number, rng: Rng): GameState {
-  const leads = [...state.leads]
-  const used = new Set(leads.map((l) => l.name))
-  const parts = state.scenario.companyNames[segmentId] ?? { first: [], second: [] }
-  for (let i = 0; i < count; i++) {
-    const name = pickName(parts, used, rng)
-    used.add(name)
-    leads.push({
-      id: `lead_${leads.length + 1}`,
-      name,
-      segmentId,
-      stage: 'lead',
-      stageSinceWeek: state.week,
-      lastContactWeek: state.week,
-      silentSinceWeek: null,
-      lostReason: null,
-    })
-  }
-  return { ...state, leads }
 }
 
 function sender(state: GameState, event: ScenarioEvent, rng: Rng) {

@@ -344,7 +344,7 @@ describe('phase 4 screens', () => {
     expect(page).not.toMatch(/[{}]/)
   })
 
-  it('reports landing page results on the Market tab, a few weeks later', () => {
+  it('reports landing page results on the Market tab a week later', () => {
     const store = fresh('p4-landing')
     begin(store)
     store.getState().setLanding('coworking', 20_000)
@@ -353,13 +353,13 @@ describe('phase 4 screens', () => {
     expect(first).toContain('Ads for landing page tests cost €200.')
     store.getState().dismissReport()
     store.getState().setTab('market')
-    expect(html(store)).toContain('Landing page test running. Result in week 3.')
-    for (let i = 0; i < 2; i++) {
-      store.getState().endWeek()
-      if (i === 1) expect(html(store)).toMatch(/Landing page test for Coworking spaces: \d+ of 133/)
-      store.getState().dismissReport()
-    }
-    expect(html(store)).toMatch(/Week 3: \d+ of 133 visitors signed up \(€200 of ads\)/)
+    expect(html(store)).toContain('Landing page test running. Result in week 2.')
+    store.getState().endWeek()
+    expect(html(store)).toMatch(
+      /Landing page test for Coworking spaces: \d+ of 133 visitors signed up, and \d+ left their details/,
+    )
+    store.getState().dismissReport()
+    expect(html(store)).toMatch(/Week 2: \d+ of 133 visitors signed up \(€200 of ads\)/)
   })
 
   it('shows the inbox with hours on every choice, and counts open messages on its tab', () => {

@@ -98,9 +98,12 @@ export const LandingConfigSchema = z.object({
   budgetsCents: z.array(Cents.positive()).min(1),
   centsPerVisitor: Cents.positive(),
   weeks: z.number().int().positive(),
-  // Each visitor signs up with probability signupBase + signupPerPain * pain.
+  // Each visitor signs up with probability (signupBase + signupPerPain * pain) * priceFactor,
+  // at the price shown on the page.
   signupBase: Share,
   signupPerPain: Share,
+  // Every this many sign ups become one open lead when the result comes in.
+  signupsPerLead: z.number().int().positive(),
 })
 
 export const PresaleConfigSchema = z.object({

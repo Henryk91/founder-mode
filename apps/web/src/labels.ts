@@ -225,7 +225,7 @@ const labels = {
   'results.interview': 'You spoke to someone at {segment}. Their view: {bucket}.',
   'plan.section.test': 'Test the demand',
   'plan.section.testHint':
-    'A landing page test costs {hours} and the ad budget, and reports {weeks} later with visitors and sign ups. A pre-sale costs {presale} per batch and asks up to {size} of your open leads whether they would pay. It reports {presaleWeeks} later.',
+    'A landing page test costs {hours} and the ad budget, and reports {weeks} later with visitors and sign ups. The page shows your current price, and a few people who sign up become leads. A pre-sale costs {presale} per batch and asks up to {size} of your open leads whether they would pay. It reports {presaleWeeks} later.',
   'plan.landing': 'Landing page: {segment}',
   'plan.landing.none': 'No test',
   'plan.landing.budget': '{budget} of ads, about {visitors} visitors',
@@ -255,8 +255,10 @@ const labels = {
   'results.entry.invoices_issued.other': '{n} invoices sent, {amount} in total.',
   'results.entry.invoice_written_off': '{name} never paid their {amount}. Written off.',
   'results.entry.ad_spend': 'Ads for landing page tests cost {amount}.',
-  'results.entry.landing_result':
-    'Landing page test for {segment}: {signups} of {visitors} visitors signed up.',
+  'results.entry.landing_result.one':
+    'Landing page test for {segment}: {signups} of {visitors} visitors signed up, and {n} left their details.',
+  'results.entry.landing_result.other':
+    'Landing page test for {segment}: {signups} of {visitors} visitors signed up, and {n} left their details.',
   'results.entry.presale_result':
     'Pre-sale in {segment}: {commits} of {prospects} prospects would pay.',
   'results.entry.candidates_ready.one': 'One {role} candidate is ready to meet.',

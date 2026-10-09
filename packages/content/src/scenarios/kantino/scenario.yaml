@@ -61,9 +61,10 @@ experiments:
     hours: 8
     budgetsCents: [20000, 50000]
     centsPerVisitor: 150
-    weeks: 2
+    weeks: 1
     signupBase: 0.02
     signupPerPain: 0.15
+    signupsPerLead: 5
   presale:
     hoursPerBatch: 6
     batchSize: 5
