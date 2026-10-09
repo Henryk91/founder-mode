@@ -346,7 +346,7 @@ describe('lead names', () => {
         }),
       ).state
     }
-    expect(s.leads.length).toBeGreaterThan(10)
+    expect(s.leads.length).toBeGreaterThan(5)
     for (const l of s.leads) {
       const parts = s.scenario.companyNames[l.segmentId]!
       expect(companyNameCombinations(parts)).toContain(l.name)

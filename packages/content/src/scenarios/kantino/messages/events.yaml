@@ -40,6 +40,8 @@ events:
       - id: call
         label: Take the call
         hours: 2
+        effects:
+          - { type: lostHours, hours: 2 }
       - id: decline
         label: Politely decline
         hours: 0
@@ -81,7 +83,7 @@ events:
         label: Follow up today
         hours: 1
         effects:
-          - { type: newLeads, count: 2 }
+          - { type: newLeads, count: 1 }
       - id: ignore
         label: Let it sit
         hours: 0
@@ -194,6 +196,7 @@ events:
         effects:
           - { type: touchLead }
           - { type: bugs, delta: 2 }
+          - { type: lostHours, hours: 3 }
       - id: honest
         label: Be honest about it
         hours: 1
@@ -219,6 +222,8 @@ events:
       - id: study
         label: Study it properly
         hours: 3
+        effects:
+          - { type: energy, delta: -3 }
       - id: ignore
         label: Ignore it
         hours: 0
@@ -244,12 +249,12 @@ events:
         label: Send a careful apology
         hours: 1
         effects:
-          - { type: churnChance, delta: 0.1 }
+          - { type: churnChance, delta: 0.05 }
       - id: nothing
         label: Do nothing
         hours: 0
         effects:
-          - { type: churnChance, delta: 0.25 }
+          - { type: churnChance, delta: 0.1 }
 
   - id: restaurant_portal
     area: product
@@ -270,6 +275,8 @@ events:
       - id: chat
         label: Hear him out
         hours: 2
+        effects:
+          - { type: lostHours, hours: 3 }
       - id: decline
         label: Decline politely
         hours: 0
