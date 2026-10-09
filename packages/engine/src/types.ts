@@ -11,7 +11,7 @@ export type RngState = { a: number; b: number; c: number; d: number }
 
 export type { ChannelId }
 
-export type EndingId = 'bankrupt' | 'still_searching' | 'sustainable'
+export type EndingId = 'bankrupt' | 'burnout' | 'still_searching' | 'sustainable'
 export type UiStage = 'scrappy' | 'organised'
 
 // ---------------------------------------------------------------------------
@@ -56,6 +56,8 @@ export type FounderState = {
   baseHoursPerWeek: number
   maxHoursPerWeek: number
   energy: number
+  /** Weeks in a row that ended with energy at 0. Burnout at scenario burnoutWeeks. */
+  weeksAtZeroEnergy: number
   savingsCents: number
   livingCostCentsPerWeek: number
   skills: { interviewing: number; selling: number }
@@ -227,6 +229,12 @@ export type PlayerView = {
     maxHoursPerWeek: number
     energy: number
     maxEnergy: number
+    /** Below this energy everything works less well. Scenario text, not a hidden value. */
+    lowEnergyBelow: number
+    /** Weeks in a row at 0 energy that end the run. */
+    burnoutWeeks: number
+    /** Weeks in a row that ended at 0 energy so far. */
+    weeksAtZeroEnergy: number
     savingsCents: number
     livingCostCentsPerWeek: number
   }

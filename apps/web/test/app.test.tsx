@@ -166,7 +166,7 @@ describe('onboarding', () => {
       store.getState().openExplain(key)
       const page = html(store)
       expect(page).toContain('Got it')
-      const text = label(`explain.${key}.text`, stage)
+      const text = label(`explain.${key}.text`, stage, { low: 30, weeks: 3 })
       expect(text.split('. ').length).toBe(2)
       expect(page).toContain(text.replace(/'/g, '&#x27;'))
     }
@@ -293,5 +293,27 @@ describe('playtest fixes', () => {
     // The coworking row shows In person selected, the others the first channel.
     const pressed = [...page.matchAll(/aria-pressed="true"[^>]*>([^<]+)</g)].map((m) => m[1])
     expect(pressed).toEqual(['Cold email', 'In person', 'Cold email'])
+  })
+})
+
+describe('energy', () => {
+  it('warns when energy runs low and shows the burnout ending', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'tired' })
+    begin(store)
+    const overwork = () => {
+      store.getState().setInterviews('coworking', 32)
+      store.getState().endWeek()
+      store.getState().dismissReport()
+    }
+    overwork() // 80 to 52
+    overwork() // 52 to 24
+    expect(html(store)).toContain('Running on fumes. Below 30 everything you try works less well.')
+    overwork() // 0, first week
+    expect(html(store)).toContain('Empty. 2 more weeks at 0 and you burn out.')
+    overwork()
+    expect(html(store)).toContain('Empty. One more week at 0 and you burn out.')
+    overwork()
+    expect(store.getState().view?.ending).toBe('burnout')
+    expect(html(store)).toContain('You ran on empty for too long.')
   })
 })

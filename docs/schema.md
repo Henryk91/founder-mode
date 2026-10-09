@@ -2,7 +2,7 @@
 
 Source of truth for the shapes shared between engine, content, bots, and UI. Update this file in the same change as any type change.
 
-Status: Phase 2b plus playtest fixes (engine 0.3.0). Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
+Status: Phase 3 (engine 0.4.0). Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
 
 ## Conventions
 
@@ -24,12 +24,13 @@ type GameState = {
   rng: RngState                 // sfc32 state { a, b, c, d }, signed 32 bit integers
   week: number                  // starts at 1; stays on the final week once the run ends
   status: 'running' | 'ended'
-  ending: EndingId | null       // 'bankrupt' | 'still_searching' | 'sustainable'
+  ending: EndingId | null       // 'bankrupt' | 'burnout' | 'still_searching' | 'sustainable'
 
   founder: {
     baseHoursPerWeek: number    // 50
     maxHoursPerWeek: number     // 65
     energy: number              // 0..scenario.founder.energy.max, may be fractional (x.5)
+    weeksAtZeroEnergy: number   // weeks in a row that ended at 0; burnout at founder.energy.burnoutWeeks
     savingsCents: number        // never below 0
     livingCostCentsPerWeek: number
     skills: { interviewing: number; selling: number }   // 0..1
@@ -109,6 +110,10 @@ Stage rules (plan 4.5, numbers in `scenario.sales`), in the order `systems/sales
 3. An answering `lead`: `leadToDemoBase * (leadToDemoOffset + leadToDemoPerPain * pain)` to become `demo`.
 4. A `lead` or `demo` that was not touched this week goes silent with `ghostChancePerWeek`; a silent lead is lost (`silent`) after `silentWeeksToLose`.
 5. Outreach finds `floor(x)` leads, plus one with probability `x - floor(x)`, where `x = hours * channelResponse * (sellingBase + skills.selling)`.
+
+Steps 1 to 3 and 5 are multiplied by `founder.energy.lowFactor` while energy, after this week's hours, is below `lowBelow` (Kantino: 0.85 below 30). Ghosting and churn are not.
+
+Endings are checked in this order: bankrupt, burnout (`weeksAtZeroEnergy >= burnoutWeeks`), then the week limit.
 
 `fit = pain * coverage * (fitBase + fitPerQuality * quality / 100)`, `coverage` is the shipped share of the segment's must have features, and `priceFactor` is 1 up to the willingness to pay and `exp(-priceSlope * (price / wtp - 1))` above it. `exp` is computed in `math.ts` from pure arithmetic, because `Math.exp` is not bit identical across engines.
 
@@ -256,6 +261,9 @@ type PlayerView = {
     maxHoursPerWeek: number
     energy: number
     maxEnergy: number
+    lowEnergyBelow: number        // scenario rule, shown in the energy explanation
+    burnoutWeeks: number          // scenario rule
+    weeksAtZeroEnergy: number
     savingsCents: number
     livingCostCentsPerWeek: number
   }
@@ -424,7 +432,15 @@ type Scenario = {
   founder: {
     baseHoursPerWeek: number
     maxHoursPerWeek: number
-    energy: { max: number; perHourOverBase: number; perRestHour: number; weekWithinBase: number }
+    energy: {
+      max: number
+      perHourOverBase: number
+      perRestHour: number
+      weekWithinBase: number
+      lowBelow: number            // below this energy every sales chance is multiplied by lowFactor
+      lowFactor: number
+      burnoutWeeks: number        // weeks in a row at 0 that end the run
+    }
   }
   finance: { weeksPerMonth: number }
   experiments: {

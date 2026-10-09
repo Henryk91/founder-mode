@@ -30,6 +30,9 @@ founder:
     perHourOverBase: -2
     perRestHour: 1.5
     weekWithinBase: 3
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
 
 finance:
   weeksPerMonth: 4

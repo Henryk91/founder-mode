@@ -16,7 +16,7 @@ export function plannedHours(scenario: Scenario, plan: WeekPlan): number {
 /**
  * Energy for the week (docs/scenario-kantino.md section 7). Hours above the base cost energy,
  * rest restores it, and a week within the base gives a small bonus. Clamped to 0..max.
- * The low energy penalty and burnout arrive in Phase 4.
+ * Counts the weeks in a row that end at 0, for the burnout ending.
  */
 export function applyFounderWeek(
   founder: FounderState,
@@ -29,5 +29,12 @@ export function applyFounderWeek(
   let delta = overtime * rules.perHourOverBase + restHours * rules.perRestHour
   if (overtime === 0) delta += rules.weekWithinBase
   const energy = Math.min(rules.max, Math.max(0, founder.energy + delta))
-  return { ...founder, energy }
+  const weeksAtZeroEnergy = energy === 0 ? founder.weeksAtZeroEnergy + 1 : 0
+  return { ...founder, energy, weeksAtZeroEnergy }
+}
+
+/** Multiplier on sales chances this week: lowFactor while energy is below lowBelow, else 1. */
+export function energyFactor(founder: FounderState, scenario: Scenario): number {
+  const rules = scenario.founder.energy
+  return founder.energy < rules.lowBelow ? rules.lowFactor : 1
 }

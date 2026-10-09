@@ -36,6 +36,9 @@ const labels = {
 
   'plan.title': 'This week',
   'plan.energy': 'Energy {energy} of {max}',
+  'plan.energyLow': 'Running on fumes. Below {low} everything you try works less well.',
+  'plan.energyZero.one': 'Empty. One more week at 0 and you burn out.',
+  'plan.energyZero.other': 'Empty. {n} more weeks at 0 and you burn out.',
   'plan.issue.too_many_hours': 'That is more than {max} hours. Take something out.',
   'plan.issue.transfer_exceeds_savings': 'You do not have that much in savings.',
   'plan.issue.other': 'Something in this plan does not add up.',
@@ -141,6 +144,8 @@ const labels = {
 
   'end.title': 'The run is over',
   'end.bankrupt': 'The money ran out, yours included. The company is closed.',
+  'end.burnout':
+    'You ran on empty for too long. The doctor said rest, and this time you listened. The company is closed.',
   'end.still_searching': 'Week {max}. The company is still alive and still not paying for itself.',
   'end.sustainable': 'Week {max}. The company pays for itself and for you. That is rare.',
   'end.stats': 'Weeks played: {weeks}. Customers now: {customers}.',
@@ -173,7 +178,7 @@ const labels = {
     'Cash is the money in the company account. Fixed costs leave it and customer payments arrive at every month end, and your savings top it up if it goes negative.',
   'explain.energy.title': 'Energy',
   'explain.energy.text':
-    'Energy is how much you have left in the tank, out of 100. Hours above 50 in a week drain it, and rest hours and lighter weeks refill it.',
+    'Energy is how much you have left in the tank: hours above 50 in a week drain it, and rest hours and lighter weeks refill it. Below {low} everything you try works less well, and {weeks} weeks in a row at 0 end the run.',
   'explain.hours.title': 'Hours',
   'explain.hours.text':
     'A normal week is 50 hours, and you can plan up to 65 if you accept the energy cost. Interviews, building, bug fixing, outreach, demos and rest all count as planned hours.',

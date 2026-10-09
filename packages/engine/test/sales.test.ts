@@ -300,9 +300,9 @@ describe('lead names', () => {
         s,
         plan({
           outreach: {
-            small_offices: { channel: 'cold_email', hours: 20 },
-            coworking: { channel: 'in_person', hours: 20 },
-            medical: { channel: 'phone', hours: 20 },
+            small_offices: { channel: 'cold_email', hours: 15 },
+            coworking: { channel: 'in_person', hours: 15 },
+            medical: { channel: 'phone', hours: 15 },
           },
         }),
       ).state
