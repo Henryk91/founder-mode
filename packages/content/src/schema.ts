@@ -65,6 +65,12 @@ export const InterviewConfigSchema = z.object({
 export const SalesConfigSchema = z.object({
   // Leads from outreach: hours * channelResponse * (selling factor)
   sellingBase: z.number().nonnegative(),
+  // Outreach hours on one channel in one market over the last saturationWeeks weeks (this week
+  // included) beyond saturationHours per week find leads at saturatedFactor of the normal rate:
+  // the easy contacts are used up for a while.
+  saturationHours: z.number().nonnegative(),
+  saturationWeeks: z.number().int().positive(),
+  saturatedFactor: Share,
   // Weekly chance that a lead agrees to a demo: base * (offset + perPain * pain)
   leadToDemoBase: Share,
   leadToDemoOffset: Share,

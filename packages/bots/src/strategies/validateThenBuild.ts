@@ -21,12 +21,17 @@ const CHANNEL_TRIAL_HOURS = 10
 const PIVOT_AFTER_WEEKS = 12
 /** Overdue invoices chased per week. */
 const CHASE_PER_WEEK = 3
-/** Pre-sale batches run in the chosen market, and the batches without a commitment that end it. */
+/** Pre-sale batches a careful player runs in its chosen market, and the batches that refute it. */
 const MAX_PRESALE_BATCHES = 2
 /** How much the landing page sign up rate, above or below the bar, counts next to interviews. */
 const LANDING_WEIGHT = 4
 /** Share of landing page visitors who must sign up for the market to stay interesting. */
 const LANDING_BAR = 0.07
+/** How much the pre-sale commit rate, above or below the bar, counts next to interviews. */
+const PRESALE_WEIGHT = 3
+const PRESALE_BAR = 0.08
+/** Markets that get a landing page test in week 2, best interviews first. */
+const LANDING_MARKETS = 2
 
 /** Open leads in the chosen market followed up per week, silent ones first. */
 const FOLLOW_UPS_PER_WEEK = 6
@@ -49,6 +54,64 @@ const MESSAGE_CASH_SHARE = 0.1
 const MESSAGE_CASH_FLOOR_CENTS = 300_000
 
 /**
+ * How the inbox is answered: `reader` reads each message and picks the answer that suits it
+ * (`READER_CHOICES`), `effort` takes the most effortful affordable choice without reading
+ * (`answerInbox`), `none` leaves every message to its default.
+ */
+export type InboxPolicy = 'reader' | 'effort' | 'none'
+
+/**
+ * What a careful reader answers, per kind of message. A function gets the view for answers that
+ * depend on the founder's state. Messages not listed are left to their default.
+ */
+const READER_CHOICES: Record<string, string | ((view: PlayerView) => string)> = {
+  survey_offer: 'pass',
+  friend_of_friend: 'decline',
+  startup_meetup: 'skip',
+  referral: 'follow_up',
+  discount_demand: 'hold',
+  slow_lead: 'wait',
+  food_fair: 'pass',
+  sales_coach: 'decline',
+  integration_question: 'honest',
+  competitor_launch: 'ignore',
+  crash_report: 'patch',
+  restaurant_portal: 'decline',
+  security_notice: 'patch',
+  hosting_pricing: 'accept',
+  late_payer_first: 'reminder',
+  filing_deadline: 'file',
+  regional_grant: 'apply',
+  laptop_fan: 'live_with_it',
+  bank_fee: 'accept',
+  bad_sleep: 'nap',
+  family_lunch: (v) => (v.founder.energy < v.founder.tiredBelow ? 'go' : 'stay'),
+  flu: (v) => (v.founder.energy - 10 < v.founder.tiredBelow ? 'rest' : 'work_through'),
+  old_boss: 'freelance',
+  team_plan: 'session',
+  raise_request: 'decline',
+}
+
+/** The reader's answers: the listed choice when its hours fit and its money leaves a cushion. */
+export function readInbox(view: PlayerView): { messageId: string; choiceId: string }[] {
+  const answers: { messageId: string; choiceId: string }[] = []
+  let used = view.committedHours
+  for (const m of view.inbox) {
+    if (m.answeredChoiceId !== null) continue
+    const rule = READER_CHOICES[m.eventId]
+    if (!rule) continue
+    const id = typeof rule === 'function' ? rule(view) : rule
+    const c = m.choices.find((x) => x.id === id)
+    if (!c) continue
+    if (used + c.hours + view.forcedHours > view.founder.maxHoursPerWeek) continue
+    if (c.costCents > 0 && view.company.cashCents - c.costCents < MESSAGE_CASH_FLOOR_CENTS) continue
+    answers.push({ messageId: m.id, choiceId: c.id })
+    used += c.hours
+  }
+  return answers
+}
+
+/**
  * When to make the one hire: never, once monthly revenue covers the salary, or as soon as the
  * observed funnel says the hire could pay for themselves before the last week.
  */
@@ -56,21 +119,26 @@ export type HireRule = 'none' | 'covered' | 'payback'
 
 /** The behaviours added in Phase 4 and after, each of which can be switched off to measure it. */
 export type Behaviours = {
-  inbox: boolean
+  inbox: InboxPolicy
   chase: boolean
   landing: boolean
   books: boolean
   followUps: boolean
   hire: HireRule
+  /** `careful`: up to two batches in the chosen market. `max`: every batch allowed, everywhere. */
+  presales: 'careful' | 'max'
+  /** For the event table: always answer this event with this choice. */
+  forced?: { eventId: string; choiceId: string }
 }
 
 export const ALL_BEHAVIOURS: Behaviours = {
-  inbox: true,
+  inbox: 'reader',
   chase: true,
   landing: true,
   books: true,
   followUps: true,
   hire: 'none',
+  presales: 'careful',
 }
 
 export type PaybackInput = {
@@ -116,9 +184,21 @@ function landingRate(view: PlayerView, segmentId: string): number | null {
   return visitors ? tests.reduce((t, x) => t + x.signups, 0) / visitors : null
 }
 
-function score(notes: ReturnType<typeof segmentNotes>, landing: number | null): number {
-  const adjust = landing === null ? 0 : LANDING_WEIGHT * (landing - LANDING_BAR)
-  return notes.meanBucket + notes.mentionRate + adjust
+/** Share of pre-sale prospects who paid a deposit, over all batches in a market, or null. */
+function presaleRate(view: PlayerView, segmentId: string): number | null {
+  const sales = view.segments.find((s) => s.id === segmentId)?.presales ?? []
+  const prospects = sales.reduce((t, x) => t + x.prospects, 0)
+  return prospects ? sales.reduce((t, x) => t + x.commits, 0) / prospects : null
+}
+
+function score(
+  notes: ReturnType<typeof segmentNotes>,
+  landing: number | null,
+  presale: number | null,
+): number {
+  const fromLanding = landing === null ? 0 : LANDING_WEIGHT * (landing - LANDING_BAR)
+  const fromPresale = presale === null ? 0 : PRESALE_WEIGHT * (presale - PRESALE_BAR)
+  return notes.meanBucket + notes.mentionRate + fromLanding + fromPresale
 }
 
 /**
@@ -157,8 +237,9 @@ export function answerInbox(view: PlayerView): { messageId: string; choiceId: st
  * Interviews every market, then runs one landing page test on the market its interviews favour
  * and drops that market if too few visitors sign up. Picks the market that sounds most in pain,
  * signs up visitors and asks for features most, builds what its interviewees asked for, then sells
- * there on the channel that finds the most leads per hour. Runs pre-sales once it has enough
- * leads. Answers the inbox by `answerInbox`, sorts the books when the accountant asks, and chases late invoices. Moves to
+ * there on the channel that finds the most leads per hour. Pitches pre-sales to test what
+ * prospects do. Reads the inbox, sorts the books when the accountant asks, and chases late
+ * invoices. Moves to
  * the next market after a long stretch without a customer, or when pre-sales find nobody who
  * pays. Follows up with open leads in that market. `behaviours.hire` sets when it makes the one
  * hire.
@@ -169,7 +250,7 @@ export function validatingPlayer(
   pricing: PricingRule | null = null,
   behaviours: Behaviours = ALL_BEHAVIOURS,
 ): Player {
-  const channels = new ChannelLog()
+  const channels = new ChannelLog(scenario.sales)
   const prices = pricing ? new PriceSearch(pricing) : null
   let lastView: PlayerView | null = null
   const abandoned = new Set<string>()
@@ -180,12 +261,14 @@ export function validatingPlayer(
 
   const ranked = (view: PlayerView) =>
     view.segments
-      .map((s) => ({
-        id: s.id,
-        notes: segmentNotes(scenario, view, s.id),
-        landing: landingRate(view, s.id),
-      }))
-      .sort((a, b) => score(b.notes, b.landing) - score(a.notes, a.landing))
+      .map((s) => {
+        const notes = segmentNotes(scenario, view, s.id)
+        return {
+          id: s.id,
+          score: score(notes, landingRate(view, s.id), presaleRate(view, s.id)),
+        }
+      })
+      .sort((a, b) => b.score - a.score)
 
   /** Skill the bot expects from an impression label: the middle of its band. */
   const skillOf = (label: string | null): number => {
@@ -286,7 +369,25 @@ export function validatingPlayer(
   }
 
   return {
-    respond(view) {
+    focus: () => target,
+    respond(input) {
+      // A forced answer comes first and takes its messages out of the rest.
+      const forced = behaviours.forced
+      const forcedAnswers: { messageId: string; choiceId: string }[] = []
+      let forcedHours = 0
+      for (const m of input.inbox) {
+        if (!forced || m.eventId !== forced.eventId || m.answeredChoiceId !== null) continue
+        const c = m.choices.find((x) => x.id === forced.choiceId)
+        const hours = input.committedHours + forcedHours + input.forcedHours + (c?.hours ?? 0)
+        if (!c || hours > input.founder.maxHoursPerWeek) continue
+        forcedAnswers.push({ messageId: m.id, choiceId: c.id })
+        forcedHours += c.hours
+      }
+      const view = {
+        ...input,
+        committedHours: input.committedHours + forcedHours,
+        inbox: input.inbox.filter((m) => !forced || m.eventId !== forced.eventId),
+      }
       // The books are their own behaviour: sorted by hand, or left to the default.
       const books = view.inbox.filter(
         (m) => m.eventId === BOOKS_EVENT && m.answeredChoiceId === null,
@@ -299,7 +400,7 @@ export function validatingPlayer(
             return fits ? [{ messageId: m.id, choiceId: BOOKS_CHOICE }] : []
           })
         : []
-      if (!behaviours.inbox) return answers
+      if (behaviours.inbox === 'none') return [...forcedAnswers, ...answers]
       const used = answers.reduce(
         (t, a) =>
           t +
@@ -307,10 +408,15 @@ export function validatingPlayer(
             ?.hours ?? 0),
         0,
       )
-      const rest = view.inbox.filter((m) => m.eventId !== BOOKS_EVENT)
+      const rest = {
+        ...view,
+        committedHours: view.committedHours + used,
+        inbox: view.inbox.filter((m) => m.eventId !== BOOKS_EVENT),
+      }
       return [
+        ...forcedAnswers,
         ...answers,
-        ...answerInbox({ ...view, committedHours: view.committedHours + used, inbox: rest }),
+        ...(behaviours.inbox === 'reader' ? readInbox(rest) : answerInbox(rest)),
       ]
     },
     plan(view) {
@@ -329,7 +435,12 @@ export function validatingPlayer(
       }
       if (view.week === 2) {
         const top = ranked(view)
-        if (behaviours.landing && top[0]) b.landing(top[0].id)
+        if (behaviours.presales === 'max') {
+          for (const { id } of top) while (b.presale(id));
+        } else if (top[0]) {
+          b.presale(top[0].id)
+        }
+        if (behaviours.landing) for (const { id } of top.slice(0, LANDING_MARKETS)) b.landing(id)
         for (const { id } of top.slice(0, 2)) b.interviews(id, SECOND_WEEK_INTERVIEWS)
         const all = new Map<string, number>()
         for (const id of ids) {
@@ -373,22 +484,27 @@ export function validatingPlayer(
       if (wanted.length < 3 && notes.interviews < 20) b.interviews(target, 3)
       for (const f of unshipped) b.build(f, MAX_BUILD_HOURS - (b.plan.build[f] ?? 0))
 
-      // Pre-sales measure what prospects do. Nobody commits in two batches: this market is out.
+      // Pre-sales measure what prospects do. A careful player runs a second batch only when the
+      // first found nobody; nobody in two batches and this market is out.
       const sales = view.segments.find((s) => s.id === target)?.presales ?? []
       const waiting = view.pendingExperiments.some(
         (e) => e.kind === 'presale' && e.segmentId === target,
       )
-      if (sales.length < MAX_PRESALE_BATCHES && !waiting) b.presale(target)
       const prospects = sales.reduce((t, x) => t + x.prospects, 0)
       const commits = sales.reduce((t, x) => t + x.commits, 0)
+      if (behaviours.presales === 'max') {
+        for (const r of ranked(view)) if (!abandoned.has(r.id)) while (b.presale(r.id));
+      } else if (sales.length < MAX_PRESALE_BATCHES && commits === 0 && !waiting) {
+        b.presale(target)
+      }
       const refuted =
         sales.length >= MAX_PRESALE_BATCHES &&
-        prospects >= view.costs.presaleBatchSize &&
+        prospects >= MAX_PRESALE_BATCHES * view.costs.presaleBatchSize &&
         commits === 0
 
       if (unshipped.length <= 1 && wanted.length > 0) {
         sellingSince ??= view.week
-        const channel = channels.choose(target, view.channels, CHANNEL_TRIAL_HOURS)
+        const channel = channels.choose(target, view.channels, CHANNEL_TRIAL_HOURS, b.free)
         b.outreach(target, channel, b.free)
       }
 
@@ -414,7 +530,7 @@ export function validatingPlayer(
 }
 
 const DESCRIPTION =
-  'Interviews every market, runs one landing page test on the market its interviews favour (and drops it below 7% sign ups), builds what that market asks for, sells on its best channel, follows up with up to six open leads there a week, runs up to two pre-sale batches, and moves on after 12 weeks without a customer or two pre-sale batches without a commitment. Sorts the books when the accountant asks, chases three late invoices a week, and answers the inbox by the policy in `answerInbox`.'
+  'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. Drops a market below 7% landing sign ups, or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
 
 export const validateThenBuild: Strategy = {
   id: 'validate_then_build',
@@ -448,11 +564,44 @@ export function withoutBehaviours(
   off: readonly BehaviourName[],
 ): Strategy {
   const behaviours: Behaviours = { ...ALL_BEHAVIOURS, hire: base.hire }
-  for (const name of off) behaviours[name] = false
+  for (const name of off) {
+    if (name === 'inbox') behaviours.inbox = 'none'
+    else behaviours[name] = false
+  }
   return {
     id: `${base.id} -${off.join(' -')}`,
     description: `${base.id} without ${off.join(', ')}.`,
     create: (scenario) => validatingPlayer(scenario, 50, null, behaviours),
+  }
+}
+
+export const presaleMax: Strategy = {
+  id: 'presale_max',
+  description:
+    'Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews.',
+  create: (scenario) =>
+    validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, presales: 'max' }),
+}
+
+/** validate_then_build that answers one event the same way every time, for the event table. */
+export function forcedAnswer(eventId: string, choiceId: string): Strategy {
+  return {
+    id: `validate_then_build ${eventId}:${choiceId}`,
+    description: `validate_then_build, always answering ${eventId} with ${choiceId}.`,
+    create: (scenario) =>
+      validatingPlayer(scenario, 50, null, {
+        ...ALL_BEHAVIOURS,
+        forced: { eventId, choiceId },
+      }),
+  }
+}
+
+/** validate_then_build with another inbox policy, for the inbox comparison in the report. */
+export function withInbox(inbox: InboxPolicy): Strategy {
+  return {
+    id: `validate_then_build inbox:${inbox}`,
+    description: `validate_then_build with the ${inbox} inbox policy.`,
+    create: (scenario) => validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, inbox }),
   }
 }
 

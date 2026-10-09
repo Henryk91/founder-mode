@@ -269,7 +269,12 @@ export function Plan() {
 
       <section className={styles.card}>
         <h2 className={styles.title}>{label('plan.section.sell', stage)}</h2>
-        <p className={styles.hint}>{label('plan.section.sellHint', stage)}</p>
+        <p className={styles.hint}>
+          {label('plan.section.sellHint', stage, {
+            hours: label('unit.hours', stage, { n: costs.saturationHours }),
+            weeks: count('unit.weeks', stage, costs.saturationWeeks),
+          })}
+        </p>
         {view.segments.map((seg) => {
           const out = plan.outreach[seg.id]
           const channel: ChannelId = out?.channel ?? seg.lastChannel ?? view.channels[0] ?? 'phone'

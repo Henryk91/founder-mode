@@ -83,6 +83,9 @@ product:
 
 sales:
   sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
   leadToDemoBase: 0.18
   leadToDemoOffset: 0.4
   leadToDemoPerPain: 0.6

@@ -1,5 +1,5 @@
 import type { RunResult } from './simulate'
-import { CHECK_WEEK, PACING_WEEKS } from './simulate'
+import { CHECK_WEEK, EVIDENCE_WEEK, PACING_WEEKS } from './simulate'
 
 export type StrategyRuns = {
   id: string
@@ -17,6 +17,8 @@ export type ReportInput = {
   ablations?: StrategyRuns[]
   /** Runs for the report only, such as the random bot that never answers a message. */
   extras?: StrategyRuns[]
+  /** Forced answer runs of validate_then_build, one per event and choice. */
+  events?: EventChoiceRuns[]
 }
 
 /** The validate_then_build variants the targets are judged on. */
@@ -47,8 +49,8 @@ const fmtEur = (cents: number | null) =>
 
 export const isLoss = (r: RunResult) => r.ending !== 'sustainable'
 
-/** Targets 6 and 7 were added after the Phase 3 review; nothing has been tuned toward them. */
-export type Target = { id: number; text: string; value: string; pass: boolean; tuned: boolean }
+/** A target of plan section 7. `value` is '-' when the runs it needs were not part of the input. */
+export type Target = { id: number; text: string; value: string; pass: boolean }
 
 const wins = (rs: readonly RunResult[]) => rs.filter((r) => r.ending === 'sustainable')
 
@@ -70,26 +72,163 @@ export function marketSpread(results: readonly RunResult[]): number {
 const firstCustomerWeeks = (rs: readonly RunResult[]) =>
   rs.flatMap((r) => (r.firstCustomerWeek === null ? [] : [r.firstCustomerWeek]))
 
+/** Forced choice runs for the event table: one event answered one way, every time. */
+export type EventChoiceRuns = {
+  eventId: string
+  choiceId: string
+  hours: number
+  costCents: number
+  results: RunResult[]
+}
+
+export type EventRow = {
+  eventId: string
+  /** Seeds where the event arrived in at least one of the runs compared. */
+  seeds: number
+  choices: { choiceId: string; hours: number; costCents: number; rate: number }[]
+  best: string
+  cheapest: string
+  /** The cheapest choice (fewest hours, then least money) has the highest win rate. */
+  favoursCheap: boolean
+}
+
+/** Seeds with this few arrivals are too noisy to say which answer is best. */
+export const EVENT_MIN_SEEDS = 150
+
+/** Win rate of each forced answer per event, on the seeds where the event arrived. */
+export function eventRows(
+  base: readonly RunResult[],
+  runs: readonly EventChoiceRuns[],
+): EventRow[] {
+  const ids = [...new Set(runs.map((r) => r.eventId))]
+  return ids.map((eventId) => {
+    const forced = runs.filter((r) => r.eventId === eventId)
+    const seen = new Set<number>()
+    base.forEach((r, i) => r.eventsSeen.includes(eventId) && seen.add(i))
+    for (const f of forced)
+      f.results.forEach((r, i) => r.eventsSeen.includes(eventId) && seen.add(i))
+    const choices = forced.map((f) => {
+      const rs = [...seen].flatMap((i) => (f.results[i] ? [f.results[i]] : []))
+      return {
+        choiceId: f.choiceId,
+        hours: f.hours,
+        costCents: f.costCents,
+        rate: pct(wins(rs).length, rs.length),
+      }
+    })
+    const best = [...choices].sort((x, y) => y.rate - x.rate)[0]
+    const cheapest = [...choices].sort((x, y) => x.hours - y.hours || x.costCents - y.costCents)[0]
+    return {
+      eventId,
+      seeds: seen.size,
+      choices,
+      best: best?.choiceId ?? '-',
+      cheapest: cheapest?.choiceId ?? '-',
+      favoursCheap: !!best && !!cheapest && cheapest.rate >= best.rate,
+    }
+  })
+}
+
+/** Customers won in winning runs, by the action that found them, largest share first. */
+export function customerShares(results: readonly RunResult[]): { key: string; share: number }[] {
+  const totals = new Map<string, number>()
+  for (const r of wins(results)) {
+    for (const [k, n] of Object.entries(r.customersBySource))
+      totals.set(k, (totals.get(k) ?? 0) + n)
+  }
+  const all = [...totals.values()].reduce((a, b) => a + b, 0)
+  return [...totals.entries()]
+    .map(([key, n]) => ({ key, share: pct(n, all) }))
+    .sort((a, b) => b.share - a.share)
+}
+
+/** Paired comparison on the same seeds: points of difference, and seeds that flipped each way. */
+export function paired(full: readonly RunResult[], other: readonly RunResult[]) {
+  let onlyFull = 0
+  let onlyOther = 0
+  other.forEach((r, i) => {
+    const f = full[i]
+    if (!f) return
+    if (winsOf(f) && !winsOf(r)) onlyFull++
+    if (!winsOf(f) && winsOf(r)) onlyOther++
+  })
+  const n = Math.max(1, full.length)
+  return {
+    change: pct(wins(other).length, n) - pct(wins(full).length, n),
+    onlyFull,
+    onlyOther,
+  }
+}
+
+const find = (input: ReportInput, id: string) =>
+  [...input.strategies, ...(input.ablations ?? []), ...(input.extras ?? [])].find(
+    (x) => x.id === id,
+  )
+
+/** The win rate of hired runs, and of plain play on the same seeds. Null without a hire. */
+export function hireComparison(hireRuns: readonly RunResult[], plain: readonly RunResult[]) {
+  const hired = hireRuns.filter((r) => r.hiredWeek !== null)
+  if (hired.length === 0) return null
+  const same = hired.flatMap((r) => plain.filter((p) => p.seed === r.seed))
+  return {
+    hired: hired.length,
+    withHire: pct(wins(hired).length, hired.length),
+    plain: pct(wins(same).length, same.length),
+  }
+}
+
+/** The targets of plan section 7. Targets 2, 6, 7 and 8 are judged on `vtbId`. */
 export function evaluateTargets(
   input: ReportInput,
   vtbId: string = 'validate_then_build',
 ): Target[] {
   const winRate = (id: string) => {
-    const s = input.strategies.find((x) => x.id === id)
-    if (!s) return null
-    return pct(s.results.filter((r) => r.ending === 'sustainable').length, s.results.length)
+    const s = find(input, id)
+    return s ? pct(wins(s.results).length, s.results.length) : null
   }
   const buildOnly = winRate('build_only')
   const vtb = winRate(vtbId)
+  const plain = winRate('validate_then_build')
   const rates = input.strategies.map((s) => ({ id: s.id, rate: winRate(s.id) ?? 0 }))
   const top = rates.sort((a, b) => b.rate - a.rate)[0]
   const losing = input.strategies.flatMap((s) => s.results.filter(isLoss).map((r) => r.weeks))
   const losingMedian = median(losing)
   const slowest = Math.max(...input.strategies.map((s) => (s.seconds * 1000) / s.results.length))
-  const vtbRuns = input.strategies.find((s) => s.id === vtbId)?.results ?? []
+  const vtbRuns = find(input, vtbId)?.results ?? []
+  const plainRuns = find(input, 'validate_then_build')?.results ?? []
   const spread = marketSpread(vtbRuns)
   const firstWin = median(firstCustomerWeeks(wins(vtbRuns)))
-  const targets: Omit<Target, 'tuned'>[] = [
+  const evidence = vtbRuns.filter((r) => r.evidenceByCheck !== null)
+  const evidenceShare = pct(evidence.filter((r) => r.evidenceByCheck).length, evidence.length)
+  const decisionShare = (id: string) => {
+    const rs = find(input, id)?.results ?? []
+    const weeks = rs.reduce((t, r) => t + r.pacingWeeks, 0)
+    return weeks
+      ? pct(
+          rs.reduce((t, r) => t + r.decisionWeeks, 0),
+          weeks,
+        )
+      : null
+  }
+  const paceVtb = decisionShare('validate_then_build')
+  const pacePlay = decisionShare('playtest')
+  const rows = input.events ? eventRows(plainRuns, input.events) : []
+  const measured = rows.filter((r) => r.seeds >= EVENT_MIN_SEEDS)
+  const cheapShare = pct(measured.filter((r) => r.favoursCheap).length, measured.length)
+  const none = winRate('validate_then_build inbox:none')
+  const effort = winRate('validate_then_build inbox:effort')
+  const early = find(input, 'validate_then_build_early_hire')?.results
+  const hire = early ? hireComparison(early, plainRuns) : null
+  const behaviour = (name: string) => {
+    const v = find(input, `validate_then_build -${name}`)
+    return v ? paired(plainRuns, v.results) : null
+  }
+  const offs = ['chase', 'landing', 'books'].map((n) => ({ n, p: behaviour(n) }))
+  const presaleMax = winRate('presale_max')
+  const shares = customerShares(plainRuns)
+  const topShare = shares[0]
+  const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
+  return [
     {
       id: 1,
       text: 'build_only reaches Sustainable business in under 5% of runs',
@@ -110,9 +249,9 @@ export function evaluateTargets(
     },
     {
       id: 4,
-      text: 'Median run length of losing runs (all strategies) is between week 20 and week 50',
+      text: 'Median run length of losing runs (all strategies) is between week 20 and week 40',
       value: `week ${fmtNum(losingMedian, 1)}`,
-      pass: losingMedian !== null && losingMedian >= 20 && losingMedian <= 50,
+      pass: losingMedian !== null && losingMedian >= 20 && losingMedian <= 40,
     },
     {
       id: 5,
@@ -128,20 +267,87 @@ export function evaluateTargets(
     },
     {
       id: 7,
-      text: 'validate_then_build gets its first paying customer between week 8 and 14 in the median winning run',
+      text: 'validate_then_build gets its first paying customer between week 6 and 10 in the median winning run',
       value: `week ${fmtNum(firstWin, 1)}`,
-      pass: firstWin !== null && firstWin >= 8 && firstWin <= 14,
+      pass: firstWin !== null && firstWin >= 6 && firstWin <= 10,
+    },
+    {
+      id: 8,
+      text: 'By week 10, at least 70% of validate_then_build runs have a paying customer or have left a market that is not viable',
+      value: evidence.length ? fmtPct(evidenceShare) : '-',
+      pass: evidence.length > 0 && evidenceShare >= 70,
+    },
+    {
+      id: 9,
+      text: 'In weeks 1 to 20, at least 85% of weeks bring decision news, for validate_then_build and playtest',
+      value: `${paceVtb === null ? '-' : fmtPct(paceVtb)} and ${pacePlay === null ? '-' : fmtPct(pacePlay)}`,
+      pass: paceVtb !== null && pacePlay !== null && paceVtb >= 85 && pacePlay >= 85,
+    },
+    {
+      id: 10,
+      text: `At least a third of events (seen in ${EVENT_MIN_SEEDS} or more seeds) favour the cheap or free choice`,
+      value: measured.length
+        ? `${measured.filter((r) => r.favoursCheap).length} of ${measured.length} (${fmtPct(cheapShare)})`
+        : '-',
+      pass: measured.length > 0 && cheapShare >= 100 / 3,
+    },
+    {
+      id: 11,
+      text: 'Blind effort inbox policy beats leaving messages alone by at most 2 points; reading beats it by at least 4',
+      value:
+        none === null || effort === null || plain === null
+          ? '-'
+          : `effort ${signed(effort - none)}, reading ${signed(plain - none)}`,
+      pass:
+        none !== null &&
+        effort !== null &&
+        plain !== null &&
+        effort - none <= 2 &&
+        plain - none >= 4,
+    },
+    {
+      id: 12,
+      text: 'Runs where the payback rule hires win at least as often as plain play on the same seeds',
+      value: hire
+        ? `${fmtPct(hire.withHire)} against ${fmtPct(hire.plain)} (${hire.hired} runs)`
+        : '-',
+      pass: !!hire && hire.withHire >= hire.plain,
+    },
+    {
+      id: 13,
+      text: 'Switching off chase, landing tests or books each costs at least 2 points, with more seeds won only with it',
+      value: offs
+        .map(({ n, p }) =>
+          p ? `${n} ${signed(p.change)} (${p.onlyFull}/${p.onlyOther})` : `${n} -`,
+        )
+        .join(', '),
+      pass: offs.every(({ p }) => !!p && p.change <= -2 && p.onlyFull > p.onlyOther),
+    },
+    {
+      id: 14,
+      text: 'presale_max does not beat validate_then_build by more than 3 points',
+      value: presaleMax === null || plain === null ? '-' : `${signed(presaleMax - plain)} points`,
+      pass: presaleMax !== null && plain !== null && presaleMax - plain <= 3,
+    },
+    {
+      id: 15,
+      text: 'No single action (outreach counted per channel) finds more than a third of the customers in winning validate_then_build runs',
+      value: topShare ? `${topShare.key} ${fmtPct(topShare.share)}` : '-',
+      pass: !!topShare && topShare.share <= 100 / 3,
     },
   ]
-  return targets.map((t) => ({ ...t, tuned: t.id <= 5 }))
 }
+
+/** Targets judged per validate_then_build variant; the others are the same for all. */
+const PER_VARIANT = new Set([2, 6, 7, 8])
 
 function targetRows(input: ReportInput): string[] {
   const columns = TARGET_STRATEGIES.map((id) => evaluateTargets(input, id))
   const first = columns[0]
   if (!first) return []
-  const met = (t: Target) => `${t.pass ? 'yes' : 'no'}${t.tuned ? '' : ' (not tuned yet)'}`
+  const met = (t: Target) => (t.value === '-' ? 'not measured' : t.pass ? 'yes' : 'no')
   return first.map((t, i) => {
+    if (!PER_VARIANT.has(t.id)) return `| ${t.id} | ${t.text} | ${t.value} | ${met(t)} | | | | |`
     const cells = columns.map((c) => {
       const u = c[i] as Target
       return `${u.value} | ${met(u)}`
@@ -198,7 +404,7 @@ export function buildReport(input: ReportInput): string {
     '',
     '## Targets (plan section 7)',
     '',
-    `Targets 1, 3, 4 and 5 look at all strategies and are the same in every column. Targets 2, 6 and 7 are judged on each of ${TARGET_STRATEGIES.map((id) => `\`${id}\``).join(', ')}.`,
+    `Targets 2, 6, 7 and 8 are judged on each of ${TARGET_STRATEGIES.map((id) => `\`${id}\``).join(', ')}. The others have one value, in the first column.`,
     '',
     `| # | Target | ${TARGET_STRATEGIES.map((id) => `${id} | Met`).join(' | ')} |`,
     `|---|---|${TARGET_STRATEGIES.map(() => '---|---').join('|')}|`,
@@ -464,6 +670,86 @@ export function buildReport(input: ReportInput): string {
         `| Win rate | ${bins.map(([a, b]) => rate(hired.filter((r) => r.hiredWeek! >= a && r.hiredWeek! <= b))).join(' | ')} |`,
       )
     }
+  }
+
+  const plainAll = find(input, 'validate_then_build')
+  if (plainAll) {
+    const variants = ['inbox:none', 'inbox:effort'].flatMap((v) => {
+      const x = find(input, `validate_then_build ${v}`)
+      return x ? [{ label: v.slice(6), runs: x }] : []
+    })
+    if (variants.length > 0) {
+      const none = variants.find((v) => v.label === 'none')?.runs
+      push(
+        '',
+        '## Inbox policies',
+        '',
+        '`validate_then_build` with three ways of answering the inbox, same seeds. Reading picks the answer each message deserves (`readInbox`); blind effort takes the most effortful affordable choice without reading (`answerInbox`); none leaves every message to its default.',
+        '',
+        '| Policy | Win rate | Against none (points) | Won only with this policy | Won only with none |',
+        '|---|---|---|---|---|',
+        ...[{ label: 'reading', runs: plainAll }, ...variants].map(({ label, runs }) => {
+          const p = none ? paired(none.results, runs.results) : null
+          return `| ${label} | ${fmtPct(pct(wins(runs.results).length, runs.results.length))} | ${p ? p.change.toFixed(1) : '-'} | ${p ? p.onlyOther : '-'} | ${p ? p.onlyFull : '-'} |`
+        }),
+      )
+    }
+  }
+
+  if (input.events && plainAll) {
+    const rows = eventRows(plainAll.results, input.events)
+    push(
+      '',
+      '## Inbox events: which answer wins',
+      '',
+      `\`validate_then_build\` answering one event the same way every time it arrives, everything else by reading. Win rates on the seeds where the event arrived; differences of a few points are noise. Events seen in fewer than ${EVENT_MIN_SEEDS} seeds are not judged.`,
+      '',
+      '| Event | Seeds | Win rate per answer (hours, money) | Best | Cheapest | Cheapest wins |',
+      '|---|---|---|---|---|---|',
+      ...rows.map(
+        (r) =>
+          `| ${r.eventId} | ${r.seeds} | ${r.choices.map((c) => `${c.choiceId} (${c.hours} h${c.costCents ? `, ${fmtEur(c.costCents)}` : ''}) ${fmtPct(c.rate)}`).join('; ')} | ${r.best} | ${r.cheapest} | ${r.seeds < EVENT_MIN_SEEDS ? 'not judged' : r.favoursCheap ? 'yes' : 'no'} |`,
+      ),
+    )
+  }
+
+  if (plainAll) {
+    push(
+      '',
+      '## Where customers come from',
+      '',
+      'Customers won in winning runs, by the action that found the lead. Outreach is counted per channel, as the plan chooses it.',
+      '',
+      '| Strategy | Shares |',
+      '|---|---|',
+      ...['validate_then_build', 'presale_max', 'validate_then_build_early_hire'].flatMap((id) => {
+        const x = find(input, id)
+        if (!x) return []
+        const shares = customerShares(x.results)
+        return [`| ${id} | ${shares.map((v) => `${v.key} ${fmtPct(v.share)}`).join(', ') || '-'} |`]
+      }),
+    )
+    const evidence = (rs: RunResult[]) => {
+      const with_ = rs.filter((r) => r.evidenceByCheck !== null)
+      return fmtPct(pct(with_.filter((r) => r.evidenceByCheck).length, with_.length))
+    }
+    push(
+      '',
+      `## Evidence by week ${EVIDENCE_WEEK}`,
+      '',
+      `Share of runs that by week ${EVIDENCE_WEEK} had a paying customer or had moved off a market that is not viable.`,
+      '',
+      '| Strategy | Customer or left a dead market | Paying customer by then |',
+      '|---|---|---|',
+      ...TARGET_STRATEGIES.flatMap((id) => {
+        const x = find(input, id)
+        if (!x) return []
+        const early = x.results.filter(
+          (r) => r.firstCustomerWeek !== null && r.firstCustomerWeek <= EVIDENCE_WEEK,
+        ).length
+        return [`| ${id} | ${evidence(x.results)} | ${fmtPct(pct(early, x.results.length))} |`]
+      }),
+    )
   }
 
   push(

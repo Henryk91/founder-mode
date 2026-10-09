@@ -15,6 +15,8 @@ import type { Strategy } from './strategy'
 export const CHECK_WEEK = 15
 /** Pacing is measured over the opening weeks, where hand play felt empty. */
 export const PACING_WEEKS = 20
+/** By this week a careful player should have a customer or have left a market that is not viable. */
+export const EVIDENCE_WEEK = 10
 
 /** The stricter reading: news that asks for a decision, not routine flow such as one new lead. */
 export function isDecisive(e: WeekReport['entries'][number]): boolean {
@@ -82,6 +84,13 @@ export type RunResult = {
   messageWeeks: number
   /** Ids of the inbox events that arrived, in order. */
   eventsSeen: string[]
+  /**
+   * By EVIDENCE_WEEK: a paying customer, or the player's focus moved off a market that is not
+   * viable. Null for players without a focus.
+   */
+  evidenceByCheck: boolean | null
+  /** Customers won over the run, by the action that found them: `outreach:<channel>`, `landing`, ... */
+  customersBySource: Record<string, number>
   customersAtCheck: number
   monthlyRevenueAtCheckCents: number
   minEnergy: number
@@ -148,6 +157,7 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
   let weeks = 0
   let firstReport: WeekReport | null = null
   let firstWeekInterviews: number | null = null
+  const focus: (string | null)[] = []
   let pacingWeeks = 0
   let noteworthyWeeks = 0
   let decisionWeeks = 0
@@ -194,9 +204,26 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
       revenueAtCheck = monthlyRevenue(state)
     }
     player.observe?.(result.report, getView(state))
+    if (result.report.week <= EVIDENCE_WEEK) focus.push(player.focus ? player.focus() : null)
   }
 
   const viable = Object.entries(state.hidden.segments).find(([, h]) => h.roleId === 'viable')
+  const viableId = viable?.[0] ?? ''
+  let evidenceByCheck: boolean | null = null
+  if (player.focus) {
+    const customer = state.customers.some((c) => c.sinceWeek <= EVIDENCE_WEEK)
+    const left = focus.some(
+      (f, i) => f !== null && f !== viableId && focus.slice(i + 1).some((g) => g !== f),
+    )
+    evidenceByCheck = customer || left
+  }
+  const customersBySource: Record<string, number> = {}
+  for (const c of state.customers) {
+    const lead = state.leads.find((l) => l.id === c.leadId)
+    const key =
+      lead?.source === 'outreach' ? `outreach:${lead.channel}` : (lead?.source ?? 'unknown')
+    customersBySource[key] = (customersBySource[key] ?? 0) + 1
+  }
   const signal = firstReport && viable ? firstWeekSignal(scenario, firstReport, viable[0]) : null
   return {
     strategy: strategy.id,
@@ -218,6 +245,8 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     decisionWeeks,
     messageWeeks,
     eventsSeen: state.drawnEvents.map((d) => d.eventId),
+    evidenceByCheck,
+    customersBySource,
     customersAtCheck,
     monthlyRevenueAtCheckCents: revenueAtCheck,
     minEnergy,

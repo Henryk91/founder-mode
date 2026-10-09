@@ -5,6 +5,7 @@ import { random } from './random'
 import { sellFirst } from './sellFirst'
 import {
   overworker,
+  presaleMax,
   priceAware,
   validateThenBuild,
   validateThenBuildEarlyHire,
@@ -18,6 +19,7 @@ export const STRATEGIES: Strategy[] = [
   validateThenBuild,
   validateThenBuildHire,
   validateThenBuildEarlyHire,
+  presaleMax,
   priceAware,
   overworker,
   playtest,

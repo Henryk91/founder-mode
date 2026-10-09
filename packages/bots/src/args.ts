@@ -5,10 +5,18 @@ export type BotArgs = {
   out: string
   /** Run only these strategies; empty means all. */
   only: string[]
+  /** Also run every answer of every inbox event (slow). */
+  events: boolean
 }
 
 export function parseArgs(argv: readonly string[]): BotArgs {
-  const args: BotArgs = { runs: 100, seedPrefix: 'bot', out: 'docs/balancing.md', only: [] }
+  const args: BotArgs = {
+    runs: 100,
+    seedPrefix: 'bot',
+    out: 'docs/balancing.md',
+    only: [],
+    events: false,
+  }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
     const value = argv[i + 1]
@@ -23,6 +31,8 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     } else if (flag === '--out' && value !== undefined) {
       args.out = value
       i++
+    } else if (flag === '--events') {
+      args.events = true
     } else if (flag === '--only' && value !== undefined) {
       args.only = value.split(',').filter(Boolean)
       i++

@@ -80,6 +80,37 @@ export function addLeads(
   return { ...state, leads }
 }
 
+/**
+ * The founder's outreach hours per `segment/channel` in the weeks before this one that are still
+ * inside the saturation window.
+ */
+export function recentOutreach(state: GameState): Map<string, number> {
+  const from = state.week - state.scenario.sales.saturationWeeks + 1
+  const spent = new Map<string, number>()
+  for (const a of state.actionLog) {
+    if (a.type !== 'endWeek' || a.week < from) continue
+    for (const [seg, out] of Object.entries(a.plan.outreach)) {
+      const key = `${seg}/${out.channel}`
+      spent.set(key, (spent.get(key) ?? 0) + out.hours)
+    }
+  }
+  return spent
+}
+
+/**
+ * Outreach hours as they count for finding leads: full while the channel's hours in the window
+ * stay within `limit`, `factor` of an hour beyond. `before` is what was spent there already.
+ */
+export function effectiveHours(
+  before: number,
+  hours: number,
+  limit: number,
+  factor: number,
+): number {
+  const full = Math.max(0, Math.min(hours, limit - before))
+  return full + (hours - full) * factor
+}
+
 /** floor(x), plus one more with probability equal to the fraction. */
 function randomRound(x: number, rng: Rng): number {
   const whole = Math.floor(x)
@@ -263,9 +294,16 @@ export function applySales(
       selling: team.selling,
     })
   }
+  // Hours already spent per market and channel in the saturation window, this week's included.
+  const spent = recentOutreach(state)
+  const limit = cfg.saturationHours * cfg.saturationWeeks
   for (const item of items) {
     const response = state.hidden.segments[item.segmentId]?.channelResponse[item.channel] ?? 0
-    const count = randomRound(item.hours * response * (cfg.sellingBase + item.selling) * tired, rng)
+    const key = `${item.segmentId}/${item.channel}`
+    const before = spent.get(key) ?? 0
+    spent.set(key, before + item.hours)
+    const hours = effectiveHours(before, item.hours, limit, cfg.saturatedFactor)
+    const count = randomRound(hours * response * (cfg.sellingBase + item.selling) * tired, rng)
     for (let i = 0; i < count; i++) {
       const parts = state.scenario.companyNames[item.segmentId] ?? { first: [], second: [] }
       const name = pickName(parts, used, rng)
@@ -276,6 +314,7 @@ export function applySales(
         segmentId: item.segmentId,
         stage: 'lead',
         source: item.source,
+        channel: item.channel,
         stageSinceWeek: week,
         lastContactWeek: week,
         silentSinceWeek: null,

@@ -75,6 +75,8 @@ export function getView(state: GameState): PlayerView {
       presaleMaxBatches: scenario.experiments.presale.maxBatchesPerSegment,
       presaleRefundWeeks: scenario.experiments.presale.refundWeeks,
       followUpHours: scenario.sales.followUpHours,
+      saturationHours: scenario.sales.saturationHours,
+      saturationWeeks: scenario.sales.saturationWeeks,
       presaleWeeks: scenario.experiments.presale.weeks,
       chaseHours: scenario.finance.chaseHours,
       searchHours: scenario.team.searchHours,
