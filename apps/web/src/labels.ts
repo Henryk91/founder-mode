@@ -17,6 +17,8 @@ const labels = {
   'start.notice.incompatible':
     'That save came from an older version of the game and cannot be continued. Start a new run.',
   'start.notice.broken': 'That save could not be read. Start a new run.',
+  'start.notice.scenario_changed':
+    'That save was made with different game numbers. The game has been retuned since, so the run cannot be continued. Start a new run.',
 
   'bar.week': 'Week {week} of {max}',
   'bar.endWeek': 'End week',

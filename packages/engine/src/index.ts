@@ -6,7 +6,8 @@ export { getView } from './view'
 export { checkPlan, clonePlan, emptyPlan, validatePlan } from './plan'
 export type { PlanCheck } from './plan'
 export { endWeek } from './turn'
-export { isCompatibleSave, replay, toSave } from './save'
+export { replay, saveProblem, toSave } from './save'
+export { scenarioHash } from './hash'
 
 export type {
   ChannelId,
@@ -27,6 +28,7 @@ export type {
   PlayerView,
   ReportEntry,
   SaveFile,
+  SaveProblem,
   SegmentView,
   UiStage,
   WeekPlan,

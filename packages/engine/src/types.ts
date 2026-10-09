@@ -363,6 +363,11 @@ export type ReportEntry =
 export type SaveFile = {
   engineVersion: string
   scenarioId: string
+  /** Fingerprint of the scenario's numbers and texts. Missing in saves made before 0.4.0. */
+  scenarioHash?: string
   seed: string
   actions: LoggedAction[]
 }
+
+/** Why a save cannot be continued. */
+export type SaveProblem = 'engine_version' | 'scenario_id' | 'scenario_changed'

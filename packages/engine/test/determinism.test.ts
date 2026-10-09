@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { createGame, endWeek, replay, toSave, type GameState } from '../src/index'
+import {
+  createGame,
+  endWeek,
+  replay,
+  toSave,
+  type GameState,
+  saveProblem,
+  scenarioHash,
+} from '../src/index'
 import { deepFreeze, kantino, newGame, play, plan, richKantino, scriptedPlan } from './helpers'
 
 describe('determinism', () => {
@@ -38,6 +46,29 @@ describe('replay', () => {
     const save = toSave(play(newGame(), 2))
     expect(() => replay(kantino(), { ...save, engineVersion: '0.0.0' })).toThrow(/engine/)
     expect(() => replay(kantino(), { ...save, scenarioId: 'other' })).toThrow(/scenario/)
+  })
+
+  it('refuses a save made under other scenario values, with a clear message', () => {
+    const save = toSave(play(newGame(), 2))
+    const s = kantino()
+    const retuned = { ...s, sales: { ...s.sales, leadToDemoBase: s.sales.leadToDemoBase + 0.01 } }
+    expect(saveProblem(retuned, save)).toBe('scenario_changed')
+    expect(() => replay(retuned, save)).toThrow(/other values for scenario kantino/)
+    const old = { ...save }
+    delete old.scenarioHash
+    expect(saveProblem(kantino(), old)).toBe('scenario_changed')
+    expect(saveProblem(kantino(), save)).toBeNull()
+  })
+
+  it('hashes the scenario independent of key order, and sensitive to any value or text', () => {
+    const s = kantino()
+    const h = scenarioHash(s)
+    expect(h).toMatch(/^[0-9a-f]{16}$/)
+    expect(scenarioHash(kantino())).toBe(h)
+    const reordered = Object.fromEntries(Object.entries(s).reverse()) as typeof s
+    expect(scenarioHash(reordered)).toBe(h)
+    expect(scenarioHash({ ...s, name: 'Kantino ' })).not.toBe(h)
+    expect(scenarioHash({ ...s, maxWeeks: s.maxWeeks + 1 })).not.toBe(h)
   })
 })
 

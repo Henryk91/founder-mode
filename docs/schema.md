@@ -394,12 +394,15 @@ type LeadChange = 'wants_demo' | 'trial_started' | 'won' | 'declined' | 'went_si
 type SaveFile = {
   engineVersion: string         // replay refuses a save from another engine version
   scenarioId: string
+  scenarioHash?: string         // scenarioHash(scenario); missing only in saves from before 0.4.0
   seed: string
   actions: LoggedAction[]
 }
+
+type SaveProblem = 'engine_version' | 'scenario_id' | 'scenario_changed'
 ```
 
-`replay(scenario, save)` creates a fresh game from the seed and applies each action in order. It throws on a version or scenario mismatch, or when an action's week does not match.
+`scenarioHash(scenario)` (`hash.ts`) is 16 hex digits: two 32 bit FNV-1a hashes over the scenario as JSON with sorted keys, so any change to a number or a text changes it and YAML key order does not. `saveProblem(scenario, save)` returns the first problem in the order above, or null. A missing hash counts as `scenario_changed`. `replay(scenario, save)` throws with a message naming the problem (for a changed scenario: both hashes), or when an action's week does not match. The UI maps `scenario_changed` to its own notice and the other two to `incompatible`.
 
 ## Content: Scenario
 
@@ -541,7 +544,7 @@ type UiState = {
   report: WeekReport | null     // the week that just resolved, until dismissed
   tab: 'plan' | 'market' | 'pipeline' | 'money'
   hasSave: boolean
-  saveNotice: 'incompatible' | 'broken' | null
+  saveNotice: 'incompatible' | 'scenario_changed' | 'broken' | null
   introStep: number | null      // index of the intro card on screen; null when none. Set to 0 by startRun, never by continueRun
   helpOpen: boolean             // help screen replaces the tab content
   explain: 'runway' | 'cash' | 'energy' | 'hours' | null   // explanation card on screen

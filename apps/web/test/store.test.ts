@@ -1,11 +1,19 @@
 import { describe, expect, it } from 'vitest'
+import { loadScenario, type Scenario } from '@founder-mode/content'
 import { ENGINE_VERSION } from '@founder-mode/engine'
 import { memoryStorage } from '../src/storage'
 import { createGameStore } from '../src/store'
 
-const setup = (initial = null as Parameters<typeof memoryStorage>[0]) => {
+const setup = (
+  initial = null as Parameters<typeof memoryStorage>[0],
+  scenario?: () => Scenario,
+) => {
   const storage = memoryStorage(initial)
-  const store = createGameStore({ storage, makeSeed: () => 'seed-1' })
+  const store = createGameStore({
+    storage,
+    makeSeed: () => 'seed-1',
+    ...(scenario && { scenario }),
+  })
   return { storage, store, get: () => store.getState() }
 }
 
@@ -123,10 +131,39 @@ describe('game store', () => {
     expect(second.storage.current()).toBeNull()
   })
 
+  it('refuses a save made under other scenario values, with its own notice', () => {
+    const first = setup()
+    first.get().startRun()
+    first.get().endWeek()
+    const retuned = () => {
+      const s = loadScenario('kantino')
+      return { ...s, start: { ...s.start, cashCents: s.start.cashCents + 100 } }
+    }
+    const second = setup(first.storage.current(), retuned)
+    second.get().continueRun()
+    expect(second.get().view).toBeNull()
+    expect(second.get().saveNotice).toBe('scenario_changed')
+    expect(second.storage.current()).toBeNull()
+  })
+
+  it('refuses a save from before the scenario check', () => {
+    const first = setup()
+    first.get().startRun()
+    const old = { ...first.storage.current()! }
+    delete old.scenarioHash
+    const second = setup(old)
+    second.get().continueRun()
+    expect(second.get().saveNotice).toBe('scenario_changed')
+  })
+
   it('warns and drops a save that cannot be replayed', () => {
     const first = setup()
     first.get().startRun()
-    const bad = { ...first.storage.current()!, scenarioId: 'other' }
+    const save = first.storage.current()!
+    const bad = {
+      ...save,
+      actions: [{ type: 'endWeek' as const, week: 7, plan: first.get().plan }],
+    }
     const second = setup(bad)
     second.get().continueRun()
     expect(second.get().saveNotice).toBe('broken')

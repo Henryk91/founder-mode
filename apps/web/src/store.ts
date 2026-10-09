@@ -5,8 +5,8 @@ import {
   emptyPlan,
   endWeek,
   getView,
-  isCompatibleSave,
   replay,
+  saveProblem,
   toSave,
   type ChannelId,
   type GameState,
@@ -22,7 +22,7 @@ export type Tab = 'plan' | 'market' | 'pipeline' | 'money'
 
 export type ExplainKey = 'runway' | 'cash' | 'energy' | 'hours'
 
-export type SaveNotice = 'incompatible' | 'broken' | null
+export type SaveNotice = 'incompatible' | 'scenario_changed' | 'broken' | null
 
 /** Everything the screens may read. No GameState, nothing hidden. */
 export type UiState = {
@@ -150,14 +150,19 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           set({ hasSave: false })
           return
         }
-        if (!isCompatibleSave(file)) {
-          // Plan section 4.14: warn and start fresh instead of replaying a different engine.
+        const scenario = getScenario()
+        const problem = saveProblem(scenario, file)
+        if (problem) {
+          // Plan section 4.14: warn and start fresh instead of replaying a different game.
           deps.storage.clear()
-          set({ hasSave: false, saveNotice: 'incompatible' })
+          set({
+            hasSave: false,
+            saveNotice: problem === 'scenario_changed' ? 'scenario_changed' : 'incompatible',
+          })
           return
         }
         try {
-          begin(replay(getScenario(), file))
+          begin(replay(scenario, file))
         } catch {
           deps.storage.clear()
           set({ hasSave: false, saveNotice: 'broken' })
