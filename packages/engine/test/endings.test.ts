@@ -8,9 +8,11 @@ describe('endings', () => {
     const s = play(newGame('broke'), 200, () => plan())
     expect(s.status).toBe('ended')
     expect(s.ending).toBe('bankrupt')
-    // 27,000 EUR of cash and savings at about 517.50 EUR a week.
-    expect(s.week).toBeGreaterThanOrEqual(50)
-    expect(s.week).toBeLessThanOrEqual(54)
+    // Cash and savings at about 517.50 EUR a week (living costs plus a quarter of fixed costs).
+    const start = s.scenario.start
+    const weeks = (start.cashCents + start.savingsCents) / 51_750
+    expect(s.week).toBeGreaterThanOrEqual(Math.floor(weeks) - 2)
+    expect(s.week).toBeLessThanOrEqual(Math.ceil(weeks) + 2)
     expect(s.founder.savingsCents).toBe(0)
     expect(s.company.cashCents).toBeLessThan(0)
   })

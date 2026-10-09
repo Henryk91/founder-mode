@@ -70,3 +70,4 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Burnout and the low energy penalty are Phase 4. Until then the overworker cannot burn out, and energy has no effect in the bots.
 - Tuning 1, interview signals: trap and mediocre politeness up, viable down, noise 0.30, skill gain 0.01, Urgent from 0.90, mention chance 0.3 + 0.3 x pain. The viable market sounded Urgent 5 of 5 in the playtest; now all three average Painful to an untrained interviewer and the viable one leads after 6 interviews in about 60% of runs.
 - Tuning 2, lead volume: all channel responses halved, so the best channel finds about 0.07 leads per hour at the start (one per 15 h, scenario section 10). The playtest found 7 to 8 leads from 45 h a week.
+- Tuning 3, starting cash 10,000 EUR (was 15,000): about 42 weeks of runway with savings. Losing runs lasted a median of 55 weeks, now 44 (target 4).
