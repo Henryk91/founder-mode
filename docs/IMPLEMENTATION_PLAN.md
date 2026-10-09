@@ -63,7 +63,7 @@ Keep the architecture open for these, but write no code for them.
 | Tests | Vitest |
 | Lint and format | ESLint, Prettier |
 | Fonts | IBM Plex Sans, IBM Plex Mono, Caveat (handwriting) |
-| Hosting | Any static host |
+| Hosting | GitHub Pages, deployed by GitHub Actions (see Phase 8) |
 
 ---
 
@@ -583,9 +583,98 @@ Plain styling stays. All text goes through the label table or the content files.
 - Save version check
 - Accessibility: contrast, touch targets of 44 px or more, real buttons, keyboard focus
 - Performance check on a mid range phone
-- Static build and deploy
+- Static build and deploy to GitHub Pages (details below)
 
-**Done when:** a new player can finish a run without explanation. This is the early MVP.
+**Done when:** a new player can finish a run without explanation, and a push to `main` publishes the game at the live URL. This is the early MVP.
+
+#### Deployment: GitHub Pages
+
+| Setting | Value |
+|---|---|
+| Repository | `https://github.com/Henryk91/founder-mode` |
+| Live URL | `https://henryk91.github.io/founder-mode/` |
+| Vite `base` | `/founder-mode/` for production builds, `/` in dev |
+| Build output | `apps/web/dist` |
+| Trigger | Push to `main`, or manual run |
+
+Tasks:
+
+1. Set `base` in `apps/web/vite.config.ts` so production builds use `/founder-mode/` and the dev server keeps `/`. Every asset, font, and image reference must work under the subpath: no absolute `/...` URLs in code, CSS, or `index.html`.
+2. Make sure the root `package.json` has a `packageManager` field with the pnpm version in use, so the workflow installs the same version.
+3. Make sure a root `pnpm build` script builds the web app into `apps/web/dist`. If the script has a different name, adjust the workflow to match.
+4. Add the workflow below as `.github/workflows/deploy.yml`.
+5. Saves are stored per origin and path, so they are not shared between `localhost` and the live site. No action needed, but do not treat a missing save on the live site as a bug.
+6. Verify locally before pushing: run the production build, serve `apps/web/dist` under the `/founder-mode/` subpath, and confirm the game loads, a run can be started, and a reload continues it.
+
+One manual step for the repository owner, which Claude Code cannot do: in the repository settings under Pages, set the source to "GitHub Actions".
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      # Fallback so a reload on any path still serves the app
+      - name: SPA 404 fallback
+        run: cp apps/web/dist/index.html apps/web/dist/404.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+The workflow follows the one used in the owner's other projects, adapted for pnpm, the monorepo output path, and with lint and tests added before the build so a failing engine is never deployed.
 
 ---
 
