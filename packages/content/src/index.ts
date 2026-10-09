@@ -1,5 +1,5 @@
-// Scenario data and zod schemas. The Kantino scenario arrives in Phase 1.
+// Scenario data and zod schemas.
 
-export const SCENARIO_IDS = ['kantino'] as const
-
-export type ScenarioId = (typeof SCENARIO_IDS)[number]
+export * from './schema'
+export { SCENARIO_IDS, loadScenario, parseScenario, scenarioSources } from './load'
+export type { ScenarioId, ScenarioSources } from './load'

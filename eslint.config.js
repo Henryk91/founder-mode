@@ -73,6 +73,25 @@ export default tseslint.config(
     },
   },
 
+  // Engine source may use content types, but never its runtime (zod, YAML). Tests may load it.
+  {
+    files: ['packages/engine/src/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@founder-mode/content',
+              allowTypeImports: true,
+              message: 'Use `import type`. The engine receives the scenario as data.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
   // Node side: bots CLI and config files.
   {
     files: ['packages/bots/**/*.ts', '*.config.{js,ts}', 'apps/web/vite.config.ts'],

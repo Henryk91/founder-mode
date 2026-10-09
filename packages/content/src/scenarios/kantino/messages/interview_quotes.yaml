@@ -1,0 +1,52 @@
+# segment -> interview bucket -> quotes. Phase 1 has 2 per bucket; Phase 5 raises this to 10.
+
+small_offices:
+  not_a_problem:
+    - We just each bring something. It works.
+    - There is a bakery downstairs. That is our whole lunch strategy.
+  mild:
+    - It is a bit chaotic some days, I suppose.
+    - Sometimes we argue about pizza for twenty minutes. I would not call it a crisis.
+  noticeable:
+    - Someone always ends up collecting money. It is annoying.
+    - Our office manager keeps a spreadsheet of who owes what. Nobody likes the spreadsheet.
+  painful:
+    - I lose half an hour every day on this.
+    - Last Friday the order went in late and twelve designers went feral.
+  urgent:
+    - If you can fix this I want it next week.
+    - Please do not leave without telling me when I can sign up.
+
+coworking:
+  not_a_problem:
+    - Our members sort themselves out. They are adults, mostly.
+    - We have a café on the ground floor. Problem solved, as far as I can tell.
+  mild:
+    - Members do ask about lunch now and then. I nod politely.
+    - A shared order would be nice, I guess, if it ran itself.
+  noticeable:
+    - The community manager spends Mondays chasing lunch money. She has better things to do.
+    - Members keep asking for a group order and we keep improvising one.
+  painful:
+    - Lunch logistics is the number one complaint in our member survey. Again.
+    - We lost two tenants last year who said the building felt dead at lunch.
+  urgent:
+    - I would pay for this today if it handled all our sites.
+    - Our board asked me to fix lunch by next quarter. Can you start on Monday?
+
+medical:
+  not_a_problem:
+    - The team brings food from home. Nobody has time to order anything anyway.
+    - Lunch? We eat standing up between patients. It is fine.
+  mild:
+    - The nurses do grumble about food sometimes. They grumble about everything.
+    - It would be a nice perk. I am not sure anyone would notice.
+  noticeable:
+    - Ordering for the late shift is always a mess. Someone forgets every time.
+    - We tried a group order once. The allergy discussion took longer than lunch.
+  painful:
+    - My staff skip lunch because ordering takes too long. Then they make mistakes.
+    - Every week someone gets the wrong food and it ends with a sick note.
+  urgent:
+    - Fix this and you have my signature. I mean it.
+    - I have been looking for something like this for two years. Where do I pay?
