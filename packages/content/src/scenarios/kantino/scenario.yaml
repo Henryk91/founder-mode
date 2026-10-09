@@ -93,7 +93,7 @@ segments:
     name: Small offices
     description: Agencies and firms with 10 to 50 staff
     size: { min: 800, max: 2000 }
-    wtpCents: { min: 15000, max: 40000 }
+    wtpCents: { min: 20000, max: 45000 }
     mustHave: [basic_ordering, invoice_export, chat_integration]
     channelResponse:
       cold_email: { min: 0.05, max: 0.1 }
@@ -119,7 +119,7 @@ segments:
     name: Medical practices
     description: Doctors and dentists with shift based teams
     size: { min: 400, max: 1200 }
-    wtpCents: { min: 10000, max: 25000 }
+    wtpCents: { min: 18000, max: 32000 }
     mustHave: [basic_ordering, allergy_filter, shift_schedule]
     channelResponse:
       cold_email: { min: 0.01, max: 0.03 }
