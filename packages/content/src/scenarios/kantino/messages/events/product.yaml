@@ -3,6 +3,7 @@
 # must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
 # conditions hold when the week ends. Choices show their hours to the player, never their odds.
 # An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# look: letter (default), note for something personal, official for banks and offices.
 # Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
 events:
   - id: crash_report
@@ -87,6 +88,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Hosting provider
+    look: official
     text: >-
       Your hosting provider has changed its pricing. The new price is higher. The old plan is now
       described as "legacy".
@@ -195,6 +197,7 @@ events:
     when: [features.shipped >= 2]
     from: none
     sender: Your conscience
+    look: note
     text: >-
       You realise the database has not been backed up since the day you set it up. Nothing has
       gone wrong. Nothing has gone wrong yet.
@@ -308,6 +311,7 @@ events:
     when: [bugs >= 3]
     from: none
     sender: Your bug list
+    look: note
     text: >-
       Your bug list is now long enough to need a table of contents. A focused day would clear
       the worst of it, which matters most to the people who pay you.
@@ -422,6 +426,7 @@ events:
     when: [features.shipped >= 1]
     from: none
     sender: Monitoring service
+    look: official
     text: >-
       A monitoring service offers outage alerts for 15 EUR a month. Without it you hear about
       outages from customers, who are faster but less polite. With few customers, there is

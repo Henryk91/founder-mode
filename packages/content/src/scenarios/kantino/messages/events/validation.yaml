@@ -3,6 +3,7 @@
 # must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
 # conditions hold when the week ends. Choices show their hours to the player, never their odds.
 # An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# look: letter (default), note for something personal, official for banks and offices.
 # Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
 events:
   - id: survey_offer
@@ -34,6 +35,7 @@ events:
     when: [week >= 1]
     from: none
     sender: A friend of a friend
+    look: note
     text: >-
       A friend's friend runs an office and offers a free chat about lunch. They are very
       supportive. They would be supportive of anything.

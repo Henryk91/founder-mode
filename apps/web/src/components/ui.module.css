@@ -200,3 +200,75 @@
   color: var(--ink);
   font-weight: 700;
 }
+
+.subtitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Handwritten panel title on the dark desk. */
+.hand {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--on-dark);
+}
+
+.handText {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 23px;
+  line-height: 1.15;
+}
+
+.caps {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.linkRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+}
+
+.linkTab {
+  flex-shrink: 0;
+  color: var(--act-sales);
+  font-weight: 700;
+}
+
+.moment {
+  gap: 16px;
+  padding: 24px 20px;
+  margin-top: 24px;
+}
+
+.momentTitle {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.05;
+}

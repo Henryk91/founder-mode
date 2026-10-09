@@ -3,6 +3,7 @@
 # must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
 # conditions hold when the week ends. Choices show their hours to the player, never their odds.
 # An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# look: letter (default), note for something personal, official for banks and offices.
 # Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
 events:
   - id: referral
@@ -202,6 +203,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Chamber of commerce
+    look: official
     text: >-
       The chamber of commerce invites you to a networking breakfast at half past seven. There
       will be name badges, filter coffee and forty people selling insurance to each other. Worth
@@ -226,6 +228,7 @@ events:
     when: [week >= 2]
     from: none
     sender: Former colleague
+    look: note
     text: >-
       A former colleague offers to introduce you to her company's facilities manager. She adds
       that he hates being introduced to people. Worth it if you have room for another lead.
@@ -380,6 +383,7 @@ events:
     when: [week >= 5]
     from: none
     sender: Procurement office
+    look: official
     text: >-
       A company with 2,000 staff invites you to bid for its lunch system. The bid needs forty
       pages and a reference customer with at least 500 users.
@@ -494,6 +498,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Your cousin
+    look: note
     text: >-
       Your cousin offers you a corner of their stand at a wedding fair. Nobody at a wedding fair
       is buying office lunch software. Your cousin disagrees.

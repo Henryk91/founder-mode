@@ -3,6 +3,7 @@
 # must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
 # conditions hold when the week ends. Choices show their hours to the player, never their odds.
 # An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# look: letter (default), note for something personal, official for banks and offices.
 # Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
 events:
   - id: team_plan
@@ -12,6 +13,7 @@ events:
     when: [hasHire >= 1]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire politely asks whether there is a plan. They add that it would be nice if the plan
       were also written down somewhere.
@@ -35,6 +37,7 @@ events:
     when: [hasHire >= 1, week >= 12]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire would like a raise. They have, to be fair, now worked for you for several
       weeks without a single dramatic exit.
@@ -58,6 +61,7 @@ events:
     when: [hasHire >= 1]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire would like a second monitor. At the moment they work in a window the size of a
       beer mat. It costs 225 EUR.
@@ -81,6 +85,7 @@ events:
     when: [hasHire >= 1]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire would like a week off in August. They booked the flights in January, before
       they had heard of you.
@@ -102,6 +107,7 @@ events:
     when: [hasHire >= 1]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire has an idea for the product. It is a good idea, which is slightly annoying.
     defaultChoice: later
@@ -124,6 +130,7 @@ events:
     when: [hasHire >= 1]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire's laptop is older than your company and slower than your bank. A new one costs
       1,200 EUR.
@@ -147,6 +154,7 @@ events:
     when: [hasHire >= 1, week >= 14]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire asks for feedback. They have prepared a document for you to write the feedback
       in.
@@ -168,6 +176,7 @@ events:
     when: [hasHire >= 1, features.shipped >= 1]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire suggests a team lunch, ordered through Kantino. It would be the first time the
       product has been used by its own team.
@@ -190,6 +199,7 @@ events:
     when: [hasHire >= 1, week >= 16]
     from: none
     sender: Your hire
+    look: note
     text: >-
       A recruiter has been writing to your hire. Your hire mentions this in a way that is
       clearly meant to be mentioned.
@@ -211,6 +221,7 @@ events:
     when: [hasHire >= 1]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire asks for a design tool at 25 EUR a month. They show you what they made with the
       free version. It is persuasive.
@@ -234,6 +245,7 @@ events:
     when: [hasHire >= 1]
     from: none
     sender: Your hire
+    look: note
     text: >-
       Your hire asks whether the company will ever have an office. You are both on a video
       call, from your respective kitchens.

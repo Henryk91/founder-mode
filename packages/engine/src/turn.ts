@@ -1,7 +1,7 @@
 import { clonePlan, validatePlan } from './plan'
 import { Rng } from './rng'
 import { resolveExperiments, runInterviews, startExperiments } from './systems/experiments'
-import { applyFinanceWeek, noExtras } from './systems/finance'
+import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
 import { applyFounderWeek, plannedHours } from './systems/founder'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
@@ -113,6 +113,7 @@ export function endWeek(
   const churn = applyChurn(state, rng)
   state = churn.state
   entries.push(...churn.entries)
+  state = closeLedger(state)
 
   // 10. Scheduled effects: none, inbox effects land in step 2
   // 11. Milestones: later (Phase 7)
@@ -132,7 +133,7 @@ export function endWeek(
     energyAfter: state.founder.energy,
     interviews: interviews.outcomes.map((o) => interviewView(state, o.evidence)),
     entries,
-    ledger: finance.ledger,
+    ledger: state.ledger.at(-1) ?? finance.ledger,
     ending,
   }
   state = {

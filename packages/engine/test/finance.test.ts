@@ -169,6 +169,9 @@ describe('finance', () => {
       otherIncomeCents: 0,
       cashEndCents: 0,
       savingsEndCents: 0,
+      monthlyRevenueCents: 0,
+      customers: 0,
+      runwayWeeks: null,
     })
     const base = newGame()
     const monthCost = 40_500 + 4 * 67_500 // 207,000

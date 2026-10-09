@@ -2,12 +2,15 @@ import type { ChannelId, PlayerView, TeamRoleId } from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { count, label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
-import styles from '../components/ui.module.css'
+import styles from './ui.module.css'
 
 const roleName = (role: TeamRoleId, stage: UiStage) => label(`team.role.${role}`, stage)
 
-/** One hire at most: search, meet candidates, make an offer, point them at work, or let go. */
-export function Team() {
+/**
+ * The hiring section of the Plan tab. One hire at most: search, meet candidates, make an offer,
+ * point them at work, or let go.
+ */
+export function TeamPlan() {
   const view = useGame((s) => s.view)
   const plan = useGame((s) => s.plan)
   const actions = {
@@ -23,8 +26,7 @@ export function Team() {
   const hours = (n: number) => label('unit.hours', stage, { n })
   return (
     <>
-      <section className={styles.card}>
-        <h2 className={styles.title}>{label('team.title', stage)}</h2>
+      <div className={styles.group}>
         <p className={styles.hint}>
           {label('team.hint', stage, {
             hours: hours(costs.searchHours),
@@ -70,10 +72,10 @@ export function Team() {
             )
           })}
         {team.hadHire && <p className={styles.hint}>{label('team.hadHire', stage)}</p>}
-      </section>
+      </div>
       {team.candidates.length > 0 && (
-        <section className={styles.card}>
-          <h3 className={styles.title}>{label('team.candidates', stage)}</h3>
+        <div className={styles.group}>
+          <h4 className={styles.subtitle}>{label('team.candidates', stage)}</h4>
           <p className={styles.hint}>{label('team.candidatesHint', stage)}</p>
           {team.candidates.map((c) => {
             const booked = plan.hire === c.id
@@ -101,7 +103,7 @@ export function Team() {
               </div>
             )
           })}
-        </section>
+        </div>
       )}
       {team.member && (
         <MemberCard
@@ -144,10 +146,10 @@ function MemberCard(props: {
     </button>
   )
   return (
-    <section className={styles.card}>
-      <h3 className={styles.title}>
+    <div className={styles.group}>
+      <h4 className={styles.subtitle}>
         {label('team.member', stage, { role: roleName(member.role, stage) })}
-      </h3>
+      </h4>
       <div className={styles.rowHead}>
         <span>{member.name}</span>
         <span className={styles.mono}>
@@ -217,6 +219,6 @@ function MemberCard(props: {
             : label('team.letGo', stage, { cost: formatEuro(member.letGoCostCents) })}
         </button>
       </div>
-    </section>
+    </div>
   )
 }

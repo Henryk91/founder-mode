@@ -6,10 +6,28 @@ import { count, label } from '../src/labels'
 import { memoryStorage } from '../src/storage'
 import { createGameStore } from '../src/store'
 
-const html = (store: ReturnType<typeof createGameStore>) =>
-  renderToString(<App store={store} />).replace(/<!-- -->/g, '')
+const html = (store: ReturnType<typeof createGameStore>, layout: 'phone' | 'desk' = 'phone') =>
+  renderToString(<App store={store} layout={layout} />).replace(/<!-- -->/g, '')
+
+/** The page as plain text, tags removed, for checking what a player reads. */
+const text = (store: Store, layout: 'phone' | 'desk' = 'phone') =>
+  html(store, layout)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&#x27;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
 
 type Store = ReturnType<typeof createGameStore>
+
+const SECTIONS = ['talk', 'test', 'build', 'sell', 'demos', 'team', 'rest'] as const
+
+/** Opens every Plan section, as a player tapping each header would. */
+function openAll(store: Store) {
+  for (const s of SECTIONS) {
+    if (!store.getState().openSections.includes(s)) store.getState().toggleSection(s)
+  }
+}
 
 /** Starts a run and clicks through the intro, like a player would. */
 function begin(store: Store, seed?: string) {
@@ -28,7 +46,7 @@ describe('app smoke test', () => {
     expect(plan).toContain('Week 1 of 60')
     expect(plan).toContain('End week')
     expect(plan).toContain('Talk to people')
-    expect(plan).toContain('Runway: 29 weeks')
+    expect(text(store)).toContain('Runway 29 weeks')
 
     for (let i = 0; i < 3; i++) {
       store.getState().setInterviews('coworking', 2)
@@ -177,7 +195,7 @@ describe('onboarding', () => {
     expect(html(store)).not.toContain('Got it')
     // The terms are tappable on screen.
     const page = html(store)
-    expect(page).toContain('Runway: 29 weeks')
+    expect(text(store)).toContain('Runway 29 weeks')
     expect(page).toMatch(/aria-label="Energy: What does this mean\?"/)
     expect(page).toMatch(/aria-label="Hours: What does this mean\?"/)
   })
@@ -197,13 +215,14 @@ describe('onboarding', () => {
     store.getState().setBuild('basic_ordering', 40)
     store.getState().endWeek()
     store.getState().dismissReport()
+    openAll(store)
     const page = html(store).replace(/&#x27;/g, "'")
     for (const line of [
       'Costs 2 h each. Gives you one answer in the interviewee',
       'Costs the hours shown. A feature ships once all its hours are in',
       'Costs the hours you set, on one channel per market. Finds new leads at the end of this week',
-      'Costs 3 h per demo. A good demo starts a trial that runs 1 week',
       'Costs the hours you set. Restores energy this week.',
+      'One part time hire at most.',
     ]) {
       expect(page, line).toContain(line)
     }
@@ -239,20 +258,30 @@ describe('onboarding', () => {
     expect(page).toContain('Agencies and firms with 10 to 50 staff')
   })
 
-  it('tells the week as an account before the numbers', () => {
+  it('shows the week on one screen, grouped under headings, most important first', () => {
     const store = fresh()
     begin(store)
     store.getState().setInterviews('medical', 2)
     store.getState().setOutreach('coworking', 'phone', 10)
     store.getState().endWeek()
     const page = html(store)
-    const at = (text: string) => page.indexOf(text)
-    expect(at('What happened')).toBeGreaterThan(-1)
-    expect(at('You spoke to someone at Medical practices')).toBeGreaterThan(at('What happened'))
-    expect(at('The numbers')).toBeGreaterThan(at('You spoke to someone at Medical practices'))
-    expect(at('Company received')).toBeGreaterThan(at('The numbers'))
+    const heading = (name: string) => page.indexOf(`>${name}</h3>`)
+    for (const name of ['Money', 'Sales', 'Learning', 'Founder']) {
+      expect(heading(name), name).toBeGreaterThan(-1)
+    }
+    // Nothing was built, so there is no Product heading.
+    expect(heading('Product')).toBe(-1)
+    // Interviews (learning) matter more than the plain weekly numbers and the energy line.
+    expect(heading('Learning')).toBeLessThan(heading('Money'))
+    expect(heading('Money')).toBeLessThan(heading('Founder'))
+    expect(page.indexOf('You spoke to someone at Medical practices')).toBeGreaterThan(
+      heading('Learning'),
+    )
+    expect(page.indexOf('Company received')).toBeGreaterThan(heading('Money'))
     expect(page).toContain('<blockquote')
     expect(page).not.toMatch(/[{}]/)
+    // An ordinary week has no extra steps: one tap goes back to planning.
+    expect(page).toContain('Next week')
   })
 })
 
@@ -292,6 +321,7 @@ describe('playtest fixes', () => {
     store.getState().endWeek()
     store.getState().dismissReport()
     expect(store.getState().plan.outreach).toEqual({})
+    store.getState().toggleSection('sell')
     const page = html(store)
     // The coworking row shows In person selected, the others the first channel.
     const pressed = [...page.matchAll(/aria-pressed="true"[^>]*>([^<]+)</g)]
@@ -336,6 +366,7 @@ describe('phase 4 screens', () => {
   it('shows the new sections on the Plan tab', () => {
     const store = fresh('p4-plan')
     begin(store)
+    store.getState().toggleSection('test')
     const page = html(store)
     expect(page).toContain('Test the demand')
     expect(page).toContain('Landing page: Coworking spaces')
@@ -404,10 +435,11 @@ describe('phase 4 screens', () => {
     expect(again.getState().view).toEqual(store.getState().view)
   })
 
-  it('books a search on the Team tab and shows the candidates later', () => {
+  it('books a search in the Hiring section of the Plan tab and shows the candidates later', () => {
     const store = fresh('p4-team')
     begin(store)
-    store.getState().setTab('team')
+    expect(text(store)).toContain('Hiring nobody yet, one hire allowed')
+    store.getState().toggleSection('team')
     const page = html(store)
     expect(page).toContain('Look for a Developer')
     expect(page).toContain('€3,900 per month')
@@ -415,13 +447,16 @@ describe('phase 4 screens', () => {
     store.getState().setSearchRole('developer')
     expect(store.getState().plannedHours).toBe(6)
     expect(html(store)).toContain('Search booked (6 h). Tap to cancel.')
+    expect(text(store)).toContain('Hiring search for a Developer 6 h')
     store.getState().endWeek()
     store.getState().dismissReport()
+    store.getState().toggleSection('team')
     expect(html(store)).toContain('Looking for a Developer. Candidates arrive in week 3.')
     for (let i = 0; i < 2; i++) {
       store.getState().endWeek()
       store.getState().dismissReport()
     }
+    store.getState().toggleSection('team')
     const candidates = html(store)
     expect(candidates).toContain('Candidates')
     expect(candidates).toMatch(/Impression: (Weak|Solid|Strong|Outstanding)/)
@@ -542,7 +577,7 @@ describe('follow ups, costs and plurals', () => {
     store.getState().endWeek()
     store.getState().dismissReport()
     store.getState().setTab('inbox')
-    const page = html(store)
+    const page = text(store)
     expect(page).toContain('Act (2 h, €400, €40 a month)')
     expect(page).toContain('No (Free)')
   })
@@ -562,7 +597,10 @@ describe('follow ups, costs and plurals', () => {
     expect(store.getState().plannedHours).toBe(1)
     expect(html(store)).toContain('Follow up booked, tap to cancel')
     store.getState().setTab('plan')
+    expect(text(store)).toContain('Demos and follow ups 1 follow up 1 h')
+    store.getState().toggleSection('demos')
     expect(html(store)).toContain('1 follow up (1 h)')
+    expect(html(store)).toContain('Costs 3 h per demo. A good demo starts a trial that runs 1 week')
   })
 
   it('says "1 batch left" and "2 batches left", and weeks in the singular', () => {

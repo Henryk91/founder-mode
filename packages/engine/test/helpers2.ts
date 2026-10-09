@@ -20,6 +20,7 @@ export function event(over: Partial<ScenarioEvent> & Pick<ScenarioEvent, 'id'>):
     when: [],
     from: 'none',
     sender: 'Tester',
+    look: 'letter',
     text: 'Something happened.',
     defaultChoice: 'skip',
     choices: [

@@ -19,9 +19,13 @@ import {
   type WeekReport,
 } from '@founder-mode/engine'
 import { createStore, type StoreApi } from 'zustand/vanilla'
+import { repeatPlan } from './repeatPlan'
 import type { SaveStorage } from './storage'
 
-export type Tab = 'plan' | 'inbox' | 'market' | 'pipeline' | 'team' | 'money'
+export type Tab = 'plan' | 'inbox' | 'market' | 'pipeline' | 'money'
+
+/** The collapsible sections of the Plan tab. */
+export type PlanSection = 'talk' | 'test' | 'build' | 'sell' | 'demos' | 'team' | 'rest'
 
 export type ExplainKey = 'runway' | 'cash' | 'energy' | 'hours'
 
@@ -46,6 +50,12 @@ export type UiState = {
   dismissedNotes: string[]
   /** True while the Money tab asks whether to really shut the company down. */
   shutDownAsked: boolean
+  /** Plan sections the player opened this week. All start closed. */
+  openSections: PlanSection[]
+  /** True when there is a resolved week whose plan can be repeated. */
+  canRepeat: boolean
+  /** How many of the report's notable moments the player has already tapped through. */
+  momentsSeen: number
 }
 
 export type UiActions = {
@@ -88,6 +98,10 @@ export type UiActions = {
   setPriceCents(cents: number | null): void
   endWeek(): void
   dismissReport(): void
+  toggleSection(section: PlanSection): void
+  /** Replaces the draft with last week's plan, minus whatever is no longer possible. */
+  repeatLastWeek(): void
+  nextMoment(): void
 }
 
 export type GameStore = UiState & UiActions
@@ -121,8 +135,19 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         plan,
         plannedHours: check.plannedHours,
         issues: check.issues,
+        canRepeat: lastPlan() !== null,
         ...patch,
       })
+    }
+
+    /** The plan of the last resolved week, from the action log. */
+    const lastPlan = (): WeekPlan | null => {
+      const log = game?.actionLog ?? []
+      for (let i = log.length - 1; i >= 0; i--) {
+        const action = log[i]!
+        if (action.type === 'endWeek') return action.plan
+      }
+      return null
     }
 
     const editPlan = (change: (plan: WeekPlan) => WeekPlan) => {
@@ -142,6 +167,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         explain: null,
         dismissedNotes: [],
         shutDownAsked: false,
+        openSections: [],
+        momentsSeen: 0,
       })
     }
 
@@ -159,6 +186,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       explain: null,
       dismissedNotes: [],
       shutDownAsked: false,
+      openSections: [],
+      canRepeat: false,
+      momentsSeen: 0,
 
       startRun(seed) {
         const state = createGame(getScenario(), seed?.trim() || deps.makeSeed())
@@ -288,10 +318,29 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         const result = endWeek(game, plan)
         game = result.state
         deps.storage.save(toSave(game))
-        refresh({ plan: emptyPlan(), report: result.report, shutDownAsked: false })
+        refresh({
+          plan: emptyPlan(),
+          report: result.report,
+          shutDownAsked: false,
+          openSections: [],
+          momentsSeen: 0,
+        })
       },
 
-      dismissReport: () => set({ report: null }),
+      dismissReport: () => set({ report: null, momentsSeen: 0 }),
+      toggleSection: (section) =>
+        set((s) => ({
+          openSections: s.openSections.includes(section)
+            ? s.openSections.filter((x) => x !== section)
+            : [...s.openSections, section],
+        })),
+      repeatLastWeek() {
+        const last = lastPlan()
+        const view = get().view
+        if (!last || !view) return
+        refresh({ plan: repeatPlan(last, view) })
+      },
+      nextMoment: () => set((s) => ({ momentsSeen: s.momentsSeen + 1 })),
     }
   })
 

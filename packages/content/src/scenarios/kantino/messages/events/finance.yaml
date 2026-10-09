@@ -3,6 +3,7 @@
 # must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
 # conditions hold when the week ends. Choices show their hours to the player, never their odds.
 # An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# look: letter (default), note for something personal, official for banks and offices.
 # Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
 events:
   - id: late_payer_first
@@ -44,6 +45,7 @@ events:
     when: [week >= 4]
     from: none
     sender: Accountant
+    look: official
     text: >-
       Your accountant found a form that should have been filed last month. It is short and mildly
       urgent. The fee for filing it late is not short.
@@ -65,6 +67,7 @@ events:
     when: [week >= 2, cashEur <= 12000]
     from: none
     sender: Regional programme
+    look: official
     text: >-
       A regional programme offers startups a small grant. The application is nine pages long.
       Page six asks for your vision of the year 2035.
@@ -86,6 +89,7 @@ events:
     when: [week >= 2]
     from: none
     sender: Your laptop
+    look: note
     text: >-
       The fan in your laptop now sounds like a small aircraft. A new laptop costs 2,100 EUR. The
       old one still technically works.
@@ -110,6 +114,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Accountant
+    look: official
     text: >-
       Your accountant would like the receipts for the last few weeks. Some are in a shoebox.
       One is on the back of a lunch menu.
@@ -137,6 +142,7 @@ events:
     when: [week >= 2]
     from: none
     sender: Bank
+    look: official
     text: >-
       The bank is introducing an account fee for accounts that are used. Yours is used. The letter
       is friendly about it.
@@ -158,6 +164,7 @@ events:
     when: [week >= 2]
     from: none
     sender: Insurance broker
+    look: official
     text: >-
       A broker offers a startup package covering cyber risk, legal costs and "unforeseen catering
       incidents". It costs 60 EUR a month. The broker calls it peace of mind, twice.
@@ -179,6 +186,7 @@ events:
     when: [week >= 5]
     from: none
     sender: Tax office
+    look: official
     text: >-
       The tax office has one question about your VAT number. The question arrived in a letter of
       four pages. The answer is due in two weeks.
@@ -201,6 +209,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Invoicing app
+    look: official
     text: >-
       An invoicing app promises to make your invoices look more professional, for 20 EUR a
       month. It also sends a motivational quote every Monday, which cannot be turned off.
@@ -248,6 +257,7 @@ events:
     when: [cashEur <= 6000]
     from: none
     sender: Your hallway
+    look: note
     text: >-
       Your old road bike could sell for about 450 EUR. You last rode it in a previous life, and
       the tyres have gone flat in sympathy.
@@ -269,6 +279,7 @@ events:
     when: [week >= 6]
     from: none
     sender: Accountant
+    look: official
     text: >-
       Your accountant offers a "growth package" for 90 EUR a month. It includes a quarterly call
       in which they ask how growth is going.
@@ -290,6 +301,7 @@ events:
     when: [week >= 5]
     from: none
     sender: Bank statement
+    look: official
     text: >-
       Your bank statement shows nine software subscriptions, and you have logged into seven of
       them. Two offer refunds if you ask nicely and fill in a form.
@@ -311,6 +323,7 @@ events:
     when: [week >= 4]
     from: none
     sender: City council
+    look: official
     text: >-
       A parking fine of 35 EUR arrives from the day of your best demo. Contesting it would take
       a morning and a photo you do not have.
@@ -334,6 +347,7 @@ events:
     when: [week >= 12]
     from: none
     sender: Accountant
+    look: official
     text: >-
       The quarterly VAT return is due. Your accountant can do it for 180 EUR, or you can do it
       yourself and learn several new words.
@@ -376,6 +390,7 @@ events:
     when: [week >= 5, cashEur <= 9000]
     from: none
     sender: City programme
+    look: official
     text: >-
       A city programme refunds half the cost of new office equipment. You have no office, but
       you do have a receipt for a chair that squeaks.
