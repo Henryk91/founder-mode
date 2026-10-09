@@ -6,10 +6,10 @@ name: Kantino
 maxWeeks: 60
 
 start:
-  cashCents: 600000
-  savingsCents: 950000
-  livingCostCentsPerWeek: 45000
-  priceCentsPerMonth: 30000
+  cashCents: 900000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  priceCentsPerMonth: 45000
   energy: 80
   skills:
     interviewing: 0.1
@@ -17,10 +17,10 @@ start:
   fixedCosts:
     - id: tools_hosting
       name: Tools and hosting
-      monthlyCents: 12000
+      monthlyCents: 18000
     - id: accountant
       name: Accountant
-      monthlyCents: 15000
+      monthlyCents: 22500
 
 founder:
   baseHoursPerWeek: 50
@@ -60,8 +60,8 @@ experiments:
       - { id: urgent, name: Urgent }
   landing:
     hours: 8
-    budgetsCents: [20000, 50000]
-    centsPerVisitor: 150
+    budgetsCents: [30000, 75000]
+    centsPerVisitor: 225
     weeks: 1
     signupBase: 0.02
     signupPerPain: 0.15
@@ -122,12 +122,12 @@ team:
     # A junior or part time hire: cheaper, fewer hours.
     developer:
       name: Developer
-      monthlyCents: 260000
-      weeklyHours: 25
+      monthlyCents: 390000
+      weeklyHours: 20
       skill: { min: 0.5, max: 1.2 }
     salesperson:
       name: Salesperson
-      monthlyCents: 220000
+      monthlyCents: 330000
       weeklyHours: 20
       skill: { min: 0.5, max: 1.2 }
       selling: 0.3
@@ -181,7 +181,7 @@ segments:
     name: Small offices
     description: Agencies and firms with 10 to 50 staff
     size: { min: 800, max: 2000 }
-    wtpCents: { min: 25000, max: 48000 }
+    wtpCents: { min: 37500, max: 72000 }
     mustHave: [basic_ordering, invoice_export, chat_integration]
     channelResponse:
       cold_email: { min: 0.05, max: 0.1 }
@@ -195,7 +195,7 @@ segments:
     name: Coworking spaces
     description: Shared workspaces with many small tenants
     size: { min: 100, max: 300 }
-    wtpCents: { min: 60000, max: 150000 }
+    wtpCents: { min: 90000, max: 225000 }
     mustHave: [basic_ordering, multi_site, member_billing]
     channelResponse:
       cold_email: { min: 0.025, max: 0.06 }
@@ -209,7 +209,7 @@ segments:
     name: Medical practices
     description: Doctors and dentists with shift based teams
     size: { min: 400, max: 1200 }
-    wtpCents: { min: 26000, max: 42000 }
+    wtpCents: { min: 39000, max: 63000 }
     mustHave: [basic_ordering, allergy_filter, shift_schedule]
     channelResponse:
       cold_email: { min: 0.04, max: 0.08 }

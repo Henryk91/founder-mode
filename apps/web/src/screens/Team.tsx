@@ -51,6 +51,11 @@ export function Team() {
                     {label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
                   </span>
                 </div>
+                <span className={styles.hint}>
+                  {label('team.partTime', stage, {
+                    hours: label('unit.hours', stage, { n: r.weeklyHours }),
+                  })}
+                </span>
                 <button
                   type="button"
                   aria-pressed={booked}

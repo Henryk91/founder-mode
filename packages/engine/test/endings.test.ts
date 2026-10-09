@@ -10,7 +10,7 @@ describe('endings', () => {
     expect(s.ending).toBe('bankrupt')
     // Cash and savings at about 517.50 EUR a week (living costs plus a quarter of fixed costs).
     const start = s.scenario.start
-    const weeks = (start.cashCents + start.savingsCents) / 51_750
+    const weeks = (start.cashCents + start.savingsCents) / 77_625
     expect(s.week).toBeGreaterThanOrEqual(Math.floor(weeks) - 2)
     expect(s.week).toBeLessThanOrEqual(Math.ceil(weeks) + 2)
     expect(s.founder.savingsCents).toBe(0)
@@ -46,7 +46,7 @@ describe('endings', () => {
 
   it('reaches sustainable at the limit when the last two months were profitable', () => {
     const s = play(newGame('limit', richKantino()), 59, () => plan())
-    const ledger = s.ledger.map((l) => ({ ...l, revenueCents: 100_000 }))
+    const ledger = s.ledger.map((l) => ({ ...l, revenueCents: 150_000 }))
     expect(checkEnding({ ...s, week: 60, ledger: [...ledger, ledger[0]!] })).toBe('sustainable')
   })
 

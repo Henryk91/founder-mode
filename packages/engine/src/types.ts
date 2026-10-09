@@ -436,6 +436,8 @@ export type PlayerView = {
     weeksAtZeroEnergy: number
     savingsCents: number
     livingCostCentsPerWeek: number
+    /** Living costs over one game month (weeksPerMonth weeks). */
+    livingCostCentsPerMonth: number
   }
   company: {
     cashCents: number
@@ -600,7 +602,7 @@ export type MemberView = {
 export type TeamView = {
   /** False once someone was hired, or while a search is running. */
   canSearch: boolean
-  roles: { id: TeamRoleId; name: string; monthlyCents: number }[]
+  roles: { id: TeamRoleId; name: string; monthlyCents: number; weeklyHours: number }[]
   search: { role: TeamRoleId; readyWeek: number } | null
   candidates: CandidateView[]
   member: MemberView | null

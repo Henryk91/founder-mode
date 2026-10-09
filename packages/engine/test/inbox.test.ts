@@ -85,7 +85,7 @@ describe('conditions', () => {
         cond('invoices.open == 1'),
         cond('leads.waitingForDemo == 1'),
         cond('monthlyRevenueEur == 300'),
-        cond('cashEur == 6000'),
+        cond('cashEur == 9000'),
       ]),
     ).toBe(true)
   })
@@ -113,19 +113,19 @@ describe('the inbox', () => {
   it('shows what a choice certainly costs, in money, but never gains or odds', () => {
     const s = withMessage(
       effects('act', [
-        { type: 'cash', amountCents: -40_000, chance: 1 },
-        { type: 'cash', amountCents: -10_000, chance: 0.5 },
-        { type: 'cash', amountCents: 90_000, chance: 0.4 },
-        { type: 'fixedCost', id: 'sub', name: 'Sub', monthlyCents: 4_000, chance: 1 },
+        { type: 'cash', amountCents: -60_000, chance: 1 },
+        { type: 'cash', amountCents: -15_000, chance: 0.5 },
+        { type: 'cash', amountCents: 135_000, chance: 0.4 },
+        { type: 'fixedCost', id: 'sub', name: 'Sub', monthlyCents: 6_000, chance: 1 },
       ]),
     )
     const act = getView(s).inbox[0]!.choices.find((c) => c.id === 'act')!
-    expect(act).toMatchObject({ costCents: 50_000, monthlyCostCents: 4_000 })
+    expect(act).toMatchObject({ costCents: 75_000, monthlyCostCents: 6_000 })
     expect(JSON.stringify(getView(s).inbox)).not.toContain('90000')
   })
 
   it('shows choices with hours and never any effect or chance', () => {
-    const s = withMessage(effects('act', [{ type: 'cash', amountCents: 100_000, chance: 0.4 }]))
+    const s = withMessage(effects('act', [{ type: 'cash', amountCents: 150_000, chance: 0.4 }]))
     const json = JSON.stringify(getView(s).inbox)
     expect(json).not.toContain('chance')
     expect(json).not.toContain('amountCents')
@@ -290,7 +290,7 @@ describe('answering', () => {
 
   it('is part of the save and replays exactly, with a shut down too', () => {
     const scenario = withEvents(
-      [effects('act', [{ type: 'cash', amountCents: 5_000, chance: 1 }])],
+      [effects('act', [{ type: 'cash', amountCents: 7_500, chance: 1 }])],
       { maxPerWeek: 1 },
     )
     let s = endWeek(newGame('replay', scenario), book).state
@@ -321,12 +321,12 @@ describe('effects', () => {
   })
 
   it('moves money through the ledger', () => {
-    const gain = run([{ type: 'cash', amountCents: 150_000, chance: 1 }])
-    expect(gain.report.ledger.otherIncomeCents).toBe(150_000)
-    expect(gain.report.entries).toContainEqual({ kind: 'cash_effect', amountCents: 150_000 })
-    const loss = run([{ type: 'cash', amountCents: -40_000, chance: 1 }])
-    expect(loss.report.ledger.otherCostsCents).toBe(40_000)
-    expect(loss.state.company.cashCents).toBe(gain.state.company.cashCents - 150_000 - 40_000)
+    const gain = run([{ type: 'cash', amountCents: 225_000, chance: 1 }])
+    expect(gain.report.ledger.otherIncomeCents).toBe(225_000)
+    expect(gain.report.entries).toContainEqual({ kind: 'cash_effect', amountCents: 225_000 })
+    const loss = run([{ type: 'cash', amountCents: -60_000, chance: 1 }])
+    expect(loss.report.ledger.otherCostsCents).toBe(60_000)
+    expect(loss.state.company.cashCents).toBe(gain.state.company.cashCents - 225_000 - 60_000)
   })
 
   it('changes bugs and quality, and skills up to their caps', () => {
@@ -348,8 +348,8 @@ describe('effects', () => {
     const lost = run([{ type: 'lostHours', hours: 6, chance: 1 }])
     expect(getView(lost.state).forcedHours).toBe(6)
     const cost = run([
-      { type: 'fixedCost', id: 'sub', name: 'Subscription', monthlyCents: 4_000, chance: 1 },
-      { type: 'fixedCost', id: 'sub', name: 'Subscription', monthlyCents: 4_000, chance: 1 },
+      { type: 'fixedCost', id: 'sub', name: 'Subscription', monthlyCents: 6_000, chance: 1 },
+      { type: 'fixedCost', id: 'sub', name: 'Subscription', monthlyCents: 6_000, chance: 1 },
     ])
     expect(cost.state.company.fixedCosts.filter((c) => c.id === 'sub')).toHaveLength(1)
   })
@@ -376,7 +376,7 @@ describe('effects', () => {
           customerId: 'customer_1',
           customerName: 'Kunde customer_1',
           segmentId: 'coworking',
-          amountCents: 30_000,
+          amountCents: 45_000,
           issuedWeek: 4,
           dueWeek: 6,
           paidWeek: null,
@@ -416,7 +416,7 @@ describe('effects', () => {
     let hits = 0
     for (let i = 0; i < 200; i++) {
       const scenario = withEvents(
-        [effects('act', [{ type: 'cash', amountCents: 1_000, chance: 0.4 }])],
+        [effects('act', [{ type: 'cash', amountCents: 1_500, chance: 0.4 }])],
         { maxPerWeek: 1 },
       )
       let s = endWeek(newGame(`ch${i}`, scenario), book).state

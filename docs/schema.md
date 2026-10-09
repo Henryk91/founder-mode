@@ -587,3 +587,4 @@ Arrives in Phase 4. See plan section 4.10.
 - `Lead.channel`: the outreach channel that found an outreach or salesperson lead.
 - Outreach saturation: `sales.saturationHours` (12), `saturationWeeks` (3), `saturatedFactor` (0.3). Founder and salesperson outreach on one channel in one market counts fully up to 36 h over the current and previous two weeks, beyond that at 0.3 per hour. `costs.saturationHours` and `costs.saturationWeeks` carry the rule to the view.
 - `new_leads` entries carry `wornOut` when some outreach hours went beyond saturation; the results screen says the channel is wearing out. `hireEconomics(state)` (public): role, cost so far, customers the hire found, cost per customer, and money received per customer over the run.
+- `PlayerView.founder.livingCostCentsPerMonth` (weekly living costs x `weeksPerMonth`), `TeamView.roles[].weeklyHours`. Intro cards may use `{livingMonth:eur}`.

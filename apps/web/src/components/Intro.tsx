@@ -19,6 +19,7 @@ export function Intro() {
     cash: view.company.cashCents,
     savings: view.founder.savingsCents,
     living: view.founder.livingCostCentsPerWeek,
+    livingMonth: view.founder.livingCostCentsPerMonth,
     maxWeeks: view.maxWeeks,
   }
   const last = step === cards.length - 1

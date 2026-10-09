@@ -284,7 +284,7 @@ export type ScenarioEvent = z.infer<typeof EventSchema>
 export type EventChoice = z.infer<typeof EventChoiceSchema>
 export const EVENT_PLACEHOLDERS = ['name'] as const
 
-export const INTRO_PLACEHOLDERS = ['cash', 'savings', 'living', 'maxWeeks'] as const
+export const INTRO_PLACEHOLDERS = ['cash', 'savings', 'living', 'livingMonth', 'maxWeeks'] as const
 export const NOTE_PLACEHOLDERS = ['week', 'n', 'living'] as const
 
 // The engine picks one of these by rule, so every id must have text.

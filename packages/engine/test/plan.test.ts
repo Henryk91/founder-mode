@@ -31,13 +31,13 @@ describe('validatePlan', () => {
   })
 
   it('rejects transfers above savings', () => {
-    expect(validatePlan(state, plan({ transferToCompanyCents: 1_200_001 }))).toEqual([
-      { code: 'transfer_exceeds_savings', savingsCents: 950_000 },
+    expect(validatePlan(state, plan({ transferToCompanyCents: 1_425_001 }))).toEqual([
+      { code: 'transfer_exceeds_savings', savingsCents: 1_425_000 },
     ])
   })
 
   it('accepts a positive whole price and rejects anything else', () => {
-    expect(validatePlan(state, plan({ priceCentsPerMonth: 45_000 }))).toEqual([])
+    expect(validatePlan(state, plan({ priceCentsPerMonth: 67_500 }))).toEqual([])
     for (const price of [0, -100, 12.5]) {
       expect(validatePlan(state, plan({ priceCentsPerMonth: price }))).toEqual([
         { code: 'invalid_price' },

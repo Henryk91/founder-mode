@@ -20,7 +20,7 @@ These are defaults. Change them here before starting and Claude Code will follow
 | Platform | Browser, phone layout first, desktop layout second | No native wrapper yet |
 | Backend | None | Everything runs client side, saves in the browser |
 | Package manager | pnpm workspaces | |
-| Run length | Max 78 weeks, target 60 to 90 minutes of play | |
+| Run length | Max 60 weeks, money for about 30 weeks, target 45 to 70 minutes of play | Was 78 weeks with money for about 42; changed after the Phase 4 review |
 | Turn | 1 week, 50 founder hours | |
 | Team in early MVP | Solo founder plus at most one hire | No cofounder yet |
 | Funding in early MVP | Bootstrapping plus personal savings | No loans, angels, or VC yet |
@@ -356,8 +356,8 @@ Milestones: first interview, first sign up, first paying customer, 1,000 EUR mon
 | Bankrupt | Company cash still below zero after the automatic top up, i.e. savings are used up and cannot cover the gap |
 | Burnout | Energy at 0 for 3 consecutive weeks |
 | Shut down | Player chooses to stop |
-| Still searching | Week 78 reached, not profitable |
-| Sustainable business | Week 78 reached, profitable for the last 8 weeks |
+| Still searching | Week 60 reached, not profitable |
+| Sustainable business | Week 60 reached, profitable for the last 8 weeks |
 
 ### 4.14 Save format
 
@@ -441,29 +441,41 @@ Always visible: cash, runway, monthly revenue, paying customers. Each shows its 
 
 ## 7. Bots and balancing
 
-`packages/bots` runs complete games without UI.
+`packages/bots` runs complete games without UI. Bots see only `PlayerView` and `WeekReport`.
 
 | Strategy | Behaviour | Expected result |
 |---|---|---|
 | random | Random valid plans | Almost always loses |
-| build_only | Builds features, never talks to customers | Loses more than 90% |
+| build_only | Builds features, never talks to customers | Loses more than 95% |
 | sell_first | Outreach immediately, no validation | Loses often, wins sometimes |
-| validate_then_build | Interviews and pre-sales, picks best segment, builds must haves, then sells | Best results, but not guaranteed |
+| validate_then_build | Interviews, landing tests and a pre-sale, picks the best segment, builds its must haves, sells with channel rotation and follow ups, reads the inbox, chases invoices, sorts the books | Best results, but not guaranteed |
+| validate_then_build_hire, validate_then_build_early_hire | As above, plus the one hire once revenue covers it, or as soon as a payback estimate says it pays | Worse than without a hire: the hire rarely pays |
+| presale_max | As validate_then_build, but every pre-sale batch allowed | No better than validate_then_build |
+| price_aware | As validate_then_build, raising the price while trials convert | About as good |
 | overworker | Plans 65 h every week | Burns out |
+| playtest | Replays the hand playtest | Loses |
 
-Command: `pnpm bots --runs 1000 --seed-prefix test`
+Command: `pnpm bots --runs 1000 --seed-prefix test` (add `--events` for the per event table, which also measures target 10).
 
-Report per strategy: ending distribution, median week of death, median peak revenue. Written to `docs/balancing.md`.
+Report per strategy: ending distribution, median week of death, median peak revenue, wins by viable market, first paying customer, evidence by week 10, pacing, inbox policies, per event answers, customer sources, behaviour ablations, the hire. Written to `docs/balancing.md`.
 
-Targets for the early MVP:
+Targets for the early MVP (judged on `validate_then_build`; revised after the Phase 4 review):
 
 1. `build_only` reaches "Sustainable business" in under 5% of runs
 2. `validate_then_build` reaches it in 25 to 45% of runs
 3. No strategy exceeds 60%
-4. Median run length for losing runs is between week 20 and week 50
+4. Median run length for losing runs is between week 20 and week 40
 5. 1000 runs complete in under 60 seconds
-6. `validate_then_build` win rates across the three viable markets lie within 15 points of each other (added after the Phase 3 review)
-7. `validate_then_build` gets its first paying customer between week 8 and week 14 in the median winning run (added after the Phase 3 review)
+6. `validate_then_build` win rates across the three viable markets lie within 15 points
+7. `validate_then_build` gets its first paying customer between week 4 and week 10 in the median winning run
+8. By week 10, at least 70% of `validate_then_build` runs have a paying customer or have left a market that is not viable
+9. In weeks 1 to 20, at least 85% of weeks bring decision news (a new message, a lead that moved, an experiment result, a lost customer or invoice, candidates), for `validate_then_build` and `playtest`
+10. At least a third of inbox events (seen in 150 or more of 1000 seeds) are best answered by their cheapest choice
+11. A blind policy that takes the most effortful affordable answer beats leaving every message alone by at most 4 points; reading the messages beats it by at least 4
+12. Dropped: hires by the payback rule were to win as often as plain play. No salary pays back within the run; the hire is a choice that rarely pays
+13. Switching off chasing, landing tests or the books each costs `validate_then_build` at least 2 points, with more seeds won only with it than only without
+14. `presale_max` does not beat `validate_then_build` by more than 3 points
+15. No single action (outreach counted per channel) finds more than 40% of the customers in winning `validate_then_build` runs
 
 If a target fails, tune scenario values first and formulas second, and record the change in `docs/decisions.md`.
 

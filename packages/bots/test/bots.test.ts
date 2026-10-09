@@ -170,7 +170,7 @@ describe('bots', () => {
       costCents,
       monthlyCostCents,
     })
-    const view = (choices: ReturnType<typeof choice>[], cash = 1_000_000): PlayerView =>
+    const view = (choices: ReturnType<typeof choice>[], cash = 1_500_000): PlayerView =>
       ({
         committedHours: 0,
         forcedHours: 0,
@@ -199,14 +199,14 @@ describe('bots', () => {
       expect(answerInbox(view([choice('a', 0), choice('b', 0)]))).toEqual([])
     })
 
-    it('never takes a monthly cost, and spends at most a tenth of the cash above 3,000 EUR', () => {
-      expect(answerInbox(view([choice('skip', 0), choice('sub', 3, 0, 4_000)]))).toEqual([])
-      const buy = [choice('skip', 0), choice('buy', 1, 140_000)]
-      expect(answerInbox(view(buy, 1_000_000))).toEqual([])
-      expect(answerInbox(view(buy, 1_500_000))).toEqual([
+    it('never takes a monthly cost, and spends at most a tenth of the cash above 4,500 EUR', () => {
+      expect(answerInbox(view([choice('skip', 0), choice('sub', 3, 0, 6_000)]))).toEqual([])
+      const buy = [choice('skip', 0), choice('buy', 1, 210_000)]
+      expect(answerInbox(view(buy, 1_500_000))).toEqual([])
+      expect(answerInbox(view(buy, 2_250_000))).toEqual([
         { messageId: 'message_1', choiceId: 'buy' },
       ])
-      expect(answerInbox(view([choice('skip', 0), choice('pay', 1, 50_000)], 340_000))).toEqual([])
+      expect(answerInbox(view([choice('skip', 0), choice('pay', 1, 75_000)], 510_000))).toEqual([])
     })
 
     it('keeps the week under 8 hours of answers', () => {

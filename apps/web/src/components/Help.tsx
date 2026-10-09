@@ -30,6 +30,7 @@ export function Help() {
               cash: view.company.cashCents,
               savings: view.founder.savingsCents,
               living: view.founder.livingCostCentsPerWeek,
+              livingMonth: view.founder.livingCostCentsPerMonth,
             })}
           </p>
         )}

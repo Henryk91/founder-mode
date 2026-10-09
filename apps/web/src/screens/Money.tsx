@@ -43,7 +43,15 @@ export function Money() {
         {stat('money.savings', founder.savingsCents)}
         {stat('money.monthlyRevenue', view.monthlyRevenueCents)}
         {stat('money.fixedCosts', company.monthlyFixedCostsCents)}
-        {stat('money.living', founder.livingCostCentsPerWeek)}
+        <div className={styles.rowHead}>
+          <span>{label('money.living', stage)}</span>
+          <span className={styles.mono}>
+            {label('money.livingValue', stage, {
+              week: formatEuro(founder.livingCostCentsPerWeek),
+              month: formatEuro(founder.livingCostCentsPerMonth),
+            })}
+          </span>
+        </div>
       </section>
 
       <section className={styles.card}>

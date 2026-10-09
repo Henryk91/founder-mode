@@ -19,7 +19,7 @@ describe('content', () => {
     expect(s.segments.map((x) => x.id)).toEqual(['small_offices', 'coworking', 'medical'])
     expect(s.roles.map((x) => x.id)).toEqual(['viable', 'mediocre', 'trap'])
     expect(s.features).toHaveLength(8)
-    expect(s.start.cashCents).toBe(600_000)
+    expect(s.start.cashCents).toBe(900_000)
     expect(s.maxWeeks).toBe(60)
   })
 
@@ -38,13 +38,13 @@ describe('content', () => {
     const s = loadScenario('kantino')
     expect(s.experiments.landing).toMatchObject({
       hours: 8,
-      budgetsCents: [20_000, 50_000],
-      centsPerVisitor: 150,
+      budgetsCents: [30_000, 75_000],
+      centsPerVisitor: 225,
     })
     expect(s.experiments.presale).toMatchObject({ hoursPerBatch: 6, batchSize: 5, weeks: 1 })
     expect(s.finance.chaseBoost).toBe(0.3)
-    expect(s.team.roles.developer.monthlyCents).toBe(260_000)
-    expect(s.team.roles.salesperson.monthlyCents).toBe(220_000)
+    expect(s.team.roles.developer.monthlyCents).toBe(390_000)
+    expect(s.team.roles.salesperson.monthlyCents).toBe(330_000)
     expect(s.team).toMatchObject({
       searchHours: 6,
       searchWeeks: 2,

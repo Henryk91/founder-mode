@@ -180,7 +180,7 @@ describe('demos and trials', () => {
             segmentId: 'small_offices',
             sinceWeek: 3,
             churnedWeek: null,
-            priceCentsPerMonth: 30_000,
+            priceCentsPerMonth: 45_000,
           },
         ])
       } else {
@@ -235,7 +235,7 @@ describe('customers, revenue and churn', () => {
     segmentId: 'small_offices',
     sinceWeek,
     churnedWeek: null,
-    priceCentsPerMonth: 30_000,
+    priceCentsPerMonth: 45_000,
   })
 
   it('invoices at month end the customers won before that week, and is paid later', () => {
@@ -245,18 +245,18 @@ describe('customers, revenue and churn', () => {
     expect(r.state.invoices).toHaveLength(1)
     expect(r.state.invoices[0]).toMatchObject({
       customerId: 'customer_1',
-      amountCents: 30_000,
+      amountCents: 45_000,
       issuedWeek: 4,
       dueWeek: 6,
     })
     expect(r.report.entries).toContainEqual({
       kind: 'invoices_issued',
-      amountCents: 30_000,
+      amountCents: 45_000,
       count: 1,
     })
     // No money yet: an invoice is paid in a later week.
     expect(r.report.ledger.revenueCents).toBe(0)
-    expect(r.state.company.cashCents).toBe(600_000 - 27_000)
+    expect(r.state.company.cashCents).toBe(900_000 - 40_500)
   })
 
   it('invoices every customer the price agreed when they signed', () => {
@@ -265,13 +265,13 @@ describe('customers, revenue and churn', () => {
       week: 4,
       customers: [
         customer('customer_1', 1),
-        { ...customer('customer_2', 2), priceCentsPerMonth: 45_000 },
+        { ...customer('customer_2', 2), priceCentsPerMonth: 67_500 },
       ],
     }
     // A price change this week applies to new customers only.
-    const r = endWeek(s, plan({ priceCentsPerMonth: 90_000 }))
-    expect(r.state.invoices.map((i) => i.amountCents)).toEqual([30_000, 45_000])
-    expect(r.state.company.priceCentsPerMonth).toBe(90_000)
+    const r = endWeek(s, plan({ priceCentsPerMonth: 135_000 }))
+    expect(r.state.invoices.map((i) => i.amountCents)).toEqual([45_000, 67_500])
+    expect(r.state.company.priceCentsPerMonth).toBe(135_000)
     const active = r.state.customers.filter((c) => c.churnedWeek === null)
     expect(getView(r.state).monthlyRevenueCents).toBe(
       active.reduce((sum, c) => sum + c.priceCentsPerMonth, 0),

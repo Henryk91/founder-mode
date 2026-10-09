@@ -9,11 +9,11 @@ const quiet = (seed: string) => newGame(seed, quietKantino())
 describe('landing page tests', () => {
   it('costs 8 h and the ad budget, and reports after 1 week', () => {
     let s = quiet('landing')
-    const week1 = endWeek(s, plan({ landing: { coworking: 20_000 } }))
+    const week1 = endWeek(s, plan({ landing: { coworking: 30_000 } }))
     expect(week1.report.plannedHours).toBe(8)
-    expect(week1.report.ledger.adSpendCents).toBe(20_000)
-    expect(week1.report.entries).toContainEqual({ kind: 'ad_spend', amountCents: 20_000 })
-    expect(week1.state.company.cashCents).toBe(600_000 - 20_000)
+    expect(week1.report.ledger.adSpendCents).toBe(30_000)
+    expect(week1.report.entries).toContainEqual({ kind: 'ad_spend', amountCents: 30_000 })
+    expect(week1.state.company.cashCents).toBe(900_000 - 30_000)
     expect(getView(week1.state).pendingExperiments).toEqual([
       { kind: 'landing', segmentId: 'coworking', resolveWeek: 2 },
     ])
@@ -25,7 +25,7 @@ describe('landing page tests', () => {
     const week2 = endWeek(s, plan())
     const test = getView(week2.state).segments.find((x) => x.id === 'coworking')!.landingTests
     expect(test).toHaveLength(1)
-    expect(test[0]).toMatchObject({ week: 2, budgetCents: 20_000, visitors: 133 })
+    expect(test[0]).toMatchObject({ week: 2, budgetCents: 30_000, visitors: 133 })
     expect(week2.report.entries).toContainEqual(
       expect.objectContaining({ kind: 'landing_result', segmentId: 'coworking', visitors: 133 }),
     )
@@ -35,7 +35,7 @@ describe('landing page tests', () => {
   it('turns every 5 sign ups into one open lead in that market', () => {
     for (let i = 0; i < 10; i++) {
       let s = withPain(quiet(`lead${i}`), 'coworking', 0.8)
-      s = endWeek(s, plan({ landing: { coworking: 50_000 } })).state
+      s = endWeek(s, plan({ landing: { coworking: 75_000 } })).state
       const r = endWeek(s, plan())
       const result = r.report.entries.find((e) => e.kind === 'landing_result')!
       if (result.kind !== 'landing_result') throw new Error('no result')
@@ -54,7 +54,7 @@ describe('landing page tests', () => {
         const wtp = s.hidden.segments.medical!.wtpCents
         s = endWeek(
           s,
-          plan({ landing: { medical: 50_000 }, priceCentsPerMonth: Math.round(wtp * factor) }),
+          plan({ landing: { medical: 75_000 }, priceCentsPerMonth: Math.round(wtp * factor) }),
         ).state
         s = endWeek(s, plan()).state
         signups += getView(s).segments.find((x) => x.id === 'medical')!.landingTests[0]!.signups
@@ -66,7 +66,7 @@ describe('landing page tests', () => {
 
   it('buys 333 visitors with the larger budget', () => {
     let s = quiet('landing-big')
-    s = endWeek(s, plan({ landing: { medical: 50_000 } })).state
+    s = endWeek(s, plan({ landing: { medical: 75_000 } })).state
     s = endWeek(s, plan()).state
     expect(getView(s).segments.find((x) => x.id === 'medical')!.landingTests[0]!.visitors).toBe(333)
   })
@@ -77,7 +77,7 @@ describe('landing page tests', () => {
       let visitors = 0
       for (let i = 0; i < 60; i++) {
         let s = withPain(quiet(`rate${i}`), 'coworking', pain)
-        s = endWeek(s, plan({ landing: { coworking: 50_000 } })).state
+        s = endWeek(s, plan({ landing: { coworking: 75_000 } })).state
         s = endWeek(s, plan()).state
         const t = getView(s).segments.find((x) => x.id === 'coworking')!.landingTests[0]!
         signups += t.signups
@@ -92,7 +92,7 @@ describe('landing page tests', () => {
 
   it('logs each result with its expected value for the post-mortem', () => {
     let s = withPain(quiet('landing-log'), 'coworking', 0.5)
-    for (const p of [plan({ landing: { coworking: 20_000 } }), plan()]) {
+    for (const p of [plan({ landing: { coworking: 30_000 } }), plan()]) {
       s = endWeek(s, p).state
     }
     const logged = s.eventLog.filter((e) => e.kind === 'landing')
@@ -103,10 +103,10 @@ describe('landing page tests', () => {
 
   it('rejects a budget that is not one of the scenario budgets', () => {
     const s = quiet('landing-budget')
-    expect(validatePlan(s, plan({ landing: { coworking: 30_000 } }))).toEqual([
+    expect(validatePlan(s, plan({ landing: { coworking: 45_000 } }))).toEqual([
       { code: 'invalid_budget', segmentId: 'coworking' },
     ])
-    expect(validatePlan(s, plan({ landing: { nowhere: 20_000 } }))).toContainEqual({
+    expect(validatePlan(s, plan({ landing: { nowhere: 30_000 } }))).toContainEqual({
       code: 'unknown_segment',
       segmentId: 'nowhere',
     })
@@ -144,7 +144,7 @@ describe('pre-sales', () => {
     const next = endWeek(r.state, plan())
     const sale = commitsOf(next.state, 'coworking')
     expect(sale).toHaveLength(1)
-    expect(sale[0]).toMatchObject({ week: 2, prospects: 10, priceCents: 30_000 })
+    expect(sale[0]).toMatchObject({ week: 2, prospects: 10, priceCents: 45_000 })
   })
 
   it('commits about a quarter of the prospects at full pain, fewer when the price is too high', () => {
@@ -197,10 +197,10 @@ describe('pre-sales', () => {
 
   it('takes a deposit of one month from every prospect who commits', () => {
     const { r, commits } = committed()
-    expect(r.report.ledger.revenueCents).toBe(commits * 30_000)
+    expect(r.report.ledger.revenueCents).toBe(commits * 45_000)
     const leads = r.state.leads.filter((l) => l.stage === 'committed')
     expect(leads).toHaveLength(commits)
-    for (const l of leads) expect(l).toMatchObject({ source: 'presale', depositCents: 30_000 })
+    for (const l of leads) expect(l).toMatchObject({ source: 'presale', depositCents: 45_000 })
     expect(r.report.entries).toContainEqual(
       expect.objectContaining({ kind: 'presale_result', commits }),
     )
@@ -225,7 +225,7 @@ describe('pre-sales', () => {
     const next = endWeek(s, plan())
     expect(next.state.customers).toHaveLength(commits)
     for (const c of next.state.customers) {
-      expect(c).toMatchObject({ priceCentsPerMonth: 30_000, prepaidMonths: 1 })
+      expect(c).toMatchObject({ priceCentsPerMonth: 45_000, prepaidMonths: 1 })
     }
     expect(
       next.report.entries.filter((e) => e.kind === 'lead_update' && e.change === 'won'),
@@ -248,7 +248,7 @@ describe('pre-sales', () => {
         (e) => e.kind === 'lead_update' && e.change === 'refunded',
       ).length
       if (refund > 0) {
-        expect(next.report.ledger.otherCostsCents).toBe(commits * 30_000)
+        expect(next.report.ledger.otherCostsCents).toBe(commits * 45_000)
         expect(w).toBe(7)
       }
       s = next.state
