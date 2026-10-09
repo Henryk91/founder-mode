@@ -61,6 +61,7 @@ export function endWeek(
   const results = resolveExperiments(state, rng)
   state = results.state
   entries.push(...results.entries)
+  extras.depositsCents += results.depositsCents
 
   // 5. Product: bug fixing, build progress, shipping. A working developer adds build hours.
   const team = teamOutput(state, plan)
@@ -74,6 +75,7 @@ export function endWeek(
   const sales = applySales(state, plan, rng, team)
   state = sales.state
   entries.push(...sales.entries)
+  extras.otherCostsCents += sales.refundsCents
 
   // 7. Team: letting go, offers, searches, starts
   const staff = applyTeam(state, plan, rng)

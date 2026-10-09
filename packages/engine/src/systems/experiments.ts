@@ -116,6 +116,15 @@ export function runInterviews(
   }
 }
 
+/** Pre-sale batches a market has had so far: every logged week plan, plus `plan` if given. */
+export function presaleBatchesUsed(state: GameState, segmentId: string, plan?: WeekPlan): number {
+  let used = plan?.presales[segmentId] ?? 0
+  for (const a of state.actionLog) {
+    if (a.type === 'endWeek') used += a.plan.presales[segmentId] ?? 0
+  }
+  return used
+}
+
 /** Leads of a segment that are still in play: not lost and not yet customers. */
 export function openLeadCount(state: GameState, segmentId: string): number {
   return state.leads.filter(
@@ -154,8 +163,8 @@ export function startExperiments(state: GameState, plan: WeekPlan): GameState {
         segmentId: seg.id,
         startWeek: state.week,
         resolveWeek: state.week + presale.weeks,
-        // A batch with fewer leads than its size has that many prospects.
-        trials: Math.min(batches * presale.batchSize, openLeadCount(state, seg.id)),
+        // Cold prospects: no leads needed.
+        trials: batches * presale.batchSize,
         p: presale.commitRate * hidden.pain * priceFactor(state, seg.id),
         budgetCents: 0,
         priceCents: state.company.priceCentsPerMonth,
@@ -169,13 +178,17 @@ export function startExperiments(state: GameState, plan: WeekPlan): GameState {
   }
 }
 
-/** Draws the result of every experiment due this week and files it as evidence. */
+/**
+ * Draws the result of every experiment due this week and files it as evidence. Landing sign ups
+ * become leads; every pre-sale commit pays a deposit of one month and becomes a committed lead.
+ */
 export function resolveExperiments(
   state: GameState,
   rng: Rng,
-): { state: GameState; entries: ReportEntry[] } {
+): { state: GameState; entries: ReportEntry[]; depositsCents: number } {
   const due = state.hidden.experiments.filter((e) => e.resolveWeek <= state.week)
-  if (due.length === 0) return { state, entries: [] }
+  if (due.length === 0) return { state, entries: [], depositsCents: 0 }
+  let depositsCents = 0
   const entries: ReportEntry[] = []
   const events: ExperimentEvent[] = []
   const knowledge = { ...state.knowledge }
@@ -188,6 +201,17 @@ export function resolveExperiments(
         ? Math.floor(observed / state.scenario.experiments.landing.signupsPerLead)
         : 0
     withLeads = addLeads(withLeads, e.segmentId, leads, rng, 'landing')
+    if (e.kind === 'presale' && observed > 0) {
+      const before = withLeads.leads.length
+      withLeads = addLeads(withLeads, e.segmentId, observed, rng, 'presale')
+      withLeads = {
+        ...withLeads,
+        leads: withLeads.leads.map((l, i) =>
+          i < before ? l : { ...l, stage: 'committed', depositCents: e.priceCents },
+        ),
+      }
+      depositsCents += observed * e.priceCents
+    }
     events.push({
       kind: e.kind,
       week: state.week,
@@ -243,5 +267,6 @@ export function resolveExperiments(
       eventLog: [...state.eventLog, ...events],
     },
     entries,
+    depositsCents,
   }
 }

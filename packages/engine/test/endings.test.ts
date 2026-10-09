@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { endWeek, getView, replay, shutDown, toSave, validatePlan } from '../src/index'
 import { checkEnding } from '../src/systems/endings'
-import { newGame, plan, play, richKantino } from './helpers'
+import { newGame, plan, play, richKantino, quietKantino } from './helpers'
 
 describe('endings', () => {
   it('goes bankrupt with Kantino values when nothing earns money', () => {
-    const s = play(newGame('broke'), 200, () => plan())
+    const s = play(newGame('broke', quietKantino()), 200, () => plan())
     expect(s.status).toBe('ended')
     expect(s.ending).toBe('bankrupt')
     // Cash and savings at about 517.50 EUR a week (living costs plus a quarter of fixed costs).

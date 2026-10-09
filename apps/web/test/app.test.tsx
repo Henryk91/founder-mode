@@ -200,7 +200,7 @@ describe('onboarding', () => {
       'Costs 2 h each. Gives you one answer in the interviewee',
       'Costs the hours shown. A feature ships once all its hours are in',
       'Costs the hours you set, on one channel per market. Finds new leads at the end of this week',
-      'Costs 3 h per demo. A good demo starts a trial that runs 2 weeks',
+      'Costs 3 h per demo. A good demo starts a trial that runs 1 week',
       'Costs the hours you set. Restores energy this week.',
     ]) {
       expect(page, line).toContain(line)
@@ -340,7 +340,7 @@ describe('phase 4 screens', () => {
     expect(page).toContain('€200')
     expect(page).toContain('€500')
     expect(page).toContain('Pre-sale: Medical practices')
-    expect(page).toContain('0 open leads. A batch needs at least 3.')
+    expect(page).toContain('3 batches left in this market.')
     expect(page).not.toMatch(/[{}]/)
   })
 
@@ -555,13 +555,9 @@ describe('follow ups, costs and plurals', () => {
     expect(html(store)).toContain('1 follow up (1 h)')
   })
 
-  it('says "1 open lead" and "2 open leads", and weeks in the singular', () => {
-    expect(count('plan.presale.leads', 'scrappy', 1, { min: 3 })).toBe(
-      '1 open lead. A batch needs at least 3.',
-    )
-    expect(count('plan.presale.leads', 'scrappy', 2, { min: 3 })).toBe(
-      '2 open leads. A batch needs at least 3.',
-    )
+  it('says "1 batch left" and "2 batches left", and weeks in the singular', () => {
+    expect(count('plan.presale.left', 'scrappy', 1)).toBe('1 batch left in this market.')
+    expect(count('plan.presale.left', 'scrappy', 2)).toBe('2 batches left in this market.')
     expect(count('unit.weeks', 'scrappy', 1)).toBe('1 week')
     expect(count('unit.weeks', 'scrappy', 2)).toBe('2 weeks')
   })

@@ -6,13 +6,14 @@ import type {
   Lead,
   LeadChange,
   LeadSource,
+  LostReason,
   ReportEntry,
   SegmentId,
   WeekPlan,
 } from '../types'
 import { isMonthEnd } from './finance'
 import { energyFactor } from './founder'
-import { fit, priceFactor } from './market'
+import { coverage, fit, priceFactor } from './market'
 import type { TeamOutput } from './team'
 
 /** A lead can take part in a demo when it asked for one and is still answering. */
@@ -87,6 +88,8 @@ function randomRound(x: number, rng: Rng): number {
 
 /**
  * Sales step (plan section 4.5), in this order, leads in list order:
+ * -1. committed prospects: a paying customer once their market's must haves have shipped, their
+ *     deposit counting as the first month; refunded and lost after `refundWeeks` without them,
  * 0. follow ups: the lead answers again, is not ghosted this week, and is a bit keener,
  * 1. demos held this week: the lead becomes a trial or is lost,
  * 2. trials that ran their course: the lead becomes a paying customer or is lost,
@@ -101,8 +104,10 @@ export function applySales(
   plan: WeekPlan,
   rng: Rng,
   team: TeamOutput | null = null,
-): { state: GameState; entries: ReportEntry[] } {
+): { state: GameState; entries: ReportEntry[]; refundsCents: number } {
   const cfg = state.scenario.sales
+  const refundWeeks = state.scenario.experiments.presale.refundWeeks
+  let refundsCents = 0
   const week = state.week
   const entries: ReportEntry[] = []
   const leads: Lead[] = state.leads.map((l) => ({ ...l }))
@@ -124,10 +129,35 @@ export function applySales(
       name: lead.name,
       segmentId: lead.segmentId,
     })
-  const lose = (lead: Lead, reason: 'declined' | 'silent') => {
+  const lose = (lead: Lead, reason: LostReason) => {
     lead.stage = 'lost'
     lead.stageSinceWeek = week
     lead.lostReason = reason
+  }
+
+  // -1. Committed prospects
+  for (const lead of leads) {
+    if (lead.stage !== 'committed') continue
+    if (coverage(state, lead.segmentId) >= 1) {
+      lead.stage = 'paying'
+      lead.stageSinceWeek = week
+      lead.lastContactWeek = week
+      customers.push({
+        id: `customer_${customers.length + 1}`,
+        leadId: lead.id,
+        name: lead.name,
+        segmentId: lead.segmentId,
+        sinceWeek: week,
+        churnedWeek: null,
+        priceCentsPerMonth: lead.depositCents ?? state.company.priceCentsPerMonth,
+        prepaidMonths: 1,
+      })
+      update(lead, 'won')
+    } else if (week - lead.stageSinceWeek >= refundWeeks) {
+      refundsCents += lead.depositCents ?? 0
+      lose(lead, 'refunded')
+      update(lead, 'refunded')
+    }
   }
 
   // 0. Follow ups
@@ -262,6 +292,7 @@ export function applySales(
       customers,
     },
     entries,
+    refundsCents,
   }
 }
 

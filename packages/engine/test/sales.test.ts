@@ -138,7 +138,7 @@ describe('demos and trials', () => {
   })
 
   it('turns a trial into a paying customer only after the trial weeks', () => {
-    let s = withLeads([lead({ stage: 'trial', stageSinceWeek: 1 })], { pain: 1, shipped: true })
+    let s = withLeads([lead({ stage: 'trial', stageSinceWeek: 2 })], { pain: 1, shipped: true })
     s = { ...s, week: 2 }
     expect(stages(endWeek(s, plan()).state)).toEqual(['trial'])
     let won = 0

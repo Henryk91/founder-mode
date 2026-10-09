@@ -108,12 +108,16 @@ export const LandingConfigSchema = z.object({
 
 export const PresaleConfigSchema = z.object({
   hoursPerBatch: z.number().int().positive(),
+  // Cold prospects pitched per batch. No leads needed.
   batchSize: z.number().int().positive(),
-  // Open leads a batch needs. With fewer than batchSize leads, the batch has that many prospects.
-  minLeads: z.number().int().positive(),
   weeks: z.number().int().positive(),
-  // Each prospect commits with probability commitRate * pain * priceFactor.
+  // Each prospect pays a deposit of one month with probability commitRate * pain * priceFactor.
   commitRate: Share,
+  // Batches allowed per market over the whole run.
+  maxBatchesPerSegment: z.number().int().positive(),
+  // A deposit becomes a paying customer once the market's must haves have shipped. If they have
+  // not shipped this many weeks after the deposit, it is refunded and the prospect is lost.
+  refundWeeks: z.number().int().positive(),
 })
 
 export const FinanceConfigSchema = z.object({
@@ -162,6 +166,8 @@ export const InboxConfigSchema = z.object({
   drawChance: Share,
   // Weeks a message stays open, counting the week it arrives.
   openWeeks: z.number().int().positive(),
+  // While fewer than this many messages are open, a week with no new message draws one anyway.
+  guaranteeBelowOpen: z.number().int().nonnegative(),
   // A repeatable event does not come back within this many weeks.
   cooldownWeeks: z.number().int().nonnegative(),
   // No new messages while this many are still open.

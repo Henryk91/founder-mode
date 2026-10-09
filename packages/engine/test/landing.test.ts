@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { endWeek, getView, validatePlan } from '../src/index'
 import { newGame, plan, quietKantino } from './helpers'
-import { openLead, withPain } from './helpers2'
+import type { GameState } from '../src/types'
+import { withPain } from './helpers2'
 
 const quiet = (seed: string) => newGame(seed, quietKantino())
 
@@ -114,85 +115,146 @@ describe('landing page tests', () => {
 })
 
 describe('pre-sales', () => {
-  const withLeads = (seed: string, segmentId: string, n: number, pain = 0.8) => {
-    const s = withPain(quiet(seed), segmentId, pain)
-    return { ...s, leads: Array.from({ length: n }, (_, i) => openLead(i + 1, segmentId)) }
-  }
+  const pained = (seed: string, segmentId: string, pain = 0.8) =>
+    withPain(quiet(seed), segmentId, pain)
+  const commitsOf = (s: GameState, segmentId: string) =>
+    getView(s).segments.find((x) => x.id === segmentId)!.presales
 
-  it('needs 3 open leads in the market for each batch', () => {
-    const s = withLeads('presale-leads', 'coworking', 7)
-    expect(validatePlan(s, plan({ presales: { coworking: 2 } }))).toEqual([])
-    expect(validatePlan(s, plan({ presales: { coworking: 3 } }))).toEqual([
-      { code: 'presale_needs_leads', segmentId: 'coworking', leads: 9 },
+  it('pitches cold prospects, needs no leads, and allows 3 batches per market', () => {
+    const s = pained('presale-cap', 'coworking')
+    expect(validatePlan(s, plan({ presales: { coworking: 3 } }))).toEqual([])
+    expect(validatePlan(s, plan({ presales: { coworking: 4 } }))).toEqual([
+      { code: 'presale_cap', segmentId: 'coworking', left: 3 },
     ])
-    expect(
-      validatePlan(withLeads('few', 'coworking', 2), plan({ presales: { coworking: 1 } })),
-    ).toHaveLength(1)
-    const lost = { ...s, leads: s.leads.map((l) => ({ ...l, stage: 'lost' as const })) }
-    expect(validatePlan(lost, plan({ presales: { coworking: 1 } }))).toHaveLength(1)
+    const after = endWeek(s, plan({ presales: { coworking: 2 } })).state
+    expect(getView(after).segments.find((x) => x.id === 'coworking')!.presaleBatchesLeft).toBe(1)
+    expect(validatePlan(after, plan({ presales: { coworking: 2 } }))).toEqual([
+      { code: 'presale_cap', segmentId: 'coworking', left: 1 },
+    ])
+    expect(validatePlan(after, plan({ presales: { medical: 3 } }))).toEqual([])
   })
 
-  it('scales the prospects to the leads when a batch is short of 5', () => {
-    const run = (leads: number, batches: number) => {
-      let s = withLeads('presale-scale', 'coworking', leads)
-      s = endWeek(s, plan({ presales: { coworking: batches } })).state
-      s = endWeek(s, plan()).state
-      return getView(s).segments.find((x) => x.id === 'coworking')!.presales[0]!
-    }
-    expect(run(3, 1).prospects).toBe(3)
-    expect(run(4, 1).prospects).toBe(4)
-    expect(run(12, 1).prospects).toBe(5)
-    expect(run(7, 2).prospects).toBe(7)
-    expect(run(12, 2).prospects).toBe(10)
-  })
-
-  it('costs 6 h per batch and reports after a week', () => {
-    const s = withLeads('presale-cost', 'coworking', 12)
+  it('costs 6 h per batch of 5 prospects and reports after a week', () => {
+    const s = pained('presale-cost', 'coworking')
     const r = endWeek(s, plan({ presales: { coworking: 2 } }))
     expect(r.report.plannedHours).toBe(12)
     expect(getView(r.state).pendingExperiments).toEqual([
       { kind: 'presale', segmentId: 'coworking', resolveWeek: 2 },
     ])
     const next = endWeek(r.state, plan())
-    const sale = getView(next.state).segments.find((x) => x.id === 'coworking')!.presales
+    const sale = commitsOf(next.state, 'coworking')
     expect(sale).toHaveLength(1)
     expect(sale[0]).toMatchObject({ week: 2, prospects: 10, priceCents: 30_000 })
-    expect(sale[0]!.commits).toBeLessThanOrEqual(10)
   })
 
-  it('commits about half of the prospects at full pain, fewer when the price is too high', () => {
-    const commits = (priceFor: (wtp: number) => number) => {
+  it('commits about a quarter of the prospects at full pain, fewer when the price is too high', () => {
+    const rate = (priceFor: (wtp: number) => number) => {
       let total = 0
-      for (let i = 0; i < 80; i++) {
-        let s = withLeads(`pre${i}`, 'coworking', 5, 1)
+      for (let i = 0; i < 100; i++) {
+        let s = pained(`pre${i}`, 'coworking', 1)
         const wtp = s.hidden.segments.coworking!.wtpCents
         s = endWeek(
           s,
-          plan({ presales: { coworking: 1 }, priceCentsPerMonth: priceFor(wtp) }),
+          plan({ presales: { coworking: 2 }, priceCentsPerMonth: priceFor(wtp) }),
         ).state
         s = endWeek(s, plan()).state
-        total += getView(s).segments.find((x) => x.id === 'coworking')!.presales[0]!.commits
+        total += commitsOf(s, 'coworking')[0]!.commits
       }
-      return total / (80 * 5)
+      return total / (100 * 10)
     }
-    expect(commits((wtp) => wtp)).toBeCloseTo(0.5, 1)
-    expect(commits((wtp) => wtp * 2)).toBeLessThan(0.15)
+    expect(rate((wtp) => wtp)).toBeCloseTo(0.25, 1)
+    expect(rate((wtp) => wtp * 2)).toBeLessThan(0.08)
   })
 
   it('measures what prospects do: a trap market rarely commits', () => {
     let low = 0
     let high = 0
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 80; i++) {
       for (const [pain, add] of [
         [0.15, (n: number) => (low += n)],
         [0.75, (n: number) => (high += n)],
       ] as const) {
-        let s = withLeads(`trap${i}`, 'small_offices', 5, pain)
-        s = endWeek(s, plan({ presales: { small_offices: 1 } })).state
+        let s = pained(`trap${i}`, 'small_offices', pain)
+        s = endWeek(s, plan({ presales: { small_offices: 2 } })).state
         s = endWeek(s, plan()).state
-        add(getView(s).segments.find((x) => x.id === 'small_offices')!.presales[0]!.commits)
+        add(commitsOf(s, 'small_offices')[0]!.commits)
       }
     }
     expect(high).toBeGreaterThan(low * 3)
+  })
+
+  /** A run where a pre-sale in coworking found at least one prospect who paid a deposit. */
+  const committed = () => {
+    for (let i = 0; i < 50; i++) {
+      let s = pained(`dep${i}`, 'coworking', 1)
+      s = endWeek(s, plan({ presales: { coworking: 3 } })).state
+      const r = endWeek(s, plan())
+      const commits = commitsOf(r.state, 'coworking')[0]!.commits
+      if (commits > 0) return { r, commits }
+    }
+    throw new Error('no commit in 50 runs')
+  }
+
+  it('takes a deposit of one month from every prospect who commits', () => {
+    const { r, commits } = committed()
+    expect(r.report.ledger.revenueCents).toBe(commits * 30_000)
+    const leads = r.state.leads.filter((l) => l.stage === 'committed')
+    expect(leads).toHaveLength(commits)
+    for (const l of leads) expect(l).toMatchObject({ source: 'presale', depositCents: 30_000 })
+    expect(r.report.entries).toContainEqual(
+      expect.objectContaining({ kind: 'presale_result', commits }),
+    )
+    expect(getView(r.state).leads.filter((l) => l.stage === 'committed')).toHaveLength(commits)
+  })
+
+  it('turns a deposit into a customer once the market has its must haves, with the first month paid', () => {
+    const { r, commits } = committed()
+    let s = r.state
+    // Ship every coworking must have at once.
+    s = {
+      ...s,
+      product: {
+        ...s.product,
+        features: s.product.features.map((f) =>
+          s.hidden.segments.coworking!.mustHave.includes(f.id)
+            ? { ...f, shippedWeek: s.week - 1 }
+            : f,
+        ),
+      },
+    }
+    const next = endWeek(s, plan())
+    expect(next.state.customers).toHaveLength(commits)
+    for (const c of next.state.customers) {
+      expect(c).toMatchObject({ priceCentsPerMonth: 30_000, prepaidMonths: 1 })
+    }
+    expect(
+      next.report.entries.filter((e) => e.kind === 'lead_update' && e.change === 'won'),
+    ).toHaveLength(commits)
+    // The first month end sends no invoice: the deposit paid for it.
+    let t = next.state
+    while (t.week % 4 !== 0) t = endWeek(t, plan()).state
+    const monthEnd = endWeek(t, plan()).state
+    expect(monthEnd.invoices).toHaveLength(0)
+    expect(monthEnd.customers.every((c) => c.prepaidMonths === 0)).toBe(true)
+  })
+
+  it('refunds the deposit and loses the prospect after 8 weeks without the product', () => {
+    const { r, commits } = committed()
+    let s = r.state
+    let refund = 0
+    for (let w = 0; w < 8; w++) {
+      const next = endWeek(s, plan())
+      refund += next.report.entries.filter(
+        (e) => e.kind === 'lead_update' && e.change === 'refunded',
+      ).length
+      if (refund > 0) {
+        expect(next.report.ledger.otherCostsCents).toBe(commits * 30_000)
+        expect(w).toBe(7)
+      }
+      s = next.state
+    }
+    expect(refund).toBe(commits)
+    expect(s.leads.filter((l) => l.lostReason === 'refunded')).toHaveLength(commits)
+    expect(s.customers).toHaveLength(0)
   })
 })

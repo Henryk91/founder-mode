@@ -6,6 +6,7 @@ import styles from '../components/ui.module.css'
 const GROUPS = [
   ['demo', 'pipeline.group.demo'],
   ['trial', 'pipeline.group.trial'],
+  ['committed', 'pipeline.group.committed'],
   ['lead', 'pipeline.group.lead'],
 ] as const satisfies readonly (readonly [LeadStage, LabelKey])[]
 
@@ -34,6 +35,7 @@ export function Pipeline() {
           {segmentName(l.segmentId)} ·{' '}
           {label('pipeline.lastContact', stage, { week: l.lastContactWeek })}
           {l.stage === 'trial' && ` · ${count('pipeline.trialWeeks', stage, l.weeksInStage)}`}
+          {l.stage === 'committed' && ` · ${count('pipeline.depositWeeks', stage, l.weeksInStage)}`}
         </span>
         {l.canFollowUp && (
           <button
@@ -135,7 +137,9 @@ export function Pipeline() {
                   <span className={styles.hint}>
                     {l.lostReason === 'silent'
                       ? label('pipeline.lostSilent', stage)
-                      : label('pipeline.lostDeclined', stage)}
+                      : l.lostReason === 'refunded'
+                        ? label('pipeline.lostRefunded', stage)
+                        : label('pipeline.lostDeclined', stage)}
                   </span>
                 </li>
               ))}

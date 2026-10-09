@@ -15,7 +15,7 @@ export function richKantino(): Scenario {
 /** Kantino where no inbox message ever arrives, for tests about other systems. */
 export function quietKantino(): Scenario {
   const s = kantino()
-  return { ...s, inbox: { ...s.inbox, drawChance: 0 } }
+  return { ...s, inbox: { ...s.inbox, drawChance: 0, guaranteeBelowOpen: 0 } }
 }
 
 export function plan(overrides: Partial<WeekPlan> = {}): WeekPlan {

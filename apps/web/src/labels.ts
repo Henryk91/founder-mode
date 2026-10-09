@@ -88,6 +88,7 @@ const labels = {
   'pipeline.group.demo': 'Wants a demo',
   'pipeline.group.trial': 'Trying it out',
   'pipeline.group.lead': 'Found, not yet interested',
+  'pipeline.group.committed': 'Paid a deposit, waiting for the product',
   'pipeline.group.paying': 'Paying',
   'pipeline.group.lost': 'Gone',
   'pipeline.lastContact': 'Last contact: week {week}',
@@ -95,6 +96,9 @@ const labels = {
   'pipeline.trialWeeks.other': 'Trial for {n} weeks',
   'pipeline.silent': 'Not answering',
   'pipeline.lostDeclined': 'Said no',
+  'pipeline.lostRefunded': 'Deposit refunded',
+  'pipeline.depositWeeks.one': 'deposit paid {n} week ago',
+  'pipeline.depositWeeks.other': 'deposit paid {n} weeks ago',
   'pipeline.lostSilent': 'Stopped answering',
   'pipeline.customerSince': 'Customer since week {week}',
   'pipeline.bookDemo': 'Book demo ({hours})',
@@ -153,6 +157,9 @@ const labels = {
   'results.entry.declined': '{name} said no thanks.',
   'results.entry.went_silent': '{name} stopped answering.',
   'results.entry.lost_silent': '{name} is gone for good.',
+  'results.entry.committed':
+    '{name} paid a deposit of one month. They will pay monthly once the product does what they need.',
+  'results.entry.refunded': '{name} got their deposit back. The product never got there in time.',
   'results.entry.customer_churned': '{name} cancelled.',
 
   'end.title': 'The run is over',
@@ -225,7 +232,7 @@ const labels = {
   'results.interview': 'You spoke to someone at {segment}. Their view: {bucket}.',
   'plan.section.test': 'Test the demand',
   'plan.section.testHint':
-    'A landing page test costs {hours} and the ad budget, and reports {weeks} later with visitors and sign ups. The page shows your current price, and a few people who sign up become leads. A pre-sale costs {presale} per batch and asks up to {size} of your open leads whether they would pay. It reports {presaleWeeks} later.',
+    'A landing page test costs {hours} and the ad budget, and reports {weeks} later with visitors and sign ups. The page shows your current price, and a few people who sign up become leads. A pre-sale costs {presale} per batch and pitches {size} companies you have not met. Those who say yes pay a deposit of one month and become customers once the product does what they need. If it does not within {refund}, they get their money back. It reports {presaleWeeks} later, and each market allows {max} batches.',
   'plan.landing': 'Landing page: {segment}',
   'plan.landing.none': 'No test',
   'plan.landing.budget': '{budget} of ads, about {visitors} visitors',
@@ -233,8 +240,8 @@ const labels = {
   'plan.presale.none': 'No pre-sale',
   'plan.presale.batches.one': '{n} batch',
   'plan.presale.batches.other': '{n} batches',
-  'plan.presale.leads.one': '{n} open lead. A batch needs at least {min}.',
-  'plan.presale.leads.other': '{n} open leads. A batch needs at least {min}.',
+  'plan.presale.left.one': '{n} batch left in this market.',
+  'plan.presale.left.other': '{n} batches left in this market.',
   'plan.chase.booked.one': '{n} invoice chased ({hours})',
   'plan.chase.booked.other': '{n} invoices chased ({hours})',
   'plan.forced':
@@ -242,7 +249,7 @@ const labels = {
   'plan.committed': '{hours} are already spent on answers in your inbox.',
   'plan.team': 'Team',
   'plan.teamSummary': 'Searching for a {role} costs {hours}. Set it on the Team tab.',
-  'plan.issue.presale_needs_leads': 'A pre-sale needs more open leads in that market.',
+  'plan.issue.presale_cap': 'No pre-sale batches left in that market.',
   'market.landing.title': 'Landing page tests',
   'market.landing.result':
     'Week {week}: {signups} of {visitors} visitors signed up ({budget} of ads).',
