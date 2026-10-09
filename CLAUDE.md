@@ -9,6 +9,8 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 ## Reference docs
 
 - `docs/IMPLEMENTATION_PLAN.md`: scope, architecture, formulas, phases
+- `docs/scenario-kantino.md`: segments, features, and starting values for the first scenario. Source of truth for the content YAML.
+- `docs/design/design.md`: layout, colour and font tokens, component mapping, and three HTML mockups. Read before any UI work.
 - `docs/schema.md`: game state, player view, save file, content schemas. Update it in the same change as any type change.
 - `docs/balancing.md`: latest bot report
 - `docs/decisions.md`: short log of design decisions and tuning changes

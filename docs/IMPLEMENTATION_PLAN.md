@@ -393,6 +393,8 @@ Built only from `eventLog`, `knowledge`, and `hidden`:
 | Interview quotes | 10 per segment per bucket band (low, mid, high) |
 | Company name pool | 80 fictional names |
 
+Segments, features, and all starting values are specified in `docs/scenario-kantino.md`. Where that file and this plan differ, the scenario file wins.
+
 Tone: dry humour, short messages (2 to 4 sentences). No real company names.
 
 ---
@@ -419,7 +421,7 @@ Pinned on every screen: week, cash, runway, End week button.
 - **PhoneLayout** (under 900 px): one screen at a time, bottom tab bar with 5 tabs.
 - **DeskLayout** (900 px and up): inbox left, scene image plus plan and pipeline centre, money and upcoming right. Same screen components, arranged side by side.
 
-Reference mockups exist on a design canvas: phone inbox, scrappy desk, established desk (the last one is out of scope and shown only as a direction).
+Reference mockups, tokens, and component mapping are in `docs/design/` (start with `design.md`). The established desk mockup is out of scope and shown only as a direction.
 
 ### 6.3 Scrappy style
 
