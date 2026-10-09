@@ -60,3 +60,11 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - The outreach channel is remembered per segment as `SegmentView.lastChannel`, read from the action log, so it also survives a reload.
 - Company names are built from two word lists per segment (`first` x `second`, 720 to 750 combinations each), drawn from the unused ones. A numbered name remains only as a fallback once every combination is used.
 - 10 interview quotes per segment and bucket. A quote not yet heard in that segment and bucket is picked first, so nothing repeats within a week and a run hears every quote before any repeat.
+
+## Phase 3
+
+- Bots see only `PlayerView` before a week and `WeekReport` after it, like a human. The runner reads the hidden truth for the report only (which market was viable). Bots may read observable scenario facts such as the bucket order.
+- Bots run under `vite-node` (content loads YAML through `?raw`). `pnpm bots` writes `docs/balancing.md` and keeps its hand written "Tuning notes" section. `--out -` prints instead, `--only a,b` runs some strategies.
+- Strategies: the five from the plan plus `playtest`, which replays the hand playtest (always coworking) on every seed. Pre-sales and landing pages do not exist until Phase 4, so `validate_then_build` validates with interviews: score = mean bucket + share of interviews that asked for a feature. It builds every feature its market asked for and moves to the next market after 12 weeks of selling without a customer there.
+- Target 4 counts every losing run of every strategy, still searching runs included (length 78). Target 5 is judged on the slowest strategy per 1000 runs.
+- Burnout and the low energy penalty are Phase 4. Until then the overworker cannot burn out, and energy has no effect in the bots.

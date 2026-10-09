@@ -6,6 +6,15 @@ describe('parseArgs', () => {
     expect(parseArgs(['--runs', '1000', '--seed-prefix', 'test'])).toEqual({
       runs: 1000,
       seedPrefix: 'test',
+      out: 'docs/balancing.md',
+      only: [],
+    })
+  })
+
+  it('reads the output path and a strategy filter', () => {
+    expect(parseArgs(['--out', '-', '--only', 'random,playtest'])).toMatchObject({
+      out: '-',
+      only: ['random', 'playtest'],
     })
   })
 
