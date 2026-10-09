@@ -321,7 +321,13 @@ export function applySales(
         lostReason: null,
       })
     }
-    entries.push({ kind: 'new_leads', segmentId: item.segmentId, channel: item.channel, count })
+    entries.push({
+      kind: 'new_leads',
+      segmentId: item.segmentId,
+      channel: item.channel,
+      count,
+      wornOut: hours < item.hours,
+    })
   }
   return {
     state: {

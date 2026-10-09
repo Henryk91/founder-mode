@@ -3,10 +3,12 @@ import {
   createGame,
   endWeek,
   getView,
+  hireEconomics,
   respond,
   validatePlan,
   type EndingId,
   type GameState,
+  type HireEconomics,
   type WeekReport,
 } from '@founder-mode/engine'
 import type { Strategy } from './strategy'
@@ -89,6 +91,8 @@ export type RunResult = {
    * viable. Null for players without a focus.
    */
   evidenceByCheck: boolean | null
+  /** For runs with a hire: what it cost per customer it found, and what a customer was worth. */
+  hire: HireEconomics | null
   /** Customers won over the run, by the action that found them: `outreach:<channel>`, `landing`, ... */
   customersBySource: Record<string, number>
   customersAtCheck: number
@@ -247,6 +251,7 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     eventsSeen: state.drawnEvents.map((d) => d.eventId),
     evidenceByCheck,
     customersBySource,
+    hire: hireEconomics(state),
     customersAtCheck,
     monthlyRevenueAtCheckCents: revenueAtCheck,
     minEnergy,

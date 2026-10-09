@@ -7,6 +7,8 @@ export { checkPlan, clonePlan, emptyPlan, validatePlan } from './plan'
 export type { PlanCheck } from './plan'
 export { endWeek, shutDown } from './turn'
 export { respond } from './systems/inbox'
+export { hireEconomics } from './systems/team'
+export type { HireEconomics } from './systems/team'
 export { replay, saveProblem, toSave } from './save'
 export { scenarioHash } from './hash'
 

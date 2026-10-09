@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { endWeek, getView, validatePlan } from '../src/index'
+import { endWeek, getView, validatePlan, hireEconomics } from '../src/index'
 import type { GameState, TeamRoleId } from '../src/types'
 import { newGame, plan, quietKantino } from './helpers'
 import { openLead } from './helpers2'
@@ -211,3 +211,16 @@ describe('a hire', () => {
 })
 
 const hasOne = (s: GameState) => getView(s).team.member?.working === true
+
+describe('hire economics for the post-mortem', () => {
+  it('is null without a hire, and counts salary, customers found and their value with one', () => {
+    expect(hireEconomics(quiet())).toBeNull()
+    let s = hired('econ', 'salesperson')
+    for (let i = 0; i < 12; i++) s = endWeek(s, plan(book)).state
+    const e = hireEconomics(s)!
+    // Started in week 6; month ends 8, 12 and 16 have charged the salary.
+    expect(e).toMatchObject({ role: 'salesperson', costCents: 3 * 220_000, customersGained: 0 })
+    expect(e.costPerCustomerCents).toBeNull()
+    expect(e.lifetimeValueCents).toBeNull()
+  })
+})

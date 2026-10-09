@@ -692,7 +692,14 @@ export type ReportEntry =
   | { kind: 'cash_effect'; amountCents: number }
   | { kind: 'feature_shipped'; featureId: FeatureId; name: string; bugsAdded: number }
   | { kind: 'bugs_fixed'; count: number }
-  | { kind: 'new_leads'; segmentId: SegmentId; channel: ChannelId; count: number }
+  | {
+      kind: 'new_leads'
+      segmentId: SegmentId
+      channel: ChannelId
+      count: number
+      /** Some of the hours went beyond the channel's saturation and found fewer people. */
+      wornOut: boolean
+    }
   | { kind: 'lead_update'; change: LeadChange; leadId: string; name: string; segmentId: SegmentId }
   | { kind: 'customer_churned'; customerId: string; name: string; segmentId: SegmentId }
 
