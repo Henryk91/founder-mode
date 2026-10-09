@@ -56,11 +56,11 @@ At game creation the engine shuffles three roles across the three segments. The 
 
 | Role | Pain | Politeness bias in interviews |
 |---|---|---|
-| Viable | 0.65 to 0.90 | 0.05 to 0.15 |
+| Viable | 0.60 to 0.85 | 0.05 to 0.15 |
 | Mediocre | 0.35 to 0.55 | 0.25 to 0.40 |
 | Trap | 0.10 to 0.25 | 0.50 to 0.65 |
 
-The trap is designed so that early interviews sound encouraging while pre-sales fail. With an untrained interviewer all three markets average "Painful": the viable market sounds most in pain only about 60% of the time after 5 interviews each. Practice (lower politeness bias) and feature mentions tell them apart. (Phase 3 tuning: politeness was 0.10 to 0.20, 0.15 to 0.30, 0.28 to 0.35.)
+The trap is designed so that early interviews sound encouraging while pre-sales fail. With an untrained interviewer all three markets average "Painful": the viable market sounds most in pain only about 60% of the time after 5 interviews each. Practice (lower politeness bias) and feature mentions tell them apart. (Phase 3 tuning: politeness was 0.10 to 0.20, 0.15 to 0.30, 0.28 to 0.35, and viable pain 0.65 to 0.90.)
 
 ## 4. Features
 
@@ -111,10 +111,18 @@ Phase 3 tuning: noise was 0.20, skill gain 0.02, the Urgent bound 0.80, and the 
 |---|---|
 | Demo | 3 h of founder time, or done by a hired salesperson |
 | Trial length | 2 weeks |
-| Skill gain | selling +0.01 per demo held, capped at 0.80 |
+| Skill gain | selling +0.005 per demo held, capped at 0.80 |
 | Chase an invoice | 1 h, raises the chance of payment next week by 0.30 |
 
-Funnel formulas are in the implementation plan, section 4.5.
+Funnel formulas are in the implementation plan, section 4.5. The scenario sets their constants:
+
+| Constant | Value | Was before Phase 3 tuning |
+|---|---|---|
+| Lead to demo per week | 0.18 x (0.4 + 0.6 x pain) | 0.25 x (0.4 + 0.6 x pain) |
+| Demo to trial | 0.05 + 0.40 x fit | 0.20 + 0.60 x fit |
+| Monthly churn | 0.03 + 0.20 x (1 - fit) + 0.01 x bugs, capped at 0.6 | 0.02 + 0.25 x (1 - fit) + 0.01 x bugs |
+
+Reason: a bot that found the viable market ended with about 19 customers when 7 make the company profitable, so finding the market was the whole game. Now fewer demos turn into trials and selling skill grows half as fast. Churn stays moderate (about 11% a month for a good fit without bugs), because a leaky bucket is less fun than a slow funnel; a churn of 0.06 + 0.45 x misfit was tried and gave 20 to 30% a month for products that fit.
 
 ## 7. Founder energy
 
