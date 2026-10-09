@@ -121,6 +121,13 @@ describe('finance', () => {
     expect(getView(after).company.runwayWeeks).toBe(218)
   })
 
+  it('reports no runway until a full month has been played', () => {
+    const s = play(newGame(), 3, () => plan())
+    expect(getView(s).company.runwayKnown).toBe(false)
+    expect(getView(s).company.runwayWeeks).toBeNull()
+    expect(getView(play(s, 1, () => plan())).company.runwayKnown).toBe(true)
+  })
+
   it('treats a month as profitable when revenue covers fixed and living costs', () => {
     const week = (w: number, revenueCents: number): WeekLedger => ({
       week: w,

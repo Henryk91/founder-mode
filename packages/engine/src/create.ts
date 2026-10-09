@@ -1,5 +1,6 @@
 import { Rng, seedRng } from './rng'
 import { drawHiddenSegments } from './systems/market'
+import { initialProduct } from './systems/product'
 import type { GameState, Scenario } from './types'
 import { ENGINE_VERSION } from './version'
 
@@ -33,6 +34,9 @@ export function createGame(scenario: Scenario, seed: string): GameState {
     },
     hidden: { segments: hiddenSegments },
     knowledge: Object.fromEntries(scenario.segments.map((s) => [s.id, []])),
+    product: initialProduct({ scenario }),
+    leads: [],
+    customers: [],
     ledger: [],
     actionLog: [],
     eventLog: [],

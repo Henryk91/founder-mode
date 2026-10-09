@@ -25,8 +25,15 @@ describe('content', () => {
   })
 
   it('game text has no em dashes', () => {
-    const { scenario, features, interviewQuotes } = scenarioSources('kantino')
-    expect(scenario + features + interviewQuotes).not.toContain('—')
+    const { scenario, features, interviewQuotes, companyNames } = scenarioSources('kantino')
+    expect(scenario + features + interviewQuotes + companyNames).not.toContain('—')
+  })
+
+  it('has company names for every segment', () => {
+    const s = loadScenario('kantino')
+    for (const seg of s.segments) {
+      expect(s.companyNames[seg.id]?.length ?? 0).toBeGreaterThanOrEqual(10)
+    }
   })
 
   describe('rejects broken content', () => {
@@ -45,6 +52,11 @@ describe('content', () => {
     it('role count differs from segment count', () => {
       const scenario = base.scenario.replace(/ {2}- id: trap[\s\S]*?\n\n/, '\n')
       expect(() => parseScenario({ ...base, scenario })).toThrow(/one role per segment/)
+    })
+
+    it('a segment without company names', () => {
+      const companyNames = base.companyNames.replace(/^medical:/m, 'medicine:')
+      expect(() => parseScenario({ ...base, companyNames })).toThrow(/no company names for medical/)
     })
 
     it('inverted range', () => {

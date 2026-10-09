@@ -1,0 +1,35 @@
+.header {
+  background: var(--bar);
+  color: var(--on-dark);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 8px 14px;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.week {
+  color: var(--on-dark-muted);
+  font-size: 13px;
+}
+
+.band {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 32px;
+  padding: 4px 14px;
+  align-items: center;
+  background: var(--shadow);
+  color: var(--on-dark-muted);
+  font-size: 13px;
+}

@@ -1,0 +1,19 @@
+.start {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 40px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  margin: 0;
+  font-size: 34px;
+}
+
+.tagline {
+  margin: 0;
+  color: var(--on-dark-muted);
+  font-size: 16px;
+}

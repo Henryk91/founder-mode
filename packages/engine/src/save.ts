@@ -1,4 +1,5 @@
 import { createGame } from './create'
+import { clonePlan } from './plan'
 import { endWeek } from './turn'
 import type { GameState, SaveFile, Scenario } from './types'
 import { ENGINE_VERSION } from './version'
@@ -8,10 +9,7 @@ export function toSave(state: GameState): SaveFile {
     engineVersion: state.engineVersion,
     scenarioId: state.scenarioId,
     seed: state.seed,
-    actions: state.actionLog.map((a) => ({
-      ...a,
-      plan: { ...a.plan, interviews: { ...a.plan.interviews } },
-    })),
+    actions: state.actionLog.map((a) => ({ ...a, plan: clonePlan(a.plan) })),
   }
 }
 

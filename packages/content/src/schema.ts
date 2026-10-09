@@ -59,6 +59,32 @@ export const InterviewConfigSchema = z.object({
   buckets: z.array(InterviewBucketSchema).min(2),
 })
 
+export const SalesConfigSchema = z.object({
+  // Leads from outreach: hours * channelResponse * (selling factor)
+  sellingBase: z.number().nonnegative(),
+  // Weekly chance that a lead agrees to a demo: base * (offset + perPain * pain)
+  leadToDemoBase: Share,
+  leadToDemoOffset: Share,
+  leadToDemoPerPain: Share,
+  demoHours: z.number().int().positive(),
+  // Chance that a held demo becomes a trial: base + perFit * fit
+  demoToTrialBase: Share,
+  demoToTrialPerFit: Share,
+  trialWeeks: z.number().int().positive(),
+  ghostChancePerWeek: Share,
+  silentWeeksToLose: z.number().int().positive(),
+  skillGainPerDemo: z.number().nonnegative(),
+  skillCap: Share,
+  // Price above willingness to pay: exp(-priceSlope * (price / wtp - 1))
+  priceSlope: z.number().nonnegative(),
+  churn: z.object({
+    base: Share,
+    perMisfit: Share,
+    perBug: Share,
+    cap: Share,
+  }),
+})
+
 export const FeatureSchema = z.object({
   id: Id,
   name: z.string().min(1),
@@ -97,6 +123,16 @@ export const ScenarioFileSchema = z.object({
   experiments: z.object({
     interview: InterviewConfigSchema,
   }),
+  product: z.object({
+    startQuality: z.number().min(0).max(100),
+    // quality = startQuality - qualityPerBug * bugs, never below 0
+    qualityPerBug: z.number().nonnegative(),
+    fixHoursPerBug: z.number().int().positive(),
+    // fit = pain * coverage * (fitBase + fitPerQuality * quality / 100)
+    fitBase: Share,
+    fitPerQuality: Share,
+  }),
+  sales: SalesConfigSchema,
   roles: z.array(RoleSchema).min(1),
   segments: z.array(SegmentSchema).min(1),
 })
@@ -107,6 +143,8 @@ export const InterviewQuotesSchema = z.record(Id, z.record(Id, z.array(z.string(
 export const ScenarioSchema = ScenarioFileSchema.extend({
   features: z.array(FeatureSchema).min(1),
   interviewQuotes: InterviewQuotesSchema,
+  // segment id -> fictional company names for leads of that segment
+  companyNames: z.record(Id, z.array(z.string().min(1)).min(1)),
 }).superRefine((s, ctx) => {
   const issue = (message: string, path: (string | number)[]) =>
     ctx.addIssue({ code: 'custom', message, path })
@@ -155,6 +193,18 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     }
   })
 
+  for (const name of dupes(Object.values(s.companyNames).flat())) {
+    issue(`duplicate company name ${name}`, ['companyNames'])
+  }
+  for (const seg of s.segments) {
+    if (!s.companyNames[seg.id]?.length) issue(`no company names for ${seg.id}`, ['companyNames'])
+  }
+  for (const segId of Object.keys(s.companyNames)) {
+    if (!s.segments.some((x) => x.id === segId)) {
+      issue(`company names for unknown segment ${segId}`, ['companyNames'])
+    }
+  }
+
   const segmentIds = new Set(s.segments.map((x) => x.id))
   const bucketIds = new Set(buckets.map((b) => b.id))
   for (const [segId, byBucket] of Object.entries(s.interviewQuotes)) {
@@ -179,5 +229,6 @@ export type ScenarioSegment = Scenario['segments'][number]
 export type ScenarioRole = Scenario['roles'][number]
 export type ScenarioFeature = Scenario['features'][number]
 export type InterviewBucket = Scenario['experiments']['interview']['buckets'][number]
+export type SalesConfig = z.infer<typeof SalesConfigSchema>
 export type ChannelId = z.infer<typeof Channel>
 export type NumberRange = z.infer<typeof Range>

@@ -11,9 +11,11 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@founder-mode/content": "workspace:*",
     "@founder-mode/engine": "workspace:*",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/react": "^19.2.0",

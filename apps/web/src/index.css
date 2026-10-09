@@ -1,14 +1,40 @@
+@import './theme/scrappy.css';
+
 :root {
-  color-scheme: light;
-  font-family: system-ui, sans-serif;
-  line-height: 1.5;
+  color-scheme: dark;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  background: var(--ground);
+  color: var(--on-dark);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
   min-width: 320px;
+  background: var(--ground);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
