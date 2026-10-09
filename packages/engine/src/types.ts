@@ -415,6 +415,8 @@ export type PlayerView = {
     maxHoursPerWeek: number
     energy: number
     maxEnergy: number
+    /** Below this energy things start to work less well, and below `lowEnergyBelow` much less. */
+    tiredBelow: number
     /** Below this energy everything works less well. Scenario text, not a hidden value. */
     lowEnergyBelow: number
     /** Weeks in a row at 0 energy that end the run. */

@@ -11,6 +11,7 @@ export function Explain() {
   if (!key) return null
   const vars = {
     low: founder?.lowEnergyBelow ?? 0,
+    tired: founder?.tiredBelow ?? 0,
     weeks: count('unit.weeks', stage, founder?.burnoutWeeks ?? 0),
   }
   return (

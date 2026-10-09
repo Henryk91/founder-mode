@@ -581,3 +581,4 @@ Arrives in Phase 4. See plan section 4.10.
 - Landing tests report after 1 week (`experiments.landing.weeks` 1). The sign up chance is `(signupBase + signupPerPain * pain) * priceFactor` at the price when the test starts. Every `signupsPerLead` (5) sign ups become one open lead; `landing_result` entries carry `leads`.
 - `Lead.source`: `outreach | landing | inbox | team`, how the lead was found. State only, for the bots' report. `addLeads` in `systems/sales.ts` is shared by outreach, landing tests and inbox effects. `TeamOutput.selling` is the selling skill of the member's outreach.
 - Team roles may set `selling`, the selling skill of that member's outreach (salesperson 0.3). Without it the founder's skill is used.
+- Energy: `founder.energy.fullAt` (70). Sales chances are multiplied by 1 from `fullAt` up, falling linearly to `lowFactor` at `lowBelow`. `PlayerView.founder.tiredBelow` carries `fullAt`.

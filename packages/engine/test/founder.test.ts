@@ -41,9 +41,15 @@ describe('founder', () => {
     expect(f).toMatchObject({ energy: 3, weeksAtZeroEnergy: 0 })
   })
 
-  it('lowers sales chances below the low energy line', () => {
-    const { lowBelow, lowFactor } = scenario.founder.energy
-    expect(energyFactor({ ...founder, energy: lowBelow }, scenario)).toBe(1)
+  it('lowers sales chances gradually from the tired line down to the low energy line', () => {
+    const { fullAt, lowBelow, lowFactor } = scenario.founder.energy
+    expect(energyFactor({ ...founder, energy: fullAt }, scenario)).toBe(1)
+    expect(energyFactor({ ...founder, energy: 100 }, scenario)).toBe(1)
+    expect(energyFactor({ ...founder, energy: (fullAt + lowBelow) / 2 }, scenario)).toBeCloseTo(
+      (1 + lowFactor) / 2,
+      10,
+    )
+    expect(energyFactor({ ...founder, energy: lowBelow }, scenario)).toBe(lowFactor)
     expect(energyFactor({ ...founder, energy: lowBelow - 0.5 }, scenario)).toBe(lowFactor)
   })
 
