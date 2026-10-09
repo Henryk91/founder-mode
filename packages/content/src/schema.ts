@@ -331,7 +331,9 @@ export const ScenarioFileSchema = z.object({
       perHourOverBase: z.number(),
       perRestHour: z.number(),
       weekWithinBase: z.number(),
-      // Below this energy every sales chance is multiplied by lowFactor.
+      // Sales chances are multiplied by 1 from fullAt energy up, falling in a straight line to
+      // lowFactor at lowBelow, and by lowFactor below that.
+      fullAt: z.number().nonnegative(),
       lowBelow: z.number().nonnegative(),
       lowFactor: Share,
       // Weeks in a row at 0 energy that end the run with burnout.

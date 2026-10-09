@@ -167,7 +167,7 @@ describe('onboarding', () => {
       store.getState().openExplain(key)
       const page = html(store)
       expect(page).toContain('Got it')
-      const text = label(`explain.${key}.text`, stage, { low: 30, weeks: '3 weeks' })
+      const text = label(`explain.${key}.text`, stage, { low: 30, tired: 70, weeks: '3 weeks' })
       expect(text.split('. ').length).toBe(2)
       expect(page).toContain(text.replace(/'/g, '&#x27;'))
     }

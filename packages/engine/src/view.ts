@@ -42,6 +42,7 @@ export function getView(state: GameState): PlayerView {
       maxHoursPerWeek: founder.maxHoursPerWeek,
       energy: founder.energy,
       maxEnergy: scenario.founder.energy.max,
+      tiredBelow: scenario.founder.energy.fullAt,
       lowEnergyBelow: scenario.founder.energy.lowBelow,
       burnoutWeeks: scenario.founder.energy.burnoutWeeks,
       weeksAtZeroEnergy: founder.weeksAtZeroEnergy,

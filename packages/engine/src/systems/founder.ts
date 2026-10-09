@@ -58,8 +58,13 @@ export function applyFounderWeek(
   return { ...founder, energy, weeksAtZeroEnergy }
 }
 
-/** Multiplier on sales chances this week: lowFactor while energy is below lowBelow, else 1. */
+/**
+ * Multiplier on sales chances this week: 1 from `fullAt` energy up, falling in a straight line to
+ * `lowFactor` at `lowBelow`, and `lowFactor` below that.
+ */
 export function energyFactor(founder: FounderState, scenario: Scenario): number {
-  const rules = scenario.founder.energy
-  return founder.energy < rules.lowBelow ? rules.lowFactor : 1
+  const { fullAt, lowBelow, lowFactor } = scenario.founder.energy
+  if (founder.energy >= fullAt) return 1
+  if (founder.energy <= lowBelow) return lowFactor
+  return lowFactor + ((1 - lowFactor) * (founder.energy - lowBelow)) / (fullAt - lowBelow)
 }

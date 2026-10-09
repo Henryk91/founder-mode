@@ -192,7 +192,7 @@ const labels = {
     'Cash is the money in the company account. Fixed costs leave it at every month end, customer payments arrive when their invoices are paid, and your savings top it up if it goes negative.',
   'explain.energy.title': 'Energy',
   'explain.energy.text':
-    'Energy is how much you have left in the tank: hours above 50 in a week drain it, and rest hours and lighter weeks refill it. Below {low} everything you try works less well, and {weeks} in a row at 0 end the run.',
+    'Energy is how much you have left in the tank: hours above 50 in a week drain it, and rest hours and lighter weeks refill it. Below {tired} what you try starts to work less well, below {low} clearly worse, and {weeks} in a row at 0 end the run.',
   'explain.hours.title': 'Hours',
   'explain.hours.text':
     'A normal week is 50 hours, and you can plan up to 65 if you accept the energy cost. Interviews, building, bug fixing, outreach, demos and rest all count as planned hours.',

@@ -7,6 +7,7 @@ events:
   - id: survey_offer
     area: validation
     weight: 2
+    once: true
     when: [week >= 2]
     from: none
     sender: Panel firm
@@ -39,8 +40,6 @@ events:
       - id: call
         label: Take the call
         hours: 2
-        effects:
-          - { type: skill, skill: interviewing, delta: 0.02 }
       - id: decline
         label: Politely decline
         hours: 0
@@ -61,7 +60,7 @@ events:
         hours: 4
         effects:
           - { type: energy, delta: 4 }
-          - { type: newLeads, count: 1, chance: 0.6 }
+          - { type: newLeads, count: 1, chance: 0.3 }
       - id: skip
         label: Skip it
         hours: 0
@@ -112,7 +111,7 @@ events:
         label: Hold the price
         hours: 0
         effects:
-          - { type: churnChance, delta: 0.2 }
+          - { type: churnChance, delta: 0.05 }
 
   - id: slow_lead
     area: sales
@@ -128,7 +127,7 @@ events:
         label: Call them
         hours: 1
         effects:
-          - { type: touchLead, chance: 0.5 }
+          - { type: touchLead, chance: 0.2 }
       - id: wait
         label: Wait
         hours: 0
@@ -173,7 +172,7 @@ events:
         hours: 2
         effects:
           - { type: cash, amountCents: -25000 }
-          - { type: skill, skill: selling, delta: 0.04 }
+          - { type: skill, skill: selling, delta: 0.01 }
       - id: decline
         label: Decline
         hours: 0
@@ -194,12 +193,13 @@ events:
         hours: 3
         effects:
           - { type: touchLead }
-          - { type: bugs, delta: 1 }
+          - { type: bugs, delta: 2 }
       - id: honest
         label: Be honest about it
         hours: 1
         effects:
-          - { type: touchLead, chance: 0.6 }
+          - { type: touchLead }
+          - { type: skill, skill: selling, delta: 0.01 }
       - id: ignore
         label: Do not answer yet
         hours: 0
@@ -219,8 +219,6 @@ events:
       - id: study
         label: Study it properly
         hours: 3
-        effects:
-          - { type: skill, skill: selling, delta: 0.02 }
       - id: ignore
         label: Ignore it
         hours: 0
@@ -272,8 +270,6 @@ events:
       - id: chat
         label: Hear him out
         hours: 2
-        effects:
-          - { type: skill, skill: interviewing, delta: 0.01 }
       - id: decline
         label: Decline politely
         hours: 0
@@ -317,7 +313,7 @@ events:
         label: Accept the new price
         hours: 0
         effects:
-          - { type: fixedCost, id: hosting_upgrade, name: Hosting upgrade, monthlyCents: 4000 }
+          - { type: fixedCost, id: hosting_upgrade, name: Hosting upgrade, monthlyCents: 2000 }
 
   # ---- finance ----
   - id: late_payer_first
@@ -336,12 +332,12 @@ events:
         label: Send a friendly reminder
         hours: 1
         effects:
-          - { type: invoicePayChance, delta: 0.15 }
+          - { type: invoicePayChance, delta: 0.5 }
       - id: call
         label: Call their accounting team
         hours: 2
         effects:
-          - { type: invoicePayChance, delta: 0.45 }
+          - { type: invoicePayChance, delta: 0.55 }
       - id: pause
         label: Pause their account
         hours: 0
@@ -371,7 +367,7 @@ events:
         label: File it later
         hours: 0
         effects:
-          - { type: cash, amountCents: -20000 }
+          - { type: cash, amountCents: -30000 }
 
   - id: regional_grant
     area: finance
@@ -389,7 +385,7 @@ events:
         label: Apply
         hours: 5
         effects:
-          - { type: cash, amountCents: 150000, chance: 0.4 }
+          - { type: cash, amountCents: 150000, chance: 0.5 }
       - id: skip
         label: Skip it
         hours: 0
@@ -464,7 +460,7 @@ events:
         label: Accept the fee
         hours: 0
         effects:
-          - { type: fixedCost, id: bank_fee, name: Bank fee, monthlyCents: 1500 }
+          - { type: fixedCost, id: bank_fee, name: Bank fee, monthlyCents: 1000 }
 
   # ---- founder ----
   - id: bad_sleep
