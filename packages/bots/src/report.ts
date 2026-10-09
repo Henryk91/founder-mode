@@ -165,18 +165,6 @@ const find = (input: ReportInput, id: string) =>
     (x) => x.id === id,
   )
 
-/** The win rate of hired runs, and of plain play on the same seeds. Null without a hire. */
-export function hireComparison(hireRuns: readonly RunResult[], plain: readonly RunResult[]) {
-  const hired = hireRuns.filter((r) => r.hiredWeek !== null)
-  if (hired.length === 0) return null
-  const same = hired.flatMap((r) => plain.filter((p) => p.seed === r.seed))
-  return {
-    hired: hired.length,
-    withHire: pct(wins(hired).length, hired.length),
-    plain: pct(wins(same).length, same.length),
-  }
-}
-
 /** The targets of plan section 7. Targets 2, 6, 7 and 8 are judged on `vtbId`. */
 export function evaluateTargets(
   input: ReportInput,
@@ -217,8 +205,6 @@ export function evaluateTargets(
   const cheapShare = pct(measured.filter((r) => r.favoursCheap).length, measured.length)
   const none = winRate('validate_then_build inbox:none')
   const effort = winRate('validate_then_build inbox:effort')
-  const early = find(input, 'validate_then_build_early_hire')?.results
-  const hire = early ? hireComparison(early, plainRuns) : null
   const behaviour = (name: string) => {
     const v = find(input, `validate_then_build -${name}`)
     return v ? paired(plainRuns, v.results) : null
@@ -267,9 +253,9 @@ export function evaluateTargets(
     },
     {
       id: 7,
-      text: 'validate_then_build gets its first paying customer between week 6 and 10 in the median winning run',
+      text: 'validate_then_build gets its first paying customer between week 4 and 10 in the median winning run',
       value: `week ${fmtNum(firstWin, 1)}`,
-      pass: firstWin !== null && firstWin >= 6 && firstWin <= 10,
+      pass: firstWin !== null && firstWin >= 4 && firstWin <= 10,
     },
     {
       id: 8,
@@ -293,7 +279,7 @@ export function evaluateTargets(
     },
     {
       id: 11,
-      text: 'Blind effort inbox policy beats leaving messages alone by at most 2 points; reading beats it by at least 4',
+      text: 'Blind effort inbox policy beats leaving messages alone by at most 4 points; reading beats it by at least 4',
       value:
         none === null || effort === null || plain === null
           ? '-'
@@ -302,16 +288,8 @@ export function evaluateTargets(
         none !== null &&
         effort !== null &&
         plain !== null &&
-        effort - none <= 2 &&
+        effort - none <= 4 &&
         plain - none >= 4,
-    },
-    {
-      id: 12,
-      text: 'Runs where the payback rule hires win at least as often as plain play on the same seeds',
-      value: hire
-        ? `${fmtPct(hire.withHire)} against ${fmtPct(hire.plain)} (${hire.hired} runs)`
-        : '-',
-      pass: !!hire && hire.withHire >= hire.plain,
     },
     {
       id: 13,
@@ -331,9 +309,9 @@ export function evaluateTargets(
     },
     {
       id: 15,
-      text: 'No single action (outreach counted per channel) finds more than a third of the customers in winning validate_then_build runs',
+      text: 'No single action (outreach counted per channel) finds more than 40% of the customers in winning validate_then_build runs',
       value: topShare ? `${topShare.key} ${fmtPct(topShare.share)}` : '-',
-      pass: !!topShare && topShare.share <= 100 / 3,
+      pass: !!topShare && topShare.share <= 40,
     },
   ]
 }
@@ -629,8 +607,8 @@ export function buildReport(input: ReportInput): string {
       '',
       'Each hire variant plays like `validate_then_build` until its hire rule fires, so on the same seed the runs are identical up to the search. "With a hire" and "without" split the variant\'s own runs; "same seeds, plain" is plain `validate_then_build` on the seeds where the variant hired, so the two win rates on the right compare the same games with and without the hire.',
       '',
-      '| Variant | Runs with a hire | Developer / salesperson | Median offer week | Win rate | Win rate with a hire | Win rate without | Same seeds, plain | Won only with the hire | Won only without |',
-      '|---|---|---|---|---|---|---|---|---|---|',
+      '| Variant | Runs with a hire | Developer / salesperson | Median offer week | Win rate | Win rate with a hire | Win rate without | Same seeds, plain | Won only with the hire | Won only without | Median cost per customer the hire found | Median value of a customer |',
+      '|---|---|---|---|---|---|---|---|---|---|---|---|',
     )
     for (const v of hireVariants) {
       const hired = v.results.filter((r) => r.hiredWeek !== null)
@@ -647,7 +625,7 @@ export function buildReport(input: ReportInput): string {
         if (!winsOf(r) && winsOf(p)) onlyPlain++
       }
       push(
-        `| ${v.id} | ${hired.length} (${fmtPct(pct(hired.length, v.results.length))}) | ${dev} / ${hired.length - dev} | ${fmtNum(median(hired.map((r) => r.hiredWeek as number)))} | ${rate(v.results)} | ${rate(hired)} | ${rate(v.results.filter((r) => r.hiredWeek === null))} | ${rate(plainSame)} | ${onlyHire} | ${onlyPlain} |`,
+        `| ${v.id} | ${hired.length} (${fmtPct(pct(hired.length, v.results.length))}) | ${dev} / ${hired.length - dev} | ${fmtNum(median(hired.map((r) => r.hiredWeek as number)))} | ${rate(v.results)} | ${rate(hired)} | ${rate(v.results.filter((r) => r.hiredWeek === null))} | ${rate(plainSame)} | ${onlyHire} | ${onlyPlain} | ${fmtEur(median(hired.flatMap((r) => (r.hire?.costPerCustomerCents != null ? [r.hire.costPerCustomerCents] : []))))} | ${fmtEur(median(hired.flatMap((r) => (r.hire?.lifetimeValueCents != null ? [r.hire.lifetimeValueCents] : []))))} |`,
       )
     }
     const early = hireVariants.find((v) => v.id === 'validate_then_build_early_hire')

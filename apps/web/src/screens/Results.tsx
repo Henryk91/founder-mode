@@ -28,9 +28,13 @@ function entryText(entry: ReportEntry, view: PlayerView): string {
         segment: segment(entry.segmentId),
         channel: label(`channel.${entry.channel}`, stage),
       }
-      return entry.count === 0
-        ? label('results.entry.new_leads.zero', stage, vars)
-        : count('results.entry.new_leads', stage, entry.count, vars)
+      const found =
+        entry.count === 0
+          ? label('results.entry.new_leads.zero', stage, vars)
+          : count('results.entry.new_leads', stage, entry.count, vars)
+      return entry.wornOut
+        ? `${found} ${label('results.entry.new_leads.wornOut', stage, vars)}`
+        : found
     }
     case 'lead_update':
       return label(`results.entry.${entry.change}`, stage, { name: entry.name })

@@ -151,6 +151,8 @@ const labels = {
   'results.entry.new_leads.zero': '{channel} outreach to {segment} found nobody.',
   'results.entry.new_leads.one': '{channel} outreach to {segment} found {n} new lead.',
   'results.entry.new_leads.other': '{channel} outreach to {segment} found {n} new leads.',
+  'results.entry.new_leads.wornOut':
+    'The {segment} people you reach by {channel} have heard from you a lot lately, and fewer of them answered. Another channel might do better for a while.',
   'results.entry.wants_demo': '{name} would like a demo.',
   'results.entry.trial_started': '{name} liked the demo and started a trial.',
   'results.entry.won': '{name} signed up and will pay every month.',

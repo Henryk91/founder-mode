@@ -182,3 +182,50 @@ export function applyTeam(
 }
 
 export const salaryId = (m: Pick<TeamMember, 'id'>) => `salary_${m.id}`
+
+export type HireEconomics = {
+  role: TeamRoleId
+  /** Salary charged so far, plus severance if the member was let go. */
+  costCents: number
+  /** Customers whose lead the member found. */
+  customersGained: number
+  /** Cost divided by customers gained, or null when the hire found nobody. */
+  costPerCustomerCents: number | null
+  /** Money received per customer over the run, across all customers: what a customer was worth. */
+  lifetimeValueCents: number | null
+}
+
+/**
+ * For the post-mortem of a run with a hire: what each customer the hire brought in cost, next to
+ * what a customer was worth. Null without a hire. Built from observable state only.
+ */
+export function hireEconomics(state: GameState): HireEconomics | null {
+  const member = state.team.members[0]
+  if (!member) return null
+  const cfg = state.scenario.team
+  const monthly = cfg.roles[member.role].monthlyCents
+  const lastWeek = member.letGoWeek !== null ? member.letGoWeek - 1 : state.ledger.length
+  const perMonth = state.scenario.finance.weeksPerMonth
+  let months = 0
+  for (let w = member.startWeek; w <= lastWeek; w++) if (w % perMonth === 0) months++
+  const severance =
+    member.letGoWeek !== null
+      ? Math.round((monthly * cfg.severanceWeeks) / state.scenario.finance.weeksPerMonth)
+      : 0
+  const costCents = months * monthly + severance
+  const sourceOf = (leadId: string) => state.leads.find((l) => l.id === leadId)
+  const customersGained = state.customers.filter(
+    (c) => sourceOf(c.leadId)?.source === 'team',
+  ).length
+  const received =
+    state.invoices.filter((i) => i.paidWeek !== null).reduce((t, i) => t + i.amountCents, 0) +
+    state.customers.reduce((t, c) => t + (sourceOf(c.leadId)?.depositCents ?? 0), 0)
+  return {
+    role: member.role,
+    costCents,
+    customersGained,
+    costPerCustomerCents: customersGained > 0 ? Math.round(costCents / customersGained) : null,
+    lifetimeValueCents:
+      state.customers.length > 0 ? Math.round(received / state.customers.length) : null,
+  }
+}
