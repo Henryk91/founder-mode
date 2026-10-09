@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { loadScenario, parseScenario, SCENARIO_IDS, scenarioSources } from '../src/index'
+import {
+  FOUNDER_NOTE_IDS,
+  loadScenario,
+  parseScenario,
+  SCENARIO_IDS,
+  scenarioSources,
+} from '../src/index'
 
 describe('content', () => {
   it.each(SCENARIO_IDS)('%s passes its schema', (id) => {
@@ -25,14 +31,24 @@ describe('content', () => {
   })
 
   it('game text has no em dashes', () => {
-    const { scenario, features, interviewQuotes, companyNames } = scenarioSources('kantino')
-    expect(scenario + features + interviewQuotes + companyNames).not.toContain('—')
+    const { scenario, features, interviewQuotes, companyNames, intro } = scenarioSources('kantino')
+    expect(scenario + features + interviewQuotes + companyNames + intro).not.toContain('—')
   })
 
   it('has company names for every segment', () => {
     const s = loadScenario('kantino')
     for (const seg of s.segments) {
       expect(s.companyNames[seg.id]?.length ?? 0).toBeGreaterThanOrEqual(10)
+    }
+  })
+
+  it('has the four intro cards and a note for every rule, without naming a segment', () => {
+    const s = loadScenario('kantino')
+    expect(s.intro.cards.map((c) => c.id)).toEqual(['you', 'idea', 'problem', 'goal'])
+    expect(Object.keys(s.founderNotes).sort()).toEqual([...FOUNDER_NOTE_IDS].sort())
+    const text = JSON.stringify([s.intro, s.founderNotes]).toLowerCase()
+    for (const word of ['viable', 'trap', 'mediocre', 'best segment']) {
+      expect(text).not.toContain(word)
     }
   })
 
@@ -57,6 +73,18 @@ describe('content', () => {
     it('a segment without company names', () => {
       const companyNames = base.companyNames.replace(/^medical:/m, 'medicine:')
       expect(() => parseScenario({ ...base, companyNames })).toThrow(/no company names for medical/)
+    })
+
+    it('an unknown placeholder in the intro or a note', () => {
+      const intro = base.intro.replace('{savings:eur}', '{salary:eur}')
+      expect(() => parseScenario({ ...base, intro })).toThrow(/unknown placeholder \{salary:eur\}/)
+      const notes = base.intro.replace('{n} leads', '{count} leads')
+      expect(() => parseScenario({ ...base, intro: notes })).toThrow(/unknown placeholder/)
+    })
+
+    it('an intro without a goal card', () => {
+      const intro = base.intro.replace('id: goal', 'id: target')
+      expect(() => parseScenario({ ...base, intro })).toThrow(/card with id goal/)
     })
 
     it('inverted range', () => {

@@ -263,7 +263,8 @@ type PlayerView = {
     runwayKnown: boolean          // false until a full month (4 weeks) has been played
     uiStage: 'scrappy' | 'organised'
   }
-  costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number }
+  costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number; trialWeeks: number }
+  guidance: GuidanceView
   channels: ChannelId[]           // outreach channels in display order
   product: ProductView
   leads: LeadView[]
@@ -271,6 +272,20 @@ type PlayerView = {
   monthlyRevenueCents: number     // active customers * monthly price
   segments: SegmentView[]         // in scenario order
   history: { week: number; cashCents: number; savingsCents: number }[]
+}
+
+// Onboarding text from the scenario. Placeholders: {name} is a plain number, {name:eur} is cents.
+type GuidanceView = {
+  intro: IntroCardView[]                 // shown before week 1 of a new run
+  founderNote: FounderNoteView | null    // weeks 1 to 4 only, null when no rule applies
+}
+
+type IntroCardView = { id: string; title: string; body: string }
+
+type FounderNoteView = {
+  id: 'first_week' | 'no_evidence' | 'only_interviews' | 'built_unseen' | 'leads_only'
+  template: string                       // scenario text with placeholders
+  values: Record<string, number>         // week, n, living (cents)
 }
 
 type ProductView = {
@@ -377,6 +392,7 @@ zod schema `ScenarioSchema` in `packages/content/src/schema.ts`; `Scenario = z.i
 | `scenarios/<id>/features.yaml` | `features` |
 | `scenarios/<id>/messages/interview_quotes.yaml` | `interviewQuotes` |
 | `scenarios/<id>/messages/company_names.yaml` | `companyNames` |
+| `scenarios/<id>/messages/intro.yaml` | `intro` and `founderNotes` |
 
 ```ts
 type Range = { min: number; max: number }   // min <= max; IntRange requires integers
@@ -434,6 +450,8 @@ type Scenario = {
   features: Feature[]
   interviewQuotes: Record<SegmentId, Record<BucketId, string[]>>
   companyNames: Record<SegmentId, string[]>   // fictional lead names per segment
+  intro: { cards: { id: string; title: string; body: string }[] }   // must include a card with id 'goal'
+  founderNotes: Record<FounderNoteId, string>  // one text per rule, see below
 }
 
 type SalesConfig = {
@@ -454,7 +472,20 @@ type SalesConfig = {
 }
 ```
 
-Cross checks in `superRefine`: unique ids, one role per segment, `maxHoursPerWeek >= baseHoursPerWeek`, start energy within max, every `mustHave` id is a feature, bucket bounds ascend with only the last unbounded, and every segment has quotes for every bucket, every segment has company names, and company names are unique across segments.
+Cross checks in `superRefine`: unique ids, one role per segment, `maxHoursPerWeek >= baseHoursPerWeek`, start energy within max, every `mustHave` id is a feature, bucket bounds ascend with only the last unbounded, and every segment has quotes for every bucket, every segment has company names, company names are unique across segments, the intro has a `goal` card, and every placeholder in the intro (`cash`, `savings`, `living`, `maxWeeks`) and the notes (`week`, `n`, `living`) is a known one.
+
+## Founder's note rules
+
+`selectFounderNote` in `systems/guidance.ts` reads only what the player can see, in weeks 1 to 4. The first matching rule wins and nothing in it recommends a move.
+
+| Order | Condition | Note id | Values |
+|---|---|---|---|
+| 1 | week is 1 | `first_week` | none |
+| 2 | no leads, nothing shipped, no interviews | `no_evidence` | week, living |
+| 3 | no leads, nothing shipped, some interviews | `only_interviews` | n = interviews |
+| 4 | no leads, something shipped | `built_unseen` | none |
+| 5 | leads, no customers | `leads_only` | n = leads |
+| 6 | otherwise (or after week 4) | no note | |
 
 ## Content: Feature
 
@@ -484,6 +515,10 @@ type UiState = {
   tab: 'plan' | 'market' | 'pipeline' | 'money'
   hasSave: boolean
   saveNotice: 'incompatible' | 'broken' | null
+  introStep: number | null      // index of the intro card on screen; null when none. Set to 0 by startRun, never by continueRun
+  helpOpen: boolean             // help screen replaces the tab content
+  explain: 'runway' | 'cash' | 'energy' | 'hours' | null   // explanation card on screen
+  dismissedNotes: string[]      // founder's note ids dismissed in this run; not saved
 }
 ```
 

@@ -41,3 +41,12 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Phase 2 tabs are Plan, Market (interview notes), Pipeline, and Money. Inbox and Team arrive with their systems. The pipeline tab is named "Who pays" at the scrappy stage.
 - The informed test script (`informedPlan` in the engine tests) knows the hidden truth and wins about 35 of 40 runs. It only proves the loop can be won; balancing happens in Phase 3 with honest bots.
 - The fit formula constants (0.5 and 0.5) live in `scenario.yaml` under `product` (`fitBase`, `fitPerQuality`), so no scenario number is in engine code. UI step sizes (build 5 h, money 100 and 1,000 EUR) stay in the UI.
+
+## Phase 2b
+
+- Intro cards and founder's note texts live in `messages/intro.yaml` (`intro`, `founderNotes`), validated by zod, including a `goal` card and the allowed placeholders. They reach the UI through `PlayerView.guidance`. Money in them is `{name:eur}`, filled by the UI so the engine never formats.
+- The note rules are an engine function over observable state (`systems/guidance.ts`), first match wins, weeks 1 to 4 only. Dismissal is UI state per run and is not saved; a reload brings a dismissed note back. The engine version stays 0.2.0, since replays are unaffected.
+- The intro shows for every new run and never for Continue. Help reopens the goal card and a five step "how a week works" list from the label table.
+- Explanations for Runway, Cash, Energy and hours are label table text, opened by tapping the term (the runway and cash in the top band, `?` buttons at hours and energy). The band is now 44 px high so those are real tap targets.
+- Plan action lines say cost, product and timing, in one or two sentences. Numbers that come from the scenario (interview hours, bug fix hours, demo hours, trial weeks) are passed in, not written into labels.
+- The Market tab gains a per segment tally of features people asked for ("asked for by 2 of 5"), an observable fact with its sample size.

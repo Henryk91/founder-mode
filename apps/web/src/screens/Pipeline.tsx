@@ -72,6 +72,11 @@ export function Pipeline() {
           </section>
         )
       })}
+      {view.customers.length === 0 && open.length > 0 && (
+        <section className={`${styles.card} ${styles.sticky}`}>
+          <p>{label('pipeline.noCustomers', stage)}</p>
+        </section>
+      )}
       {view.customers.length > 0 && (
         <section className={styles.card}>
           <h3 className={styles.title}>

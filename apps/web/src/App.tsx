@@ -1,4 +1,7 @@
 import type { StoreApi } from 'zustand/vanilla'
+import { Explain } from './components/Explain'
+import { Help } from './components/Help'
+import { Intro } from './components/Intro'
 import { TopBar } from './components/TopBar'
 import { label, type UiStage } from './labels'
 import { Market } from './screens/Market'
@@ -32,7 +35,10 @@ function Root() {
   const report = useGame((s) => s.report)
   const tab = useGame((s) => s.tab)
   const setTab = useGame((s) => s.setTab)
+  const introStep = useGame((s) => s.introStep)
+  const helpOpen = useGame((s) => s.helpOpen)
   if (!view) return <Start />
+  if (introStep !== null) return <Intro />
 
   const stage: UiStage = view.company.uiStage
   // A finished run goes straight to its ending, even after a reload.
@@ -42,8 +48,11 @@ function Root() {
   return (
     <div className={styles.shell}>
       <TopBar />
-      <main className={styles.content}>{showResults ? <Results /> : <Screen />}</main>
-      {!showResults && (
+      <main className={styles.content}>
+        <Explain />
+        {helpOpen ? <Help /> : showResults ? <Results /> : <Screen />}
+      </main>
+      {!showResults && !helpOpen && (
         <nav className={styles.tabs} aria-label={label('tab.nav', stage)}>
           {TABS.map((t) => (
             <button

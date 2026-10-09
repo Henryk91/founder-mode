@@ -236,7 +236,8 @@ export type PlayerView = {
     runwayKnown: boolean
     uiStage: UiStage
   }
-  costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number }
+  costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number; trialWeeks: number }
+  guidance: GuidanceView
   channels: ChannelId[]
   product: ProductView
   leads: LeadView[]
@@ -245,6 +246,21 @@ export type PlayerView = {
   monthlyRevenueCents: number
   segments: SegmentView[]
   history: { week: number; cashCents: number; savingsCents: number }[]
+}
+
+/** Onboarding text from the scenario. Placeholders: {name} plain, {name:eur} for cents. */
+export type GuidanceView = {
+  intro: IntroCardView[]
+  /** Null after the first weeks, or when no rule applies. */
+  founderNote: FounderNoteView | null
+}
+
+export type IntroCardView = { id: string; title: string; body: string }
+
+export type FounderNoteView = {
+  id: 'first_week' | 'no_evidence' | 'only_interviews' | 'built_unseen' | 'leads_only'
+  template: string
+  values: Record<string, number>
 }
 
 export type ProductView = {

@@ -26,10 +26,27 @@
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  min-height: 32px;
-  padding: 4px 14px;
+  min-height: 44px;
+  padding: 0 14px;
   align-items: center;
   background: var(--shadow);
   color: var(--on-dark-muted);
   font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.bandButton {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
 }
