@@ -283,7 +283,7 @@ const labels = {
   'inbox.free': 'Free',
   'team.title': 'Team',
   'team.hint':
-    'One hire at most. A search costs {hours}, candidates arrive {weeks} later, and a hire starts {start} after the offer. Their pay is a fixed cost every month.',
+    'One part time hire at most. A search costs {hours}, candidates arrive {weeks} later, and a hire starts {start} after the offer. Their pay is a fixed cost every month.',
   'team.role.developer': 'Developer',
   'team.role.salesperson': 'Salesperson',
   'team.perMonth': '{amount} per month',

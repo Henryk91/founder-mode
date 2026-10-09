@@ -48,7 +48,7 @@ export function teamOutput(state: GameState, plan: WeekPlan): TeamOutput | null 
     build: {},
     demos: [],
     outreach: null,
-    selling: state.founder.skills.selling,
+    selling: cfg.selling ?? state.founder.skills.selling,
   }
 
   if (member.role === 'developer') {
