@@ -13,6 +13,44 @@ import type { Strategy } from './strategy'
 
 /** Week at which the playtest numbers are compared. */
 export const CHECK_WEEK = 15
+/** Pacing is measured over the opening weeks, where hand play felt empty. */
+export const PACING_WEEKS = 20
+
+/** The stricter reading: news that asks for a decision, not routine flow such as one new lead. */
+export function isDecisive(e: WeekReport['entries'][number]): boolean {
+  return (
+    e.kind === 'lead_update' ||
+    e.kind === 'landing_result' ||
+    e.kind === 'presale_result' ||
+    e.kind === 'customer_churned' ||
+    e.kind === 'invoice_written_off' ||
+    e.kind === 'candidates_ready'
+  )
+}
+
+/**
+ * Something the player did not simply do themselves: a result, a reply, money, a loss. Interviews,
+ * ad spend, team output and invoices issued do not count.
+ */
+export function isNoteworthy(e: WeekReport['entries'][number]): boolean {
+  switch (e.kind) {
+    case 'new_leads':
+      return e.count > 0
+    case 'revenue':
+    case 'invoice_written_off':
+    case 'bookkeeping_penalty':
+    case 'landing_result':
+    case 'presale_result':
+    case 'candidates_ready':
+    case 'hire_started':
+    case 'feature_shipped':
+    case 'lead_update':
+    case 'customer_churned':
+      return true
+    default:
+      return false
+  }
+}
 
 export type RunResult = {
   strategy: string
@@ -36,6 +74,13 @@ export type RunResult = {
   finalWealthCents: number
   /** Week of the offer to the one hire, or null when nobody was hired. */
   hiredWeek: number | null
+  hiredRole: 'developer' | 'salesperson' | null
+  /** Weeks among the first PACING_WEEKS played: with a noteworthy entry, with a new message. */
+  pacingWeeks: number
+  noteworthyWeeks: number
+  /** Weeks with a new message, a lead that moved, an experiment result, or a lost customer. */
+  decisionWeeks: number
+  messageWeeks: number
   customersAtCheck: number
   monthlyRevenueAtCheckCents: number
   minEnergy: number
@@ -102,6 +147,10 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
   let weeks = 0
   let firstReport: WeekReport | null = null
   let firstWeekInterviews: number | null = null
+  let pacingWeeks = 0
+  let noteworthyWeeks = 0
+  let decisionWeeks = 0
+  let messageWeeks = 0
 
   while (state.status === 'running') {
     for (const answer of player.respond?.(getView(state)) ?? []) {
@@ -118,9 +167,18 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
       const counts = scenario.segments.map((seg) => plan.interviews[seg.id] ?? 0)
       firstWeekInterviews = Math.min(...counts) > 0 ? Math.min(...counts) : null
     }
+    const inboxBefore = state.inbox.length
     const result = endWeek(state, plan)
     state = result.state
     weeks++
+    if (result.report.week <= PACING_WEEKS) {
+      pacingWeeks++
+      // Messages drawn now arrive at the start of the next week; week 1 starts with none.
+      const arrived = state.inbox.length > inboxBefore
+      if (result.report.entries.some(isNoteworthy) || arrived) noteworthyWeeks++
+      if (arrived) messageWeeks++
+      if (arrived || result.report.entries.some(isDecisive)) decisionWeeks++
+    }
     firstReport ??= result.report
     hours += result.report.plannedHours
     for (const o of Object.values(plan.outreach)) outreachHours += o.hours
@@ -153,6 +211,11 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     customersEnd: state.customers.filter((c) => c.churnedWeek === null).length,
     finalWealthCents: state.company.cashCents + state.founder.savingsCents,
     hiredWeek: state.team.members[0]?.offerWeek ?? null,
+    hiredRole: state.team.members[0]?.role ?? null,
+    pacingWeeks,
+    noteworthyWeeks,
+    decisionWeeks,
+    messageWeeks,
     customersAtCheck,
     monthlyRevenueAtCheckCents: revenueAtCheck,
     minEnergy,

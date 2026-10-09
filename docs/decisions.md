@@ -106,3 +106,9 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - `validate_then_build_hire` also makes the one hire once monthly revenue covers the salary (developer while wanted features are unbuilt, else salesperson), picks the best impression, and sends the developer to unbuilt wanted features and the salesperson to the chosen market.
 - The report runs both variants through the seven targets and switches each of inbox, chase, landing, books off in turn (same seeds), plus all four off. The random bot is also run without answering the inbox. None of these extra runs enter the targets.
 - The bots do not use follow ups yet.
+
+## Follow ups and the early hire (bots only)
+
+- `validate_then_build` follows up with up to 6 open leads in its chosen market a week, silent ones first, after demos. Follow ups join the switchable behaviours of the ablation table.
+- `validate_then_build_early_hire` (hire rule `payback`): searches when observed leads per hour x share of closed leads won x price, over the weeks left after search, start, and 8 weeks to payment, exceeds the salary to week 78, with no churn assumed, and while cash plus savings hold 2 months of salary. Picks the role that pays back more; hires the best impression if it still pays back at that impression's skill band middle. Role output hours (`team.roles.*.weeklyHours`) are read from the scenario as the job description.
+- Report: a third target column, a hire table compared on the same seeds with plain play, and pacing in weeks 1 to 20 (noteworthy weeks, and a stricter count of weeks with decision news).

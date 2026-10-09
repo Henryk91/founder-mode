@@ -7,9 +7,10 @@ import { randomNoInbox } from '../src/strategies/random'
 import {
   answerInbox,
   BEHAVIOUR_NAMES,
+  hirePayback,
   withoutBehaviours,
 } from '../src/strategies/validateThenBuild'
-import type { PlayerView } from '@founder-mode/engine'
+import { createGame, endWeek, getView, type PlayerView } from '@founder-mode/engine'
 
 const scenario = loadScenario('kantino')
 
@@ -21,6 +22,7 @@ describe('bots', () => {
       'sell_first',
       'validate_then_build',
       'validate_then_build_hire',
+      'validate_then_build_early_hire',
       'price_aware',
       'overworker',
       'playtest',
@@ -211,18 +213,18 @@ describe('bots', () => {
   })
 
   it('switches single behaviours off, and names the variant after them', () => {
-    expect(BEHAVIOUR_NAMES).toEqual(['inbox', 'chase', 'landing', 'books'])
-    const noBooks = withoutBehaviours({ id: 'validate_then_build', hire: false }, ['books'])
+    expect(BEHAVIOUR_NAMES).toEqual(['inbox', 'chase', 'landing', 'books', 'followUps'])
+    const noBooks = withoutBehaviours({ id: 'validate_then_build', hire: 'none' }, ['books'])
     expect(noBooks.id).toBe('validate_then_build -books')
     const r = runGame(scenario, noBooks, 'nb')
     expect(r.bookkeepingPenalties).toBeGreaterThan(0)
     const noLanding = runGame(
       scenario,
-      withoutBehaviours({ id: 'v', hire: false }, ['landing']),
+      withoutBehaviours({ id: 'v', hire: 'none' }, ['landing']),
       'nl',
     )
     expect(noLanding.landingTests).toBe(0)
-    const none = withoutBehaviours({ id: 'v', hire: false }, BEHAVIOUR_NAMES)
+    const none = withoutBehaviours({ id: 'v', hire: 'none' }, BEHAVIOUR_NAMES)
     const rn = runGame(scenario, none, 'nn')
     expect(rn.messagesAnswered).toBe(0)
     expect(rn.landingTests).toBe(0)
@@ -235,6 +237,54 @@ describe('bots', () => {
     expect(hired.length).toBeGreaterThan(0)
     const plain = STRATEGIES.find((s) => s.id === 'validate_then_build')!
     expect(runGame(scenario, plain, 'h1').hiredWeek).toBeNull()
+  })
+
+  it('the early hire variant hires earlier than the covered one', () => {
+    const early = STRATEGIES.find((s) => s.id === 'validate_then_build_early_hire')!
+    const covered = STRATEGIES.find((s) => s.id === 'validate_then_build_hire')!
+    const weeks = (strategy: typeof early) =>
+      Array.from({ length: 60 }, (_, i) => runGame(scenario, strategy, `e${i}`).hiredWeek).filter(
+        (w): w is number => w !== null,
+      )
+    const e = weeks(early)
+    expect(e.length).toBeGreaterThan(0)
+    expect(median(e)!).toBeLessThan(median(weeks(covered)) ?? Infinity)
+  })
+
+  it('a hire pays back when the extra hours find enough customers early enough', () => {
+    const base = {
+      maxWeeks: 78,
+      startWeek: 20,
+      monthlySalaryCents: 380_000,
+      weeksPerMonth: 4,
+      priceCentsPerMonth: 30_000,
+      weeklyHours: 20,
+      usefulHours: Infinity,
+      leadsPerHour: 0.1,
+      winRate: 0.3,
+      lagWeeks: 8,
+    }
+    // 0.6 customers a week at 75 EUR a week each, against 950 EUR of salary a week.
+    expect(hirePayback(base)).toBeGreaterThan(0)
+    expect(hirePayback({ ...base, startWeek: 50 })).toBeLessThan(0)
+    expect(hirePayback({ ...base, winRate: 0.05 })).toBeLessThan(0)
+    // A developer with 40 hours of work left frees too little.
+    expect(hirePayback({ ...base, usefulHours: 40 })).toBeLessThan(0)
+  })
+
+  it('validate_then_build follows up with its open leads', () => {
+    const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
+    const player = strategy.create(scenario, 'fu')
+    let state = createGame(scenario, 'fu')
+    let followUps = 0
+    for (let w = 0; w < 30 && state.status === 'running'; w++) {
+      const plan = player.plan(getView(state))
+      followUps += plan.followUps.length
+      const result = endWeek(state, plan)
+      player.observe?.(result.report, getView(result.state))
+      state = result.state
+    }
+    expect(followUps).toBeGreaterThan(0)
   })
 
   it('the silent random bot never answers and plays the same random stream', () => {

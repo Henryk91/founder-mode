@@ -1,5 +1,5 @@
 import type { RunResult } from './simulate'
-import { CHECK_WEEK } from './simulate'
+import { CHECK_WEEK, PACING_WEEKS } from './simulate'
 
 export type StrategyRuns = {
   id: string
@@ -19,8 +19,15 @@ export type ReportInput = {
   extras?: StrategyRuns[]
 }
 
-/** The two validate_then_build variants the targets are judged on. */
-export const TARGET_STRATEGIES = ['validate_then_build', 'validate_then_build_hire'] as const
+/** The validate_then_build variants the targets are judged on. */
+export const TARGET_STRATEGIES = [
+  'validate_then_build',
+  'validate_then_build_hire',
+  'validate_then_build_early_hire',
+] as const
+
+/** The hire variants, compared with plain validate_then_build in their own section. */
+const HIRE_STRATEGIES = ['validate_then_build_hire', 'validate_then_build_early_hire'] as const
 
 /** Heading of the hand written part of docs/balancing.md, kept when the report is rebuilt. */
 export const NOTES_HEADING = '## Tuning notes'
@@ -130,12 +137,16 @@ export function evaluateTargets(
 }
 
 function targetRows(input: ReportInput): string[] {
-  const [a, b] = TARGET_STRATEGIES.map((id) => evaluateTargets(input, id))
-  if (!a || !b) return []
+  const columns = TARGET_STRATEGIES.map((id) => evaluateTargets(input, id))
+  const first = columns[0]
+  if (!first) return []
   const met = (t: Target) => `${t.pass ? 'yes' : 'no'}${t.tuned ? '' : ' (not tuned yet)'}`
-  return a.map((t, i) => {
-    const u = b[i] as Target
-    return `| ${t.id} | ${t.text} | ${t.value} | ${met(t)} | ${u.value} | ${met(u)} |`
+  return first.map((t, i) => {
+    const cells = columns.map((c) => {
+      const u = c[i] as Target
+      return `${u.value} | ${met(u)}`
+    })
+    return `| ${t.id} | ${t.text} | ${cells.join(' | ')} |`
   })
 }
 
@@ -161,11 +172,14 @@ function behaviourRows(full: StrategyRuns, variants: StrategyRuns[]): string[] {
     const bankrupt = s.results.filter((r) => r.ending === 'bankrupt').length
     return `| ${label} | ${fmtPct(pct(w, n))} | ${(pct(w, n) - pct(fullWins, n)).toFixed(1)} | ${onlyFull} | ${onlyThis} | ${fmtPct(pct(bankrupt, n))} | ${fmtNum(median(s.results.filter(isLoss).map((r) => r.weeks)))} |`
   }
+  const most = Math.max(
+    ...variants.map((v) => v.id.slice(full.id.length).split(' -').filter(Boolean).length),
+  )
   return [
-    row('all four behaviours', full),
+    row('all behaviours', full),
     ...variants.map((v) => {
       const off = v.id.slice(full.id.length).split(' -').filter(Boolean)
-      return row(off.length === 4 ? 'without all four' : `without ${off.join(', ')}`, v)
+      return row(off.length === most && most > 1 ? 'without all' : `without ${off.join(', ')}`, v)
     }),
   ]
 }
@@ -184,10 +198,10 @@ export function buildReport(input: ReportInput): string {
     '',
     '## Targets (plan section 7)',
     '',
-    'Targets 1, 3, 4 and 5 look at all strategies and are the same in both columns. Targets 2, 6 and 7 are judged on `validate_then_build` and on `validate_then_build_hire`.',
+    `Targets 1, 3, 4 and 5 look at all strategies and are the same in every column. Targets 2, 6 and 7 are judged on each of ${TARGET_STRATEGIES.map((id) => `\`${id}\``).join(', ')}.`,
     '',
-    '| # | Target | validate_then_build | Met | validate_then_build_hire | Met |',
-    '|---|---|---|---|---|---|',
+    `| # | Target | ${TARGET_STRATEGIES.map((id) => `${id} | Met`).join(' | ')} |`,
+    `|---|---|${TARGET_STRATEGIES.map(() => '---|---').join('|')}|`,
     ...targetRows(input),
     '',
     '## Endings',
@@ -395,18 +409,80 @@ export function buildReport(input: ReportInput): string {
     )
   }
 
-  const hireRuns = input.strategies.find((x) => x.id === 'validate_then_build_hire')?.results
-  if (hireRuns) {
-    const hired = hireRuns.filter((r) => r.hiredWeek !== null)
-    const rate = (rs: RunResult[]) => fmtPct(pct(rs.filter(winsOf).length, rs.length))
+  const plainRuns = input.strategies.find((x) => x.id === 'validate_then_build')?.results
+  const hireVariants = HIRE_STRATEGIES.flatMap((id) => {
+    const found = input.strategies.find((x) => x.id === id)
+    return found ? [found] : []
+  })
+  if (hireVariants.length > 0) {
+    const rate = (rs: RunResult[]) =>
+      rs.length ? fmtPct(pct(rs.filter(winsOf).length, rs.length)) : '-'
     push(
       '',
       '## The hire',
       '',
-      `Runs of \`validate_then_build_hire\` that made the hire: ${hired.length} of ${hireRuns.length} (${fmtPct(pct(hired.length, hireRuns.length))}). Median week of the offer: ${fmtNum(median(hired.map((r) => r.hiredWeek as number)))}.`,
+      'Each hire variant plays like `validate_then_build` until its hire rule fires, so on the same seed the runs are identical up to the search. "With a hire" and "without" split the variant\'s own runs; "same seeds, plain" is plain `validate_then_build` on the seeds where the variant hired, so the two win rates on the right compare the same games with and without the hire.',
       '',
-      `- Win rate with a hire: ${rate(hired)} (${hired.length} runs)`,
-      `- Win rate without a hire: ${rate(hireRuns.filter((r) => r.hiredWeek === null))}`,
+      '| Variant | Runs with a hire | Developer / salesperson | Median offer week | Win rate | Win rate with a hire | Win rate without | Same seeds, plain | Won only with the hire | Won only without |',
+      '|---|---|---|---|---|---|---|---|---|---|',
+    )
+    for (const v of hireVariants) {
+      const hired = v.results.filter((r) => r.hiredWeek !== null)
+      const dev = hired.filter((r) => r.hiredRole === 'developer').length
+      const plainSame = plainRuns
+        ? hired.flatMap((r) => plainRuns.filter((p) => p.seed === r.seed))
+        : []
+      let onlyHire = 0
+      let onlyPlain = 0
+      for (const r of hired) {
+        const p = plainRuns?.find((x) => x.seed === r.seed)
+        if (!p) continue
+        if (winsOf(r) && !winsOf(p)) onlyHire++
+        if (!winsOf(r) && winsOf(p)) onlyPlain++
+      }
+      push(
+        `| ${v.id} | ${hired.length} (${fmtPct(pct(hired.length, v.results.length))}) | ${dev} / ${hired.length - dev} | ${fmtNum(median(hired.map((r) => r.hiredWeek as number)))} | ${rate(v.results)} | ${rate(hired)} | ${rate(v.results.filter((r) => r.hiredWeek === null))} | ${rate(plainSame)} | ${onlyHire} | ${onlyPlain} |`,
+      )
+    }
+    const early = hireVariants.find((v) => v.id === 'validate_then_build_early_hire')
+    if (early) {
+      const hired = early.results.filter((r) => r.hiredWeek !== null)
+      const bins: [number, number][] = [
+        [1, 15],
+        [16, 25],
+        [26, 35],
+        [36, 50],
+        [51, 78],
+      ]
+      push(
+        '',
+        'Offer week of `validate_then_build_early_hire`, and the win rate of the runs that hired in that window:',
+        '',
+        `| Offer week | ${bins.map(([a, b]) => `${a} to ${b}`).join(' | ')} |`,
+        `|---|${bins.map(() => '---').join('|')}|`,
+        `| Runs | ${bins.map(([a, b]) => hired.filter((r) => r.hiredWeek! >= a && r.hiredWeek! <= b).length).join(' | ')} |`,
+        `| Win rate | ${bins.map(([a, b]) => rate(hired.filter((r) => r.hiredWeek! >= a && r.hiredWeek! <= b))).join(' | ')} |`,
+      )
+    }
+  }
+
+  push(
+    '',
+    `## Pacing in weeks 1 to ${PACING_WEEKS}`,
+    '',
+    "Share of weeks with at least one noteworthy thing: a new message, new leads, a lead that moved, an experiment result, a shipped feature, a payment, a churned customer, a fine, or candidates. Interviews and the player's own spending do not count. The stricter column counts only news that asks for a decision: a new message, a lead that moved stage, an experiment result, a lost customer or invoice, or candidates.",
+    '',
+    '| Strategy | Weeks with something noteworthy | Weeks with decision news (stricter) | Weeks with a new message | Median noteworthy weeks per run | Runs with 5 or more weeks without decision news |',
+    '|---|---|---|---|---|---|',
+  )
+  for (const s of input.strategies) {
+    const weeks = s.results.reduce((t, r) => t + r.pacingWeeks, 0)
+    const noted = s.results.reduce((t, r) => t + r.noteworthyWeeks, 0)
+    const msgs = s.results.reduce((t, r) => t + r.messageWeeks, 0)
+    const decided = s.results.reduce((t, r) => t + r.decisionWeeks, 0)
+    const empty = s.results.filter((r) => r.pacingWeeks - r.decisionWeeks >= 5).length
+    push(
+      `| ${s.id} | ${fmtPct(pct(noted, weeks))} | ${fmtPct(pct(decided, weeks))} | ${fmtPct(pct(msgs, weeks))} | ${fmtNum(median(s.results.map((r) => r.noteworthyWeeks)))} of ${fmtNum(median(s.results.map((r) => r.pacingWeeks)))} | ${fmtPct(pct(empty, s.results.length))} |`,
     )
   }
 

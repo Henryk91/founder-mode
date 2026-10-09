@@ -42,13 +42,14 @@ const play = (strategy: Strategy): StrategyRuns => {
 
 const runs = strategies.map(play)
 
-// Leave-one-out runs of both validate_then_build variants, and the silent random bot. Only for
+// Leave-one-out runs of the validate_then_build variants, and the silent random bot. Only for
 // the report, so they stay out of the strategy list that the targets look at.
 const full = args.only.length === 0
 const bases = [
-  { id: 'validate_then_build', hire: false },
-  { id: 'validate_then_build_hire', hire: true },
-]
+  { id: 'validate_then_build', hire: 'none' },
+  { id: 'validate_then_build_hire', hire: 'covered' },
+  { id: 'validate_then_build_early_hire', hire: 'payback' },
+] as const
 const ablations = full
   ? bases
       .flatMap((base) => [

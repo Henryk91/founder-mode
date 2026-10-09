@@ -28,20 +28,36 @@ const LANDING_WEIGHT = 4
 /** Share of landing page visitors who must sign up for the market to stay interesting. */
 const LANDING_BAR = 0.07
 
+/** Open leads in the chosen market followed up per week, silent ones first. */
+const FOLLOW_UPS_PER_WEEK = 6
+/**
+ * Payback hire: weeks from extra outreach to money in the bank (demo, trial, invoice, payment),
+ * the skill assumed before candidates are seen, and the months of salary the founder must hold.
+ */
+const PAYBACK_LAG_WEEKS = 8
+const ASSUMED_SKILL = 0.85
+const PAYBACK_CASH_MONTHS = 2
+
 /** Inbox policy limits: hours per message, hours per week, and how much cash may be spent. */
 const MESSAGE_HOURS_MAX = 6
 const MESSAGE_HOURS_PER_WEEK = 8
 const MESSAGE_CASH_SHARE = 0.1
 const MESSAGE_CASH_FLOOR_CENTS = 300_000
 
-/** The four behaviours added in Phase 4, each of which can be switched off to measure it. */
+/**
+ * When to make the one hire: never, once monthly revenue covers the salary, or as soon as the
+ * observed funnel says the hire could pay for themselves before the last week.
+ */
+export type HireRule = 'none' | 'covered' | 'payback'
+
+/** The behaviours added in Phase 4 and after, each of which can be switched off to measure it. */
 export type Behaviours = {
   inbox: boolean
   chase: boolean
   landing: boolean
   books: boolean
-  /** Makes the one hire once monthly revenue covers the salary. */
-  hire: boolean
+  followUps: boolean
+  hire: HireRule
 }
 
 export const ALL_BEHAVIOURS: Behaviours = {
@@ -49,7 +65,44 @@ export const ALL_BEHAVIOURS: Behaviours = {
   chase: true,
   landing: true,
   books: true,
-  hire: false,
+  followUps: true,
+  hire: 'none',
+}
+
+export type PaybackInput = {
+  maxWeeks: number
+  /** Week the hire would start working. */
+  startWeek: number
+  monthlySalaryCents: number
+  weeksPerMonth: number
+  priceCentsPerMonth: number
+  /** Outreach hours (or founder hours freed for outreach) the hire adds per week. */
+  weeklyHours: number
+  /** Most hours the work lasts in total; a developer runs out of wanted features. */
+  usefulHours: number
+  leadsPerHour: number
+  /** Share of closed leads in the market that became customers. */
+  winRate: number
+  lagWeeks: number
+}
+
+/**
+ * Money the hire's extra hours bring in before the last week, minus their salary from the start
+ * week on. Every extra hour finds `leadsPerHour x winRate` customers, who pay the price from
+ * `lagWeeks` later until the end. No churn: this is the plausible case, not the cautious one.
+ */
+export function hirePayback(p: PaybackInput): number {
+  let value = 0
+  let left = p.usefulHours
+  const perWeek = p.priceCentsPerMonth / p.weeksPerMonth
+  for (let w = p.startWeek; w <= p.maxWeeks && left > 0; w++) {
+    const h = Math.min(p.weeklyHours, left)
+    left -= h
+    const paidWeeks = Math.max(0, p.maxWeeks - (w + p.lagWeeks) + 1)
+    value += h * p.leadsPerHour * p.winRate * perWeek * paidWeeks
+  }
+  const salaryWeeks = Math.max(0, p.maxWeeks - p.startWeek + 1)
+  return value - (p.monthlySalaryCents / p.weeksPerMonth) * salaryWeeks
 }
 
 /** Share of landing page visitors who signed up, over all tests in a market, or null. */
@@ -103,7 +156,8 @@ export function answerInbox(view: PlayerView): { messageId: string; choiceId: st
  * there on the channel that finds the most leads per hour. Runs pre-sales once it has enough
  * leads. Answers the inbox by `answerInbox`, does the books, and chases late invoices. Moves to
  * the next market after a long stretch without a customer, or when pre-sales find nobody who
- * pays. With `hire` it makes the one hire once revenue covers the salary.
+ * pays. Follows up with open leads in that market. `behaviours.hire` sets when it makes the one
+ * hire.
  */
 export function validatingPlayer(
   scenario: Scenario,
@@ -129,21 +183,90 @@ export function validatingPlayer(
       }))
       .sort((a, b) => score(b.notes, b.landing) - score(a.notes, a.landing))
 
-  /** The one hire: search when revenue covers the salary, hire the best impression, put them to work. */
+  /** Skill the bot expects from an impression label: the middle of its band. */
+  const skillOf = (label: string | null): number => {
+    const bands = scenario.team.impressions
+    const i = bands.findIndex((b) => b.name === label)
+    if (i < 0) return ASSUMED_SKILL
+    const lo = bands[i - 1]?.below ?? (bands[i]?.below ?? ASSUMED_SKILL) - 0.25
+    const hi = bands[i]?.below ?? lo + 0.25
+    return (lo + hi) / 2
+  }
+
+  /** Best payback over the two roles for a hire starting at `startWeek`, from what was observed. */
+  const bestPayback = (
+    view: PlayerView,
+    unshipped: string[],
+    market: string,
+    startWeek: number,
+    roleOnly: 'developer' | 'salesperson' | null,
+    skill: number,
+  ): { role: 'developer' | 'salesperson'; value: number } | null => {
+    const leads = view.leads.filter((l) => l.segmentId === market)
+    const won = leads.filter((l) => l.stage === 'paying').length
+    const closed = won + leads.filter((l) => l.stage === 'lost').length
+    if (won === 0 || closed === 0) return null
+    const remaining = unshipped.reduce(
+      (t, f) => t + (view.product.features.find((x) => x.id === f)?.remainingHours ?? 0),
+      0,
+    )
+    const roles = (['developer', 'salesperson'] as const).filter((r) => !roleOnly || r === roleOnly)
+    let best: { role: 'developer' | 'salesperson'; value: number } | null = null
+    for (const role of roles) {
+      const salary = view.team.roles.find((r) => r.id === role)?.monthlyCents ?? Infinity
+      const value = hirePayback({
+        maxWeeks: view.maxWeeks,
+        startWeek,
+        monthlySalaryCents: salary,
+        weeksPerMonth: scenario.finance.weeksPerMonth,
+        priceCentsPerMonth: view.company.priceCentsPerMonth,
+        weeklyHours: scenario.team.roles[role].weeklyHours * skill,
+        usefulHours: role === 'developer' ? remaining : Infinity,
+        leadsPerHour: channels.bestRate(market, view.channels),
+        winRate: won / closed,
+        lagWeeks: PAYBACK_LAG_WEEKS,
+      })
+      if (!best || value > best.value) best = { role, value }
+    }
+    return best
+  }
+
+  /**
+   * The one hire. `covered`: search once revenue covers the salary and hire the best impression.
+   * `payback`: search once the observed funnel says a hire pays back before the last week and
+   * the founder holds two months of salary, then hire the best impression if it still does.
+   */
   const staffing = (b: PlanBuilder, view: PlayerView, wanted: string[], market: string | null) => {
     const team = view.team
     const unshipped = wanted.filter((f) => !view.product.features.find((x) => x.id === f)?.shipped)
+    const money = view.company.cashCents + Math.max(0, view.founder.savingsCents)
     if (team.candidates.length > 0 && !team.member) {
       const best = [...team.candidates].sort(
         (x, y) => impressionOrder.indexOf(y.impression) - impressionOrder.indexOf(x.impression),
       )[0]
-      if (best) b.plan.hire = best.id
+      if (best && behaviours.hire === 'covered') b.plan.hire = best.id
+      if (best && behaviours.hire === 'payback' && market) {
+        const start = view.week + view.costs.startWeeks
+        const pay = bestPayback(view, unshipped, market, start, best.role, skillOf(best.impression))
+        if (pay && pay.value > 0) b.plan.hire = best.id
+      }
     } else if (team.canSearch && team.candidates.length === 0 && !team.hadHire) {
-      const role = unshipped.length > 0 ? 'developer' : 'salesperson'
-      const salary = team.roles.find((r) => r.id === role)?.monthlyCents ?? Infinity
-      if (view.monthlyRevenueCents >= salary && b.free >= view.costs.searchHours) {
-        b.plan.searchRole = role
-        b.free -= view.costs.searchHours
+      if (b.free >= view.costs.searchHours) {
+        let role: 'developer' | 'salesperson' | null = null
+        if (behaviours.hire === 'covered') {
+          const r = unshipped.length > 0 ? 'developer' : 'salesperson'
+          const salary = team.roles.find((x) => x.id === r)?.monthlyCents ?? Infinity
+          if (view.monthlyRevenueCents >= salary) role = r
+        } else if (behaviours.hire === 'payback' && market) {
+          const start = view.week + view.costs.searchWeeks + view.costs.startWeeks
+          const pay = bestPayback(view, unshipped, market, start, null, ASSUMED_SKILL)
+          const salary = team.roles.find((x) => x.id === pay?.role)?.monthlyCents ?? Infinity
+          if (pay && pay.value > 0 && money >= PAYBACK_CASH_MONTHS * salary) role = pay.role
+        }
+        if (role) {
+          b.plan.searchRole = role
+          b.free -= view.costs.searchHours
+        }
       }
     }
     if (team.member?.working && team.member.role === 'developer') {
@@ -212,9 +335,10 @@ export function validatingPlayer(
         (f) => !view.product.features.find((x) => x.id === f)?.shipped,
       )
 
-      if (behaviours.hire) staffing(b, view, wanted, target)
+      if (behaviours.hire !== 'none') staffing(b, view, wanted, target)
       b.demos(bookableLeads(view, target))
       b.demos(bookableLeads(view))
+      if (behaviours.followUps) b.followUp(FOLLOW_UPS_PER_WEEK, target)
       if (view.product.bugs >= BUG_LIMIT) b.fixBugs(BUG_FIX_HOURS)
       // Keep listening until a few different features have come up.
       if (wanted.length < 3 && notes.interviews < 20) b.interviews(target, 3)
@@ -261,7 +385,7 @@ export function validatingPlayer(
 }
 
 const DESCRIPTION =
-  'Interviews every market, runs one landing page test on the market its interviews favour (and drops it below 7% sign ups), builds what that market asks for, sells on its best channel, runs up to two pre-sale batches, and moves on after 12 weeks without a customer or two pre-sale batches without a commitment. Does the books, chases three late invoices a week, and answers the inbox by the policy in `answerInbox`.'
+  'Interviews every market, runs one landing page test on the market its interviews favour (and drops it below 7% sign ups), builds what that market asks for, sells on its best channel, follows up with up to six open leads there a week, runs up to two pre-sale batches, and moves on after 12 weeks without a customer or two pre-sale batches without a commitment. Does the books, chases three late invoices a week, and answers the inbox by the policy in `answerInbox`.'
 
 export const validateThenBuild: Strategy = {
   id: 'validate_then_build',
@@ -273,16 +397,25 @@ export const validateThenBuildHire: Strategy = {
   id: 'validate_then_build_hire',
   description:
     'Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression.',
-  create: (scenario) => validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, hire: true }),
+  create: (scenario) =>
+    validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, hire: 'covered' }),
 }
 
-/** The four behaviours, for leave-one-out runs. */
-export const BEHAVIOUR_NAMES = ['inbox', 'chase', 'landing', 'books'] as const
+export const validateThenBuildEarlyHire: Strategy = {
+  id: 'validate_then_build_early_hire',
+  description:
+    'Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill.',
+  create: (scenario) =>
+    validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, hire: 'payback' }),
+}
+
+/** The switchable behaviours, for leave-one-out runs. */
+export const BEHAVIOUR_NAMES = ['inbox', 'chase', 'landing', 'books', 'followUps'] as const
 export type BehaviourName = (typeof BEHAVIOUR_NAMES)[number]
 
 /** A variant of a base strategy with some behaviours switched off, for the report. */
 export function withoutBehaviours(
-  base: { id: string; hire: boolean },
+  base: { id: string; hire: HireRule },
   off: readonly BehaviourName[],
 ): Strategy {
   const behaviours: Behaviours = { ...ALL_BEHAVIOURS, hire: base.hire }
