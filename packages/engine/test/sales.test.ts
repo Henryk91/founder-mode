@@ -57,9 +57,12 @@ describe('outreach', () => {
       expect(entry).toMatchObject({ segmentId: 'small_offices', channel: 'cold_email' })
       expect(r.state.leads.every((l) => l.stage === 'lead' || l.stage === 'demo')).toBe(true)
     }
-    // cold email 0.10 to 0.20 (mean 0.15) * 20 h * (0.5 + 0.1) = 1.8 on average
-    expect(total / runs).toBeGreaterThan(1.3)
-    expect(total / runs).toBeLessThan(2.3)
+    // mean cold email response * 20 h * (sellingBase + starting skill), from the scenario
+    const sc = newGame().scenario
+    const r = sc.segments.find((x) => x.id === 'small_offices')!.channelResponse.cold_email
+    const expected = ((r.min + r.max) / 2) * 20 * (sc.sales.sellingBase + sc.start.skills.selling)
+    expect(total / runs).toBeGreaterThan(expected * 0.75)
+    expect(total / runs).toBeLessThan(expected * 1.25)
   })
 
   it('gives every lead a distinct name without a number, even in a long run', () => {

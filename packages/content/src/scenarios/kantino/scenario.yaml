@@ -96,9 +96,9 @@ segments:
     wtpCents: { min: 15000, max: 40000 }
     mustHave: [basic_ordering, invoice_export, chat_integration]
     channelResponse:
-      cold_email: { min: 0.1, max: 0.2 }
-      phone: { min: 0.08, max: 0.15 }
-      in_person: { min: 0.05, max: 0.25 }
+      cold_email: { min: 0.05, max: 0.1 }
+      phone: { min: 0.04, max: 0.075 }
+      in_person: { min: 0.025, max: 0.125 }
     paymentDelayDaysMean: 5
     neverPaysShare: 0.05
 
@@ -109,9 +109,9 @@ segments:
     wtpCents: { min: 60000, max: 150000 }
     mustHave: [basic_ordering, multi_site, member_billing]
     channelResponse:
-      cold_email: { min: 0.05, max: 0.12 }
-      phone: { min: 0.1, max: 0.22 }
-      in_person: { min: 0.15, max: 0.3 }
+      cold_email: { min: 0.025, max: 0.06 }
+      phone: { min: 0.05, max: 0.11 }
+      in_person: { min: 0.075, max: 0.15 }
     paymentDelayDaysMean: 12
     neverPaysShare: 0.03
 
@@ -122,8 +122,8 @@ segments:
     wtpCents: { min: 10000, max: 25000 }
     mustHave: [basic_ordering, allergy_filter, shift_schedule]
     channelResponse:
-      cold_email: { min: 0.02, max: 0.06 }
-      phone: { min: 0.12, max: 0.25 }
-      in_person: { min: 0.1, max: 0.2 }
+      cold_email: { min: 0.01, max: 0.03 }
+      phone: { min: 0.06, max: 0.125 }
+      in_person: { min: 0.05, max: 0.1 }
     paymentDelayDaysMean: 20
     neverPaysShare: 0.08
