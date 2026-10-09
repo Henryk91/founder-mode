@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "bots": "tsx src/run.ts",
+    "bots": "vite-node src/run.ts --",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },
@@ -14,6 +14,6 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.0",
-    "tsx": "^4.20.0"
+    "vite-node": "3.2.4"
   }
 }

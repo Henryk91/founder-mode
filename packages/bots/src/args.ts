@@ -1,10 +1,14 @@
 export type BotArgs = {
   runs: number
   seedPrefix: string
+  /** Where to write the markdown report, relative to the repo root. '-' prints only. */
+  out: string
+  /** Run only these strategies; empty means all. */
+  only: string[]
 }
 
 export function parseArgs(argv: readonly string[]): BotArgs {
-  const args: BotArgs = { runs: 100, seedPrefix: 'bot' }
+  const args: BotArgs = { runs: 100, seedPrefix: 'bot', out: 'docs/balancing.md', only: [] }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
     const value = argv[i + 1]
@@ -15,6 +19,12 @@ export function parseArgs(argv: readonly string[]): BotArgs {
       i++
     } else if (flag === '--seed-prefix' && value !== undefined) {
       args.seedPrefix = value
+      i++
+    } else if (flag === '--out' && value !== undefined) {
+      args.out = value
+      i++
+    } else if (flag === '--only' && value !== undefined) {
+      args.only = value.split(',').filter(Boolean)
       i++
     }
   }
