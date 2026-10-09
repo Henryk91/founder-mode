@@ -1,0 +1,75 @@
+.band {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--shadow);
+}
+
+.bar {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 44px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--on-dark);
+  text-align: left;
+}
+
+.tappable {
+  cursor: pointer;
+}
+
+.tappable .title {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--on-dark-muted);
+}
+
+.value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar .value {
+  font-size: 17px;
+}
+
+.note {
+  font-size: 12px;
+  color: var(--on-dark-muted);
+}
+
+.change {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--on-dark-muted);
+  white-space: nowrap;
+}
+
+.good {
+  color: var(--good-on-dark);
+}
+
+.bad {
+  color: var(--warn-on-dark);
+}

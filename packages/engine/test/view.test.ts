@@ -115,7 +115,33 @@ describe('hidden boundary', () => {
     expect(interviews).toHaveLength(2)
     expect(interviews[0]!.bucketName.length).toBeGreaterThan(0)
     expect(v.company.monthlyFixedCostsCents).toBe(40_500)
-    expect(v.history).toEqual([{ week: 1, cashCents: 900_000, savingsCents: 1_357_500 }])
+    expect(v.history).toEqual([
+      {
+        week: 1,
+        cashCents: 900_000,
+        savingsCents: 1_357_500,
+        monthlyRevenueCents: 0,
+        customers: 0,
+        runwayWeeks: v.company.runwayWeeks,
+      },
+    ])
+  })
+
+  it('records revenue, customers and runway at the end of every week, after churn', () => {
+    const s = play(newGame(), 30, scriptedPlan)
+    const v = getView(s)
+    const last = v.history.at(-1)!
+    expect(last.customers).toBe(v.customers.length)
+    expect(last.monthlyRevenueCents).toBe(v.monthlyRevenueCents)
+    expect(last.runwayWeeks).toBe(v.company.runwayWeeks)
+  })
+
+  it('names the next month end and how each message looks', () => {
+    expect(getView(newGame()).company.nextMonthEndWeek).toBe(4)
+    const s = play(newGame(), 4)
+    expect(getView(s).company.nextMonthEndWeek).toBe(8)
+    const looks = ['letter', 'note', 'official']
+    for (const m of getView(play(newGame(), 20)).inbox) expect(looks).toContain(m.look)
   })
 
   it('is a plain serialisable object', () => {

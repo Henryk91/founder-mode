@@ -143,3 +143,17 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - The reader migrates the hosting and switches the bank (was: accept both): every monthly cost costs several points of win rate, which the old event table hid. It skips the uptime monitor for the same reason.
 - Report: a third inbox policy, always cheapest (fewest hours, then least money). Target 11 now asks both blind policies to stay within 4 points of no answers and reading to beat all three by 4. Target 16: no event repeats. New section on the inbox pool; the event table shows the reader's win rate per event.
 - Lead names: two open leads of one market never share the distinctive word (the first word; for medical practices the surname, `distinct: second`). Small offices and coworking gained 15 first words each, since a market can have 36 leads open at once. Birkenau, an unintended reference to the camp, is now Birkenweg.
+
+## Phase 6: scrappy UI and desktop layout
+
+- Layouts: `DeskLayout` from 900 px (inbox left; scene, My week or Market, corkboard centre; money right), `PhoneLayout` below. Results and help take the centre alone at the desk. The layout follows `matchMedia`; tests force one with `App layout`.
+- Phone has five tabs: Inbox, Plan, Who pays, Market, Money. Team is gone; hiring is the Plan section "Hiring". The mockup's Team tab lost to the current game's Market tab.
+- Plan tab: a "My week" header (hours bar by activity with each part also named in text, energy, booked hours, "Same as last week") and seven sections that start closed each week, show a one line summary and their hours, and open several at a time. Fix bugs merged into Build; demos book inside "Demos and follow ups", which only appears once someone can be demoed, followed up or chased.
+- "Same as last week" copies regular work only (interviews, tests, building, fixing, outreach, rest, the hire's task) and cuts it to what is still possible. One-off decisions are never repeated.
+- Results: one screen grouped under money, sales, product, learning and founder, groups and lines ordered by a fixed importance (a won customer 10, churn 9, an auto top up 8, down to ad spend 2). Full screen steps only for the first paying customer, a hire starting and the ending; milestones join in Phase 7.
+- Headline numbers: cash, runway, monthly revenue, customers, each with its change over 4 resolved weeks (arrow and words, colour only as an extra). Hidden until 4 weeks exist to compare.
+- Energy stays on its 0 to 100 scale everywhere (plan header, help, results, scene); there is no 10 point display.
+- Message looks come from content (`look: letter | note | official`), not from sender names in code. Paper tilts only once a message has no buttons left.
+- Office stage: the engine has none yet, so the kitchen table always shows; the coworking desk scene is drawn and tested and waits for its event.
+- Fonts are bundled with `@fontsource` (Plex Sans, Plex Mono, Caveat), so the static build makes no outside requests.
+- `uiStage` sets `data-stage` on the layout; `theme/organised.css` restyles only the pipeline board tokens. The switch itself is Phase 7.

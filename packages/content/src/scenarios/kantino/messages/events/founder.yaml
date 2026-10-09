@@ -3,6 +3,7 @@
 # must hold. Effects: closed set in schema.ts; an effect's own `when` makes it land only if its
 # conditions hold when the week ends. Choices show their hours to the player, never their odds.
 # An unanswered message takes its defaultChoice (which costs no hours) when it expires.
+# look: letter (default), note for something personal, official for banks and offices.
 # Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
 events:
   - id: bad_sleep
@@ -12,6 +13,7 @@ events:
     when: [energy <= 60]
     from: none
     sender: Next door
+    look: note
     text: >-
       The neighbours are renovating again, starting at 6 am. You can now name drill models by
       sound.
@@ -35,6 +37,7 @@ events:
     when: [week >= 2]
     from: none
     sender: Family
+    look: note
     text: >-
       Your family has noticed that you now exist mostly as a voice on the phone. Sunday lunch is
       at one. Attendance is voluntary in the way tax is voluntary.
@@ -58,6 +61,7 @@ events:
     when: [week >= 8, cashEur <= 7500]
     from: none
     sender: Your old boss
+    look: note
     text: >-
       Your former boss writes. There is a job, a salary and a pension. He mentions the pension
       twice.
@@ -80,6 +84,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Your body
+    look: note
     text: >-
       You have a cold. The company is a team of one, and the team is not feeling well.
     defaultChoice: work_through
@@ -102,6 +107,7 @@ events:
     when: [week >= 4]
     from: none
     sender: An old friend
+    look: note
     text: >-
       A friend has signed you both up for a 10 km run in six weeks. They already paid the fee,
       which feels like a tactic.
@@ -123,6 +129,7 @@ events:
     when: [week >= 2]
     from: none
     sender: An old friend
+    look: note
     text: >-
       An old friend turns 40 on Saturday. There will be a speech, and you are apparently in it.
     defaultChoice: card
@@ -166,6 +173,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Your brain
+    look: note
     text: >-
       You wake at four with a brilliant idea. By seven it is less brilliant, and you are more
       tired.
@@ -189,6 +197,7 @@ events:
     when: [week >= 8]
     from: none
     sender: Friends
+    look: note
     text: >-
       Friends have rented a house by a lake for a long weekend. There is no wifi, which they
       list as a feature. It would do wonders if you are running on fumes.
@@ -210,6 +219,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Your sister
+    look: note
     text: >-
       Your sister has booked a table for Friday. She said the word "phone" in a meaningful way.
     defaultChoice: reschedule
@@ -232,6 +242,7 @@ events:
     when: [week >= 2]
     from: none
     sender: Your kitchen
+    look: note
     text: >-
       Your coffee machine has died. A new one costs 150 EUR. The café downstairs is cheaper per
       cup, and costs a short walk every time.
@@ -277,6 +288,7 @@ events:
     when: [energy <= 50]
     from: none
     sender: A friend
+    look: note
     text: >-
       A friend sends you an article about founder burnout. You read it at midnight, which feels
       like it misses the point.
@@ -300,6 +312,7 @@ events:
     when: [week >= 3]
     from: none
     sender: Your phone
+    look: note
     text: >-
       Your phone screen cracked on the way to a demo. It still works, mostly in the top half.
     defaultChoice: live_with_it
@@ -322,6 +335,7 @@ events:
     when: [week >= 5]
     from: none
     sender: Your parents
+    look: note
     text: >-
       Your parents are in town and would like to see "the office". The office is your kitchen
       table, and they have sat at it before.
@@ -350,6 +364,7 @@ events:
     when: [week >= 8]
     from: none
     sender: Tax office
+    look: official
     text: >-
       Your personal tax return is due. Last year it took an afternoon. Last year you had a
       salary and one source of receipts.
@@ -371,6 +386,7 @@ events:
     when: [week >= 6]
     from: none
     sender: Your back
+    look: note
     text: >-
       Your back has opinions about your chair. A physiotherapist has an opening on Tuesday,
       which helps most if you are already worn down.

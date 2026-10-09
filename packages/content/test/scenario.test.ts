@@ -143,6 +143,13 @@ describe('content', () => {
       }
     })
 
+    it('gives every event a look, and uses all three', () => {
+      const looks = new Set(s.events.map((e) => e.look))
+      expect([...looks].sort()).toEqual(['letter', 'note', 'official'])
+      expect(s.events.find((e) => e.id === 'receipts_pile')!.look).toBe('official')
+      expect(s.events.find((e) => e.id === 'bad_sleep')!.look).toBe('note')
+    })
+
     it('parses effect conditions into data', () => {
       const podcast = s.events.find((e) => e.id === 'podcast_invite')!
       const leads = podcast.choices[0]!.effects.find((fx) => fx.type === 'newLeads')!

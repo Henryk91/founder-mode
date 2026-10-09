@@ -1,20 +1,75 @@
-/* Scrappy stage tokens, see docs/design/design.md. Phase 2 uses the core subset only. */
-:root {
+/* Scrappy stage tokens, see docs/design/design.md. The shell sets data-stage from uiStage. */
+:root,
+[data-stage='scrappy'] {
   --ground: #1d3836;
   --bar: #122624;
+  --bar-raised: #2c4a47;
   --on-dark: #eaf2f0;
   --on-dark-muted: #a8c2be;
   --paper: #fbfcfd;
+  --paper-grey: #e8ecef;
   --ink: #17212b;
   --ink-muted: #4b5a68;
   --rule: #d9e3ea;
   --sticky: #ffe27a;
   --on-sticky: #2a2200;
+  --cork: #c9a473;
+  --cork-frame: #7a5630;
+  --on-cork: #2b1c08;
   --primary: #ffd34d;
   --on-primary: #1b1500;
   --good: #16663f;
+  --good-on-dark: #7fe0a8;
   --warn: #a0440a;
+  --warn-on-dark: #ffb37a;
   --danger: #b3261e;
   --shadow: #0e1f1e;
   --focus: #2456d6;
+
+  /* Activity colours of the hours bar, white text on each. */
+  --act-sales: #2456d6;
+  --act-build: #1b7a4b;
+  --act-learn: #5b3c8c;
+  --act-admin: #4b5a68;
+  --act-rest: #8c6a42;
+
+  /* Scene palette: muted, not cartoon. */
+  --scene-wall: #d9ddda;
+  --scene-floor: #9a8266;
+  --scene-sky: #c3d0da;
+  --scene-skyline: #a3b3c1;
+  --scene-desk: #e0b777;
+  --scene-wood: #8c6a42;
+  --scene-skirting: #7b6750;
+  --scene-line: #5e6b76;
+  --scene-frame: #f4f5f4;
+  --scene-window-dot: #8c9cab;
+  --scene-counter: #b9a68c;
+  --scene-fridge: #eef0ef;
+  --scene-plant: #5f7d66;
+  --scene-pot: #6e6259;
+  --scene-coat-you: #34495e;
+  --scene-coat-hire: #48604f;
+  --scene-skin-you: #d2a584;
+  --scene-skin-hire: #c4956f;
+  --scene-hair-you: #3a2e25;
+  --scene-hair-hire: #22201f;
+  --scene-label: #1b1206;
+
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-hand: 'Caveat', 'Segoe Print', cursive;
+
+  --paper-radius: 3px;
+  --panel-radius: 8px;
+  --paper-shadow: 0 3px 0 var(--shadow);
+
+  /* The pipeline panel is the one thing the organised stage restyles. */
+  --board-surface: var(--cork);
+  --board-frame: 8px solid var(--cork-frame);
+  --board-radius: 6px;
+  --board-ink: var(--on-cork);
+  --board-title-font: var(--font-hand);
+  --board-title-size: 26px;
+  --board-card-tilt: 1;
 }

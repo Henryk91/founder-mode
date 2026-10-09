@@ -1,0 +1,108 @@
+.board {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 12px 14px;
+  border: var(--board-frame);
+  border-radius: var(--board-radius);
+  background: var(--board-surface);
+  color: var(--board-ink);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--board-title-font);
+  font-size: var(--board-title-size);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.empty {
+  margin: 0;
+  font-size: 14px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.columnTitle {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border-top: 5px solid var(--danger);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 2px 0 var(--shadow);
+}
+
+.lead {
+  border-top-color: var(--danger);
+}
+.demo {
+  border-top-color: var(--act-sales);
+  background: var(--sticky);
+}
+.trial {
+  border-top-color: var(--act-build);
+}
+.committed {
+  border-top-color: var(--warn);
+}
+.paying {
+  border-top-color: var(--act-learn);
+}
+
+.name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.note {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.button {
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* On a narrow board the columns stack and empty ones step aside. */
+@container (max-width: 520px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .emptyColumn {
+    display: none;
+  }
+}

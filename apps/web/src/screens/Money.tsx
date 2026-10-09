@@ -1,3 +1,4 @@
+import { BankStatement, ComingUp, WorryNote } from '../components/Statement'
 import { Stepper } from '../components/Stepper'
 import { formatEuro } from '../format'
 import { count, label } from '../labels'
@@ -37,9 +38,11 @@ export function Money() {
 
   return (
     <>
+      <BankStatement view={view} />
+      <WorryNote view={view} />
+      <ComingUp view={view} />
       <section className={styles.card}>
         <h2 className={styles.title}>{label('money.title', stage)}</h2>
-        {stat('money.cash', company.cashCents)}
         {stat('money.savings', founder.savingsCents)}
         {stat('money.monthlyRevenue', view.monthlyRevenueCents)}
         {stat('money.fixedCosts', company.monthlyFixedCostsCents)}
@@ -147,24 +150,6 @@ export function Money() {
                   </li>
                 )
               })}
-          </ul>
-        )}
-      </section>
-      <section className={styles.card}>
-        <h2 className={styles.title}>{label('money.history', stage)}</h2>
-        {view.history.length === 0 ? (
-          <p className={styles.hint}>{label('money.historyNone', stage)}</p>
-        ) : (
-          <ul className={styles.list}>
-            {view.history
-              .slice(-6)
-              .reverse()
-              .map((h) => (
-                <li key={h.week} className={styles.rowHead}>
-                  <span>{label('money.historyRow', stage, { week: h.week })}</span>
-                  <span className={styles.mono}>{formatEuro(h.cashCents)}</span>
-                </li>
-              ))}
           </ul>
         )}
       </section>

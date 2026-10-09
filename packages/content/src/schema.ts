@@ -268,6 +268,9 @@ export const EventChoiceSchema = z.object({
   effects: z.array(EffectSchema).default([]),
 })
 
+export const MESSAGE_LOOKS = ['letter', 'note', 'official'] as const
+export type MessageLook = (typeof MESSAGE_LOOKS)[number]
+
 export const EventSchema = z.object({
   id: Id,
   area: z.enum(EVENT_AREAS),
@@ -280,6 +283,8 @@ export const EventSchema = z.object({
   from: z.enum(['none', 'customer', 'lead']).default('none'),
   // The sender's role, shown with their name. For `none` it is the whole sender.
   sender: z.string().min(1),
+  // How the message looks on the desk: a letter, a sticky note, or an official letter.
+  look: z.enum(MESSAGE_LOOKS).default('letter'),
   text: z.string().min(1),
   // The choice taken when the message expires unanswered. It costs no hours.
   defaultChoice: Id,

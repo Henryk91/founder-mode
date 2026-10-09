@@ -1,4 +1,4 @@
-import type { ChannelId, Scenario, TeamRoleId } from '@founder-mode/content'
+import type { ChannelId, MessageLook, Scenario, TeamRoleId } from '@founder-mode/content'
 
 export type { Scenario, TeamRoleId }
 
@@ -303,6 +303,12 @@ export type WeekLedger = {
   otherIncomeCents: number
   cashEndCents: number
   savingsEndCents: number
+  /** Monthly revenue of active customers at the end of the week, after churn. */
+  monthlyRevenueCents: number
+  /** Active customers at the end of the week, after churn. */
+  customers: number
+  /** Runway at the end of the week, null while money is not shrinking. */
+  runwayWeeks: number | null
 }
 
 export type LoggedAction =
@@ -450,6 +456,8 @@ export type PlayerView = {
      */
     runwayWeeks: number | null
     uiStage: UiStage
+    /** The next month end, this week included: fixed costs go out and invoices are sent. */
+    nextMonthEndWeek: number
   }
   costs: {
     interviewHours: number
@@ -492,7 +500,14 @@ export type PlayerView = {
   /** Sum of the monthly prices of active customers. */
   monthlyRevenueCents: number
   segments: SegmentView[]
-  history: { week: number; cashCents: number; savingsCents: number }[]
+  history: {
+    week: number
+    cashCents: number
+    savingsCents: number
+    monthlyRevenueCents: number
+    customers: number
+    runwayWeeks: number | null
+  }[]
 }
 
 /** Onboarding text from the scenario. Placeholders: {name} plain, {name:eur} for cents. */
@@ -574,6 +589,8 @@ export type MessageView = {
   expiresWeek: number
   fromRole: string
   fromName: string
+  /** Letter, sticky note or official letter, from the scenario event. */
+  look: MessageLook
   text: string
   choices: MessageChoice[]
   /** The choice made this week, still to take effect when the week ends. */

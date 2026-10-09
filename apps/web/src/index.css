@@ -1,8 +1,10 @@
+@import './theme/fonts.css';
 @import './theme/scrappy.css';
+@import './theme/organised.css';
 
 :root {
   color-scheme: dark;
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.45;
   background: var(--ground);
@@ -32,9 +34,19 @@ input {
 
 button {
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

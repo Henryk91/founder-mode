@@ -1,0 +1,192 @@
+.scene {
+  position: relative;
+  height: 330px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--scene-wall);
+  box-shadow: var(--paper-shadow);
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-body);
+}
+
+.chip {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--bar);
+  color: var(--on-dark);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Phone: a 72 px strip with the place written over it, Inbox tab only. */
+.strip {
+  position: relative;
+  height: 72px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--bar);
+}
+
+.stripSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+}
+
+.stripText {
+  position: relative;
+  padding: 12px 16px;
+  color: var(--on-dark);
+}
+
+.where {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--on-dark-muted);
+}
+
+.place {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.wall {
+  fill: var(--scene-wall);
+}
+.floor {
+  fill: var(--scene-floor);
+}
+.skirting {
+  fill: var(--scene-skirting);
+}
+.sky {
+  fill: var(--scene-sky);
+}
+.skyline {
+  fill: var(--scene-skyline);
+}
+.dot {
+  fill: var(--scene-window-dot);
+}
+.frame {
+  fill: none;
+  stroke: var(--scene-frame);
+  stroke-width: 4;
+}
+.desk {
+  fill: var(--scene-desk);
+}
+.wood {
+  fill: var(--scene-wood);
+}
+.line {
+  fill: none;
+  stroke: var(--scene-line);
+  stroke-width: 2;
+}
+.dashed {
+  fill: none;
+  stroke: var(--scene-line);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+.screen {
+  fill: var(--paper-grey);
+  stroke: var(--scene-line);
+  stroke-width: 2;
+}
+.paper {
+  fill: var(--paper);
+}
+.sticky {
+  fill: var(--sticky);
+}
+.ink {
+  fill: var(--ink);
+}
+.mug {
+  fill: var(--ink);
+}
+.counter {
+  fill: var(--scene-counter);
+}
+.fridge {
+  fill: var(--scene-fridge);
+  stroke: var(--scene-line);
+  stroke-width: 2;
+}
+.plant {
+  fill: var(--scene-plant);
+}
+.pot {
+  fill: var(--scene-pot);
+}
+.customer {
+  fill: var(--act-build);
+}
+.coatYou {
+  fill: var(--scene-coat-you);
+}
+.coatHire {
+  fill: var(--scene-coat-hire);
+}
+.skinYou {
+  fill: var(--scene-skin-you);
+}
+.skinHire {
+  fill: var(--scene-skin-hire);
+}
+.hairYou {
+  fill: var(--scene-hair-you);
+}
+.hairHire {
+  fill: var(--scene-hair-hire);
+}
+.chair {
+  fill: none;
+  stroke: var(--scene-line);
+  stroke-width: 3;
+  stroke-dasharray: 6 5;
+}
+.label {
+  fill: var(--scene-label);
+  font-size: 13px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+.sublabel {
+  fill: var(--scene-label);
+  font-size: 12px;
+  text-anchor: middle;
+}
+.cardText {
+  fill: var(--paper);
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+.small {
+  fill: var(--ink-muted);
+  font-size: 11px;
+  text-anchor: middle;
+}
+.heading {
+  fill: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+}

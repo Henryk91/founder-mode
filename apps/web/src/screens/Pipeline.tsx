@@ -1,15 +1,21 @@
 import type { LeadStage, LeadView } from '@founder-mode/engine'
+import { formatEuro } from '../format'
 import { count, label, type LabelKey } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
+import board from './Pipeline.module.css'
 
 const GROUPS = [
+  ['lead', 'pipeline.group.lead'],
   ['demo', 'pipeline.group.demo'],
   ['trial', 'pipeline.group.trial'],
   ['committed', 'pipeline.group.committed'],
-  ['lead', 'pipeline.group.lead'],
 ] as const satisfies readonly (readonly [LeadStage, LabelKey])[]
 
+/** Fixed tilts for pinned cards without buttons; the organised stage sets them to zero. */
+const TILTS = [-1, 1, -1.2, 0.8, 1.5, -0.8]
+
+/** The corkboard: columns by stage, a pinned card per lead. Demos and follow ups book here. */
 export function Pipeline() {
   const view = useGame((s) => s.view)
   const demos = useGame((s) => s.plan.demos)
@@ -22,107 +28,111 @@ export function Pipeline() {
   const segmentName = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
   const open = view.leads.filter((l) => l.stage !== 'paying' && l.stage !== 'lost')
   const lost = view.leads.filter((l) => l.stage === 'lost')
+  const free = view.founder.maxHoursPerWeek - planned
+  const hours = (n: number) => label('unit.hours', stage, { n })
 
-  const lead = (l: LeadView) => {
+  const card = (l: LeadView, i: number) => {
     const booked = demos.includes(l.id)
+    const following = followUps.includes(l.id)
+    const hasButtons = l.canFollowUp || l.canBookDemo
     return (
-      <li key={l.id} className={styles.row}>
-        <div className={styles.rowHead}>
-          <span>{l.name}</span>
-          {l.silent && <span className={styles.badge}>{label('pipeline.silent', stage)}</span>}
-        </div>
-        <span className={styles.hint}>
+      <li
+        key={l.id}
+        className={`${board.card} ${board[l.stage]}`}
+        style={hasButtons ? undefined : tilt(i)}
+      >
+        <span className={board.name}>{l.name}</span>
+        <span className={board.note}>
           {segmentName(l.segmentId)} ·{' '}
           {label('pipeline.lastContact', stage, { week: l.lastContactWeek })}
           {l.stage === 'trial' && ` · ${count('pipeline.trialWeeks', stage, l.weeksInStage)}`}
           {l.stage === 'committed' && ` · ${count('pipeline.depositWeeks', stage, l.weeksInStage)}`}
         </span>
+        {l.silent && <span className={styles.badge}>{label('pipeline.silent', stage)}</span>}
         {l.canFollowUp && (
           <button
             type="button"
-            aria-pressed={followUps.includes(l.id)}
-            disabled={
-              !followUps.includes(l.id) &&
-              planned + view.costs.followUpHours > view.founder.maxHoursPerWeek
-            }
-            className={`${styles.button} ${followUps.includes(l.id) ? styles.primary : ''}`}
+            aria-pressed={following}
+            disabled={!following && free < view.costs.followUpHours}
+            className={`${styles.button} ${board.button} ${following ? styles.primary : ''}`}
             onClick={() => toggleFollowUp(l.id)}
           >
-            {followUps.includes(l.id)
+            {following
               ? label('pipeline.followUpBooked', stage)
-              : label('pipeline.followUp', stage, {
-                  hours: label('unit.hours', stage, { n: view.costs.followUpHours }),
-                })}
+              : label('pipeline.followUp', stage, { hours: hours(view.costs.followUpHours) })}
           </button>
         )}
         {l.canBookDemo && (
           <button
             type="button"
             aria-pressed={booked}
-            className={`${styles.button} ${booked ? styles.primary : ''}`}
+            disabled={!booked && free < view.costs.demoHours}
+            className={`${styles.button} ${board.button} ${booked ? styles.primary : ''}`}
             onClick={() => toggleDemo(l.id)}
           >
             {booked
               ? label('pipeline.unbookDemo', stage)
-              : label('pipeline.bookDemo', stage, {
-                  hours: label('unit.hours', stage, { n: view.costs.demoHours }),
-                })}
+              : label('pipeline.bookDemo', stage, { hours: hours(view.costs.demoHours) })}
           </button>
         )}
       </li>
     )
   }
 
+  const columns = GROUPS.filter(
+    ([group]) => group !== 'committed' || open.some((l) => l.stage === group),
+  )
+
   return (
     <>
-      <h2 className={styles.title} style={{ color: 'var(--on-dark)' }}>
-        {label('pipeline.title', stage)}
-      </h2>
-      {open.length === 0 && view.customers.length === 0 && (
-        <section className={`${styles.card} ${styles.sticky}`}>
-          <p>{label('pipeline.empty', stage)}</p>
-        </section>
-      )}
-      {GROUPS.map(([group, key]) => {
-        const items = open.filter((l) => l.stage === group)
-        if (items.length === 0) return null
-        return (
-          <section key={group} className={styles.card}>
-            <h3 className={styles.title}>
-              {label(key, stage)} ({items.length})
-            </h3>
-            <ul className={styles.list}>{items.map(lead)}</ul>
-          </section>
-        )
-      })}
-      {view.customers.length === 0 && open.length > 0 && (
-        <section className={`${styles.card} ${styles.sticky}`}>
-          <p>{label('pipeline.noCustomers', stage)}</p>
-        </section>
-      )}
-      {view.customers.length > 0 && (
-        <section className={styles.card}>
-          <h3 className={styles.title}>
-            {label('pipeline.group.paying', stage)} ({view.customers.length})
-          </h3>
-          <ul className={styles.list}>
-            {view.customers.map((c) => (
-              <li key={c.id} className={styles.row}>
-                <div className={styles.rowHead}>
-                  <span>{c.name}</span>
+      <section className={board.board} aria-label={label('pipeline.title', stage)}>
+        <h2 className={board.title}>{label('pipeline.title', stage)}</h2>
+        {open.length === 0 && view.customers.length === 0 ? (
+          <p className={board.empty}>{label('pipeline.empty', stage)}</p>
+        ) : (
+          <div className={board.columns}>
+            {columns.map(([group, key]) => {
+              const items = open.filter((l) => l.stage === group)
+              return (
+                <div
+                  key={group}
+                  className={`${board.column} ${items.length === 0 ? board.emptyColumn : ''}`}
+                >
+                  <h3 className={board.columnTitle}>
+                    {label(key, stage)} · {items.length}
+                  </h3>
+                  <ul className={board.cards}>{items.map(card)}</ul>
                 </div>
-                <span className={styles.hint}>
-                  {segmentName(c.segmentId)} ·{' '}
-                  {label('pipeline.customerSince', stage, { week: c.sinceWeek })}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+              )
+            })}
+            <div className={board.column}>
+              <h3 className={board.columnTitle}>
+                {label('pipeline.group.paying', stage)} · {view.customers.length}
+              </h3>
+              {view.customers.length === 0 && (
+                <p className={board.empty}>{label('pipeline.noCustomers', stage)}</p>
+              )}
+              <ul className={board.cards}>
+                {view.customers.map((c, i) => (
+                  <li key={c.id} className={`${board.card} ${board.paying}`} style={tilt(i + 3)}>
+                    <span className={board.name}>{c.name}</span>
+                    <span className={board.note}>
+                      {label('pipeline.perMonth', stage, {
+                        amount: formatEuro(c.priceCentsPerMonth),
+                      })}
+                      {' · '}
+                      {label('pipeline.customerSince', stage, { week: c.sinceWeek })}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+      </section>
       {lost.length > 0 && (
         <section className={styles.card}>
-          <h3 className={styles.title}>
+          <h3 className={styles.subtitle}>
             {label('pipeline.group.lost', stage)} ({lost.length})
           </h3>
           <ul className={styles.list}>
@@ -130,10 +140,8 @@ export function Pipeline() {
               .slice(-8)
               .reverse()
               .map((l) => (
-                <li key={l.id} className={styles.row}>
-                  <div className={styles.rowHead}>
-                    <span>{l.name}</span>
-                  </div>
+                <li key={l.id} className={styles.rowHead}>
+                  <span>{l.name}</span>
                   <span className={styles.hint}>
                     {l.lostReason === 'silent'
                       ? label('pipeline.lostSilent', stage)
@@ -148,4 +156,8 @@ export function Pipeline() {
       )}
     </>
   )
+}
+
+function tilt(i: number): React.CSSProperties {
+  return { transform: `rotate(calc(var(--board-card-tilt) * ${TILTS[i % TILTS.length]}deg))` }
 }

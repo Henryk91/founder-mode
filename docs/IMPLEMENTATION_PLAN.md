@@ -123,7 +123,7 @@ founder-mode/
         labels.ts              label table keyed by ui stage
         theme/                 CSS variables per ui stage
         screens/               Inbox, Plan, Pipeline, Money, Team, Results, PostMortem, Start
-        layouts/               PhoneLayout, DeskLayout
+        layout/                PhoneLayout, DeskLayout
         components/
 ```
 
@@ -413,7 +413,7 @@ Tone: dry humour, short messages (2 to 4 sentences). No real company names.
 | Plan | Hours per activity with steppers, remaining hours, energy warning |
 | Pipeline | Leads grouped by stage, tap for detail and actions |
 | Money | Cash, runway, recent and upcoming payments, open invoices, savings transfer |
-| Team | Founder status, hire search, team member |
+| Team | Hire search, candidates and team member, as the Hiring section of the Plan tab (Phase 6) |
 | Results | End of week sequence: what happened, in order |
 | Post-mortem | See 4.15 |
 
@@ -421,7 +421,7 @@ Pinned on every screen: week, cash, runway, End week button.
 
 ### 6.2 Layouts
 
-- **PhoneLayout** (under 900 px): one screen at a time, bottom tab bar with 5 tabs.
+- **PhoneLayout** (under 900 px): one screen at a time, bottom tab bar with 5 tabs: Inbox, Plan, Pipeline, Market, Money.
 - **DeskLayout** (900 px and up): inbox left, scene image plus plan and pipeline centre, money and upcoming right. Same screen components, arranged side by side.
 
 Reference mockups, tokens, and component mapping are in `docs/design/` (start with `design.md`). The established desk mockup is out of scope and shown only as a direction.
@@ -576,7 +576,8 @@ Plain styling stays. All text goes through the label table or the content files.
 - DeskLayout
 - Static scene images for two office stages
 - Headline numbers with changes
-- End of week results sequence
+- End of week results: one grouped screen, full screen steps only for notable moments
+- Plan tab in collapsed sections with one line summaries and "Same as last week"; hiring moves into it
 
 **Done when:** both layouts are usable, no string is hardcoded, and nothing depends on hover or drag.
 

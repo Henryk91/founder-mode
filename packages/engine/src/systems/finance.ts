@@ -108,6 +108,10 @@ export function applyFinanceWeek(
     otherIncomeCents: extras.otherIncomeCents,
     cashEndCents: cash,
     savingsEndCents: savings,
+    // Filled in by `closeLedger` once churn has run.
+    monthlyRevenueCents: 0,
+    customers: 0,
+    runwayWeeks: null,
   }
   const movements: MoneyMovement[] = (
     [
@@ -169,6 +173,21 @@ export function netChangeCents(l: WeekLedger): number {
  * costs is always in the window. Before that it uses the known costs: living costs, fixed costs
  * spread over the month, and what active customers pay. Null when the total is not shrinking.
  */
+/** Records where the week ended: revenue, customers and runway, after churn. */
+export function closeLedger(state: GameState): GameState {
+  const last = state.ledger.at(-1)
+  if (!last) return state
+  const active = activeCustomers(state)
+  const closed: WeekLedger = {
+    ...last,
+    monthlyRevenueCents: active.reduce((sum, c) => sum + c.priceCentsPerMonth, 0),
+    customers: active.length,
+  }
+  const ledger = [...state.ledger.slice(0, -1), closed]
+  closed.runwayWeeks = runwayWeeks({ ...state, ledger })
+  return { ...state, ledger }
+}
+
 export function runwayWeeks(state: GameState): number | null {
   const weeksPerMonth = state.scenario.finance.weeksPerMonth
   // Net change over one month, from history or from known costs.

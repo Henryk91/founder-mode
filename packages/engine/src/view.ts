@@ -61,6 +61,8 @@ export function getView(state: GameState): PlayerView {
       monthlyFixedCostsCents: monthlyFixedCostsCents(state),
       runwayWeeks: runwayWeeks(state),
       uiStage: company.uiStage,
+      nextMonthEndWeek:
+        Math.ceil(state.week / scenario.finance.weeksPerMonth) * scenario.finance.weeksPerMonth,
     },
     costs: {
       interviewHours: scenario.experiments.interview.hours,
@@ -118,6 +120,7 @@ export function getView(state: GameState): PlayerView {
         expiresWeek: m.expiresWeek,
         fromRole: m.fromRole,
         fromName: m.fromName,
+        look: scenario.events.find((e) => e.id === m.eventId)?.look ?? 'letter',
         text: m.text,
         choices: m.choices.map((c) => ({ ...c })),
         answeredChoiceId: m.status === 'answered' ? m.choiceId : null,
@@ -204,6 +207,9 @@ export function getView(state: GameState): PlayerView {
       week: l.week,
       cashCents: l.cashEndCents,
       savingsCents: l.savingsEndCents,
+      monthlyRevenueCents: l.monthlyRevenueCents,
+      customers: l.customers,
+      runwayWeeks: l.runwayWeeks,
     })),
   }
 }

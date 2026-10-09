@@ -48,7 +48,7 @@ Aylin (the hired developer) and the open "Sales hire" seat do match the MVP's si
 2. Runway band, 32 px: runway text and cash, visible on every tab
 3. Scene header, about 72 px, on the Inbox tab only
 4. Scrolling content for the active tab
-5. Bottom tab bar, 64 px: Inbox, Plan, Pipeline, Money, Team
+5. Bottom tab bar, 64 px: Inbox, Plan, Pipeline, Market, Money (hiring is a Plan section, see `docs/decisions.md`, Phase 6)
 
 ## Tokens: scrappy stage
 

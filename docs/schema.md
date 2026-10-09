@@ -167,8 +167,13 @@ type WeekLedger = {
   autoTransferCents: number     // savings moved automatically to cover negative company cash
   cashEndCents: number
   savingsEndCents: number
+  monthlyRevenueCents: number   // active customers' prices at week end, after churn
+  customers: number             // active customers at week end, after churn
+  runwayWeeks: number | null    // runway at week end; null while not shrinking
 }
 ```
+
+The last three are filled by `closeLedger(state)` after churn (step 9), for the headline changes over 4 weeks.
 
 Invariants (tested): `cash' = cash + revenue - fixedCosts - founderDraw + transfer + autoTransfer` and `savings' = savings - (livingCosts - founderDraw) - transfer - autoTransfer`.
 
@@ -274,6 +279,7 @@ type PlayerView = {
     monthlyFixedCostsCents: number
     runwayWeeks: number | null    // weeks until cash plus savings reach zero; null when not shrinking
     uiStage: 'scrappy' | 'organised'
+    nextMonthEndWeek: number      // next month end, this week included
   }
   costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number; trialWeeks: number }
   guidance: GuidanceView
@@ -283,7 +289,14 @@ type PlayerView = {
   customers: CustomerView[]       // active customers only
   monthlyRevenueCents: number     // sum of active customers' own prices
   segments: SegmentView[]         // in scenario order
-  history: { week: number; cashCents: number; savingsCents: number }[]
+  history: {                      // one per resolved week, from the ledger
+    week: number
+    cashCents: number
+    savingsCents: number
+    monthlyRevenueCents: number
+    customers: number
+    runwayWeeks: number | null
+  }[]
 }
 
 // Onboarding text from the scenario. Placeholders: {name} is a plain number, {name:eur} is cents.
@@ -547,15 +560,21 @@ type UiState = {
   plannedHours: number          // from checkPlan
   issues: PlanIssue[]           // from checkPlan; End week is disabled while non empty
   report: WeekReport | null     // the week that just resolved, until dismissed
-  tab: 'plan' | 'market' | 'pipeline' | 'money'
+  tab: 'inbox' | 'plan' | 'pipeline' | 'market' | 'money'   // hiring is a Plan section; the desk shows plan or market in its centre
   hasSave: boolean
   saveNotice: 'incompatible' | 'scenario_changed' | 'broken' | null
   introStep: number | null      // index of the intro card on screen; null when none. Set to 0 by startRun, never by continueRun
   helpOpen: boolean             // help screen replaces the tab content
   explain: 'runway' | 'cash' | 'energy' | 'hours' | null   // explanation card on screen
   dismissedNotes: string[]      // founder's note ids dismissed in this run; not saved
+  shutDownAsked: boolean
+  openSections: ('talk' | 'test' | 'build' | 'sell' | 'demos' | 'team' | 'rest')[]  // Plan sections open; all closed each week
+  canRepeat: boolean            // a resolved week exists whose plan "Same as last week" can copy
+  momentsSeen: number           // notable moments of the report already tapped through
 }
 ```
+
+`repeatLastWeek()` takes the plan of the last `endWeek` in the action log and passes it through `repeatPlan(last, view)` (`apps/web/src/repeatPlan.ts`): regular work stays, one-off decisions (demos, follow ups, chasing, transfers, price, hiring steps) go, and shipped features, used batches and surplus bug fixing are cut back.
 
 Autosave: a `SaveFile` is written under one localStorage key when a run starts and after every resolved week. `continueRun` replays it; a save from another `engineVersion` (or one that fails to replay) is dropped with a notice. The draft plan is not saved. A finished run clears its save when the player leaves it.
 
@@ -573,6 +592,7 @@ type ScenarioEvent = {
   when: Condition[]             // all must hold for the event to arrive
   from: 'none' | 'customer' | 'lead'
   sender: string
+  look: 'letter' | 'note' | 'official'   // default letter; note for personal, official for banks and offices
   text: string                  // 2 to 4 sentences; EUR amounts must be amounts a choice costs or pays
   defaultChoice: string         // costs no hours
   choices: { id: string; label: string; hours: number; effects: Effect[] }[]
@@ -599,6 +619,10 @@ type ScenarioEvent = {
 
 - Effects gained `when`. Events are split into one file per area and must be `once` unless they set `cooldownWeeks` (only `receipts_pile` does). `ScenarioSources.events` is a record of area to file text; `eventsIn(text)` reads one file.
 - `companyNames[segment].distinct` names the word that tells companies apart (medical: the surname). `pickName(parts, used, busy, rng)` skips names whose distinctive word an open lead holds; `namePicker(state, leads)` hands out a week's names; `distinctWord(parts, name)` reads the word back.
+
+### Phase 6 UI (engine 0.8.0, no replay change)
+
+- `WeekLedger` and `PlayerView.history` gained `monthlyRevenueCents`, `customers` and `runwayWeeks` at week end. `PlayerView.company.nextMonthEndWeek`. `MessageView.look` from the event's `look`. None changes how a save replays, so `ENGINE_VERSION` stays 0.8.0; the scenario fingerprint changes with `look`, so older saves get the "retuned" notice.
 
 ### Design fixes (engine 0.7.0)
 

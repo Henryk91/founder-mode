@@ -1,0 +1,415 @@
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { renderToString } from 'react-dom/server'
+import { describe, expect, it } from 'vitest'
+import type { PlayerView, WeekReport } from '@founder-mode/engine'
+import { App } from '../src/App'
+import { headlineStats } from '../src/components/Headline'
+import { Scene } from '../src/components/Scene'
+import { upcoming, worry } from '../src/components/Statement'
+import { repeatPlan } from '../src/repeatPlan'
+import { notableMoments } from '../src/screens/Results'
+import { memoryStorage } from '../src/storage'
+import { createGameStore } from '../src/store'
+import { StoreProvider } from '../src/useGame'
+
+type Store = ReturnType<typeof createGameStore>
+type Layout = 'phone' | 'desk'
+
+const html = (store: Store, layout: Layout = 'phone') =>
+  renderToString(<App store={store} layout={layout} />).replace(/<!-- -->/g, '')
+const text = (store: Store, layout: Layout = 'phone') =>
+  html(store, layout)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&#x27;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+
+function run(seed: string): Store {
+  const store = createGameStore({ storage: memoryStorage(), makeSeed: () => seed })
+  store.getState().startRun()
+  while (store.getState().introStep !== null) store.getState().nextIntro()
+  return store
+}
+
+function week(store: Store) {
+  store.getState().endWeek()
+  while (store.getState().report && store.getState().momentsSeen < 5) store.getState().nextMoment()
+  store.getState().dismissReport()
+}
+
+describe('layouts', () => {
+  it('phone: five tabs, no Team tab, the scene strip on the Inbox tab only', () => {
+    const store = run('phone')
+    const page = html(store)
+    const tabs = [...page.matchAll(/<nav[^>]*aria-label="Main sections"[\s\S]*?<\/nav>/g)][0]![0]
+    expect(tabs.match(/<button/g)).toHaveLength(5)
+    for (const name of ['Inbox', 'Plan', 'Who pays', 'Market', 'Money']) {
+      expect(tabs).toContain(name)
+    }
+    expect(tabs).not.toContain('Team')
+    expect(page).not.toContain('Where you work')
+    store.getState().setTab('inbox')
+    expect(text(store)).toContain('Where you work Kitchen table')
+  })
+
+  it('desk: inbox left, scene with My week and corkboard centre, money right', () => {
+    const store = run('desk')
+    week(store)
+    const page = text(store, 'desk')
+    const at = (s: string) => page.indexOf(s)
+    expect(at('On your desk')).toBeGreaterThan(-1)
+    expect(at('Kitchen table')).toBeGreaterThan(at('On your desk'))
+    expect(at('My week')).toBeGreaterThan(at('Kitchen table'))
+    expect(at('Who might pay us')).toBeGreaterThan(at('My week'))
+    expect(at('Company account')).toBeGreaterThan(at('Who might pay us'))
+    expect(at('Coming up')).toBeGreaterThan(at('Company account'))
+    // No bottom tab bar at the desk; the centre switches between My week and Market.
+    expect(html(store, 'desk')).not.toContain('aria-label="Main sections"')
+    store.getState().setTab('market')
+    expect(text(store, 'desk')).toContain('What you have heard')
+    expect(text(store, 'desk')).not.toContain('Talk to people')
+  })
+
+  it('desk: results and help take the centre alone', () => {
+    const store = run('desk-results')
+    store.getState().endWeek()
+    const page = text(store, 'desk')
+    expect(page).toContain('Next week')
+    expect(page).not.toContain('On your desk')
+    expect(page).not.toContain('End week')
+  })
+
+  it('selects the theme by uiStage', () => {
+    const store = run('stage')
+    expect(html(store)).toContain('data-stage="scrappy"')
+    expect(html(store, 'desk')).toContain('data-stage="scrappy"')
+  })
+
+  it('draws both office stages, and names the people in the picture', () => {
+    const store = run('scene')
+    for (const [stage, name] of [
+      ['kitchen_table', 'Kitchen table'],
+      ['coworking_desk', 'Coworking desk'],
+    ] as const) {
+      const page = renderToString(
+        <StoreProvider value={store}>
+          <Scene stage={stage} />
+        </StoreProvider>,
+      )
+      expect(page).toContain(name)
+      expect(page).toContain('<svg')
+      expect(page).toMatch(/You: rested, 0 h this week/)
+    }
+  })
+})
+
+describe('headline numbers', () => {
+  it('shows cash, runway, monthly revenue and customers on every screen', () => {
+    const store = run('headline')
+    for (const tab of ['plan', 'inbox', 'market', 'pipeline', 'money'] as const) {
+      store.getState().setTab(tab)
+      const page = text(store)
+      for (const title of ['Cash', 'Runway', 'Revenue', 'Customers']) {
+        expect(page, `${tab} ${title}`).toContain(title)
+      }
+    }
+  })
+
+  it('shows the change over the last 4 weeks once there are 4 weeks to compare', () => {
+    const store = run('changes')
+    for (let i = 0; i < 4; i++) week(store)
+    expect(headlineStats(store.getState().view!).every((s) => s.change === null)).toBe(true)
+    week(store)
+    const stats = headlineStats(store.getState().view!)
+    expect(stats.every((s) => s.change !== null)).toBe(true)
+    const cash = stats.find((s) => s.id === 'cash')!
+    // Living costs and month end costs: cash has gone down, said with an arrow and in words.
+    expect(cash.change!.text).toMatch(/^▼ €/)
+    expect(cash.change!.good).toBe(false)
+    expect(stats.find((s) => s.id === 'customers')!.change!.text).toBe('no change')
+    expect(text(store)).toContain('over the last 4 weeks')
+  })
+})
+
+describe('plan tab', () => {
+  it('starts with every section closed, each with a one line summary', () => {
+    const store = run('closed')
+    const page = text(store)
+    expect(page).toContain('Talk to people nothing planned')
+    expect(page).not.toContain('Costs 2 h each')
+    store.getState().setInterviews('coworking', 3)
+    expect(text(store)).toContain('Talk to people 3 interviews 6 h')
+    store.getState().setOutreach('medical', 'phone', 5)
+    expect(text(store)).toContain('Find customers Phone to Medical practices 5 h')
+  })
+
+  it('opens several sections at once, and closes them all for the next week', () => {
+    const store = run('open')
+    store.getState().toggleSection('talk')
+    store.getState().toggleSection('rest')
+    const page = text(store)
+    expect(page).toContain('Costs 2 h each')
+    expect(page).toContain('Restores energy this week.')
+    expect(html(store)).toMatch(/aria-expanded="true"[\s\S]*aria-expanded="true"/)
+    store.getState().toggleSection('talk')
+    expect(text(store)).not.toContain('Costs 2 h each')
+    week(store)
+    expect(store.getState().openSections).toEqual([])
+  })
+
+  it('splits the hours bar by activity, with each part named in text', () => {
+    const store = run('bar')
+    store.getState().setInterviews('coworking', 2)
+    store.getState().setBuild('basic_ordering', 10)
+    store.getState().setOutreach('coworking', 'phone', 6)
+    const page = text(store)
+    expect(page).toContain('Sales 6 h · Building 10 h · Learning 4 h')
+  })
+
+  it('repeats last week on one tap, without one-off decisions', () => {
+    const store = run('repeat')
+    expect(text(store)).not.toContain('Same as last week')
+    store.getState().setInterviews('medical', 2)
+    store.getState().setOutreach('coworking', 'in_person', 8)
+    store.getState().setRestHours(3)
+    store.getState().setTransferCents(10_000)
+    store.getState().setSearchRole('developer')
+    week(store)
+    expect(text(store)).toContain('Same as last week')
+    store.getState().repeatLastWeek()
+    const plan = store.getState().plan
+    expect(plan.interviews).toEqual({ medical: 2 })
+    expect(plan.outreach).toEqual({ coworking: { channel: 'in_person', hours: 8 } })
+    expect(plan.restHours).toBe(3)
+    expect(plan.transferToCompanyCents).toBe(0)
+    expect(plan.searchRole).toBeNull()
+    expect(store.getState().plannedHours).toBe(4 + 8 + 3)
+  })
+
+  it('does not repeat building a shipped feature or batches that are used up', () => {
+    const store = run('repeat-clip')
+    const view = store.getState().view!
+    const feature = view.product.features[0]!
+    const last = {
+      ...store.getState().plan,
+      build: { [feature.id]: feature.buildHours + 10 },
+      presales: { medical: 9 },
+      demos: ['lead_1'],
+      chase: ['inv_1'],
+    }
+    const shipped: PlayerView = {
+      ...view,
+      product: {
+        ...view.product,
+        features: view.product.features.map((f) =>
+          f.id === feature.id ? { ...f, shipped: true, remainingHours: 0 } : f,
+        ),
+      },
+    }
+    const plan = repeatPlan(last, shipped)
+    expect(plan.build).toEqual({})
+    expect(plan.presales).toEqual({ medical: view.costs.presaleMaxBatches })
+    expect(plan.demos).toEqual([])
+    expect(plan.chase).toEqual([])
+  })
+
+  it('has hiring as a Plan section', () => {
+    const store = run('hiring')
+    store.getState().toggleSection('team')
+    expect(text(store)).toContain('Look for a Developer')
+  })
+})
+
+describe('results', () => {
+  it('shows an ordinary week on one screen with no extra steps', () => {
+    const store = run('ordinary')
+    store.getState().endWeek()
+    expect(notableMoments(store.getState().report!, store.getState().view!)).toEqual([])
+    expect(text(store)).toContain('Next week')
+  })
+
+  it('gives the first paying customer and a hire starting their own full screen step', () => {
+    const store = run('moments')
+    const view = store.getState().view!
+    const report: WeekReport = {
+      week: 9,
+      plannedHours: 40,
+      energyBefore: 80,
+      energyAfter: 80,
+      interviews: [],
+      entries: [
+        {
+          kind: 'lead_update',
+          change: 'won',
+          leadId: 'l1',
+          name: 'Werk Neun',
+          segmentId: 'coworking',
+        },
+        { kind: 'hire_started', name: 'Aylin Demir', role: 'developer' },
+      ],
+      ledger: {
+        week: 9,
+        revenueCents: 0,
+        fixedCostsCents: 0,
+        livingCostsCents: 0,
+        founderDrawCents: 0,
+        transferCents: 0,
+        autoTransferCents: 0,
+        adSpendCents: 0,
+        otherCostsCents: 0,
+        otherIncomeCents: 0,
+        cashEndCents: 0,
+        savingsEndCents: 0,
+        monthlyRevenueCents: 0,
+        customers: 0,
+        runwayWeeks: null,
+      },
+      ending: null,
+    }
+    const moments = notableMoments(report, view)
+    expect(moments.map((m) => m.id)).toEqual(['first_customer', 'hire_started'])
+    expect(moments[0]!.text).toContain('Werk Neun will pay €450 every month.')
+    expect(moments[1]!.text).toContain('Aylin Demir started today as your developer.')
+    // A second customer is no longer a moment.
+    const weekEnd = (w: number, customers: number) => ({
+      week: w,
+      cashCents: 0,
+      savingsCents: 0,
+      monthlyRevenueCents: 0,
+      customers,
+      runwayWeeks: null,
+    })
+    const later: PlayerView = { ...view, history: [weekEnd(7, 1), weekEnd(8, 2)] }
+    expect(notableMoments(report, later).map((m) => m.id)).toEqual(['hire_started'])
+  })
+
+  it('shows the ending as its own step, then the week and the way back', () => {
+    const store = run('the-end')
+    while (store.getState().view!.status === 'running') {
+      store.getState().endWeek()
+      if (store.getState().view!.status === 'running') store.getState().dismissReport()
+    }
+    const ending = text(store)
+    expect(ending).toContain('The run is over')
+    expect(ending).toContain('See the last week')
+    expect(ending).not.toContain('Back to start')
+    store.getState().nextMoment()
+    const after = text(store)
+    expect(after).toContain('Back to start')
+    expect(after).toContain('Money')
+  })
+})
+
+describe('money', () => {
+  it('lists what is coming up, soonest first, starting with the month end', () => {
+    const store = run('coming')
+    store.getState().setLanding('coworking', 30_000)
+    week(store)
+    const items = upcoming(store.getState().view!)
+    expect(items[0]!.text).toContain('Landing page result, Coworking spaces')
+    expect(items.map((i) => i.week)).toEqual([...items.map((i) => i.week)].sort((a, b) => a - b))
+    expect(items.some((i) => i.text.startsWith('Month end.'))).toBe(true)
+  })
+
+  it('writes the worry note from the runway', () => {
+    const store = run('worry')
+    const view = store.getState().view!
+    expect(worry(view, 'scrappy')).toBe(
+      `Week ${view.week + view.company.runwayWeeks!}: we are out of money.`,
+    )
+  })
+})
+
+describe('energy', () => {
+  it('uses one 0 to 100 scale on the plan, in help and in the results', () => {
+    const store = run('energy-scale')
+    expect(text(store)).toContain('Energy 80 of 100')
+    store.getState().openExplain('energy')
+    expect(text(store)).toContain('Below 70 what you try starts to work less well, below 30')
+    store.getState().closeExplain()
+    store.getState().endWeek()
+    expect(text(store)).toMatch(/Energy 80 to \d+\./)
+  })
+})
+
+/** Every .tsx file under src. */
+function sources(): { file: string; code: string }[] {
+  const out: { file: string; code: string }[] = []
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name)
+      if (entry.isDirectory()) walk(path)
+      else if (entry.name.endsWith('.tsx'))
+        out.push({ file: path, code: readFileSync(path, 'utf8') })
+    }
+  }
+  walk(join(__dirname, '../src'))
+  return out
+}
+
+describe('static checks', () => {
+  it('has no hardcoded words in JSX text or text attributes', () => {
+    for (const { file, code } of sources()) {
+      const jsxText = [...code.matchAll(/>\s*([A-Za-z][A-Za-z ,.'!?]{2,})\s*</g)].map((m) => m[1])
+      expect(jsxText, file).toEqual([])
+      const attrs = [
+        ...code.matchAll(/\b(aria-label|title|alt|placeholder)="([^"]*[A-Za-z][^"]*)"/g),
+      ]
+      expect(
+        attrs.map((m) => m[0]),
+        file,
+      ).toEqual([])
+    }
+  })
+
+  it('gives every button a class with a touch target of at least 44 px', () => {
+    const css = new Map<string, string>()
+    const cssOf = (dir: string, rel: string) => {
+      const path = join(dir, rel)
+      if (!css.has(path)) css.set(path, readFileSync(path, 'utf8'))
+      return css.get(path)!
+    }
+    /** min-height (or height) of a class in a CSS module, from its own rule. */
+    const minHeight = (source: string, name: string) => {
+      const rules = [...source.matchAll(new RegExp(`\\.${name}\\b[^{]*\\{([^}]*)\\}`, 'g'))]
+      const values = rules.flatMap((r) => [...r[1]!.matchAll(/(?:min-)?height:\s*(\d+)px/g)])
+      return Math.max(0, ...values.map((v) => Number(v[1])))
+    }
+    let buttons = 0
+    for (const { file, code } of sources()) {
+      const dir = join(file, '..')
+      const imports = new Map(
+        [...code.matchAll(/import (\w+) from '(\.[^']+\.module\.css)'/g)].map((m) => [
+          m[1]!,
+          m[2]!,
+        ]),
+      )
+      for (const match of code.matchAll(/<button\b/g)) {
+        buttons++
+        const tag = openingTag(code, match.index)
+        const classes = [...tag.matchAll(/\b(\w+)\.(\w+)\b/g)].filter(([, alias]) =>
+          imports.has(alias!),
+        )
+        const tallest = Math.max(
+          0,
+          ...classes.map(([, alias, name]) => minHeight(cssOf(dir, imports.get(alias!)!), name!)),
+        )
+        expect([file, tag.slice(0, 80), tallest >= 44]).toEqual([file, tag.slice(0, 80), true])
+      }
+    }
+    expect(buttons).toBeGreaterThan(20)
+  })
+})
+
+/** The opening tag starting at `start`, up to its closing `>` outside braces. */
+function openingTag(code: string, start: number): string {
+  let depth = 0
+  for (let i = start + 1; i < code.length; i++) {
+    const c = code[i]
+    if (c === '{') depth++
+    else if (c === '}') depth--
+    else if (c === '>' && depth === 0 && code[i - 1] !== '=') return code.slice(start, i + 1)
+  }
+  return code.slice(start)
+}
