@@ -1,6 +1,6 @@
 import type { ChannelId, PlayerView, TeamRoleId } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { label, type UiStage } from '../labels'
+import { count, label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 
@@ -28,8 +28,8 @@ export function Team() {
         <p className={styles.hint}>
           {label('team.hint', stage, {
             hours: hours(costs.searchHours),
-            weeks: costs.searchWeeks,
-            start: costs.startWeeks,
+            weeks: count('unit.weeks', stage, costs.searchWeeks),
+            start: count('unit.weeks', stage, costs.startWeeks),
           })}
         </p>
         {team.search && (

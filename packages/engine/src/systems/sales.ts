@@ -19,6 +19,11 @@ export function canBookDemo(lead: Lead): boolean {
   return lead.stage === 'demo' && lead.silentSinceWeek === null
 }
 
+/** An open lead the founder can follow up with: still asking, or waiting for a demo. */
+export function canFollowUp(lead: Lead): boolean {
+  return lead.stage === 'lead' || lead.stage === 'demo'
+}
+
 type NameParts = { first: readonly string[]; second: readonly string[] }
 
 /**
@@ -51,6 +56,7 @@ function randomRound(x: number, rng: Rng): number {
 
 /**
  * Sales step (plan section 4.5), in this order, leads in list order:
+ * 0. follow ups: the lead answers again, is not ghosted this week, and is a bit keener,
  * 1. demos held this week: the lead becomes a trial or is lost,
  * 2. trials that ran their course: the lead becomes a paying customer or is lost,
  * 3. open leads agree to a demo,
@@ -73,6 +79,7 @@ export function applySales(
   const founderDemoIds = new Set(plan.demos)
   const demoIds = new Set([...plan.demos, ...(team?.demos ?? [])])
   const touched = new Set<string>()
+  const followedUp = new Set(plan.followUps)
   let selling = state.founder.skills.selling
   const sellingAtStart = selling
   // Energy after this week's hours (step 3 runs first): a tired founder sells worse.
@@ -92,6 +99,13 @@ export function applySales(
     lead.lostReason = reason
   }
 
+  // 0. Follow ups
+  for (const lead of leads) {
+    if (!followedUp.has(lead.id) || !canFollowUp(lead)) continue
+    lead.silentSinceWeek = null
+    lead.lastContactWeek = week
+    touched.add(lead.id)
+  }
   // 1. Demos
   for (const lead of leads) {
     if (!demoIds.has(lead.id)) continue
@@ -139,7 +153,9 @@ export function applySales(
   for (const lead of leads) {
     if (lead.stage !== 'lead' || lead.silentSinceWeek !== null) continue
     const pain = state.hidden.segments[lead.segmentId]?.pain ?? 0
-    const p = cfg.leadToDemoBase * (cfg.leadToDemoOffset + cfg.leadToDemoPerPain * pain) * tired
+    const boost = followedUp.has(lead.id) ? cfg.followUpDemoBoost : 0
+    const p =
+      (cfg.leadToDemoBase * (cfg.leadToDemoOffset + cfg.leadToDemoPerPain * pain) + boost) * tired
     if (rng.chance(p)) {
       lead.stage = 'demo'
       lead.stageSinceWeek = week

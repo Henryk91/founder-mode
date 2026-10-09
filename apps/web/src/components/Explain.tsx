@@ -1,4 +1,4 @@
-import { label } from '../labels'
+import { count, label } from '../labels'
 import { useGame } from '../useGame'
 import styles from './ui.module.css'
 
@@ -9,7 +9,10 @@ export function Explain() {
   const close = useGame((s) => s.closeExplain)
   const founder = useGame((s) => s.view?.founder)
   if (!key) return null
-  const vars = { low: founder?.lowEnergyBelow ?? 0, weeks: founder?.burnoutWeeks ?? 0 }
+  const vars = {
+    low: founder?.lowEnergyBelow ?? 0,
+    weeks: count('unit.weeks', stage, founder?.burnoutWeeks ?? 0),
+  }
   return (
     <section className={`${styles.card} ${styles.sticky}`} role="note">
       <h2 className={styles.title}>{label(`explain.${key}.title`, stage)}</h2>

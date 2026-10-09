@@ -1,7 +1,8 @@
 import { renderToString } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { App } from '../src/App'
-import { label } from '../src/labels'
+import { loadScenario } from '@founder-mode/content'
+import { count, label } from '../src/labels'
 import { memoryStorage } from '../src/storage'
 import { createGameStore } from '../src/store'
 
@@ -166,7 +167,7 @@ describe('onboarding', () => {
       store.getState().openExplain(key)
       const page = html(store)
       expect(page).toContain('Got it')
-      const text = label(`explain.${key}.text`, stage, { low: 30, weeks: 3 })
+      const text = label(`explain.${key}.text`, stage, { low: 30, weeks: '3 weeks' })
       expect(text.split('. ').length).toBe(2)
       expect(page).toContain(text.replace(/'/g, '&#x27;'))
     }
@@ -199,7 +200,7 @@ describe('onboarding', () => {
       'Costs 2 h each. Gives you one answer in the interviewee',
       'Costs the hours shown. A feature ships once all its hours are in',
       'Costs the hours you set, on one channel per market. Finds new leads at the end of this week',
-      'Costs 3 h per demo. A good demo starts a 2 week trial',
+      'Costs 3 h per demo. A good demo starts a trial that runs 2 weeks',
       'Costs the hours you set. Restores energy this week.',
     ]) {
       expect(page, line).toContain(line)
@@ -340,7 +341,7 @@ describe('phase 4 screens', () => {
     expect(page).toContain('€200')
     expect(page).toContain('€500')
     expect(page).toContain('Pre-sale: Medical practices')
-    expect(page).toContain('Open leads: 0. A batch needs 5.')
+    expect(page).toContain('0 open leads. A batch needs at least 3.')
     expect(page).toContain('The books')
     expect(page).toContain('Open: 0 h. Planned this week: 0 h.')
     expect(page).not.toMatch(/[{}]/)
@@ -501,5 +502,73 @@ describe('shutting down', () => {
     expect(html(again)).toContain('You closed the company on purpose.')
     store.getState().leaveRun()
     expect(storage.current()).toBeNull()
+  })
+})
+
+describe('follow ups, costs and plurals', () => {
+  it('shows money costs on inbox choices, hours first, and "Free" only when nothing is spent', () => {
+    const scenario = () => {
+      const s = loadScenario('kantino')
+      const event = {
+        ...s.events[0]!,
+        id: 'costly',
+        once: true,
+        when: [],
+        from: 'none' as const,
+        text: 'Pay up.',
+        defaultChoice: 'no',
+        choices: [
+          { id: 'no', label: 'No', hours: 0, effects: [] },
+          {
+            id: 'act',
+            label: 'Act',
+            hours: 2,
+            effects: [
+              { type: 'cash' as const, amountCents: -40_000, chance: 1 },
+              { type: 'fixedCost' as const, id: 'x', name: 'X', monthlyCents: 4_000, chance: 1 },
+            ],
+          },
+        ],
+      }
+      return { ...s, events: [event], inbox: { ...s.inbox, drawChance: 1 } }
+    }
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'cost', scenario })
+    begin(store)
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    store.getState().setTab('inbox')
+    const page = html(store)
+    expect(page).toContain('Act (2 h, €400, €40 a month)')
+    expect(page).toContain('No (Free)')
+  })
+
+  it('offers a follow up on open leads in the Pipeline tab and plans its hour', () => {
+    const store = fresh('followup')
+    begin(store)
+    for (let i = 0; i < 6 && !store.getState().view!.leads.some((l) => l.canFollowUp); i++) {
+      store.getState().setOutreach('coworking', 'in_person', 40)
+      store.getState().setBookkeepingHours(2)
+      store.getState().endWeek()
+      store.getState().dismissReport()
+    }
+    const lead = store.getState().view!.leads.find((l) => l.canFollowUp)!
+    store.getState().setTab('pipeline')
+    expect(html(store)).toContain('Follow up (1 h)')
+    store.getState().toggleFollowUp(lead.id)
+    expect(store.getState().plannedHours).toBe(1)
+    expect(html(store)).toContain('Follow up booked, tap to cancel')
+    store.getState().setTab('plan')
+    expect(html(store)).toContain('1 follow up (1 h)')
+  })
+
+  it('says "1 open lead" and "2 open leads", and weeks in the singular', () => {
+    expect(count('plan.presale.leads', 'scrappy', 1, { min: 3 })).toBe(
+      '1 open lead. A batch needs at least 3.',
+    )
+    expect(count('plan.presale.leads', 'scrappy', 2, { min: 3 })).toBe(
+      '2 open leads. A batch needs at least 3.',
+    )
+    expect(count('unit.weeks', 'scrappy', 1)).toBe('1 week')
+    expect(count('unit.weeks', 'scrappy', 2)).toBe('2 weeks')
   })
 })

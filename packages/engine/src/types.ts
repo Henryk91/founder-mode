@@ -203,7 +203,17 @@ export type Invoice = {
   writtenOffWeek: number | null
 }
 
-export type MessageChoice = { id: string; label: string; hours: number }
+/**
+ * `costCents` is what the choice certainly costs now (cash going out), `monthlyCostCents` what it
+ * adds to the fixed costs. Gains and chances are never shown.
+ */
+export type MessageChoice = {
+  id: string
+  label: string
+  hours: number
+  costCents: number
+  monthlyCostCents: number
+}
 
 /**
  * - open: waiting for an answer
@@ -346,6 +356,8 @@ export type WeekPlan = {
   landing: Record<SegmentId, number>
   /** Pre-sales: number of batches of prospects per segment. */
   presales: Record<SegmentId, number>
+  /** Ids of open leads to follow up with this week. */
+  followUps: string[]
   /** Hours spent on the books. */
   bookkeepingHours: number
   /** Ids of overdue invoices to chase. */
@@ -375,6 +387,7 @@ export type PlanIssue =
   | { code: 'too_many_hours'; plannedHours: number; maxHours: number }
   | { code: 'transfer_exceeds_savings'; savingsCents: number }
   | { code: 'invalid_price' }
+  | { code: 'invalid_follow_up'; leadId: string }
   | { code: 'invalid_budget'; segmentId: string }
   | { code: 'presale_needs_leads'; segmentId: string; leads: number }
   | { code: 'bookkeeping_exceeds_backlog'; maxHours: number }
@@ -432,6 +445,8 @@ export type PlayerView = {
     landingWeeks: number
     presaleHoursPerBatch: number
     presaleBatchSize: number
+    presaleMinLeads: number
+    followUpHours: number
     presaleWeeks: number
     chaseHours: number
     searchHours: number
@@ -509,6 +524,8 @@ export type LeadView = {
   lostReason: 'declined' | 'silent' | null
   /** True when a demo can be held with this lead this week. */
   canBookDemo: boolean
+  /** True when the lead is open and a follow up can be booked. */
+  canFollowUp: boolean
 }
 
 export type CustomerView = {

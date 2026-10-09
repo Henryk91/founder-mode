@@ -7,7 +7,7 @@ import { workingMember } from './systems/team'
 import { activeCustomers } from './systems/customers'
 import { selectFounderNote } from './systems/guidance'
 import { maxBugFixHours } from './systems/product'
-import { canBookDemo } from './systems/sales'
+import { canBookDemo, canFollowUp } from './systems/sales'
 import type {
   ChannelId,
   GameState,
@@ -72,6 +72,8 @@ export function getView(state: GameState): PlayerView {
       landingWeeks: scenario.experiments.landing.weeks,
       presaleHoursPerBatch: scenario.experiments.presale.hoursPerBatch,
       presaleBatchSize: scenario.experiments.presale.batchSize,
+      presaleMinLeads: scenario.experiments.presale.minLeads,
+      followUpHours: scenario.sales.followUpHours,
       presaleWeeks: scenario.experiments.presale.weeks,
       chaseHours: scenario.finance.chaseHours,
       searchHours: scenario.team.searchHours,
@@ -118,7 +120,7 @@ export function getView(state: GameState): PlayerView {
         fromRole: m.fromRole,
         fromName: m.fromName,
         text: m.text,
-        choices: m.choices.map((c) => ({ id: c.id, label: c.label, hours: c.hours })),
+        choices: m.choices.map((c) => ({ ...c })),
         answeredChoiceId: m.status === 'answered' ? m.choiceId : null,
       })),
     team: teamView(state),
@@ -160,6 +162,7 @@ export function getView(state: GameState): PlayerView {
       silent: l.silentSinceWeek !== null,
       lostReason: l.lostReason,
       canBookDemo: canBookDemo(l),
+      canFollowUp: canFollowUp(l),
     })),
     customers: activeCustomers(state).map((c) => ({
       id: c.id,

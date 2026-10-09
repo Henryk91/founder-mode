@@ -1,4 +1,6 @@
-import { label } from '../labels'
+import type { MessageChoice } from '@founder-mode/engine'
+import { formatEuro } from '../format'
+import { label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 
@@ -59,11 +61,7 @@ export function Inbox() {
                       disabled={!fits}
                       onClick={() => answer(m.id, c.id)}
                     >
-                      {c.label} (
-                      {c.hours === 0
-                        ? label('inbox.free', stage)
-                        : label('unit.hours', stage, { n: c.hours })}
-                      )
+                      {c.label} ({costParts(c, stage).join(', ')})
                     </button>
                   )
                 })}
@@ -77,4 +75,17 @@ export function Inbox() {
       })}
     </>
   )
+}
+
+/** What a choice costs: hours, money now, and money every month. Free when it costs nothing. */
+function costParts(c: MessageChoice, stage: UiStage): string[] {
+  const parts: string[] = []
+  if (c.hours > 0) parts.push(label('unit.hours', stage, { n: c.hours }))
+  if (c.costCents > 0) {
+    parts.push(label('inbox.cost.money', stage, { amount: formatEuro(c.costCents) }))
+  }
+  if (c.monthlyCostCents > 0) {
+    parts.push(label('inbox.cost.monthly', stage, { amount: formatEuro(c.monthlyCostCents) }))
+  }
+  return parts.length > 0 ? parts : [label('inbox.free', stage)]
 }

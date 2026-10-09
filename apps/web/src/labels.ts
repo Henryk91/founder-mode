@@ -38,6 +38,8 @@ const labels = {
 
   'unit.hours': '{n} h',
   'unit.hoursEach': '{n} h each',
+  'unit.weeks.one': '{n} week',
+  'unit.weeks.other': '{n} weeks',
 
   'plan.title': 'This week',
   'plan.energy': 'Energy {energy} of {max}',
@@ -96,6 +98,12 @@ const labels = {
   'pipeline.lostSilent': 'Stopped answering',
   'pipeline.customerSince': 'Customer since week {week}',
   'pipeline.bookDemo': 'Book demo ({hours})',
+  'pipeline.followUp': 'Follow up ({hours})',
+  'pipeline.followUpBooked': 'Follow up booked, tap to cancel',
+  'plan.followUps.booked.one': '{n} follow up ({hours})',
+  'plan.followUps.booked.other': '{n} follow ups ({hours})',
+  'inbox.cost.money': '{amount}',
+  'inbox.cost.monthly': '{amount} a month',
   'pipeline.unbookDemo': 'Demo booked, tap to cancel',
 
   'money.title': 'Money',
@@ -184,7 +192,7 @@ const labels = {
     'Cash is the money in the company account. Fixed costs leave it at every month end, customer payments arrive when their invoices are paid, and your savings top it up if it goes negative.',
   'explain.energy.title': 'Energy',
   'explain.energy.text':
-    'Energy is how much you have left in the tank: hours above 50 in a week drain it, and rest hours and lighter weeks refill it. Below {low} everything you try works less well, and {weeks} weeks in a row at 0 end the run.',
+    'Energy is how much you have left in the tank: hours above 50 in a week drain it, and rest hours and lighter weeks refill it. Below {low} everything you try works less well, and {weeks} in a row at 0 end the run.',
   'explain.hours.title': 'Hours',
   'explain.hours.text':
     'A normal week is 50 hours, and you can plan up to 65 if you accept the energy cost. Interviews, building, bug fixing, outreach, demos and rest all count as planned hours.',
@@ -203,7 +211,7 @@ const labels = {
   'plan.section.sellHint':
     'Costs the hours you set, on one channel per market. Finds new leads at the end of this week, if anyone answers.',
   'plan.section.demosHint':
-    'Costs {hours} per demo. A good demo starts a {weeks} week trial, and a trial can turn into a paying customer. The verdict on the demo arrives this week, the trial result {weeks} weeks later.',
+    'Costs {hours} per demo. A good demo starts a trial that runs {weeks}, and a trial can turn into a paying customer. The verdict on the demo arrives this week, the trial result {weeks} later.',
   'plan.section.restHint': 'Costs the hours you set. Restores energy this week.',
   'market.based.zero': 'No interviews yet. Plan some on the Plan tab and the answers collect here.',
   'market.tallyTitle': 'Features people asked for',
@@ -217,15 +225,16 @@ const labels = {
   'results.interview': 'You spoke to someone at {segment}. Their view: {bucket}.',
   'plan.section.test': 'Test the demand',
   'plan.section.testHint':
-    'A landing page test costs {hours} and the ad budget, and reports {weeks} weeks later with visitors and sign ups. A pre-sale costs {presale} per batch of {size} prospects from your open leads and reports a week later with how many would pay.',
+    'A landing page test costs {hours} and the ad budget, and reports {weeks} later with visitors and sign ups. A pre-sale costs {presale} per batch and asks up to {size} of your open leads whether they would pay. It reports {presaleWeeks} later.',
   'plan.landing': 'Landing page: {segment}',
   'plan.landing.none': 'No test',
   'plan.landing.budget': '{budget} of ads, about {visitors} visitors',
   'plan.presale': 'Pre-sale: {segment}',
   'plan.presale.none': 'No pre-sale',
-  'plan.presale.batches.one': '{n} batch, {prospects} prospects',
-  'plan.presale.batches.other': '{n} batches, {prospects} prospects',
-  'plan.presale.leads': 'Open leads: {n}. A batch needs {size}.',
+  'plan.presale.batches.one': '{n} batch',
+  'plan.presale.batches.other': '{n} batches',
+  'plan.presale.leads.one': '{n} open lead. A batch needs at least {min}.',
+  'plan.presale.leads.other': '{n} open leads. A batch needs at least {min}.',
   'plan.section.books': 'The books',
   'plan.section.booksHint':
     'The books need {required} each week. What you skip piles up, and above {limit} the accountant sends a fine and takes some of your time.',
@@ -280,7 +289,7 @@ const labels = {
   'inbox.free': 'Free',
   'team.title': 'Team',
   'team.hint':
-    'One hire at most. A search costs {hours}, candidates arrive {weeks} weeks later, and a hire starts {start} weeks after the offer. Their pay is a fixed cost every month.',
+    'One hire at most. A search costs {hours}, candidates arrive {weeks} later, and a hire starts {start} after the offer. Their pay is a fixed cost every month.',
   'team.role.developer': 'Developer',
   'team.role.salesperson': 'Salesperson',
   'team.perMonth': '{amount} per month',

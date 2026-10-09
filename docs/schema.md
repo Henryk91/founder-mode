@@ -567,3 +567,7 @@ Arrives in Phase 4. See plan section 4.10.
 - `WeekPlan` and `PlanIssue` gained the fields and codes listed in `docs/decisions.md` (Phase 4).
 - `PlayerView` gained `invoices`, `receivablesCents`, `inbox`, `team`, `bookkeeping`, `pendingExperiments`, `committedHours`, `forcedHours`, extra `costs`, and per segment `landingTests`, `presales`, `openLeads`. None holds a pay week, true skill or effect odds.
 - Scenario: `experiments.landing`, `experiments.presale`, `finance` (invoice and bookkeeping), `team`, `inbox`, and `events` (from `messages/events.yaml`; effects `cash, energy, bugs, skill, invoicePayChance, churnChance, newLeads, touchLead, lostHours, fixedCost`, each with optional `chance`).
+
+### After Phase 4 (engine 0.6.0)
+
+`WeekPlan.followUps: string[]`, `PlanIssue` `invalid_follow_up`, `LeadView.canFollowUp`, `MessageChoice.costCents` and `monthlyCostCents`, `costs.presaleMinLeads`, `costs.followUpHours`. Scenario: `sales.followUpHours`, `sales.followUpDemoBoost`, `experiments.presale.minLeads`.

@@ -90,14 +90,31 @@ describe('pre-sales', () => {
     return { ...s, leads: Array.from({ length: n }, (_, i) => openLead(i + 1, segmentId)) }
   }
 
-  it('needs 5 open leads in the market for each batch', () => {
+  it('needs 3 open leads in the market for each batch', () => {
     const s = withLeads('presale-leads', 'coworking', 7)
-    expect(validatePlan(s, plan({ presales: { coworking: 1 } }))).toEqual([])
-    expect(validatePlan(s, plan({ presales: { coworking: 2 } }))).toEqual([
-      { code: 'presale_needs_leads', segmentId: 'coworking', leads: 10 },
+    expect(validatePlan(s, plan({ presales: { coworking: 2 } }))).toEqual([])
+    expect(validatePlan(s, plan({ presales: { coworking: 3 } }))).toEqual([
+      { code: 'presale_needs_leads', segmentId: 'coworking', leads: 9 },
     ])
+    expect(
+      validatePlan(withLeads('few', 'coworking', 2), plan({ presales: { coworking: 1 } })),
+    ).toHaveLength(1)
     const lost = { ...s, leads: s.leads.map((l) => ({ ...l, stage: 'lost' as const })) }
     expect(validatePlan(lost, plan({ presales: { coworking: 1 } }))).toHaveLength(1)
+  })
+
+  it('scales the prospects to the leads when a batch is short of 5', () => {
+    const run = (leads: number, batches: number) => {
+      let s = withLeads('presale-scale', 'coworking', leads)
+      s = endWeek(s, plan({ presales: { coworking: batches } })).state
+      s = endWeek(s, plan()).state
+      return getView(s).segments.find((x) => x.id === 'coworking')!.presales[0]!
+    }
+    expect(run(3, 1).prospects).toBe(3)
+    expect(run(4, 1).prospects).toBe(4)
+    expect(run(12, 1).prospects).toBe(5)
+    expect(run(7, 2).prospects).toBe(7)
+    expect(run(12, 2).prospects).toBe(10)
   })
 
   it('costs 6 h per batch and reports after a week', () => {
