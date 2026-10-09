@@ -22,6 +22,14 @@ export type RunResult = {
   /** Hidden truth, read by the report only: the segment with the viable role. */
   viableSegment: string
   peakMonthlyRevenueCents: number
+  /** Money received from customers over the whole run. */
+  revenueReceivedCents: number
+  /** Most customers active at the end of any week. */
+  peakCustomers: number
+  /** Week the first customer signed, or null when none did. */
+  firstCustomerWeek: number | null
+  /** Monthly price at the end of the run. */
+  finalPriceCents: number
   customersEnd: number
   customersAtCheck: number
   monthlyRevenueAtCheckCents: number
@@ -68,6 +76,7 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
   let state = createGame(scenario, seed)
   const player = strategy.create(scenario, seed)
   let peak = 0
+  let peakCustomers = 0
   let customersAtCheck = 0
   let revenueAtCheck = 0
   let minEnergy = state.founder.energy
@@ -92,6 +101,10 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     for (const o of Object.values(plan.outreach)) outreachHours += o.hours
     minEnergy = Math.min(minEnergy, state.founder.energy)
     peak = Math.max(peak, monthlyRevenue(state))
+    peakCustomers = Math.max(
+      peakCustomers,
+      state.customers.filter((c) => c.churnedWeek === null).length,
+    )
     if (result.report.week === CHECK_WEEK) {
       customersAtCheck = state.customers.filter((c) => c.churnedWeek === null).length
       revenueAtCheck = monthlyRevenue(state)
@@ -108,6 +121,10 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     weeks: state.week,
     viableSegment: viable?.[0] ?? '',
     peakMonthlyRevenueCents: peak,
+    revenueReceivedCents: state.ledger.reduce((t, l) => t + l.revenueCents, 0),
+    peakCustomers,
+    firstCustomerWeek: state.customers[0]?.sinceWeek ?? null,
+    finalPriceCents: state.company.priceCentsPerMonth,
     customersEnd: state.customers.filter((c) => c.churnedWeek === null).length,
     customersAtCheck,
     monthlyRevenueAtCheckCents: revenueAtCheck,

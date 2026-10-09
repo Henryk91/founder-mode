@@ -47,5 +47,6 @@ if (args.out === '-') {
   console.log(`Report written to ${args.out}`)
 }
 for (const t of evaluateTargets(input)) {
-  console.log(`${t.pass ? 'ok  ' : 'FAIL'} ${t.id}. ${t.text}: ${t.value}`)
+  const status = t.pass ? 'ok  ' : t.tuned ? 'FAIL' : 'open'
+  console.log(`${status} ${t.id}. ${t.text}: ${t.value}${t.tuned ? '' : ' (not tuned yet)'}`)
 }

@@ -78,3 +78,5 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 ## After the Phase 3 review
 
 - Saves carry `scenarioHash`, a fingerprint of the whole scenario (numbers and texts). A save made under other scenario values is refused with its own notice ("the game has been retuned since"), instead of replaying into a different game. Texts are included because quote and name counts change random draws. The engine version stays 0.4.0: the replay itself did not change.
+- Report additions: ending week histogram, earnings of losing runs, first paying customer week, win rate spread per market. `price_aware` bot: validate_then_build plus a price search (+100 EUR after every 4 trial results with at least 40% won, one step back and stop below that). Bot parameters are not scenario values and live in the bot code.
+- Targets 6 (win rate spread across viable markets within 15 points) and 7 (median first paying customer in winning validate_then_build runs in week 8 to 14) are in plan section 7 and the report, marked "not tuned yet".

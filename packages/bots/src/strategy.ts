@@ -89,6 +89,11 @@ export class PlanBuilder {
     return n
   }
 
+  /** Sets the monthly price for customers who sign from this week on. */
+  price(cents: number): void {
+    this.plan.priceCentsPerMonth = cents === this.view.company.priceCentsPerMonth ? null : cents
+  }
+
   rest(hours: number): number {
     const h = Math.max(0, Math.min(hours, this.free))
     this.plan.restHours += h
