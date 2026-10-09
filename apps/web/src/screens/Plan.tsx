@@ -227,7 +227,10 @@ function PlanHeader() {
           <ExplainButton term="hours" />
         </span>
       </div>
-      <div className={`${plan.bar} ${over ? plan.barOver : ''}`} aria-hidden="true">
+      <div
+        className={`${plan.bar} ${over ? plan.barOver : ''} ${planned === 0 ? plan.barEmpty : ''}`}
+        aria-hidden="true"
+      >
         {ACTIVITIES.map(({ id, key }) =>
           byActivity[id] > 0 ? (
             <div
@@ -246,7 +249,9 @@ function PlanHeader() {
             className={`${plan.segment} ${plan.free}`}
             style={{ width: `${(unplanned / scale) * 100}%` }}
           >
-            <span className={plan.segmentText}>{label('plan.act.free', stage)}</span>
+            {planned > 0 && (
+              <span className={plan.segmentText}>{label('plan.act.free', stage)}</span>
+            )}
           </div>
         )}
       </div>

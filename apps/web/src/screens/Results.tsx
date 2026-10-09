@@ -1,4 +1,5 @@
-import type { PlayerView, ReportEntry, WeekReport } from '@founder-mode/engine'
+import { useState } from 'react'
+import type { InterviewView, PlayerView, ReportEntry, WeekReport } from '@founder-mode/engine'
 import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type UiStage } from '../labels'
 import { useGame } from '../useGame'
@@ -294,23 +295,17 @@ export function groupWeek(report: WeekReport, view: PlayerView, stage: UiStage):
     const [group, priority] = place(e)
     lines[group].push({ key: `e${i}`, priority, node: entryText(e, view) })
   })
-  report.interviews.forEach((iv, i) => {
+  const bySegment = new Map<string, InterviewView[]>()
+  for (const iv of report.interviews) {
+    bySegment.set(iv.segmentId, [...(bySegment.get(iv.segmentId) ?? []), iv])
+  }
+  for (const [segmentId, ivs] of bySegment) {
     lines.learning.push({
-      key: `iv${i}`,
+      key: `iv-${segmentId}`,
       priority: 5,
-      node: (
-        <>
-          <div>
-            {label('results.interview', stage, {
-              segment: segment(iv.segmentId),
-              bucket: iv.bucketName,
-            })}
-          </div>
-          <blockquote className={styles.quote}>{iv.quote}</blockquote>
-        </>
-      ),
+      node: <InterviewSummary segmentName={segment(segmentId)} interviews={ivs} stage={stage} />,
     })
-  })
+  }
   const low = report.energyAfter < view.founder.lowEnergyBelow
   lines.founder.push({
     key: 'energy',
@@ -331,6 +326,49 @@ export function groupWeek(report: WeekReport, view: PlayerView, stage: UiStage):
   return GROUP_ORDER.filter((g) => lines[g].length > 0)
     .map((g): [Group, Line[]] => [g, [...lines[g]].sort((a, b) => b.priority - a.priority)])
     .sort(([a], [b]) => top(b) - top(a) || GROUP_ORDER.indexOf(a) - GROUP_ORDER.indexOf(b))
+}
+
+/** One line per market, with the individual quotes a tap away. */
+function InterviewSummary({
+  segmentName,
+  interviews,
+  stage,
+}: {
+  segmentName: string
+  interviews: InterviewView[]
+  stage: UiStage
+}) {
+  const [open, setOpen] = useState(false)
+  const tally = new Map<string, { name: string; n: number }>()
+  for (const iv of interviews) {
+    const t = tally.get(iv.bucketId) ?? { name: iv.bucketName, n: 0 }
+    tally.set(iv.bucketId, { ...t, n: t.n + 1 })
+  }
+  const top = [...tally.values()].reduce((best, t) => (t.n > best.n ? t : best))
+  return (
+    <>
+      <div>
+        {count('results.interview', stage, interviews.length, {
+          segment: segmentName,
+          bucket: top.name,
+        })}
+      </div>
+      <button
+        type="button"
+        className={styles.linkRow}
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        <span>{label(open ? 'results.quotes.hide' : 'results.quotes.show', stage)}</span>
+      </button>
+      {open &&
+        interviews.map((iv, i) => (
+          <blockquote key={i} className={styles.quote}>
+            {iv.quote}
+          </blockquote>
+        ))}
+    </>
+  )
 }
 
 function Numbers({ report, stage }: { report: WeekReport; stage: UiStage }) {

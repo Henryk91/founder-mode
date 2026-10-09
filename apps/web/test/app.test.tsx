@@ -53,7 +53,7 @@ describe('app smoke test', () => {
       store.getState().endWeek()
       const results = html(store)
       expect(results).toContain(`Week ${i + 1}`)
-      expect(results).toContain('You spoke to someone at Coworking spaces')
+      expect(results).toContain('You spoke to 2 people at Coworking spaces')
       expect(results).toContain('Next week')
       // Ending another week from the results screen would skip its report.
       expect(results).not.toContain('End week')
@@ -274,11 +274,13 @@ describe('onboarding', () => {
     // Interviews (learning) matter more than the plain weekly numbers and the energy line.
     expect(heading('Learning')).toBeLessThan(heading('Money'))
     expect(heading('Money')).toBeLessThan(heading('Founder'))
-    expect(page.indexOf('You spoke to someone at Medical practices')).toBeGreaterThan(
+    expect(page.indexOf('You spoke to 2 people at Medical practices')).toBeGreaterThan(
       heading('Learning'),
     )
     expect(page.indexOf('Company received')).toBeGreaterThan(heading('Money'))
-    expect(page).toContain('<blockquote')
+    // Quotes sit behind a tap, one summary line per market.
+    expect(page).toContain('Show what they said')
+    expect(page).not.toContain('<blockquote')
     expect(page).not.toMatch(/[{}]/)
     // An ordinary week has no extra steps: one tap goes back to planning.
     expect(page).toContain('Next week')
