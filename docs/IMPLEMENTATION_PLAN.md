@@ -513,6 +513,22 @@ Work strictly in order. Stop at the end of each phase for review.
 
 **Done when:** a person can play a full run on a phone browser from start to an ending. This is the version to playtest for fun. **Pause here for a human playtest before continuing.**
 
+### Phase 2b: Onboarding (about 2 days)
+
+- Intro flow before week 1 of a new run: four short cards (you, the idea, the problem, the goal). Text lives in the scenario content files under an `intro` key, never in components, and never reveals which segment is viable
+- Help button in the top bar that reopens the goal and a short "how a week works" explanation
+- Tappable explanations for Runway, Cash, Energy, and hours: two sentences each, from the label table
+- Every action on the Plan tab gets one line: what it costs, what it produces, when the result arrives
+- Founder's note at the top of the Plan tab during weeks 1 to 4, chosen by simple rules from the current state. It describes the situation and never recommends a move. Dismissible
+- Empty states on every tab that say what makes content appear there
+- Clearer hours wording: a normal week is 50 h, up to 65 h is possible and costs energy
+- The results screen after "End week" reads as a short account of what happened, including interview quotes, before the numbers
+- Market tab shows each segment's description and everything learned so far, with sample sizes
+
+Plain styling stays. All text goes through the label table or the content files.
+
+**Done when:** a person who has never seen the game can explain the goal and make a reasoned first week plan without help.
+
 ### Phase 3: Bots and first balancing (about 3 days)
 
 - `packages/bots` with the five strategies and the report

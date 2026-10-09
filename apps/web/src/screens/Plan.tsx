@@ -1,4 +1,6 @@
 import type { ChannelId, PlayerView } from '@founder-mode/engine'
+import { ExplainButton } from '../components/Explain'
+import { FounderNote } from '../components/FounderNote'
 import { Stepper } from '../components/Stepper'
 import { formatEnergy } from '../format'
 import { count, label, type UiStage } from '../labels'
@@ -32,6 +34,7 @@ export function Plan() {
 
   return (
     <>
+      <FounderNote />
       <section className={styles.card} aria-label={label('plan.title', stage)}>
         <h2 className={styles.title}>{label('plan.title', stage)}</h2>
         <div className={styles.rowHead}>
@@ -41,6 +44,7 @@ export function Plan() {
               base: founder.baseHoursPerWeek,
             })}
           </span>
+          <ExplainButton term="hours" />
         </div>
         <div className={styles.meter} aria-hidden="true">
           <div
@@ -49,13 +53,21 @@ export function Plan() {
           />
         </div>
         <p className={styles.hint}>
-          {label('plan.hoursFree', stage, { n: free, max: founder.maxHoursPerWeek })}
-          {' · '}
-          {label('plan.energy', stage, {
-            energy: formatEnergy(founder.energy),
-            max: founder.maxEnergy,
+          {label('plan.hoursFree', stage, {
+            n: free,
+            base: founder.baseHoursPerWeek,
+            max: founder.maxHoursPerWeek,
           })}
         </p>
+        <div className={styles.rowHead}>
+          <span>
+            {label('plan.energy', stage, {
+              energy: formatEnergy(founder.energy),
+              max: founder.maxEnergy,
+            })}
+          </span>
+          <ExplainButton term="energy" />
+        </div>
         {issues.map((issue) => (
           <p key={issue.code + JSON.stringify(issue)} className={styles.warn} role="alert">
             {issue.code === 'too_many_hours' || issue.code === 'transfer_exceeds_savings'
@@ -242,6 +254,12 @@ function DemoSummary(props: {
   return (
     <section className={styles.card}>
       <h2 className={styles.title}>{label('plan.section.demos', stage)}</h2>
+      <p className={styles.hint}>
+        {label('plan.section.demosHint', stage, {
+          hours: label('unit.hours', stage, { n: view.costs.demoHours }),
+          weeks: view.costs.trialWeeks,
+        })}
+      </p>
       <p>
         {booked === 0
           ? label('plan.demos.none', stage, { tab: label('tab.pipeline', stage) })

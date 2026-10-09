@@ -190,3 +190,13 @@
   background: var(--paper);
   color: var(--ink);
 }
+
+.infoButton {
+  min-width: 44px;
+  min-height: 44px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 700;
+}

@@ -1,5 +1,6 @@
 import { monthlyFixedCostsCents, runwayKnown, runwayWeeks } from './systems/finance'
 import { activeCustomers } from './systems/customers'
+import { selectFounderNote } from './systems/guidance'
 import { maxBugFixHours } from './systems/product'
 import { canBookDemo } from './systems/sales'
 import type { ChannelId, GameState, InterviewEvidence, InterviewView, PlayerView } from './types'
@@ -49,6 +50,11 @@ export function getView(state: GameState): PlayerView {
       interviewHours: scenario.experiments.interview.hours,
       demoHours: scenario.sales.demoHours,
       fixHoursPerBug: scenario.product.fixHoursPerBug,
+      trialWeeks: scenario.sales.trialWeeks,
+    },
+    guidance: {
+      intro: scenario.intro.cards.map((c) => ({ id: c.id, title: c.title, body: c.body })),
+      founderNote: selectFounderNote(state),
     },
     channels: [...CHANNELS],
     product: {

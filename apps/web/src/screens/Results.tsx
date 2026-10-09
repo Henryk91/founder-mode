@@ -81,38 +81,41 @@ function WeekSection({ report, view }: { report: WeekReport; view: PlayerView })
   const received = l.revenueCents + l.transferCents + l.autoTransferCents
   const paid = l.fixedCostsCents + l.founderDrawCents
   const segment = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
+  const quiet = report.interviews.length === 0 && report.entries.length === 0
   return (
-    <section className={styles.card}>
-      <h2 className={styles.title}>{label('results.title', stage, { week: report.week })}</h2>
-      <p className={styles.hint}>
-        {label('results.hours', stage, {
-          hours: report.plannedHours,
-          before: formatEnergy(report.energyBefore),
-          after: formatEnergy(report.energyAfter),
-        })}
-      </p>
-      <ul className={styles.list}>
-        {report.interviews.map((iv, i) => (
-          <li key={`iv${i}`} className={styles.row}>
-            <div>
-              {label('results.interview', stage, {
-                segment: segment(iv.segmentId),
-                bucket: iv.bucketName,
-              })}
-            </div>
-            <blockquote className={styles.quote}>{iv.quote}</blockquote>
-          </li>
-        ))}
-        {report.entries.map((e, i) => (
-          <li key={`e${i}`} className={styles.row}>
-            {entryText(e, view)}
-          </li>
-        ))}
-      </ul>
-      {report.interviews.length === 0 && report.entries.length === 0 && (
-        <p>{label('results.quiet', stage)}</p>
-      )}
-      <div className={styles.row}>
+    <>
+      <section className={styles.card}>
+        <h2 className={styles.title}>{label('results.title', stage, { week: report.week })}</h2>
+        <h3 className={styles.hint}>{label('results.account', stage)}</h3>
+        {quiet && <p>{label('results.quiet', stage)}</p>}
+        <ul className={styles.list}>
+          {report.interviews.map((iv, i) => (
+            <li key={`iv${i}`} className={styles.row}>
+              <div>
+                {label('results.interview', stage, {
+                  segment: segment(iv.segmentId),
+                  bucket: iv.bucketName,
+                })}
+              </div>
+              <blockquote className={styles.quote}>{iv.quote}</blockquote>
+            </li>
+          ))}
+          {report.entries.map((e, i) => (
+            <li key={`e${i}`} className={styles.row}>
+              {entryText(e, view)}
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section className={styles.card}>
+        <h2 className={styles.title}>{label('results.numbers', stage)}</h2>
+        <p className={styles.hint}>
+          {label('results.hours', stage, {
+            hours: report.plannedHours,
+            before: formatEnergy(report.energyBefore),
+            after: formatEnergy(report.energyAfter),
+          })}
+        </p>
         <div className={styles.rowHead}>
           <span>{label('results.in', stage)}</span>
           <span className={`${styles.mono} ${received > 0 ? styles.good : ''}`}>
@@ -127,7 +130,7 @@ function WeekSection({ report, view }: { report: WeekReport; view: PlayerView })
           <span>{label('results.cashNow', stage)}</span>
           <span className={styles.mono}>{formatEuro(l.cashEndCents)}</span>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }

@@ -20,6 +20,8 @@ import type { SaveStorage } from './storage'
 
 export type Tab = 'plan' | 'market' | 'pipeline' | 'money'
 
+export type ExplainKey = 'runway' | 'cash' | 'energy' | 'hours'
+
 export type SaveNotice = 'incompatible' | 'broken' | null
 
 /** Everything the screens may read. No GameState, nothing hidden. */
@@ -33,12 +35,25 @@ export type UiState = {
   tab: Tab
   hasSave: boolean
   saveNotice: SaveNotice
+  /** Index of the intro card on screen, or null when no intro is showing. */
+  introStep: number | null
+  helpOpen: boolean
+  explain: ExplainKey | null
+  /** Ids of founder's notes the player dismissed in this run. */
+  dismissedNotes: string[]
 }
 
 export type UiActions = {
   startRun(seed?: string): void
   continueRun(): void
   leaveRun(): void
+  nextIntro(): void
+  prevIntro(): void
+  openHelp(): void
+  closeHelp(): void
+  openExplain(key: ExplainKey): void
+  closeExplain(): void
+  dismissNote(id: string): void
   setTab(tab: Tab): void
   setInterviews(segmentId: string, count: number): void
   setBuild(featureId: string, hours: number): void
@@ -93,7 +108,16 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
 
     const begin = (state: GameState) => {
       game = state
-      refresh({ plan: emptyPlan(), report: null, tab: 'plan', saveNotice: null })
+      refresh({
+        plan: emptyPlan(),
+        report: null,
+        tab: 'plan',
+        saveNotice: null,
+        introStep: null,
+        helpOpen: false,
+        explain: null,
+        dismissedNotes: [],
+      })
     }
 
     return {
@@ -105,12 +129,17 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       tab: 'plan',
       hasSave: initialSave !== null,
       saveNotice: null,
+      introStep: null,
+      helpOpen: false,
+      explain: null,
+      dismissedNotes: [],
 
       startRun(seed) {
         const state = createGame(getScenario(), seed?.trim() || deps.makeSeed())
         deps.storage.save(toSave(state))
         begin(state)
-        set({ hasSave: true })
+        // The intro belongs to a new run only; Continue goes straight to the game.
+        set({ hasSave: true, introStep: getView(state).guidance.intro.length > 0 ? 0 : null })
       },
 
       continueRun() {
@@ -140,10 +169,27 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           set({ hasSave: false })
         }
         game = null
-        refresh({ report: null, tab: 'plan' })
+        refresh({ report: null, tab: 'plan', introStep: null, helpOpen: false, explain: null })
       },
 
       setTab: (tab) => set({ tab }),
+
+      nextIntro() {
+        const { introStep, view } = get()
+        if (introStep === null) return
+        const last = (view?.guidance.intro.length ?? 0) - 1
+        set({ introStep: introStep >= last ? null : introStep + 1 })
+      },
+      prevIntro: () =>
+        set((s) => ({ introStep: s.introStep === null ? null : Math.max(0, s.introStep - 1) })),
+      openHelp: () => set({ helpOpen: true, explain: null }),
+      closeHelp: () => set({ helpOpen: false }),
+      openExplain: (key) => set({ explain: key }),
+      closeExplain: () => set({ explain: null }),
+      dismissNote: (id) =>
+        set((s) =>
+          s.dismissedNotes.includes(id) ? s : { dismissedNotes: [...s.dismissedNotes, id] },
+        ),
 
       setInterviews: (segmentId, count) =>
         editPlan((p) => ({ ...p, interviews: { ...p.interviews, [segmentId]: count } })),

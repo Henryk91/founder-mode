@@ -85,6 +85,25 @@ export const SalesConfigSchema = z.object({
   }),
 })
 
+export const INTRO_PLACEHOLDERS = ['cash', 'savings', 'living', 'maxWeeks'] as const
+export const NOTE_PLACEHOLDERS = ['week', 'n', 'living'] as const
+
+// The engine picks one of these by rule, so every id must have text.
+export const FOUNDER_NOTE_IDS = [
+  'first_week',
+  'no_evidence',
+  'only_interviews',
+  'built_unseen',
+  'leads_only',
+] as const
+export type FounderNoteId = (typeof FOUNDER_NOTE_IDS)[number]
+
+export const IntroCardSchema = z.object({
+  id: Id,
+  title: z.string().min(1),
+  body: z.string().min(1),
+})
+
 export const FeatureSchema = z.object({
   id: Id,
   name: z.string().min(1),
@@ -145,6 +164,14 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
   interviewQuotes: InterviewQuotesSchema,
   // segment id -> fictional company names for leads of that segment
   companyNames: z.record(Id, z.array(z.string().min(1)).min(1)),
+  intro: z.object({ cards: z.array(IntroCardSchema).min(1) }),
+  founderNotes: z.object({
+    first_week: z.string().min(1),
+    no_evidence: z.string().min(1),
+    only_interviews: z.string().min(1),
+    built_unseen: z.string().min(1),
+    leads_only: z.string().min(1),
+  }),
 }).superRefine((s, ctx) => {
   const issue = (message: string, path: (string | number)[]) =>
     ctx.addIssue({ code: 'custom', message, path })
@@ -193,6 +220,29 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     }
   })
 
+  if (!s.intro.cards.some((c) => c.id === 'goal')) {
+    issue('the intro needs a card with id goal, the help screen reopens it', ['intro', 'cards'])
+  }
+  for (const id of dupes(s.intro.cards.map((c) => c.id))) {
+    issue(`duplicate intro card ${id}`, ['intro', 'cards'])
+  }
+  // Placeholders: {name} or {name:eur}. Only names the UI and engine fill are allowed.
+  const checkText = (text: string, allowed: readonly string[], path: (string | number)[]) => {
+    for (const m of text.matchAll(/\{([^}]*)\}/g)) {
+      const [name, format] = (m[1] ?? '').split(':')
+      if (!name || !allowed.includes(name) || (format !== undefined && format !== 'eur')) {
+        issue(`unknown placeholder {${m[1]}}`, path)
+      }
+    }
+  }
+  s.intro.cards.forEach((c, i) => {
+    checkText(c.title, [], ['intro', 'cards', i, 'title'])
+    checkText(c.body, INTRO_PLACEHOLDERS, ['intro', 'cards', i, 'body'])
+  })
+  for (const [id, text] of Object.entries(s.founderNotes)) {
+    checkText(text, NOTE_PLACEHOLDERS, ['founderNotes', id])
+  }
+
   for (const name of dupes(Object.values(s.companyNames).flat())) {
     issue(`duplicate company name ${name}`, ['companyNames'])
   }
@@ -229,6 +279,7 @@ export type ScenarioSegment = Scenario['segments'][number]
 export type ScenarioRole = Scenario['roles'][number]
 export type ScenarioFeature = Scenario['features'][number]
 export type InterviewBucket = Scenario['experiments']['interview']['buckets'][number]
+export type IntroCard = z.infer<typeof IntroCardSchema>
 export type SalesConfig = z.infer<typeof SalesConfigSchema>
 export type ChannelId = z.infer<typeof Channel>
 export type NumberRange = z.infer<typeof Range>

@@ -9,6 +9,8 @@ export function TopBar() {
   const issues = useGame((s) => s.issues.length)
   const showingReport = useGame((s) => s.report !== null)
   const endWeek = useGame((s) => s.endWeek)
+  const openHelp = useGame((s) => s.openHelp)
+  const openExplain = useGame((s) => s.openExplain)
   if (!view) return null
   const stage = view.company.uiStage
   const runway =
@@ -27,22 +29,33 @@ export function TopBar() {
             {label('bar.week', stage, { week: view.week, max: view.maxWeeks })}
           </div>
         </div>
-        {view.status === 'running' && !showingReport && (
-          <button
-            type="button"
-            className={`${ui.button} ${ui.primary}`}
-            disabled={issues > 0}
-            onClick={endWeek}
-          >
-            {label('bar.endWeek', stage)}
+        <div className={styles.actions}>
+          <button type="button" className={ui.button} onClick={openHelp}>
+            {label('bar.help', stage)}
           </button>
-        )}
+          {view.status === 'running' && !showingReport && (
+            <button
+              type="button"
+              className={`${ui.button} ${ui.primary}`}
+              disabled={issues > 0}
+              onClick={endWeek}
+            >
+              {label('bar.endWeek', stage)}
+            </button>
+          )}
+        </div>
       </div>
       <div className={styles.band}>
-        <span>{runway}</span>
-        <span className={ui.mono}>
+        <button type="button" className={styles.bandButton} onClick={() => openExplain('runway')}>
+          {runway}
+        </button>
+        <button
+          type="button"
+          className={`${styles.bandButton} ${ui.mono}`}
+          onClick={() => openExplain('cash')}
+        >
           {label('bar.cash', stage)} {formatEuro(view.company.cashCents)}
-        </span>
+        </button>
       </div>
     </header>
   )
