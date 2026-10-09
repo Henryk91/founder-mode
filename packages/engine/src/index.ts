@@ -5,18 +5,29 @@ export { createGame } from './create'
 export { getView } from './view'
 export { checkPlan, clonePlan, emptyPlan, validatePlan } from './plan'
 export type { PlanCheck } from './plan'
-export { endWeek } from './turn'
+export { endWeek, shutDown } from './turn'
+export { respond } from './systems/inbox'
 export { replay, saveProblem, toSave } from './save'
 export { scenarioHash } from './hash'
 
 export type {
   ChannelId,
+  CandidateView,
   CustomerView,
   EndingId,
   FeatureView,
   FounderNoteView,
   GuidanceView,
   IntroCardView,
+  InvoiceStatus,
+  InvoiceView,
+  MemberView,
+  MessageChoice,
+  MessageView,
+  PendingExperimentView,
+  TeamView,
+  LandingView,
+  PresaleView,
   LeadChange,
   LeadStage,
   LeadView,
@@ -31,6 +42,7 @@ export type {
   SaveProblem,
   SegmentView,
   UiStage,
+  TeamRoleId,
   WeekPlan,
   WeekReport,
 } from './types'

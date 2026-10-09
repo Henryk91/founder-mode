@@ -1,17 +1,21 @@
 import { clonePlan, validatePlan } from './plan'
 import { Rng } from './rng'
-import { runInterviews } from './systems/experiments'
-import { applyFinanceWeek } from './systems/finance'
+import { applyBookkeeping } from './systems/bookkeeping'
+import { resolveExperiments, runInterviews, startExperiments } from './systems/experiments'
+import { applyFinanceWeek, noExtras } from './systems/finance'
 import { applyFounderWeek, plannedHours } from './systems/founder'
+import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
 import { applyChurn, applySales } from './systems/sales'
+import { applyTeam, teamOutput } from './systems/team'
 import { checkEnding } from './systems/endings'
 import type { GameState, ReportEntry, WeekPlan, WeekReport } from './types'
 import { interviewView } from './view'
 
 /**
  * Resolves one week (plan section 4.11). Throws if the plan is invalid; call `validatePlan`
- * first. Steps marked "later" arrive with their systems in later phases.
+ * first. The milestone step (11) arrives in Phase 7; there are no scheduled effects (10) yet,
+ * because inbox effects land in step 2.
  */
 export function endWeek(
   input: GameState,
@@ -26,45 +30,95 @@ export function endWeek(
   const rng = new Rng(input.rng)
   let state = input
   const entries: ReportEntry[] = []
+  const extras = noExtras()
+  // Hours of this week, with the answers already given, before they take effect.
+  const hours = plannedHours(state, plan)
+  let forcedNextWeek = 0
 
-  // 2. Inbox responses: later (Phase 4). A price change applies before anything else.
+  // 2. Inbox: answered and expired messages take effect. A price change applies right after.
+  const messages = resolveMessages(state, rng)
+  state = messages.state
+  entries.push(...messages.entries)
+  extras.otherCostsCents += messages.costsCents
+  extras.otherIncomeCents += messages.incomeCents
+  forcedNextWeek += messages.lostHours
   if (plan.priceCentsPerMonth !== null) {
     state = { ...state, company: { ...state.company, priceCentsPerMonth: plan.priceCentsPerMonth } }
   }
 
-  // 3. Founder: hours, energy
-  const hours = plannedHours(state.scenario, plan)
-  const energyBefore = state.founder.energy
+  // 3. Founder: hours, energy, and the books
+  const energyBefore = input.founder.energy
   state = {
     ...state,
     founder: applyFounderWeek(state.founder, state.scenario, hours, plan.restHours),
   }
+  const books = applyBookkeeping(state, plan)
+  state = { ...state, company: { ...state.company, bookkeepingBacklogHours: books.backlogHours } }
+  if (books.penalty) {
+    extras.otherCostsCents += books.penalty.feeCents
+    forcedNextWeek += books.penalty.lostHours
+    entries.push({ kind: 'bookkeeping_penalty', ...books.penalty })
+    state = {
+      ...state,
+      eventLog: [
+        ...state.eventLog,
+        { kind: 'bookkeeping_penalty', week: state.week, feeCents: books.penalty.feeCents },
+      ],
+    }
+  }
 
-  // 4. Experiments: interviews now, landing page and pre-sale later (Phase 4)
+  // 4. Experiments: interviews now, landing page tests and pre-sales start and report when due
   const interviews = runInterviews(state, plan, rng)
   state = interviews.state
+  state = startExperiments(state, plan)
+  for (const budget of Object.values(plan.landing)) extras.adSpendCents += budget
+  if (extras.adSpendCents > 0) entries.push({ kind: 'ad_spend', amountCents: extras.adSpendCents })
+  const results = resolveExperiments(state, rng)
+  state = results.state
+  entries.push(...results.entries)
 
-  // 5. Product: bug fixing, build progress, shipping
-  const product = applyProduct(state, plan, rng)
+  // 5. Product: bug fixing, build progress, shipping. A working developer adds build hours.
+  const team = teamOutput(state, plan)
+  if (team && team.hours > 0)
+    entries.push({ kind: 'team_output', role: team.role, hours: team.hours })
+  const product = applyProduct(state, plan, rng, team)
   state = product.state
   entries.push(...product.entries)
 
-  // 6. Sales: demos, trials, new leads, ghosting
-  const sales = applySales(state, plan, rng)
+  // 6. Sales: demos, trials, new leads, ghosting. A working salesperson helps.
+  const sales = applySales(state, plan, rng, team)
   state = sales.state
   entries.push(...sales.entries)
 
-  // 7. Team: later (Phase 4)
+  // 7. Team: letting go, offers, searches, starts
+  const staff = applyTeam(state, plan, rng)
+  state = staff.state
+  entries.push(...staff.entries)
+  extras.otherCostsCents += staff.severanceCents
 
-  // 8. Finance: transfers, living costs, fixed costs and revenue at month end
-  const finance = applyFinanceWeek(state, plan)
+  // 8. Finance: transfers, costs, chasing, payments, invoices at month end
+  const finance = applyFinanceWeek(state, plan, extras, rng)
   state = finance.state
   entries.push(...finance.movements)
-  if (finance.ledger.revenueCents > 0) {
+  if (finance.issued.length > 0) {
+    entries.push({
+      kind: 'invoices_issued',
+      count: finance.issued.length,
+      amountCents: finance.issued.reduce((sum, i) => sum + i.amountCents, 0),
+    })
+  }
+  if (finance.paid.length > 0) {
     entries.push({
       kind: 'revenue',
       amountCents: finance.ledger.revenueCents,
-      customers: finance.payingCount,
+      customers: finance.paid.length,
+    })
+  }
+  for (const inv of finance.writtenOff) {
+    entries.push({
+      kind: 'invoice_written_off',
+      amountCents: inv.amountCents,
+      name: inv.customerName,
     })
   }
 
@@ -73,14 +127,15 @@ export function endWeek(
   state = churn.state
   entries.push(...churn.entries)
 
-  // 10. Scheduled effects: later
+  // 10. Scheduled effects: none, inbox effects land in step 2
   // 11. Milestones: later (Phase 7)
 
   // 12. Endings
   const ending = checkEnding(state)
   if (ending) state = { ...state, status: 'ended', ending }
 
-  // 13. Inbox events for next week: later (Phase 4)
+  // 13. Inbox events for next week
+  if (state.status === 'running') state = drawMessages(state, rng)
 
   // 14. Advance week, append to logs
   const report: WeekReport = {
@@ -95,9 +150,21 @@ export function endWeek(
   }
   state = {
     ...state,
+    founder: { ...state.founder, forcedHours: forcedNextWeek },
     rng: rng.state(),
     week: state.status === 'running' ? state.week + 1 : state.week,
     actionLog: [...state.actionLog, { type: 'endWeek', week: input.week, plan: clonePlan(plan) }],
   }
   return { state, report }
+}
+
+/** The player closes the company on purpose (plan section 4.13). Ends the run in this week. */
+export function shutDown(state: GameState): GameState {
+  if (state.status !== 'running') throw new Error('The run is over')
+  return {
+    ...state,
+    status: 'ended',
+    ending: 'shut_down',
+    actionLog: [...state.actionLog, { type: 'shutDown', week: state.week }],
+  }
 }

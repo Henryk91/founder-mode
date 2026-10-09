@@ -36,6 +36,59 @@ function entryText(entry: ReportEntry, view: PlayerView): string {
       return label(`results.entry.${entry.change}`, stage, { name: entry.name })
     case 'customer_churned':
       return label('results.entry.customer_churned', stage, { name: entry.name })
+    case 'invoices_issued':
+      return count('results.entry.invoices_issued', stage, entry.count, {
+        amount: formatEuro(entry.amountCents),
+      })
+    case 'invoice_written_off':
+      return label('results.entry.invoice_written_off', stage, {
+        name: entry.name,
+        amount: formatEuro(entry.amountCents),
+      })
+    case 'ad_spend':
+      return label('results.entry.ad_spend', stage, { amount: formatEuro(entry.amountCents) })
+    case 'bookkeeping_penalty':
+      return label('results.entry.bookkeeping_penalty', stage, {
+        fee: formatEuro(entry.feeCents),
+        hours: label('unit.hours', stage, { n: entry.lostHours }),
+      })
+    case 'landing_result':
+      return label('results.entry.landing_result', stage, {
+        segment: segment(entry.segmentId),
+        signups: entry.signups,
+        visitors: entry.visitors,
+      })
+    case 'presale_result':
+      return label('results.entry.presale_result', stage, {
+        segment: segment(entry.segmentId),
+        commits: entry.commits,
+        prospects: entry.prospects,
+      })
+    case 'candidates_ready':
+      return count('results.entry.candidates_ready', stage, entry.count, {
+        role: label(`team.role.${entry.role}`, stage).toLowerCase(),
+      })
+    case 'hire_started':
+      return label('results.entry.hire_started', stage, { name: entry.name })
+    case 'member_let_go':
+      return label('results.entry.member_let_go', stage, {
+        name: entry.name,
+        amount: formatEuro(entry.costCents),
+      })
+    case 'team_output':
+      return label(`results.entry.team_output.${entry.role}`, stage, { hours: entry.hours })
+    case 'message_resolved':
+      return label(
+        entry.expired ? 'results.entry.message_expired' : 'results.entry.message_resolved',
+        stage,
+        { from: entry.fromName, choice: entry.choiceLabel },
+      )
+    case 'cash_effect':
+      return label(
+        entry.amountCents >= 0 ? 'results.entry.cash_effect.in' : 'results.entry.cash_effect.out',
+        stage,
+        { amount: formatEuro(Math.abs(entry.amountCents)) },
+      )
   }
 }
 
@@ -78,8 +131,8 @@ export function Results() {
 function WeekSection({ report, view }: { report: WeekReport; view: PlayerView }) {
   const stage = view.company.uiStage
   const l = report.ledger
-  const received = l.revenueCents + l.transferCents + l.autoTransferCents
-  const paid = l.fixedCostsCents + l.founderDrawCents
+  const received = l.revenueCents + l.otherIncomeCents + l.transferCents + l.autoTransferCents
+  const paid = l.fixedCostsCents + l.founderDrawCents + l.adSpendCents + l.otherCostsCents
   const segment = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
   const quiet = report.interviews.length === 0 && report.entries.length === 0
   return (

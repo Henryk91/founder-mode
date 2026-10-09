@@ -1,6 +1,6 @@
-import type { ChannelId, Scenario } from '@founder-mode/content'
+import type { ChannelId, Scenario, TeamRoleId } from '@founder-mode/content'
 
-export type { Scenario }
+export type { Scenario, TeamRoleId }
 
 export type SegmentId = string
 export type FeatureId = string
@@ -11,7 +11,7 @@ export type RngState = { a: number; b: number; c: number; d: number }
 
 export type { ChannelId }
 
-export type EndingId = 'bankrupt' | 'burnout' | 'still_searching' | 'sustainable'
+export type EndingId = 'bankrupt' | 'burnout' | 'shut_down' | 'still_searching' | 'sustainable'
 export type UiStage = 'scrappy' | 'organised'
 
 // ---------------------------------------------------------------------------
@@ -35,6 +35,12 @@ export type GameState = {
   /** Never leaves the engine. */
   hidden: {
     segments: Record<SegmentId, HiddenSegment>
+    /** Landing page tests and pre-sales that have not reported yet. */
+    experiments: PendingExperiment[]
+    /** Week in which each invoice will be paid, or null if it never will. Keyed by invoice id. */
+    payWeeks: Record<string, number | null>
+    /** True skill of every candidate and team member. Keyed by candidate id. */
+    teamSkills: Record<string, number>
   }
 
   /** What the player has observed, per segment. */
@@ -44,6 +50,13 @@ export type GameState = {
   leads: Lead[]
   /** Every customer ever won, oldest first. Churned customers stay with `churnedWeek` set. */
   customers: Customer[]
+  /** Every invoice ever issued, oldest first. */
+  invoices: Invoice[]
+  /** Every message ever received, oldest first. */
+  inbox: Message[]
+  /** Events that were drawn, for `once` and the cooldown. */
+  drawnEvents: { eventId: string; week: number }[]
+  team: TeamState
   /** One entry per resolved week, oldest first. */
   ledger: WeekLedger[]
   /** Everything needed to rebuild this state from the seed. */
@@ -61,6 +74,8 @@ export type FounderState = {
   savingsCents: number
   livingCostCentsPerWeek: number
   skills: { interviewing: number; selling: number }
+  /** Hours already taken out of the coming week by penalties and events. */
+  forcedHours: number
 }
 
 export type FixedCost = { id: string; name: string; monthlyCents: number }
@@ -69,6 +84,8 @@ export type CompanyState = {
   cashCents: number
   priceCentsPerMonth: number
   fixedCosts: FixedCost[]
+  /** Bookkeeping hours not yet done. Above the scenario limit a penalty fires. */
+  bookkeepingBacklogHours: number
   uiStage: UiStage
 }
 
@@ -136,7 +153,106 @@ export type InterviewEvidence = {
   mentionedFeatureId: FeatureId | null
 }
 
-export type Evidence = InterviewEvidence
+export type LandingEvidence = {
+  kind: 'landing'
+  /** The week the result came in. */
+  week: number
+  segmentId: SegmentId
+  budgetCents: number
+  visitors: number
+  signups: number
+}
+
+export type PresaleEvidence = {
+  kind: 'presale'
+  /** The week the result came in. */
+  week: number
+  segmentId: SegmentId
+  prospects: number
+  commits: number
+  /** The monthly price the prospects were asked to commit to. */
+  priceCents: number
+}
+
+export type Evidence = InterviewEvidence | LandingEvidence | PresaleEvidence
+
+/** A landing page test or pre-sale in progress. Holds the hidden chance, so it stays hidden. */
+export type PendingExperiment = {
+  kind: 'landing' | 'presale'
+  segmentId: SegmentId
+  startWeek: number
+  resolveWeek: number
+  /** Visitors or prospects. */
+  trials: number
+  /** Chance per visitor or prospect, fixed when the experiment starts. */
+  p: number
+  budgetCents: number
+  priceCents: number
+}
+
+/** `paidWeek` and `writtenOffWeek` are null while the invoice is open. */
+export type Invoice = {
+  id: string
+  customerId: string
+  customerName: string
+  segmentId: SegmentId
+  amountCents: number
+  issuedWeek: number
+  dueWeek: number
+  paidWeek: number | null
+  writtenOffWeek: number | null
+}
+
+export type MessageChoice = { id: string; label: string; hours: number }
+
+/**
+ * - open: waiting for an answer
+ * - answered: the player chose; hours count this week and effects land when the week ends
+ * - resolved: the player's choice has taken effect
+ * - expired: nobody answered, the default choice took effect
+ */
+export type MessageStatus = 'open' | 'answered' | 'resolved' | 'expired'
+
+export type Message = {
+  id: string
+  eventId: string
+  area: string
+  /** Week in which the message arrived. */
+  week: number
+  /** Last week in which it can be answered. */
+  expiresWeek: number
+  fromRole: string
+  fromName: string
+  /** The customer or lead the message is about, if any. */
+  targetId: string | null
+  text: string
+  choices: MessageChoice[]
+  status: MessageStatus
+  choiceId: string | null
+}
+
+export type TeamSearch = { role: TeamRoleId; readyWeek: number }
+export type Candidate = {
+  id: string
+  name: string
+  role: TeamRoleId
+  /** Id of the impression label, true skill plus noise. */
+  impressionId: string
+}
+export type TeamMember = {
+  id: string
+  name: string
+  role: TeamRoleId
+  offerWeek: number
+  startWeek: number
+  letGoWeek: number | null
+}
+export type TeamState = {
+  search: TeamSearch | null
+  candidates: Candidate[]
+  /** At most one in the early MVP. */
+  members: TeamMember[]
+}
 
 /** Money movements of one resolved week. All values in cents, outflows positive. */
 export type WeekLedger = {
@@ -150,13 +266,23 @@ export type WeekLedger = {
   transferCents: number
   /** Savings moved into the company automatically to cover negative cash. */
   autoTransferCents: number
+  /** Ad budgets of landing page tests started this week. */
+  adSpendCents: number
+  /** Late fees, severance, and costs of inbox choices. */
+  otherCostsCents: number
+  /** Money from inbox choices. */
+  otherIncomeCents: number
   cashEndCents: number
   savingsEndCents: number
 }
 
-export type LoggedAction = { type: 'endWeek'; week: number; plan: WeekPlan }
+export type LoggedAction =
+  | { type: 'endWeek'; week: number; plan: WeekPlan }
+  | { type: 'respond'; week: number; messageId: string; choiceId: string }
+  | { type: 'shutDown'; week: number }
 
-export type LoggedEvent = InterviewEvent | MoneyEvent
+export type LoggedEvent =
+  InterviewEvent | ExperimentEvent | MoneyEvent | BookkeepingEvent | MessageEvent
 
 export type InterviewEvent = {
   kind: 'interview'
@@ -164,6 +290,25 @@ export type InterviewEvent = {
   segmentId: SegmentId
   expected: number
   observed: number
+}
+
+/** A landing page test or pre-sale result next to what its chance predicted. */
+export type ExperimentEvent = {
+  kind: 'landing' | 'presale'
+  week: number
+  segmentId: SegmentId
+  expected: number
+  observed: number
+}
+
+export type BookkeepingEvent = { kind: 'bookkeeping_penalty'; week: number; feeCents: number }
+
+export type MessageEvent = {
+  kind: 'message'
+  week: number
+  eventId: string
+  choiceId: string
+  expired: boolean
 }
 
 export type MoneyEvent = { kind: MoneyMovementKind; week: number; amountCents: number }
@@ -197,6 +342,24 @@ export type WeekPlan = {
   transferToCompanyCents: number
   /** New monthly price for customers who sign from this week on, or null to keep it. */
   priceCentsPerMonth: number | null
+  /** Landing page tests: ad budget in cents per segment, 0 or missing for none. */
+  landing: Record<SegmentId, number>
+  /** Pre-sales: number of batches of prospects per segment. */
+  presales: Record<SegmentId, number>
+  /** Hours spent on the books. */
+  bookkeepingHours: number
+  /** Ids of overdue invoices to chase. */
+  chase: string[]
+  /** Start looking for someone in this role. */
+  searchRole: TeamRoleId | null
+  /** Make an offer to this candidate. */
+  hire: string | null
+  /** Let the current team member go. */
+  letGo: boolean
+  /** The feature a developer works on. */
+  teamBuild: FeatureId | null
+  /** Where a salesperson does outreach, after holding every demo they can. */
+  teamOutreach: { segmentId: SegmentId; channel: ChannelId } | null
 }
 
 export type PlanIssue =
@@ -212,6 +375,14 @@ export type PlanIssue =
   | { code: 'too_many_hours'; plannedHours: number; maxHours: number }
   | { code: 'transfer_exceeds_savings'; savingsCents: number }
   | { code: 'invalid_price' }
+  | { code: 'invalid_budget'; segmentId: string }
+  | { code: 'presale_needs_leads'; segmentId: string; leads: number }
+  | { code: 'bookkeeping_exceeds_backlog'; maxHours: number }
+  | { code: 'invalid_chase'; invoiceId: string }
+  | { code: 'search_not_allowed' }
+  | { code: 'invalid_hire'; candidateId: string }
+  | { code: 'let_go_not_allowed' }
+  | { code: 'invalid_team_work' }
 
 // ---------------------------------------------------------------------------
 // What the UI receives. Contains no hidden values.
@@ -250,7 +421,40 @@ export type PlayerView = {
     runwayWeeks: number | null
     uiStage: UiStage
   }
-  costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number; trialWeeks: number }
+  costs: {
+    interviewHours: number
+    demoHours: number
+    fixHoursPerBug: number
+    trialWeeks: number
+    landingHours: number
+    landingBudgetsCents: number[]
+    landingVisitorCents: number
+    landingWeeks: number
+    presaleHoursPerBatch: number
+    presaleBatchSize: number
+    presaleWeeks: number
+    chaseHours: number
+    searchHours: number
+    searchWeeks: number
+    startWeeks: number
+  }
+  /** Hours already spent this week by answers to messages, and by earlier penalties. */
+  committedHours: number
+  forcedHours: number
+  bookkeeping: {
+    requiredHoursPerWeek: number
+    backlogHours: number
+    limitHours: number
+    /** Most hours that can be booked this week. */
+    maxHours: number
+  }
+  invoices: InvoiceView[]
+  /** Sum of invoices that are issued and not yet paid or written off. */
+  receivablesCents: number
+  inbox: MessageView[]
+  team: TeamView
+  /** Landing page tests and pre-sales still running. */
+  pendingExperiments: PendingExperimentView[]
   guidance: GuidanceView
   channels: ChannelId[]
   product: ProductView
@@ -315,11 +519,88 @@ export type CustomerView = {
   priceCentsPerMonth: number
 }
 
+export type InvoiceStatus = 'open' | 'overdue' | 'paid' | 'written_off'
+
+export type InvoiceView = {
+  id: string
+  customerName: string
+  segmentId: SegmentId
+  amountCents: number
+  issuedWeek: number
+  dueWeek: number
+  status: InvoiceStatus
+  /** Weeks past the due week for an overdue invoice, else 0. */
+  overdueWeeks: number
+  paidWeek: number | null
+  canChase: boolean
+}
+
+export type MessageView = {
+  id: string
+  week: number
+  expiresWeek: number
+  fromRole: string
+  fromName: string
+  text: string
+  choices: MessageChoice[]
+  /** The choice made this week, still to take effect when the week ends. */
+  answeredChoiceId: string | null
+}
+
+export type CandidateView = {
+  id: string
+  name: string
+  role: TeamRoleId
+  impression: string
+}
+
+export type MemberView = {
+  id: string
+  name: string
+  role: TeamRoleId
+  roleName: string
+  monthlyCents: number
+  /** First working week. In the future while the new hire is still starting. */
+  startWeek: number
+  working: boolean
+  letGoCostCents: number
+}
+
+export type TeamView = {
+  /** False once someone was hired, or while a search is running. */
+  canSearch: boolean
+  roles: { id: TeamRoleId; name: string; monthlyCents: number }[]
+  search: { role: TeamRoleId; readyWeek: number } | null
+  candidates: CandidateView[]
+  member: MemberView | null
+  /** True once someone has been hired and let go: the early MVP allows one hire. */
+  hadHire: boolean
+}
+
+export type PendingExperimentView = {
+  kind: 'landing' | 'presale'
+  segmentId: SegmentId
+  resolveWeek: number
+}
+
+export type LandingView = {
+  week: number
+  budgetCents: number
+  visitors: number
+  signups: number
+}
+
+export type PresaleView = { week: number; prospects: number; commits: number; priceCents: number }
+
 export type SegmentView = {
   id: SegmentId
   name: string
   description: string
   interviews: InterviewView[]
+  landingTests: LandingView[]
+  presales: PresaleView[]
+  /** Leads of this segment that are not lost and not yet customers. */
+  openLeads: number
   /** Outreach channel picked for this segment in the latest plan that had one, else null. */
   lastChannel: ChannelId | null
 }
@@ -351,6 +632,18 @@ export type LeadChange =
 export type ReportEntry =
   | MoneyMovement
   | { kind: 'revenue'; amountCents: number; customers: number }
+  | { kind: 'invoices_issued'; amountCents: number; count: number }
+  | { kind: 'invoice_written_off'; amountCents: number; name: string }
+  | { kind: 'ad_spend'; amountCents: number }
+  | { kind: 'bookkeeping_penalty'; feeCents: number; lostHours: number }
+  | { kind: 'landing_result'; segmentId: SegmentId; visitors: number; signups: number }
+  | { kind: 'presale_result'; segmentId: SegmentId; prospects: number; commits: number }
+  | { kind: 'candidates_ready'; role: TeamRoleId; count: number }
+  | { kind: 'hire_started'; name: string; role: TeamRoleId }
+  | { kind: 'member_let_go'; name: string; costCents: number }
+  | { kind: 'team_output'; role: TeamRoleId; hours: number }
+  | { kind: 'message_resolved'; fromName: string; choiceLabel: string; expired: boolean }
+  | { kind: 'cash_effect'; amountCents: number }
   | { kind: 'feature_shipped'; featureId: FeatureId; name: string; bugsAdded: number }
   | { kind: 'bugs_fixed'; count: number }
   | { kind: 'new_leads'; segmentId: SegmentId; channel: ChannelId; count: number }

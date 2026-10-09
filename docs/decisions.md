@@ -80,3 +80,14 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Saves carry `scenarioHash`, a fingerprint of the whole scenario (numbers and texts). A save made under other scenario values is refused with its own notice ("the game has been retuned since"), instead of replaying into a different game. Texts are included because quote and name counts change random draws. The engine version stays 0.4.0: the replay itself did not change.
 - Report additions: ending week histogram, earnings of losing runs, first paying customer week, win rate spread per market. `price_aware` bot: validate_then_build plus a price search (+100 EUR after every 4 trial results with at least 40% won, one step back and stop below that). Bot parameters are not scenario values and live in the bot code.
 - Targets 6 (win rate spread across viable markets within 15 points) and 7 (median first paying customer in winning validate_then_build runs in week 8 to 14) are in plan section 7 and the report, marked "not tuned yet".
+
+## Phase 4
+
+- Engine 0.5.0. `WeekPlan` gained landing, presales, bookkeepingHours, chase, searchRole, hire, letGo, teamBuild, teamOutreach. Saves also log `respond` and `shutDown` actions.
+- Invoices replace instant revenue. Due after 14 days; paid late by a uniform 0 to 2x segment mean days, or never (segment share). The pay week is hidden. Unpaid 12 weeks after due: written off. Chasing costs 1 h and pays next week with chance 0.3, never for a never payer.
+- Bookkeeping: 2 h a week piles up; above 12 h a 150 EUR fine and 4 h lost next week, books cleared. It is an extra weekly cost that the plan did not list.
+- Landing test: 8 h, 200 or 500 EUR ads, 150 cents per visitor, result after 2 weeks. Pre-sale: 6 h per batch of 5, needs 5 open leads per batch, result after 1 week, odds fixed at the price when started.
+- One hire: candidates have hidden skill and a noisy label; salary is a fixed cost from the start week; letting go costs 4 weeks of salary; a developer needs a chosen feature, a salesperson holds demos first, then does outreach.
+- Inbox: answering counts hours at once, effects land when the week ends, unanswered messages take their free default choice after 2 weeks. Events are 25 YAML entries; conditions are parsed by zod into data (no eval).
+- Left out on purpose: the coworking desk office stage (needs persistent modifiers) and the `organised` UI switch (Phase 7).
+- Shut down: `shutDown` ends the run with `shut_down`. The Money tab asks first; the store ignores a shut down that was not asked for.

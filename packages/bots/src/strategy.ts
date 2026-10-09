@@ -12,7 +12,11 @@ import {
  * `WeekReport` after it. The scenario is passed in for observable facts such as the order of
  * the interview buckets, never for hidden values.
  */
+export type Answer = { messageId: string; choiceId: string }
+
 export type Player = {
+  /** Answers to inbox messages, given before the plan. Unanswered messages take their default. */
+  respond?(view: PlayerView): Answer[]
   plan(view: PlayerView): WeekPlan
   observe?(report: WeekReport, view: PlayerView): void
 }
@@ -32,7 +36,51 @@ export class PlanBuilder {
     private readonly view: PlayerView,
     budget: number,
   ) {
-    this.free = Math.min(budget, view.founder.maxHoursPerWeek)
+    // Hours already taken by answers to messages and by earlier penalties come off the budget.
+    const taken = view.committedHours + view.forcedHours
+    this.free = Math.max(0, Math.min(budget, view.founder.maxHoursPerWeek) - taken)
+  }
+
+  /** Brings the books up to date. Always the first thing a sensible founder books. */
+  bookkeeping(): number {
+    const h = Math.max(0, Math.min(this.view.bookkeeping.maxHours, this.free))
+    this.plan.bookkeepingHours = h
+    this.free -= h
+    return h
+  }
+
+  /** Chases overdue invoices, oldest first, up to `max` of them. */
+  chase(max: number): number {
+    let n = 0
+    for (const inv of this.view.invoices) {
+      if (n >= max || this.free < this.view.costs.chaseHours) break
+      if (!inv.canChase || this.plan.chase.includes(inv.id)) continue
+      this.plan.chase.push(inv.id)
+      this.free -= this.view.costs.chaseHours
+      n++
+    }
+    return n
+  }
+
+  /** A landing page test with the smallest ad budget, if the hours fit. */
+  landing(segmentId: string): boolean {
+    const budget = this.view.costs.landingBudgetsCents[0]
+    if (budget === undefined || this.free < this.view.costs.landingHours) return false
+    this.plan.landing[segmentId] = budget
+    this.free -= this.view.costs.landingHours
+    return true
+  }
+
+  /** One batch of pre-sale prospects, if the market has enough open leads and the hours fit. */
+  presale(segmentId: string): boolean {
+    const seg = this.view.segments.find((x) => x.id === segmentId)
+    const c = this.view.costs
+    const batches = this.plan.presales[segmentId] ?? 0
+    if (!seg || seg.openLeads < (batches + 1) * c.presaleBatchSize) return false
+    if (this.free < c.presaleHoursPerBatch) return false
+    this.plan.presales[segmentId] = batches + 1
+    this.free -= c.presaleHoursPerBatch
+    return true
   }
 
   interviews(segmentId: string, count: number): number {

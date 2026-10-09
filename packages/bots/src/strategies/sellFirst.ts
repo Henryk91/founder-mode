@@ -6,13 +6,15 @@ const BUILD_HOURS = 20
 export const sellFirst: Strategy = {
   id: 'sell_first',
   description:
-    'Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order.',
+    'Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Does the books and chases three late invoices a week.',
   create(_scenario, seed) {
     const rng = new BotRng(`sell_first/${seed}`)
     let order: string[] | null = null
     return {
       plan(view) {
         const b = new PlanBuilder(view, 50)
+        b.bookkeeping()
+        b.chase(3)
         if (!order) {
           const [core, ...rest] = view.product.features.map((f) => f.id)
           order = [core!, ...rng.shuffle(rest)]

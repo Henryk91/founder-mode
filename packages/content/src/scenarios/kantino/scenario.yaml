@@ -36,6 +36,17 @@ founder:
 
 finance:
   weeksPerMonth: 4
+  # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
+  # late by a segment dependent number of days, or never.
+  invoiceDueDays: 14
+  writeOffWeeks: 12
+  chaseHours: 1
+  chaseBoost: 0.3
+  bookkeeping:
+    hoursPerWeek: 2
+    backlogLimit: 12
+    lateFeeCents: 15000
+    lostHours: 4
 
 experiments:
   interview:
@@ -51,6 +62,18 @@ experiments:
       - { id: noticeable, name: Noticeable, below: 0.6 }
       - { id: painful, name: Painful, below: 0.9 }
       - { id: urgent, name: Urgent }
+  landing:
+    hours: 8
+    budgetsCents: [20000, 50000]
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+  presale:
+    hoursPerBatch: 6
+    batchSize: 5
+    weeks: 1
+    commitRate: 0.5
 
 product:
   startQuality: 70
@@ -78,6 +101,61 @@ sales:
     perMisfit: 0.2
     perBug: 0.01
     cap: 0.6
+
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 4
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - { id: weak, name: Weak, below: 0.7 }
+    - { id: solid, name: Solid, below: 0.95 }
+    - { id: strong, name: Strong, below: 1.1 }
+    - { id: outstanding, name: Outstanding }
+  roles:
+    developer:
+      name: Developer
+      monthlyCents: 420000
+      weeklyHours: 30
+      skill: { min: 0.5, max: 1.2 }
+    salesperson:
+      name: Salesperson
+      monthlyCents: 380000
+      weeklyHours: 25
+      skill: { min: 0.5, max: 1.2 }
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+
+# The inbox: each week up to maxPerWeek events are drawn by weight from the eligible ones.
+inbox:
+  maxPerWeek: 3
+  drawChance: 0.4
+  openWeeks: 2
+  cooldownWeeks: 8
+  openLimit: 4
 
 # Shuffled across the segments at game creation, one role each.
 roles:

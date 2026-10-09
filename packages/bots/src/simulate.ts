@@ -3,6 +3,7 @@ import {
   createGame,
   endWeek,
   getView,
+  respond,
   validatePlan,
   type EndingId,
   type GameState,
@@ -37,8 +38,20 @@ export type RunResult = {
   meanPlannedHours: number
   leads: number
   outreachHours: number
+  /** Landing page tests and pre-sale batches the run paid for. */
+  landingTests: number
+  presaleBatches: number
+  /** Bookkeeping penalties, and invoices written off, over the run. */
+  bookkeepingPenalties: number
+  writtenOffInvoices: number
+  invoicesIssued: number
+  /** Messages in the inbox over the run, and how many the player answered. */
+  messages: number
+  messagesAnswered: number
   /** Week 1 interviews, when every market was interviewed that week. Null otherwise. */
   firstWeekSignal: FirstWeekSignal | null
+  /** Interviews per market in the first plan, when every market got some. Null otherwise. */
+  firstWeekInterviews: number | null
 }
 
 export type FirstWeekSignal = {
@@ -84,14 +97,22 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
   let outreachHours = 0
   let weeks = 0
   let firstReport: WeekReport | null = null
+  let firstWeekInterviews: number | null = null
 
   while (state.status === 'running') {
+    for (const answer of player.respond?.(getView(state)) ?? []) {
+      state = respond(state, answer.messageId, answer.choiceId)
+    }
     const plan = player.plan(getView(state))
     const issues = validatePlan(state, plan)
     if (issues.length > 0) {
       throw new Error(
         `${strategy.id} made an invalid plan in week ${state.week} (seed ${seed}): ${JSON.stringify(issues)}`,
       )
+    }
+    if (weeks === 0) {
+      const counts = scenario.segments.map((seg) => plan.interviews[seg.id] ?? 0)
+      firstWeekInterviews = Math.min(...counts) > 0 ? Math.min(...counts) : null
     }
     const result = endWeek(state, plan)
     state = result.state
@@ -132,6 +153,22 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     meanPlannedHours: weeks ? hours / weeks : 0,
     leads: state.leads.length,
     outreachHours,
+    landingTests: state.actionLog.reduce(
+      (t, a) =>
+        t + (a.type === 'endWeek' ? Object.values(a.plan.landing).filter((b) => b > 0).length : 0),
+      0,
+    ),
+    presaleBatches: state.actionLog.reduce(
+      (t, a) =>
+        t + (a.type === 'endWeek' ? Object.values(a.plan.presales).reduce((x, y) => x + y, 0) : 0),
+      0,
+    ),
+    bookkeepingPenalties: state.eventLog.filter((e) => e.kind === 'bookkeeping_penalty').length,
+    writtenOffInvoices: state.invoices.filter((i) => i.writtenOffWeek !== null).length,
+    invoicesIssued: state.invoices.length,
+    messages: state.inbox.length,
+    messagesAnswered: state.inbox.filter((m) => m.status === 'resolved').length,
     firstWeekSignal: signal,
+    firstWeekInterviews,
   }
 }

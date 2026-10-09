@@ -6,19 +6,22 @@ import {
   endWeek,
   getView,
   replay,
+  respond,
   saveProblem,
+  shutDown,
   toSave,
   type ChannelId,
   type GameState,
   type PlanIssue,
   type PlayerView,
+  type TeamRoleId,
   type WeekPlan,
   type WeekReport,
 } from '@founder-mode/engine'
 import { createStore, type StoreApi } from 'zustand/vanilla'
 import type { SaveStorage } from './storage'
 
-export type Tab = 'plan' | 'market' | 'pipeline' | 'money'
+export type Tab = 'plan' | 'inbox' | 'market' | 'pipeline' | 'team' | 'money'
 
 export type ExplainKey = 'runway' | 'cash' | 'energy' | 'hours'
 
@@ -41,6 +44,8 @@ export type UiState = {
   explain: ExplainKey | null
   /** Ids of founder's notes the player dismissed in this run. */
   dismissedNotes: string[]
+  /** True while the Money tab asks whether to really shut the company down. */
+  shutDownAsked: boolean
 }
 
 export type UiActions = {
@@ -62,6 +67,23 @@ export type UiActions = {
   toggleDemo(leadId: string): void
   setRestHours(hours: number): void
   setTransferCents(cents: number): void
+  /** Ad budget in cents for a landing page test, 0 for none. */
+  setLanding(segmentId: string, budgetCents: number): void
+  setPresales(segmentId: string, batches: number): void
+  setBookkeepingHours(hours: number): void
+  toggleChase(invoiceId: string): void
+  setSearchRole(role: TeamRoleId | null): void
+  setHire(candidateId: string | null): void
+  setLetGo(letGo: boolean): void
+  setTeamBuild(featureId: string | null): void
+  setTeamOutreach(target: { segmentId: string; channel: ChannelId } | null): void
+  /** Answers a message now: its hours count at once, its effects land when the week ends. */
+  answer(messageId: string, choiceId: string): void
+  /** First step of shutting down: shows the question. Nothing happens to the run yet. */
+  askShutDown(): void
+  cancelShutDown(): void
+  /** Closes the company. Only works after `askShutDown`, so one stray tap cannot end a run. */
+  shutDown(): void
   /** Null keeps the current price. */
   setPriceCents(cents: number | null): void
   endWeek(): void
@@ -119,6 +141,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         helpOpen: false,
         explain: null,
         dismissedNotes: [],
+        shutDownAsked: false,
       })
     }
 
@@ -135,6 +158,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       helpOpen: false,
       explain: null,
       dismissedNotes: [],
+      shutDownAsked: false,
 
       startRun(seed) {
         const state = createGame(getScenario(), seed?.trim() || deps.makeSeed())
@@ -179,7 +203,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         refresh({ report: null, tab: 'plan', introStep: null, helpOpen: false, explain: null })
       },
 
-      setTab: (tab) => set({ tab }),
+      setTab: (tab) => set({ tab, shutDownAsked: false }),
 
       nextIntro() {
         const { introStep, view } = get()
@@ -215,6 +239,41 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       setRestHours: (hours) => editPlan((p) => ({ ...p, restHours: hours })),
       setTransferCents: (cents) => editPlan((p) => ({ ...p, transferToCompanyCents: cents })),
       setPriceCents: (cents) => editPlan((p) => ({ ...p, priceCentsPerMonth: cents })),
+      setLanding: (segmentId, budgetCents) =>
+        editPlan((p) => ({ ...p, landing: { ...p.landing, [segmentId]: budgetCents } })),
+      setPresales: (segmentId, batches) =>
+        editPlan((p) => ({ ...p, presales: { ...p.presales, [segmentId]: batches } })),
+      setBookkeepingHours: (hours) => editPlan((p) => ({ ...p, bookkeepingHours: hours })),
+      toggleChase: (invoiceId) =>
+        editPlan((p) => ({
+          ...p,
+          chase: p.chase.includes(invoiceId)
+            ? p.chase.filter((id) => id !== invoiceId)
+            : [...p.chase, invoiceId],
+        })),
+      setSearchRole: (role) => editPlan((p) => ({ ...p, searchRole: role })),
+      setHire: (candidateId) => editPlan((p) => ({ ...p, hire: candidateId })),
+      setLetGo: (letGo) => editPlan((p) => ({ ...p, letGo })),
+      setTeamBuild: (featureId) => editPlan((p) => ({ ...p, teamBuild: featureId })),
+      setTeamOutreach: (target) => editPlan((p) => ({ ...p, teamOutreach: target })),
+      answer(messageId, choiceId) {
+        if (!game || game.status !== 'running') return
+        try {
+          game = respond(game, messageId, choiceId)
+        } catch {
+          return
+        }
+        deps.storage.save(toSave(game))
+        refresh()
+      },
+      askShutDown: () => set({ shutDownAsked: true }),
+      cancelShutDown: () => set({ shutDownAsked: false }),
+      shutDown() {
+        if (!game || game.status !== 'running' || !get().shutDownAsked) return
+        game = shutDown(game)
+        deps.storage.save(toSave(game))
+        refresh({ report: null, helpOpen: false, explain: null, shutDownAsked: false })
+      },
 
       endWeek() {
         if (!game || game.status !== 'running') return
@@ -223,7 +282,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         const result = endWeek(game, plan)
         game = result.state
         deps.storage.save(toSave(game))
-        refresh({ plan: emptyPlan(), report: result.report })
+        refresh({ plan: emptyPlan(), report: result.report, shutDownAsked: false })
       },
 
       dismissReport: () => set({ report: null }),

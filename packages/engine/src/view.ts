@@ -1,9 +1,22 @@
-import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
+import { maxBookkeepingHours } from './systems/bookkeeping'
+import { interviewsOf, openLeadCount } from './systems/experiments'
+import { monthlyFixedCostsCents, receivablesCents, runwayWeeks } from './systems/finance'
+import { committedHours } from './systems/founder'
+import { isOverdue, overdueWeeks } from './systems/invoices'
+import { workingMember } from './systems/team'
 import { activeCustomers } from './systems/customers'
 import { selectFounderNote } from './systems/guidance'
 import { maxBugFixHours } from './systems/product'
 import { canBookDemo } from './systems/sales'
-import type { ChannelId, GameState, InterviewEvidence, InterviewView, PlayerView } from './types'
+import type {
+  ChannelId,
+  GameState,
+  InterviewEvidence,
+  InterviewView,
+  InvoiceStatus,
+  PlayerView,
+  TeamView,
+} from './types'
 
 // Compile time check that every channel of the scenario schema is listed.
 const CHANNEL_ORDER = { cold_email: 0, phone: 1, in_person: 2 } satisfies Record<ChannelId, number>
@@ -53,7 +66,67 @@ export function getView(state: GameState): PlayerView {
       demoHours: scenario.sales.demoHours,
       fixHoursPerBug: scenario.product.fixHoursPerBug,
       trialWeeks: scenario.sales.trialWeeks,
+      landingHours: scenario.experiments.landing.hours,
+      landingBudgetsCents: [...scenario.experiments.landing.budgetsCents],
+      landingVisitorCents: scenario.experiments.landing.centsPerVisitor,
+      landingWeeks: scenario.experiments.landing.weeks,
+      presaleHoursPerBatch: scenario.experiments.presale.hoursPerBatch,
+      presaleBatchSize: scenario.experiments.presale.batchSize,
+      presaleWeeks: scenario.experiments.presale.weeks,
+      chaseHours: scenario.finance.chaseHours,
+      searchHours: scenario.team.searchHours,
+      searchWeeks: scenario.team.searchWeeks,
+      startWeeks: scenario.team.startWeeks,
     },
+    committedHours: committedHours(state),
+    forcedHours: founder.forcedHours,
+    bookkeeping: {
+      requiredHoursPerWeek: scenario.finance.bookkeeping.hoursPerWeek,
+      backlogHours: company.bookkeepingBacklogHours,
+      limitHours: scenario.finance.bookkeeping.backlogLimit,
+      maxHours: maxBookkeepingHours(state),
+    },
+    invoices: state.invoices.map((inv) => {
+      const status: InvoiceStatus =
+        inv.paidWeek !== null
+          ? 'paid'
+          : inv.writtenOffWeek !== null
+            ? 'written_off'
+            : isOverdue(inv, state.week)
+              ? 'overdue'
+              : 'open'
+      return {
+        id: inv.id,
+        customerName: inv.customerName,
+        segmentId: inv.segmentId,
+        amountCents: inv.amountCents,
+        issuedWeek: inv.issuedWeek,
+        dueWeek: inv.dueWeek,
+        status,
+        overdueWeeks: status === 'overdue' ? overdueWeeks(inv, state.week) : 0,
+        paidWeek: inv.paidWeek,
+        canChase: status === 'overdue',
+      }
+    }),
+    receivablesCents: receivablesCents(state),
+    inbox: state.inbox
+      .filter((m) => m.status === 'open' || m.status === 'answered')
+      .map((m) => ({
+        id: m.id,
+        week: m.week,
+        expiresWeek: m.expiresWeek,
+        fromRole: m.fromRole,
+        fromName: m.fromName,
+        text: m.text,
+        choices: m.choices.map((c) => ({ id: c.id, label: c.label, hours: c.hours })),
+        answeredChoiceId: m.status === 'answered' ? m.choiceId : null,
+      })),
+    team: teamView(state),
+    pendingExperiments: state.hidden.experiments.map((e) => ({
+      kind: e.kind,
+      segmentId: e.segmentId,
+      resolveWeek: e.resolveWeek,
+    })),
     guidance: {
       intro: scenario.intro.cards.map((c) => ({ id: c.id, title: c.title, body: c.body })),
       founderNote: selectFounderNote(state),
@@ -100,7 +173,25 @@ export function getView(state: GameState): PlayerView {
       id: seg.id,
       name: seg.name,
       description: seg.description,
-      interviews: (state.knowledge[seg.id] ?? []).map((e) => interviewView(state, e)),
+      interviews: interviewsOf(state.knowledge[seg.id] ?? []).map((e) => interviewView(state, e)),
+      landingTests: (state.knowledge[seg.id] ?? []).flatMap((e) =>
+        e.kind === 'landing'
+          ? [
+              {
+                week: e.week,
+                budgetCents: e.budgetCents,
+                visitors: e.visitors,
+                signups: e.signups,
+              },
+            ]
+          : [],
+      ),
+      presales: (state.knowledge[seg.id] ?? []).flatMap((e) =>
+        e.kind === 'presale'
+          ? [{ week: e.week, prospects: e.prospects, commits: e.commits, priceCents: e.priceCents }]
+          : [],
+      ),
+      openLeads: openLeadCount(state, seg.id),
       lastChannel: lastChannel(state, seg.id),
     })),
     history: state.ledger.map((l) => ({
@@ -111,10 +202,50 @@ export function getView(state: GameState): PlayerView {
   }
 }
 
+function teamView(state: GameState): TeamView {
+  const cfg = state.scenario.team
+  const { team } = state
+  const hired = team.members.length > 0
+  const current = team.members.find((m) => m.letGoWeek === null) ?? null
+  const impression = (id: string) => cfg.impressions.find((b) => b.id === id)?.name ?? id
+  const monthly = (role: 'developer' | 'salesperson') => cfg.roles[role].monthlyCents
+  return {
+    canSearch: !hired && team.search === null,
+    roles: (['developer', 'salesperson'] as const).map((id) => ({
+      id,
+      name: cfg.roles[id].name,
+      monthlyCents: monthly(id),
+    })),
+    search: team.search ? { role: team.search.role, readyWeek: team.search.readyWeek } : null,
+    candidates: team.candidates.map((c) => ({
+      id: c.id,
+      name: c.name,
+      role: c.role,
+      impression: impression(c.impressionId),
+    })),
+    member: current
+      ? {
+          id: current.id,
+          name: current.name,
+          role: current.role,
+          roleName: cfg.roles[current.role].name,
+          monthlyCents: monthly(current.role),
+          startWeek: current.startWeek,
+          working: workingMember(state)?.id === current.id,
+          letGoCostCents: Math.round(
+            (monthly(current.role) * cfg.severanceWeeks) / state.scenario.finance.weeksPerMonth,
+          ),
+        }
+      : null,
+    hadHire: hired && current === null,
+  }
+}
+
 /** The outreach channel of the latest plan that had one for this segment. */
 function lastChannel(state: GameState, segmentId: string): ChannelId | null {
   for (let i = state.actionLog.length - 1; i >= 0; i--) {
-    const out = state.actionLog[i]?.plan.outreach[segmentId]
+    const action = state.actionLog[i]
+    const out = action?.type === 'endWeek' ? action.plan.outreach[segmentId] : undefined
     if (out) return out.channel
   }
   return null

@@ -80,6 +80,13 @@ export class Rng {
     return (sum - 6) * sd
   }
 
+  /** Successes in n independent trials of probability p, one draw per trial. */
+  binomial(n: number, p: number): number {
+    let k = 0
+    for (let i = 0; i < n; i++) if (this.next() < p) k++
+    return k
+  }
+
   pick<T>(items: readonly T[]): T {
     if (items.length === 0) throw new Error('Cannot pick from an empty list')
     return items[this.int(0, items.length - 1)] as T

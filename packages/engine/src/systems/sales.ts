@@ -1,5 +1,6 @@
 import type { Rng } from '../rng'
 import type {
+  ChannelId,
   Customer,
   GameState,
   Lead,
@@ -11,6 +12,7 @@ import type {
 import { isMonthEnd } from './finance'
 import { energyFactor } from './founder'
 import { fit, priceFactor } from './market'
+import type { TeamOutput } from './team'
 
 /** A lead can take part in a demo when it asked for one and is still answering. */
 export function canBookDemo(lead: Lead): boolean {
@@ -53,19 +55,23 @@ function randomRound(x: number, rng: Rng): number {
  * 2. trials that ran their course: the lead becomes a paying customer or is lost,
  * 3. open leads agree to a demo,
  * 4. silent leads are lost after a while, untouched open leads may go silent,
- * 5. outreach finds new leads.
+ * 5. outreach finds new leads, the founder's per market and then the salesperson's.
+ * A salesperson (`team`) holds demos too, without costing the founder hours or raising the
+ * founder's selling skill.
  */
 export function applySales(
   state: GameState,
   plan: WeekPlan,
   rng: Rng,
+  team: TeamOutput | null = null,
 ): { state: GameState; entries: ReportEntry[] } {
   const cfg = state.scenario.sales
   const week = state.week
   const entries: ReportEntry[] = []
   const leads: Lead[] = state.leads.map((l) => ({ ...l }))
   const customers: Customer[] = [...state.customers]
-  const demoIds = new Set(plan.demos)
+  const founderDemoIds = new Set(plan.demos)
+  const demoIds = new Set([...plan.demos, ...(team?.demos ?? [])])
   const touched = new Set<string>()
   let selling = state.founder.skills.selling
   const sellingAtStart = selling
@@ -89,7 +95,9 @@ export function applySales(
   // 1. Demos
   for (const lead of leads) {
     if (!demoIds.has(lead.id)) continue
-    selling = Math.min(cfg.skillCap, selling + cfg.skillGainPerDemo)
+    if (founderDemoIds.has(lead.id)) {
+      selling = Math.min(cfg.skillCap, selling + cfg.skillGainPerDemo)
+    }
     lead.lastContactWeek = week
     touched.add(lead.id)
     const p = (cfg.demoToTrialBase + cfg.demoToTrialPerFit * fit(state, lead.segmentId)) * tired
@@ -155,24 +163,30 @@ export function applySales(
     }
   }
 
-  // 5. Outreach, segments in scenario order
+  // 5. Outreach, segments in scenario order, then the salesperson
   const used = new Set(leads.map((l) => l.name))
+  const items: { segmentId: SegmentId; channel: ChannelId; hours: number }[] = []
   for (const seg of state.scenario.segments) {
     const out = plan.outreach[seg.id]
-    if (!out || out.hours <= 0) continue
-    const response = state.hidden.segments[seg.id]?.channelResponse[out.channel] ?? 0
+    if (out && out.hours > 0) items.push({ segmentId: seg.id, ...out })
+  }
+  if (team?.outreach) {
+    items.push({ ...team.outreach, channel: team.outreach.channel as ChannelId })
+  }
+  for (const item of items) {
+    const response = state.hidden.segments[item.segmentId]?.channelResponse[item.channel] ?? 0
     const count = randomRound(
-      out.hours * response * (cfg.sellingBase + sellingAtStart) * tired,
+      item.hours * response * (cfg.sellingBase + sellingAtStart) * tired,
       rng,
     )
     for (let i = 0; i < count; i++) {
-      const parts = state.scenario.companyNames[seg.id] ?? { first: [], second: [] }
+      const parts = state.scenario.companyNames[item.segmentId] ?? { first: [], second: [] }
       const name = pickName(parts, used, rng)
       used.add(name)
       leads.push({
         id: `lead_${leads.length + 1}`,
         name,
-        segmentId: seg.id,
+        segmentId: item.segmentId,
         stage: 'lead',
         stageSinceWeek: week,
         lastContactWeek: week,
@@ -180,9 +194,8 @@ export function applySales(
         lostReason: null,
       })
     }
-    entries.push({ kind: 'new_leads', segmentId: seg.id, channel: out.channel, count })
+    entries.push({ kind: 'new_leads', segmentId: item.segmentId, channel: item.channel, count })
   }
-
   return {
     state: {
       ...state,

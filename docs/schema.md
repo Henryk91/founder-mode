@@ -557,3 +557,13 @@ Autosave: a `SaveFile` is written under one localStorage key when a run starts a
 ## Content: Event
 
 Arrives in Phase 4. See plan section 4.10.
+
+## Phase 4 additions (engine 0.5.0)
+
+- `GameState`: `invoices`, `inbox`, `drawnEvents`, `team {search, candidates, members}`, `company.bookkeepingBacklogHours`, `founder.forcedHours`, `hidden.experiments`, `hidden.payWeeks`, `hidden.teamSkills`.
+- `Evidence` is `interview | landing | presale`. `WeekLedger` gained `adSpendCents`, `otherCostsCents`, `otherIncomeCents`.
+- `LoggedAction` is `endWeek | respond {messageId, choiceId} | shutDown`.
+- `EndingId` gained `shut_down`. `respond(state, messageId, choiceId)` and `shutDown(state)` are public.
+- `WeekPlan` and `PlanIssue` gained the fields and codes listed in `docs/decisions.md` (Phase 4).
+- `PlayerView` gained `invoices`, `receivablesCents`, `inbox`, `team`, `bookkeeping`, `pendingExperiments`, `committedHours`, `forcedHours`, extra `costs`, and per segment `landingTests`, `presales`, `openLeads`. None holds a pay week, true skill or effect odds.
+- Scenario: `experiments.landing`, `experiments.presale`, `finance` (invoice and bookkeeping), `team`, `inbox`, and `events` (from `messages/events.yaml`; effects `cash, energy, bugs, skill, invoicePayChance, churnChance, newLeads, touchLead, lostHours, fixedCost`, each with optional `chance`).

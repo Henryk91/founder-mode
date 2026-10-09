@@ -291,7 +291,9 @@ describe('playtest fixes', () => {
     expect(store.getState().plan.outreach).toEqual({})
     const page = html(store)
     // The coworking row shows In person selected, the others the first channel.
-    const pressed = [...page.matchAll(/aria-pressed="true"[^>]*>([^<]+)</g)].map((m) => m[1])
+    const pressed = [...page.matchAll(/aria-pressed="true"[^>]*>([^<]+)</g)]
+      .map((m) => m[1])
+      .filter((text) => text !== 'No test')
     expect(pressed).toEqual(['Cold email', 'In person', 'Cold email'])
   })
 })
@@ -315,5 +317,189 @@ describe('energy', () => {
     overwork()
     expect(store.getState().view?.ending).toBe('burnout')
     expect(html(store)).toContain('You ran on empty for too long.')
+  })
+})
+
+/** Ends weeks with the books done until a message is in the inbox. */
+function untilMessage(store: Store, maxWeeks = 30) {
+  for (let i = 0; i < maxWeeks && store.getState().view!.inbox.length === 0; i++) {
+    store.getState().setBookkeepingHours(2)
+    store.getState().endWeek()
+    store.getState().dismissReport()
+  }
+  expect(store.getState().view!.inbox.length).toBeGreaterThan(0)
+}
+
+describe('phase 4 screens', () => {
+  it('shows the new sections on the Plan tab', () => {
+    const store = fresh('p4-plan')
+    begin(store)
+    const page = html(store)
+    expect(page).toContain('Test the demand')
+    expect(page).toContain('Landing page: Coworking spaces')
+    expect(page).toContain('€200')
+    expect(page).toContain('€500')
+    expect(page).toContain('Pre-sale: Medical practices')
+    expect(page).toContain('Open leads: 0. A batch needs 5.')
+    expect(page).toContain('The books')
+    expect(page).toContain('Open: 0 h. Planned this week: 0 h.')
+    expect(page).not.toMatch(/[{}]/)
+  })
+
+  it('reports landing page results on the Market tab, a few weeks later', () => {
+    const store = fresh('p4-landing')
+    begin(store)
+    store.getState().setLanding('coworking', 20_000)
+    store.getState().endWeek()
+    const first = html(store)
+    expect(first).toContain('Ads for landing page tests cost €200.')
+    store.getState().dismissReport()
+    store.getState().setTab('market')
+    expect(html(store)).toContain('Landing page test running. Result in week 3.')
+    for (let i = 0; i < 2; i++) {
+      store.getState().setBookkeepingHours(2)
+      store.getState().endWeek()
+      if (i === 1) expect(html(store)).toMatch(/Landing page test for Coworking spaces: \d+ of 133/)
+      store.getState().dismissReport()
+    }
+    expect(html(store)).toMatch(/Week 3: \d+ of 133 visitors signed up \(€200 of ads\)/)
+  })
+
+  it('shows the inbox with hours on every choice, and counts open messages on its tab', () => {
+    const store = fresh('p4-inbox')
+    begin(store)
+    expect(html(store)).not.toContain('Inbox (')
+    store.getState().setTab('inbox')
+    expect(html(store)).toContain('Nothing to answer')
+    untilMessage(store)
+    const n = store.getState().view!.inbox.length
+    expect(html(store)).toContain(`Inbox (${n})`)
+    store.getState().setTab('inbox')
+    const page = html(store)
+    for (const m of store.getState().view!.inbox) {
+      expect(page).toContain(m.text.replace(/'/g, '&#x27;').replace(/"/g, '&quot;'))
+      for (const c of m.choices) expect(page).toContain(c.label.replace(/'/g, '&#x27;'))
+    }
+    expect(page).not.toMatch(/chance|probab|%/i)
+  })
+
+  it('answers a message: its hours count at once and the answer is saved', () => {
+    const storage = memoryStorage()
+    const store = createGameStore({ storage, makeSeed: () => 'p4-answer' })
+    begin(store)
+    untilMessage(store)
+    const message = store.getState().view!.inbox[0]!
+    const choice = message.choices.find((c) => c.hours > 0) ?? message.choices[0]!
+    store.getState().answer(message.id, choice.id)
+    expect(store.getState().view!.committedHours).toBe(choice.hours)
+    expect(store.getState().plannedHours).toBe(choice.hours)
+    expect(storage.current()!.actions.at(-1)).toMatchObject({
+      type: 'respond',
+      choiceId: choice.id,
+    })
+    store.getState().setTab('inbox')
+    expect(html(store)).toContain('It takes effect when you end the week.')
+    // A continued run keeps the answer.
+    const again = createGameStore({ storage, makeSeed: () => 'x' })
+    again.getState().continueRun()
+    expect(again.getState().view).toEqual(store.getState().view)
+  })
+
+  it('books a search on the Team tab and shows the candidates later', () => {
+    const store = fresh('p4-team')
+    begin(store)
+    store.getState().setTab('team')
+    const page = html(store)
+    expect(page).toContain('Look for a Developer')
+    expect(page).toContain('€4,200 per month')
+    store.getState().setSearchRole('developer')
+    expect(store.getState().plannedHours).toBe(6)
+    expect(html(store)).toContain('Search booked (6 h). Tap to cancel.')
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    expect(html(store)).toContain('Looking for a Developer. Candidates arrive in week 3.')
+    for (let i = 0; i < 2; i++) {
+      store.getState().setBookkeepingHours(2)
+      store.getState().endWeek()
+      store.getState().dismissReport()
+    }
+    const candidates = html(store)
+    expect(candidates).toContain('Candidates')
+    expect(candidates).toMatch(/Impression: (Weak|Solid|Strong|Outstanding)/)
+    expect(candidates).toContain('Make an offer')
+  })
+
+  it('shows invoices on the Money tab, with a chase button when one is overdue', () => {
+    const store = fresh('p4-money')
+    begin(store)
+    store.getState().setTab('money')
+    expect(html(store)).toContain('No invoices yet.')
+    expect(html(store)).toContain('Shut down the company')
+  })
+})
+
+describe('shutting down', () => {
+  it('asks first, and does nothing until the player says yes', () => {
+    const storage = memoryStorage()
+    const store = createGameStore({ storage, makeSeed: () => 'quit' })
+    begin(store)
+    store.getState().setTab('money')
+    const page = html(store)
+    expect(page).toContain('Shut down the company')
+    expect(page).not.toContain('Yes, shut it down')
+
+    // A stray call without the question being asked changes nothing.
+    store.getState().shutDown()
+    expect(store.getState().view!.status).toBe('running')
+
+    store.getState().askShutDown()
+    const asked = html(store)
+    expect(asked).toContain('Shut down the company?')
+    expect(asked).toContain('Yes, shut it down')
+    expect(asked).toContain('No, keep going')
+
+    store.getState().cancelShutDown()
+    expect(html(store)).not.toContain('Yes, shut it down')
+    store.getState().shutDown()
+    expect(store.getState().view!.status).toBe('running')
+    expect(storage.current()!.actions).toEqual([])
+  })
+
+  it('asking is forgotten when the player leaves the tab', () => {
+    const store = fresh('quit-tab')
+    begin(store)
+    store.getState().setTab('money')
+    store.getState().askShutDown()
+    store.getState().setTab('plan')
+    store.getState().setTab('money')
+    expect(html(store)).not.toContain('Yes, shut it down')
+  })
+
+  it('ends the run with the shut down ending, saves it, and shows how it ended', () => {
+    const storage = memoryStorage()
+    const store = createGameStore({ storage, makeSeed: () => 'quit2' })
+    begin(store)
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    store.getState().setTab('money')
+    store.getState().askShutDown()
+    store.getState().shutDown()
+    const view = store.getState().view!
+    expect(view.status).toBe('ended')
+    expect(view.ending).toBe('shut_down')
+    expect(view.week).toBe(2)
+    expect(storage.current()!.actions.at(-1)).toEqual({ type: 'shutDown', week: 2 })
+    const page = html(store)
+    expect(page).toContain('The run is over')
+    expect(page).toContain('You closed the company on purpose.')
+    expect(page).toContain('Back to start')
+    expect(page).not.toContain('End week</button>')
+    // Reloading shows the same ending.
+    const again = createGameStore({ storage, makeSeed: () => 'x' })
+    again.getState().continueRun()
+    expect(again.getState().view!.ending).toBe('shut_down')
+    expect(html(again)).toContain('You closed the company on purpose.')
+    store.getState().leaveRun()
+    expect(storage.current()).toBeNull()
   })
 })

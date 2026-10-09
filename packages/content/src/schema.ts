@@ -85,6 +85,188 @@ export const SalesConfigSchema = z.object({
   }),
 })
 
+export const LandingConfigSchema = z.object({
+  hours: z.number().int().positive(),
+  // The ad budgets the player can pick from. Visitors = budget / centsPerVisitor.
+  budgetsCents: z.array(Cents.positive()).min(1),
+  centsPerVisitor: Cents.positive(),
+  weeks: z.number().int().positive(),
+  // Each visitor signs up with probability signupBase + signupPerPain * pain.
+  signupBase: Share,
+  signupPerPain: Share,
+})
+
+export const PresaleConfigSchema = z.object({
+  hoursPerBatch: z.number().int().positive(),
+  batchSize: z.number().int().positive(),
+  weeks: z.number().int().positive(),
+  // Each prospect commits with probability commitRate * pain * priceFactor.
+  commitRate: Share,
+})
+
+export const BookkeepingConfigSchema = z.object({
+  hoursPerWeek: z.number().int().nonnegative(),
+  // Above this many open hours the penalty fires.
+  backlogLimit: z.number().int().positive(),
+  lateFeeCents: Cents.nonnegative(),
+  // Hours taken out of the next week by the penalty.
+  lostHours: z.number().int().nonnegative(),
+})
+
+export const FinanceConfigSchema = z.object({
+  weeksPerMonth: z.number().int().positive(),
+  // Invoices are due this many days after they are issued.
+  invoiceDueDays: z.number().int().positive(),
+  // An unpaid invoice is written off this many weeks after its due week.
+  writeOffWeeks: z.number().int().positive(),
+  chaseHours: z.number().int().positive(),
+  // Chance that chasing an overdue invoice gets it paid in the following week.
+  chaseBoost: Share,
+  bookkeeping: BookkeepingConfigSchema,
+})
+
+export const ROLE_IDS = ['developer', 'salesperson'] as const
+export const TeamRoleId = z.enum(ROLE_IDS)
+export type TeamRoleId = z.infer<typeof TeamRoleId>
+
+export const TeamRoleSchema = z.object({
+  name: z.string().min(1),
+  monthlyCents: Cents.positive(),
+  // Developer: build hours. Salesperson: outreach and demo hours. Multiplied by true skill.
+  weeklyHours: z.number().int().positive(),
+  skill: rangeOf(z.number().positive()),
+})
+
+export const TeamConfigSchema = z.object({
+  searchHours: z.number().int().positive(),
+  searchWeeks: z.number().int().positive(),
+  candidates: z.number().int().positive(),
+  // Weeks between the offer and the first working week.
+  startWeeks: z.number().int().nonnegative(),
+  // Letting someone go costs this many weeks of salary.
+  severanceWeeks: z.number().int().nonnegative(),
+  // Interview impression = true skill + N(0, impressionSd), shown as a label.
+  impressionSd: z.number().nonnegative(),
+  impressions: z.array(InterviewBucketSchema).min(2),
+  roles: z.object({ developer: TeamRoleSchema, salesperson: TeamRoleSchema }),
+  candidateNames: z.array(z.string().min(1)).min(1),
+})
+
+export const InboxConfigSchema = z.object({
+  // Most new messages per week, and the chance that each slot is filled if an event is eligible.
+  maxPerWeek: z.number().int().positive(),
+  drawChance: Share,
+  // Weeks a message stays open, counting the week it arrives.
+  openWeeks: z.number().int().positive(),
+  // A repeatable event does not come back within this many weeks.
+  cooldownWeeks: z.number().int().nonnegative(),
+  // No new messages while this many are still open.
+  openLimit: z.number().int().positive(),
+})
+
+// Conditions are `<path> <op> <number>`, from a closed set of paths. No eval anywhere.
+export const CONDITION_PATHS = [
+  'week',
+  'customers.count',
+  'customers.churned',
+  'leads.open',
+  'leads.waitingForDemo',
+  'invoices.open',
+  'invoices.overdueDays',
+  'cashEur',
+  'savingsEur',
+  'energy',
+  'bugs',
+  'quality',
+  'features.shipped',
+  'hasHire',
+  'monthlyRevenueEur',
+  'bookkeepingBacklog',
+] as const
+export type ConditionPath = (typeof CONDITION_PATHS)[number]
+export const CONDITION_OPS = ['>=', '<=', '>', '<', '==', '!='] as const
+export type ConditionOp = (typeof CONDITION_OPS)[number]
+export type Condition = { path: ConditionPath; op: ConditionOp; value: number }
+
+/** Parses `customers.count >= 1`. Returns null for anything outside the closed grammar. */
+export function parseCondition(text: string): Condition | null {
+  const m = /^\s*([A-Za-z.]+)\s*(>=|<=|==|!=|>|<)\s*(-?\d+(?:\.\d+)?)\s*$/.exec(text)
+  if (!m) return null
+  const path = m[1] as ConditionPath
+  if (!(CONDITION_PATHS as readonly string[]).includes(path)) return null
+  return { path, op: m[2] as ConditionOp, value: Number(m[3]) }
+}
+
+const ConditionSchema = z.string().transform((text, ctx): Condition => {
+  const c = parseCondition(text)
+  if (!c) {
+    ctx.addIssue({ code: 'custom', message: `unknown condition "${text}"` })
+    return z.NEVER
+  }
+  return c
+})
+
+// Effects are a closed union. Adding a type means adding it here and in the engine.
+// `chance` (default 1) makes an effect succeed only some of the time.
+const Chance = Share.default(1)
+export const EffectSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('cash'), amountCents: Cents, chance: Chance }),
+  z.object({ type: z.literal('energy'), delta: z.number(), chance: Chance }),
+  z.object({ type: z.literal('bugs'), delta: z.number().int(), chance: Chance }),
+  z.object({
+    type: z.literal('skill'),
+    skill: z.enum(['interviewing', 'selling']),
+    delta: z.number(),
+    chance: Chance,
+  }),
+  // Overdue invoices of the sender get paid in the following week with this chance.
+  z.object({ type: z.literal('invoicePayChance'), delta: Share, chance: Chance }),
+  // The sender (a customer) leaves with this chance.
+  z.object({ type: z.literal('churnChance'), delta: Share, chance: Chance }),
+  // New leads in the sender's segment, else a random one.
+  z.object({ type: z.literal('newLeads'), count: z.number().int().positive(), chance: Chance }),
+  // The sender (a lead) answers again.
+  z.object({ type: z.literal('touchLead'), chance: Chance }),
+  // Hours taken out of next week.
+  z.object({ type: z.literal('lostHours'), hours: z.number().int().positive(), chance: Chance }),
+  z.object({
+    type: z.literal('fixedCost'),
+    id: Id,
+    name: z.string().min(1),
+    monthlyCents: Cents.positive(),
+    chance: Chance,
+  }),
+])
+export type Effect = z.infer<typeof EffectSchema>
+
+export const EVENT_AREAS = ['validation', 'sales', 'product', 'finance', 'founder', 'team'] as const
+
+export const EventChoiceSchema = z.object({
+  id: Id,
+  label: z.string().min(1),
+  hours: z.number().int().nonnegative(),
+  effects: z.array(EffectSchema).default([]),
+})
+
+export const EventSchema = z.object({
+  id: Id,
+  area: z.enum(EVENT_AREAS),
+  weight: z.number().positive(),
+  once: z.boolean().default(false),
+  when: z.array(ConditionSchema).default([]),
+  // Who the message is from. A customer or lead is a real one, picked when the message arrives.
+  from: z.enum(['none', 'customer', 'lead']).default('none'),
+  // The sender's role, shown with their name. For `none` it is the whole sender.
+  sender: z.string().min(1),
+  text: z.string().min(1),
+  // The choice taken when the message expires unanswered. It costs no hours.
+  defaultChoice: Id,
+  choices: z.array(EventChoiceSchema).min(2),
+})
+export type ScenarioEvent = z.infer<typeof EventSchema>
+export type EventChoice = z.infer<typeof EventChoiceSchema>
+export const EVENT_PLACEHOLDERS = ['name'] as const
+
 export const INTRO_PLACEHOLDERS = ['cash', 'savings', 'living', 'maxWeeks'] as const
 export const NOTE_PLACEHOLDERS = ['week', 'n', 'living'] as const
 
@@ -151,12 +333,14 @@ export const ScenarioFileSchema = z.object({
       burnoutWeeks: z.number().int().positive(),
     }),
   }),
-  finance: z.object({
-    weeksPerMonth: z.number().int().positive(),
-  }),
+  finance: FinanceConfigSchema,
   experiments: z.object({
     interview: InterviewConfigSchema,
+    landing: LandingConfigSchema,
+    presale: PresaleConfigSchema,
   }),
+  team: TeamConfigSchema,
+  inbox: InboxConfigSchema,
   product: z.object({
     startQuality: z.number().min(0).max(100),
     // quality = startQuality - qualityPerBug * bugs, never below 0
@@ -176,6 +360,7 @@ export const InterviewQuotesSchema = z.record(Id, z.record(Id, z.array(z.string(
 
 export const ScenarioSchema = ScenarioFileSchema.extend({
   features: z.array(FeatureSchema).min(1),
+  events: z.array(EventSchema),
   interviewQuotes: InterviewQuotesSchema,
   // segment id -> two word lists; a lead's name is one word from each, joined by a space
   companyNames: z.record(Id, CompanyNamePartsSchema),
@@ -258,6 +443,40 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     checkText(text, NOTE_PLACEHOLDERS, ['founderNotes', id])
   }
 
+  for (const id of dupes(s.events.map((e) => e.id))) issue(`duplicate event ${id}`, ['events'])
+  s.events.forEach((e, i) => {
+    const at = (...rest: (string | number)[]) => ['events', i, ...rest]
+    checkText(e.text, EVENT_PLACEHOLDERS, at('text'))
+    if (e.from === 'none' && e.text.includes('{name}')) {
+      issue('{name} needs a sender that is a customer or a lead', at('text'))
+    }
+    const choice = e.choices.find((c) => c.id === e.defaultChoice)
+    if (!choice) issue(`unknown default choice ${e.defaultChoice}`, at('defaultChoice'))
+    else if (choice.hours > 0) issue('the default choice must cost no hours', at('defaultChoice'))
+    for (const id of dupes(e.choices.map((c) => c.id)))
+      issue(`duplicate choice ${id}`, at('choices'))
+    e.choices.forEach((c, j) => {
+      for (const fx of c.effects) {
+        if (
+          (fx.type === 'invoicePayChance' || fx.type === 'churnChance') &&
+          e.from !== 'customer'
+        ) {
+          issue(`${fx.type} needs a customer sender`, at('choices', j, 'effects'))
+        }
+        if (fx.type === 'touchLead' && e.from !== 'lead') {
+          issue('touchLead needs a lead sender', at('choices', j, 'effects'))
+        }
+      }
+    })
+  })
+  const impressions = s.team.impressions
+  impressions.forEach((b, i) => {
+    const last = i === impressions.length - 1
+    if (last !== (b.below === undefined)) {
+      issue('only the last impression has no upper bound', ['team', 'impressions', i])
+    }
+  })
+
   const allNames = Object.values(s.companyNames).flatMap(companyNameCombinations)
   for (const name of new Set(dupes(allNames))) {
     issue(`duplicate company name ${name}`, ['companyNames'])
@@ -298,4 +517,5 @@ export type InterviewBucket = Scenario['experiments']['interview']['buckets'][nu
 export type IntroCard = z.infer<typeof IntroCardSchema>
 export type SalesConfig = z.infer<typeof SalesConfigSchema>
 export type ChannelId = z.infer<typeof Channel>
+export type TeamRole = z.infer<typeof TeamRoleSchema>
 export type NumberRange = z.infer<typeof Range>

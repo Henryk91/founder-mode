@@ -3,6 +3,7 @@ import {
   companyNameCombinations,
   FOUNDER_NOTE_IDS,
   loadScenario,
+  parseCondition,
   parseScenario,
   SCENARIO_IDS,
   scenarioSources,
@@ -33,9 +34,43 @@ describe('content', () => {
     }
   })
 
+  it('has the Phase 4 numbers of the scenario spec', () => {
+    const s = loadScenario('kantino')
+    expect(s.experiments.landing).toMatchObject({
+      hours: 8,
+      budgetsCents: [20_000, 50_000],
+      centsPerVisitor: 150,
+    })
+    expect(s.experiments.presale).toMatchObject({ hoursPerBatch: 6, batchSize: 5, weeks: 1 })
+    expect(s.finance.bookkeeping).toMatchObject({ hoursPerWeek: 2, backlogLimit: 12 })
+    expect(s.finance.chaseBoost).toBe(0.3)
+    expect(s.team.roles.developer.monthlyCents).toBe(420_000)
+    expect(s.team.roles.salesperson.monthlyCents).toBe(380_000)
+    expect(s.team).toMatchObject({
+      searchHours: 6,
+      searchWeeks: 2,
+      candidates: 3,
+      startWeeks: 4,
+      severanceWeeks: 4,
+    })
+    expect(s.events.length).toBeGreaterThanOrEqual(25)
+  })
+
+  it('parses event conditions into data, not code', () => {
+    const s = loadScenario('kantino')
+    const late = s.events.find((e) => e.id === 'late_payer_first')!
+    expect(late.when).toEqual([
+      { path: 'customers.count', op: '>=', value: 1 },
+      { path: 'invoices.overdueDays', op: '>=', value: 14 },
+    ])
+    expect(parseCondition('week >= 3')).toEqual({ path: 'week', op: '>=', value: 3 })
+    expect(parseCondition('constructor.prototype > 1')).toBeNull()
+  })
+
   it('game text has no em dashes', () => {
-    const { scenario, features, interviewQuotes, companyNames, intro } = scenarioSources('kantino')
-    expect(scenario + features + interviewQuotes + companyNames + intro).not.toContain('—')
+    const { scenario, features, interviewQuotes, companyNames, intro, events } =
+      scenarioSources('kantino')
+    expect(scenario + features + interviewQuotes + companyNames + intro + events).not.toContain('—')
   })
 
   it('has at least 400 company names for every segment, none ending in a number', () => {
@@ -98,6 +133,47 @@ describe('content', () => {
     it('an intro without a goal card', () => {
       const intro = base.intro.replace('id: goal', 'id: target')
       expect(() => parseScenario({ ...base, intro })).toThrow(/card with id goal/)
+    })
+
+    it('an event condition outside the closed grammar', () => {
+      for (const bad of ['week >= soon', 'moonPhase > 1', 'week >= 2 and cashEur > 3']) {
+        const events = base.events.replace('week >= 2', bad)
+        expect(() => parseScenario({ ...base, events })).toThrow(/unknown condition/)
+      }
+    })
+
+    it('an event whose default choice does not exist or costs hours', () => {
+      const missing = base.events.replace('defaultChoice: pass', 'defaultChoice: nope')
+      expect(() => parseScenario({ ...base, events: missing })).toThrow(
+        /unknown default choice nope/,
+      )
+      const costly = base.events.replace('defaultChoice: pass', 'defaultChoice: buy')
+      expect(() => parseScenario({ ...base, events: costly })).toThrow(/must cost no hours/)
+    })
+
+    it('an effect type that does not exist', () => {
+      const events = base.events.replace(
+        'type: skill, skill: interviewing, delta: 0.03',
+        'type: teleport',
+      )
+      expect(() => parseScenario({ ...base, events })).toThrow()
+    })
+
+    it('a sender effect without that sender, and {name} without a sender', () => {
+      const churn = base.events.replace(
+        'type: skill, skill: interviewing, delta: 0.03',
+        'type: churnChance, delta: 0.3',
+      )
+      expect(() => parseScenario({ ...base, events: churn })).toThrow(/needs a customer sender/)
+      const name = base.events.replace('A market research firm', '{name} is a market research firm')
+      expect(() => parseScenario({ ...base, events: name })).toThrow(
+        /needs a sender that is a customer/,
+      )
+    })
+
+    it('two events with the same id', () => {
+      const events = base.events.replace('id: friend_of_friend', 'id: survey_offer')
+      expect(() => parseScenario({ ...base, events })).toThrow(/duplicate event survey_offer/)
     })
 
     it('inverted range', () => {

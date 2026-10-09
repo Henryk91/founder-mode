@@ -45,8 +45,11 @@ describe('a full run with product and sales', () => {
         const l = r.report.ledger
         expect(s.company.cashCents).toBe(
           before.company.cashCents +
-            l.revenueCents -
+            l.revenueCents +
+            l.otherIncomeCents -
             l.fixedCostsCents -
+            l.adSpendCents -
+            l.otherCostsCents -
             l.founderDrawCents +
             l.transferCents +
             l.autoTransferCents,

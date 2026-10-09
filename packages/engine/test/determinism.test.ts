@@ -124,8 +124,11 @@ describe('full run', () => {
         // Cash arithmetic: every cent is accounted for in the ledger.
         expect(s.company.cashCents).toBe(
           before.company.cashCents +
-            l.revenueCents -
+            l.revenueCents +
+            l.otherIncomeCents -
             l.fixedCostsCents -
+            l.adSpendCents -
+            l.otherCostsCents -
             l.founderDrawCents +
             l.transferCents +
             l.autoTransferCents,
