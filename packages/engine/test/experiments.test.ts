@@ -3,7 +3,7 @@ import { endWeek, getView } from '../src/index'
 import { Rng } from '../src/rng'
 import { bucketFor, runInterviews } from '../src/systems/experiments'
 import type { GameState } from '../src/types'
-import { newGame, plan } from './helpers'
+import { kantino, newGame, plan } from './helpers'
 
 const segmentWithRole = (s: GameState, role: string) =>
   Object.entries(s.hidden.segments).find(([, h]) => h.roleId === role)![0]
@@ -22,7 +22,8 @@ describe('interviews', () => {
     const s = newGame()
     const { state, report } = endWeek(s, plan({ interviews: { medical: 3 } }))
     expect(state.knowledge.medical).toHaveLength(3)
-    expect(state.founder.skills.interviewing).toBeCloseTo(0.16)
+    const { skillGain } = s.scenario.experiments.interview
+    expect(state.founder.skills.interviewing).toBeCloseTo(0.1 + 3 * skillGain)
     expect(state.eventLog).toHaveLength(3)
     expect(report.interviews).toHaveLength(3)
     expect(getView(state).segments.find((x) => x.id === 'medical')!.interviews).toHaveLength(3)
@@ -30,7 +31,12 @@ describe('interviews', () => {
   })
 
   it('caps the interviewing skill', () => {
-    const s = newGame()
+    const base = kantino()
+    const scenario = {
+      ...base,
+      experiments: { interview: { ...base.experiments.interview, skillGain: 0.02 } },
+    }
+    const s = newGame('cap', scenario)
     // 0.10 + 35 x 0.02 would be 0.80; 36 interviews over two weeks must stop there.
     const week1 = endWeek(s, plan({ interviews: { coworking: 32 } })).state
     expect(week1.founder.skills.interviewing).toBeCloseTo(0.74)

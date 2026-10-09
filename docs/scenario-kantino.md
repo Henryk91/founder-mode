@@ -54,11 +54,11 @@ At game creation the engine shuffles three roles across the three segments. The 
 
 | Role | Pain | Politeness bias in interviews |
 |---|---|---|
-| Viable | 0.65 to 0.90 | 0.10 to 0.20 |
-| Mediocre | 0.35 to 0.55 | 0.15 to 0.30 |
-| Trap | 0.10 to 0.25 | 0.28 to 0.35 |
+| Viable | 0.65 to 0.90 | 0.05 to 0.15 |
+| Mediocre | 0.35 to 0.55 | 0.25 to 0.40 |
+| Trap | 0.10 to 0.25 | 0.50 to 0.65 |
 
-The trap is designed so that early interviews sound encouraging while pre-sales fail.
+The trap is designed so that early interviews sound encouraging while pre-sales fail. With an untrained interviewer all three markets average "Painful": the viable market sounds most in pain only about 60% of the time after 5 interviews each. Practice (lower politeness bias) and feature mentions tell them apart. (Phase 3 tuning: politeness was 0.10 to 0.20, 0.15 to 0.30, 0.28 to 0.35.)
 
 ## 4. Features
 
@@ -83,7 +83,7 @@ The player sees feature names and build hours. The "Required by" column is hidde
 
 | Experiment | Cost | Delay | Parameters |
 |---|---|---|---|
-| Interview | 2 h each | Same week | Skill gain +0.02 per interview, capped at 0.80 |
+| Interview | 2 h each | Same week | Noise N(0, 0.30). Skill gain +0.01 per interview, capped at 0.80 |
 | Landing page test | 8 h plus an ad budget of 200 or 500 | 2 weeks | 1.50 per visitor, so 133 or 333 visitors |
 | Pre-sale | 6 h per batch of 5 prospects | 1 week | Requires at least 5 leads in that segment |
 
@@ -96,10 +96,12 @@ The observed value (see the formula in the implementation plan) is shown only as
 | below 0.20 | Not a problem | "We just each bring something. It works." |
 | 0.20 to 0.40 | Mild | "It is a bit chaotic some days, I suppose." |
 | 0.40 to 0.60 | Noticeable | "Someone always ends up collecting money. It is annoying." |
-| 0.60 to 0.80 | Painful | "I lose half an hour every day on this." |
-| above 0.80 | Urgent | "If you can fix this I want it next week." |
+| 0.60 to 0.90 | Painful | "I lose half an hour every day on this." |
+| above 0.90 | Urgent | "If you can fix this I want it next week." |
 
-Write at least 10 quotes per bucket per segment. In each interview there is also a chance of 0.3 + 0.5 x pain that the person mentions one of the segment's must have features in their own words.
+Write at least 10 quotes per bucket per segment. In each interview there is also a chance of 0.3 + 0.3 x pain that the person mentions one of the segment's must have features in their own words.
+
+Phase 3 tuning: noise was 0.20, skill gain 0.02, the Urgent bound 0.80, and the mention chance 0.3 + 0.5 x pain.
 
 ## 6. Sales
 
