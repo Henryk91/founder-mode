@@ -1,4 +1,4 @@
-import { interviewsOf, openLeadCount } from './systems/experiments'
+import { interviewsOf, openLeadCount, presaleBatchesUsed } from './systems/experiments'
 import { monthlyFixedCostsCents, receivablesCents, runwayWeeks } from './systems/finance'
 import { committedHours } from './systems/founder'
 import { isOverdue, overdueWeeks } from './systems/invoices'
@@ -72,7 +72,8 @@ export function getView(state: GameState): PlayerView {
       landingWeeks: scenario.experiments.landing.weeks,
       presaleHoursPerBatch: scenario.experiments.presale.hoursPerBatch,
       presaleBatchSize: scenario.experiments.presale.batchSize,
-      presaleMinLeads: scenario.experiments.presale.minLeads,
+      presaleMaxBatches: scenario.experiments.presale.maxBatchesPerSegment,
+      presaleRefundWeeks: scenario.experiments.presale.refundWeeks,
       followUpHours: scenario.sales.followUpHours,
       presaleWeeks: scenario.experiments.presale.weeks,
       chaseHours: scenario.finance.chaseHours,
@@ -190,6 +191,10 @@ export function getView(state: GameState): PlayerView {
           : [],
       ),
       openLeads: openLeadCount(state, seg.id),
+      presaleBatchesLeft: Math.max(
+        0,
+        scenario.experiments.presale.maxBatchesPerSegment - presaleBatchesUsed(state, seg.id),
+      ),
       lastChannel: lastChannel(state, seg.id),
     })),
     history: state.ledger.map((l) => ({

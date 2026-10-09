@@ -1,4 +1,4 @@
-import { openLeadCount } from './systems/experiments'
+import { presaleBatchesUsed } from './systems/experiments'
 import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
 import { canBookDemo, canFollowUp } from './systems/sales'
@@ -135,11 +135,11 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
       issues.push({ code: 'unknown_segment', segmentId })
     } else if (!isCount(batches)) {
       issues.push({ code: 'invalid_number', field: `presales.${segmentId}` })
-    } else if (batches * presale.minLeads > openLeadCount(state, segmentId)) {
+    } else if (presaleBatchesUsed(state, segmentId, plan) > presale.maxBatchesPerSegment) {
       issues.push({
-        code: 'presale_needs_leads',
+        code: 'presale_cap',
         segmentId,
-        leads: batches * presale.minLeads,
+        left: Math.max(0, presale.maxBatchesPerSegment - presaleBatchesUsed(state, segmentId)),
       })
     }
   }

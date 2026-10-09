@@ -108,10 +108,11 @@ export type ProductState = {
   fixProgressHours: number
 }
 
-export type LeadStage = 'lead' | 'demo' | 'trial' | 'paying' | 'lost'
+/** `committed`: paid a deposit in a pre-sale, waiting for the product. */
+export type LeadStage = 'lead' | 'demo' | 'trial' | 'committed' | 'paying' | 'lost'
 
 /** How a lead was found: outreach, a landing page sign up, an inbox message, or the salesperson. */
-export type LeadSource = 'outreach' | 'landing' | 'inbox' | 'team'
+export type LeadSource = 'outreach' | 'landing' | 'inbox' | 'team' | 'presale'
 
 /** Observable facts only. */
 export type Lead = {
@@ -124,8 +125,13 @@ export type Lead = {
   lastContactWeek: number
   /** Week in which the lead stopped answering, or null. Silent leads cannot progress. */
   silentSinceWeek: number | null
-  lostReason: 'declined' | 'silent' | null
+  lostReason: LostReason | null
+  /** The deposit a committed prospect paid, one month at the pitched price. */
+  depositCents?: number
 }
+
+/** Why a lead was lost. `refunded`: a deposit was paid back because the product did not ship. */
+export type LostReason = 'declined' | 'silent' | 'refunded'
 
 export type Customer = {
   id: string
@@ -136,6 +142,8 @@ export type Customer = {
   churnedWeek: number | null
   /** The monthly price agreed when the customer signed. Later price changes do not touch it. */
   priceCentsPerMonth: number
+  /** Months already paid for, by a pre-sale deposit. These month ends send no invoice. */
+  prepaidMonths?: number
 }
 
 export type HiddenSegment = {
@@ -275,6 +283,7 @@ export type TeamState = {
 /** Money movements of one resolved week. All values in cents, outflows positive. */
 export type WeekLedger = {
   week: number
+  /** Invoices paid and pre-sale deposits received. Refunds of deposits are other costs. */
   revenueCents: number
   fixedCostsCents: number
   livingCostsCents: number
@@ -392,7 +401,7 @@ export type PlanIssue =
   | { code: 'invalid_price' }
   | { code: 'invalid_follow_up'; leadId: string }
   | { code: 'invalid_budget'; segmentId: string }
-  | { code: 'presale_needs_leads'; segmentId: string; leads: number }
+  | { code: 'presale_cap'; segmentId: string; left: number }
   | { code: 'invalid_chase'; invoiceId: string }
   | { code: 'search_not_allowed' }
   | { code: 'invalid_hire'; candidateId: string }
@@ -449,7 +458,8 @@ export type PlayerView = {
     landingWeeks: number
     presaleHoursPerBatch: number
     presaleBatchSize: number
-    presaleMinLeads: number
+    presaleMaxBatches: number
+    presaleRefundWeeks: number
     followUpHours: number
     presaleWeeks: number
     chaseHours: number
@@ -518,7 +528,7 @@ export type LeadView = {
   weeksInStage: number
   lastContactWeek: number
   silent: boolean
-  lostReason: 'declined' | 'silent' | null
+  lostReason: LostReason | null
   /** True when a demo can be held with this lead this week. */
   canBookDemo: boolean
   /** True when the lead is open and a follow up can be booked. */
@@ -617,6 +627,8 @@ export type SegmentView = {
   presales: PresaleView[]
   /** Leads of this segment that are not lost and not yet customers. */
   openLeads: number
+  /** Pre-sale batches still allowed in this market, after the ones already run. */
+  presaleBatchesLeft: number
   /** Outreach channel picked for this segment in the latest plan that had one, else null. */
   lastChannel: ChannelId | null
 }
@@ -643,7 +655,14 @@ export type WeekReport = {
 }
 
 export type LeadChange =
-  'wants_demo' | 'trial_started' | 'won' | 'declined' | 'went_silent' | 'lost_silent'
+  | 'wants_demo'
+  | 'trial_started'
+  | 'won'
+  | 'declined'
+  | 'went_silent'
+  | 'lost_silent'
+  | 'committed'
+  | 'refunded'
 
 export type ReportEntry =
   | MoneyMovement

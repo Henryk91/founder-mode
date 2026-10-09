@@ -29,8 +29,14 @@ export function issueInvoices(state: GameState, rng: Rng): { state: GameState; i
   const issued: Invoice[] = []
   const payWeeks = { ...state.hidden.payWeeks }
   const waitsForChase = [...state.hidden.waitsForChase]
+  const prepaid = new Set<string>()
   for (const customer of activeCustomers(state)) {
     if (customer.sinceWeek >= state.week) continue
+    // A month paid for by a pre-sale deposit sends no invoice.
+    if ((customer.prepaidMonths ?? 0) > 0) {
+      prepaid.add(customer.id)
+      continue
+    }
     const hidden = state.hidden.segments[customer.segmentId]
     if (!hidden) throw new Error(`Unknown segment ${customer.segmentId}`)
     const id = `invoice_${state.invoices.length + issued.length + 1}`
@@ -51,10 +57,16 @@ export function issueInvoices(state: GameState, rng: Rng): { state: GameState; i
     payWeeks[id] = never || waits ? null : state.week + weeksFor(dueDays + lateDays)
     if (!never && waits) waitsForChase.push(id)
   }
-  if (issued.length === 0) return { state, issued }
+  const customers = prepaid.size
+    ? state.customers.map((c) =>
+        prepaid.has(c.id) ? { ...c, prepaidMonths: (c.prepaidMonths ?? 0) - 1 } : c,
+      )
+    : state.customers
+  if (issued.length === 0) return { state: { ...state, customers }, issued }
   return {
     state: {
       ...state,
+      customers,
       invoices: [...state.invoices, ...issued],
       hidden: { ...state.hidden, payWeeks, waitsForChase },
     },

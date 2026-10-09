@@ -8,7 +8,7 @@ events:
     area: validation
     weight: 2
     once: true
-    when: [week >= 2]
+    when: [week >= 1]
     from: none
     sender: Panel firm
     text: >-
@@ -29,7 +29,7 @@ events:
   - id: friend_of_friend
     area: validation
     weight: 2
-    when: [week >= 2]
+    when: [week >= 1]
     from: none
     sender: A friend of a friend
     text: >-
@@ -47,7 +47,7 @@ events:
   - id: startup_meetup
     area: validation
     weight: 2
-    when: [week >= 4]
+    when: [week >= 2]
     from: none
     sender: Meetup organiser
     text: >-
@@ -136,7 +136,7 @@ events:
     area: sales
     weight: 1
     once: true
-    when: [week >= 6, cashEur >= 2000]
+    when: [week >= 4, cashEur >= 2000]
     from: none
     sender: Trade fair
     text: >-
@@ -159,7 +159,7 @@ events:
     area: sales
     weight: 1
     once: true
-    when: [week >= 5]
+    when: [week >= 3]
     from: none
     sender: Sales coach
     text: >-
@@ -208,7 +208,7 @@ events:
     area: sales
     weight: 1
     once: true
-    when: [week >= 10]
+    when: [week >= 6]
     from: none
     sender: Newsletter
     text: >-
@@ -254,7 +254,7 @@ events:
   - id: restaurant_portal
     area: product
     weight: 2
-    when: [week >= 6]
+    when: [week >= 3]
     from: none
     sender: Restaurant owner
     text: >-
@@ -298,7 +298,7 @@ events:
     area: product
     weight: 1
     once: true
-    when: [week >= 5]
+    when: [week >= 3]
     from: none
     sender: Hosting provider
     text: >-
@@ -352,7 +352,7 @@ events:
     area: finance
     weight: 2
     once: true
-    when: [week >= 6]
+    when: [week >= 4]
     from: none
     sender: Accountant
     text: >-
@@ -373,7 +373,7 @@ events:
     area: finance
     weight: 1
     once: true
-    when: [week >= 3, cashEur <= 8000]
+    when: [week >= 2, cashEur <= 8000]
     from: none
     sender: Regional programme
     text: >-
@@ -394,7 +394,7 @@ events:
     area: finance
     weight: 1
     once: true
-    when: [week >= 4]
+    when: [week >= 2]
     from: none
     sender: Your laptop
     text: >-
@@ -418,7 +418,7 @@ events:
     area: finance
     weight: 3
     cooldownWeeks: 5
-    when: [week >= 4]
+    when: [week >= 3]
     from: none
     sender: Accountant
     text: >-
@@ -445,7 +445,7 @@ events:
     area: finance
     weight: 1
     once: true
-    when: [week >= 4]
+    when: [week >= 2]
     from: none
     sender: Bank
     text: >-
@@ -488,7 +488,7 @@ events:
   - id: family_lunch
     area: founder
     weight: 2
-    when: [week >= 3]
+    when: [week >= 2]
     from: none
     sender: Family
     text: >-
@@ -532,7 +532,7 @@ events:
   - id: flu
     area: founder
     weight: 1
-    when: [week >= 5]
+    when: [week >= 3]
     from: none
     sender: Your body
     text: >-

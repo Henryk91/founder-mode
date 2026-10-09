@@ -14,6 +14,8 @@ export function isMonthEnd(state: GameState, week: number): boolean {
 /** Money that moves in a week apart from the regular flows, gathered by earlier steps. */
 export type WeekExtras = {
   adSpendCents: number
+  /** Pre-sale deposits received: money from customers, counted as revenue. */
+  depositsCents: number
   /** Late fees, severance, and costs of inbox choices. */
   otherCostsCents: number
   /** Money from inbox choices. */
@@ -22,6 +24,7 @@ export type WeekExtras = {
 
 export const noExtras = (): WeekExtras => ({
   adSpendCents: 0,
+  depositsCents: 0,
   otherCostsCents: 0,
   otherIncomeCents: 0,
 })
@@ -74,7 +77,8 @@ export function applyFinanceWeek(
 
   const settled = settleInvoices(state)
   state = settled.state
-  const revenueCents = settled.paid.reduce((sum, inv) => sum + inv.amountCents, 0)
+  const revenueCents =
+    settled.paid.reduce((sum, inv) => sum + inv.amountCents, 0) + extras.depositsCents
   cash += revenueCents
 
   let issued: Invoice[] = []

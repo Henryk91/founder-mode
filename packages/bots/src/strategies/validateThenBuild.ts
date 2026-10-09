@@ -383,7 +383,7 @@ export function validatingPlayer(
       const commits = sales.reduce((t, x) => t + x.commits, 0)
       const refuted =
         sales.length >= MAX_PRESALE_BATCHES &&
-        prospects >= view.costs.presaleMinLeads &&
+        prospects >= view.costs.presaleBatchSize &&
         commits === 0
 
       if (unshipped.length <= 1 && wanted.length > 0) {

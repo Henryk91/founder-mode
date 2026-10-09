@@ -136,6 +136,8 @@ export function Plan() {
             presaleWeeks: count('unit.weeks', stage, costs.presaleWeeks),
             presale: label('unit.hours', stage, { n: costs.presaleHoursPerBatch }),
             size: costs.presaleBatchSize,
+            refund: count('unit.weeks', stage, costs.presaleRefundWeeks),
+            max: costs.presaleMaxBatches,
           })}
         </p>
         {view.segments.map((seg) => {
@@ -184,15 +186,13 @@ export function Plan() {
                 <span>{label('plan.presale', stage, { segment: seg.name })}</span>
               </div>
               <span className={styles.hint}>
-                {count('plan.presale.leads', stage, seg.openLeads, {
-                  min: costs.presaleMinLeads,
-                })}
+                {count('plan.presale.left', stage, seg.presaleBatchesLeft)}
               </span>
               <Stepper
                 stage={stage}
                 value={batches}
                 max={Math.min(
-                  Math.floor(seg.openLeads / costs.presaleMinLeads),
+                  seg.presaleBatchesLeft,
                   capFor(batches, free, costs.presaleHoursPerBatch, 10),
                 )}
                 display={
@@ -410,7 +410,7 @@ function issueText(code: PlanIssue['code'], stage: UiStage, max: number): string
     case 'too_many_hours':
     case 'transfer_exceeds_savings':
       return label(`plan.issue.${code}`, stage, { max })
-    case 'presale_needs_leads':
+    case 'presale_cap':
       return label(`plan.issue.${code}`, stage)
     default:
       return label('plan.issue.other', stage)

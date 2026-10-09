@@ -69,9 +69,10 @@ experiments:
   presale:
     hoursPerBatch: 6
     batchSize: 5
-    minLeads: 3
     weeks: 1
-    commitRate: 0.5
+    commitRate: 0.25
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
 
 product:
   startQuality: 70
@@ -90,7 +91,7 @@ sales:
   followUpDemoBoost: 0.05
   demoToTrialBase: 0.05
   demoToTrialPerFit: 0.4
-  trialWeeks: 2
+  trialWeeks: 1
   ghostChancePerWeek: 0.1
   silentWeeksToLose: 4
   skillGainPerDemo: 0.005
@@ -156,6 +157,7 @@ inbox:
   maxPerWeek: 3
   drawChance: 0.4
   openWeeks: 2
+  guaranteeBelowOpen: 2
   cooldownWeeks: 8
   openLimit: 4
 

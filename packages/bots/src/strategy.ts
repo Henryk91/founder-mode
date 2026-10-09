@@ -82,12 +82,12 @@ export class PlanBuilder {
     return true
   }
 
-  /** One batch of pre-sale prospects, if the market has enough open leads and the hours fit. */
+  /** One batch of pre-sale pitches, if the market has batches left and the hours fit. */
   presale(segmentId: string): boolean {
     const seg = this.view.segments.find((x) => x.id === segmentId)
     const c = this.view.costs
     const batches = this.plan.presales[segmentId] ?? 0
-    if (!seg || seg.openLeads < (batches + 1) * c.presaleMinLeads) return false
+    if (!seg || seg.presaleBatchesLeft <= batches) return false
     if (this.free < c.presaleHoursPerBatch) return false
     this.plan.presales[segmentId] = batches + 1
     this.free -= c.presaleHoursPerBatch

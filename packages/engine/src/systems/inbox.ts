@@ -217,7 +217,8 @@ function eligibleEvents(state: GameState, taken: ReadonlySet<string>): ScenarioE
 /**
  * Plan section 4.10 and step 13: draws the messages for next week. Up to `maxPerWeek` slots, each
  * filled with the scenario's chance by a weighted draw among the eligible events, while fewer
- * than `openLimit` messages are open.
+ * than `openLimit` messages are open. If no slot was filled and fewer than `guaranteeBelowOpen`
+ * messages are open, one more draw happens without the chance.
  */
 export function drawMessages(state: GameState, rng: Rng): GameState {
   const cfg = state.scenario.inbox
@@ -238,37 +239,62 @@ export function drawMessages(state: GameState, rng: Rng): GameState {
     taken.add(event.id)
     open++
     drawn.push({ eventId: event.id, week: arrival })
-    added.push({
-      id: `message_${state.inbox.length + added.length + 1}`,
-      eventId: event.id,
-      area: event.area,
-      week: arrival,
-      expiresWeek: arrival + cfg.openWeeks - 1,
-      fromRole: event.sender,
-      fromName: from.name,
-      targetId: from.targetId,
-      text: event.text.replaceAll('{name}', from.name),
-      choices: event.choices.map((c) => ({
-        id: c.id,
-        label: c.label,
-        hours: c.hours,
-        costCents: c.effects.reduce(
-          (sum, e) => sum + (e.type === 'cash' && e.amountCents < 0 ? -e.amountCents : 0),
-          0,
-        ),
-        monthlyCostCents: c.effects.reduce(
-          (sum, e) => sum + (e.type === 'fixedCost' ? e.monthlyCents : 0),
-          0,
-        ),
-      })),
-      status: 'open',
-      choiceId: null,
-    })
+    added.push(makeMessage(state, event, from, arrival, added.length))
+  }
+  // A quiet week still brings one message while the inbox is nearly empty.
+  if (added.length === 0 && open < cfg.guaranteeBelowOpen) {
+    const eligible = eligibleEvents(state, taken)
+    const total = eligible.reduce((sum, e) => sum + e.weight, 0)
+    if (total > 0) {
+      let r = rng.next() * total
+      const event = eligible.find((e) => (r -= e.weight) < 0) ?? eligible[eligible.length - 1]
+      if (event) {
+        const from = sender(state, event, rng)
+        drawn.push({ eventId: event.id, week: arrival })
+        added.push(makeMessage(state, event, from, arrival, 0))
+      }
+    }
   }
   if (added.length === 0) return state
   return {
     ...state,
     inbox: [...state.inbox, ...added],
     drawnEvents: [...state.drawnEvents, ...drawn],
+  }
+}
+
+function makeMessage(
+  state: GameState,
+  event: ScenarioEvent,
+  from: { name: string; targetId: string | null },
+  arrival: number,
+  index: number,
+): Message {
+  const cfg = state.scenario.inbox
+  return {
+    id: `message_${state.inbox.length + index + 1}`,
+    eventId: event.id,
+    area: event.area,
+    week: arrival,
+    expiresWeek: arrival + cfg.openWeeks - 1,
+    fromRole: event.sender,
+    fromName: from.name,
+    targetId: from.targetId,
+    text: event.text.replaceAll('{name}', from.name),
+    choices: event.choices.map((c) => ({
+      id: c.id,
+      label: c.label,
+      hours: c.hours,
+      costCents: c.effects.reduce(
+        (sum, e) => sum + (e.type === 'cash' && e.amountCents < 0 ? -e.amountCents : 0),
+        0,
+      ),
+      monthlyCostCents: c.effects.reduce(
+        (sum, e) => sum + (e.type === 'fixedCost' ? e.monthlyCents : 0),
+        0,
+      ),
+    })),
+    status: 'open',
+    choiceId: null,
   }
 }
