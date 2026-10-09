@@ -13,7 +13,12 @@ import {
 import { runGame } from './simulate'
 import { STRATEGIES } from './strategies'
 import { randomNoInbox } from './strategies/random'
-import { BEHAVIOUR_NAMES, withoutBehaviours } from './strategies/validateThenBuild'
+import {
+  BEHAVIOUR_NAMES,
+  forcedAnswer,
+  withInbox,
+  withoutBehaviours,
+} from './strategies/validateThenBuild'
 import type { Strategy } from './strategy'
 
 /** The hand written tuning notes at the end of an existing report survive a new run. */
@@ -45,11 +50,7 @@ const runs = strategies.map(play)
 // Leave-one-out runs of the validate_then_build variants, and the silent random bot. Only for
 // the report, so they stay out of the strategy list that the targets look at.
 const full = args.only.length === 0
-const bases = [
-  { id: 'validate_then_build', hire: 'none' },
-  { id: 'validate_then_build_hire', hire: 'covered' },
-  { id: 'validate_then_build_early_hire', hire: 'payback' },
-] as const
+const bases = [{ id: 'validate_then_build', hire: 'none' }] as const
 const ablations = full
   ? bases
       .flatMap((base) => [
@@ -58,7 +59,23 @@ const ablations = full
       ])
       .map(play)
   : []
-const extras = full ? [play(randomNoInbox)] : []
+const extras = full ? [randomNoInbox, withInbox('none'), withInbox('effort')].map(play) : []
+
+// Every answer of every event, forced, on validate_then_build. Slow, so only on request.
+const events = args.events
+  ? scenario.events.flatMap((e) =>
+      e.choices.map((c) => ({
+        eventId: e.id,
+        choiceId: c.id,
+        hours: c.hours,
+        costCents: c.effects.reduce(
+          (t, fx) => t + (fx.type === 'cash' && fx.amountCents < 0 ? -fx.amountCents : 0),
+          0,
+        ),
+        results: play(forcedAnswer(e.id, c.id)).results,
+      })),
+    )
+  : undefined
 
 const input = {
   engineVersion: ENGINE_VERSION,
@@ -67,6 +84,7 @@ const input = {
   strategies: runs,
   ablations,
   extras,
+  ...(events ? { events } : {}),
 }
 const report = buildReport(input)
 if (args.out === '-') {
@@ -80,7 +98,7 @@ if (args.out === '-') {
 for (const id of TARGET_STRATEGIES) {
   console.log(`\nTargets for ${id}`)
   for (const t of evaluateTargets(input, id)) {
-    const status = t.pass ? 'ok  ' : t.tuned ? 'FAIL' : 'open'
-    console.log(`${status} ${t.id}. ${t.text}: ${t.value}${t.tuned ? '' : ' (not tuned yet)'}`)
+    const status = t.value === '-' ? '----' : t.pass ? 'ok  ' : 'FAIL'
+    console.log(`${status} ${t.id}. ${t.text}: ${t.value}`)
   }
 }

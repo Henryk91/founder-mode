@@ -216,7 +216,7 @@ const labels = {
   'plan.section.fixHint':
     'Costs {hours} per bug. Removes one bug and lifts quality. Arrives this week.',
   'plan.section.sellHint':
-    'Costs the hours you set, on one channel per market. Finds new leads at the end of this week, if anyone answers.',
+    'Costs the hours you set, on one channel per market. Finds new leads at the end of this week, if anyone answers. One channel in one market wears out above about {hours} a week, counted over {weeks}, so switching channels helps.',
   'plan.section.demosHint':
     'Costs {hours} per demo. A good demo starts a trial that runs {weeks}, and a trial can turn into a paying customer. The verdict on the demo arrives this week, the trial result {weeks} later.',
   'plan.section.restHint': 'Costs the hours you set. Restores energy this week.',

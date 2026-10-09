@@ -19,6 +19,8 @@ export type Player = {
   respond?(view: PlayerView): Answer[]
   plan(view: PlayerView): WeekPlan
   observe?(report: WeekReport, view: PlayerView): void
+  /** The market the player is working on, if it has one. Read by the report only. */
+  focus?(): string | null
 }
 
 export type Strategy = {
@@ -207,47 +209,86 @@ export function segmentNotes(
   }
 }
 
-/** Tracks new leads per outreach hour by segment and channel, from week reports. */
+/**
+ * Tracks new leads per outreach hour by segment and channel, from week reports. Hours are counted
+ * as they work for finding leads: beyond the scenario's saturation window an hour counts for less,
+ * so a channel that was worn out does not look bad for good.
+ */
 export class ChannelLog {
   private readonly stats = new Map<string, { hours: number; leads: number }>()
+  /** Founder outreach hours per week, oldest first, as `segment/channel` to hours. */
+  private readonly weeks: Map<string, number>[] = []
+
+  constructor(private readonly sales: Scenario['sales']) {}
+
+  private get limit(): number {
+    return this.sales.saturationHours * this.sales.saturationWeeks
+  }
+
+  /** Hours on a channel in the weeks before this one that still count against its window. */
+  recentHours(segmentId: string, channel: ChannelId): number {
+    const back = this.weeks.slice(-(this.sales.saturationWeeks - 1))
+    return back.reduce((t, w) => t + (w.get(`${segmentId}/${channel}`) ?? 0), 0)
+  }
+
+  /** Hours that would count for finding leads if `hours` were spent on the channel now. */
+  effective(segmentId: string, channel: ChannelId, hours: number): number {
+    const before = this.recentHours(segmentId, channel)
+    const full = Math.max(0, Math.min(hours, this.limit - before))
+    return full + (hours - full) * this.sales.saturatedFactor
+  }
 
   record(plan: WeekPlan, report: WeekReport): void {
+    const week = new Map<string, number>()
     for (const e of report.entries) {
       if (e.kind !== 'new_leads') continue
       const out = plan.outreach[e.segmentId]
-      if (!out) continue
+      if (!out || out.channel !== e.channel) continue
       const key = `${e.segmentId}/${e.channel}`
+      const counted = this.effective(e.segmentId, e.channel, out.hours)
       const s = this.stats.get(key) ?? { hours: 0, leads: 0 }
-      this.stats.set(key, { hours: s.hours + out.hours, leads: s.leads + e.count })
+      this.stats.set(key, { hours: s.hours + counted, leads: s.leads + e.count })
     }
+    for (const [seg, out] of Object.entries(plan.outreach)) {
+      const key = `${seg}/${out.channel}`
+      week.set(key, (week.get(key) ?? 0) + out.hours)
+    }
+    this.weeks.push(week)
   }
 
   hours(segmentId: string, channel: ChannelId): number {
     return this.stats.get(`${segmentId}/${channel}`)?.hours ?? 0
   }
 
-  /** Leads per hour on the best channel tried in a segment, 0 before any outreach there. */
-  bestRate(segmentId: string, channels: readonly ChannelId[]): number {
-    let best = 0
-    for (const c of channels) {
-      const s = this.stats.get(`${segmentId}/${c}`)
-      if (s && s.hours > 0) best = Math.max(best, s.leads / s.hours)
-    }
-    return best
+  rate(segmentId: string, channel: ChannelId): number {
+    const s = this.stats.get(`${segmentId}/${channel}`)
+    return s && s.hours > 0 ? s.leads / s.hours : 0
   }
 
-  /** The channel to use next: any channel tried for less than `minHours` first, else the best. */
-  choose(segmentId: string, channels: readonly ChannelId[], minHours: number): ChannelId {
+  /** Leads per hour on the best channel tried in a segment, 0 before any outreach there. */
+  bestRate(segmentId: string, channels: readonly ChannelId[]): number {
+    return Math.max(0, ...channels.map((c) => this.rate(segmentId, c)))
+  }
+
+  /**
+   * The channel to use next: any channel tried for less than `minHours` first, else the one that
+   * would find the most leads with `hours` now, given how worn out each one is.
+   */
+  choose(
+    segmentId: string,
+    channels: readonly ChannelId[],
+    minHours: number,
+    hours = 0,
+  ): ChannelId {
     const untried = channels.find((c) => this.hours(segmentId, c) < minHours)
     if (untried) return untried
     let best = channels[0] as ChannelId
-    let bestRate = -1
+    let bestLeads = -1
     for (const c of channels) {
-      const s = this.stats.get(`${segmentId}/${c}`)
-      const rate = s && s.hours > 0 ? s.leads / s.hours : 0
-      if (rate > bestRate) {
+      const leads = this.rate(segmentId, c) * this.effective(segmentId, c, Math.max(1, hours))
+      if (leads > bestLeads) {
         best = c
-        bestRate = rate
+        bestLeads = leads
       }
     }
     return best

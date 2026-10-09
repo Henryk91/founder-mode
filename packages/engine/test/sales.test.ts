@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { companyNameCombinations } from '@founder-mode/content'
 import { endWeek, getView, validatePlan } from '../src/index'
 import { Rng, seedRng } from '../src/rng'
-import { churnChance, pickName } from '../src/systems/sales'
+import { churnChance, effectiveHours, pickName, recentOutreach } from '../src/systems/sales'
 import type { GameState, Lead } from '../src/types'
 import { newGame, plan, richKantino } from './helpers'
 
@@ -52,19 +52,44 @@ describe('outreach', () => {
       const s = newGame(`outreach-${i}`)
       const r = endWeek(
         s,
-        plan({ outreach: { small_offices: { channel: 'cold_email', hours: 20 } } }),
+        plan({ outreach: { small_offices: { channel: 'cold_email', hours: 12 } } }),
       )
       total += r.state.leads.length
       const entry = r.report.entries.find((e) => e.kind === 'new_leads')
       expect(entry).toMatchObject({ segmentId: 'small_offices', channel: 'cold_email' })
       expect(r.state.leads.every((l) => l.stage === 'lead' || l.stage === 'demo')).toBe(true)
     }
-    // mean cold email response * 20 h * (sellingBase + starting skill), from the scenario
+    // mean cold email response * 12 h * (sellingBase + starting skill), from the scenario
     const sc = newGame().scenario
     const r = sc.segments.find((x) => x.id === 'small_offices')!.channelResponse.cold_email
-    const expected = ((r.min + r.max) / 2) * 20 * (sc.sales.sellingBase + sc.start.skills.selling)
+    const expected = ((r.min + r.max) / 2) * 12 * (sc.sales.sellingBase + sc.start.skills.selling)
     expect(total / runs).toBeGreaterThan(expected * 0.75)
     expect(total / runs).toBeLessThan(expected * 1.25)
+  })
+
+  it('finds fewer leads per hour beyond the saturation hours on one channel', () => {
+    // One week alone stays within 3 x 12 h; three weeks of 30 h on the same channel do not.
+    const inPerson = { coworking: { channel: 'in_person' as const, hours: 30 } }
+    let s = newGame('window')
+    for (let i = 0; i < 2; i++) s = endWeek(s, plan({ outreach: inPerson })).state
+    expect(recentOutreach(s).get('coworking/in_person')).toBe(60)
+    s = endWeek(s, plan()).state
+    expect(recentOutreach(s).get('coworking/in_person')).toBe(30)
+    expect(effectiveHours(0, 10, 12, 0.3)).toBe(10)
+    expect(effectiveHours(0, 20, 12, 0.3)).toBeCloseTo(12 + 8 * 0.3, 10)
+    expect(effectiveHours(12, 5, 12, 0.3)).toBeCloseTo(1.5, 10)
+    const leads = (hours: number) => {
+      let total = 0
+      for (let i = 0; i < 200; i++) {
+        const s = newGame(`sat-${i}`)
+        const out = { coworking: { channel: 'in_person' as const, hours } }
+        total += endWeek(s, plan({ outreach: out })).state.leads.length
+      }
+      return total
+    }
+    // In week 1, 60 h count as 36 + 24 * 0.3 = 43.2 h, so about 1.2 times the leads of 36 h.
+    expect(leads(60) / leads(36)).toBeGreaterThan(1.05)
+    expect(leads(60) / leads(36)).toBeLessThan(1.4)
   })
 
   it('gives every lead a distinct name without a number, even in a long run', () => {
@@ -74,7 +99,7 @@ describe('outreach', () => {
     }
     const names = s.leads.map((l) => l.name)
     expect(new Set(names).size).toBe(names.length)
-    expect(names.length).toBeGreaterThan(100)
+    expect(names.length).toBeGreaterThan(60)
     for (const name of names) expect(name).not.toMatch(/ \d+$/)
   })
 

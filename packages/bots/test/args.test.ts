@@ -8,7 +8,9 @@ describe('parseArgs', () => {
       seedPrefix: 'test',
       out: 'docs/balancing.md',
       only: [],
+      events: false,
     })
+    expect(parseArgs(['--events']).events).toBe(true)
   })
 
   it('reads the output path and a strategy filter', () => {

@@ -23,6 +23,7 @@ describe('bots', () => {
       'validate_then_build',
       'validate_then_build_hire',
       'validate_then_build_early_hire',
+      'presale_max',
       'price_aware',
       'overworker',
       'playtest',
@@ -69,8 +70,9 @@ describe('bots', () => {
     }))
     const input = { engineVersion: 'x', runs: 2, seedPrefix: 'r', strategies }
     const targets = evaluateTargets(input)
-    expect(targets.map((t) => t.id)).toEqual([1, 2, 3, 4, 5, 6, 7])
-    expect(targets.filter((t) => !t.tuned).map((t) => t.id)).toEqual([6, 7])
+    expect(targets.map((t) => t.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+    // Without the extra runs, the targets that need them are not measured.
+    expect(targets.find((t) => t.id === 10)!.value).toBe('-')
     const md = buildReport(input)
     expect(md).toContain('# Balancing report')
     for (const heading of [
@@ -81,7 +83,7 @@ describe('bots', () => {
     ]) {
       expect(md).toContain(heading)
     }
-    expect(md).toContain('(not tuned yet)')
+    expect(md).toContain('not measured')
     expect(md).toContain('| validate_then_build |')
     expect(md).not.toContain('NaN')
   })
@@ -101,7 +103,10 @@ describe('bots', () => {
     for (const r of runs) {
       if (r.firstCustomerWeek === null) expect(r.peakCustomers).toBe(0)
       else expect(r.peakCustomers).toBeGreaterThan(0)
-      if (r.revenueReceivedCents > 0) expect(r.firstCustomerWeek).not.toBeNull()
+      // Pre-sale deposits are money received before anyone is a customer.
+      if (r.revenueReceivedCents > 0 && r.presaleBatches === 0) {
+        expect(r.firstCustomerWeek).not.toBeNull()
+      }
     }
   })
 
@@ -121,7 +126,7 @@ describe('bots', () => {
     const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
     const runs = Array.from({ length: 20 }, (_, i) => runGame(scenario, strategy, `p4-${i}`))
     for (const r of runs) {
-      expect(r.landingTests).toBe(1)
+      expect(r.landingTests).toBe(2)
     }
     expect(runs.some((r) => r.presaleBatches > 0)).toBe(true)
     expect(runs.some((r) => r.invoicesIssued > 0)).toBe(true)

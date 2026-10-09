@@ -121,6 +121,8 @@ export type Lead = {
   segmentId: SegmentId
   stage: LeadStage
   source: LeadSource
+  /** The outreach channel that found the lead, for outreach by the founder or the salesperson. */
+  channel?: ChannelId
   stageSinceWeek: number
   lastContactWeek: number
   /** Week in which the lead stopped answering, or null. Silent leads cannot progress. */
@@ -461,6 +463,9 @@ export type PlayerView = {
     presaleMaxBatches: number
     presaleRefundWeeks: number
     followUpHours: number
+    /** Outreach on one channel in one market works fully up to this many hours a week, on average over `saturationWeeks`. */
+    saturationHours: number
+    saturationWeeks: number
     presaleWeeks: number
     chaseHours: number
     searchHours: number
