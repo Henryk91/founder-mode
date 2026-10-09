@@ -9,6 +9,8 @@ export type BucketId = string
 /** sfc32 state, four signed 32 bit integers. */
 export type RngState = { a: number; b: number; c: number; d: number }
 
+export type { ChannelId }
+
 export type EndingId = 'bankrupt' | 'still_searching' | 'sustainable'
 export type UiStage = 'scrappy' | 'organised'
 
@@ -37,6 +39,11 @@ export type GameState = {
 
   /** What the player has observed, per segment. */
   knowledge: Record<SegmentId, Evidence[]>
+  product: ProductState
+  /** Every lead ever found, oldest first. Lost and won leads stay for the record. */
+  leads: Lead[]
+  /** Every customer ever won, oldest first. Churned customers stay with `churnedWeek` set. */
+  customers: Customer[]
   /** One entry per resolved week, oldest first. */
   ledger: WeekLedger[]
   /** Everything needed to rebuild this state from the seed. */
@@ -61,6 +68,46 @@ export type CompanyState = {
   priceCentsPerMonth: number
   fixedCosts: FixedCost[]
   uiStage: UiStage
+}
+
+export type FeatureProgress = {
+  id: FeatureId
+  progressHours: number
+  /** Week in which the feature shipped, or null while it is still being built. */
+  shippedWeek: number | null
+}
+
+export type ProductState = {
+  features: FeatureProgress[]
+  /** startQuality - qualityPerBug * bugs, never below 0. */
+  quality: number
+  bugs: number
+  /** Bug fixing hours not yet enough for a whole bug. */
+  fixProgressHours: number
+}
+
+export type LeadStage = 'lead' | 'demo' | 'trial' | 'paying' | 'lost'
+
+/** Observable facts only. */
+export type Lead = {
+  id: string
+  name: string
+  segmentId: SegmentId
+  stage: LeadStage
+  stageSinceWeek: number
+  lastContactWeek: number
+  /** Week in which the lead stopped answering, or null. Silent leads cannot progress. */
+  silentSinceWeek: number | null
+  lostReason: 'declined' | 'silent' | null
+}
+
+export type Customer = {
+  id: string
+  leadId: string
+  name: string
+  segmentId: SegmentId
+  sinceWeek: number
+  churnedWeek: number | null
 }
 
 export type HiddenSegment = {
@@ -133,6 +180,14 @@ export type MoneyMovement = { kind: MoneyMovementKind; amountCents: number }
 export type WeekPlan = {
   /** Number of interviews per segment. */
   interviews: Record<SegmentId, number>
+  /** Build hours per feature. */
+  build: Record<FeatureId, number>
+  /** Hours spent fixing bugs. */
+  bugFixHours: number
+  /** Outreach per segment: one channel and the hours spent on it. */
+  outreach: Record<SegmentId, { channel: ChannelId; hours: number }>
+  /** Ids of leads in the demo stage to hold a demo with this week. */
+  demos: string[]
   restHours: number
   /** Personal savings to move into the company this week. */
   transferToCompanyCents: number
@@ -142,6 +197,12 @@ export type PlanIssue =
   | { code: 'game_over' }
   | { code: 'invalid_number'; field: string }
   | { code: 'unknown_segment'; segmentId: string }
+  | { code: 'unknown_feature'; featureId: string }
+  | { code: 'feature_shipped'; featureId: string }
+  | { code: 'build_exceeds_remaining'; featureId: string; remainingHours: number }
+  | { code: 'bug_fix_exceeds_bugs'; maxHours: number }
+  | { code: 'invalid_channel'; segmentId: string }
+  | { code: 'invalid_demo'; leadId: string }
   | { code: 'too_many_hours'; plannedHours: number; maxHours: number }
   | { code: 'transfer_exceeds_savings'; savingsCents: number }
 
@@ -171,11 +232,56 @@ export type PlayerView = {
     monthlyFixedCostsCents: number
     /** Whole weeks until cash reaches zero at the recent burn. Null when not burning cash. */
     runwayWeeks: number | null
+    /** False until a full month has been played; runway is meaningless before that. */
+    runwayKnown: boolean
     uiStage: UiStage
   }
-  costs: { interviewHours: number }
+  costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number }
+  channels: ChannelId[]
+  product: ProductView
+  leads: LeadView[]
+  customers: CustomerView[]
+  /** Active customers times the monthly price. */
+  monthlyRevenueCents: number
   segments: SegmentView[]
   history: { week: number; cashCents: number; savingsCents: number }[]
+}
+
+export type ProductView = {
+  quality: number
+  bugs: number
+  /** Most bug fixing hours that still make sense this week. */
+  fixableHours: number
+  features: FeatureView[]
+}
+
+export type FeatureView = {
+  id: FeatureId
+  name: string
+  buildHours: number
+  progressHours: number
+  remainingHours: number
+  shipped: boolean
+}
+
+export type LeadView = {
+  id: string
+  name: string
+  segmentId: SegmentId
+  stage: LeadStage
+  weeksInStage: number
+  lastContactWeek: number
+  silent: boolean
+  lostReason: 'declined' | 'silent' | null
+  /** True when a demo can be held with this lead this week. */
+  canBookDemo: boolean
+}
+
+export type CustomerView = {
+  id: string
+  name: string
+  segmentId: SegmentId
+  sinceWeek: number
 }
 
 export type SegmentView = {
@@ -206,7 +312,17 @@ export type WeekReport = {
   ending: EndingId | null
 }
 
-export type ReportEntry = MoneyMovement
+export type LeadChange =
+  'wants_demo' | 'trial_started' | 'won' | 'declined' | 'went_silent' | 'lost_silent'
+
+export type ReportEntry =
+  | MoneyMovement
+  | { kind: 'revenue'; amountCents: number; customers: number }
+  | { kind: 'feature_shipped'; featureId: FeatureId; name: string; bugsAdded: number }
+  | { kind: 'bugs_fixed'; count: number }
+  | { kind: 'new_leads'; segmentId: SegmentId; channel: ChannelId; count: number }
+  | { kind: 'lead_update'; change: LeadChange; leadId: string; name: string; segmentId: SegmentId }
+  | { kind: 'customer_churned'; customerId: string; name: string; segmentId: SegmentId }
 
 // ---------------------------------------------------------------------------
 // Saves

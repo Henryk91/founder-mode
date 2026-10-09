@@ -1,5 +1,14 @@
-import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
-import type { GameState, InterviewEvidence, InterviewView, PlayerView } from './types'
+import { monthlyFixedCostsCents, runwayKnown, runwayWeeks } from './systems/finance'
+import { activeCustomers } from './systems/customers'
+import { maxBugFixHours } from './systems/product'
+import { canBookDemo } from './systems/sales'
+import type { ChannelId, GameState, InterviewEvidence, InterviewView, PlayerView } from './types'
+
+// Compile time check that every channel of the scenario schema is listed.
+const CHANNEL_ORDER = { cold_email: 0, phone: 1, in_person: 2 } satisfies Record<ChannelId, number>
+const CHANNELS = (Object.keys(CHANNEL_ORDER) as ChannelId[]).sort(
+  (a, b) => CHANNEL_ORDER[a] - CHANNEL_ORDER[b],
+)
 
 /**
  * The only way game data reaches the UI. Builds every field explicitly from observable state
@@ -33,9 +42,51 @@ export function getView(state: GameState): PlayerView {
       })),
       monthlyFixedCostsCents: monthlyFixedCostsCents(state),
       runwayWeeks: runwayWeeks(state),
+      runwayKnown: runwayKnown(state),
       uiStage: company.uiStage,
     },
-    costs: { interviewHours: scenario.experiments.interview.hours },
+    costs: {
+      interviewHours: scenario.experiments.interview.hours,
+      demoHours: scenario.sales.demoHours,
+      fixHoursPerBug: scenario.product.fixHoursPerBug,
+    },
+    channels: [...CHANNELS],
+    product: {
+      quality: state.product.quality,
+      bugs: state.product.bugs,
+      fixableHours: maxBugFixHours(state),
+      features: scenario.features.map((def) => {
+        const progress = state.product.features.find((f) => f.id === def.id)
+        const shipped = progress?.shippedWeek != null
+        const done = shipped ? def.buildHours : (progress?.progressHours ?? 0)
+        return {
+          id: def.id,
+          name: def.name,
+          buildHours: def.buildHours,
+          progressHours: done,
+          remainingHours: def.buildHours - done,
+          shipped,
+        }
+      }),
+    },
+    leads: state.leads.map((l) => ({
+      id: l.id,
+      name: l.name,
+      segmentId: l.segmentId,
+      stage: l.stage,
+      weeksInStage: state.week - l.stageSinceWeek,
+      lastContactWeek: l.lastContactWeek,
+      silent: l.silentSinceWeek !== null,
+      lostReason: l.lostReason,
+      canBookDemo: canBookDemo(l),
+    })),
+    customers: activeCustomers(state).map((c) => ({
+      id: c.id,
+      name: c.name,
+      segmentId: c.segmentId,
+      sinceWeek: c.sinceWeek,
+    })),
+    monthlyRevenueCents: activeCustomers(state).length * company.priceCentsPerMonth,
     segments: scenario.segments.map((seg) => ({
       id: seg.id,
       name: seg.name,

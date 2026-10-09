@@ -1,4 +1,5 @@
 import type { GameState, MoneyMovement, WeekLedger, WeekPlan } from '../types'
+import { payingCustomers } from './customers'
 
 export function monthlyFixedCostsCents(state: GameState): number {
   return state.company.fixedCosts.reduce((sum, c) => sum + c.monthlyCents, 0)
@@ -16,12 +17,12 @@ export function isMonthEnd(state: GameState, week: number): boolean {
  * 4. if company cash is negative, savings cover the gap automatically as far as they can.
  * Each non zero movement between savings and company is returned as a `MoneyMovement` and
  * written to the event log, so the post-mortem can total the private money put in.
- * Revenue arrives with customers in Phase 2.
+ * Revenue is the monthly price of every customer won before this week, received at month end.
  */
 export function applyFinanceWeek(
   state: GameState,
   plan: WeekPlan,
-): { state: GameState; ledger: WeekLedger; movements: MoneyMovement[] } {
+): { state: GameState; ledger: WeekLedger; movements: MoneyMovement[]; payingCount: number } {
   let cash = state.company.cashCents
   let savings = state.founder.savingsCents
 
@@ -38,7 +39,9 @@ export function applyFinanceWeek(
   const fixedCostsCents = isMonthEnd(state, state.week) ? monthlyFixedCostsCents(state) : 0
   cash -= fixedCostsCents
 
-  const revenueCents = 0
+  // Phase 2: every customer pays the monthly price at month end. Invoices arrive in Phase 4.
+  const paying = isMonthEnd(state, state.week) ? payingCustomers(state) : []
+  const revenueCents = paying.length * state.company.priceCentsPerMonth
   cash += revenueCents
 
   let autoTransferCents = 0
@@ -77,6 +80,7 @@ export function applyFinanceWeek(
     },
     ledger,
     movements,
+    payingCount: paying.length,
   }
 }
 
@@ -94,13 +98,19 @@ export function operatingNetCents(l: WeekLedger): number {
   return l.revenueCents - l.fixedCostsCents - l.founderDrawCents
 }
 
+/** Runway needs a full month of history before it says anything. */
+export function runwayKnown(state: GameState): boolean {
+  return state.ledger.length >= state.scenario.finance.weeksPerMonth
+}
+
 /**
  * Whole weeks until company cash reaches zero at the average operating change of the last
  * `window` weeks. Null when there is no history yet or cash is not shrinking.
  */
 export function runwayWeeks(state: GameState, window = 4): number | null {
+  // A month of history, so that one month end with its fixed costs is always in the window.
+  if (!runwayKnown(state)) return null
   const recent = state.ledger.slice(-window)
-  if (recent.length === 0) return null
   const net = recent.reduce((sum, l) => sum + operatingNetCents(l), 0)
   if (net >= 0) return null
   if (state.company.cashCents <= 0) return 0

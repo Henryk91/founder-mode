@@ -1,6 +1,7 @@
+import { expNeg } from '../math'
 import type { ChannelId } from '@founder-mode/content'
 import type { Rng } from '../rng'
-import type { HiddenSegment, Scenario, SegmentId } from '../types'
+import type { GameState, HiddenSegment, Scenario, SegmentId } from '../types'
 
 /**
  * Draws the hidden demand of every segment. Roles (viable, mediocre, trap) are shuffled across
@@ -31,4 +32,35 @@ export function drawHiddenSegments(scenario: Scenario, rng: Rng): Record<Segment
     }
   })
   return out
+}
+
+/** Share of a segment's must have features that have shipped (0..1). */
+export function coverage(state: GameState, segmentId: SegmentId): number {
+  const hidden = state.hidden.segments[segmentId]
+  if (!hidden || hidden.mustHave.length === 0) return 0
+  const shipped = hidden.mustHave.filter((id) =>
+    state.product.features.some((f) => f.id === id && f.shippedWeek !== null),
+  )
+  return shipped.length / hidden.mustHave.length
+}
+
+/** How well the product fits a segment: pain * coverage * (fitBase + fitPerQuality * quality / 100). */
+export function fit(state: GameState, segmentId: SegmentId): number {
+  const hidden = state.hidden.segments[segmentId]
+  if (!hidden) return 0
+  const { fitBase, fitPerQuality } = state.scenario.product
+  return (
+    hidden.pain *
+    coverage(state, segmentId) *
+    (fitBase + (fitPerQuality * state.product.quality) / 100)
+  )
+}
+
+/** 1 up to the willingness to pay, then falling off as exp(-slope * (price / wtp - 1)). */
+export function priceFactor(state: GameState, segmentId: SegmentId): number {
+  const hidden = state.hidden.segments[segmentId]
+  if (!hidden) return 0
+  const price = state.company.priceCentsPerMonth
+  if (price <= hidden.wtpCents) return 1
+  return expNeg(state.scenario.sales.priceSlope * (price / hidden.wtpCents - 1))
 }

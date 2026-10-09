@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createGame, endWeek, replay, toSave, type GameState } from '../src/index'
-import { deepFreeze, kantino, newGame, play, richKantino, scriptedPlan } from './helpers'
+import { deepFreeze, kantino, newGame, play, plan, richKantino, scriptedPlan } from './helpers'
 
 describe('determinism', () => {
   it('gives a deep equal state for the same seed and actions', () => {
@@ -15,16 +15,8 @@ describe('determinism', () => {
 
   it('does not depend on the key order of a plan', () => {
     const s = newGame('order')
-    const a = endWeek(s, {
-      interviews: { medical: 2, coworking: 1 },
-      restHours: 0,
-      transferToCompanyCents: 0,
-    })
-    const b = endWeek(s, {
-      interviews: { coworking: 1, medical: 2 },
-      restHours: 0,
-      transferToCompanyCents: 0,
-    })
+    const a = endWeek(s, plan({ interviews: { medical: 2, coworking: 1 } }))
+    const b = endWeek(s, plan({ interviews: { coworking: 1, medical: 2 } }))
     expect(a.state.knowledge).toEqual(b.state.knowledge)
     expect(a.state.rng).toEqual(b.state.rng)
   })
@@ -83,12 +75,15 @@ describe('full run', () => {
         const w = s.week
         const segs = s.scenario.segments.map((x) => x.id)
         const before = s
-        const r = endWeek(s, {
-          interviews: { [segs[(run + w) % 3]!]: (run * 7 + w * 3) % 6 },
-          restHours: (run + w * 5) % 20,
-          transferToCompanyCents:
-            w % 9 === 0 ? Math.min(50_000, Math.max(0, s.founder.savingsCents)) : 0,
-        })
+        const r = endWeek(
+          s,
+          plan({
+            interviews: { [segs[(run + w) % 3]!]: (run * 7 + w * 3) % 6 },
+            restHours: (run + w * 5) % 20,
+            transferToCompanyCents:
+              w % 9 === 0 ? Math.min(50_000, Math.max(0, s.founder.savingsCents)) : 0,
+          }),
+        )
         s = r.state
         const l = r.report.ledger
         expect(s.founder.energy).toBeGreaterThanOrEqual(0)

@@ -2,7 +2,7 @@
 
 Source of truth for the shapes shared between engine, content, bots, and UI. Update this file in the same change as any type change.
 
-Status: Phase 1. Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
+Status: Phase 2. Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
 
 ## Conventions
 
@@ -13,7 +13,7 @@ Status: Phase 1. Engine types live in `packages/engine/src/types.ts`, content sc
 
 ## GameState
 
-Never passed to the UI. Fields from plan section 4.2 that are not listed here arrive with their systems: product, leads, customers (Phase 2), invoices, team, inbox, scheduled, `hidden.candidates`, `bookkeepingBacklogHours` (Phase 4), milestones (Phase 7).
+Never passed to the UI. Fields from plan section 4.2 that are not listed here arrive with their systems: invoices, team, inbox, scheduled, `hidden.candidates`, `bookkeepingBacklogHours` (Phase 4), milestones (Phase 7).
 
 ```ts
 type GameState = {
@@ -47,11 +47,71 @@ type GameState = {
   }
 
   knowledge: Record<SegmentId, Evidence[]>   // one key per scenario segment
+  product: ProductState
+  leads: Lead[]                              // every lead ever found, oldest first
+  customers: Customer[]                      // every customer ever won, oldest first
   ledger: WeekLedger[]                       // one entry per resolved week
   actionLog: LoggedAction[]
   eventLog: LoggedEvent[]
 }
 ```
+
+### ProductState
+
+```ts
+type ProductState = {
+  features: FeatureProgress[]   // one per scenario feature, in scenario order
+  quality: number               // startQuality - qualityPerBug * bugs, never below 0
+  bugs: number
+  fixProgressHours: number      // bug fixing hours not yet enough for a whole bug
+}
+
+type FeatureProgress = {
+  id: FeatureId
+  progressHours: number         // never above the feature's buildHours
+  shippedWeek: number | null    // set when progressHours reaches buildHours
+}
+```
+
+### Lead and Customer
+
+Observable facts only; no hidden value is stored on a lead. Leads and customers are append only, so ids are `lead_<n>` and `customer_<n>` by position.
+
+```ts
+type LeadStage = 'lead' | 'demo' | 'trial' | 'paying' | 'lost'
+
+type Lead = {
+  id: string
+  name: string                  // from scenario.companyNames[segmentId]
+  segmentId: SegmentId
+  stage: LeadStage              // 'demo' means: asked for a demo, waiting for the founder
+  stageSinceWeek: number
+  lastContactWeek: number
+  silentSinceWeek: number | null   // set when the lead stops answering; silent leads cannot progress
+  lostReason: 'declined' | 'silent' | null
+}
+
+type Customer = {
+  id: string
+  leadId: string
+  name: string
+  segmentId: SegmentId
+  sinceWeek: number
+  churnedWeek: number | null    // null while active
+}
+```
+
+Stage rules (plan 4.5, numbers in `scenario.sales`), in the order `systems/sales.ts` applies them each week:
+
+1. A demo held this week (`plan.demos`): `demoToTrialBase + demoToTrialPerFit * fit` to become a `trial`, else lost (`declined`). Raises `skills.selling` by `skillGainPerDemo`, capped.
+2. A trial older than `trialWeeks`: `fit * priceFactor` to become `paying` (a `Customer` is created), else lost (`declined`).
+3. An answering `lead`: `leadToDemoBase * (leadToDemoOffset + leadToDemoPerPain * pain)` to become `demo`.
+4. A `lead` or `demo` that was not touched this week goes silent with `ghostChancePerWeek`; a silent lead is lost (`silent`) after `silentWeeksToLose`.
+5. Outreach finds `floor(x)` leads, plus one with probability `x - floor(x)`, where `x = hours * channelResponse * (sellingBase + skills.selling)`.
+
+`fit = pain * coverage * (fitBase + fitPerQuality * quality / 100)`, `coverage` is the shipped share of the segment's must have features, and `priceFactor` is 1 up to the willingness to pay and `exp(-priceSlope * (price / wtp - 1))` above it. `exp` is computed in `math.ts` from pure arithmetic, because `Math.exp` is not bit identical across engines.
+
+Churn runs on every month end for customers won in an earlier week: `min(cap, base + perMisfit * (1 - fit) + perBug * bugs)`.
 
 ### HiddenSegment
 
@@ -93,7 +153,7 @@ Money movements of one resolved week. Outflows are positive numbers.
 ```ts
 type WeekLedger = {
   week: number
-  revenueCents: number          // 0 until Phase 2
+  revenueCents: number          // month end only: price * customers won before this week
   fixedCostsCents: number       // sum of fixedCosts at month end, else 0
   livingCostsCents: number      // founder living costs for the week
   founderDrawCents: number      // part of living costs paid by the company because savings ran out
@@ -145,19 +205,33 @@ Private money put in (for the post-mortem) = sum of `savings_transfer` and `auto
 ```ts
 type WeekPlan = {
   interviews: Record<SegmentId, number>   // interviews per segment, 2 h each
+  build: Record<FeatureId, number>        // build hours per feature
+  bugFixHours: number                     // fixHoursPerBug hours remove one bug
+  outreach: Record<SegmentId, { channel: ChannelId; hours: number }>   // one channel per segment
+  demos: string[]                         // lead ids in stage 'demo', demoHours each
   restHours: number                       // counts as planned hours
   transferToCompanyCents: number          // from personal savings
 }
+
+type ChannelId = 'cold_email' | 'phone' | 'in_person'
 
 type PlanIssue =
   | { code: 'game_over' }
   | { code: 'invalid_number'; field: string }          // negative or not an integer
   | { code: 'unknown_segment'; segmentId: string }
+  | { code: 'unknown_feature'; featureId: string }
+  | { code: 'feature_shipped'; featureId: string }            // build hours for a shipped feature
+  | { code: 'build_exceeds_remaining'; featureId: string; remainingHours: number }
+  | { code: 'bug_fix_exceeds_bugs'; maxHours: number }
+  | { code: 'invalid_channel'; segmentId: string }
+  | { code: 'invalid_demo'; leadId: string }                  // unknown, not in stage 'demo', silent, or listed twice
   | { code: 'too_many_hours'; plannedHours: number; maxHours: number }
   | { code: 'transfer_exceeds_savings'; savingsCents: number }
 ```
 
-`emptyPlan()` returns a plan with nothing planned. `endWeek` throws on a plan with issues.
+Planned hours = interviews * 2 + build + bug fixing + outreach + demos * `demoHours` + rest.
+
+`emptyPlan()` returns a plan with nothing planned. `clonePlan(plan)` deep copies one. `endWeek` throws on a plan with issues. `checkPlan(state, plan)` returns `{ plannedHours, issues }` so the UI can show live feedback without seeing the state.
 
 ## PlayerView
 
@@ -185,13 +259,49 @@ type PlayerView = {
     priceCentsPerMonth: number
     fixedCosts: { id: string; name: string; monthlyCents: number }[]
     monthlyFixedCostsCents: number
-    runwayWeeks: number | null    // null when there is no history or cash is not shrinking
+    runwayWeeks: number | null    // null while runwayKnown is false, or when cash is not shrinking
+    runwayKnown: boolean          // false until a full month (4 weeks) has been played
     uiStage: 'scrappy' | 'organised'
   }
-  costs: { interviewHours: number }
+  costs: { interviewHours: number; demoHours: number; fixHoursPerBug: number }
+  channels: ChannelId[]           // outreach channels in display order
+  product: ProductView
+  leads: LeadView[]
+  customers: CustomerView[]       // active customers only
+  monthlyRevenueCents: number     // active customers * monthly price
   segments: SegmentView[]         // in scenario order
   history: { week: number; cashCents: number; savingsCents: number }[]
 }
+
+type ProductView = {
+  quality: number
+  bugs: number
+  fixableHours: number            // most bug fixing hours that still make sense this week
+  features: FeatureView[]         // scenario order
+}
+
+type FeatureView = {
+  id: FeatureId
+  name: string
+  buildHours: number
+  progressHours: number
+  remainingHours: number
+  shipped: boolean
+}
+
+type LeadView = {
+  id: string
+  name: string
+  segmentId: SegmentId
+  stage: LeadStage
+  weeksInStage: number
+  lastContactWeek: number
+  silent: boolean
+  lostReason: 'declined' | 'silent' | null
+  canBookDemo: boolean            // stage 'demo' and still answering
+}
+
+type CustomerView = { id: string; name: string; segmentId: SegmentId; sinceWeek: number }
 
 type SegmentView = {
   id: SegmentId
@@ -210,7 +320,9 @@ type InterviewView = {
 }
 ```
 
-Runway is `floor(cash / (-sum(operatingNet) / n))` over the last `n <= 4` weeks, where `operatingNet = revenue - fixedCosts - founderDraw` (transfers excluded).
+Runway is `floor(cash / (-sum(operatingNet) / n))` over the last 4 weeks, where `operatingNet = revenue - fixedCosts - founderDraw` (transfers excluded). It is unknown (`runwayKnown: false`) until 4 weeks have been played, so a month end with its fixed costs is always in the window.
+
+Lead names and company names are scenario text, not hidden values. Must have features, pain, and willingness to pay never appear in the view; the product view shows only what was built.
 
 ## WeekReport
 
@@ -228,7 +340,18 @@ type WeekReport = {
   ending: EndingId | null       // set when this week ended the run
 }
 
-type ReportEntry = MoneyMovement   // more kinds arrive with later systems
+type ReportEntry =
+  | MoneyMovement                                                    // savings_transfer, founder_draw, auto_top_up
+  | { kind: 'revenue'; amountCents: number; customers: number }
+  | { kind: 'feature_shipped'; featureId: FeatureId; name: string; bugsAdded: number }
+  | { kind: 'bugs_fixed'; count: number }
+  | { kind: 'new_leads'; segmentId: SegmentId; channel: ChannelId; count: number }   // count may be 0
+  | { kind: 'lead_update'; change: LeadChange; leadId: string; name: string; segmentId: SegmentId }
+  | { kind: 'customer_churned'; customerId: string; name: string; segmentId: SegmentId }
+
+type LeadChange = 'wants_demo' | 'trial_started' | 'won' | 'declined' | 'went_silent' | 'lost_silent'
+
+// More kinds arrive with later systems. Entries are in resolution order: product, sales, finance, churn.
 ```
 
 ## SaveFile
@@ -253,6 +376,7 @@ zod schema `ScenarioSchema` in `packages/content/src/schema.ts`; `Scenario = z.i
 | `scenarios/<id>/scenario.yaml` | everything except `features` and `interviewQuotes` |
 | `scenarios/<id>/features.yaml` | `features` |
 | `scenarios/<id>/messages/interview_quotes.yaml` | `interviewQuotes` |
+| `scenarios/<id>/messages/company_names.yaml` | `companyNames` |
 
 ```ts
 type Range = { min: number; max: number }   // min <= max; IntRange requires integers
@@ -299,16 +423,42 @@ type Scenario = {
     paymentDelayDaysMean: number
     neverPaysShare: number
   }[]
+  product: {
+    startQuality: number          // 0..100
+    qualityPerBug: number         // quality = startQuality - qualityPerBug * bugs
+    fixHoursPerBug: number
+    fitBase: number               // fit = pain * coverage * (fitBase + fitPerQuality * quality / 100)
+    fitPerQuality: number
+  }
+  sales: SalesConfig
   features: Feature[]
   interviewQuotes: Record<SegmentId, Record<BucketId, string[]>>
+  companyNames: Record<SegmentId, string[]>   // fictional lead names per segment
+}
+
+type SalesConfig = {
+  sellingBase: number             // outreach leads = hours * channelResponse * (sellingBase + skills.selling)
+  leadToDemoBase: number          // weekly chance = base * (offset + perPain * pain)
+  leadToDemoOffset: number
+  leadToDemoPerPain: number
+  demoHours: number
+  demoToTrialBase: number         // chance = base + perFit * fit
+  demoToTrialPerFit: number
+  trialWeeks: number
+  ghostChancePerWeek: number
+  silentWeeksToLose: number
+  skillGainPerDemo: number
+  skillCap: number
+  priceSlope: number              // priceFactor = exp(-priceSlope * (price / wtp - 1)) above wtp
+  churn: { base: number; perMisfit: number; perBug: number; cap: number }
 }
 ```
 
-Cross checks in `superRefine`: unique ids, one role per segment, `maxHoursPerWeek >= baseHoursPerWeek`, start energy within max, every `mustHave` id is a feature, bucket bounds ascend with only the last unbounded, and every segment has quotes for every bucket.
+Cross checks in `superRefine`: unique ids, one role per segment, `maxHoursPerWeek >= baseHoursPerWeek`, start energy within max, every `mustHave` id is a feature, bucket bounds ascend with only the last unbounded, and every segment has quotes for every bucket, every segment has company names, and company names are unique across segments.
 
 ## Content: Feature
 
-Data only in Phase 1 (used by interview mentions and reference checks). The product system arrives in Phase 2.
+Used by interview mentions (Phase 1) and by the product system (Phase 2): `buildHours` is the work needed to ship it and `bugsOnShip` the bugs added when it does.
 
 ```ts
 type Feature = {
@@ -319,6 +469,25 @@ type Feature = {
   mention: string               // what an interviewee says when asking for it
 }
 ```
+
+## UI store
+
+`apps/web/src/store.ts` wraps the engine in a Zustand store. The `GameState` lives in the store's closure and is never part of the store's state. Screens read only this shape:
+
+```ts
+type UiState = {
+  view: PlayerView | null       // null on the Start screen
+  plan: WeekPlan                // the draft plan for the current week
+  plannedHours: number          // from checkPlan
+  issues: PlanIssue[]           // from checkPlan; End week is disabled while non empty
+  report: WeekReport | null     // the week that just resolved, until dismissed
+  tab: 'plan' | 'market' | 'pipeline' | 'money'
+  hasSave: boolean
+  saveNotice: 'incompatible' | 'broken' | null
+}
+```
+
+Autosave: a `SaveFile` is written under one localStorage key when a run starts and after every resolved week. `continueRun` replays it; a save from another `engineVersion` (or one that fails to replay) is dropped with a notice. The draft plan is not saved. A finished run clears its save when the player leaves it.
 
 ## Content: Event
 

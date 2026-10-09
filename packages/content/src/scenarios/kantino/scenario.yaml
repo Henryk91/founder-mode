@@ -49,6 +49,33 @@ experiments:
       - { id: painful, name: Painful, below: 0.8 }
       - { id: urgent, name: Urgent }
 
+product:
+  startQuality: 70
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+
+sales:
+  sellingBase: 0.5
+  leadToDemoBase: 0.25
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  demoToTrialBase: 0.2
+  demoToTrialPerFit: 0.6
+  trialWeeks: 2
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.01
+  skillCap: 0.8
+  priceSlope: 2
+  churn:
+    base: 0.02
+    perMisfit: 0.25
+    perBug: 0.01
+    cap: 0.6
+
 # Shuffled across the segments at game creation, one role each.
 roles:
   - id: viable

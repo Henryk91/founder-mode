@@ -2,8 +2,15 @@ import type { FounderState, Scenario, WeekPlan } from '../types'
 
 /** Total founder hours a plan uses. Rest counts as planned time. */
 export function plannedHours(scenario: Scenario, plan: WeekPlan): number {
-  const interviewCount = Object.values(plan.interviews).reduce((sum, n) => sum + n, 0)
-  return interviewCount * scenario.experiments.interview.hours + plan.restHours
+  const sum = (values: number[]) => values.reduce((a, b) => a + b, 0)
+  return (
+    sum(Object.values(plan.interviews)) * scenario.experiments.interview.hours +
+    sum(Object.values(plan.build)) +
+    plan.bugFixHours +
+    sum(Object.values(plan.outreach).map((o) => o.hours)) +
+    plan.demos.length * scenario.sales.demoHours +
+    plan.restHours
+  )
 }
 
 /**

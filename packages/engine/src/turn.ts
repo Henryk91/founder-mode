@@ -1,10 +1,12 @@
-import { validatePlan } from './plan'
+import { clonePlan, validatePlan } from './plan'
 import { Rng } from './rng'
 import { runInterviews } from './systems/experiments'
 import { applyFinanceWeek } from './systems/finance'
 import { applyFounderWeek, plannedHours } from './systems/founder'
+import { applyProduct } from './systems/product'
+import { applyChurn, applySales } from './systems/sales'
 import { checkEnding } from './systems/endings'
-import type { GameState, WeekPlan, WeekReport } from './types'
+import type { GameState, ReportEntry, WeekPlan, WeekReport } from './types'
 import { interviewView } from './view'
 
 /**
@@ -23,6 +25,7 @@ export function endWeek(
 
   const rng = new Rng(input.rng)
   let state = input
+  const entries: ReportEntry[] = []
 
   // 2. Inbox responses: later (Phase 4)
 
@@ -38,15 +41,35 @@ export function endWeek(
   const interviews = runInterviews(state, plan, rng)
   state = interviews.state
 
-  // 5. Product: later (Phase 2)
-  // 6. Sales: later (Phase 2)
+  // 5. Product: bug fixing, build progress, shipping
+  const product = applyProduct(state, plan, rng)
+  state = product.state
+  entries.push(...product.entries)
+
+  // 6. Sales: demos, trials, new leads, ghosting
+  const sales = applySales(state, plan, rng)
+  state = sales.state
+  entries.push(...sales.entries)
+
   // 7. Team: later (Phase 4)
 
-  // 8. Finance: transfers, living costs, fixed costs at month end
+  // 8. Finance: transfers, living costs, fixed costs and revenue at month end
   const finance = applyFinanceWeek(state, plan)
   state = finance.state
+  entries.push(...finance.movements)
+  if (finance.ledger.revenueCents > 0) {
+    entries.push({
+      kind: 'revenue',
+      amountCents: finance.ledger.revenueCents,
+      customers: finance.payingCount,
+    })
+  }
 
-  // 9. Churn: later (Phase 2)
+  // 9. Churn on month ends
+  const churn = applyChurn(state, rng)
+  state = churn.state
+  entries.push(...churn.entries)
+
   // 10. Scheduled effects: later
   // 11. Milestones: later (Phase 7)
 
@@ -63,7 +86,7 @@ export function endWeek(
     energyBefore,
     energyAfter: state.founder.energy,
     interviews: interviews.outcomes.map((o) => interviewView(state, o.evidence)),
-    entries: [...finance.movements],
+    entries,
     ledger: finance.ledger,
     ending,
   }
@@ -74,8 +97,4 @@ export function endWeek(
     actionLog: [...state.actionLog, { type: 'endWeek', week: input.week, plan: clonePlan(plan) }],
   }
   return { state, report }
-}
-
-function clonePlan(plan: WeekPlan): WeekPlan {
-  return { ...plan, interviews: { ...plan.interviews } }
 }
