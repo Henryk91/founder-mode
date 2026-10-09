@@ -1,19 +1,29 @@
 .start {
+  min-height: 100%;
   max-width: 440px;
   margin: 0 auto;
-  padding: 40px 14px;
+  padding: 24px 14px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  justify-content: center;
+  gap: 14px;
+}
+
+.paper {
+  gap: 16px;
+  padding: 22px 20px;
 }
 
 .title {
   margin: 0;
-  font-size: 34px;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 52px;
+  line-height: 1;
 }
 
 .tagline {
   margin: 0;
-  color: var(--on-dark-muted);
+  color: var(--ink-muted);
   font-size: 16px;
 }

@@ -640,3 +640,7 @@ type ScenarioEvent = {
 - Outreach saturation: `sales.saturationHours` (12), `saturationWeeks` (3), `saturatedFactor` (0.3). Founder and salesperson outreach on one channel in one market counts fully up to 36 h over the current and previous two weeks, beyond that at 0.3 per hour. `costs.saturationHours` and `costs.saturationWeeks` carry the rule to the view.
 - `new_leads` entries carry `wornOut` when some outreach hours went beyond saturation; the results screen says the channel is wearing out. `hireEconomics(state)` (public): role, cost so far, customers the hire found, cost per customer, and money received per customer over the run.
 - `PlayerView.founder.livingCostCentsPerMonth` (weekly living costs x `weeksPerMonth`), `TeamView.roles[].weeklyHours`. Intro cards may use `{livingMonth:eur}`.
+
+### Second UI pass (engine 0.8.0, no replay change)
+
+- `MessageChoice.possibleCostCents`: cash that may go out (effect with `chance` below 1 or a `when`). `costCents` now counts only certain cash costs. The UI shows the first as a risk, never with odds.

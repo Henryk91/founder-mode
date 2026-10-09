@@ -23,10 +23,23 @@
   font-size: 14px;
 }
 
+/* Stacked by default. With room, every column sits side by side: never some beside, some below. */
 .columns {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
+}
+
+@container (min-width: 560px) {
+  .cols4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 700px) {
+  .cols5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
 
 .column {
@@ -96,13 +109,15 @@
   font-size: 13px;
 }
 
-/* On a narrow board the columns stack and empty ones step aside. */
-@container (max-width: 520px) {
-  .columns {
-    grid-template-columns: minmax(0, 1fr);
+/* While stacked, empty columns step aside. */
+@container (max-width: 559px) {
+  .cols4 .emptyColumn {
+    display: none;
   }
+}
 
-  .emptyColumn {
+@container (max-width: 699px) {
+  .cols5 .emptyColumn {
     display: none;
   }
 }

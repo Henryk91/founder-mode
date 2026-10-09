@@ -87,18 +87,6 @@
 .right {
   width: 290px;
   flex-shrink: 0;
-  container-type: inline-size;
-}
-
-/* Between 900 and 1200 px the side columns narrow so the centre keeps room. */
-@media (max-width: 1199px) {
-  .left {
-    width: 300px;
-  }
-
-  .right {
-    width: 260px;
-  }
 }
 
 .deskSingle {

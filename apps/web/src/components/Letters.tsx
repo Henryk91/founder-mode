@@ -150,6 +150,9 @@ export function costParts(c: MessageChoice, stage: UiStage): string[] {
   if (c.costCents > 0) {
     parts.push(label('inbox.cost.money', stage, { amount: formatEuro(c.costCents) }))
   }
+  if (c.possibleCostCents > 0) {
+    parts.push(label('inbox.cost.possible', stage, { amount: formatEuro(c.possibleCostCents) }))
+  }
   if (c.monthlyCostCents > 0) {
     parts.push(label('inbox.cost.monthly', stage, { amount: formatEuro(c.monthlyCostCents) }))
   }

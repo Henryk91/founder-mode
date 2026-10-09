@@ -14,16 +14,15 @@ export function Start() {
 
   return (
     <main className={startStyles.start}>
-      <h1 className={startStyles.title}>{label('app.title', stage)}</h1>
-      <p className={startStyles.tagline}>{label('app.tagline', stage)}</p>
-
       {notice && (
         <div className={`${styles.card} ${styles.sticky}`} role="status">
           <p>{label(`start.notice.${notice}`, stage)}</p>
         </div>
       )}
 
-      <div className={`${styles.card}`}>
+      <div className={`${styles.card} ${startStyles.paper}`}>
+        <h1 className={startStyles.title}>{label('app.title', stage)}</h1>
+        <p className={startStyles.tagline}>{label('app.tagline', stage)}</p>
         {hasSave && (
           <button
             type="button"

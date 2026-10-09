@@ -36,10 +36,13 @@ function Quotes({ interviews }: { interviews: InterviewView[] }) {
     <>
       <button
         type="button"
-        className={styles.linkRow}
+        className={styles.reveal}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
+        <span className={styles.revealArrow} aria-hidden="true">
+          {open ? '▾' : '▸'}
+        </span>
         <span>{label(open ? 'market.quotes.hide' : 'market.quotes.show', stage)}</span>
       </button>
       {open && (

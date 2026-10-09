@@ -90,7 +90,9 @@ export function Pipeline() {
         {open.length === 0 && view.customers.length === 0 ? (
           <p className={board.empty}>{label('pipeline.empty', stage)}</p>
         ) : (
-          <div className={board.columns}>
+          <div
+            className={`${board.columns} ${columns.length + 1 >= 5 ? board.cols5 : board.cols4}`}
+          >
             {columns.map(([group, key]) => {
               const items = open.filter((l) => l.stage === group)
               return (

@@ -100,6 +100,7 @@ const labels = {
   'plan.followUps.booked.one': '{n} follow up ({hours})',
   'plan.followUps.booked.other': '{n} follow ups ({hours})',
   'inbox.cost.money': '{amount}',
+  'inbox.cost.possible': 'risk of losing {amount}',
   'inbox.cost.monthly': '{amount} a month',
   'pipeline.unbookDemo': 'Demo booked, tap to cancel',
 

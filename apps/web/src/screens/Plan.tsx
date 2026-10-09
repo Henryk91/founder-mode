@@ -530,7 +530,10 @@ function SellBody({ free }: { free: number }) {
         return (
           <div key={seg.id} className={styles.row}>
             <span className={plan.lineName}>{seg.name}</span>
-            <div className={styles.chips}>
+            <div
+              className={plan.channels}
+              style={{ gridTemplateColumns: `repeat(${view.channels.length}, minmax(0, 1fr))` }}
+            >
               {view.channels.map((c) => (
                 <button
                   key={c}

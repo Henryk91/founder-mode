@@ -171,6 +171,7 @@ describe('bots', () => {
       label: id,
       hours,
       costCents,
+      possibleCostCents: 0,
       monthlyCostCents,
     })
     const view = (choices: ReturnType<typeof choice>[], cash = 1_500_000): PlayerView =>
