@@ -142,6 +142,9 @@ export function upcoming(view: PlayerView): Upcoming[] {
   return items.sort((a, b) => a.week - b.week).slice(0, COMING_UP)
 }
 
+/** Fixed tilts for the calendar notes, so they look the same on every render. */
+const NOTE_TILTS = [-1, 0.8, 1.2, -0.7]
+
 /** "Coming up": calendar notes for the next scheduled things. */
 export function ComingUp({ view }: { view: PlayerView }) {
   const stage = view.company.uiStage
@@ -150,8 +153,12 @@ export function ComingUp({ view }: { view: PlayerView }) {
     <section aria-label={label('coming.title', stage)} className={styles.coming}>
       <h2 className={styles.hand}>{label('coming.title', stage)}</h2>
       <ul className={styles.notes}>
-        {items.map((item) => (
-          <li key={item.week + item.text} className={styles.note}>
+        {items.map((item, i) => (
+          <li
+            key={item.week + item.text}
+            className={styles.note}
+            style={{ transform: `rotate(${NOTE_TILTS[i % NOTE_TILTS.length]}deg)` }}
+          >
             <span className={styles.noteWeek}>
               {label('coming.week', stage, { week: item.week })}
             </span>

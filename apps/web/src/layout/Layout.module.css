@@ -87,6 +87,7 @@
 .right {
   width: 290px;
   flex-shrink: 0;
+  container-type: inline-size;
 }
 
 /* Between 900 and 1200 px the side columns narrow so the centre keeps room. */

@@ -175,18 +175,18 @@
 }
 .cardText {
   fill: var(--paper);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-anchor: middle;
 }
 .small {
   fill: var(--ink-muted);
-  font-size: 11px;
+  font-size: 12px;
   text-anchor: middle;
 }
 .heading {
   fill: var(--ink-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-anchor: middle;
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { InterviewView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { count, label } from '../labels'
@@ -13,6 +14,59 @@ function tally(interviews: InterviewView[]): [string, number][] {
     }
   }
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
+}
+
+/** How many answers fell into each type, most common first. */
+function answerCounts(interviews: InterviewView[]): [string, number][] {
+  const counts = new Map<string, number>()
+  for (const iv of interviews) counts.set(iv.bucketName, (counts.get(iv.bucketName) ?? 0) + 1)
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
+}
+
+/** The individual interview quotes of one market, newest first, behind a tap. */
+function Quotes({ interviews }: { interviews: InterviewView[] }) {
+  const [open, setOpen] = useState(false)
+  const view = useGame((s) => s.view)
+  if (!view || interviews.length === 0) return null
+  const stage = view.company.uiStage
+  const newestFirst = interviews
+    .map((iv, i) => ({ iv, i }))
+    .sort((a, b) => b.iv.week - a.iv.week || b.i - a.i)
+  return (
+    <>
+      <button
+        type="button"
+        className={styles.linkRow}
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        <span>{label(open ? 'market.quotes.hide' : 'market.quotes.show', stage)}</span>
+      </button>
+      {open && (
+        <ul className={styles.list}>
+          {newestFirst.map(({ iv, i }) => (
+            <li key={i} className={styles.row}>
+              <div className={styles.rowHead}>
+                <span>{iv.bucketName}</span>
+                <span className={styles.hint}>
+                  {label('market.week', stage, { week: iv.week })}
+                </span>
+              </div>
+              <blockquote className={styles.quote}>{iv.quote}</blockquote>
+              {iv.mentionedFeature && (
+                <>
+                  <span className={styles.hint}>
+                    {label('market.mentioned', stage, { feature: iv.mentionedFeature.name })}
+                  </span>
+                  <blockquote className={styles.quote}>{iv.mentionedFeature.quote}</blockquote>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  )
 }
 
 export function Market() {
@@ -34,6 +88,18 @@ export function Market() {
               ? label('market.based.zero', stage)
               : count('market.based', stage, seg.interviews.length)}
           </p>
+          {seg.interviews.length > 0 && (
+            <div className={styles.row}>
+              <div className={styles.rowHead}>
+                <span>{label('market.answersTitle', stage)}</span>
+              </div>
+              <p>
+                {answerCounts(seg.interviews)
+                  .map(([bucket, n]) => label('market.answer', stage, { bucket, n }))
+                  .join(', ')}
+              </p>
+            </div>
+          )}
           {tally(seg.interviews).length > 0 && (
             <div className={styles.row}>
               <div className={styles.rowHead}>
@@ -98,27 +164,7 @@ export function Market() {
               </ul>
             </div>
           )}
-          <ul className={styles.list}>
-            {seg.interviews.map((iv, i) => (
-              <li key={i} className={styles.row}>
-                <div className={styles.rowHead}>
-                  <span>{iv.bucketName}</span>
-                  <span className={styles.hint}>
-                    {label('market.week', stage, { week: iv.week })}
-                  </span>
-                </div>
-                <blockquote className={styles.quote}>{iv.quote}</blockquote>
-                {iv.mentionedFeature && (
-                  <>
-                    <span className={styles.hint}>
-                      {label('market.mentioned', stage, { feature: iv.mentionedFeature.name })}
-                    </span>
-                    <blockquote className={styles.quote}>{iv.mentionedFeature.quote}</blockquote>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
+          <Quotes interviews={seg.interviews} />
         </section>
       ))}
     </>

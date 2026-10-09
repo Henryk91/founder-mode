@@ -117,14 +117,13 @@
 .sections {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  margin-top: 4px;
 }
 
+/* The section rows are pages of the same notebook: they sit on its ruled paper. */
 .section {
-  background: var(--paper);
   color: var(--ink);
-  border-radius: var(--paper-radius);
-  box-shadow: var(--paper-shadow);
+  border-top: 2px solid var(--ink-muted);
 }
 
 .sectionHead {
@@ -154,8 +153,10 @@
 }
 
 .sectionTitle {
+  font-family: var(--font-hand);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 24px;
+  line-height: 1.05;
 }
 
 .summary {
@@ -174,6 +175,7 @@
 }
 
 .body {
+  background: var(--paper);
   display: flex;
   flex-direction: column;
   gap: 10px;

@@ -145,6 +145,27 @@
   font-size: 15px;
 }
 
+/* In a narrow column (the desk's money column) the whole stepper stays on one row. */
+@container (max-width: 320px) {
+  .stepper {
+    flex-wrap: nowrap;
+    gap: 3px;
+  }
+
+  .stepButton {
+    flex-shrink: 1;
+    min-width: 40px;
+    padding: 0 3px;
+    font-size: 12px;
+  }
+
+  .stepValue {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 14px;
+  }
+}
+
 .meter {
   height: 14px;
   border-radius: 3px;
@@ -226,8 +247,23 @@
 .handText {
   margin: 0;
   font-family: var(--font-hand);
+  font-weight: 500;
   font-size: 23px;
   line-height: 1.15;
+}
+
+/* Group heading on a results paper. */
+.paperHead {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.moneyLines {
+  font-family: var(--font-mono);
+  font-size: 13px;
 }
 
 .caps {
