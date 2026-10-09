@@ -3,6 +3,13 @@ import { describe, expect, it } from 'vitest'
 import { buildReport, evaluateTargets, marketSpread, median, winRateByMarket } from '../src/report'
 import { runGame } from '../src/simulate'
 import { STRATEGIES } from '../src/strategies'
+import { randomNoInbox } from '../src/strategies/random'
+import {
+  answerInbox,
+  BEHAVIOUR_NAMES,
+  withoutBehaviours,
+} from '../src/strategies/validateThenBuild'
+import type { PlayerView } from '@founder-mode/engine'
 
 const scenario = loadScenario('kantino')
 
@@ -13,6 +20,7 @@ describe('bots', () => {
       'build_only',
       'sell_first',
       'validate_then_build',
+      'validate_then_build_hire',
       'price_aware',
       'overworker',
       'playtest',
@@ -111,7 +119,7 @@ describe('bots', () => {
     const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
     const runs = Array.from({ length: 20 }, (_, i) => runGame(scenario, strategy, `p4-${i}`))
     for (const r of runs) {
-      expect(r.landingTests).toBe(3)
+      expect(r.landingTests).toBe(1)
       expect(r.bookkeepingPenalties).toBe(0)
     }
     expect(runs.some((r) => r.presaleBatches > 0)).toBe(true)
@@ -146,6 +154,93 @@ describe('bots', () => {
     expect(md).toContain('## Phase 4 systems in use')
     expect(md).toContain('| Shut down |')
     expect(md).not.toContain('NaN')
+  })
+
+  describe('the inbox policy', () => {
+    const choice = (id: string, hours: number, costCents = 0, monthlyCostCents = 0) => ({
+      id,
+      label: id,
+      hours,
+      costCents,
+      monthlyCostCents,
+    })
+    const view = (choices: ReturnType<typeof choice>[], cash = 1_000_000): PlayerView =>
+      ({
+        committedHours: 0,
+        forcedHours: 0,
+        founder: { maxHoursPerWeek: 65 },
+        company: { cashCents: cash },
+        inbox: [
+          {
+            id: 'message_1',
+            week: 2,
+            expiresWeek: 3,
+            fromRole: 'x',
+            fromName: 'x',
+            text: 'x',
+            choices,
+            answeredChoiceId: null,
+          },
+        ],
+      }) as unknown as PlayerView
+
+    it('takes the choice that asks the most effort, within 6 hours', () => {
+      const answers = answerInbox(view([choice('skip', 0), choice('chat', 2), choice('long', 8)]))
+      expect(answers).toEqual([{ messageId: 'message_1', choiceId: 'chat' }])
+    })
+
+    it('leaves a message alone when its best choice is free, so the default happens', () => {
+      expect(answerInbox(view([choice('a', 0), choice('b', 0)]))).toEqual([])
+    })
+
+    it('never takes a monthly cost, and spends at most a tenth of the cash above 3,000 EUR', () => {
+      expect(answerInbox(view([choice('skip', 0), choice('sub', 3, 0, 4_000)]))).toEqual([])
+      const buy = [choice('skip', 0), choice('buy', 1, 140_000)]
+      expect(answerInbox(view(buy, 1_000_000))).toEqual([])
+      expect(answerInbox(view(buy, 1_500_000))).toEqual([
+        { messageId: 'message_1', choiceId: 'buy' },
+      ])
+      expect(answerInbox(view([choice('skip', 0), choice('pay', 1, 50_000)], 340_000))).toEqual([])
+    })
+
+    it('keeps the week under 8 hours of answers', () => {
+      const v = view([choice('skip', 0), choice('a', 5)])
+      v.inbox.push({ ...v.inbox[0]!, id: 'message_2' })
+      expect(answerInbox(v)).toEqual([{ messageId: 'message_1', choiceId: 'a' }])
+    })
+  })
+
+  it('switches single behaviours off, and names the variant after them', () => {
+    expect(BEHAVIOUR_NAMES).toEqual(['inbox', 'chase', 'landing', 'books'])
+    const noBooks = withoutBehaviours({ id: 'validate_then_build', hire: false }, ['books'])
+    expect(noBooks.id).toBe('validate_then_build -books')
+    const r = runGame(scenario, noBooks, 'nb')
+    expect(r.bookkeepingPenalties).toBeGreaterThan(0)
+    const noLanding = runGame(
+      scenario,
+      withoutBehaviours({ id: 'v', hire: false }, ['landing']),
+      'nl',
+    )
+    expect(noLanding.landingTests).toBe(0)
+    const none = withoutBehaviours({ id: 'v', hire: false }, BEHAVIOUR_NAMES)
+    const rn = runGame(scenario, none, 'nn')
+    expect(rn.messagesAnswered).toBe(0)
+    expect(rn.landingTests).toBe(0)
+  })
+
+  it('the hire variant hires once revenue covers a salary, and only once', () => {
+    const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build_hire')!
+    const runs = Array.from({ length: 150 }, (_, i) => runGame(scenario, strategy, `h${i}`))
+    const hired = runs.filter((r) => r.hiredWeek !== null)
+    expect(hired.length).toBeGreaterThan(0)
+    const plain = STRATEGIES.find((s) => s.id === 'validate_then_build')!
+    expect(runGame(scenario, plain, 'h1').hiredWeek).toBeNull()
+  })
+
+  it('the silent random bot never answers and plays the same random stream', () => {
+    const silent = runGame(scenario, randomNoInbox, 'quiet')
+    expect(silent.messagesAnswered).toBe(0)
+    expect(silent.messages).toBeGreaterThan(0)
   })
 
   it('computes medians', () => {
