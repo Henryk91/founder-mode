@@ -181,9 +181,9 @@ In display order. The progress bar shows the first one not reached yet, skipping
 | `first_interview` | First interview | 1 interview |
 | `first_deposit` | First deposit | 1 pre-sale deposit |
 | `first_customer` | First paying customer | 1 customer (keeps its full screen moment) |
-| `covers_company_costs` | Revenue covers company costs | Monthly revenue at least the monthly company costs (tools, accountant, salary) |
-| `covers_all_costs` | Revenue covers all costs, you included | Monthly revenue at least company costs plus 4 weeks of living costs |
-| `first_hire` | First hire | The hire starts work. Not on the bar |
+| `covers_company_costs` | Monthly revenue covers company costs | Monthly revenue at least the monthly company costs (tools, accountant, salary, office) |
+| `covers_all_costs` | Monthly revenue covers all costs, you included | Monthly revenue at least company costs plus 4 weeks of living costs. Turns the UI organised, unless the first hire did earlier |
+| `first_hire` | First hire | The hire starts work. Not on the bar. Turns the UI organised, unless revenue did earlier |
 | `weeks_26` | 26 weeks survived | Week 26 is over and did not end the run |
 | `weeks_52` | 52 weeks survived | Week 52 is over and did not end the run |
 

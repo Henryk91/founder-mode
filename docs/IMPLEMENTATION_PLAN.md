@@ -347,9 +347,9 @@ choices:
 
 Milestones: first interview, first sign up, first paying customer, 1,000 EUR monthly revenue, first hire, break even month, 52 weeks survived.
 
-Phase 7 as built: the milestones live in the scenario (`milestones`, see `docs/scenario-kantino.md` 9b): first interview, first deposit, first paying customer, revenue covers company costs, revenue covers all costs, first hire, 26 and 52 weeks survived. Revenue milestones cover the run's own costs instead of a fixed amount.
+Phase 7 as built: the milestones live in the scenario (`milestones`, see `docs/scenario-kantino.md` 9b): first interview, first deposit, first paying customer, monthly revenue covers company costs, monthly revenue covers all costs, first hire, 26 and 52 weeks survived. Revenue milestones cover the run's own costs instead of a fixed amount.
 
-`uiStage` switches from `scrappy` to `organised` at the first hire or at 2,000 EUR monthly revenue, whichever comes first. (As built: at the first milestone listed in the scenario's `organisedAt`, first hire or revenue covers company costs.) This is the single UI upgrade step in the early MVP: labels change, the pipeline shows one new number (conversion from demo to trial), and the handwriting font is replaced on that panel only.
+`uiStage` switches from `scrappy` to `organised` at the first hire or at 2,000 EUR monthly revenue, whichever comes first. (As built: at the first milestone listed in the scenario's `organisedAt`: the first hire, or monthly revenue covering all costs including the founder's living costs.) This is the single UI upgrade step in the early MVP: labels change, the pipeline shows one new number (conversion from demo to trial), and the handwriting font is replaced on that panel only.
 
 ### 4.13 Endings
 
