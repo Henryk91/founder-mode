@@ -145,6 +145,13 @@ describe('content', () => {
       }
     })
 
+    it('keeps the full milestone names, commas included, and organises at all costs or a hire', () => {
+      const names = Object.fromEntries(s.milestones.map((m) => [m.id, m.name]))
+      expect(names['covers_all_costs']).toBe('Monthly revenue covers all costs, you included')
+      expect(names['covers_company_costs']).toBe('Monthly revenue covers company costs')
+      expect(s.organisedAt).toEqual(['first_hire', 'covers_all_costs'])
+    })
+
     it('offers the coworking desk once, for sure, from week 8 or after the first customer', () => {
       const desk = s.events.find((e) => e.id === 'coworking_desk')!
       expect(desk.once).toBe(true)
@@ -178,7 +185,7 @@ describe('content', () => {
         /unknown office stage penthouse/,
       )
       const scenario = base.scenario.replace(
-        'organisedAt: [first_hire, covers_company_costs]',
+        'organisedAt: [first_hire, covers_all_costs]',
         'organisedAt: [first_unicorn]',
       )
       expect(() => parseScenario({ ...base, scenario })).toThrow(/unknown milestone first_unicorn/)

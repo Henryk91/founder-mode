@@ -102,25 +102,45 @@ describe('office stages', () => {
 })
 
 describe('organised stage', () => {
-  it('turns organised at the first of the scenario milestones, once, and says so in that week', () => {
+  it('turns organised once revenue covers all costs, once, and says so in that week', () => {
     const s0 = newGame('organise', quiet())
     const fixed = s0.company.fixedCosts.reduce((t, c) => t + c.monthlyCents, 0)
-    const price = Math.ceil(fixed / 2)
-    const s = {
+    const living = s0.founder.livingCostCentsPerWeek * s0.scenario.finance.weeksPerMonth
+    const paying = (total: number) => ({
       ...s0,
       customers: [
-        { ...customer('c1', 'coworking', 1), priceCentsPerMonth: price },
-        { ...customer('c2', 'coworking', 1), priceCentsPerMonth: price },
+        { ...customer('c1', 'coworking', 1), priceCentsPerMonth: Math.ceil(total / 2) },
+        { ...customer('c2', 'coworking', 1), priceCentsPerMonth: Math.ceil(total / 2) },
       ],
-    }
-    expect(s.company.uiStage).toBe('scrappy')
-    const first = endWeek(s, plan())
+    })
+    // Company costs alone are not enough any more.
+    const companyOnly = endWeek(paying(fixed), plan())
+    expect(companyOnly.report.milestones.map((m) => m.id)).toContain('covers_company_costs')
+    expect(companyOnly.state.company.uiStage).toBe('scrappy')
+    expect(companyOnly.report.uiStageChanged).toBe(false)
+
+    const first = endWeek(paying(fixed + living), plan())
     expect(first.state.company.uiStage).toBe('organised')
     expect(first.report.uiStageChanged).toBe(true)
-    expect(first.report.milestones.map((m) => m.id)).toContain('covers_company_costs')
+    expect(first.report.milestones.map((m) => m.id)).toContain('covers_all_costs')
     const second = endWeek(first.state, plan())
     expect(second.report.uiStageChanged).toBe(false)
     expect(second.state.company.uiStage).toBe('organised')
+  })
+
+  it('turns organised when the first hire starts, before revenue covers anything', () => {
+    const s0 = newGame('organise-hire', quiet())
+    const member = {
+      id: 'm1',
+      name: 'Aylin Demir',
+      role: 'developer' as const,
+      offerWeek: 1,
+      startWeek: 1,
+      letGoWeek: null,
+    }
+    const out = endWeek({ ...s0, team: { ...s0.team, members: [member] } }, plan())
+    expect(out.report.milestones.map((m) => m.id)).toContain('first_hire')
+    expect(out.state.company.uiStage).toBe('organised')
   })
 
   it('stays scrappy while no organising milestone is reached', () => {
