@@ -196,8 +196,8 @@ export function notableMoments(report: WeekReport, view: PlayerView): Moment[] {
 
 /**
  * After End week: notable moments one at a time, then one screen with the week grouped under
- * money, sales, product, learning and founder, most important group first. A finished run shows
- * its ending and the way back.
+ * money, sales, product, learning and founder, most important group first. A finished run goes
+ * from its ending moment to the post-mortem instead (see App).
  */
 export function Results() {
   const view = useGame((s) => s.view)
@@ -205,10 +205,8 @@ export function Results() {
   const seen = useGame((s) => s.momentsSeen)
   const next = useGame((s) => s.nextMoment)
   const dismiss = useGame((s) => s.dismissReport)
-  const leave = useGame((s) => s.leaveRun)
   if (!view) return null
   const stage = view.company.uiStage
-  const finished = view.status === 'ended'
   const moment = report ? notableMoments(report, view)[seen] : undefined
 
   if (moment) {
@@ -223,7 +221,7 @@ export function Results() {
           <p>{label('end.stats', stage, { weeks: view.week, customers: view.customers.length })}</p>
         )}
         <button type="button" className={`${styles.button} ${styles.primary}`} onClick={next}>
-          {label(moment.id === 'ending' ? 'moment.toWeek' : 'moment.next', stage)}
+          {label(moment.id === 'ending' ? 'moment.toPostMortem' : 'moment.next', stage)}
         </button>
       </section>
     )
@@ -232,26 +230,10 @@ export function Results() {
   return (
     <>
       {report && <WeekSummary report={report} view={view} />}
-      {finished && view.ending && (
-        <section
-          className={`${styles.card} ${styles.sticky}`}
-          aria-label={label('end.title', stage)}
-        >
-          <h2 className={styles.title}>{label('end.title', stage)}</h2>
-          <p>{label(`end.${view.ending}`, stage, { max: view.maxWeeks })}</p>
-          <p>{label('end.stats', stage, { weeks: view.week, customers: view.customers.length })}</p>
-        </section>
-      )}
       <div className={styles.stickyBottom}>
-        {finished ? (
-          <button type="button" className={`${styles.button} ${styles.primary}`} onClick={leave}>
-            {label('end.backToStart', stage)}
-          </button>
-        ) : (
-          <button type="button" className={`${styles.button} ${styles.primary}`} onClick={dismiss}>
-            {label('results.continue', stage)}
-          </button>
-        )}
+        <button type="button" className={`${styles.button} ${styles.primary}`} onClick={dismiss}>
+          {label('results.continue', stage)}
+        </button>
       </div>
     </>
   )

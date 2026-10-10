@@ -311,14 +311,21 @@ export type WeekLedger = {
   customers: number
   /** Runway at the end of the week, null while money is not shrinking. */
   runwayWeeks: number | null
+  /** Founder energy at the end of the week. */
+  energyEnd: number
+  /** The founder's hours this week by activity, inbox answers and lost hours under admin. */
+  hours: HoursByActivity
 }
+
+export type Activity = 'learning' | 'building' | 'selling' | 'admin' | 'rest'
+export type HoursByActivity = Record<Activity, number>
 
 export type LoggedAction =
   | { type: 'endWeek'; week: number; plan: WeekPlan }
   | { type: 'respond'; week: number; messageId: string; choiceId: string }
   | { type: 'shutDown'; week: number }
 
-export type LoggedEvent = InterviewEvent | ExperimentEvent | MoneyEvent | MessageEvent
+export type LoggedEvent = InterviewEvent | ExperimentEvent | MoneyEvent | MessageEvent | OddsEvent
 
 export type InterviewEvent = {
   kind: 'interview'
@@ -346,6 +353,34 @@ export type MessageEvent = {
 }
 
 export type MoneyEvent = { kind: MoneyMovementKind; week: number; amountCents: number }
+
+/**
+ * Chance outcomes of one kind in one week, for the post-mortem's luck section: how many tries,
+ * how many successes the chances predicted (`expected`, a sum of chances) and how many happened.
+ * - leads: leads found by outreach (one try per outreach line, expected is the mean count)
+ * - lead_demo: open leads agreeing to a demo
+ * - demo: demos that became trials
+ * - trial: trials that became paying customers
+ * - churn: customers who left at a month end
+ * - never_pays: invoices whose customer will never pay them
+ * - message: a cash effect of an inbox answer that depends on chance
+ * `unitCents` is the money one success moves (invoice amount, cash effect), 0 when none.
+ * Logging never draws from the PRNG, so it does not change any outcome.
+ */
+export type OddsEvent = {
+  kind: 'odds'
+  odds: OddsKind
+  week: number
+  segmentId: SegmentId | null
+  /** The inbox event, for `message` odds. */
+  eventId: string | null
+  tries: number
+  expected: number
+  observed: number
+  unitCents: number
+}
+
+export type OddsKind = 'leads' | 'lead_demo' | 'demo' | 'trial' | 'churn' | 'never_pays' | 'message'
 
 /**
  * Money moving between the founder and the company.
@@ -738,3 +773,220 @@ export type SaveFile = {
 
 /** Why a save cannot be continued. */
 export type SaveProblem = 'engine_version' | 'scenario_id' | 'scenario_changed'
+
+// ---------------------------------------------------------------------------
+// Post-mortem. Built only after the run has ended; reveals hidden values on purpose.
+
+/** Why the run ended, as one sentence. The UI words it from the id and the numbers. */
+export type PostMortemCauseId =
+  | 'bankrupt_no_customers'
+  | 'bankrupt_hire'
+  | 'bankrupt_churn'
+  | 'bankrupt_below_costs'
+  | 'burnout'
+  | 'still_searching'
+  | 'sustainable'
+  | 'shut_down'
+
+export type PostMortemCause = {
+  id: PostMortemCauseId
+  week: number
+  /** Highest monthly revenue of active customers in any week. */
+  peakRevenueCents: number
+  /** Monthly revenue at the end. */
+  revenueCents: number
+  /** Company costs plus the founder's living costs over one month, at the end. */
+  monthlyCostsCents: number
+  /** The same without the hire's salary. Equal to `monthlyCostsCents` without a hire. */
+  monthlyCostsWithoutHireCents: number
+  customersWon: number
+  customersLost: number
+  /** Weeks with more hours than the founder's base week. */
+  weeksOverBase: number
+  /** Revenue at the end as a whole percentage of monthly costs. */
+  coveredPercent: number
+  /** First week in which monthly revenue covered all monthly costs, or null. */
+  coveredWeek: number | null
+  /** Runway when the run ended, for a shut down. */
+  runwayWeeks: number | null
+}
+
+export type ChainKind =
+  | 'savings_empty'
+  | 'first_customer'
+  | 'customer_won'
+  | 'customer_lost'
+  | 'feature_shipped'
+  | 'hire_started'
+  | 'hire_let_go'
+  | 'price_changed'
+  | 'energy_low'
+  | 'energy_zero'
+  | 'invoice_written_off'
+  | 'covers_all_costs'
+  | 'lead_declined'
+  | 'ending'
+
+/** One dated step in the chain that led to the ending. Fields depend on the kind. */
+export type ChainItem = {
+  week: number
+  kind: ChainKind
+  name: string | null
+  segmentId: SegmentId | null
+  featureId: FeatureId | null
+  /** Active customers after the step, for wins and losses. */
+  customers: number | null
+  /** Money of the step: price, invoice, monthly revenue, or cash at the ending. */
+  cents: number | null
+  /** The ending, for `ending`. */
+  ending: EndingId | null
+}
+
+export type MarketFeature = {
+  featureId: FeatureId
+  /** Interviews in which someone mentioned it unprompted. */
+  mentions: number
+  shippedWeek: number | null
+}
+
+/** One market: the hidden truth next to what the player's evidence suggested. */
+export type MarketTruth = {
+  segmentId: SegmentId
+  roleId: string
+  /** The interview bucket the true pain falls into. */
+  painBucketId: BucketId
+  interviews: number
+  /** The bucket the interviews averaged, or null without interviews. */
+  saidBucketId: BucketId | null
+  /** Interviews in the top bucket. */
+  topBucketCount: number
+  landing: { tests: number; visitors: number; signups: number } | null
+  presale: { batches: number; prospects: number; commits: number; priceCents: number } | null
+  /** Willingness to pay, rounded to 10 EUR. */
+  wtpCents: number
+  customersWon: number
+  /** Distinct prices customers of this market signed at, lowest first. */
+  customerPricesCents: number[]
+  mustHave: MarketFeature[]
+}
+
+export type Misread =
+  | {
+      kind: 'interviews_high' | 'interviews_low'
+      segmentId: SegmentId
+      interviews: number
+      saidBucketId: BucketId
+      painBucketId: BucketId
+      /** Polite answers explain the gap, or chance does. */
+      cause: 'politeness' | 'chance'
+      /** For chance: interviews in all that would likely have fixed it, null when already done. */
+      interviewsNeeded: number | null
+    }
+  | {
+      kind: 'experiment'
+      experiment: 'landing' | 'presale'
+      segmentId: SegmentId
+      week: number
+      /** Visitors or prospects. */
+      size: number
+      observed: number
+      /** What that market would normally give, rounded. */
+      normal: number
+    }
+  | {
+      kind: 'went_against'
+      /** The market the strongest evidence ranked first: the good one. */
+      rankedFirstSegmentId: SegmentId
+      evidence: 'presale' | 'landing' | 'interviews'
+      focusSegmentId: SegmentId
+      focusHours: number
+    }
+
+export type LuckKind = OddsKind | 'landing' | 'presale'
+
+/** A group of chance outcomes against what was normal, and what the difference was worth. */
+export type LuckItem = {
+  kind: LuckKind
+  segmentId: SegmentId | null
+  eventId: string | null
+  tries: number
+  observed: number
+  expected: number
+  /** Effect in customers, positive when luck helped. */
+  customers: number
+  /** Effect in money, positive when luck helped. 0 when the item is not about money. */
+  cents: number
+  /** A test result that changed which market came out on top in its week. */
+  changedChoice: boolean
+}
+
+export type SuggestionId =
+  | 'compare_markets'
+  | 'talk_more'
+  | 'watch_energy'
+  | 'listen_features'
+  | 'check_price'
+  | 'watch_churn'
+  | 'hire_cost'
+  | 'chase_invoices'
+  | 'raise_price'
+  | 'sooner'
+  | 'sample_sizes'
+
+export type PostMortem = {
+  scenarioId: string
+  seed: string
+  ending: EndingId
+  week: number
+  maxWeeks: number
+  /** Content names for the ids below: markets, features and interview buckets. */
+  names: {
+    segments: Record<SegmentId, string>
+    features: Record<FeatureId, string>
+    buckets: Record<BucketId, string>
+  }
+  cause: PostMortemCause
+  /** Up to three earlier steps, then every step of the final week, then the ending. */
+  chain: ChainItem[]
+  /** Every matching suggestion, best first. Always ends with `sample_sizes`. */
+  suggestions: SuggestionId[]
+  markets: MarketTruth[]
+  misreads: Misread[]
+  hours: {
+    total: number
+    byActivity: HoursByActivity
+    weeksOverBase: number
+    baseHoursPerWeek: number
+    /** The market most of the selling and building went to, or null. */
+    focusSegmentId: SegmentId | null
+    focusSellingHours: number
+  }
+  money: {
+    savingsStartCents: number
+    savingsEmptyWeek: number | null
+    livingFromSavingsCents: number
+    movedByYouCents: number
+    movedAutomaticallyCents: number
+    companyPaidYouCents: number
+    customersPaidCents: number
+    peakRevenueCents: number
+    hire: HireEconomicsView | null
+  }
+  luck: {
+    /** At most four, most important first. */
+    items: LuckItem[]
+    /** All luck together, in customers. Positive when luck helped. */
+    netCustomers: number
+    /** Whether average luck would have turned this ending around. Null when money did not decide it. */
+    averageWouldChange: boolean | null
+  }
+}
+
+/** `HireEconomics` from the team system, repeated here so the type has no import cycle. */
+export type HireEconomicsView = {
+  role: TeamRoleId
+  costCents: number
+  customersGained: number
+  costPerCustomerCents: number | null
+  lifetimeValueCents: number | null
+}

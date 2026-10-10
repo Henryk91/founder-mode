@@ -8,6 +8,7 @@ export type { PlanCheck } from './plan'
 export { endWeek, shutDown } from './turn'
 export { respond } from './systems/inbox'
 export { hireEconomics } from './systems/team'
+export { buildPostMortem } from './postmortem'
 export type { HireEconomics } from './systems/team'
 export { replay, saveProblem, toSave } from './save'
 export { scenarioHash } from './hash'
@@ -34,6 +35,17 @@ export type {
   LeadStage,
   LeadView,
   PlanIssue,
+  PostMortem,
+  PostMortemCauseId,
+  ChainItem,
+  ChainKind,
+  MarketTruth,
+  Misread,
+  LuckItem,
+  LuckKind,
+  SuggestionId,
+  HoursByActivity,
+  Activity,
   ProductView,
   InterviewView,
   MoneyMovement,

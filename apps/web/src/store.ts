@@ -1,5 +1,6 @@
 import { loadScenario, type Scenario } from '@founder-mode/content'
 import {
+  buildPostMortem,
   checkPlan,
   createGame,
   emptyPlan,
@@ -14,13 +15,15 @@ import {
   type GameState,
   type PlanIssue,
   type PlayerView,
+  type PostMortem,
+  type SuggestionId,
   type TeamRoleId,
   type WeekPlan,
   type WeekReport,
 } from '@founder-mode/engine'
 import { createStore, type StoreApi } from 'zustand/vanilla'
 import { repeatPlan } from './repeatPlan'
-import type { SaveStorage } from './storage'
+import { MAX_RUNS, memoryProfiles, type ProfileStorage, type SaveStorage } from './storage'
 
 export type Tab = 'plan' | 'inbox' | 'market' | 'pipeline' | 'money'
 
@@ -42,7 +45,10 @@ export type ExplainKey =
 
 export type SaveNotice = 'incompatible' | 'scenario_changed' | 'broken' | null
 
-/** Everything the screens may read. No GameState, nothing hidden. */
+/**
+ * Everything the screens may read. No GameState, nothing hidden, with one exception: the
+ * post-mortem, which reveals the truth on purpose and only exists once the run has ended.
+ */
 export type UiState = {
   view: PlayerView | null
   plan: WeekPlan
@@ -67,10 +73,18 @@ export type UiState = {
   canRepeat: boolean
   /** How many of the report's notable moments the player has already tapped through. */
   momentsSeen: number
+  /** The post-mortem of a finished run, null while the run is going. */
+  postMortem: PostMortem | null
+  /** The one suggestion shown in the post-mortem, chosen once when the run ends. */
+  suggestion: SuggestionId | null
 }
 
 export type UiActions = {
   startRun(seed?: string): void
+  /** A new run with a new seed, straight from the post-mortem. */
+  newRun(): void
+  /** A new run on the seed of the finished one, flagged as a replay in the run record. */
+  sameMarketAgain(): void
   continueRun(): void
   leaveRun(): void
   nextIntro(): void
@@ -121,6 +135,8 @@ export type StoreDeps = {
   storage: SaveStorage
   makeSeed: () => string
   scenario?: () => Scenario
+  /** Best runs and the last suggestion, per scenario. In memory unless given. */
+  profiles?: ProfileStorage
 }
 
 /**
@@ -130,6 +146,10 @@ export type StoreDeps = {
 export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
   const getScenario = deps.scenario ?? (() => loadScenario('kantino'))
   let game: GameState | null = null
+  const profiles = deps.profiles ?? memoryProfiles()
+  /** The game the post-mortem below belongs to, so it is built once per finished run. */
+  let mortemOf: GameState | null = null
+  let mortem: { postMortem: PostMortem; suggestion: SuggestionId } | null = null
 
   const initialSave = deps.storage.load()
 
@@ -141,7 +161,10 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       }
       const plan = patch.plan ?? get().plan
       const check = checkPlan(game, plan)
+      const ended = game.status === 'ended' ? finish(game) : null
       set({
+        postMortem: ended?.postMortem ?? null,
+        suggestion: ended?.suggestion ?? null,
         view: getView(game),
         plan,
         plannedHours: check.plannedHours,
@@ -161,9 +184,57 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       return null
     }
 
+    /**
+     * Builds the post-mortem of a finished run. The first time, it also picks the suggestion (the
+     * first that was not shown after the previous run) and records the run for the best runs.
+     */
+    const finish = (state: GameState) => {
+      if (mortemOf === state && mortem) return mortem
+      const postMortem = buildPostMortem(state)
+      const profile = profiles.load(state.scenarioId)
+      const current = profile.current?.seed === state.seed ? profile.current : null
+      let suggestion = current?.suggestion ?? null
+      if (suggestion === null) {
+        suggestion =
+          postMortem.suggestions.find((id) => id !== profile.lastSuggestion) ??
+          postMortem.suggestions[0]!
+        const runs = [
+          ...profile.runs,
+          {
+            seed: state.seed,
+            replay: current?.replay ?? false,
+            ending: postMortem.ending,
+            weeks: postMortem.week,
+            peakRevenueCents: postMortem.cause.peakRevenueCents,
+          },
+        ].slice(-MAX_RUNS)
+        profiles.save(state.scenarioId, {
+          current: { seed: state.seed, replay: current?.replay ?? false, suggestion },
+          lastSuggestion: suggestion,
+          runs,
+        })
+      }
+      mortemOf = state
+      mortem = { postMortem, suggestion }
+      return mortem
+    }
+
     const editPlan = (change: (plan: WeekPlan) => WeekPlan) => {
       if (!game) return
       refresh({ plan: change(get().plan) })
+    }
+
+    const start = (seed: string, replay: boolean) => {
+      const state = createGame(getScenario(), seed)
+      deps.storage.save(toSave(state))
+      const profile = profiles.load(state.scenarioId)
+      profiles.save(state.scenarioId, {
+        ...profile,
+        current: { seed: state.seed, replay, suggestion: null },
+      })
+      begin(state)
+      // The intro belongs to a new run only; Continue goes straight to the game.
+      set({ hasSave: true, introStep: getView(state).guidance.intro.length > 0 ? 0 : null })
     }
 
     const begin = (state: GameState) => {
@@ -200,15 +271,19 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       openSections: [],
       canRepeat: false,
       momentsSeen: 0,
+      postMortem: null,
+      suggestion: null,
 
       startRun(seed) {
-        const state = createGame(getScenario(), seed?.trim() || deps.makeSeed())
-        deps.storage.save(toSave(state))
-        begin(state)
-        // The intro belongs to a new run only; Continue goes straight to the game.
-        set({ hasSave: true, introStep: getView(state).guidance.intro.length > 0 ? 0 : null })
+        start(seed?.trim() || deps.makeSeed(), false)
       },
-
+      newRun() {
+        start(deps.makeSeed(), false)
+      },
+      sameMarketAgain() {
+        if (!game || game.status !== 'ended') return
+        start(game.seed, true)
+      },
       continueRun() {
         const file = deps.storage.load()
         if (!file) {
@@ -239,6 +314,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         if (game?.status === 'ended') {
           deps.storage.clear()
           set({ hasSave: false })
+          const profile = profiles.load(game.scenarioId)
+          profiles.save(game.scenarioId, { ...profile, current: null })
         }
         game = null
         refresh({ report: null, tab: 'plan', introStep: null, helpOpen: false, explain: null })

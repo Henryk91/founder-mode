@@ -1,6 +1,7 @@
 import type { Rng } from '../rng'
 import type { GameState, Invoice, WeekPlan } from '../types'
 import { activeCustomers } from './customers'
+import { OddsTally } from './odds'
 
 const DAYS_PER_WEEK = 7
 const weeksFor = (days: number) => Math.ceil(days / DAYS_PER_WEEK)
@@ -30,6 +31,7 @@ export function issueInvoices(state: GameState, rng: Rng): { state: GameState; i
   const payWeeks = { ...state.hidden.payWeeks }
   const waitsForChase = [...state.hidden.waitsForChase]
   const prepaid = new Set<string>()
+  const odds = new OddsTally(state.week)
   for (const customer of activeCustomers(state)) {
     if (customer.sinceWeek >= state.week) continue
     // A month paid for by a pre-sale deposit sends no invoice.
@@ -41,6 +43,13 @@ export function issueInvoices(state: GameState, rng: Rng): { state: GameState; i
     if (!hidden) throw new Error(`Unknown segment ${customer.segmentId}`)
     const id = `invoice_${state.invoices.length + issued.length + 1}`
     const never = rng.chance(hidden.neverPaysShare)
+    odds.roll(
+      'never_pays',
+      customer.segmentId,
+      hidden.neverPaysShare,
+      never,
+      customer.priceCentsPerMonth,
+    )
     const lateDays = Math.round(rng.range(0, 2 * hidden.paymentDelayDaysMean))
     const waits = rng.chance(hidden.waitsForChaseShare)
     issued.push({
@@ -69,6 +78,7 @@ export function issueInvoices(state: GameState, rng: Rng): { state: GameState; i
       customers,
       invoices: [...state.invoices, ...issued],
       hidden: { ...state.hidden, payWeeks, waitsForChase },
+      eventLog: [...state.eventLog, ...odds.events()],
     },
     issued,
   }

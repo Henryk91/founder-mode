@@ -170,10 +170,14 @@ type WeekLedger = {
   monthlyRevenueCents: number   // active customers' prices at week end, after churn
   customers: number             // active customers at week end, after churn
   runwayWeeks: number | null    // runway at week end; null while not shrinking
+  energyEnd: number             // founder energy at week end
+  hours: HoursByActivity        // the week's founder hours: learning, building, selling, admin, rest
 }
+
+type HoursByActivity = Record<'learning' | 'building' | 'selling' | 'admin' | 'rest', number>
 ```
 
-The last three are filled by `closeLedger(state)` after churn (step 9), for the headline changes over 4 weeks.
+The last five are filled by `closeLedger(state, hours)` after churn (step 9). `hoursByActivity(state, plan)` (`systems/founder.ts`) splits a week's hours: interviews, landing tests and pre-sales are learning; building and bug fixing are building; outreach, demos and follow ups are selling; chasing, the hiring search, inbox answers and lost hours are admin. `plannedHours` is its sum.
 
 Invariants (tested): `cash' = cash + revenue - fixedCosts - founderDraw + transfer + autoTransfer` and `savings' = savings - (livingCosts - founderDraw) - transfer - autoTransfer`.
 
@@ -183,7 +187,20 @@ Invariants (tested): `cash' = cash + revenue - fixedCosts - founderDraw + transf
 type LoggedAction = { type: 'endWeek'; week: number; plan: WeekPlan }
 
 // Input for the post-mortem: random outcomes with their expected value, and money moves.
-type LoggedEvent = InterviewEvent | MoneyEvent
+type LoggedEvent = InterviewEvent | ExperimentEvent | MoneyEvent | MessageEvent | OddsEvent
+
+// Chance outcomes of one kind, market (and inbox event) in one week. Never draws from the PRNG.
+type OddsEvent = {
+  kind: 'odds'
+  odds: 'leads' | 'lead_demo' | 'demo' | 'trial' | 'churn' | 'never_pays' | 'message'
+  week: number
+  segmentId: SegmentId | null
+  eventId: string | null        // for 'message': the inbox event whose cash effect rolled
+  tries: number
+  expected: number              // sum of the chances (for 'leads': the mean lead count)
+  observed: number              // successes that happened
+  unitCents: number             // money one success moves (invoice, cash effect), else 0
+}
 
 type InterviewEvent = {
   kind: 'interview'
@@ -644,3 +661,38 @@ type ScenarioEvent = {
 ### Second UI pass (engine 0.8.0, no replay change)
 
 - `MessageChoice.possibleCostCents`: cash that may go out (effect with `chance` below 1 or a `when`). `costCents` now counts only certain cash costs. The UI shows the first as a risk, never with odds.
+
+### Phase 7 part 1: post-mortem (engine 0.8.0, no replay change)
+
+- `WeekLedger.energyEnd` and `WeekLedger.hours`, and the `OddsEvent` log entry (above). Logging reads rolls already made and never draws, so every outcome and the bot report stay the same and `ENGINE_VERSION` stays 0.8.0.
+- `buildPostMortem(state): PostMortem` (`src/postmortem.ts`, public) throws while the run is going. It reads the event log, knowledge, hidden state, ledger, customers, leads and action log, and returns data only (ids, counts, cents, weeks); the UI words it.
+
+```ts
+type PostMortem = {
+  scenarioId: string; seed: string; ending: EndingId; week: number; maxWeeks: number
+  names: { segments; features; buckets: Record<string, string> }   // content names for the ids
+  cause: PostMortemCause        // id: bankrupt_no_customers | bankrupt_hire | bankrupt_churn |
+                                //   bankrupt_below_costs | burnout | still_searching | sustainable | shut_down
+                                // plus peak and end revenue, monthly costs with and without the hire,
+                                // customers won and lost, weeks over base, covered % and week, runway
+  chain: ChainItem[]            // up to 3 earlier steps by the ending's rule, every final week step, then 'ending'
+  suggestions: SuggestionId[]   // every matching rule in fixed order, always ending with 'sample_sizes'
+  markets: MarketTruth[]        // role, true pain bucket, interviews and their average bucket, landing,
+                                // pre-sale, willingness to pay (rounded to 10 EUR), customers, must haves
+                                // with mentions and ship week
+  misreads: Misread[]           // interviews_high | interviews_low (cause politeness or chance),
+                                // experiment (landing or pre-sale at half or double normal, 2 or more off),
+                                // went_against (strongest evidence ranked the good market first, work went elsewhere)
+  hours: { total; byActivity; weeksOverBase; baseHoursPerWeek; focusSegmentId; focusSellingHours }
+  money: { savingsStartCents; savingsEmptyWeek; livingFromSavingsCents; movedByYouCents;
+           movedAutomaticallyCents; companyPaidYouCents; customersPaidCents; peakRevenueCents; hire }
+  luck: { items: LuckItem[]     // at most 4: results that changed which market looked best, then by size
+          netCustomers: number  // all luck in customers, positive when it helped
+          averageWouldChange: boolean | null }
+}
+```
+
+- The focus market is the one with the most selling hours plus building on features only it needs. The good market is the role with the highest pain.
+- Luck in customers: a trial is one, a demo is worth the run's normal trial rate, a lead agreeing to a demo the demo and trial rates, a lead found and a landing sign up (per `signupsPerLead`) the run's lead to customer rate, a pre-sale commit one, churn minus one. Money items (never paying, inbox gambles) divide by a customer's worth: the price for as long as one usually stays, at most half a run.
+- UI store: `postMortem: PostMortem | null` and `suggestion: SuggestionId | null` (set only once the run has ended), actions `newRun()` and `sameMarketAgain()`. `StoreDeps.profiles` (a `ProfileStorage`, in memory unless given).
+- Profile, per scenario under `founder-mode.profile.v1.<scenarioId>`: `{ current: { seed, replay, suggestion } | null, lastSuggestion, runs: RunRecord[] }` with `RunRecord = { seed, replay, ending, weeks, peakRevenueCents }`, at most 200. A run is recorded once, when its post-mortem is first built; the suggestion chosen then (the first not equal to `lastSuggestion`) is kept for reloads.

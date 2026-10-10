@@ -2,7 +2,7 @@ import { clonePlan, validatePlan } from './plan'
 import { Rng } from './rng'
 import { resolveExperiments, runInterviews, startExperiments } from './systems/experiments'
 import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
-import { applyFounderWeek, plannedHours } from './systems/founder'
+import { applyFounderWeek, hoursByActivity } from './systems/founder'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
 import { applyChurn, applySales } from './systems/sales'
@@ -31,7 +31,9 @@ export function endWeek(
   const entries: ReportEntry[] = []
   const extras = noExtras()
   // Hours of this week, with the answers already given, before they take effect.
-  const hours = plannedHours(state, plan)
+  const activity = hoursByActivity(state, plan)
+  const hours =
+    activity.learning + activity.building + activity.selling + activity.admin + activity.rest
   let forcedNextWeek = 0
 
   // 2. Inbox: answered and expired messages take effect. A price change applies right after.
@@ -113,7 +115,7 @@ export function endWeek(
   const churn = applyChurn(state, rng)
   state = churn.state
   entries.push(...churn.entries)
-  state = closeLedger(state)
+  state = closeLedger(state, activity)
 
   // 10. Scheduled effects: none, inbox effects land in step 2
   // 11. Milestones: later (Phase 7)

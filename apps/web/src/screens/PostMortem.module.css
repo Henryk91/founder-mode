@@ -1,0 +1,324 @@
+/* The post-mortem: paper on the desk, handwriting headings, scrappy tokens. */
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ground);
+  color: var(--on-dark);
+}
+
+.bar {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  min-height: 60px;
+  padding: 12px 14px;
+  background: var(--bar);
+}
+
+.company {
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.ending {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--warn-on-dark);
+}
+
+[data-layout='desk'] .bar {
+  min-height: 68px;
+  padding: 14px 20px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.paper {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.paper p {
+  margin: 0;
+}
+
+.head {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.subhead {
+  margin: 4px 0 0;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink-muted);
+}
+
+.cause {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.note {
+  transform: rotate(-1deg);
+}
+
+/* The chain of events: week in mono on the left, the step beside it. */
+.chain {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chain li {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.chain li:last-child {
+  border-bottom: none;
+}
+
+.week {
+  font-size: 13px;
+  color: var(--ink-muted);
+  padding-top: 1px;
+}
+
+.chainEnd {
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.chainWin {
+  font-weight: 700;
+  color: var(--good);
+}
+
+.lines {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* One market: name, what it really was, then facts. */
+.market {
+  border-top: 1px solid var(--rule);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.marketHead {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.role,
+.role_viable,
+.role_mediocre,
+.role_trap {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.role_viable {
+  color: var(--good);
+}
+
+.role_mediocre {
+  color: var(--ink-muted);
+}
+
+.role_trap {
+  color: var(--danger);
+}
+
+.facts {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.facts > div {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 8px;
+}
+
+.facts dt {
+  color: var(--ink-muted);
+}
+
+.facts dd {
+  margin: 0;
+}
+
+.features {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A section that opens on tap on the phone. */
+.fold {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+}
+
+.foldArrow {
+  flex-shrink: 0;
+  width: 1em;
+}
+
+.foldText {
+  flex: 1;
+  min-width: 0;
+}
+
+.foldAction {
+  flex-shrink: 0;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.verdict {
+  font-weight: 700;
+}
+
+/* Hours: one bar in the planner's activity colours, the shares written beside it. */
+.hoursBar {
+  display: flex;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.hoursBar > span {
+  flex-basis: 0;
+}
+
+.shares {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.shares li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.act_learning {
+  background: var(--act-learn);
+}
+
+.act_building {
+  background: var(--act-build);
+}
+
+.act_selling {
+  background: var(--act-sales);
+}
+
+.act_admin {
+  background: var(--act-admin);
+}
+
+.act_rest {
+  background: var(--act-rest);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 14px;
+}
+
+.hint {
+  margin: 0;
+  color: var(--on-dark-muted);
+  font-size: 13px;
+}
