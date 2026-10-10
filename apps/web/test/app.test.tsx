@@ -217,17 +217,29 @@ describe('onboarding', () => {
     store.getState().dismissReport()
     openAll(store)
     const page = html(store).replace(/&#x27;/g, "'")
+    // Each section keeps to a line or two; the full account is behind its "?".
     for (const line of [
-      'Costs 2 h each. Gives you one answer in the interviewee',
-      'Costs the hours shown. A feature ships once all its hours are in',
-      'Costs the hours you set, on one channel per market. Finds new leads at the end of this week',
+      'Each interview costs 2 h. The answer arrives at week end.',
+      'A feature ships once its hours are in. Shipping adds bugs.',
+      'Hours on one channel per market find leads. Channels wear out.',
       'Costs the hours you set. Restores energy this week.',
-      'One part time hire at most.',
+      'One part time hire at most. A search costs 6 h.',
     ]) {
       expect(page, line).toContain(line)
     }
+    for (const [key, line] of [
+      ['talk', "Gives you one answer in the interviewee's own words about that market."],
+      ['build', 'A feature ships once all its hours are in'],
+      ['sell', 'Finds new leads at the end of this week'],
+      ['hiring', 'candidates arrive 2 weeks later'],
+      ['demos', 'The verdict on the demo arrives this week'],
+      ['test', 'A landing page test costs 8 h and the ad budget'],
+    ] as const) {
+      store.getState().openExplain(key)
+      expect(html(store).replace(/&#x27;/g, "'"), key).toContain(line)
+    }
     // Bug fixing appears once there are bugs to fix.
-    expect(page).toContain('Costs 4 h per bug. Removes one bug')
+    expect(page).toContain('Costs 4 h per bug and lifts quality.')
   })
 
   it('has an empty state on every tab that says what fills it', () => {
@@ -606,7 +618,7 @@ describe('follow ups, costs and plurals', () => {
     expect(text(store)).toContain('Demos and follow ups 1 follow up 1 h')
     store.getState().toggleSection('demos')
     expect(html(store)).toContain('1 follow up (1 h)')
-    expect(html(store)).toContain('Costs 3 h per demo. A good demo starts a trial that runs 1 week')
+    expect(html(store)).toContain('A demo costs 3 h and can start a trial of 1 week.')
   })
 
   it('says "1 batch left" and "2 batches left", and weeks in the singular', () => {

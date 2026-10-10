@@ -1,7 +1,8 @@
 import type { ChannelId, PlayerView, TeamRoleId } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type UiStage } from '../labels'
+import { label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
+import { Choices, HintRow, Item, NameWithFigure } from './Ruled'
 import styles from './ui.module.css'
 
 const roleName = (role: TeamRoleId, stage: UiStage) => label(`team.role.${role}`, stage)
@@ -26,38 +27,30 @@ export function TeamPlan() {
   const hours = (n: number) => label('unit.hours', stage, { n })
   return (
     <>
-      <div className={styles.group}>
-        <p className={styles.hint}>
-          {label('team.hint', stage, {
-            hours: hours(costs.searchHours),
-            weeks: count('unit.weeks', stage, costs.searchWeeks),
-            start: count('unit.weeks', stage, costs.startWeeks),
+      <HintRow term="hiring">
+        {label('team.hint', stage, { hours: hours(costs.searchHours) })}
+      </HintRow>
+      {team.search && (
+        <p>
+          {label('team.searching', stage, {
+            role: roleName(team.search.role, stage),
+            week: team.search.readyWeek,
           })}
         </p>
-        {team.search && (
-          <p>
-            {label('team.searching', stage, {
-              role: roleName(team.search.role, stage),
-              week: team.search.readyWeek,
-            })}
-          </p>
-        )}
-        {team.canSearch &&
-          team.roles.map((r) => {
-            const booked = plan.searchRole === r.id
-            return (
-              <div key={r.id} className={styles.row}>
-                <div className={styles.rowHead}>
-                  <span>{roleName(r.id, stage)}</span>
-                  <span className={styles.mono}>
-                    {label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
-                  </span>
-                </div>
-                <span className={styles.hint}>
-                  {label('team.partTime', stage, {
-                    hours: label('unit.hours', stage, { n: r.weeklyHours }),
-                  })}
-                </span>
+      )}
+      {team.canSearch &&
+        team.roles.map((r) => {
+          const booked = plan.searchRole === r.id
+          return (
+            <Item key={r.id}>
+              <NameWithFigure
+                name={roleName(r.id, stage)}
+                figure={label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
+                note={label('team.partTime', stage, {
+                  hours: label('unit.hours', stage, { n: r.weeklyHours }),
+                })}
+              />
+              <Choices columns="one">
                 <button
                   type="button"
                   aria-pressed={booked}
@@ -68,42 +61,39 @@ export function TeamPlan() {
                     ? label('team.searchBooked', stage, { hours: hours(costs.searchHours) })
                     : label('team.search', stage, { role: roleName(r.id, stage) })}
                 </button>
-              </div>
-            )
-          })}
-        {team.hadHire && <p className={styles.hint}>{label('team.hadHire', stage)}</p>}
-      </div>
+              </Choices>
+            </Item>
+          )
+        })}
+      {team.hadHire && <p className={styles.hint}>{label('team.hadHire', stage)}</p>}
       {team.candidates.length > 0 && (
-        <div className={styles.group}>
-          <h4 className={styles.subtitle}>{label('team.candidates', stage)}</h4>
+        <>
+          <p className={styles.subtitle}>{label('team.candidates', stage)}</p>
           <p className={styles.hint}>{label('team.candidatesHint', stage)}</p>
           {team.candidates.map((c) => {
             const booked = plan.hire === c.id
             const monthly = team.roles.find((r) => r.id === c.role)?.monthlyCents ?? 0
             return (
-              <div key={c.id} className={styles.row}>
-                <div className={styles.rowHead}>
-                  <span>{c.name}</span>
-                  <span className={styles.mono}>
-                    {label('team.perMonth', stage, { amount: formatEuro(monthly) })}
-                  </span>
-                </div>
-                <span className={styles.hint}>
-                  {roleName(c.role, stage)} ·{' '}
-                  {label('team.impression', stage, { impression: c.impression })}
-                </span>
-                <button
-                  type="button"
-                  aria-pressed={booked}
-                  className={`${styles.button} ${booked ? styles.primary : ''}`}
-                  onClick={() => actions.setHire(booked ? null : c.id)}
-                >
-                  {booked ? label('team.offerBooked', stage) : label('team.offer', stage)}
-                </button>
-              </div>
+              <Item key={c.id}>
+                <NameWithFigure
+                  name={c.name}
+                  figure={label('team.perMonth', stage, { amount: formatEuro(monthly) })}
+                  note={`${roleName(c.role, stage)} · ${label('team.impression', stage, { impression: c.impression })}`}
+                />
+                <Choices columns="one">
+                  <button
+                    type="button"
+                    aria-pressed={booked}
+                    className={`${styles.button} ${booked ? styles.primary : ''}`}
+                    onClick={() => actions.setHire(booked ? null : c.id)}
+                  >
+                    {booked ? label('team.offerBooked', stage) : label('team.offer', stage)}
+                  </button>
+                </Choices>
+              </Item>
             )
           })}
-        </div>
+        </>
       )}
       {team.member && (
         <MemberCard
@@ -146,24 +136,22 @@ function MemberCard(props: {
     </button>
   )
   return (
-    <div className={styles.group}>
-      <h4 className={styles.subtitle}>
+    <>
+      <p className={styles.subtitle}>
         {label('team.member', stage, { role: roleName(member.role, stage) })}
-      </h4>
-      <div className={styles.rowHead}>
-        <span>{member.name}</span>
-        <span className={styles.mono}>
-          {label('team.perMonth', stage, { amount: formatEuro(member.monthlyCents) })}
-        </span>
-      </div>
-      <p className={styles.hint}>
-        {label(member.working ? 'team.working' : 'team.starts', stage, { week: member.startWeek })}
       </p>
+      <NameWithFigure
+        name={member.name}
+        figure={label('team.perMonth', stage, { amount: formatEuro(member.monthlyCents) })}
+        note={label(member.working ? 'team.working' : 'team.starts', stage, {
+          week: member.startWeek,
+        })}
+      />
       {member.working && member.role === 'developer' && (
-        <div className={styles.row}>
-          <span>{label('team.devWork', stage)}</span>
+        <>
+          <p>{label('team.devWork', stage)}</p>
           <p className={styles.hint}>{label('team.devHint', stage)}</p>
-          <div className={styles.chips}>
+          <Choices>
             {chip(props.buildTarget === null, label('team.devNone', stage), () =>
               actions.setTeamBuild(null),
             )}
@@ -172,14 +160,14 @@ function MemberCard(props: {
               .map((f) =>
                 chip(props.buildTarget === f.id, f.name, () => actions.setTeamBuild(f.id)),
               )}
-          </div>
-        </div>
+          </Choices>
+        </>
       )}
       {member.working && member.role === 'salesperson' && (
-        <div className={styles.row}>
-          <span>{label('team.salesWork', stage)}</span>
+        <>
+          <p>{label('team.salesWork', stage)}</p>
           <p className={styles.hint}>{label('team.salesHint', stage)}</p>
-          <div className={styles.chips}>
+          <Choices>
             {chip(props.outreach === null, label('team.salesNone', stage), () =>
               actions.setTeamOutreach(null),
             )}
@@ -191,9 +179,9 @@ function MemberCard(props: {
                 }),
               ),
             )}
-          </div>
+          </Choices>
           {props.outreach && (
-            <div className={styles.chips}>
+            <Choices>
               {view.channels.map((c) =>
                 chip(props.outreach?.channel === c, label(`channel.${c}`, stage), () =>
                   actions.setTeamOutreach({
@@ -202,12 +190,12 @@ function MemberCard(props: {
                   }),
                 ),
               )}
-            </div>
+            </Choices>
           )}
-        </div>
+        </>
       )}
-      <div className={styles.row}>
-        <p className={styles.hint}>{label('team.letGoHint', stage)}</p>
+      <p className={styles.hint}>{label('team.letGoHint', stage)}</p>
+      <Choices columns="one">
         <button
           type="button"
           aria-pressed={props.letGo}
@@ -218,7 +206,7 @@ function MemberCard(props: {
             ? label('team.letGoBooked', stage)
             : label('team.letGo', stage, { cost: formatEuro(member.letGoCostCents) })}
         </button>
-      </div>
-    </div>
+      </Choices>
+    </>
   )
 }

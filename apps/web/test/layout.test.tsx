@@ -156,11 +156,11 @@ describe('plan tab', () => {
     store.getState().toggleSection('talk')
     store.getState().toggleSection('rest')
     const page = text(store)
-    expect(page).toContain('Costs 2 h each')
+    expect(page).toContain('Each interview costs 2 h')
     expect(page).toContain('Restores energy this week.')
     expect(html(store)).toMatch(/aria-expanded="true"[\s\S]*aria-expanded="true"/)
     store.getState().toggleSection('talk')
-    expect(text(store)).not.toContain('Costs 2 h each')
+    expect(text(store)).not.toContain('Each interview costs 2 h')
     week(store)
     expect(store.getState().openSections).toEqual([])
   })
@@ -380,8 +380,16 @@ describe('static checks', () => {
     /** min-height (or height) of a class in a CSS module, from its own rule. */
     const minHeight = (source: string, name: string) => {
       const rules = [...source.matchAll(new RegExp(`\\.${name}\\b[^{]*\\{([^}]*)\\}`, 'g'))]
-      const values = rules.flatMap((r) => [...r[1]!.matchAll(/(?:min-)?height:\s*(\d+)px/g)])
-      return Math.max(0, ...values.map((v) => Number(v[1])))
+      const px = rules.flatMap((r) =>
+        [...r[1]!.matchAll(/(?:min-)?height:\s*(\d+)px/g)].map((v) => Number(v[1])),
+      )
+      // Heights in notebook lines, such as calc(2 * var(--line)), are 28 px each.
+      const lines = rules.flatMap((r) =>
+        [...r[1]!.matchAll(/(?:min-)?height:\s*calc\(\s*(\d+)\s*\*\s*var\(--line\)\)/g)].map(
+          (v) => Number(v[1]) * 28,
+        ),
+      )
+      return Math.max(0, ...px, ...lines)
     }
     let buttons = 0
     for (const { file, code } of sources()) {

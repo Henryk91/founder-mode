@@ -198,22 +198,35 @@ const labels = {
   'explain.hours.title': 'Hours',
   'explain.hours.text':
     'A normal week is 50 hours, and you can plan up to 65 if you accept the energy cost. Interviews, building, bug fixing, outreach, demos and rest all count as planned hours.',
+  'explain.talk.title': 'Talk to people',
+  'explain.talk.text':
+    "Costs {hours} each. Gives you one answer in the interviewee's own words about that market. Arrives at the end of this week.",
+  'explain.test.title': 'Test the demand',
+  'explain.test.text':
+    'A landing page test costs {hours} and the ad budget, and reports {weeks} later with visitors and sign ups. The page shows your current price, and a few people who sign up become leads. A pre-sale costs {presale} per batch and pitches {size} companies you have not met. Those who say yes pay a deposit of one month and become customers once the product does what they need. If it does not within {refund}, they get their money back. It reports {presaleWeeks} later, and each market allows {max} batches.',
+  'explain.build.title': 'Build and fix',
+  'explain.build.text':
+    'Costs the hours shown. A feature ships once all its hours are in, and shipping brings a few bugs. Arrives the week you finish it.',
+  'explain.sell.title': 'Find customers',
+  'explain.sell.text':
+    'Costs the hours you set, on one channel per market. Finds new leads at the end of this week, if anyone answers. One channel in one market wears out above about {hours} a week, counted over {weeks}, so switching channels helps.',
+  'explain.demos.title': 'Demos and follow ups',
+  'explain.demos.text':
+    'Costs {hours} per demo. A good demo starts a trial that runs {weeks}, and a trial can turn into a paying customer. The verdict on the demo arrives this week, the trial result {weeks} later.',
+  'explain.hiring.title': 'Hiring',
+  'explain.hiring.text':
+    'One part time hire at most. A search costs {hours}, candidates arrive {weeks} later, and a hire starts {start} after the offer. Their pay is a fixed cost every month.',
   'note.title': "Founder's note",
   'note.dismiss': 'Dismiss',
   'plan.hours': '{planned} h planned of a normal {base} h week',
-  'plan.hoursOver': '{planned} h planned. Every hour above {base} h costs energy.',
+  'plan.hoursOver': '{planned} h planned. Extra hours cost energy.',
   'plan.hoursFree':
     'A normal week is {base} h. Up to {max} h is possible and costs energy. {n} h still free.',
-  'plan.section.talkHint':
-    "Costs {hours} each. Gives you one answer in the interviewee's own words about that market. Arrives at the end of this week.",
-  'plan.section.buildHint':
-    'Costs the hours shown. A feature ships once all its hours are in, and shipping brings a few bugs. Arrives the week you finish it.',
-  'plan.section.fixHint':
-    'Costs {hours} per bug. Removes one bug and lifts quality. Arrives this week.',
-  'plan.section.sellHint':
-    'Costs the hours you set, on one channel per market. Finds new leads at the end of this week, if anyone answers. One channel in one market wears out above about {hours} a week, counted over {weeks}, so switching channels helps.',
-  'plan.section.demosHint':
-    'Costs {hours} per demo. A good demo starts a trial that runs {weeks}, and a trial can turn into a paying customer. The verdict on the demo arrives this week, the trial result {weeks} later.',
+  'plan.section.talkHint': 'Each interview costs {hours}. The answer arrives at week end.',
+  'plan.section.buildHint': 'A feature ships once its hours are in. Shipping adds bugs.',
+  'plan.section.fixHint': 'Costs {hours} per bug and lifts quality.',
+  'plan.section.sellHint': 'Hours on one channel per market find leads. Channels wear out.',
+  'plan.section.demosHint': 'A demo costs {hours} and can start a trial of {weeks}.',
   'plan.section.restHint': 'Costs the hours you set. Restores energy this week.',
   'market.based.zero': 'No interviews yet. Plan some on the Plan tab and the answers collect here.',
   'market.answersTitle': 'What people answered',
@@ -233,8 +246,7 @@ const labels = {
   'results.quotes.show': 'Show what they said',
   'results.quotes.hide': 'Hide quotes',
   'plan.section.test': 'Test the demand',
-  'plan.section.testHint':
-    'A landing page test costs {hours} and the ad budget, and reports {weeks} later with visitors and sign ups. The page shows your current price, and a few people who sign up become leads. A pre-sale costs {presale} per batch and pitches {size} companies you have not met. Those who say yes pay a deposit of one month and become customers once the product does what they need. If it does not within {refund}, they get their money back. It reports {presaleWeeks} later, and each market allows {max} batches.',
+  'plan.section.testHint': 'Test who would pay before you build. Results arrive weeks later.',
   'plan.landing': 'Landing page: {segment}',
   'plan.landing.none': 'No test',
   'plan.landing.budget': '{budget} of ads, about {visitors} visitors',
@@ -290,8 +302,7 @@ const labels = {
   'inbox.hoursLeft': '{n} h still free this week.',
   'inbox.free': 'Free',
   'team.title': 'Team',
-  'team.hint':
-    'One part time hire at most. A search costs {hours}, candidates arrive {weeks} later, and a hire starts {start} after the offer. Their pay is a fixed cost every month.',
+  'team.hint': 'One part time hire at most. A search costs {hours}.',
   'team.role.developer': 'Developer',
   'team.role.salesperson': 'Salesperson',
   'team.perMonth': '{amount} per month',
@@ -309,7 +320,7 @@ const labels = {
   'team.starts': 'Starts in week {week}.',
   'team.working': 'At work since week {week}.',
   'team.letGo': 'Let go ({cost})',
-  'team.letGoBooked': 'Will be let go this week. Tap to cancel.',
+  'team.letGoBooked': 'Let go this week. Tap to cancel.',
   'team.letGoHint': 'Letting someone go costs severance, shown in brackets.',
   'team.hadHire': 'You have had your one hire. No more searches in this run.',
   'team.devWork': 'The developer builds',
