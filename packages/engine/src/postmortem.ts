@@ -104,8 +104,29 @@ export function buildPostMortem(state: GameState): PostMortem {
       peakRevenueCents: cause.peakRevenueCents,
       hire,
     },
+    walkIns: walkInCounts(state),
     luck,
   }
+}
+
+/** Walk-in leads per office and market, and how many of them became customers. */
+function walkInCounts(state: GameState): PostMortem['walkIns'] {
+  const out: PostMortem['walkIns'] = []
+  for (const lead of state.leads) {
+    if (lead.source !== 'walk_in') continue
+    const place =
+      state.scenario.officeStages.find((o) => o.id === lead.walkInFrom)?.name ??
+      lead.walkInFrom ??
+      ''
+    let row = out.find((r) => r.place === place && r.segmentId === lead.segmentId)
+    if (!row) {
+      row = { place, segmentId: lead.segmentId, leads: 0, customers: 0 }
+      out.push(row)
+    }
+    row.leads++
+    if (state.customers.some((c) => c.leadId === lead.id)) row.customers++
+  }
+  return out
 }
 
 // ---------------------------------------------------------------------------
@@ -599,6 +620,7 @@ function buildLuck(state: GameState, cause: PostMortemCause): PostMortem['luck']
         customers = diff * normalRate(odds, 'demo', seg) * normalRate(odds, 'trial', seg)
         break
       case 'leads':
+      case 'walk_ins':
         customers = diff * leadValue(seg)
         break
       case 'churn':

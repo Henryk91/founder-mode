@@ -1,5 +1,8 @@
 import type { ChannelId } from '@founder-mode/content'
-import type { GameState, Modifier } from '../types'
+import type { Rng } from '../rng'
+import type { GameState, Modifier, ReportEntry } from '../types'
+import { OddsTally } from './odds'
+import { addLeads } from './sales'
 
 /** The fixed cost id an office stage's rent goes under. */
 const OFFICE_COST = 'office'
@@ -9,9 +12,18 @@ function officeModifier(state: GameState, stageId: string): Modifier[] {
   const stage = state.scenario.officeStages.find((o) => o.id === stageId)
   if (!stage) throw new Error(`Unknown office stage ${stageId}`)
   const factors = stage.channelFactors
-  if (stage.energyPerWeek === 0 && Object.keys(factors).length === 0) return []
+  const walkIns = stage.walkIns
+    ? { segmentId: stage.walkIns.segment, leadsPerWeek: stage.walkIns.leadsPerWeek }
+    : null
+  if (stage.energyPerWeek === 0 && Object.keys(factors).length === 0 && !walkIns) return []
   return [
-    { id: stage.id, source: 'office', energyPerWeek: stage.energyPerWeek, channelFactors: factors },
+    {
+      id: stage.id,
+      source: 'office',
+      energyPerWeek: stage.energyPerWeek,
+      channelFactors: factors,
+      walkIns,
+    },
   ]
 }
 
@@ -44,4 +56,37 @@ export function energyPerWeek(state: Pick<GameState, 'modifiers'>): number {
 /** Outreach response factor for a channel from lasting modifiers. */
 export function channelFactor(state: Pick<GameState, 'modifiers'>, channel: ChannelId): number {
   return state.modifiers.reduce((t, m) => t * (m.channelFactors[channel] ?? 1), 1)
+}
+
+/**
+ * Leads that walk in at the office this week, from each modifier's market: the mean rate rounded
+ * at random (the whole part, plus one more with the fraction's chance). They are open leads like
+ * any other, recorded with source `walk_in` and the office they came from. No draw without one.
+ */
+export function applyWalkIns(
+  state: GameState,
+  rng: Rng,
+): { state: GameState; entries: ReportEntry[] } {
+  const entries: ReportEntry[] = []
+  const odds = new OddsTally(state.week)
+  let out = state
+  for (const m of state.modifiers) {
+    if (!m.walkIns) continue
+    const { segmentId, leadsPerWeek } = m.walkIns
+    const whole = Math.floor(leadsPerWeek)
+    const count = whole + (rng.chance(leadsPerWeek - whole) ? 1 : 0)
+    odds.count('walk_ins', segmentId, leadsPerWeek, count)
+    if (count === 0) continue
+    const before = out.leads.length
+    out = addLeads(out, segmentId, count, rng, 'walk_in')
+    out = {
+      ...out,
+      leads: out.leads.map((l, i) => (i >= before ? { ...l, walkInFrom: m.id } : l)),
+    }
+    const place = state.scenario.officeStages.find((o) => o.id === m.id)?.name ?? m.id
+    entries.push({ kind: 'walk_in_leads', segmentId, count, place })
+  }
+  const events = odds.events()
+  if (events.length === 0) return { state: out, entries }
+  return { state: { ...out, eventLog: [...out.eventLog, ...events] }, entries }
 }

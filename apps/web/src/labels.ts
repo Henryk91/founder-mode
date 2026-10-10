@@ -96,6 +96,7 @@ const labels = {
   'pipeline.group.paying': 'Paying',
   'pipeline.group.lost': 'Gone',
   'pipeline.lastContact': 'Last contact: week {week}',
+  'pipeline.walkedIn': 'Walked in at the {place}',
   'pipeline.trialWeeks.one': 'Trial for {n} week',
   'pipeline.trialWeeks.other': 'Trial for {n} weeks',
   'pipeline.silent': 'Not answering',
@@ -153,6 +154,10 @@ const labels = {
   'results.entry.bugs_fixed.one': 'You fixed {n} bug.',
   'results.entry.bugs_fixed.other': 'You fixed {n} bugs.',
   'results.entry.new_leads.zero': '{channel} outreach to {segment} found nobody.',
+  'results.entry.walk_in_leads.one':
+    'Someone from {segment} walked up to you at the {place}: 1 new lead.',
+  'results.entry.walk_in_leads.other':
+    'People from {segment} walked up to you at the {place}: {n} new leads.',
   'results.entry.new_leads.one': '{channel} outreach to {segment} found {n} new lead.',
   'results.entry.new_leads.other': '{channel} outreach to {segment} found {n} new leads.',
   'results.entry.new_leads.wornOut':
@@ -569,6 +574,9 @@ const labels = {
   'pm.market.customersValue.other': '{n}, at {prices}',
   'pm.market.customersNone': 'None',
   'pm.market.mustHave': 'Must haves',
+  'pm.market.walkIns': 'Walk-ins',
+  'pm.market.walkInsValue.one': '1 lead from the {place}, {customers} became customers',
+  'pm.market.walkInsValue.other': '{n} leads from the {place}, {customers} became customers',
   'pm.market.feature': '{feature}: {mentions}, {shipped}',
   'pm.market.mentionsNone': 'never mentioned',
   'pm.market.mentions.one': 'mentioned once',
@@ -626,6 +634,7 @@ const labels = {
   'pm.luck.lead_demo':
     'Leads in {segment} who agreed to a demo: {observed}. About {expected} is normal.',
   'pm.luck.leads': 'Outreach to {segment} found {observed} leads. About {expected} is normal.',
+  'pm.luck.walk_ins': 'Walk-ins from {segment}: {observed} leads. About {expected} is normal.',
   'pm.luck.churn': 'Customers in {segment} who left: {observed}. About {expected} is normal.',
   'pm.luck.never_pays': 'Invoices in {segment} never paid: {observed}. About {expected} is normal.',
   'pm.luck.message': 'Inbox gambles: {observed} of {tries} came off. About {expected} is normal.',

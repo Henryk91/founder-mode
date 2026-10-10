@@ -9,7 +9,7 @@ events:
   # The office stage move (spec section 9). It arrives for sure, once, from week 8 or after the
   # first paying customer, whichever comes first. Conditions are checked at the end of the week
   # before a message arrives, so `week >= 7` puts it on the desk in week 8. Its monthly cost and
-  # effects are the stage's.
+  # walk-in leads are the stage's (scenario.yaml, officeStages).
   - id: coworking_desk
     area: founder
     weight: 1
@@ -19,9 +19,9 @@ events:
     sender: Werkraum Ost, coworking
     look: letter
     text: >-
-      A desk by the window has come free at Werkraum Ost, 225 EUR a month. Proper chairs,
-      coffee that someone else cleans up after, and forty people who might know an office
-      manager. Your kitchen table would get its breakfasts back.
+      A desk by the window has come free at Werkraum Ost, 375 EUR a month. The manager knows
+      half the coworking spaces in town and says they all argue about lunch. If coworking spaces
+      are your market, that is a steady stream of introductions. If not, it is an expensive chair.
     defaultChoice: stay
     choices:
       - id: move

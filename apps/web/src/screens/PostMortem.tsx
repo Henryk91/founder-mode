@@ -76,7 +76,13 @@ export function PostMortem({ desk }: { desk: boolean }) {
         {label('pm.heading.markets', stage)}
       </h2>
       {pm.markets.map((m) => (
-        <MarketCard key={m.segmentId} m={m} t={t} stage={stage} />
+        <MarketCard
+          key={m.segmentId}
+          m={m}
+          t={t}
+          stage={stage}
+          walkIns={pm.walkIns.filter((w) => w.segmentId === m.segmentId)}
+        />
       ))}
     </section>
   )
@@ -349,7 +355,17 @@ function Fold(props: {
   )
 }
 
-function MarketCard({ m, t, stage }: { m: MarketTruth; t: Text; stage: UiStage }) {
+function MarketCard({
+  m,
+  t,
+  stage,
+  walkIns,
+}: {
+  m: MarketTruth
+  t: Text
+  stage: UiStage
+  walkIns: PostMortemData['walkIns']
+}) {
   const rows: [string, string][] = [
     [label('pm.market.pain', stage), t.bucket(m.painBucketId)],
     [
@@ -403,6 +419,17 @@ function MarketCard({ m, t, stage }: { m: MarketTruth; t: Text; stage: UiStage }
           <div key={k}>
             <dt>{k}</dt>
             <dd>{v}</dd>
+          </div>
+        ))}
+        {walkIns.map((w) => (
+          <div key={w.place}>
+            <dt>{label('pm.market.walkIns', stage)}</dt>
+            <dd>
+              {count('pm.market.walkInsValue', stage, w.leads, {
+                place: w.place.toLowerCase(),
+                customers: w.customers,
+              })}
+            </dd>
           </div>
         ))}
         <div>

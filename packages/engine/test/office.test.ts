@@ -41,22 +41,30 @@ describe('office stages', () => {
     const offer = getView(s).inbox.find((m) => m.eventId === 'coworking_desk')!
     const move = offer.choices.find((c) => c.id === 'move')!
     const stay = offer.choices.find((c) => c.id === 'stay')!
-    expect(move.monthlyCostCents).toBe(22_500)
+    expect(move.monthlyCostCents).toBe(37_500)
     expect(stay.monthlyCostCents).toBe(0)
   })
 
-  it('moves on accepting: rent, energy each week and in person outreach from the scenario', () => {
+  it('moves on accepting: rent and walk-in leads from the scenario, nothing else', () => {
     const s = play(newGame('desk-move', quiet()), 7, () => plan())
     const offer = deskOffers(s)[0]!
     const moved = endWeek(respond(s, offer.id, 'move'), plan()).state
     expect(moved.company.officeStage).toBe('coworking_desk')
     expect(moved.company.fixedCosts.find((c) => c.id === 'office')).toMatchObject({
       name: 'Coworking desk',
-      monthlyCents: 22_500,
+      monthlyCents: 37_500,
     })
-    expect(energyPerWeek(moved)).toBe(1)
-    expect(channelFactor(moved, 'in_person')).toBe(1.3)
-    expect(channelFactor(moved, 'phone')).toBe(1.15)
+    expect(moved.modifiers).toEqual([
+      {
+        id: 'coworking_desk',
+        source: 'office',
+        energyPerWeek: 0,
+        channelFactors: {},
+        walkIns: { segmentId: 'coworking', leadsPerWeek: 0.9 },
+      },
+    ])
+    expect(energyPerWeek(moved)).toBe(0)
+    expect(channelFactor(moved, 'in_person')).toBe(1)
     expect(getView(moved).company.officeStage.name).toBe('Coworking desk')
   })
 
@@ -76,28 +84,41 @@ describe('office stages', () => {
     expect(desk.energy - base.energy).toBe(1)
   })
 
-  it('finds more in person leads from the desk, with everything else the same', () => {
-    const at = (office: boolean) => {
-      const s0 = newGame('desk-leads', quiet())
-      const s = office ? moveOffice(s0, 'coworking_desk') : s0
-      const hidden = {
-        ...s.hidden.segments.coworking!,
-        channelResponse: { cold_email: 0, phone: 0, in_person: 0.1 },
-      }
-      const st = {
-        ...s,
-        hidden: { ...s.hidden, segments: { ...s.hidden.segments, coworking: hidden } },
-      }
-      const out = endWeek(
-        st,
-        plan({ outreach: { coworking: { channel: 'in_person', hours: 30 } } }),
-      )
-      return out.state.eventLog.find((e) => e.kind === 'odds' && e.odds === 'leads')!
+  it('brings walk-in leads from its market, recorded with their source and office', () => {
+    const desk = moveOffice(newGame('walk-ins', quiet()), 'coworking_desk')
+    const after = play(desk, 20, () => plan())
+    const walkIns = after.leads.filter((l) => l.source === 'walk_in')
+    // 0.9 a week: the whole part (0) plus one with chance 0.9, over 20 weeks.
+    expect(walkIns.length).toBeGreaterThanOrEqual(12)
+    expect(walkIns.length).toBeLessThanOrEqual(20)
+    expect(
+      walkIns.every((l) => l.segmentId === 'coworking' && l.walkInFrom === 'coworking_desk'),
+    ).toBe(true)
+    const odds = after.eventLog.filter((e) => e.kind === 'odds' && e.odds === 'walk_ins')
+    expect(odds.reduce((t, e) => t + (e.kind === 'odds' ? e.observed : 0), 0)).toBe(walkIns.length)
+    const lead = getView(after).leads.find((l) => l.source === 'walk_in')!
+    expect(lead.walkInFrom).toBe('Coworking desk')
+  })
+
+  it('names the walk-ins in the week they arrive', () => {
+    let s = moveOffice(newGame('walk-in-report', quiet()), 'coworking_desk')
+    let entry
+    for (let i = 0; i < 10 && !entry; i++) {
+      const out = endWeek(s, plan())
+      entry = out.report.entries.find((e) => e.kind === 'walk_in_leads')
+      s = out.state
     }
-    const plain = at(false)
-    const desk = at(true)
-    if (plain.kind !== 'odds' || desk.kind !== 'odds') throw new Error('no odds')
-    expect(desk.expected / plain.expected).toBeCloseTo(1.3, 5)
+    expect(entry).toMatchObject({
+      kind: 'walk_in_leads',
+      segmentId: 'coworking',
+      place: 'Coworking desk',
+    })
+  })
+
+  it('draws nothing for walk-ins without an office that brings them', () => {
+    const a = play(newGame('no-walk-ins', quiet()), 10, () => plan())
+    expect(a.leads.some((l) => l.source === 'walk_in')).toBe(false)
+    expect(a.eventLog.some((e) => e.kind === 'odds' && e.odds === 'walk_ins')).toBe(false)
   })
 })
 

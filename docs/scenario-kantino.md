@@ -166,9 +166,13 @@ Engine 0.7.0 made the hire junior and part time (was 4,200 and 3,800 at the old 
 | Stage | Trigger | Effect |
 |---|---|---|
 | Kitchen table | Start | None |
-| Coworking desk | Offered by an inbox event (`coworking_desk`) for sure, once, in week 8 or the week after the first paying customer, whichever comes first | Adds a company cost of 225 per month, energy +1 per week, outreach response in person x 1.3, phone and cold email x 1.15 |
+| Coworking desk | Offered by an inbox event (`coworking_desk`) for sure, once, in week 8 or the week after the first paying customer, whichever comes first | Adds a company cost of 375 per month. Walk-in leads from the coworking market, 0.9 a week on average (one in most weeks) |
 
-Phase 7 tuning: the spec values (375 per month, in person x 1.2 only) cost `validate_then_build` 9 points when it took the desk (17.1% against 26.3% staying). A desk that helps every channel a little and costs less is roughly neutral for a careful founder (26.4%).
+Each office stage may name walk-in leads: the market they come from and a mean rate per week. Walk-in leads are ordinary open leads, marked as walk-ins on their card, named in the weekly results, and counted on their own in the post-mortem.
+
+The desk is a real decision: it pays when coworking is the real market and costs when it is not. Taking it against declining it on the same seeds (`validate_then_build`, 1000 seeds): coworking viable +10.7 points, mediocre -13.6, trap -9.6. A careful founder takes it only when their own evidence puts coworking spaces first.
+
+History: the spec desk (375 per month, energy +1, in person x 1.2) cost 9 points; a cheaper desk lifting every channel (225, x 1.3 and x 1.15) was neutral everywhere, shortening losing runs by one to two weeks and never changing who wins. Energy +1 changed nothing in any comparison (bots are never tired) and was dropped.
 
 The player may decline. The scene image follows the stage.
 

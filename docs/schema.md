@@ -717,3 +717,12 @@ type PostMortem = {
 ### Phase 7 part 4: best runs (web only)
 
 - UI store: `runs: RunRecord[]` (this scenario's, from the profile) and `replaySeed(seed)`, which starts a run on that seed flagged as a replay. `bestRuns(runs)` (`apps/web/src/bestRuns.ts`) returns `{ ordinary, replays }`, each `{ longest, revenue, wins (best three), winCount }`.
+
+### Walk-in leads (engine 0.10.0, after Phase 7)
+
+- Content: `OfficeStage.walkIns?: { segment, leadsPerWeek }`, the market walk-ins come from and their mean rate. The segment must exist.
+- `Modifier.walkIns: { segmentId, leadsPerWeek } | null`. `applyWalkIns(state, rng)` (`systems/office.ts`) runs after sales in `endWeek`: per modifier, the whole part of the rate plus one more with the fraction's chance. No draw happens without such a modifier.
+- `LeadSource` gained `walk_in`; `Lead.walkInFrom?: string` is the office stage id. `LeadView.source` and `LeadView.walkInFrom` (the office stage's name, else null).
+- `ReportEntry` `{ kind: 'walk_in_leads', segmentId, count, place }`. `OddsKind` gained `walk_ins` (luck counts them like outreach leads).
+- `PostMortem.walkIns: { place, segmentId, leads, customers }[]`, per office and market.
+- Bots: `rankMarkets(scenario, view)` (exported from `validateThenBuild.ts`) is the reading bot's evidence ranking; it takes an office move with walk-ins only when that market ranks first.

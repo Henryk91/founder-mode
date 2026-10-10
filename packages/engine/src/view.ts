@@ -172,6 +172,11 @@ export function getView(state: GameState): PlayerView {
       lostReason: l.lostReason,
       canBookDemo: canBookDemo(l),
       canFollowUp: canFollowUp(l),
+      source: l.source,
+      walkInFrom:
+        l.walkInFrom === undefined
+          ? null
+          : (scenario.officeStages.find((o) => o.id === l.walkInFrom)?.name ?? l.walkInFrom),
     })),
     customers: activeCustomers(state).map((c) => ({
       id: c.id,

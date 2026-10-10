@@ -369,6 +369,8 @@ export const OfficeStageSchema = z.object({
   energyPerWeek: z.number().default(0),
   // Outreach response is multiplied by this per channel while working here.
   channelFactors: z.partialRecord(Channel, z.number().positive()).default({}),
+  // Leads that walk in from the people around you: from one market, at this mean rate per week.
+  walkIns: z.object({ segment: Id, leadsPerWeek: z.number().positive() }).optional(),
 })
 export type OfficeStage = z.infer<typeof OfficeStageSchema>
 
@@ -463,6 +465,11 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     if (!milestoneIds.has(id)) issue(`unknown milestone ${id}`, ['organisedAt'])
   }
   const stageIds = new Set(s.officeStages.map((o) => o.id))
+  s.officeStages.forEach((o, i) => {
+    if (o.walkIns && !s.segments.some((x) => x.id === o.walkIns!.segment)) {
+      issue(`unknown segment ${o.walkIns.segment}`, ['officeStages', i, 'walkIns', 'segment'])
+    }
+  })
   s.events.forEach((e, i) => {
     e.choices.forEach((c, j) =>
       c.effects.forEach((f, k) => {
