@@ -236,3 +236,17 @@ milestones:
   - { id: first_hire, name: First hire, kind: count, of: hires, target: 1, onBar: false }
   - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
   - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+
+# Office stages (spec section 9). The first is the start; the coworking desk comes through the
+# inbox event `coworking_desk`. Accepting replaces the stage's cost and effects.
+officeStages:
+  - { id: kitchen_table, name: Kitchen table, monthlyCents: 0 }
+  # Tuned in Phase 7 (spec was 375 EUR, in person x 1.2 only): see docs/decisions.md.
+  - id: coworking_desk
+    name: Coworking desk
+    monthlyCents: 22500
+    energyPerWeek: 1
+    channelFactors: { in_person: 1.3, phone: 1.15, cold_email: 1.15 }
+
+# The UI turns organised at the first of these milestones (plan section 4.12).
+organisedAt: [first_hire, covers_company_costs]

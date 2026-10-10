@@ -77,6 +77,8 @@ const labels = {
   'market.week': 'Week {week}',
 
   'pipeline.title': { scrappy: 'Who might pay us', organised: 'Sales pipeline' },
+  'pipeline.demoToTrial': 'Demo to trial: {percent}% ({trials} of {demos} demos)',
+  'pipeline.demoToTrialNone': 'Demo to trial: no demos held yet',
   'pipeline.group.demo': 'Wants a demo',
   'pipeline.group.trial': 'Trying it out',
   'pipeline.group.lead': 'Found, not yet interested',
@@ -470,6 +472,9 @@ const labels = {
   'milestone.weeks': '{current} / {target} weeks',
   'milestone.cents': '{current} / {target} a month',
   'milestone.allDone': 'Every milestone reached. Now keep it that way.',
+  'results.organised.title': 'Getting organised',
+  'results.organised.text':
+    'The sticky notes have been promoted to a sales pipeline, with a proper board and the share of demos that turn into trials. Everything else stays as scruffy as before.',
   'results.milestones.one': 'Milestone reached',
   'results.milestones.other': 'Milestones reached',
   'pm.heading.milestones': 'Milestones',

@@ -18,6 +18,7 @@ export function event(over: Partial<ScenarioEvent> & Pick<ScenarioEvent, 'id'>):
     weight: 1,
     once: false,
     when: [],
+    trigger: [],
     from: 'none',
     sender: 'Tester',
     look: 'letter',

@@ -166,7 +166,9 @@ Engine 0.7.0 made the hire junior and part time (was 4,200 and 3,800 at the old 
 | Stage | Trigger | Effect |
 |---|---|---|
 | Kitchen table | Start | None |
-| Coworking desk | Offered by an inbox event once from week 8 or after the first paying customer | Adds a company cost of 375 per month, energy +1 per week, in person channel response x 1.2 |
+| Coworking desk | Offered by an inbox event (`coworking_desk`) for sure, once, in week 8 or the week after the first paying customer, whichever comes first | Adds a company cost of 225 per month, energy +1 per week, outreach response in person x 1.3, phone and cold email x 1.15 |
+
+Phase 7 tuning: the spec values (375 per month, in person x 1.2 only) cost `validate_then_build` 9 points when it took the desk (17.1% against 26.3% staying). A desk that helps every channel a little and costs less is roughly neutral for a careful founder (26.4%).
 
 The player may decline. The scene image follows the stage.
 
@@ -193,4 +195,4 @@ This estimate is a back of the envelope calculation. Treat the bot report as the
 
 ## 11. Phase 4 and engine 0.7.0 values
 
-Landing test 8 h, ads 300 or 750 EUR, 225 cents per visitor, 1 week, 5 sign ups per lead. Pre-sale 6 h per batch of 5 cold prospects, 1 week, commit rate 0.25 x pain x price factor, at most 3 batches per market, refund after 8 weeks. Invoices due after 14 days, written off 8 weeks after due, chase 1 h for 0.3; a quarter of invoices wait for a chase. Books: the accountant's message from week 3, weight 40 (Phase 5, to keep about 7 arrivals a run among 108 events), cooldown 5 weeks: sort (3 h), pay 225 EUR, or later (half the time a 600 EUR fine, half the time 4 h lost). Hire as in section 8, impression labels weak below 0.7, solid below 0.95, strong below 1.1. Inbox: up to 3 draws a week at 0.4 each, plus one guaranteed draw in a week without a new message while fewer than 2 are open; open 2 weeks, at most 4 open. Since Phase 5 every event arrives once per run except the books, which set their own cooldown; the inbox cooldown of 8 weeks no longer applies to any event. The coworking desk (section 9) is not built yet.
+Landing test 8 h, ads 300 or 750 EUR, 225 cents per visitor, 1 week, 5 sign ups per lead. Pre-sale 6 h per batch of 5 cold prospects, 1 week, commit rate 0.25 x pain x price factor, at most 3 batches per market, refund after 8 weeks. Invoices due after 14 days, written off 8 weeks after due, chase 1 h for 0.3; a quarter of invoices wait for a chase. Books: the accountant's message from week 3, weight 40 (Phase 5, to keep about 7 arrivals a run among 108 events), cooldown 5 weeks: sort (3 h), pay 225 EUR, or later (half the time a 600 EUR fine, half the time 4 h lost). Hire as in section 8, impression labels weak below 0.7, solid below 0.95, strong below 1.1. Inbox: up to 3 draws a week at 0.4 each, plus one guaranteed draw in a week without a new message while fewer than 2 are open; open 2 weeks, at most 4 open. Since Phase 5 every event arrives once per run except the books, which set their own cooldown; the inbox cooldown of 8 weeks no longer applies to any event. The coworking desk (section 9) arrived in Phase 7.

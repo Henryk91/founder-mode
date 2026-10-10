@@ -1,5 +1,6 @@
 import { Rng, seedRng } from './rng'
 import { drawHiddenSegments } from './systems/market'
+import { moveOffice } from './systems/office'
 import { initialProduct } from './systems/product'
 import type { GameState, Scenario } from './types'
 import { ENGINE_VERSION } from './version'
@@ -9,7 +10,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
   const hiddenSegments = drawHiddenSegments(scenario, rng)
   const start = scenario.start
 
-  return {
+  const state: GameState = {
     engineVersion: ENGINE_VERSION,
     scenario,
     scenarioId: scenario.id,
@@ -33,6 +34,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       priceCentsPerMonth: start.priceCentsPerMonth,
       fixedCosts: start.fixedCosts.map((c) => ({ ...c })),
       uiStage: 'scrappy',
+      officeStage: '',
     },
     hidden: {
       segments: hiddenSegments,
@@ -53,5 +55,8 @@ export function createGame(scenario: Scenario, seed: string): GameState {
     actionLog: [],
     eventLog: [],
     milestones: [],
+    modifiers: [],
   }
+  // The first office stage is where every run starts, with its rent and effects if it has any.
+  return moveOffice(state, scenario.officeStages[0]!.id)
 }

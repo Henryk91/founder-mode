@@ -184,6 +184,7 @@ export const InboxConfigSchema = z.object({
 export const CONDITION_PATHS = [
   'week',
   'customers.count',
+  'customers.won',
   'customers.churned',
   'leads.open',
   'leads.waitingForDemo',
@@ -248,6 +249,9 @@ export const EffectSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('touchLead'), ...fx }),
   // Hours taken out of next week.
   z.object({ type: z.literal('lostHours'), hours: z.number().int().positive(), ...fx }),
+  // Moves the company to one of the scenario's office stages: its monthly cost and its lasting
+  // effects (energy each week, outreach response by channel) replace the previous stage's.
+  z.object({ type: z.literal('moveOffice'), stage: Id, ...fx }),
   z.object({
     type: z.literal('fixedCost'),
     id: Id,
@@ -279,6 +283,9 @@ export const EventSchema = z.object({
   // Weeks before a repeatable event can come back, instead of the inbox cooldown.
   cooldownWeeks: z.number().int().nonnegative().optional(),
   when: z.array(ConditionSchema).default([]),
+  // Arrives for sure, without a draw, in the first week any of these holds (and `when` holds).
+  // Such an event never comes through the random draw.
+  trigger: z.array(ConditionSchema).default([]),
   // Who the message is from. A customer or lead is a real one, picked when the message arrives.
   from: z.enum(['none', 'customer', 'lead']).default('none'),
   // The sender's role, shown with their name. For `none` it is the whole sender.
@@ -353,6 +360,18 @@ export const MilestoneSchema = z.discriminatedUnion('kind', [
 ])
 export type Milestone = z.infer<typeof MilestoneSchema>
 
+/** Where the company works. The first stage is the start; the others come through events. */
+export const OfficeStageSchema = z.object({
+  id: Id,
+  name: z.string().min(1),
+  monthlyCents: Cents.nonnegative(),
+  // Energy gained every week while working here.
+  energyPerWeek: z.number().default(0),
+  // Outreach response is multiplied by this per channel while working here.
+  channelFactors: z.partialRecord(Channel, z.number().positive()).default({}),
+})
+export type OfficeStage = z.infer<typeof OfficeStageSchema>
+
 export const ScenarioFileSchema = z.object({
   id: Id,
   name: z.string().min(1),
@@ -404,6 +423,9 @@ export const ScenarioFileSchema = z.object({
   roles: z.array(RoleSchema).min(1),
   segments: z.array(SegmentSchema).min(1),
   milestones: z.array(MilestoneSchema).min(1),
+  officeStages: z.array(OfficeStageSchema).min(1),
+  // The UI turns organised at the first of these milestones.
+  organisedAt: z.array(Id).min(1),
 })
 
 // segment id -> bucket id -> quotes
@@ -436,6 +458,21 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
   for (const id of dupes(s.milestones.map((x) => x.id))) {
     issue(`duplicate milestone ${id}`, ['milestones'])
   }
+  const milestoneIds = new Set(s.milestones.map((m) => m.id))
+  for (const id of s.organisedAt) {
+    if (!milestoneIds.has(id)) issue(`unknown milestone ${id}`, ['organisedAt'])
+  }
+  const stageIds = new Set(s.officeStages.map((o) => o.id))
+  s.events.forEach((e, i) => {
+    e.choices.forEach((c, j) =>
+      c.effects.forEach((f, k) => {
+        if (f.type === 'moveOffice' && !stageIds.has(f.stage)) {
+          issue(`unknown office stage ${f.stage}`, ['events', i, 'choices', j, 'effects', k])
+        }
+      }),
+    )
+    if (e.trigger.length > 0 && !e.once) issue('a triggered event must be once', ['events', i])
+  })
 
   if (s.roles.length !== s.segments.length) {
     issue('there must be exactly one role per segment', ['roles'])

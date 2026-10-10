@@ -14,6 +14,7 @@ import type {
 import { isMonthEnd } from './finance'
 import { energyFactor } from './founder'
 import { coverage, fit, priceFactor } from './market'
+import { channelFactor } from './office'
 import { OddsTally } from './odds'
 import type { TeamOutput } from './team'
 
@@ -366,7 +367,9 @@ export function applySales(
   const spent = recentOutreach(state)
   const limit = cfg.saturationHours * cfg.saturationWeeks
   for (const item of items) {
-    const response = state.hidden.segments[item.segmentId]?.channelResponse[item.channel] ?? 0
+    const response =
+      (state.hidden.segments[item.segmentId]?.channelResponse[item.channel] ?? 0) *
+      channelFactor(state, item.channel)
     const key = `${item.segmentId}/${item.channel}`
     const before = spent.get(key) ?? 0
     spent.set(key, before + item.hours)

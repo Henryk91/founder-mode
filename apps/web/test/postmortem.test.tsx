@@ -181,3 +181,52 @@ describe('milestones on screen', () => {
     expect(page).toContain('Week 1: First interview')
   })
 })
+
+describe('coworking desk and organised stage', () => {
+  it('offers the desk in week 8 and switches the scene once it is taken', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'desk-ui' })
+    store.getState().startRun()
+    while (store.getState().introStep !== null) store.getState().nextIntro()
+    for (let w = 1; w < 8; w++) {
+      store.getState().endWeek()
+      store.getState().dismissReport()
+    }
+    const offer = store.getState().view!.inbox.find((m) => m.eventId === 'coworking_desk')!
+    expect(offer).toBeDefined()
+    expect(text(store, 'desk')).toContain('Kitchen table')
+    store.getState().answer(offer.id, 'move')
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    expect(store.getState().view!.company.officeStage.id).toBe('coworking_desk')
+    expect(text(store, 'desk')).toContain('Coworking desk')
+    expect(html(store, 'desk')).not.toContain('>Kitchen table<')
+  })
+
+  it('shows the organised pipeline with the demo to trial number, and announces it once', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'organised-ui' })
+    store.getState().startRun()
+    while (store.getState().introStep !== null) store.getState().nextIntro()
+    store.getState().setTab('pipeline')
+    expect(text(store)).toContain('Who might pay us')
+    expect(text(store)).not.toContain('Demo to trial')
+    const view = store.getState().view!
+    store.setState({
+      view: {
+        ...view,
+        company: { ...view.company, uiStage: 'organised' },
+        funnel: { demosHeld: 10, trialsFromDemos: 4 },
+      },
+    })
+    const page = text(store)
+    expect(page).toContain('Sales pipeline')
+    expect(page).toContain('Demo to trial: 40% (4 of 10 demos)')
+    expect(html(store)).toContain('data-stage="organised"')
+
+    store.getState().endWeek()
+    const report = store.getState().report!
+    store.setState({ report: { ...report, uiStageChanged: true } })
+    expect(text(store)).toContain('Getting organised')
+    store.setState({ report: { ...report, uiStageChanged: false } })
+    expect(text(store)).not.toContain('Getting organised')
+  })
+})

@@ -169,6 +169,8 @@ const READER_CHOICES: Record<string, ReaderRule> = {
   equipment_grant: 'apply',
   double_charge: 'refund',
   // founder
+  // The desk costs rent every month: worth it once a customer pays and cash is not tight.
+  coworking_desk: (v) => (v.customers.length >= 1 && !tight(v) ? 'move' : 'stay'),
   bad_sleep: 'nap',
   family_lunch: (v) => (tired(v) ? 'go' : 'stay'),
   flu: (v) => (v.founder.energy - 10 < v.founder.tiredBelow ? 'rest' : 'work_through'),
