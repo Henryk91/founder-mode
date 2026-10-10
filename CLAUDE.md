@@ -48,6 +48,7 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 - Before coding a phase, list the files you will touch and any ambiguity.
 - Write tests alongside each system. A phase is done only when its "Done when" criteria hold and `pnpm test` and `pnpm lint` pass.
 - After any change to formulas or scenario values, run the bots and update `docs/balancing.md`.
+- After any change to engine types, content fields, or bot logic, rerun the bot report with `--events` and commit the regenerated `docs/balancing.md` in the same piece of work.
 - Record design or tuning decisions in `docs/decisions.md` in one or two lines each.
 - Stop at the end of each phase and summarise.
 
