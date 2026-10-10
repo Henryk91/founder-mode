@@ -1,7 +1,6 @@
 import type { Scenario, ScenarioId } from '@founder-mode/content'
 import type { MessageView, PlayerView, WeekPlan } from '@founder-mode/engine'
 import { PriceSearch, type PricingRule } from '../pricing'
-import { botScenario } from '../scenarios'
 import {
   bookableLeads,
   ChannelLog,
@@ -22,10 +21,19 @@ const CHANNEL_TRIAL_HOURS = 10
 const PIVOT_AFTER_WEEKS = 12
 /** Overdue invoices chased per week. */
 const CHASE_PER_WEEK = 3
-/** Pre-sale batches a careful player runs in its chosen market, and the batches that refute it. */
+/** Pre-sale batches without a deposit that refute the chosen market. */
 const MAX_PRESALE_BATCHES = 2
-/** How much the landing page sign up rate, above or below the bar, counts next to interviews. */
-const LANDING_WEIGHT = 4
+/**
+ * How much a market's landing page sign up rate counts next to interviews, per standard error
+ * above or below the rate of every tested market together.
+ */
+const LANDING_WEIGHT = 0.1
+/**
+ * A tested market is dropped when another tested market's sign up rate is this many standard
+ * errors ahead of it (a two proportion test). Markets are compared with each other, so the rule
+ * needs no sign up rate of its own per scenario.
+ */
+export const LANDING_DROP_Z = 1.5
 /** How much the pre-sale commit rate, above or below the bar, counts next to interviews. */
 const PRESALE_WEIGHT = 3
 const PRESALE_BAR = 0.08
@@ -366,11 +374,46 @@ export function hirePayback(p: PaybackInput): number {
   return value - (p.monthlySalaryCents / p.weeksPerMonth) * salaryWeeks
 }
 
-/** Share of landing page visitors who signed up, over all tests in a market, or null. */
-function landingRate(view: PlayerView, segmentId: string): number | null {
+/** Landing page visitors and sign ups, over all tests in a market. */
+function landingCounts(view: PlayerView, segmentId: string): { visitors: number; signups: number } {
   const tests = view.segments.find((s) => s.id === segmentId)?.landingTests ?? []
-  const visitors = tests.reduce((t, x) => t + x.visitors, 0)
-  return visitors ? tests.reduce((t, x) => t + x.signups, 0) / visitors : null
+  return {
+    visitors: tests.reduce((t, x) => t + x.visitors, 0),
+    signups: tests.reduce((t, x) => t + x.signups, 0),
+  }
+}
+
+/**
+ * How far a market's sign up rate lies above (positive) or below the rate of every tested market
+ * together, in standard errors; null when the market has no landing test or none differs.
+ */
+export function landingStanding(view: PlayerView, segmentId: string): number | null {
+  const own = landingCounts(view, segmentId)
+  if (own.visitors === 0) return null
+  const all = view.segments.map((s) => landingCounts(view, s.id))
+  const visitors = all.reduce((t, x) => t + x.visitors, 0)
+  const pooled = all.reduce((t, x) => t + x.signups, 0) / visitors
+  const se = Math.sqrt((pooled * (1 - pooled)) / own.visitors)
+  return se > 0 ? (own.signups / own.visitors - pooled) / se : null
+}
+
+/**
+ * True when another tested market drew clearly more sign ups than this one: a two proportion test
+ * against the best other tested market reaches `LANDING_DROP_Z`.
+ */
+export function landingBehind(view: PlayerView, segmentId: string): boolean {
+  const own = landingCounts(view, segmentId)
+  if (own.visitors === 0) return false
+  return view.segments.some((s) => {
+    if (s.id === segmentId) return false
+    const other = landingCounts(view, s.id)
+    if (other.visitors === 0) return false
+    const pooled = (own.signups + other.signups) / (own.visitors + other.visitors)
+    const se = Math.sqrt(pooled * (1 - pooled) * (1 / own.visitors + 1 / other.visitors))
+    if (se === 0) return false
+    const z = (other.signups / other.visitors - own.signups / own.visitors) / se
+    return z >= LANDING_DROP_Z
+  })
 }
 
 /** Share of pre-sale prospects who paid a deposit, over all batches in a market, or null. */
@@ -385,9 +428,8 @@ export function rankMarkets(scenario: Scenario, view: PlayerView): { id: string;
   return view.segments
     .map((s) => {
       const notes = segmentNotes(scenario, view, s.id)
-      const landing = landingRate(view, s.id)
-      const bar = botScenario(scenario.id).landingBar
-      return { id: s.id, score: score(notes, landing, bar, presaleRate(view, s.id)) }
+      const landing = landingStanding(view, s.id)
+      return { id: s.id, score: score(notes, landing, presaleRate(view, s.id)) }
     })
     .sort((a, b) => b.score - a.score)
 }
@@ -395,10 +437,9 @@ export function rankMarkets(scenario: Scenario, view: PlayerView): { id: string;
 function score(
   notes: ReturnType<typeof segmentNotes>,
   landing: number | null,
-  landingBar: number,
   presale: number | null,
 ): number {
-  const fromLanding = landing === null ? 0 : LANDING_WEIGHT * (landing - landingBar)
+  const fromLanding = landing === null ? 0 : LANDING_WEIGHT * landing
   const fromPresale = presale === null ? 0 : PRESALE_WEIGHT * (presale - PRESALE_BAR)
   return notes.meanBucket + notes.mentionRate + fromLanding + fromPresale
 }
@@ -694,10 +735,9 @@ export function validatingPlayer(
         return b.plan
       }
 
-      // A market where the landing page test drew too few sign ups is out.
+      // A market whose landing page test drew clearly fewer sign ups than another's is out.
       for (const s of view.segments) {
-        const rate = landingRate(view, s.id)
-        if (rate !== null && rate < botScenario(scenario.id).landingBar && !abandoned.has(s.id)) {
+        if (behaviours.landing && landingBehind(view, s.id) && !abandoned.has(s.id)) {
           abandoned.add(s.id)
           if (target === s.id) {
             target = null
@@ -724,8 +764,8 @@ export function validatingPlayer(
       if (wanted.length < 3 && notes.interviews < 20) b.interviews(target, 3)
       for (const f of unshipped) b.build(f, MAX_BUILD_HOURS - (b.plan.build[f] ?? 0))
 
-      // Pre-sales measure what prospects do. A careful player runs a second batch only when the
-      // first found nobody; nobody in two batches and this market is out.
+      // Pre-sales measure what prospects do. A careful player pitches every batch its chosen market
+      // allows, one a week; nobody in two batches and this market is out.
       const sales = view.segments.find((s) => s.id === target)?.presales ?? []
       const waiting = view.pendingExperiments.some(
         (e) => e.kind === 'presale' && e.segmentId === target,
@@ -734,9 +774,7 @@ export function validatingPlayer(
       const commits = sales.reduce((t, x) => t + x.commits, 0)
       if (behaviours.presales === 'max') {
         for (const r of ranked(view)) if (!abandoned.has(r.id)) while (b.presale(r.id));
-      } else if (botScenario(scenario.id).presales === 'all') {
-        if (!waiting) b.presale(target)
-      } else if (sales.length < MAX_PRESALE_BATCHES && commits === 0 && !waiting) {
+      } else if (!waiting) {
         b.presale(target)
       }
       const refuted =
@@ -772,16 +810,11 @@ export function validatingPlayer(
 }
 
 const DESCRIPTION =
-  'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. Drops a market below 7% landing sign ups, or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
+  'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
 
 export const validateThenBuild: Strategy = {
   id: 'validate_then_build',
   description: DESCRIPTION,
-  describe: (scenario) =>
-    DESCRIPTION.replace(
-      'below 7% landing',
-      `below ${Math.round(botScenario(scenario.id).landingBar * 1000) / 10}% landing`,
-    ),
   create: (scenario) => validatingPlayer(scenario, 50),
 }
 

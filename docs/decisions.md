@@ -234,3 +234,11 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 
 - The trades yard desk is worth about +20 points to the careful bot when small crews are viable (z 7.0), about twice Kantino's desk (+10.7). Check whether it dominates the run: how often the winning runs in small crews are won by walk-ins, and whether a run that takes it ever needs another channel.
 - Kantino's careful bot still stops pre-selling at the first deposit (`presales: 'refute'`); Zollstock's uses every allowed batch (`'all'`). Align them in the Phase 8 balance pass and retune Kantino if needed.
+
+## Phase 8, part 1: better bots (no game changes)
+
+- Sample sizes: targets are judged on 1000 seeds (`test`), each with a 95% margin of error in the report. Target 11's policies run on 10,000 seeds (`--inbox-runs 10000`, about 2 minutes), where its margin is about ±1 point. The full report with events (about 15 minutes for both scenarios on 9 processes) runs only at the end of a balancing pass; tuning runs leave out the parts a change cannot affect (`--parts`).
+- The bots play seeds in parallel child processes (`--jobs`). Each run depends only on scenario, strategy and seed, so the report is the same as in one process; only target 5's timing reads slower, because it is timed while the other processes run.
+- Landing tests: the fixed bars (7% Kantino, 3.7% Zollstock) are gone. The careful bot drops a tested market when another tested market drew more sign ups by 1.5 standard errors or more (two proportion test), and ranks markets by how many standard errors their sign up rate lies above or below all tested markets together. Thresholds 1.0, 1.5 and 2.0 gave the same win rates within noise; 1.5 is the middle.
+- Pre-sales: Kantino's careful bot pitches every batch its chosen market allows, one a week, as Zollstock's did (`BOT_SCENARIOS` keeps only the playtest market). Kantino's `validate_then_build` went from 28.8% to 36.2% (4.1 batches a run, was 2.1); `presale_max` is now 8 points behind it.
+- `docs/balancing.md` is not regenerated in this part: by the owner's rule the full report with the event table runs at the end of Part 3.

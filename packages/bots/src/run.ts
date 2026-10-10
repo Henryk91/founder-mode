@@ -7,15 +7,9 @@ import { buildReport, evaluateTargets, TARGET_STRATEGIES, type StrategyRuns } fr
 import { deskComparison } from './desk'
 import { asSection, mergeReportFile } from './reportFile'
 import { botScenario } from './scenarios'
-import { runGame } from './simulate'
+import { runTasks, type Task, type TaskDone } from './pool'
+import { ABLATION_SPECS, INBOX_SPECS, strategyOf, type StrategySpec } from './specs'
 import { STRATEGIES } from './strategies'
-import { randomNoInbox } from './strategies/random'
-import {
-  BEHAVIOUR_NAMES,
-  forcedAnswer,
-  withInbox,
-  withoutBehaviours,
-} from './strategies/validateThenBuild'
 import { describeStrategy, type Strategy } from './strategy'
 
 const args = parseArgs(process.argv.slice(2))
@@ -30,50 +24,78 @@ const strategies = args.only.length
   ? STRATEGIES.filter((s) => args.only.includes(s.id))
   : STRATEGIES
 
-/** Every run of one scenario, and its report as `buildReport` writes it. */
-function reportFor(scenario: Scenario): string {
-  const play = (strategy: Strategy): StrategyRuns => {
-    const start = performance.now()
-    const results = Array.from({ length: args.runs }, (_, i) =>
-      runGame(scenario, strategy, `${args.seedPrefix}-${i}`),
-    )
-    const seconds = (performance.now() - start) / 1000
-    console.log(`${scenario.id} ${strategy.id}: ${args.runs} runs in ${seconds.toFixed(1)} s`)
-    return { id: strategy.id, description: describeStrategy(strategy, scenario), results, seconds }
-  }
+/**
+ * The parts of the report, run and timed one after another: `main` the strategies the targets look
+ * at (and the silent random bot), `paired` the leave-one-out runs, `inbox` the inbox policies of
+ * target 11 (on `--inbox-runs` seeds, with a reading run on the same seeds), `events` every answer
+ * of every event.
+ */
+type Part = 'main' | 'paired' | 'inbox' | 'events'
+type Planned = { strategy: Strategy; spec: StrategySpec; part: Part; runs: number }
 
-  const runs = strategies.map(play)
-
-  // Leave-one-out runs of the validate_then_build variants, and the silent random bot. Only for
-  // the report, so they stay out of the strategy list that the targets look at.
+/** Every strategy one scenario's report needs, with the spec a worker builds it from. */
+function planFor(scenario: Scenario): Planned[] {
+  const plan = (spec: StrategySpec, part: Part, runs = args.runs): Planned => ({
+    strategy: strategyOf(spec),
+    spec,
+    part,
+    runs,
+  })
   const full = args.only.length === 0
-  const bases = [{ id: 'validate_then_build', hire: 'none' }] as const
-  const ablations = full
-    ? bases
-        .flatMap((base) => [
-          ...BEHAVIOUR_NAMES.map((name) => withoutBehaviours(base, [name])),
-          withoutBehaviours(base, BEHAVIOUR_NAMES),
-        ])
-        .map(play)
-    : []
-  const extras = full
-    ? [randomNoInbox, withInbox('none'), withInbox('effort'), withInbox('cheapest')].map(play)
-    : []
-
+  const out: Planned[] = []
+  if (args.parts.includes('main')) {
+    out.push(...strategies.map((s) => plan({ kind: 'listed', id: s.id }, 'main')))
+    if (full) out.push(plan({ kind: 'randomNoInbox' }, 'main'))
+  }
+  // Leave-one-out runs of validate_then_build. Only for the report, so they stay out of the
+  // strategy list that the targets look at.
+  if (full && args.parts.includes('paired'))
+    out.push(...ABLATION_SPECS.map((spec) => plan(spec, 'paired')))
+  if (full && args.parts.includes('inbox'))
+    out.push(...INBOX_SPECS.map((spec) => plan(spec, 'inbox', args.inboxRuns)))
   // Every answer of every event, forced, on validate_then_build. Slow, so only on request.
-  const events = args.events
-    ? scenario.events.flatMap((e) =>
-        e.choices.map((c) => ({
-          eventId: e.id,
-          choiceId: c.id,
-          hours: c.hours,
-          costCents: c.effects.reduce(
-            (t, fx) => t + (fx.type === 'cash' && fx.amountCents < 0 ? -fx.amountCents : 0),
-            0,
-          ),
-          results: play(forcedAnswer(e.id, c.id)).results,
-        })),
-      )
+  if (args.parts.includes('events'))
+    for (const e of scenario.events)
+      for (const c of e.choices)
+        out.push(plan({ kind: 'forced', eventId: e.id, choiceId: c.id }, 'events'))
+  return out
+}
+
+/** The report of one scenario, as `buildReport` writes it, from its finished runs. */
+function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): string {
+  const runs = (keep: (p: Planned) => boolean) =>
+    planned.flatMap((p, i): StrategyRuns[] =>
+      keep(p)
+        ? [
+            {
+              id: p.strategy.id,
+              description: describeStrategy(p.strategy, scenario),
+              results: done[i]!.results,
+              seconds: done[i]!.seconds,
+            },
+          ]
+        : [],
+    )
+  const events = args.parts.includes('events')
+    ? planned.flatMap((p, i) => {
+        if (p.spec.kind !== 'forced') return []
+        const { eventId, choiceId } = p.spec
+        const choice = scenario.events
+          .find((e) => e.id === eventId)!
+          .choices.find((c) => c.id === choiceId)!
+        return [
+          {
+            eventId,
+            choiceId,
+            hours: choice.hours,
+            costCents: choice.effects.reduce(
+              (t, fx) => t + (fx.type === 'cash' && fx.amountCents < 0 ? -fx.amountCents : 0),
+              0,
+            ),
+            results: done[i]!.results,
+          },
+        ]
+      })
     : undefined
 
   const { segment, note } = botScenario(scenario.id).playtest
@@ -81,9 +103,9 @@ function reportFor(scenario: Scenario): string {
     engineVersion: ENGINE_VERSION,
     runs: args.runs,
     seedPrefix: args.seedPrefix,
-    strategies: runs,
-    ablations,
-    extras,
+    strategies: runs((p) => p.part === 'main' && p.spec.kind === 'listed'),
+    ablations: runs((p) => p.part === 'paired'),
+    extras: runs((p) => (p.part === 'main' && p.spec.kind !== 'listed') || p.part === 'inbox'),
     ...(events ? { events } : {}),
     playtest: { segment, note },
   }
@@ -91,7 +113,7 @@ function reportFor(scenario: Scenario): string {
     console.log(`\nTargets for ${scenario.id}, ${id}`)
     for (const t of evaluateTargets(input, id)) {
       const status = t.value === '-' ? '----' : t.pass ? 'ok  ' : 'FAIL'
-      console.log(`${status} ${t.id}. ${t.text}: ${t.value}`)
+      console.log(`${status} ${t.id}. ${t.text}: ${t.value}${t.margin ? ` (${t.margin})` : ''}`)
     }
   }
   return buildReport(input)
@@ -103,7 +125,41 @@ if (args.desk) {
   process.exit(0)
 }
 
-const reports = new Map(chosen.map((c) => [c.id, reportFor(loadScenario(c.id))] as const))
+// Each part runs on its own, timed; within a part every scenario's runs share one pool.
+const loaded = chosen.map((c) => loadScenario(c.id))
+const plans = loaded.map(planFor)
+const done = plans.map((p) => p.map((): TaskDone => ({ results: [], seconds: 0 })))
+const timings: string[] = []
+for (const part of ['main', 'paired', 'inbox', 'events'] as const) {
+  const index = plans.flatMap((p, s) => p.flatMap((x, i) => (x.part === part ? [{ s, i }] : [])))
+  if (index.length === 0) continue
+  const tasks = index.map(({ s, i }): Task => {
+    const p = plans[s]![i]!
+    return { scenarioId: chosen[s]!.id, spec: p.spec, seedPrefix: args.seedPrefix, runs: p.runs }
+  })
+  const started = performance.now()
+  const finished = await runTasks(tasks, args.jobs, (task, d) => {
+    if (task.spec.kind !== 'forced')
+      console.log(
+        `${task.scenarioId} ${strategyOf(task.spec).id}: ${task.runs} runs in ${d.seconds.toFixed(1)} s`,
+      )
+  })
+  index.forEach(({ s, i }, k) => (done[s]![i] = finished[k]!))
+  const wall = (performance.now() - started) / 1000
+  const cpu = finished.reduce((t, d) => t + d.seconds, 0)
+  timings.push(
+    `${part}: ${tasks.length} strategy runs, ${wall.toFixed(0)} s (${cpu.toFixed(0)} s of play over ${args.jobs} processes)`,
+  )
+  console.log(`Part ${timings[timings.length - 1]}`)
+}
+const reports = new Map(
+  loaded.map((scenario, i) => [scenario.id, reportFor(scenario, plans[i]!, done[i]!)] as const),
+)
+console.log(`\nTimings\n${timings.join('\n')}`)
+const skipped = (['main', 'paired', 'inbox', 'events'] as const).filter(
+  (p) => !args.parts.includes(p),
+)
+if (skipped.length) console.log(`Skipped parts: ${skipped.join(', ')}`)
 
 if (args.out === '-') {
   for (const report of reports.values()) console.log(report)
