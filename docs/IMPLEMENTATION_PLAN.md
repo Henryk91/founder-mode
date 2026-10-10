@@ -395,14 +395,14 @@ As built in Phase 7 (`packages/engine/src/postmortem.ts`, schema in `docs/schema
 
 | Type | Target count |
 |---|---|
-| Scenario | 1 (Kantino) |
+| Scenario | 2: Kantino, and Zollstock (trade businesses, `docs/scenario-zollstock.md`), picked on the Start screen |
 | Segments | 3: small offices, coworking spaces, medical practices |
 | Features | 8, of which each segment requires 2 or 3 |
-| Events | About 105, spread over validation, sales, product, finance, founder, team (was 60; a 60 week run draws up to about 86 messages, and no event may arrive twice unless it recurs on purpose) |
+| Events | About 105 per scenario, spread over validation, sales, product, finance, founder, team (was 60; a 60 week run draws up to about 86 messages, and no event may arrive twice unless it recurs on purpose). 66 are shared by every scenario; each scenario adds 43 of its own |
 | Interview quotes | 10 per segment per bucket band (low, mid, high) |
 | Company name pool | 80 fictional names |
 
-Segments, features, and all starting values are specified in `docs/scenario-kantino.md`. Where that file and this plan differ, the scenario file wins.
+Segments, features, and all starting values are specified in `docs/scenario-kantino.md` and `docs/scenario-zollstock.md`. Where those files and this plan differ, the scenario files win.
 
 Tone: dry humour, short messages (2 to 4 sentences). No real company names.
 
@@ -461,7 +461,7 @@ Always visible: cash, runway, monthly revenue, paying customers. Each shows its 
 | overworker | Plans 65 h every week | Burns out |
 | playtest | Replays the hand playtest | Loses |
 
-Command: `pnpm bots --runs 1000 --seed-prefix test` (add `--events` for the per event table, which also measures target 10).
+Command: `pnpm bots --runs 1000 --seed-prefix test` (add `--events` for the per event table, which also measures target 10). Every scenario is run and judged on its own targets; `--scenario <id>` runs one. `--desk` compares taking the office with walk-in leads against declining it on the same seeds, by the real role of the walk-in market. Bot settings that depend on a scenario (the playtest market, the landing bar, how many pre-sales the careful bot runs) live in `packages/bots/src/scenarios.ts`.
 
 Report per strategy: ending distribution, median week of death, median peak revenue, wins by viable market, first paying customer, evidence by week 10, pacing, inbox policies, per event answers, customer sources, behaviour ablations, the hire. Written to `docs/balancing.md`.
 
@@ -596,11 +596,15 @@ Plain styling stays. All text goes through the label table or the content files.
 
 **Done when:** every ending leads to a post-mortem that names a cause, shows the truth reveal, and lists at least one misread signal when one exists.
 
-**Status: done** (2026-10, engine 0.9.0). Also built: the coworking desk office stage (offered by a triggered inbox event, tuned to 225 EUR a month, see `docs/decisions.md`), persistent modifiers, replay flags on run records. `packages/bots/test/postmortem.test.ts` checks the "done when" over bot runs of every ending.
+**Status: done** (2026-10, engine 0.9.0). Also built: the coworking desk office stage (offered by a triggered inbox event; after Phase 7 rebuilt as 375 EUR a month with 0.9 walk-in leads a week, see `docs/decisions.md`), persistent modifiers, replay flags on run records. `packages/bots/test/postmortem.test.ts` checks the "done when" over bot runs of every ending.
+
+### Between Phase 7 and Phase 8: a second scenario
+
+Zollstock (`docs/scenario-zollstock.md`), with the engine made scenario independent: shared and scenario events, a scenario picker, saves, best runs and bots per scenario, referrals and lead sources. **Status: done** (2026-10, engine 0.10.0). Zollstock meets every target but 11 (blind effort +4.8, limit 4) and the landing part of 13; see `docs/balancing.md`.
 
 ### Phase 8: Hardening (about 1 week)
 
-- Final balancing pass, update `docs/balancing.md`
+- Final balancing pass for both scenarios, update `docs/balancing.md`. Replace the careful bot's fixed landing bars (7% Kantino, 3.7% Zollstock) with a relative rule that compares markets with each other
 - Save version check
 - Accessibility: contrast, touch targets of 44 px or more, real buttons, keyboard focus
 - Performance check on a mid range phone

@@ -12,15 +12,16 @@ events:
     sender: Customer
     text: >-
       {name} offers to take you along to a site visit on Friday, to show the app to the general
-      contractor. It is half a day in a van that smells of solvent. The contractor hires a lot of
-      crews.
+      contractor. It is half a day in a van that smells of solvent. Worth it while your pipeline
+      is thin, less so when you cannot call back the leads you have.
     defaultChoice: ignore
     choices:
       - id: follow_up
         label: Go along
         hours: 4
         effects:
-          - { type: newLeads, count: 1 }
+          - { type: newLeads, count: 1, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 2, when: [leads.open > 8] }
       - id: ignore
         label: Not this week
         hours: 0
@@ -267,15 +268,16 @@ events:
     from: none
     sender: Plumbing firm
     text: >-
-      A plumbing firm that said no earlier this year writes again. The owner's daughter has taken over,
-      with opinions about paper and a budget.
+      A plumbing firm that said no earlier this year writes again. The owner's daughter has taken
+      over, with opinions about paper and a budget. Worth a call if you have room for another lead.
     defaultChoice: later
     choices:
       - id: call
         label: Call them this week
         hours: 1
         effects:
-          - { type: newLeads, count: 1 }
+          - { type: newLeads, count: 1, when: [leads.open <= 12] }
+          - { type: lostHours, hours: 2, when: [leads.open > 12] }
       - id: later
         label: Reply later
         hours: 0

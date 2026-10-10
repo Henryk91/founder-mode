@@ -109,7 +109,8 @@ sales:
     cap: 0.6
   # Happy customers recommend you to the trade next door (spec section 6).
   referral:
-    chancePerFit: 0.08
+    # Tuning round 2: was 0.08.
+    chancePerFit: 0.11
     chancePerBug: 0.01
     demoBonus: 0.6
 
@@ -193,7 +194,8 @@ segments:
     channelResponse:
       cold_email: { min: 0.008, max: 0.025 }
       phone: { min: 0.045, max: 0.09 }
-      in_person: { min: 0.07, max: 0.14 }
+      # Tuning round 3: was 0.07 to 0.14.
+      in_person: { min: 0.06, max: 0.12 }
     paymentDelayDaysMean: 10
     neverPaysShare: 0.06
     waitsForChaseShare: 0.25
@@ -206,8 +208,10 @@ segments:
     mustHave: [job_board, crew_dispatch, material_lists]
     channelResponse:
       cold_email: { min: 0.02, max: 0.045 }
-      phone: { min: 0.055, max: 0.11 }
-      in_person: { min: 0.04, max: 0.09 }
+      # Tuning round 3: was 0.055 to 0.11.
+      phone: { min: 0.06, max: 0.12 }
+      # Tuning round 2: was 0.04 to 0.09.
+      in_person: { min: 0.05, max: 0.1 }
     paymentDelayDaysMean: 25
     neverPaysShare: 0.03
     waitsForChaseShare: 0.25
@@ -220,8 +224,9 @@ segments:
     mustHave: [job_board, recurring_jobs, photo_reports]
     channelResponse:
       cold_email: { min: 0.015, max: 0.035 }
-      phone: { min: 0.04, max: 0.08 }
-      in_person: { min: 0.06, max: 0.13 }
+      # Tuning round 1: phone was 0.04 to 0.08, in person 0.06 to 0.13.
+      phone: { min: 0.06, max: 0.12 }
+      in_person: { min: 0.08, max: 0.15 }
     paymentDelayDaysMean: 15
     neverPaysShare: 0.05
     waitsForChaseShare: 0.25

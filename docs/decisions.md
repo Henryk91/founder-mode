@@ -211,3 +211,13 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - The playtest bot replays Kantino's hand playtest on contractors in Zollstock (the market playing coworking's part); nobody has played Zollstock by hand yet.
 - `pnpm bots --desk` compares taking the office with walk-ins against declining it on the same seeds, split by the walk-in market's real role. It reproduces the Kantino figures exactly. Zollstock, with Kantino's final desk (375 EUR, 0.9 a week): viable +7.7 (z 3.5), mediocre -3.3 (z -2.3), trap -5.2 (z -3.1). No desk tuning needed.
 - Tone: a fair share of master tradespeople, crew bosses and owners in events and quotes are women, never remarked on.
+
+## Second scenario, part C: balancing Zollstock
+
+- The careful bot's landing bar (drop a market below this sign up share) is a bot setting per scenario (`BOT_SCENARIOS[id].landingBar`), set at each scenario's sign up rate for a pain of about 0.33: Kantino 7% (unchanged, its report stays identical), Zollstock 3.7%. With Kantino's 7% the bot dropped good Zollstock markets, and switching landing tests off gained 5.8 points.
+- For the Phase 8 balance pass: replace both fixed bars with a relative rule (compare markets' landing results with each other, no fixed bar), so no scenario needs its own number.
+- The careful bot's pre-sales are a bot setting per scenario (`BOT_SCENARIOS[id].presales`): Kantino keeps `refute` (a second batch only when the first found nobody); Zollstock uses `all` (every batch its chosen market allows, deposit or not), because pre-sales are the strong signal there. It used 2.3 batches against presale_max's 9.0, and presale_max won 3.5 points more; now 4.3 batches and presale_max is 5.5 points behind.
+- Tuning round 1 (Zollstock): maintenance phone 0.06 to 0.12 (was 0.04 to 0.08) and in person 0.08 to 0.15 (was 0.06 to 0.13); `site_visit` and `returning_prospect` give their lead only with room in the pipeline (8 and 12 open leads) and cost 2 h otherwise, as their texts now say. Maintenance won 9.9% of its viable runs.
+- Tuning round 2: referral chance 0.11 x fit (was 0.08); contractors in person 0.05 to 0.10 (was 0.04 to 0.09). Referrals bring 19% of customers in winning runs, well under the 40% cap.
+- Tuning round 3: small crews in person 0.06 to 0.12 (was 0.07 to 0.14), contractors phone 0.06 to 0.12 (was 0.055 to 0.11); offline mode in `cellar_signal` is a 10 h build that brings a bug (the reader explains instead); the thesis interviews in `master_project` cost 3 energy; leaving Zollstock's receipts risks 750 EUR (Kantino 600).
+- After three rounds Zollstock meets every target but 11 (blind effort +4.8) and the landing part of 13 (-1.0 points). Kantino's report is unchanged throughout.

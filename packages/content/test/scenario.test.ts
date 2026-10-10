@@ -129,7 +129,7 @@ describe('content', () => {
       'photo_reports',
       'client_marketplace',
     ])
-    expect(s.sales.referral).toEqual({ chancePerFit: 0.08, chancePerBug: 0.01, demoBonus: 0.6 })
+    expect(s.sales.referral).toEqual({ chancePerFit: 0.11, chancePerBug: 0.01, demoBonus: 0.6 })
     expect(s.experiments.landing).toMatchObject({ signupBase: 0.01, signupPerPain: 0.08 })
     expect(s.start).toEqual(loadScenario('kantino').start)
     expect(s.officeStages[1]).toMatchObject({

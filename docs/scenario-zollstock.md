@@ -45,13 +45,15 @@ Identical to Kantino (same founder, same costs, same price, same run length):
 | Willingness to pay per month | 375 to 720 | 900 to 2250 | 390 to 630 |
 | Must have features | `job_board`, `site_quotes`, `customer_texts` | `job_board`, `crew_dispatch`, `material_lists` | `job_board`, `recurring_jobs`, `photo_reports` |
 | Channel response: cold email | 0.008 to 0.025 | 0.02 to 0.045 | 0.015 to 0.035 |
-| Channel response: phone | 0.045 to 0.09 | 0.055 to 0.11 | 0.04 to 0.08 |
-| Channel response: in person | 0.07 to 0.14 | 0.04 to 0.09 | 0.06 to 0.13 |
+| Channel response: phone | 0.045 to 0.09 | 0.06 to 0.12 | 0.06 to 0.12 |
+| Channel response: in person | 0.06 to 0.12 | 0.05 to 0.10 | 0.08 to 0.15 |
 | Invoice lateness, mean days | 10 | 25 | 15 |
 | Share that never pays | 6% | 3% | 5% |
 | Share that pays only once chased | 25% | 25% | 25% |
 
 Willingness to pay mirrors Kantino's three ranges on purpose, so the price side starts balanced. The difference is in the channels: cold email is about a third as effective as in Kantino, in person is stronger.
+
+Tuning (part C, see `docs/decisions.md`): round 1 raised maintenance phone (was 0.04 to 0.08) and in person (was 0.06 to 0.13), because maintenance won 9.9% of its viable runs against 29.8% for small crews. Round 2 raised contractors in person (was 0.04 to 0.09). Round 3 lowered small crews in person (was 0.07 to 0.14) and raised contractors phone (was 0.055 to 0.11), because small crews pulled 16.6 points ahead once the careful bot used all its pre-sales.
 
 ### 3.2 Roles, assigned randomly per run
 
@@ -108,11 +110,11 @@ As Kantino, plus one new mechanic.
 
 | Rule | Zollstock | Kantino |
 |---|---|---|
-| Each paying customer, each week, may refer one new lead in its own segment | Chance 0.08 x fit, reduced by 0.01 per open bug, never below 0 | 0 (off) |
+| Each paying customer, each week, may refer one new lead in its own segment | Chance 0.11 x fit, reduced by 0.01 per open bug, never below 0 (was 0.08 before tuning round 2) | 0 (off) |
 | A referred lead's weekly chance to ask for a demo | x 1.6 | not applicable |
 | Shown to the player | The lead card says "Recommended by" and the customer's name. The weekly results name the referral | not applicable |
 
-As built: `sales.referral` in scenario.yaml holds `chancePerFit` (0.08), `chancePerBug` (0.01) and `demoBonus` (0.6, so x 1.6). Kantino sets all three to 0. Only customers paying since an earlier week refer, in the order they were won, once per week each; a chance of 0 never rolls.
+As built: `sales.referral` in scenario.yaml holds `chancePerFit` (0.11 after tuning, first 0.08), `chancePerBug` (0.01) and `demoBonus` (0.6, so x 1.6). Kantino sets all three to 0. Only customers paying since an earlier week refer, in the order they were won, once per week each; a chance of 0 never rolls.
 
 Engine requirements:
 - Both numbers are scenario values. With them at 0, behaviour and the Kantino bot report must be identical to before.
@@ -137,7 +139,17 @@ The office stage is scenario content. Kantino's second office is a coworking des
 
 Same logic as Kantino's desk: if small crews are the real market, the yard feeds you leads without outreach hours. If they are the polite trap, it fills the pipeline with friendly neighbours who never pay and pulls you towards the wrong market.
 
-Values are Kantino's final desk (375 per month, 0.9 walk-ins a week); this spec first said 225 per month, energy +1 and one lead every two weeks, written before Kantino's desk was tuned. Taking it against declining on the same 1000 seeds (`pnpm bots --desk`, `validate_then_build`), split by the real role of small crews: viable +7.7 points (z 3.5), mediocre -3.3 (z -2.3), trap -5.2 (z -3.1). It clearly helps when small crews are the real market and clearly hurts when they are the trap. The scene has its own drawing: a workbench, a pegboard of tools, a van outside the window.
+Values are Kantino's final desk (375 per month, 0.9 walk-ins a week); this spec first said 225 per month, energy +1 and one lead every two weeks, written before Kantino's desk was tuned. Taking it against declining on the same 1000 seeds (`pnpm bots --desk`, `validate_then_build`), split by the real role of small crews: viable +7.7 points (z 3.5), mediocre -3.3 (z -2.3), trap -5.2 (z -3.1). It clearly helps when small crews are the real market and clearly hurts when they are the trap. After tuning (part C, careful bot using all its pre-sales): viable +20.1 (z 7.0), mediocre -7.7 (z -2.9), trap -10.5 (z -3.8). The scene has its own drawing: a workbench, a pegboard of tools, a van outside the window.
+
+## 9c. Events changed in tuning
+
+| Event | Change | Why |
+|---|---|---|
+| `site_visit` | The lead lands only with 8 or fewer open leads; above that 2 h are lost. The text says so | Leads are worth more here than in Kantino, so a lead for sure made blind effort pay |
+| `returning_prospect` | The lead lands only with 12 or fewer open leads; above that 2 h are lost. The text says so | As above |
+| `cellar_signal` | Offline mode is a 10 h build that brings a bug (was 4 h, one bug fixed) | Spec tension "build effort for one loud customer"; the blind effort policy gained from it |
+| `master_project` | The four hours of interviews also cost 3 energy | Blind effort |
+| `receipts_pile` | Leaving the receipts risks a 750 EUR fine (Kantino 600) | Sorting the books was worth under 2 points |
 
 ## 10. Content
 
