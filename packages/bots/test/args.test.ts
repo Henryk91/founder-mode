@@ -13,14 +13,14 @@ describe('parseArgs', () => {
       desk: false,
       jobs: expect.any(Number),
       parts: ['main', 'paired', 'inbox'],
-      inboxRuns: 1000,
+      wideRuns: 1000,
     })
     expect(parseArgs(['--events']).events).toBe(true)
     expect(parseArgs(['--jobs', '4']).jobs).toBe(4)
     expect(parseArgs(['--events']).parts).toEqual(['main', 'paired', 'inbox', 'events'])
-    expect(parseArgs(['--parts', 'main,inbox', '--inbox-runs', '5000'])).toMatchObject({
+    expect(parseArgs(['--parts', 'main,inbox', '--wide-runs', '5000'])).toMatchObject({
       parts: ['main', 'inbox'],
-      inboxRuns: 5000,
+      wideRuns: 5000,
       events: false,
     })
     expect(() => parseArgs(['--parts', 'main,everything'])).toThrow()

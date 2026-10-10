@@ -8,7 +8,7 @@ import { deskComparison } from './desk'
 import { asSection, mergeReportFile } from './reportFile'
 import { botScenario } from './scenarios'
 import { runTasks, type Task, type TaskDone } from './pool'
-import { ABLATION_SPECS, INBOX_SPECS, strategyOf, type StrategySpec } from './specs'
+import { ABLATION_SPECS, INBOX_SPECS, READER_SPEC, strategyOf, type StrategySpec } from './specs'
 import { STRATEGIES } from './strategies'
 import { describeStrategy, type Strategy } from './strategy'
 
@@ -27,7 +27,7 @@ const strategies = args.only.length
 /**
  * The parts of the report, run and timed one after another: `main` the strategies the targets look
  * at (and the silent random bot), `paired` the leave-one-out runs, `inbox` the inbox policies of
- * target 11 (on `--inbox-runs` seeds, with a reading run on the same seeds), `events` every answer
+ * target 11 (both on `--wide-runs` seeds, with a reading run on the same seeds), `events` every answer
  * of every event.
  */
 type Part = 'main' | 'paired' | 'inbox' | 'events'
@@ -49,10 +49,13 @@ function planFor(scenario: Scenario): Planned[] {
   }
   // Leave-one-out runs of validate_then_build. Only for the report, so they stay out of the
   // strategy list that the targets look at.
+  // The reading run that targets 6, 11 and 13 are judged against, on the wide seeds; once.
+  const wideParts = (['paired', 'inbox'] as const).filter((p) => args.parts.includes(p))
+  if (full && wideParts[0]) out.push(plan(READER_SPEC, wideParts[0], args.wideRuns))
   if (full && args.parts.includes('paired'))
-    out.push(...ABLATION_SPECS.map((spec) => plan(spec, 'paired')))
+    out.push(...ABLATION_SPECS.map((spec) => plan(spec, 'paired', args.wideRuns)))
   if (full && args.parts.includes('inbox'))
-    out.push(...INBOX_SPECS.map((spec) => plan(spec, 'inbox', args.inboxRuns)))
+    out.push(...INBOX_SPECS.map((spec) => plan(spec, 'inbox', args.wideRuns)))
   // Every answer of every event, forced, on validate_then_build. Slow, so only on request.
   if (args.parts.includes('events'))
     for (const e of scenario.events)
@@ -104,8 +107,8 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
     runs: args.runs,
     seedPrefix: args.seedPrefix,
     strategies: runs((p) => p.part === 'main' && p.spec.kind === 'listed'),
-    ablations: runs((p) => p.part === 'paired'),
-    extras: runs((p) => (p.part === 'main' && p.spec.kind !== 'listed') || p.part === 'inbox'),
+    ablations: runs((p) => p.spec.kind === 'without'),
+    extras: runs((p) => (p.part === 'main' && p.spec.kind !== 'listed') || p.spec.kind === 'inbox'),
     ...(events ? { events } : {}),
     playtest: { segment, note },
   }
