@@ -14,6 +14,8 @@ type Props = {
   bigStep?: number
   min?: number
   max: number
+  /** Room for a short text such as "+10 h" in small figures, so the stepper keeps its width. */
+  hoursValue?: boolean
 }
 
 /** Tap only number input: no typing, no dragging. Every button is at least 44 px. */
@@ -27,13 +29,14 @@ export function Stepper({
   bigStep,
   min = 0,
   max,
+  hoursValue = false,
 }: Props) {
   const clamp = (n: number) => Math.min(max, Math.max(min, n))
   const set = (n: number) => () => onChange(clamp(n))
   const atMin = value <= min
   const atMax = value >= max
   return (
-    <div className={styles.stepper}>
+    <div className={`${styles.stepper} ${hoursValue ? styles.stepperTight : ''}`}>
       {bigStep !== undefined && (
         <button
           type="button"
@@ -55,7 +58,9 @@ export function Stepper({
       >
         <span className={styles.stepFace}>{step === 1 ? '−' : `-${formatStep(step)}`}</span>
       </button>
-      <span className={styles.stepValue}>{display ?? value}</span>
+      <span className={`${styles.stepValue} ${hoursValue ? styles.stepHours : ''}`}>
+        {display ?? value}
+      </span>
       <button
         type="button"
         className={styles.stepButton}

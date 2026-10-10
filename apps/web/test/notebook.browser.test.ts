@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { chromium, type Browser, type Page } from 'playwright-core'
 import { createServer, type ViteDevServer } from 'vite'
+import { loadScenario } from '@founder-mode/content'
 
 /**
  * The ruled notebook of the Plan tab, measured in a real browser: layout cannot be checked in the
@@ -93,7 +94,8 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
         const top0 = notebook.getBoundingClientRect().top
         const desk = !!document.querySelector('[data-layout="desk"]')
         const whole = (n: number) => Math.abs(n / line - Math.round(n / line)) < 0.02
-        const controls = 'button, [class*="stepper"], [class*="_bar_"], [class*="segment"], svg'
+        const controls =
+          'button, [class*="stepper"], [class*="_bar_"], [class*="segment"], [class*="_progress_"], svg'
 
         // Every block is whole lines tall and starts on a line.
         const off: string[] = []
@@ -111,14 +113,16 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
         }
 
         // Writing rests on its line: handwriting 37 px down (6 px above the rule), numbers 31.
+        // Writing that wraps (two line rows) is checked on its first line, inside its on-rule span.
         const baselines: { mono: boolean; at: number }[] = []
         for (const el of notebook.querySelectorAll(
-          '[class*="_title_"], [class*="_sectionTitle_"], [class*="_label_"], [class*="_summary_"], [class*="_hint_"], [class*="_sub_"], [class*="_mono_"]',
+          '[class*="_title_"], [class*="_sectionTitle_"], [class*="_label_"], [class*="_summary_"], [class*="_hint_"], [class*="_sub_"], [class*="_mono_"], [class*="_wrapped_"]',
         )) {
           if (!el.textContent?.trim()) continue
           const probe = document.createElement('span')
           probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline'
-          el.insertBefore(probe, el.firstChild)
+          const host = el.querySelector('[class*="_onRule_"]') ?? el
+          host.insertBefore(probe, host.firstChild)
           baselines.push({
             mono: /_mono_/.test(el.className),
             at: probe.getBoundingClientRect().bottom - el.getBoundingClientRect().top,
@@ -201,6 +205,84 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
         // Labels and controls sit together: no empty gulf between them.
         for (const gap of result.gaps) expect(gap).toBeLessThan(40)
       }
+      await page.close()
+    }, 60_000)
+  }
+
+  for (const [width, desk] of [
+    [375, false],
+    [1440, true],
+  ] as const) {
+    it(`shows every unshipped feature's full name and progress at ${width} px, nothing clipped`, async () => {
+      const page = await planTab(width, 1000)
+      await page
+        .getByRole('button', { name: /Build and fix/ })
+        .first()
+        .click()
+      const rows = await page.evaluate(() =>
+        [...document.querySelectorAll('[class*="_feature_"]')].map((row) => {
+          const name = row.querySelector('[class*="_wrapped_"]')!
+          const text = row.querySelector('[class*="_progressText_"]')!
+          const stepper = row.querySelector('[class*="_controls_"]')!
+          const notebook = document.querySelector('section[aria-label="My week"]')!
+          const clipped = (el: Element) => {
+            const r = el.getBoundingClientRect()
+            const n = notebook.getBoundingClientRect()
+            return (
+              el.scrollWidth > el.clientWidth + 1 ||
+              r.right > n.right + 1 ||
+              getComputedStyle(el).textOverflow === 'ellipsis'
+            )
+          }
+          const n = name.getBoundingClientRect()
+          const t = text.getBoundingClientRect()
+          return {
+            name: name.textContent,
+            progress: text.textContent,
+            nameClipped: clipped(name),
+            progressClipped: clipped(text),
+            progressBelowName: t.top >= n.bottom - 1,
+            sameLine: Math.abs(t.top - n.top) < 1,
+            stepperValue: stepper.querySelector('[class*="stepValue"]')?.textContent ?? null,
+          }
+        }),
+      )
+      const names = loadScenario('kantino').features.map((f) => f.name)
+      expect(rows.map((r) => r.name)).toEqual(names)
+      for (const r of rows) {
+        expect(r.nameClipped).toBe(false)
+        expect(r.progressClipped).toBe(false)
+        expect(r.progress).toMatch(/^0\/\d+ h$/)
+        expect(r.stepperValue).toBe('')
+        if (desk) expect(r.sameLine).toBe(true)
+        else expect(r.progressBelowName).toBe(true)
+      }
+      // Planned hours show on the stepper as "+5 h", never in the progress text.
+      await page
+        .locator('[class*="_feature_"]')
+        .first()
+        .getByRole('button', { name: 'More', exact: true })
+        .click()
+      await page
+        .locator('[class*="_feature_"]')
+        .first()
+        .getByRole('button', { name: 'More', exact: true })
+        .click()
+      const first = await page.evaluate(() => {
+        const row = document.querySelector('[class*="_feature_"]')!
+        const notebook = document.querySelector('section[aria-label="My week"]')!
+        const buttons = [...row.querySelectorAll('button')].map((b) => b.getBoundingClientRect())
+        return {
+          value: row.querySelector('[class*="stepValue"]')?.textContent,
+          progress: row.querySelector('[class*="_progressText_"]')?.textContent,
+          inside: buttons.every((b) => b.right <= notebook.getBoundingClientRect().right + 0.5),
+          tappable: buttons.every((b) => b.width >= 43.5 && b.height >= 43.5),
+        }
+      })
+      expect(first.value).toBe('+10 h')
+      expect(first.inside).toBe(true)
+      expect(first.tappable).toBe(true)
+      expect(first.progress).toMatch(/^0\//)
       await page.close()
     }, 60_000)
   }

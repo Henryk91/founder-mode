@@ -45,11 +45,57 @@ export function Market(props: {
   )
 }
 
-/** A line of writing with nothing beside it. */
-export function Writing(props: { children: React.ReactNode; warn?: boolean }) {
+/** A line of writing with nothing beside it. `wrap` lets it run onto further whole lines. */
+export function Writing(props: { children: React.ReactNode; warn?: boolean; wrap?: boolean }) {
+  if (props.wrap) {
+    return (
+      <div className={plan.line}>
+        <Wrapped warn={props.warn}>{props.children}</Wrapped>
+      </div>
+    )
+  }
   return (
     <div className={plan.line}>
       <span className={`${plan.label} ${props.warn ? plan.warnText : ''}`}>{props.children}</span>
+    </div>
+  )
+}
+
+/**
+ * Handwriting that wraps instead of being cut off. Every line of it is one ruled line, and the
+ * inner span sets each baseline on its rule.
+ */
+function Wrapped(props: { children: React.ReactNode; warn?: boolean | undefined }) {
+  return (
+    <div className={`${plan.wrapped} ${props.warn ? plan.warnText : ''}`}>
+      <span className={plan.onRule}>{props.children}</span>
+    </div>
+  )
+}
+
+/**
+ * A feature to build. On a phone it takes two lines: the full name (wrapping onto more lines if
+ * it must), then, indented, a thin progress bar, the hours built so far, and the stepper. On the
+ * desk all of it shares one line.
+ */
+export function FeatureRow(props: {
+  name: string
+  progressHours: number
+  buildHours: number
+  progressText: string
+  children: React.ReactNode
+}) {
+  const share = props.buildHours > 0 ? props.progressHours / props.buildHours : 0
+  return (
+    <div className={plan.feature}>
+      <Wrapped>{props.name}</Wrapped>
+      <div className={plan.featureLine}>
+        <span className={plan.progress} aria-hidden="true">
+          <span className={plan.progressFill} style={{ width: `${Math.round(share * 100)}%` }} />
+        </span>
+        <span className={`${plan.mono} ${plan.progressText}`}>{props.progressText}</span>
+        <div className={`${plan.controls} ${plan.right}`}>{props.children}</div>
+      </div>
     </div>
   )
 }

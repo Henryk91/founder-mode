@@ -187,6 +187,18 @@
   font-size: 15px;
 }
 
+/* The 44 px buttons' own margins already separate them from the value. */
+.stepperTight {
+  gap: 0;
+}
+
+/* Planned hours ("+10 h") in small figures, at a fixed width so the row never shifts. */
+.stepHours {
+  flex: 0 0 5ch;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 .meter {
   height: 14px;
   border-radius: 3px;
