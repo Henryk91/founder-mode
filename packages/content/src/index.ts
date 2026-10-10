@@ -1,5 +1,14 @@
 // Scenario data and zod schemas.
 
 export * from './schema'
-export { SCENARIO_IDS, eventsIn, loadScenario, parseScenario, scenarioSources } from './load'
-export type { ScenarioId, ScenarioSources } from './load'
+export {
+  SCENARIO_IDS,
+  areaEvents,
+  eventsIn,
+  isScenarioId,
+  loadScenario,
+  parseScenario,
+  scenarioCatalogue,
+  scenarioSources,
+} from './load'
+export type { ScenarioAbout, ScenarioId, ScenarioSources } from './load'

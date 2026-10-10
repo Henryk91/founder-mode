@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { loadScenario, type Scenario } from '@founder-mode/content'
+import {
+  loadScenario,
+  type Scenario,
+  type ScenarioAbout,
+  type ScenarioId,
+} from '@founder-mode/content'
 import { ENGINE_VERSION } from '@founder-mode/engine'
-import { memoryStorage } from '../src/storage'
+import { emptyProfile, memoryProfiles, memoryStorage } from '../src/storage'
 import { createGameStore } from '../src/store'
 
 const setup = (
@@ -228,5 +233,87 @@ describe('game store', () => {
       expect(json).not.toContain(`"${key}"`)
     }
     expect(Object.keys(get())).not.toContain('game')
+  })
+})
+
+describe('scenario picker', () => {
+  // A second scenario with its own id, so per scenario state can be told apart.
+  const other = 'kantino_two' as ScenarioId
+  const catalogue = (): ScenarioAbout[] => [
+    { id: 'kantino', name: 'Kantino', lines: ['a', 'b'] },
+    { id: other, name: 'Kantino Two', lines: ['c', 'd'] },
+  ]
+  const load = (id: ScenarioId): Scenario => ({ ...loadScenario('kantino'), id, name: String(id) })
+  const setupTwo = (storage = memoryStorage(), profiles = memoryProfiles()) => {
+    const store = createGameStore({
+      storage,
+      profiles,
+      makeSeed: () => 'pick',
+      scenario: load,
+      catalogue,
+    })
+    return { storage, profiles, store, get: () => store.getState() }
+  }
+  const finish = (get: () => ReturnType<ReturnType<typeof createGameStore>['getState']>) => {
+    while (get().introStep !== null) get().nextIntro()
+    while (get().view?.status === 'running') get().endWeek()
+  }
+
+  it('lists every scenario and starts on the first, or on the one picked last', () => {
+    const { get, profiles } = setupTwo()
+    expect(get().scenarios.map((x) => x.id)).toEqual(['kantino', other])
+    expect(get().scenarioId).toBe('kantino')
+    get().selectScenario(other)
+    expect(setupTwo(memoryStorage(), profiles).get().scenarioId).toBe(other)
+  })
+
+  it('starts the picked scenario, and keeps a save per scenario for Continue', () => {
+    const { get, storage } = setupTwo()
+    get().selectScenario(other)
+    get().startRun()
+    expect(get().view?.scenarioId).toBe(other)
+    get().endWeek()
+    get().leaveRun()
+    expect(storage.current(other)?.actions).toHaveLength(1)
+    expect(storage.current('kantino')).toBeNull()
+    get().selectScenario('kantino')
+    expect(get().hasSave).toBe(false)
+    get().selectScenario(other)
+    expect(get().hasSave).toBe(true)
+    get().continueRun()
+    expect(get().view).toMatchObject({ scenarioId: other, week: 2 })
+  })
+
+  it('cannot switch scenario while a run is open', () => {
+    const { get } = setupTwo()
+    get().startRun()
+    get().selectScenario(other)
+    expect(get().scenarioId).toBe('kantino')
+  })
+
+  it('keeps best runs and the last suggestion per scenario', () => {
+    const { get, profiles } = setupTwo()
+    get().selectScenario(other)
+    get().startRun()
+    finish(get)
+    const suggestion = get().suggestion
+    expect(suggestion).not.toBeNull()
+    get().leaveRun()
+    expect(get().runs).toHaveLength(1)
+    expect(profiles.load(other).lastSuggestion).toBe(suggestion)
+    expect(profiles.load('kantino')).toEqual(emptyProfile())
+    get().selectScenario('kantino')
+    expect(get().runs).toEqual([])
+    get().selectScenario(other)
+    expect(get().runs).toHaveLength(1)
+  })
+
+  it('plays Same market again in the scenario of the finished run', () => {
+    const { get } = setupTwo()
+    get().selectScenario(other)
+    get().startRun()
+    finish(get)
+    get().sameMarketAgain()
+    expect(get().view).toMatchObject({ scenarioId: other, seed: 'pick', week: 1 })
   })
 })

@@ -216,8 +216,8 @@ export function runwayWeeks(state: GameState): number | null {
 }
 
 /**
- * Profitable as defined in docs/scenario-kantino.md: money received from customers over a month
- * covers that month's company fixed costs plus founder living costs. Checks each of the last
+ * Profitable as defined in the scenario specs (docs/scenario-*.md): money received from
+ * customers over a month covers that month's company fixed costs plus founder living costs. Checks each of the last
  * `months` complete months, counted back from the latest week.
  */
 export function profitableForMonths(state: GameState, months: number): boolean {

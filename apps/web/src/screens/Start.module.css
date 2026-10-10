@@ -23,6 +23,66 @@
   line-height: 1;
 }
 
+/* The scenario picker: one paper option per scenario, the picked one with a heavier border. */
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pickTitle {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 44px;
+  padding: 8px 12px 10px;
+  border: 1.5px solid var(--control-line);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+}
+
+.option[aria-pressed='true'] {
+  border: 2px solid var(--ink);
+  box-shadow: 0 3px 0 var(--shadow);
+}
+
+.optionName {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.picked {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.optionLine {
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--ink-muted);
+}
+
 .note {
   margin: 0;
   font-family: var(--font-hand);

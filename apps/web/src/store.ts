@@ -1,4 +1,11 @@
-import { loadScenario, type Scenario } from '@founder-mode/content'
+import {
+  loadScenario,
+  SCENARIO_IDS,
+  scenarioCatalogue,
+  type Scenario,
+  type ScenarioAbout,
+  type ScenarioId,
+} from '@founder-mode/content'
 import {
   buildPostMortem,
   checkPlan,
@@ -83,11 +90,17 @@ export type UiState = {
   postMortem: PostMortem | null
   /** The one suggestion shown in the post-mortem, chosen once when the run ends. */
   suggestion: SuggestionId | null
-  /** Finished runs of this scenario on this device, for the best runs on the Start screen. */
+  /** Finished runs of the chosen scenario on this device, for the best runs on the Start screen. */
   runs: RunRecord[]
+  /** Every scenario that can be played, for the picker on the Start screen. */
+  scenarios: ScenarioAbout[]
+  /** The scenario picked on the Start screen: new runs, Continue and best runs are its own. */
+  scenarioId: ScenarioId
 }
 
 export type UiActions = {
+  /** Picks the scenario on the Start screen. Does nothing while a run is open. */
+  selectScenario(id: ScenarioId): void
   startRun(seed?: string): void
   /** A new run with a new seed, straight from the post-mortem. */
   newRun(): void
@@ -144,9 +157,12 @@ export type GameStore = UiState & UiActions
 export type StoreDeps = {
   storage: SaveStorage
   makeSeed: () => string
-  scenario?: () => Scenario
-  /** Best runs and the last suggestion, per scenario. In memory unless given. */
+  /** Loads a scenario by id. The built in scenarios unless given. */
+  scenario?: (id: ScenarioId) => Scenario
+  /** Best runs, the last suggestion and the last scenario picked. In memory unless given. */
   profiles?: ProfileStorage
+  /** Scenarios offered on the Start screen. The built in ones unless given. */
+  catalogue?: () => ScenarioAbout[]
 }
 
 /**
@@ -154,14 +170,16 @@ export type StoreDeps = {
  * subscribe to `view` and the plan draft. The autosave is written after every resolved week.
  */
 export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
-  const getScenario = deps.scenario ?? (() => loadScenario('kantino'))
+  const getScenario = deps.scenario ?? loadScenario
   let game: GameState | null = null
   const profiles = deps.profiles ?? memoryProfiles()
+  const scenarios = (deps.catalogue ?? scenarioCatalogue)()
+  const picked = profiles.lastScenario()
+  const firstId: ScenarioId =
+    scenarios.find((x) => x.id === picked)?.id ?? scenarios[0]?.id ?? SCENARIO_IDS[0]
   /** The game the post-mortem below belongs to, so it is built once per finished run. */
   let mortemOf: GameState | null = null
   let mortem: { postMortem: PostMortem; suggestion: SuggestionId } | null = null
-
-  const initialSave = deps.storage.load()
 
   const store = createStore<GameStore>((set, get) => {
     const refresh = (patch: Partial<UiState> = {}) => {
@@ -235,8 +253,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       refresh({ plan: change(get().plan) })
     }
 
-    const start = (seed: string, replay: boolean) => {
-      const state = createGame(getScenario(), seed)
+    const start = (seed: string, replay: boolean, scenarioId: ScenarioId = get().scenarioId) => {
+      const state = createGame(getScenario(scenarioId), seed)
+      profiles.setLastScenario(scenarioId)
       deps.storage.save(toSave(state))
       const profile = profiles.load(state.scenarioId)
       profiles.save(state.scenarioId, {
@@ -245,7 +264,11 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       })
       begin(state)
       // The intro belongs to a new run only; Continue goes straight to the game.
-      set({ hasSave: true, introStep: getView(state).guidance.intro.length > 0 ? 0 : null })
+      set({
+        scenarioId,
+        hasSave: true,
+        introStep: getView(state).guidance.intro.length > 0 ? 0 : null,
+      })
     }
 
     const begin = (state: GameState) => {
@@ -272,7 +295,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       issues: [],
       report: null,
       tab: 'plan',
-      hasSave: initialSave !== null,
+      hasSave: deps.storage.load(firstId) !== null,
       saveNotice: null,
       introStep: null,
       helpOpen: false,
@@ -284,8 +307,20 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       momentsSeen: 0,
       postMortem: null,
       suggestion: null,
-      runs: profiles.load(getScenario().id).runs,
+      runs: profiles.load(firstId).runs,
+      scenarios,
+      scenarioId: firstId,
 
+      selectScenario(id) {
+        if (game || !scenarios.some((x) => x.id === id)) return
+        profiles.setLastScenario(id)
+        set({
+          scenarioId: id,
+          hasSave: deps.storage.load(id) !== null,
+          runs: profiles.load(id).runs,
+          saveNotice: null,
+        })
+      },
       startRun(seed) {
         start(seed?.trim() || deps.makeSeed(), false)
       },
@@ -294,22 +329,23 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       },
       sameMarketAgain() {
         if (!game || game.status !== 'ended') return
-        start(game.seed, true)
+        start(game.seed, true, game.scenarioId as ScenarioId)
       },
       replaySeed(seed) {
         start(seed, true)
       },
       continueRun() {
-        const file = deps.storage.load()
+        const id = get().scenarioId
+        const file = deps.storage.load(id)
         if (!file) {
           set({ hasSave: false })
           return
         }
-        const scenario = getScenario()
+        const scenario = getScenario(id)
         const problem = saveProblem(scenario, file)
         if (problem) {
           // Plan section 4.14: warn and start fresh instead of replaying a different game.
-          deps.storage.clear()
+          deps.storage.clear(id)
           set({
             hasSave: false,
             saveNotice: problem === 'scenario_changed' ? 'scenario_changed' : 'incompatible',
@@ -319,7 +355,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         try {
           begin(replay(scenario, file))
         } catch {
-          deps.storage.clear()
+          deps.storage.clear(id)
           set({ hasSave: false, saveNotice: 'broken' })
         }
       },
@@ -327,7 +363,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       leaveRun() {
         // Finished runs are not worth continuing, running ones stay saved.
         if (game?.status === 'ended') {
-          deps.storage.clear()
+          deps.storage.clear(game.scenarioId)
           set({ hasSave: false })
           const profile = profiles.load(game.scenarioId)
           profiles.save(game.scenarioId, { ...profile, current: null })

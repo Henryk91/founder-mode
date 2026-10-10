@@ -95,19 +95,44 @@ describe('layouts', () => {
 
   it('draws both office stages, and names the people in the picture', () => {
     const store = run('scene')
-    for (const [stage, name] of [
-      ['kitchen_table', 'Kitchen table'],
-      ['coworking_desk', 'Coworking desk'],
-    ] as const) {
-      const page = renderToString(
+    const pages = (['kitchen_table', 'coworking_desk'] as const).map((stage) =>
+      renderToString(
         <StoreProvider value={store}>
           <Scene stage={stage} />
         </StoreProvider>,
-      )
-      expect(page).toContain(name)
+      ),
+    )
+    for (const page of pages) {
+      // The chip names where the company really works, as the scenario calls it.
+      expect(page).toContain('Kitchen table')
       expect(page).toContain('<svg')
       expect(page).toMatch(/You: rested, 0 h this week/)
     }
+    expect(pages[0]).not.toBe(pages[1])
+  })
+
+  it('names an office stage as its scenario does, and draws one without a picture at a table', () => {
+    const scenario = loadScenario('kantino')
+    scenario.officeStages[0] = { ...scenario.officeStages[0]!, id: 'garage', name: 'Garage' }
+    const store = createGameStore({
+      storage: memoryStorage(),
+      makeSeed: () => 'garage',
+      scenario: () => scenario,
+    })
+    store.getState().startRun()
+    while (store.getState().introStep !== null) store.getState().nextIntro()
+    const page = renderToString(
+      <StoreProvider value={store}>
+        <Scene />
+      </StoreProvider>,
+    )
+    const table = renderToString(
+      <StoreProvider value={store}>
+        <Scene stage="kitchen_table" />
+      </StoreProvider>,
+    )
+    expect(page).toContain('Garage')
+    expect(page).toBe(table)
   })
 })
 

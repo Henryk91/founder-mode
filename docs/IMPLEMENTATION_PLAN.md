@@ -44,9 +44,11 @@ These are defaults. Change them here before starting and Claude Code will follow
 
 ### Explicitly out of scope (do not build)
 
-Cofounders, investors, loans, term sheets, board, legal form choice, real tax rules, multiple scenarios, competitors that react, cloud saves, accounts, telemetry backend, LLM generated dialogue, animated scene, established stage UI, company branding, sound, PWA or store packaging.
+Cofounders, investors, loans, term sheets, board, legal form choice, real tax rules, competitors that react, cloud saves, accounts, telemetry backend, LLM generated dialogue, animated scene, established stage UI, company branding, sound, PWA or store packaging.
 
 Keep the architecture open for these, but write no code for them.
+
+Multiple scenarios were taken off this list before Phase 8 (`docs/decisions.md`, "Second scenario"): Kantino and Zollstock, picked on the Start screen.
 
 ---
 

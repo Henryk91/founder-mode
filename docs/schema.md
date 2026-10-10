@@ -445,7 +445,9 @@ zod schema `ScenarioSchema` in `packages/content/src/schema.ts`; `Scenario = z.i
 | `scenarios/<id>/messages/interview_quotes.yaml` | `interviewQuotes` |
 | `scenarios/<id>/messages/company_names.yaml` | `companyNames` |
 | `scenarios/<id>/messages/intro.yaml` | `intro` and `founderNotes` |
-| `scenarios/<id>/messages/events/<area>.yaml` | `events`, one file per event area, concatenated in `EVENT_AREAS` order |
+| `scenarios/<id>/messages/events/<area>.yaml` | `events`, one file per event area, concatenated in `EVENT_AREAS` order. An entry `- shared: <id>` places a shared event there |
+| `shared/events/<area>.yaml` | events every scenario gets; those a scenario does not place follow its own events of that area, in file order |
+| `scenarios/<id>/about.yaml` | not part of `Scenario`: `name` and exactly two `lines` for the Start screen, read by `scenarioCatalogue()` |
 
 ```ts
 type Range = { min: number; max: number }   // min <= max; IntRange requires integers
@@ -593,7 +595,7 @@ type UiState = {
 
 `repeatLastWeek()` takes the plan of the last `endWeek` in the action log and passes it through `repeatPlan(last, view)` (`apps/web/src/repeatPlan.ts`): regular work stays, one-off decisions (demos, follow ups, chasing, transfers, price, hiring steps) go, and shipped features, used batches and surplus bug fixing are cut back.
 
-Autosave: a `SaveFile` is written under one localStorage key when a run starts and after every resolved week. `continueRun` replays it; a save from another `engineVersion` (or one that fails to replay) is dropped with a notice. The draft plan is not saved. A finished run clears its save when the player leaves it.
+Autosave: a `SaveFile` is written under its scenario's localStorage key when a run starts and after every resolved week. `continueRun` replays it; a save from another `engineVersion` (or one that fails to replay) is dropped with a notice. The draft plan is not saved. A finished run clears its save when the player leaves it.
 
 ## Content: Event
 
@@ -726,3 +728,11 @@ type PostMortem = {
 - `ReportEntry` `{ kind: 'walk_in_leads', segmentId, count, place }`. `OddsKind` gained `walk_ins` (luck counts them like outreach leads).
 - `PostMortem.walkIns: { place, segmentId, leads, customers }[]`, per office and market.
 - Bots: `rankMarkets(scenario, view)` (exported from `validateThenBuild.ts`) is the reading bot's evidence ranking; it takes an office move with walk-ins only when that market ranks first.
+
+### Second scenario, part A: scenario independence (engine 0.10.0, no replay change)
+
+- Content: `ScenarioSources.sharedEvents: Record<EventArea, string>`. `areaEvents(area, own, shared)` merges one area (throws on an unknown or twice placed shared id, or an event in the wrong area's file). `SCENARIO_IDS` lists the built in scenarios in picker order; `isScenarioId(id)`. `scenarioCatalogue(): ScenarioAbout[]` with `ScenarioAbout = { id: ScenarioId; name: string; lines: string[] }`. The parsed Kantino scenario and its fingerprint are unchanged.
+- UI store: `UiState.scenarios: ScenarioAbout[]`, `UiState.scenarioId` (the picked scenario; `runs` and `hasSave` are its own), action `selectScenario(id)` (ignored while a run is open). `StoreDeps.scenario?: (id) => Scenario` (was `() => Scenario`), `StoreDeps.catalogue?: () => ScenarioAbout[]`. `startRun`, `newRun` and `replaySeed` start the picked scenario; `sameMarketAgain` the finished run's.
+- `SaveStorage` is per scenario: `load(scenarioId)`, `save(file)` (under `file.scenarioId`), `clear(scenarioId)`; browser key `founder-mode.save.v1.<scenarioId>`, with a save under the old key `founder-mode.save.v1` moved on first load. `memoryStorage().current(scenarioId?)`. `ProfileStorage` gained `lastScenario()` and `setLastScenario(id)` (browser key `founder-mode.scenario.v1`).
+- Scene: the drawing is chosen by `view.company.officeStage.id` (`kitchen_table`, `coworking_desk`, else the kitchen table); the chip shows `officeStage.name`. The labels `scene.kitchen_table` and `scene.coworking_desk` are gone.
+- Bots: `BotArgs.scenario: string | null`. `ReportInput.playtest?: { segment, note }`. `Strategy.describe?(scenario)` and `describeStrategy`. `readerEventIds(scenarioId)` replaces `READER_EVENT_IDS`. `BOT_SCENARIOS` (`packages/bots/src/scenarios.ts`) holds the playtest market, features and channel per scenario. `asSection` and `mergeReportFile` (`reportFile.ts`) write one `#` section per scenario.

@@ -1,0 +1,6 @@
+# Shown on the Start screen before a run exists: the name and exactly two short lines.
+# Not part of the game rules, so it does not change the scenario fingerprint of a save.
+name: Kantino
+lines:
+  - One shared lunch order for the whole office, instead of a group chat and a spreadsheet.
+  - Agencies, coworking spaces, doctors. Everyone is interested. Somebody might pay.

@@ -1,0 +1,302 @@
+# Inbox events shared by every scenario, sales area. Same format as a scenario's events
+# files. Nothing here may name a scenario's product, markets or features. A scenario places a
+# shared event in its own list with `- shared: <id>`; shared events it does not place come after
+# its own, in this order.
+events:
+  - id: discount_demand
+    area: sales
+    weight: 2
+    once: true
+    when: [customers.count >= 1, week >= 8]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says a competitor charges half as much. They have not named the competitor. They
+      would like a discount.
+    defaultChoice: hold
+    choices:
+      - id: free_month
+        label: Give them a month free
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -45000 }
+      - id: call
+        label: Call and explain the value
+        hours: 2
+        effects:
+          - { type: churnChance, delta: 0.05 }
+      - id: hold
+        label: Hold the price
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.05 }
+
+  - id: slow_lead
+    area: sales
+    weight: 3
+    once: true
+    when: [leads.open >= 2]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} says they will decide after the summer. It is currently February.
+    defaultChoice: wait
+    choices:
+      - id: call
+        label: Call them
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.2 }
+      - id: wait
+        label: Wait
+        hours: 0
+
+  - id: sales_coach
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Sales coach
+    text: >-
+      A sales coach offers a two hour crash course for 375 EUR. He uses the word synergy twice
+      in the pitch for the course.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Book the course
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -37500 }
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: chamber_breakfast
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Chamber of commerce
+    look: official
+    text: >-
+      The chamber of commerce invites you to a networking breakfast at half past seven. There
+      will be name badges, filter coffee and forty people selling insurance to each other. Worth
+      the alarm only if your pipeline needs filling.
+    defaultChoice: skip
+    choices:
+      - id: go
+        label: Set an alarm
+        hours: 3
+        effects:
+          - { type: newLeads, count: 1, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 2, when: [leads.open > 8] }
+          - { type: energy, delta: -3 }
+      - id: skip
+        label: Sleep in
+        hours: 0
+
+  - id: seven_questions
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} has replied to your first email with questions. Seven of them, numbered, with
+      sub-points.
+    defaultChoice: later
+    choices:
+      - id: answer
+        label: Answer all seven
+        hours: 2
+        effects:
+          - { type: touchLead }
+      - id: later
+        label: Answer later
+        hours: 0
+
+  - id: suspicious_price
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.open >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} says your price looks suspiciously low and asks what the catch is. There is no
+      catch, which turns out to be hard to prove.
+    defaultChoice: ignore
+    choices:
+      - id: explain
+        label: Call and explain
+        hours: 1
+        effects:
+          - { type: touchLead }
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: ignore
+        label: Let the price speak
+        hours: 0
+
+  - id: trial_extension
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 5]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} would like two more weeks to decide. Their decision maker is on a sailing holiday
+      and unreachable, by design.
+    defaultChoice: refuse
+    choices:
+      - id: extend
+        label: Agree and check in
+        hours: 1
+        effects:
+          - { type: touchLead }
+      - id: refuse
+        label: Say no
+        hours: 0
+
+  - id: referral_reward
+    area: sales
+    weight: 2
+    once: true
+    when: [customers.count >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} asks whether there is a reward for recommending you. Nobody has asked before, so
+      there is not, yet. They suggest a voucher for 150 EUR.
+    defaultChoice: thanks
+    choices:
+      - id: voucher
+        label: Send the voucher
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -15000 }
+          - { type: newLeads, count: 1, chance: 0.7 }
+      - id: thanks
+        label: Thank them warmly
+        hours: 0
+
+  - id: pilot_request
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} would buy, they say, after a free three month pilot. They have a history of three
+      month pilots, and a drawer full of tools nobody uses.
+    defaultChoice: decline
+    choices:
+      - id: agree
+        label: Agree to the pilot
+        hours: 1
+        effects:
+          - { type: touchLead }
+          - { type: lostHours, hours: 4 }
+      - id: counter
+        label: Offer a normal trial instead
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.6 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: ballpark_call
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.waitingForDemo >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} wants to skip the demo and talk money on the phone. They talk fast and say
+      "ballpark" a lot.
+    defaultChoice: demo
+    choices:
+      - id: call
+        label: Take the call
+        hours: 1
+        effects:
+          - { type: touchLead }
+      - id: demo
+        label: Stick to the demo
+        hours: 0
+
+  - id: business_park_flyers
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Business park
+    text: >-
+      The manager of a business park offers to put your flyer in 60 letterboxes, for a box of
+      good chocolates. Handy when the pipeline is thin. Pointless when you cannot call back the
+      leads you already have.
+    defaultChoice: skip
+    choices:
+      - id: flyers
+        label: Print the flyers
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -3000 }
+          - { type: newLeads, count: 1, when: [leads.open <= 8] }
+          - { type: newLeads, count: 1, chance: 0.5, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 3, when: [leads.open > 8] }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: frequent_emails
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} says your follow up emails feel "quite frequent". You have sent two. They would like
+      a break of unspecified length.
+    defaultChoice: back_off
+    choices:
+      - id: call
+        label: Call to smooth it over
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.3 }
+      - id: back_off
+        label: Give them space
+        hours: 0
+
+  - id: letterhead_quote
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.open >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} needs a formal quote on letterhead. You do not have letterhead. You have a logo you
+      made at two in the morning.
+    defaultChoice: pdf
+    choices:
+      - id: letterhead
+        label: Design proper letterhead
+        hours: 3
+        effects:
+          - { type: touchLead }
+      - id: pdf
+        label: Send a plain PDF
+        hours: 0
+        effects:
+          - { type: touchLead, chance: 0.5 }
