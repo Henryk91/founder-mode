@@ -37,6 +37,10 @@ button {
   touch-action: manipulation;
 }
 
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
