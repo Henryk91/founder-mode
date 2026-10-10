@@ -63,6 +63,8 @@ export type RunResult = {
   weeks: number
   /** Hidden truth, read by the report only: the segment with the viable role. */
   viableSegment: string
+  /** Hidden truth, read by the report only: every segment's role. */
+  roles: Record<string, string>
   peakMonthlyRevenueCents: number
   /** Money received from customers over the whole run. */
   revenueReceivedCents: number
@@ -258,6 +260,9 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     ending: state.ending ?? 'still_searching',
     weeks: state.week,
     viableSegment: viable?.[0] ?? '',
+    roles: Object.fromEntries(
+      Object.entries(state.hidden.segments).map(([id, h]) => [id, h.roleId]),
+    ),
     peakMonthlyRevenueCents: peak,
     revenueReceivedCents: state.ledger.reduce((t, l) => t + l.revenueCents, 0),
     peakCustomers,

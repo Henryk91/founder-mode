@@ -9,6 +9,8 @@ export type BotArgs = {
   events: boolean
   /** Run only this scenario; null runs every scenario. */
   scenario: string | null
+  /** Instead of the report, compare taking the office with walk-ins against declining it. */
+  desk: boolean
 }
 
 export function parseArgs(argv: readonly string[]): BotArgs {
@@ -19,6 +21,7 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     only: [],
     events: false,
     scenario: null,
+    desk: false,
   }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
@@ -37,6 +40,8 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     } else if (flag === '--scenario' && value !== undefined) {
       args.scenario = value
       i++
+    } else if (flag === '--desk') {
+      args.desk = true
     } else if (flag === '--events') {
       args.events = true
     } else if (flag === '--only' && value !== undefined) {

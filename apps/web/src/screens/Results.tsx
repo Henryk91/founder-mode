@@ -24,6 +24,12 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'bugs_fixed':
       return count('results.entry.bugs_fixed', stage, entry.count)
+    case 'referral_lead':
+      return label('results.entry.referral_lead', stage, {
+        from: entry.from,
+        name: entry.name,
+        segment: segment(entry.segmentId),
+      })
     case 'walk_in_leads':
       return count('results.entry.walk_in_leads', stage, entry.count, {
         segment: segment(entry.segmentId),
@@ -126,6 +132,7 @@ function place(entry: ReportEntry): [Group, number] {
     case 'new_leads':
       return ['sales', entry.count > 0 ? 4 : 2]
     case 'walk_in_leads':
+    case 'referral_lead':
       return ['sales', 4]
     case 'feature_shipped':
       return ['product', 7]

@@ -1,6 +1,6 @@
 import type { LeadStage, LeadView, PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type LabelKey } from '../labels'
+import { count, label, type LabelKey, type UiStage } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 import board from './Pipeline.module.css'
@@ -16,6 +16,22 @@ const GROUPS = [
 const TILTS = [-1, 1, -1.2, 0.8, 1.5, -0.8]
 
 /** The corkboard: columns by stage, a pinned card per lead. Demos and follow ups book here. */
+/** How a lead was found, as its card says it. */
+export function leadSource(l: LeadView, stage: UiStage): string {
+  switch (l.source) {
+    case 'walk_in':
+      return label('pipeline.walkedIn', stage, { place: (l.walkInFrom ?? '').toLowerCase() })
+    case 'referral':
+      return label('pipeline.source.referral', stage, { name: l.referredBy ?? '' })
+    case 'outreach':
+      return l.channel
+        ? label(`pipeline.source.${l.channel}`, stage)
+        : label('pipeline.source.team', stage)
+    default:
+      return label(`pipeline.source.${l.source}`, stage)
+  }
+}
+
 export function Pipeline() {
   const view = useGame((s) => s.view)
   const demos = useGame((s) => s.plan.demos)
@@ -43,9 +59,7 @@ export function Pipeline() {
       >
         <span className={board.name}>{l.name}</span>
         <span className={board.note}>
-          {segmentName(l.segmentId)} ·{' '}
-          {l.walkInFrom !== null &&
-            `${label('pipeline.walkedIn', stage, { place: l.walkInFrom.toLowerCase() })} · `}
+          {segmentName(l.segmentId)} · {`${leadSource(l, stage)} · `}
           {label('pipeline.lastContact', stage, { week: l.lastContactWeek })}
           {l.stage === 'trial' && ` · ${count('pipeline.trialWeeks', stage, l.weeksInStage)}`}
           {l.stage === 'committed' && ` · ${count('pipeline.depositWeeks', stage, l.weeksInStage)}`}

@@ -1,6 +1,7 @@
 import { loadScenario, SCENARIO_IDS } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
 import { buildReport, evaluateTargets, marketSpread, median, winRateByMarket } from '../src/report'
+import { officeMove } from '../src/desk'
 import { runGame } from '../src/simulate'
 import { STRATEGIES } from '../src/strategies'
 import { randomNoInbox } from '../src/strategies/random'
@@ -34,13 +35,16 @@ describe('bots', () => {
   })
 
   it.each(STRATEGIES.map((s) => [s.id, s] as const))(
-    '%s plays complete runs with valid plans only',
+    '%s plays complete runs with valid plans only, in every scenario',
     (_id, strategy) => {
-      for (let i = 0; i < 5; i++) {
-        const r = runGame(scenario, strategy, `test-${i}`)
-        expect(['bankrupt', 'burnout', 'still_searching', 'sustainable']).toContain(r.ending)
-        expect(r.weeks).toBeGreaterThan(0)
-        expect(r.weeks).toBeLessThanOrEqual(scenario.maxWeeks)
+      for (const id of SCENARIO_IDS) {
+        const s = loadScenario(id)
+        for (let i = 0; i < 5; i++) {
+          const r = runGame(s, strategy, `test-${i}`)
+          expect(['bankrupt', 'burnout', 'still_searching', 'sustainable']).toContain(r.ending)
+          expect(r.weeks).toBeGreaterThan(0)
+          expect(r.weeks).toBeLessThanOrEqual(s.maxWeeks)
+        }
       }
     },
   )
@@ -338,9 +342,10 @@ describe('bots', () => {
   })
 })
 
-describe('the coworking desk', () => {
+describe.each(SCENARIO_IDS)('the %s office with walk-ins', (id) => {
   it('is taken by the reading bot only when its own evidence ranks the walk-in market first', () => {
-    const scenario = loadScenario('kantino')
+    const scenario = loadScenario(id)
+    const office = officeMove(scenario)!
     const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
     let taken = 0
     let declined = 0
@@ -351,7 +356,7 @@ describe('the coworking desk', () => {
       while (state.status === 'running' && state.company.officeStage === 'kitchen_table') {
         const view = getView(state)
         const offer = view.inbox.find(
-          (m) => m.eventId === 'coworking_desk' && m.answeredChoiceId === null,
+          (m) => m.eventId === office.eventId && m.answeredChoiceId === null,
         )
         const answers = player.respond?.(view) ?? []
         if (offer) {
@@ -359,7 +364,7 @@ describe('the coworking desk', () => {
           const move = answers.some((a) => a.messageId === offer.id && a.choiceId === 'move')
           if (move) taken++
           else declined++
-          expect(move).toBe(first === 'coworking')
+          expect(move).toBe(first === office.segmentId)
           break
         }
         for (const a of answers) state = respond(state, a.messageId, a.choiceId)

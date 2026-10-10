@@ -10,12 +10,14 @@ describe('parseArgs', () => {
       only: [],
       events: false,
       scenario: null,
+      desk: false,
     })
     expect(parseArgs(['--events']).events).toBe(true)
   })
 
   it('reads the scenario to run', () => {
     expect(parseArgs(['--scenario', 'kantino']).scenario).toBe('kantino')
+    expect(parseArgs(['--desk']).desk).toBe(true)
   })
 
   it('reads the output path and a strategy filter', () => {

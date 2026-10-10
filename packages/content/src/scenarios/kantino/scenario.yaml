@@ -105,6 +105,11 @@ sales:
     perMisfit: 0.2
     perBug: 0.01
     cap: 0.6
+  # Referrals are off in Kantino: office managers do not recommend lunch tools to each other.
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
 
 team:
   searchHours: 6

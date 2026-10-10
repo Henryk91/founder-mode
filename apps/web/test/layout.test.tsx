@@ -93,9 +93,9 @@ describe('layouts', () => {
     expect(html(store, 'desk')).toContain('data-stage="scrappy"')
   })
 
-  it('draws both office stages, and names the people in the picture', () => {
+  it('draws every office stage, and names the people in the picture', () => {
     const store = run('scene')
-    const pages = (['kitchen_table', 'coworking_desk'] as const).map((stage) =>
+    const pages = (['kitchen_table', 'coworking_desk', 'trades_yard'] as const).map((stage) =>
       renderToString(
         <StoreProvider value={store}>
           <Scene stage={stage} />
@@ -108,7 +108,7 @@ describe('layouts', () => {
       expect(page).toContain('<svg')
       expect(page).toMatch(/You: rested, 0 h this week/)
     }
-    expect(pages[0]).not.toBe(pages[1])
+    expect(new Set(pages).size).toBe(3)
   })
 
   it('names an office stage as its scenario does, and draws one without a picture at a table', () => {

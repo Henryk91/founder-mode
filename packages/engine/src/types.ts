@@ -147,8 +147,12 @@ export type ProductState = {
 /** `committed`: paid a deposit in a pre-sale, waiting for the product. */
 export type LeadStage = 'lead' | 'demo' | 'trial' | 'committed' | 'paying' | 'lost'
 
-/** How a lead was found: outreach, a landing page sign up, an inbox message, or the salesperson. */
-export type LeadSource = 'outreach' | 'landing' | 'inbox' | 'team' | 'presale' | 'walk_in'
+/**
+ * How a lead was found: outreach, a landing page sign up, an inbox message, the salesperson, a
+ * pre-sale, walking in at the office, or a paying customer's recommendation.
+ */
+export type LeadSource =
+  'outreach' | 'landing' | 'inbox' | 'team' | 'presale' | 'walk_in' | 'referral'
 
 /** Observable facts only. */
 export type Lead = {
@@ -161,6 +165,8 @@ export type Lead = {
   walkInFrom?: string
   /** The outreach channel that found the lead, for outreach by the founder or the salesperson. */
   channel?: ChannelId
+  /** For referrals: the id of the customer who recommended the company. */
+  referredBy?: string
   stageSinceWeek: number
   lastContactWeek: number
   /** Week in which the lead stopped answering, or null. Silent leads cannot progress. */
@@ -419,7 +425,15 @@ export type OddsEvent = {
 }
 
 export type OddsKind =
-  'leads' | 'lead_demo' | 'demo' | 'trial' | 'churn' | 'never_pays' | 'message' | 'walk_ins'
+  | 'leads'
+  | 'lead_demo'
+  | 'demo'
+  | 'trial'
+  | 'churn'
+  | 'never_pays'
+  | 'message'
+  | 'walk_ins'
+  | 'referrals'
 
 /**
  * Money moving between the founder and the company.
@@ -644,6 +658,10 @@ export type LeadView = {
   source: LeadSource
   /** For walk-ins: the name of the office stage they walked in at, else null. */
   walkInFrom: string | null
+  /** For outreach by the founder or the salesperson: the channel that found the lead, else null. */
+  channel: ChannelId | null
+  /** For referrals: the name of the customer who recommended the company, else null. */
+  referredBy: string | null
 }
 
 export type CustomerView = {
@@ -815,6 +833,8 @@ export type ReportEntry =
   | { kind: 'lead_update'; change: LeadChange; leadId: string; name: string; segmentId: SegmentId }
   /** Leads that walked in at the office (`place` is the office stage's name). */
   | { kind: 'walk_in_leads'; segmentId: SegmentId; count: number; place: string }
+  /** A paying customer (`from`) recommended the company to a new lead (`name`). */
+  | { kind: 'referral_lead'; segmentId: SegmentId; leadId: string; name: string; from: string }
   | { kind: 'customer_churned'; customerId: string; name: string; segmentId: SegmentId }
 
 // ---------------------------------------------------------------------------
@@ -1034,6 +1054,13 @@ export type PostMortem = {
   }
   /** Leads that walked in at an office, and the customers they became, per office and market. */
   walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]
+  /**
+   * Every lead and the customers it became, by how it was found: outreach per channel
+   * (`outreach:<channel>`), the salesperson per channel (`team:<channel>`), or the source itself
+   * (`landing`, `presale`, `inbox`, `walk_in`, `referral`). Most customers first; only sources
+   * that found a lead.
+   */
+  sources: { key: string; leads: number; customers: number }[]
   luck: {
     /** At most four, most important first. */
     items: LuckItem[]

@@ -177,6 +177,11 @@ export function getView(state: GameState): PlayerView {
         l.walkInFrom === undefined
           ? null
           : (scenario.officeStages.find((o) => o.id === l.walkInFrom)?.name ?? l.walkInFrom),
+      channel: l.channel ?? null,
+      referredBy:
+        l.referredBy === undefined
+          ? null
+          : (state.customers.find((c) => c.id === l.referredBy)?.name ?? null),
     })),
     customers: activeCustomers(state).map((c) => ({
       id: c.id,

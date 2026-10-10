@@ -5,7 +5,7 @@ import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
 import { applyFounderWeek, hoursByActivity } from './systems/founder'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
-import { applyChurn, applySales } from './systems/sales'
+import { applyChurn, applyReferrals, applySales } from './systems/sales'
 import { applyTeam, teamOutput } from './systems/team'
 import { checkEnding } from './systems/endings'
 import { checkMilestones } from './systems/milestones'
@@ -89,6 +89,9 @@ export function endWeek(
   const walkIns = applyWalkIns(state, rng)
   state = walkIns.state
   entries.push(...walkIns.entries)
+  const referrals = applyReferrals(state, rng)
+  state = referrals.state
+  entries.push(...referrals.entries)
 
   // 7. Team: letting go, offers, searches, starts
   const staff = applyTeam(state, plan, rng)

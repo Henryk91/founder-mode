@@ -1,0 +1,6 @@
+# Shown on the Start screen before a run exists: the name and exactly two short lines.
+# Not part of the game rules, so it does not change the scenario fingerprint of a save.
+name: Zollstock
+lines:
+  - Job plans, quotes and customer updates for trade businesses that run on paper and phone calls.
+  - Electricians, builders, caretakers. They trust people, not adverts, and they do not read email.

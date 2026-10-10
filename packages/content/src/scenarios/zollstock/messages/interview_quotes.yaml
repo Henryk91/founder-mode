@@ -1,0 +1,174 @@
+# segment -> interview bucket -> quotes. At least 10 per bucket. Within a run a quote is not
+# repeated until every quote of its bucket has been heard. People who work with their hands and
+# have little patience for software.
+
+small_crews:
+  not_a_problem:
+    - My husband does the calendar. He has never double booked anyone. Software would only upset him.
+    - I have a wall calendar and a pencil. Thirty years, no complaints.
+    - We are four people. If I want to know where someone is, I shout.
+    - The customers find me, I find the time. It has always worked.
+    - Quotes take me ten minutes on the back of an envelope. The envelope has never crashed.
+    - My crew starts at seven at the yard. By five past, everyone knows the day.
+    - I tried an app once. It wanted a password with a symbol in it. That was the end of that.
+    - People wait for a good electrician. They do not wait for a fast one.
+    - I write everything in my little black book. It fits in my overalls. Your laptop does not.
+    - Honestly, the hard part is finding apprentices, not planning jobs.
+  mild:
+    - Sometimes two jobs end up on the same morning. We sort it out.
+    - Now and then a customer is surprised we turned up. Mostly in a good way.
+    - I lose a quote every few months. I write it again. It is annoying, not tragic.
+    - My partner says the calendar is a crime scene. She is exaggerating, mostly.
+    - The phone rings during jobs a lot. You learn to answer with a pipe wrench in one hand.
+    - We drive back to the yard more than we should. It is good for the van's mileage, at least.
+    - Planning takes me Sunday evening. I would rather watch the football, but it gets done.
+    - Customers want to know when we are coming. I tell them roughly. Roughly is usually fine.
+    - Once I sent the wrong lad to the wrong flat. He fixed their tap anyway. They paid.
+    - It is a bit chaotic in spring, when everyone remembers their heating at once.
+  noticeable:
+    - I write quotes at the kitchen table after ten at night. Not ideal.
+    - Half my evenings go on phoning customers to say we will be late. They are not happy, and neither am I.
+    - My notebook is the whole company. If I lose it, I lose the company.
+    - I quote on Thursday, the customer forgets by Monday, and someone cheaper calls them on Tuesday.
+    - The lads ring me every morning to ask where they are going. Every single morning.
+    - We double booked twice last month. Both customers took a day off work for us.
+    - I spend more time on the phone than on ladders. I did not become a painter for the phone.
+    - The quotes are fine. Finding them again is the problem.
+    - Customers want photos, updates, times. I have three hands and a phone with a cracked screen.
+    - My wife types my handwritten quotes on Sundays. She has started charging me for it.
+  painful:
+    - I write quotes in the van with the heater on. Then I lose them in the van.
+    - Last month a crew drove to the wrong address. Twice.
+    - I lost a bathroom job worth eight thousand because my quote arrived a week after the other one.
+    - Every evening is paperwork. My kids think I am a secretary who sometimes smells of paint.
+    - Customers ring all day asking when we are coming. I cannot work and answer at the same time.
+    - We wasted three mornings last month driving to jobs that had been moved. Three.
+    - I am the only one who knows where everyone is. When I am ill, the firm stops.
+    - A customer cancelled because nobody told her we were delayed. She was right to.
+    - I quote on site with a pencil, then again at home properly, then again when they ask for changes.
+    - My apprentice spent a day waiting outside a house where nobody was home. I paid him for it.
+  urgent:
+    - I am losing jobs because I answer too slowly. Tell me what it costs.
+    - If you can make the quotes go out the same day, I will sign today.
+    - I have twelve jobs waiting for quotes and no evenings left. When can I start?
+    - Two customers left me this month for firms that text them when the van is coming. Send it.
+    - My back is fine, my hands are fine, my head is full of appointments. Fix my head.
+    - I need this before the spring rush, or I am hiring someone just to answer the phone.
+    - Show me it working on my phone, in my van, and I will pay you on the spot.
+    - I have a waiting list and I keep losing it. Literally, the paper.
+    - Every week I lose at least one job to slow paperwork. That is real money. What does yours cost?
+    - My husband says either the paperwork goes or he does. Help me keep the husband.
+
+contractors:
+  not_a_problem:
+    - We have a site manager for each job. They handle it, and they do not want an app.
+    - Our scheduling works. It is called Brigitte, and she has been here twenty years.
+    - We plan in the site hut on Monday morning. Coffee, whiteboard, done.
+    - The crews know their sites for months at a time. There is not much to plan.
+    - We bought planning software in 2015. It is still in the box, and the firm is still standing.
+    - Our problems are concrete prices, not calendars.
+    - Every crew has a foreman with a phone. That is our system, and it works.
+    - I have run this firm for twenty years with a diary and a temper. Both still work.
+    - Materials come when the merchant says. No app changes that.
+    - Planning is not where we lose money. Rain is.
+  mild:
+    - Monday mornings are a bit loud, I suppose.
+    - Sometimes two crews want the same digger. Someone wins, someone sulks.
+    - Material orders go wrong now and then. The merchant is good about it.
+    - The whiteboard gets crowded in summer. We buy a bigger whiteboard.
+    - Now and then a van turns up without the right ladder. It happens.
+    - My site managers ring each other a lot. It is how they like it.
+    - We lose a bit of time to paperwork. Every firm does.
+    - Our planning is fine until someone is ill. Then it is fine with shouting.
+    - The office and the sites disagree sometimes. The sites are usually right.
+    - It would be nice to see everything on one screen. Nice, not necessary.
+  noticeable:
+    - Monday mornings I phone eleven people to tell them where to drive. By the eleventh, the first has gone somewhere else.
+    - Every week a crew waits half a day for materials that went to another site.
+    - My foremen spend Friday afternoons on timesheets instead of building things.
+    - I have four crews, five vans and one whiteboard. The whiteboard is losing.
+    - We order materials three times for one job because nobody wrote down the first order.
+    - Changing one job moves five others. I do that in my head, at night.
+    - The office calls the site, the site calls the merchant, the merchant calls the office. Nobody knows anything.
+    - I lose a morning a week just finding out where my people are.
+    - The big jobs are fine. The small ones in between eat us alive.
+    - My site manager keeps the real plan in her head. When she is on holiday, we guess.
+  painful:
+    - Two crews turned up at the same roof last week. One of them had the wrong tiles.
+    - We paid a crew for a full day standing around because the scaffolding was booked for the wrong week.
+    - Material for one job ended up on three sites. I paid the driver three times.
+    - Our planning lives on a whiteboard that the cleaner wiped on Friday. We are still rebuilding it.
+    - A client fined us for a delay that was really a mix up between two of my own crews.
+    - I spend Sunday nights moving magnets around a board so Monday does not collapse.
+    - Every change from a client means twenty phone calls. They change things every day.
+    - I lost a tender because we could not show the client a proper schedule. We had one, on a napkin.
+    - My foremen phone me forty times a day. I counted once. Then I stopped counting.
+    - We over ordered timber by a lorry load last month. The yard is now partly a forest.
+  urgent:
+    - Two crews turned up at the same roof last week. One of them had the wrong tiles. Send me a price today.
+    - I need every crew, every van and every delivery on one screen by the spring. What does it cost?
+    - We start three big jobs in March. If this works by then, I will pay for the year in advance.
+    - I am about to hire a full time planner. Convince me I do not need to.
+    - Every week of this mess costs me more than your software does in a year. When can you start?
+    - My best site manager says she quits if Monday mornings stay like this. Help me keep her.
+    - Show me material lists per job and I will put all five crews on it next week.
+    - We are losing money on every small job because of planning. I need this now, not after summer.
+    - If it can tell me where my vans are going tomorrow, I will sign this afternoon.
+    - The client wants a weekly schedule from us by contract. We cannot produce one. Can you?
+
+maintenance:
+  not_a_problem:
+    - The buildings do not move. Neither does our plan. It is the same every month.
+    - Our caretakers know their buildings better than the landlords do.
+    - We use a spreadsheet. It has been the same spreadsheet since 2011, and it is fine.
+    - The landlords ring us when something breaks. We go. That is the job.
+    - Reports? The landlords never read them. We stopped writing them years ago and nobody noticed.
+    - Each of my people has their own round. There is nothing to plan.
+    - We have done this for thirty years with paper. The paper is filed. The filing works.
+    - Our biggest problem is getting a key for the boiler room, not software.
+    - Honestly, our landlords would rather have a phone call than an app.
+    - The checklists are laminated. Laminated things do not need updates.
+  mild:
+    - The landlords want photos. We send photos. Sometimes of the right building.
+    - Now and then someone forgets a building for a month. The tenants remind us.
+    - Our checklists are a bit out of date. The buildings are too.
+    - Sometimes a report goes to the wrong landlord. They are mostly polite about it.
+    - The spreadsheet is getting long. We added a second tab.
+    - Every few months a landlord asks for proof we were there. We find it, eventually.
+    - Planning the gutters in autumn is a bit of a scramble. It always has been.
+    - My caretakers write reports by hand. Their handwriting varies in quality.
+    - The paperwork takes a day a month. I would not mind getting it back.
+    - Now and then two of us turn up for the same broken door. We fix it twice as fast.
+  noticeable:
+    - Forty buildings, each with its own checklist on paper. The checklists are never where the building is.
+    - The landlords want monthly reports with photos. I spend three evenings a month gluing photos into documents.
+    - We miss a recurring job every month. Never the same one, which is almost impressive.
+    - I keep the whole schedule in my head. My head is getting older.
+    - A landlord asked for proof we cleaned the stairwell in March. I am still looking.
+    - The new contracts all want photo reports. We send emails with forty attachments.
+    - Every month I copy last month's plan by hand and change the dates.
+    - My people ring me from the building to ask what is on the list. The list is in my office.
+    - Half my day is answering landlords who want to know if we went. We went.
+    - When someone is ill, nobody knows their round. We find out from the tenants.
+  painful:
+    - Forty buildings, each with its own paper checklist. The paper lives in the van, and the van lives in the rain.
+    - We lost a contract because we could not prove we had serviced the heating. We had.
+    - Every landlord wants reports in a different format. I have become a desktop publisher.
+    - A boiler service slipped through for three months. The landlord found out before I did.
+    - My caretakers take photos on their own phones. Getting them off those phones is a part time job.
+    - I spend the first week of every month writing reports instead of fixing buildings.
+    - We forgot a fire door inspection. Nothing happened, but my hands shook for a week.
+    - The landlords ring me every day for updates. I would pay to never be rung again.
+    - Our recurring jobs live in three calendars and a whiteboard. They agree on nothing.
+    - A tenant complained that nobody came for a month. The job was on a sticky note. The sticky note fell off.
+  urgent:
+    - I am about to lose my biggest landlord over missing reports. Tell me what it costs.
+    - If you can make the photo reports write themselves, I will sign today.
+    - Three new contracts start next month, all with monthly reports. I cannot do it on paper.
+    - The landlords are switching to firms with apps. I need one before they all switch.
+    - Show me recurring jobs that plan themselves and I will put every building on it this week.
+    - I missed two inspections this quarter. One more and the insurer drops us. When can you start?
+    - My office manager has given notice because of the reports. I need this before she leaves.
+    - Every month I lose two days to reports. I would pay you one of those days, gladly.
+    - A landlord gave me a deadline for proper reports. It is the end of the month. Help.
+    - If it works on a phone in a cellar with gloves on, I will pay a year up front.

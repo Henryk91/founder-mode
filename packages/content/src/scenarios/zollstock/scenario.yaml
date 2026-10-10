@@ -1,0 +1,258 @@
+# Zollstock: job planning, quotes and customer updates for trade businesses.
+# Source: docs/scenario-zollstock.md. Starts from Kantino's tuned values; anything not stated in
+# the spec is Kantino's. Money in cents, time in hours.
+
+id: zollstock
+name: Zollstock
+maxWeeks: 60
+
+start:
+  cashCents: 900000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  priceCentsPerMonth: 45000
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: tools_hosting
+      name: Tools and hosting
+      monthlyCents: 18000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 22500
+
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -2
+    perRestHour: 1.5
+    weekWithinBase: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+
+finance:
+  weeksPerMonth: 4
+  # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
+  # late by a segment dependent number of days, only once chased, or never.
+  invoiceDueDays: 14
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    buckets:
+      - { id: not_a_problem, name: Not a problem, below: 0.2 }
+      - { id: mild, name: Mild, below: 0.4 }
+      - { id: noticeable, name: Noticeable, below: 0.6 }
+      - { id: painful, name: Painful, below: 0.9 }
+      - { id: urgent, name: Urgent }
+  landing:
+    hours: 8
+    budgetsCents: [30000, 75000]
+    centsPerVisitor: 225
+    weeks: 1
+    # Tradespeople rarely click ads: about half as informative as in Kantino.
+    signupBase: 0.01
+    signupPerPain: 0.08
+    signupsPerLead: 5
+  presale:
+    hoursPerBatch: 6
+    batchSize: 5
+    weeks: 1
+    commitRate: 0.25
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+
+product:
+  startQuality: 70
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.4
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  priceSlope: 2
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    cap: 0.6
+  # Happy customers recommend you to the trade next door (spec section 6).
+  referral:
+    chancePerFit: 0.08
+    chancePerBug: 0.01
+    demoBonus: 0.6
+
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - { id: weak, name: Weak, below: 0.7 }
+    - { id: solid, name: Solid, below: 0.95 }
+    - { id: strong, name: Strong, below: 1.1 }
+    - { id: outstanding, name: Outstanding }
+  roles:
+    # A junior or part time hire: cheaper, fewer hours.
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+
+# The inbox: each week up to maxPerWeek events are drawn by weight from the eligible ones.
+inbox:
+  maxPerWeek: 3
+  drawChance: 0.4
+  openWeeks: 2
+  guaranteeBelowOpen: 2
+  cooldownWeeks: 8
+  openLimit: 4
+
+# Shuffled across the segments at game creation, one role each.
+roles:
+  - id: viable
+    pain: { min: 0.6, max: 0.85 }
+    politeness: { min: 0.05, max: 0.15 }
+  - id: mediocre
+    pain: { min: 0.35, max: 0.55 }
+    politeness: { min: 0.25, max: 0.4 }
+  - id: trap
+    pain: { min: 0.1, max: 0.25 }
+    politeness: { min: 0.5, max: 0.65 }
+
+segments:
+  - id: small_crews
+    name: Small crews
+    description: Electricians, plumbers and painters with 3 to 8 people
+    size: { min: 900, max: 2200 }
+    wtpCents: { min: 37500, max: 72000 }
+    mustHave: [job_board, site_quotes, customer_texts]
+    channelResponse:
+      cold_email: { min: 0.008, max: 0.025 }
+      phone: { min: 0.045, max: 0.09 }
+      in_person: { min: 0.07, max: 0.14 }
+    paymentDelayDaysMean: 10
+    neverPaysShare: 0.06
+    waitsForChaseShare: 0.25
+
+  - id: contractors
+    name: Contractors
+    description: Building firms with several crews and 10 to 40 people
+    size: { min: 120, max: 320 }
+    wtpCents: { min: 90000, max: 225000 }
+    mustHave: [job_board, crew_dispatch, material_lists]
+    channelResponse:
+      cold_email: { min: 0.02, max: 0.045 }
+      phone: { min: 0.055, max: 0.11 }
+      in_person: { min: 0.04, max: 0.09 }
+    paymentDelayDaysMean: 25
+    neverPaysShare: 0.03
+    waitsForChaseShare: 0.25
+
+  - id: maintenance
+    name: Property maintenance
+    description: Firms that look after buildings for landlords, on recurring contracts
+    size: { min: 350, max: 1000 }
+    wtpCents: { min: 39000, max: 63000 }
+    mustHave: [job_board, recurring_jobs, photo_reports]
+    channelResponse:
+      cold_email: { min: 0.015, max: 0.035 }
+      phone: { min: 0.04, max: 0.08 }
+      in_person: { min: 0.06, max: 0.13 }
+    paymentDelayDaysMean: 15
+    neverPaysShare: 0.05
+    waitsForChaseShare: 0.25
+
+# Milestones (plan section 4.12). Revenue milestones cover the run's own monthly costs at the time:
+# company costs, or company costs plus living costs. onBar: false keeps one off the progress bar.
+milestones:
+  - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+  - { id: first_deposit, name: First deposit, kind: count, of: deposits, target: 1 }
+  - { id: first_customer, name: First paying customer, kind: count, of: customers, target: 1 }
+  - id: covers_company_costs
+    name: 'Monthly revenue covers company costs'
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: 'Monthly revenue covers all costs, you included'
+    kind: revenue
+    covers: all
+  - { id: first_hire, name: First hire, kind: count, of: hires, target: 1, onBar: false }
+  - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+  - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+
+# Office stages (spec section 9). The first is the start; the yard desk comes through the inbox
+# event `trades_yard`. Starts from Kantino's final desk: 375 EUR a month, 0.9 walk-ins a week.
+officeStages:
+  - { id: kitchen_table, name: Kitchen table, monthlyCents: 0 }
+  - id: trades_yard
+    name: Desk in a trades yard
+    monthlyCents: 37500
+    walkIns: { segment: small_crews, leadsPerWeek: 0.9 }
+
+# The UI turns organised at the first of these milestones (plan section 4.12): the first hire, or
+# revenue covering all costs. Company costs alone came with the first customer; see decisions.
+organisedAt: [first_hire, covers_all_costs]

@@ -313,8 +313,12 @@ export function applySales(
     if (lead.stage !== 'lead' || lead.silentSinceWeek !== null) continue
     const pain = state.hidden.segments[lead.segmentId]?.pain ?? 0
     const boost = followedUp.has(lead.id) ? cfg.followUpDemoBoost : 0
+    // A recommended lead is keener (scenario `sales.referral.demoBonus`).
+    const referred = lead.source === 'referral' ? 1 + cfg.referral.demoBonus : 1
     const p =
-      (cfg.leadToDemoBase * (cfg.leadToDemoOffset + cfg.leadToDemoPerPain * pain) + boost) * tired
+      (cfg.leadToDemoBase * (cfg.leadToDemoOffset + cfg.leadToDemoPerPain * pain) + boost) *
+      referred *
+      tired
     const agrees = rng.chance(p)
     odds.roll('lead_demo', lead.segmentId, p, agrees)
     if (agrees) {
@@ -411,6 +415,47 @@ export function applySales(
     entries,
     refundsCents,
   }
+}
+
+/** Chance that a paying customer of a market recommends the company this week. */
+export function referralChance(state: GameState, segmentId: SegmentId): number {
+  const r = state.scenario.sales.referral
+  return Math.max(0, r.chancePerFit * fit(state, segmentId) - r.chancePerBug * state.product.bugs)
+}
+
+/**
+ * Referrals (after outreach and walk-ins): every customer paying since an earlier week may
+ * recommend the company to one new lead in its own market, customers in the order they were won.
+ * A customer whose chance is 0 never rolls, so a scenario without referrals draws nothing.
+ */
+export function applyReferrals(
+  state: GameState,
+  rng: Rng,
+): { state: GameState; entries: ReportEntry[] } {
+  const entries: ReportEntry[] = []
+  const odds = new OddsTally(state.week)
+  let out = state
+  for (const c of state.customers) {
+    if (c.churnedWeek !== null || c.sinceWeek >= state.week) continue
+    const p = referralChance(state, c.segmentId)
+    if (p <= 0) continue
+    const hit = rng.chance(p)
+    odds.roll('referrals', c.segmentId, p, hit)
+    if (!hit) continue
+    out = addLeads(out, c.segmentId, 1, rng, 'referral')
+    const lead = out.leads[out.leads.length - 1]!
+    out = { ...out, leads: [...out.leads.slice(0, -1), { ...lead, referredBy: c.id }] }
+    entries.push({
+      kind: 'referral_lead',
+      segmentId: c.segmentId,
+      leadId: lead.id,
+      name: lead.name,
+      from: c.name,
+    })
+  }
+  const events = odds.events()
+  if (events.length === 0) return { state: out, entries }
+  return { state: { ...out, eventLog: [...out.eventLog, ...events] }, entries }
 }
 
 /** Chance that an active customer leaves at a month end. */

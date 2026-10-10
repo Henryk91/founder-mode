@@ -23,6 +23,16 @@ export const BOT_SCENARIOS: Record<ScenarioId, BotScenario> = {
       note: 'The hand playtest found 9 customers and 2,700 EUR monthly revenue by week {week}.',
     },
   },
+  // Nobody has played Zollstock by hand yet. The bot replays Kantino's playtest on the market
+  // that plays coworking's part: the highest willingness to pay and the longest build.
+  zollstock: {
+    playtest: {
+      segment: 'contractors',
+      features: ['job_board', 'crew_dispatch', 'material_lists'],
+      channel: 'in_person',
+      note: null,
+    },
+  },
 }
 
 export function botScenario(id: string): BotScenario {
