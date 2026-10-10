@@ -1,16 +1,24 @@
 /*
  * "My week": the notebook planner of docs/design/design.md.
  *
- * One unit rules everything: --line. Every block in here is a whole number of lines tall and starts
- * on a line, every text line is one line high, and the rules are drawn once, by the notebook. Text
- * sits on them: --rule-y is where in a line the rule runs, just below the text baseline.
+ * One unit rules everything: --line, 44 px, the height of a touch target. Every row is exactly one
+ * line and every control is centred on it. Writing on the paper is handwriting, set so its
+ * baseline sits the same small gap above the rule everywhere. Text inside buttons stays sans
+ * serif, numbers stay mono. No paragraphs: explanations open off the paper, from the "?".
  */
 .notebook {
-  --line: 28px;
-  --rule-y: 21px;
+  --line: 44px;
+  /* Baseline of every line of writing, measured from the top of its line, and the rule below it. */
+  --base: 31px;
+  --rule-y: 34px;
+  --fs-title: 28px;
+  --fs-section: 26px;
+  --fs-label: 22px;
+  --fs-mono: 13px;
+  container: planner / inline-size;
   display: flex;
   flex-direction: column;
-  padding: var(--line) 14px var(--line) 24px;
+  padding: 0 14px 0 24px;
   border-left: 10px solid var(--ink);
   border-radius: 4px;
   background: repeating-linear-gradient(
@@ -23,70 +31,124 @@
   line-height: var(--line);
 }
 
-.notebook p {
-  margin: 0;
+/* A button is as tall as a line, no taller: its own text stays one normal line. */
+.notebook button {
+  line-height: 1.2;
 }
 
-/* Title and hours on two lines, the "?" centred across both. */
-.head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: var(--line) var(--line);
-  column-gap: 10px;
+:global([data-layout='desk']) .notebook {
+  --fs-title: 34px;
+  --fs-section: 28px;
+  --fs-label: 24px;
+  --label-w: 220px;
 }
 
-.head > button {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-}
-
-.notebookTitle {
-  grid-column: 1;
+/*
+ * Writing: a block exactly one line high whose line box is set so the baseline lands on --base.
+ * Caveat rises 0.667 em above its centre line, Plex Mono 0.75 em.
+ */
+.title,
+.sectionTitle,
+.label,
+.summary,
+.sub {
+  height: var(--line);
   margin: 0;
   font-family: var(--font-hand);
+  font-size: var(--fs);
+  line-height: calc(2 * var(--base) - 0.667 * var(--fs));
+  /* Handwriting leans past its last letter; without room the clip would cut it. */
+  padding-right: 0.3em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title {
+  --fs: var(--fs-title);
   font-weight: 700;
-  font-size: 28px;
-  /* Handwriting sits lower in its line than the sans text; a shorter line lifts it onto the rule. */
-  line-height: 20px;
 }
 
-.notebookHours {
-  grid-column: 1;
-  font-size: 13px;
+.sectionTitle {
+  --fs: var(--fs-section);
+  font-weight: 700;
+}
+
+.label,
+.summary,
+.sub {
+  --fs: var(--fs-label);
+  font-weight: 500;
+}
+
+.sub {
+  font-weight: 700;
+}
+
+.summary {
+  color: var(--ink-muted);
+}
+
+.warnText {
+  color: var(--warn);
+}
+
+.mono {
+  height: var(--line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
   font-weight: 600;
+  line-height: calc(2 * var(--base) - 0.75 * var(--fs-mono));
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* Text on one line and a control centred across two lines. */
-.row2 {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: var(--line) var(--line);
-  column-gap: 10px;
-}
-
-.row2 > :first-child {
-  grid-column: 1;
-  grid-row: 1;
+/* A small figure inside a label, such as hours built so far. It never changes the line. */
+.note {
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
   font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 0;
+  color: var(--ink-muted);
 }
 
-.row2 > button {
-  grid-column: 2;
-  grid-row: 1 / span 2;
+/* One line: things side by side, controls centred. */
+.line {
+  display: flex;
+  align-items: flex-start;
+  column-gap: 8px;
+  min-height: var(--line);
+}
+
+.line > button,
+.line > .group,
+.controls {
   align-self: center;
 }
 
-.repeat {
-  height: calc(2 * var(--line));
+.wrap {
+  flex-wrap: wrap;
+}
+
+.group {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  column-gap: 8px;
+  height: var(--line);
+}
+
+.group > button {
+  align-self: center;
+}
+
+.group > .title,
+.group > .label,
+.toggleTitle > .sectionTitle {
+  flex: 0 0 auto;
+}
+
+.right {
+  margin-left: auto;
 }
 
 .barRow {
@@ -98,18 +160,16 @@
 .bar {
   flex: 1;
   display: flex;
-  height: 20px;
+  height: 24px;
   border: 2px solid var(--ink);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   background: var(--paper);
 }
 
 .barEmpty {
-  height: 12px;
   border-style: dashed;
   border-width: 1px;
-  border-radius: 6px;
   background: transparent;
 }
 
@@ -119,14 +179,14 @@
 
 /*
  * A segment too narrow for its label shows no label: the label wraps onto a second line, which
- * the fixed height clips away. The legend under the bar lists every activity anyway.
+ * the fixed height clips away.
  */
 .segment {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
   min-width: 0;
-  height: 16px;
+  height: 20px;
   color: var(--paper);
   font-size: 12px;
   font-weight: 700;
@@ -136,12 +196,12 @@
 .segment::before {
   content: '';
   flex: 0 0 8px;
-  height: 16px;
+  height: 20px;
 }
 
 .segmentText {
   flex: none;
-  line-height: 16px;
+  line-height: 20px;
   white-space: nowrap;
 }
 
@@ -172,11 +232,6 @@
   color: var(--ink);
 }
 
-.legend {
-  font-size: 13px;
-  color: var(--ink-muted);
-}
-
 /* Section rows run the full width of the page, so the separator and the rules reach its edges. */
 .sections {
   display: flex;
@@ -193,55 +248,60 @@
   background-image: linear-gradient(var(--ink-muted), var(--ink-muted));
   background-repeat: no-repeat;
   background-size: 100% 1px;
-  background-position: 0 calc(100% - (var(--line) - var(--rule-y)));
+  background-position: 0 calc(100% - (var(--line) - var(--rule-y) - 1px));
 }
 
-.sectionHead {
-  display: grid;
-  grid-template-columns: 24px minmax(0, 1fr) auto;
-  grid-template-rows: var(--line) var(--line);
-  width: 100%;
-  height: calc(2 * var(--line));
+.sectionLine {
+  display: flex;
+  align-items: flex-start;
+  height: var(--line);
+  padding: 0 14px 0 24px;
+}
+
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  height: var(--line);
   margin: 0;
-  padding: 0 14px 0 38px;
+  padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
   text-align: left;
 }
 
-.chevron {
-  grid-column: 1;
-  grid-row: 1;
-  font-size: 14px;
+.sectionLine > button:not(.toggle) {
+  align-self: center;
+  margin-left: 6px;
 }
 
-.sectionTitle {
-  grid-column: 2;
-  grid-row: 1;
+.toggleTitle {
+  flex: 0 0 auto;
+}
+
+.toggleRest {
+  flex: 1 1 0;
+  column-gap: 12px;
+  padding-left: 12px !important;
+}
+
+.toggleRest > .summary {
+  flex: 1 1 0;
   min-width: 0;
-  font-family: var(--font-hand);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 22px;
 }
 
-.summary {
-  grid-column: 2;
-  grid-row: 2;
-  font-size: 13px;
-  color: var(--ink-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.chevron {
+  width: 22px;
+  flex: 0 0 22px;
+  font-size: 14px;
+  line-height: calc(2 * var(--base) - 0.75 * 14px);
 }
 
 .sectionHours {
-  grid-column: 3;
-  grid-row: 1;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: 13px;
+  flex: 0 0 auto;
+  min-width: 4ch;
+  text-align: right;
 }
 
 .body {
@@ -250,103 +310,70 @@
   padding: 0 14px 0 38px;
 }
 
-/* Two lines of explanation at most; the rest is behind the "?". */
-.hintRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 10px;
-  height: calc(2 * var(--line));
-}
-
-.hintRow > p {
-  align-self: start;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  font-size: 13px;
-  color: var(--ink-muted);
-}
-
-.hintRow > button {
-  align-self: center;
-}
-
-/*
- * A market, feature or lead: its name (and a note) on the left, controls to the right when they
- * fit, below when they do not. Every control sits in a two line unit, centred.
- */
-.item {
+/* A label with its controls directly beside it. On a phone the controls go to the right edge. */
+.row {
   display: flex;
-  flex-wrap: wrap;
   align-items: flex-start;
-  column-gap: 10px;
+  column-gap: 8px;
+  min-height: var(--line);
 }
 
-.name {
+.row > .label {
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 100%;
-}
-
-.name > * {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.name > :first-child {
-  font-weight: 600;
-}
-
-.nameRow {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  max-width: calc(100% - 8px);
 }
 
 .controls {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  height: calc(2 * var(--line));
+  column-gap: 8px;
+  min-height: var(--line);
   margin-left: auto;
 }
 
-/* A control unit of its own: a full width button, or a grid of choices, any number of rows. */
-.full {
-  flex: 1 1 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-  grid-auto-rows: calc(2 * var(--line));
+/* Options on one line, only as wide as their text; more than fit wrap onto further lines. */
+.choices {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0 4px;
+  column-gap: 8px;
+  min-width: 0;
 }
 
-.full > button {
-  min-width: 0;
-  height: 44px;
-  padding: 0 6px;
-  font-size: 13px;
+.choices > button {
+  flex: 0 0 auto;
+  max-width: 100%;
+  height: var(--line);
+  padding: 0 14px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.wide {
-  grid-template-columns: minmax(0, 1fr);
+.spacer {
+  display: none;
 }
 
-.channels {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+:global([data-layout='desk']) .row > .label,
+:global([data-layout='desk']) .row > .spacer {
+  flex: 0 0 var(--label-w);
+  max-width: none;
 }
 
-.text {
+:global([data-layout='desk']) .spacer {
   display: block;
 }
 
-.sub {
-  font-weight: 700;
+:global([data-layout='desk']) .controls {
+  margin-left: 0;
+}
+
+:global([data-layout='desk']) .choices {
+  margin-left: 0;
+}
+
+:global([data-layout='desk']) .sectionHours {
+  flex: 0 0 8ch;
 }

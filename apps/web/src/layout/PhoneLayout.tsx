@@ -17,7 +17,7 @@ export function PhoneLayout(props: { main: React.ReactNode | null }) {
   const Screen = SCREENS[tab]
 
   return (
-    <div className={styles.phone} data-stage={stage}>
+    <div className={styles.phone} data-stage={stage} data-layout="phone">
       <TopBar wide={false} />
       {props.main === null && tab === 'inbox' && <SceneStrip />}
       <main className={styles.phoneContent}>

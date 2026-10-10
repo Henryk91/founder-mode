@@ -38,6 +38,7 @@ export function Stepper({
         <button
           type="button"
           className={styles.stepButton}
+          data-big=""
           disabled={atMin}
           aria-label={label('stepper.minusBig', stage)}
           onClick={set(value - bigStep)}
@@ -68,6 +69,7 @@ export function Stepper({
         <button
           type="button"
           className={styles.stepButton}
+          data-big=""
           disabled={atMax}
           aria-label={label('stepper.plusBig', stage)}
           onClick={set(value + bigStep)}

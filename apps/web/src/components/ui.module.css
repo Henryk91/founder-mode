@@ -137,6 +137,13 @@
   cursor: not-allowed;
 }
 
+/* On a narrow planner the big steps step aside, so a market and its stepper share one line. */
+@container planner (max-width: 440px) {
+  .stepButton[data-big] {
+    display: none;
+  }
+}
+
 .stepValue {
   flex: 1 1 auto;
   min-width: 0;

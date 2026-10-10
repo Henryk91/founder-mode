@@ -143,12 +143,12 @@ describe('plan tab', () => {
   it('starts with every section closed, each with a one line summary', () => {
     const store = run('closed')
     const page = text(store)
-    expect(page).toContain('Talk to people nothing planned')
-    expect(page).not.toContain('Costs 2 h each')
+    expect(page).toContain('Talk to people ? none')
+    expect(page).not.toContain('Each interview costs 2 h')
     store.getState().setInterviews('coworking', 3)
-    expect(text(store)).toContain('Talk to people 3 interviews 6 h')
+    expect(text(store)).toContain('Talk to people ? 3 interviews 6 h')
     store.getState().setOutreach('medical', 'phone', 5)
-    expect(text(store)).toContain('Find customers Phone to Medical practices 5 h')
+    expect(text(store)).toContain('Find customers ? Phone to Medical practices 5 h')
   })
 
   it('opens several sections at once, and closes them all for the next week', () => {
@@ -156,11 +156,11 @@ describe('plan tab', () => {
     store.getState().toggleSection('talk')
     store.getState().toggleSection('rest')
     const page = text(store)
-    expect(page).toContain('Each interview costs 2 h')
-    expect(page).toContain('Restores energy this week.')
+    expect(page).toContain('Medical practices')
+    expect(page).toContain('Rest hours')
     expect(html(store)).toMatch(/aria-expanded="true"[\s\S]*aria-expanded="true"/)
     store.getState().toggleSection('talk')
-    expect(text(store)).not.toContain('Each interview costs 2 h')
+    expect(text(store)).not.toContain('Small offices')
     week(store)
     expect(store.getState().openSections).toEqual([])
   })
@@ -170,8 +170,8 @@ describe('plan tab', () => {
     store.getState().setInterviews('coworking', 2)
     store.getState().setBuild('basic_ordering', 10)
     store.getState().setOutreach('coworking', 'phone', 6)
-    const page = text(store)
-    expect(page).toContain('Sales 6 h · Building 10 h · Learning 4 h')
+    // The bar carries no text of its own, so it says in words what it shows.
+    expect(html(store)).toMatch(/aria-label="Sales 6 h, Building 10 h, Learning 4 h, free \d+ h"/)
   })
 
   it('repeats last week on one tap, without one-off decisions', () => {
@@ -389,7 +389,11 @@ describe('static checks', () => {
           (v) => Number(v[1]) * 28,
         ),
       )
-      return Math.max(0, ...px, ...lines)
+      // The notebook's own unit, var(--line), is 44 px.
+      const unit = rules.flatMap((r) =>
+        [...r[1]!.matchAll(/(?<![-\w])height:\s*var\(--line\)/g)].map(() => 44),
+      )
+      return Math.max(0, ...px, ...lines, ...unit)
     }
     let buttons = 0
     for (const { file, code } of sources()) {
@@ -483,6 +487,6 @@ describe('planner header hours', () => {
 
     store.setState({ view: getView(game), plan, plannedHours: check.plannedHours })
     store.getState().setTab('plan')
-    expect(text(store)).toContain(`${expected} h planned of a normal 50 h week`)
+    expect(text(store)).toContain(`${expected} h planned of 50`)
   })
 })

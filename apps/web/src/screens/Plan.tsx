@@ -1,12 +1,12 @@
 import type { ChannelId, PlanIssue, PlayerView, WeekPlan } from '@founder-mode/engine'
 import { ExplainButton } from '../components/Explain'
 import { FounderNote } from '../components/FounderNote'
-import { Choices, Controls, HintRow, Item, Line, Name } from '../components/Ruled'
+import { Choices, Row, SubHeading, Writing } from '../components/Ruled'
 import { Stepper } from '../components/Stepper'
 import { TeamPlan } from '../components/TeamPlan'
 import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type UiStage } from '../labels'
-import type { PlanSection as SectionId } from '../store'
+import type { ExplainKey, PlanSection as SectionId } from '../store'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 import plan from './Plan.module.css'
@@ -108,13 +108,13 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
   }
 }
 
-const SECTIONS: { id: SectionId; title: LabelKey }[] = [
-  { id: 'talk', title: 'plan.section.talk' },
-  { id: 'test', title: 'plan.section.test' },
-  { id: 'build', title: 'plan.section.build' },
-  { id: 'sell', title: 'plan.section.sell' },
-  { id: 'demos', title: 'plan.section.demos' },
-  { id: 'team', title: 'plan.section.team' },
+const SECTIONS: { id: SectionId; title: LabelKey; explain?: ExplainKey }[] = [
+  { id: 'talk', title: 'plan.section.talk', explain: 'talk' },
+  { id: 'test', title: 'plan.section.test', explain: 'test' },
+  { id: 'build', title: 'plan.section.build', explain: 'build' },
+  { id: 'sell', title: 'plan.section.sell', explain: 'sell' },
+  { id: 'demos', title: 'plan.section.demos', explain: 'demos' },
+  { id: 'team', title: 'plan.section.team', explain: 'hiring' },
   { id: 'rest', title: 'plan.section.rest' },
 ]
 
@@ -146,30 +146,43 @@ export function Plan() {
   return (
     <>
       <FounderNote />
+      <PlanNotes />
       <PlanHeader>
         <div className={plan.sections}>
-          {SECTIONS.map(({ id, title }) => {
+          {SECTIONS.map(({ id, title, explain }) => {
             const isOpen = open.includes(id)
             if (id === 'demos' && !hasDemosSection(view, draft)) return null
             const Body = bodies[id]
+            const toggleSection = () => toggle(id)
             return (
               <section key={id} className={plan.section} aria-label={label(title, stage)}>
-                <button
-                  type="button"
-                  className={plan.sectionHead}
-                  aria-expanded={isOpen}
-                  aria-controls={`plan-${id}`}
-                  onClick={() => toggle(id)}
-                >
-                  <span className={plan.chevron} aria-hidden="true">
-                    {isOpen ? '▾' : '▸'}
-                  </span>
-                  <span className={plan.sectionTitle}>{label(title, stage)}</span>
-                  <span className={plan.summary}>{lines[id]}</span>
-                  <span className={plan.sectionHours}>
-                    {hours[id] > 0 ? label('unit.hours', stage, { n: hours[id] }) : ''}
-                  </span>
-                </button>
+                <div className={plan.sectionLine}>
+                  <button
+                    type="button"
+                    className={`${plan.toggle} ${plan.toggleTitle}`}
+                    aria-expanded={isOpen}
+                    aria-controls={`plan-${id}`}
+                    onClick={toggleSection}
+                  >
+                    <span className={plan.chevron} aria-hidden="true">
+                      {isOpen ? '▾' : '▸'}
+                    </span>
+                    <span className={plan.sectionTitle}>{label(title, stage)}</span>
+                  </button>
+                  {explain && <ExplainButton term={explain} />}
+                  <button
+                    type="button"
+                    className={`${plan.toggle} ${plan.toggleRest}`}
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    onClick={toggleSection}
+                  >
+                    <span className={plan.summary}>{lines[id]}</span>
+                    <span className={`${plan.mono} ${plan.sectionHours}`}>
+                      {hours[id] > 0 ? label('unit.hours', stage, { n: hours[id] }) : ''}
+                    </span>
+                  </button>
+                </div>
                 {isOpen && (
                   <div id={`plan-${id}`} className={plan.body}>
                     <Body />
@@ -201,12 +214,73 @@ const ACTIVITIES: { id: Activity; key: LabelKey }[] = [
   { id: 'rest', key: 'plan.act.rest' },
 ]
 
-/** "My week": hours and energy, the hours bar by activity, and the sections inside the notebook. */
+/** Warnings, problems and what is already booked: sentences belong off the ruled paper. */
+function PlanNotes() {
+  const view = useGame((s) => s.view)
+  const issues = useGame((s) => s.issues)
+  if (!view) return null
+  const stage = view.company.uiStage
+  const { founder } = view
+  const notes: { key: string; text: string; alert?: boolean; warn?: boolean }[] = []
+  if (founder.energy === 0) {
+    notes.push({
+      key: 'zero',
+      warn: true,
+      text: count('plan.energyZero', stage, founder.burnoutWeeks - founder.weeksAtZeroEnergy),
+    })
+  } else if (founder.energy < founder.lowEnergyBelow) {
+    notes.push({
+      key: 'low',
+      warn: true,
+      text: label('plan.energyLow', stage, { low: founder.lowEnergyBelow }),
+    })
+  }
+  if (view.forcedHours > 0) {
+    notes.push({
+      key: 'forced',
+      warn: true,
+      text: label('plan.forced', stage, {
+        hours: label('unit.hours', stage, { n: view.forcedHours }),
+      }),
+    })
+  }
+  if (view.committedHours > 0) {
+    notes.push({
+      key: 'committed',
+      text: label('plan.committed', stage, {
+        hours: label('unit.hours', stage, { n: view.committedHours }),
+      }),
+    })
+  }
+  for (const issue of issues) {
+    notes.push({
+      key: issue.code + JSON.stringify(issue),
+      warn: true,
+      alert: true,
+      text: issueText(issue.code, stage, founder.maxHoursPerWeek),
+    })
+  }
+  if (notes.length === 0) return null
+  return (
+    <section className={styles.card}>
+      {notes.map((n) => (
+        <p
+          key={n.key}
+          className={n.warn ? styles.warn : styles.hint}
+          {...(n.alert ? { role: 'alert' } : {})}
+        >
+          {n.text}
+        </p>
+      ))}
+    </section>
+  )
+}
+
+/** "My week": title, hours, the hours bar, energy, and the sections inside the notebook. */
 function PlanHeader({ children }: { children?: React.ReactNode }) {
   const view = useGame((s) => s.view)
   const draft = useGame((s) => s.plan)
   const planned = useGame((s) => s.plannedHours)
-  const issues = useGame((s) => s.issues)
   const canRepeat = useGame((s) => s.canRepeat)
   const repeat = useGame((s) => s.repeatLastWeek)
   if (!view) return null
@@ -217,20 +291,29 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
   const byActivity = hoursByActivity(view, draft, planned)
   const scale = Math.max(base, planned)
   const unplanned = Math.max(0, base - planned)
+  const lowEnergy = founder.energy < founder.lowEnergyBelow
+  // The hours bar has no text of its own, so it says in words what it shows.
+  const barText = [
+    ...ACTIVITIES.filter(({ id }) => byActivity[id] > 0).map(
+      ({ id, key }) => `${label(key, stage)} ${label('unit.hours', stage, { n: byActivity[id] })}`,
+    ),
+    `${label('plan.act.free', stage)} ${label('unit.hours', stage, { n: Math.max(0, founder.maxHoursPerWeek - planned) })}`,
+  ].join(', ')
 
   return (
     <section className={plan.notebook} aria-label={label('plan.title', stage)}>
-      <div className={plan.head}>
-        <h2 className={plan.notebookTitle}>{label('plan.title', stage)}</h2>
-        <span className={plan.notebookHours}>
+      <div className={plan.line}>
+        <h2 className={plan.title}>{label('plan.title', stage)}</h2>
+        <ExplainButton term="hours" />
+        <span className={`${plan.mono} ${plan.right} ${over ? plan.warnText : ''}`}>
           {label(over ? 'plan.hoursOver' : 'plan.hours', stage, { planned, base })}
         </span>
-        <ExplainButton term="hours" />
       </div>
       <div className={plan.barRow}>
         <div
           className={`${plan.bar} ${over ? plan.barOver : ''} ${planned === 0 ? plan.barEmpty : ''}`}
-          aria-hidden="true"
+          role="img"
+          aria-label={barText}
         >
           {ACTIVITIES.map(({ id, key }) =>
             byActivity[id] > 0 ? (
@@ -257,66 +340,22 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
           )}
         </div>
       </div>
-      <p className={plan.legend}>
-        {ACTIVITIES.filter(({ id }) => byActivity[id] > 0)
-          .map(
-            ({ id, key }) =>
-              `${label(key, stage)} ${label('unit.hours', stage, { n: byActivity[id] })}`,
-          )
-          .join(' · ') || label('plan.sum.nothing', stage)}
-        {' · '}
-        {label('plan.hoursFree', stage, {
-          n: Math.max(0, founder.maxHoursPerWeek - planned),
-          base,
-          max: founder.maxHoursPerWeek,
-        })}
-      </p>
-      <div className={plan.row2}>
-        <span>
-          {label('plan.energy', stage, {
-            energy: formatEnergy(founder.energy),
-            max: founder.maxEnergy,
-          })}
+      <div className={`${plan.line} ${plan.wrap}`}>
+        <span className={plan.group}>
+          <span className={`${plan.label} ${lowEnergy ? plan.warnText : ''}`}>
+            {label('plan.energy', stage, {
+              energy: formatEnergy(founder.energy),
+              max: founder.maxEnergy,
+            })}
+          </span>
+          <ExplainButton term="energy" />
         </span>
-        <ExplainButton term="energy" />
-      </div>
-      {founder.energy === 0 ? (
-        <p className={styles.warn}>
-          {count('plan.energyZero', stage, founder.burnoutWeeks - founder.weeksAtZeroEnergy)}
-        </p>
-      ) : (
-        founder.energy < founder.lowEnergyBelow && (
-          <p className={styles.warn}>
-            {label('plan.energyLow', stage, { low: founder.lowEnergyBelow })}
-          </p>
-        )
-      )}
-      {view.forcedHours > 0 && (
-        <p className={styles.warn}>
-          {label('plan.forced', stage, {
-            hours: label('unit.hours', stage, { n: view.forcedHours }),
-          })}
-        </p>
-      )}
-      {view.committedHours > 0 && (
-        <p className={styles.hint}>
-          {label('plan.committed', stage, {
-            hours: label('unit.hours', stage, { n: view.committedHours }),
-          })}
-        </p>
-      )}
-      {issues.map((issue) => (
-        <p key={issue.code + JSON.stringify(issue)} className={styles.warn} role="alert">
-          {issueText(issue.code, stage, founder.maxHoursPerWeek)}
-        </p>
-      ))}
-      {canRepeat && (
-        <div className={plan.repeat}>
-          <button type="button" className={styles.button} onClick={repeat}>
+        {canRepeat && (
+          <button type="button" className={`${styles.button} ${plan.right}`} onClick={repeat}>
             {label('plan.repeat', stage)}
           </button>
-        </div>
-      )}
+        )}
+      </div>
       {children}
     </section>
   )
@@ -330,22 +369,17 @@ function TalkBody({ free }: { free: number }) {
   const { costs } = view
   return (
     <>
-      <HintRow term="talk">
-        {label('plan.section.talkHint', stage, {
-          hours: label('unit.hours', stage, { n: costs.interviewHours }),
-        })}
-      </HintRow>
       {view.segments.map((seg) => {
         const value = interviews[seg.id] ?? 0
         return (
-          <Line key={seg.id} name={seg.name}>
+          <Row key={seg.id} label={seg.name}>
             <Stepper
               stage={stage}
               value={value}
               max={capFor(value, free, costs.interviewHours, 20)}
               onChange={(n) => setInterviews(seg.id, n)}
             />
-          </Line>
+          </Row>
         )
       })}
     </>
@@ -360,63 +394,52 @@ function TestBody({ free }: { free: number }) {
   const setPresales = useGame((s) => s.setPresales)
   const stage = view.company.uiStage
   const { costs } = view
+  const choices = [0, ...costs.landingBudgetsCents]
   return (
     <>
-      <HintRow term="test">{label('plan.section.testHint', stage)}</HintRow>
+      <SubHeading>{label('plan.test.landing', stage)}</SubHeading>
       {view.segments.map((seg) => {
         const budget = landing[seg.id] ?? 0
-        const batches = presales[seg.id] ?? 0
-        const choices = [0, ...costs.landingBudgetsCents]
         return (
-          <div key={seg.id}>
-            <Item>
-              <Name name={label('plan.landing', stage, { segment: seg.name })} />
-              <Choices columns={choices.length}>
-                {choices.map((cents) => {
-                  const on = budget === cents
-                  return (
-                    <button
-                      key={cents}
-                      type="button"
-                      aria-pressed={on}
-                      disabled={!on && cents > 0 && budget === 0 && free < costs.landingHours}
-                      className={`${styles.chip} ${on ? styles.chipOn : ''}`}
-                      onClick={() => setLanding(seg.id, cents)}
-                    >
-                      {cents === 0 ? label('plan.landing.none', stage) : formatEuro(cents)}
-                    </button>
-                  )
-                })}
-              </Choices>
-            </Item>
-            {budget > 0 && (
-              <p className={styles.hint}>
-                {label('plan.landing.budget', stage, {
-                  budget: formatEuro(budget),
-                  visitors: Math.floor(budget / costs.landingVisitorCents),
-                })}
-              </p>
-            )}
-            <Line
-              name={label('plan.presale', stage, { segment: seg.name })}
-              note={count('plan.presale.left', stage, seg.presaleBatchesLeft)}
-            >
-              <Stepper
-                stage={stage}
-                value={batches}
-                max={Math.min(
-                  seg.presaleBatchesLeft,
-                  capFor(batches, free, costs.presaleHoursPerBatch, 10),
-                )}
-                display={
-                  batches === 0
-                    ? label('plan.presale.none', stage)
-                    : count('plan.presale.batches', stage, batches)
-                }
-                onChange={(n) => setPresales(seg.id, n)}
-              />
-            </Line>
-          </div>
+          <Row key={seg.id} label={seg.name}>
+            {choices.map((cents) => {
+              const on = budget === cents
+              return (
+                <button
+                  key={cents}
+                  type="button"
+                  aria-pressed={on}
+                  disabled={!on && cents > 0 && budget === 0 && free < costs.landingHours}
+                  className={`${styles.chip} ${on ? styles.chipOn : ''}`}
+                  onClick={() => setLanding(seg.id, cents)}
+                >
+                  {cents === 0 ? label('plan.landing.none', stage) : formatEuro(cents)}
+                </button>
+              )
+            })}
+          </Row>
+        )
+      })}
+      <SubHeading>{label('plan.test.presale', stage)}</SubHeading>
+      {view.segments.map((seg) => {
+        const batches = presales[seg.id] ?? 0
+        return (
+          <Row key={seg.id} label={seg.name}>
+            <Stepper
+              stage={stage}
+              value={batches}
+              max={Math.min(
+                seg.presaleBatchesLeft,
+                capFor(batches, free, costs.presaleHoursPerBatch, 10),
+              )}
+              display={
+                batches === 0
+                  ? label('plan.presale.none', stage)
+                  : count('plan.presale.batches', stage, batches)
+              }
+              onChange={(n) => setPresales(seg.id, n)}
+            />
+          </Row>
         )
       })}
     </>
@@ -430,31 +453,23 @@ function BuildBody({ free }: { free: number }) {
   const setBuild = useGame((s) => s.setBuild)
   const setBugFixHours = useGame((s) => s.setBugFixHours)
   const stage = view.company.uiStage
-  const { product, costs } = view
+  const { product } = view
   const shipped = product.features.filter((f) => f.shipped)
   return (
     <>
-      <HintRow term="build">{label('plan.section.buildHint', stage)}</HintRow>
-      <p className={styles.hint}>
+      <Writing>
         {product.bugs > 0
           ? count('plan.bugs', stage, product.bugs)
           : label('plan.bugs.none', stage)}
         {' · '}
         {label('market.quality', stage, { quality: product.quality })}
-      </p>
+      </Writing>
       {product.features
         .filter((f) => !f.shipped)
         .map((f) => {
           const value = build[f.id] ?? 0
           return (
-            <Line
-              key={f.id}
-              name={f.name}
-              note={label('plan.featureProgress', stage, {
-                done: f.progressHours + value,
-                total: f.buildHours,
-              })}
-            >
+            <Row key={f.id} label={f.name} note={`${f.progressHours + value}/${f.buildHours} h`}>
               <Stepper
                 stage={stage}
                 value={value}
@@ -462,28 +477,23 @@ function BuildBody({ free }: { free: number }) {
                 max={Math.min(f.remainingHours, value + free)}
                 onChange={(n) => setBuild(f.id, n)}
               />
-            </Line>
+            </Row>
           )
         })}
       {shipped.length > 0 && (
-        <p className={styles.good}>
+        <Writing>
           {label('plan.shippedList', stage, { names: shipped.map((f) => f.name).join(', ') })}
-        </p>
+        </Writing>
       )}
       {product.bugs > 0 && (
-        <Line
-          name={label('plan.section.fix', stage)}
-          note={label('plan.section.fixHint', stage, {
-            hours: label('unit.hours', stage, { n: costs.fixHoursPerBug }),
-          })}
-        >
+        <Row label={label('plan.section.fix', stage)}>
           <Stepper
             stage={stage}
             value={bugFixHours}
             max={Math.min(product.fixableHours, bugFixHours + free)}
             onChange={setBugFixHours}
           />
-        </Line>
+        </Row>
       )}
     </>
   )
@@ -496,15 +506,13 @@ function SellBody({ free }: { free: number }) {
   const stage = view.company.uiStage
   return (
     <>
-      <HintRow term="sell">{label('plan.section.sellHint', stage)}</HintRow>
       {view.segments.map((seg) => {
         const out = outreach[seg.id]
         const channel: ChannelId = out?.channel ?? seg.lastChannel ?? view.channels[0] ?? 'phone'
         const hours = out?.hours ?? 0
         return (
-          <Item key={seg.id}>
-            <Name name={seg.name} />
-            <Controls>
+          <div key={seg.id}>
+            <Row label={seg.name}>
               <Stepper
                 stage={stage}
                 value={hours}
@@ -513,8 +521,8 @@ function SellBody({ free }: { free: number }) {
                 display={label('unit.hours', stage, { n: hours })}
                 onChange={(n) => setOutreach(seg.id, channel, n)}
               />
-            </Controls>
-            <Choices columns={view.channels.length}>
+            </Row>
+            <Choices>
               {view.channels.map((c) => (
                 <button
                   key={c}
@@ -527,7 +535,7 @@ function SellBody({ free }: { free: number }) {
                 </button>
               ))}
             </Choices>
-          </Item>
+          </div>
         )
       })}
     </>
@@ -546,17 +554,11 @@ function DemosBody({ free }: { free: number }) {
   const wanting = view.leads.filter((l) => l.canBookDemo)
   return (
     <>
-      <HintRow term="demos">
-        {label('plan.section.demosHint', stage, {
-          hours: hours(costs.demoHours),
-          weeks: count('unit.weeks', stage, costs.trialWeeks),
-        })}
-      </HintRow>
-      {wanting.length === 0 && <p>{label('plan.demos.noneWanted', stage)}</p>}
+      {wanting.length === 0 && <Writing>{label('plan.demos.noneWanted', stage)}</Writing>}
       {wanting.map((l) => {
         const booked = p.demos.includes(l.id)
         return (
-          <Line key={l.id} name={l.name}>
+          <Row key={l.id} label={l.name}>
             <button
               type="button"
               aria-pressed={booked}
@@ -568,33 +570,35 @@ function DemosBody({ free }: { free: number }) {
                 ? label('pipeline.unbookDemo', stage)
                 : label('pipeline.bookDemo', stage, { hours: hours(costs.demoHours) })}
             </button>
-          </Line>
+          </Row>
         )
       })}
       {p.followUps.length > 0 && (
-        <p>
+        <Writing>
           {count('plan.followUps.booked', stage, p.followUps.length, {
             hours: hours(p.followUps.length * costs.followUpHours),
           })}
-        </p>
+        </Writing>
       )}
       {p.chase.length > 0 && (
-        <p>
+        <Writing>
           {count('plan.chase.booked', stage, p.chase.length, {
             hours: hours(p.chase.length * costs.chaseHours),
           })}
-        </p>
+        </Writing>
       )}
-      <Choices columns="one">
+      <Choices>
         <button type="button" className={styles.button} onClick={() => setTab('pipeline')}>
           {label('plan.demos.toPipeline', stage, { tab: label('tab.pipeline', stage) })}
         </button>
-        {view.invoices.some((i) => i.canChase) && (
+      </Choices>
+      {view.invoices.some((i) => i.canChase) && (
+        <Choices>
           <button type="button" className={styles.button} onClick={() => setTab('money')}>
             {label('plan.demos.toMoney', stage, { tab: label('tab.money', stage) })}
           </button>
-        )}
-      </Choices>
+        </Choices>
+      )}
     </>
   )
 }
@@ -605,22 +609,16 @@ function RestBody({ free }: { free: number }) {
   const setRestHours = useGame((s) => s.setRestHours)
   const stage = view.company.uiStage
   return (
-    <>
-      <HintRow>{label('plan.section.restHint', stage)}</HintRow>
-      <Item>
-        <Name name={label('plan.rest', stage)} />
-        <Controls>
-          <Stepper
-            stage={stage}
-            value={restHours}
-            bigStep={5}
-            max={restHours + free}
-            display={label('unit.hours', stage, { n: restHours })}
-            onChange={setRestHours}
-          />
-        </Controls>
-      </Item>
-    </>
+    <Row label={label('plan.rest', stage)}>
+      <Stepper
+        stage={stage}
+        value={restHours}
+        bigStep={5}
+        max={restHours + free}
+        display={label('unit.hours', stage, { n: restHours })}
+        onChange={setRestHours}
+      />
+    </Row>
   )
 }
 
