@@ -347,7 +347,9 @@ choices:
 
 Milestones: first interview, first sign up, first paying customer, 1,000 EUR monthly revenue, first hire, break even month, 52 weeks survived.
 
-`uiStage` switches from `scrappy` to `organised` at the first hire or at 2,000 EUR monthly revenue, whichever comes first. This is the single UI upgrade step in the early MVP: labels change, the pipeline shows one new number (conversion from demo to trial), and the handwriting font is replaced on that panel only.
+Phase 7 as built: the milestones live in the scenario (`milestones`, see `docs/scenario-kantino.md` 9b): first interview, first deposit, first paying customer, revenue covers company costs, revenue covers all costs, first hire, 26 and 52 weeks survived. Revenue milestones cover the run's own costs instead of a fixed amount.
+
+`uiStage` switches from `scrappy` to `organised` at the first hire or at 2,000 EUR monthly revenue, whichever comes first. (As built: at the first milestone listed in the scenario's `organisedAt`, first hire or revenue covers company costs.) This is the single UI upgrade step in the early MVP: labels change, the pipeline shows one new number (conversion from demo to trial), and the handwriting font is replaced on that panel only.
 
 ### 4.13 Endings
 
@@ -382,6 +384,8 @@ Built only from `eventLog`, `knowledge`, and `hidden`:
 4. **Hours breakdown:** share of time on validation, building, selling, admin
 5. **Luck:** for the 5 highest impact random outcomes, the roll compared with its expected value, so players can separate bad decisions from bad luck
 6. **One suggestion** for the next run, selected by rule from a fixed list
+
+As built in Phase 7 (`packages/engine/src/postmortem.ts`, schema in `docs/schema.md`): also reads the ledger, customers and action log; adds money (savings, what went into the company, the hire's cost per customer), "evidence you went against", and the milestones reached; luck covers sales, churn, invoices and inbox gambles, logged as `odds` events. Screen order: what happened, next time, markets, misreads, hours, money, luck, milestones.
 
 ---
 
@@ -589,6 +593,8 @@ Plain styling stays. All text goes through the label table or the content files.
 - Best runs on the Start screen
 
 **Done when:** every ending leads to a post-mortem that names a cause, shows the truth reveal, and lists at least one misread signal when one exists.
+
+**Status: done** (2026-10, engine 0.9.0). Also built: the coworking desk office stage (offered by a triggered inbox event, tuned to 225 EUR a month, see `docs/decisions.md`), persistent modifiers, replay flags on run records. `packages/bots/test/postmortem.test.ts` checks the "done when" over bot runs of every ending.
 
 ### Phase 8: Hardening (about 1 week)
 

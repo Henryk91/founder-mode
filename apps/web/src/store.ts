@@ -23,7 +23,13 @@ import {
 } from '@founder-mode/engine'
 import { createStore, type StoreApi } from 'zustand/vanilla'
 import { repeatPlan } from './repeatPlan'
-import { MAX_RUNS, memoryProfiles, type ProfileStorage, type SaveStorage } from './storage'
+import {
+  MAX_RUNS,
+  memoryProfiles,
+  type ProfileStorage,
+  type RunRecord,
+  type SaveStorage,
+} from './storage'
 
 export type Tab = 'plan' | 'inbox' | 'market' | 'pipeline' | 'money'
 
@@ -77,6 +83,8 @@ export type UiState = {
   postMortem: PostMortem | null
   /** The one suggestion shown in the post-mortem, chosen once when the run ends. */
   suggestion: SuggestionId | null
+  /** Finished runs of this scenario on this device, for the best runs on the Start screen. */
+  runs: RunRecord[]
 }
 
 export type UiActions = {
@@ -85,6 +93,8 @@ export type UiActions = {
   newRun(): void
   /** A new run on the seed of the finished one, flagged as a replay in the run record. */
   sameMarketAgain(): void
+  /** A new run on a seed from the best runs, flagged as a replay. */
+  replaySeed(seed: string): void
   continueRun(): void
   leaveRun(): void
   nextIntro(): void
@@ -213,6 +223,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           lastSuggestion: suggestion,
           runs,
         })
+        set({ runs })
       }
       mortemOf = state
       mortem = { postMortem, suggestion }
@@ -273,6 +284,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       momentsSeen: 0,
       postMortem: null,
       suggestion: null,
+      runs: profiles.load(getScenario().id).runs,
 
       startRun(seed) {
         start(seed?.trim() || deps.makeSeed(), false)
@@ -283,6 +295,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       sameMarketAgain() {
         if (!game || game.status !== 'ended') return
         start(game.seed, true)
+      },
+      replaySeed(seed) {
+        start(seed, true)
       },
       continueRun() {
         const file = deps.storage.load()

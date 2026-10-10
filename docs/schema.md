@@ -713,3 +713,7 @@ type PostMortem = {
 - `MessageChoice.monthlyCostCents` counts what a move adds: the new stage's rent minus the current one.
 - `uiStage` turns `organised` in the week the first `organisedAt` milestone is reached (after milestones in `endWeek`). `WeekReport.uiStageChanged` is true in that week only.
 - `PlayerView.company.officeStage: { id, name }`; `PlayerView.funnel: { demosHeld, trialsFromDemos }` counted from the demo outcomes that happened (shown in the organised pipeline).
+
+### Phase 7 part 4: best runs (web only)
+
+- UI store: `runs: RunRecord[]` (this scenario's, from the profile) and `replaySeed(seed)`, which starts a run on that seed flagged as a replay. `bestRuns(runs)` (`apps/web/src/bestRuns.ts`) returns `{ ordinary, replays }`, each `{ longest, revenue, wins (best three), winCount }`.
