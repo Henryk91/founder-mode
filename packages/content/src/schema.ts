@@ -455,6 +455,10 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     built_unseen: z.string().min(1),
     leads_only: z.string().min(1),
   }),
+  // Post-mortem lines that depend on the scenario's design. `weakLanding`: said for every market
+  // that had a landing test, in a scenario whose audience rarely answers adverts. Absent when the
+  // landing signal is not weak by design.
+  postMortemNotes: z.object({ weakLanding: z.string().min(1).optional() }).optional(),
 }).superRefine((s, ctx) => {
   const issue = (message: string, path: (string | number)[]) =>
     ctx.addIssue({ code: 'custom', message, path })

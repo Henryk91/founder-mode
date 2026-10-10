@@ -83,6 +83,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
           t={t}
           stage={stage}
           walkIns={pm.walkIns.filter((w) => w.segmentId === m.segmentId)}
+          weakLanding={pm.notes.weakLanding}
         />
       ))}
     </section>
@@ -397,11 +398,14 @@ function MarketCard({
   t,
   stage,
   walkIns,
+  weakLanding,
 }: {
   m: MarketTruth
   t: Text
   stage: UiStage
   walkIns: PostMortemData['walkIns']
+  /** The scenario's line for a landing test whose signal is weak by design, or null. */
+  weakLanding: string | null
 }) {
   const rows: [string, string][] = [
     [label('pm.market.pain', stage), t.bucket(m.painBucketId)],
@@ -417,6 +421,9 @@ function MarketCard({
         ? label('pm.market.landingValue', stage, m.landing)
         : label('pm.market.notTried', stage),
     ],
+    ...(m.landing && weakLanding
+      ? [[label('pm.market.landingWeak', stage), weakLanding] as [string, string]]
+      : []),
     [
       label('pm.market.presale', stage),
       m.presale

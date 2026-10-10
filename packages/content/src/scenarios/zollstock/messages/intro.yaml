@@ -30,6 +30,13 @@ intro:
         customer money covering all costs for the last two months. Run out of money, yours
         included, and it is over.
 
+# Post-mortem lines that depend on how this scenario is built. Landing tests are weak by design
+# here (spec section 5), so every market with a landing test gets this line.
+postMortemNotes:
+  weakLanding: >-
+    In this market people rarely answer adverts, so the landing test told you little either way.
+    Deposits and conversations said more.
+
 # Chosen by simple rules from the current state, weeks 1 to 4 only. They describe, never advise.
 founderNotes:
   first_week: >-

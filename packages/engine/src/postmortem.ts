@@ -77,6 +77,7 @@ export function buildPostMortem(state: GameState): PostMortem {
         state.scenario.experiments.interview.buckets.map((x) => [x.id, x.name]),
       ),
     },
+    notes: { weakLanding: state.scenario.postMortemNotes?.weakLanding ?? null },
     cause,
     milestones: reachedMilestones(state),
     chain: buildChain(state, cause),

@@ -259,3 +259,37 @@ describe('walk-in leads', () => {
     expect(text(store)).toMatch(/Walk-ins \d+ leads? from the coworking desk, \d+ became customers/)
   })
 })
+
+describe('weak landing signal', () => {
+  /** Runs one landing test in the first market in week 1, then shuts the company down. */
+  function landingThenShutDown(scenarioId: 'kantino' | 'zollstock') {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'weak-landing' })
+    store.getState().selectScenario(scenarioId)
+    store.getState().startRun()
+    while (store.getState().introStep !== null) store.getState().nextIntro()
+    const view = store.getState().view!
+    const first = view.segments[0]!.id
+    store.getState().setLanding(first, 30_000)
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    store.getState().askShutDown()
+    store.getState().shutDown()
+    while (store.getState().postMortem && html(store).includes('The run is over')) {
+      store.getState().nextMoment()
+    }
+    return store
+  }
+
+  it('is named in Zollstock, for the market that had a landing test only', () => {
+    const page = text(landingThenShutDown('zollstock'))
+    expect(page).toContain('Landing test')
+    expect(page.match(/people rarely answer adverts/g)).toHaveLength(1)
+  })
+
+  it('is not named in Kantino, where landing tests are not weak by design', () => {
+    const page = text(landingThenShutDown('kantino'))
+    expect(page).not.toContain('About that test')
+  })
+})

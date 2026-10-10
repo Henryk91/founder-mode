@@ -573,6 +573,7 @@ const labels = {
   'pm.market.notAsked': 'Nobody asked',
   'pm.market.landing': 'Landing test',
   'pm.market.landingValue': '{signups} of {visitors} visitors signed up',
+  'pm.market.landingWeak': 'About that test',
   'pm.market.presale': 'Pre-sale',
   'pm.market.presaleValue': '{commits} of {prospects} paid a deposit at {price}',
   'pm.market.notTried': 'Not tried',
