@@ -28,7 +28,7 @@ events:
         label: Later
         hours: 0
         effects:
-          - { type: cash, amountCents: -60000, chance: 0.5 }
+          - { type: cash, amountCents: -75000, chance: 0.5 }
           - { type: lostHours, hours: 4, chance: 0.5 }
 
   - id: trade_insurance

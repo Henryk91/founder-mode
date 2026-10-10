@@ -223,9 +223,9 @@ events:
     choices:
       - id: fix
         label: Make it work offline
-        hours: 4
+        hours: 10
         effects:
-          - { type: bugs, delta: -1 }
+          - { type: bugs, delta: 1 }
       - id: workaround
         label: Explain how it catches up later
         hours: 1

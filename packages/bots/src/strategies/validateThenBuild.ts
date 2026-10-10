@@ -1,6 +1,7 @@
 import type { Scenario, ScenarioId } from '@founder-mode/content'
 import type { MessageView, PlayerView, WeekPlan } from '@founder-mode/engine'
 import { PriceSearch, type PricingRule } from '../pricing'
+import { botScenario } from '../scenarios'
 import {
   bookableLeads,
   ChannelLog,
@@ -25,8 +26,6 @@ const CHASE_PER_WEEK = 3
 const MAX_PRESALE_BATCHES = 2
 /** How much the landing page sign up rate, above or below the bar, counts next to interviews. */
 const LANDING_WEIGHT = 4
-/** Share of landing page visitors who must sign up for the market to stay interesting. */
-const LANDING_BAR = 0.07
 /** How much the pre-sale commit rate, above or below the bar, counts next to interviews. */
 const PRESALE_WEIGHT = 3
 const PRESALE_BAR = 0.08
@@ -261,9 +260,15 @@ const ZOLLSTOCK_TWINS: Record<string, string> = {
   founder_dinner: 'founder_dinner',
   hire_site_day: 'team_lunch',
 }
-SCENARIO_READER.zollstock = Object.fromEntries(
-  Object.entries(ZOLLSTOCK_TWINS).map(([id, twin]) => [id, SCENARIO_READER.kantino[twin]!]),
-)
+SCENARIO_READER.zollstock = {
+  ...Object.fromEntries(
+    Object.entries(ZOLLSTOCK_TWINS).map(([id, twin]) => [id, SCENARIO_READER.kantino[twin]!]),
+  ),
+  // Tuned to land only with room in the pipeline, as their texts say (decisions, part C).
+  site_visit: (v) => (thin(v) ? 'follow_up' : 'ignore'),
+  // Offline mode is a 10 h build for one loud customer (round 3); explaining keeps most of them.
+  cellar_signal: 'workaround',
+}
 
 /** The reader's table for one scenario: the shared answers plus the scenario's own. */
 const readerChoices = (scenarioId: string): Record<string, ReaderRule> => ({
@@ -380,7 +385,9 @@ export function rankMarkets(scenario: Scenario, view: PlayerView): { id: string;
   return view.segments
     .map((s) => {
       const notes = segmentNotes(scenario, view, s.id)
-      return { id: s.id, score: score(notes, landingRate(view, s.id), presaleRate(view, s.id)) }
+      const landing = landingRate(view, s.id)
+      const bar = botScenario(scenario.id).landingBar
+      return { id: s.id, score: score(notes, landing, bar, presaleRate(view, s.id)) }
     })
     .sort((a, b) => b.score - a.score)
 }
@@ -388,9 +395,10 @@ export function rankMarkets(scenario: Scenario, view: PlayerView): { id: string;
 function score(
   notes: ReturnType<typeof segmentNotes>,
   landing: number | null,
+  landingBar: number,
   presale: number | null,
 ): number {
-  const fromLanding = landing === null ? 0 : LANDING_WEIGHT * (landing - LANDING_BAR)
+  const fromLanding = landing === null ? 0 : LANDING_WEIGHT * (landing - landingBar)
   const fromPresale = presale === null ? 0 : PRESALE_WEIGHT * (presale - PRESALE_BAR)
   return notes.meanBucket + notes.mentionRate + fromLanding + fromPresale
 }
@@ -689,7 +697,7 @@ export function validatingPlayer(
       // A market where the landing page test drew too few sign ups is out.
       for (const s of view.segments) {
         const rate = landingRate(view, s.id)
-        if (rate !== null && rate < LANDING_BAR && !abandoned.has(s.id)) {
+        if (rate !== null && rate < botScenario(scenario.id).landingBar && !abandoned.has(s.id)) {
           abandoned.add(s.id)
           if (target === s.id) {
             target = null
@@ -726,6 +734,8 @@ export function validatingPlayer(
       const commits = sales.reduce((t, x) => t + x.commits, 0)
       if (behaviours.presales === 'max') {
         for (const r of ranked(view)) if (!abandoned.has(r.id)) while (b.presale(r.id));
+      } else if (botScenario(scenario.id).presales === 'all') {
+        if (!waiting) b.presale(target)
       } else if (sales.length < MAX_PRESALE_BATCHES && commits === 0 && !waiting) {
         b.presale(target)
       }
@@ -767,6 +777,11 @@ const DESCRIPTION =
 export const validateThenBuild: Strategy = {
   id: 'validate_then_build',
   description: DESCRIPTION,
+  describe: (scenario) =>
+    DESCRIPTION.replace(
+      'below 7% landing',
+      `below ${Math.round(botScenario(scenario.id).landingBar * 1000) / 10}% landing`,
+    ),
   create: (scenario) => validatingPlayer(scenario, 50),
 }
 

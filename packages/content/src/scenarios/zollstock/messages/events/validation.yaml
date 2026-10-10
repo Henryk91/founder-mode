@@ -65,6 +65,7 @@ events:
         hours: 4
         effects:
           - { type: skill, skill: interviewing, delta: 0.02 }
+          - { type: energy, delta: -3 }
       - id: decline
         label: Wish her luck
         hours: 0
