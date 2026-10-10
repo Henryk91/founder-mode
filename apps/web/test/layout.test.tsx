@@ -143,12 +143,12 @@ describe('plan tab', () => {
   it('starts with every section closed, each with a one line summary', () => {
     const store = run('closed')
     const page = text(store)
-    expect(page).toContain('Talk to people ? none')
+    expect(page).toContain('Talk to people none')
     expect(page).not.toContain('Each interview costs 2 h')
     store.getState().setInterviews('coworking', 3)
-    expect(text(store)).toContain('Talk to people ? 3 interviews 6 h')
+    expect(text(store)).toContain('Talk to people 3 interviews 6 h')
     store.getState().setOutreach('medical', 'phone', 5)
-    expect(text(store)).toContain('Find customers ? Phone to Medical practices 5 h')
+    expect(text(store)).toContain('Find customers Phone to Medical practices 5 h')
   })
 
   it('opens several sections at once, and closes them all for the next week', () => {
@@ -487,6 +487,6 @@ describe('planner header hours', () => {
 
     store.setState({ view: getView(game), plan, plannedHours: check.plannedHours })
     store.getState().setTab('plan')
-    expect(text(store)).toContain(`${expected} h planned of 50`)
+    expect(text(store)).toContain(`${expected} of 50 h`)
   })
 })

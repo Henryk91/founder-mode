@@ -1,4 +1,4 @@
-import { label, type LabelKey } from '../labels'
+import { count, label, type LabelKey } from '../labels'
 import { fillText } from '../texts'
 import { useGame } from '../useGame'
 import styles from './ui.module.css'
@@ -18,6 +18,12 @@ export function Help() {
   if (!view) return null
   const stage = view.company.uiStage
   const goal = view.guidance.intro.find((c) => c.id === 'goal')
+  const { founder } = view
+  const energyVars = {
+    low: founder.lowEnergyBelow,
+    tired: founder.tiredBelow,
+    weeks: count('unit.weeks', stage, founder.burnoutWeeks),
+  }
 
   return (
     <>
@@ -47,6 +53,12 @@ export function Help() {
             </li>
           ))}
         </ol>
+      </section>
+      <section className={styles.card}>
+        <h2 className={styles.title}>{label('help.hoursTitle', stage)}</h2>
+        <p>{label('explain.hours.text', stage)}</p>
+        <p>{label('help.hours.bar', stage)}</p>
+        <p>{label('explain.energy.text', stage, energyVars)}</p>
       </section>
       <button type="button" className={`${styles.button} ${styles.primary}`} onClick={close}>
         {label('help.close', stage)}

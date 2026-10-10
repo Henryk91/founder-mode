@@ -149,3 +149,50 @@ Short and dry. Examples from the mockups:
 - "Accounting says your invoice is in the next payment run. Probably."
 - "Bookkeeping, ugh (6 h)"
 - "Week 31: we are out of money. Unless Lindner pays. Or Nordlicht signs."
+
+## Planner notebook ("My week"): approved design
+
+`planner-phone.html` and `planner-desk.html` are the approved look for the planner notebook. They replace the planner shown inside `desk-scrappy.html` and take priority over anything else in this file where the two differ. Copy sizes and spacing from their styles.
+
+### Rules
+
+| Property | Value |
+|---|---|
+| Line spacing | 44 px. One row per line, nothing straddles a rule |
+| Lines | Light rules only (`--rule`). No darker separators between sections |
+| Open section | Shown by the arrow (▾) and by indenting its rows. No background, no border |
+| Text on the paper | Handwriting (Caveat). Titles 700, everything else 500 |
+| Text in buttons | IBM Plex Sans 600, 13 px |
+| Numbers and hours | IBM Plex Mono 600 |
+| Baseline | Handwriting rests on the rule with a 6 to 7 px gap. Controls are centred in the line |
+| Help | No "?" buttons in the notebook. An open section ends with one hint line in handwriting plus a "more" link that opens the full explanation off the paper |
+
+### Sizes
+
+| Element | Phone | Desktop |
+|---|---|---|
+| "My week" title | 30 px | 34 px |
+| Section title | 26 px | 28 px |
+| Section summary | 21 px, muted, truncates with an ellipsis | 23 px, muted |
+| Market label | 23 px | 24 px, in a fixed 220 px column |
+| Hint line | 19 px, muted | 21 px, muted |
+| Hours bar | 22 px tall, 1.5 px ink border | 24 px tall |
+
+### Controls
+
+| Control | Look | Tappable area |
+|---|---|---|
+| Stepper button | 30 px circle, 1.5 px border in `#7A8794`, paper fill | 44 x 44 px |
+| Choice pill | 30 px tall, 1.5 px border in `#7A8794`, paper fill. Selected: ink fill, white text | 44 px tall |
+| "Same as last week" | Choice pill style, at the right end of the energy line | 44 px tall |
+
+Controls are only as wide as their content. They are never stretched across a row.
+
+### Row layouts
+
+- Header: title left, "41 of 50 h" right.
+- Hours bar: one line. A segment too narrow for its label shows no label.
+- Energy: label left, "Same as last week" right.
+- Section: arrow, title, summary, hours right aligned.
+- Market row on phone: label left, stepper right. Channel choices on the next line, indented.
+- Market row on desktop: label, stepper, then the channel choices, all on one line. The paper to the right stays empty.

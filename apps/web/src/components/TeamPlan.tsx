@@ -2,7 +2,7 @@ import type { ChannelId, PlayerView, TeamRoleId } from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
-import { Choices, Row, SubHeading, Writing } from './Ruled'
+import { Choices, HintLine, Market, SubHeading, Writing } from './Ruled'
 import styles from './ui.module.css'
 
 const roleName = (role: TeamRoleId, stage: UiStage) => label(`team.role.${role}`, stage)
@@ -31,26 +31,23 @@ export function TeamPlan() {
         team.roles.map((r) => {
           const booked = plan.searchRole === r.id
           return (
-            <div key={r.id}>
-              <Row
-                label={roleName(r.id, stage)}
-                note={label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
-              >
-                <span />
-              </Row>
-              <Choices>
+            <Market
+              key={r.id}
+              label={roleName(r.id, stage)}
+              note={label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
+              choices={
                 <button
                   type="button"
                   aria-pressed={booked}
-                  className={`${styles.button} ${booked ? styles.primary : ''}`}
+                  className={`${styles.chip} ${booked ? styles.chipOn : ''}`}
                   onClick={() => actions.setSearchRole(booked ? null : r.id)}
                 >
                   {booked
                     ? label('team.searchBooked', stage, { hours: hours(costs.searchHours) })
                     : label('team.search', stage, { role: roleName(r.id, stage) })}
                 </button>
-              </Choices>
-            </div>
+              }
+            />
           )
         })}
       {team.candidates.length > 0 && (
@@ -61,26 +58,24 @@ export function TeamPlan() {
             const monthly = team.roles.find((r) => r.id === c.role)?.monthlyCents ?? 0
             return (
               <div key={c.id}>
-                <Row
+                <Market
                   label={c.name}
                   note={label('team.perMonth', stage, { amount: formatEuro(monthly) })}
-                >
-                  <span />
-                </Row>
+                  choices={
+                    <button
+                      type="button"
+                      aria-pressed={booked}
+                      className={`${styles.chip} ${booked ? styles.chipOn : ''}`}
+                      onClick={() => actions.setHire(booked ? null : c.id)}
+                    >
+                      {booked ? label('team.offerBooked', stage) : label('team.offer', stage)}
+                    </button>
+                  }
+                />
                 <Writing>
                   {roleName(c.role, stage)} ·{' '}
                   {label('team.impression', stage, { impression: c.impression })}
                 </Writing>
-                <Choices>
-                  <button
-                    type="button"
-                    aria-pressed={booked}
-                    className={`${styles.button} ${booked ? styles.primary : ''}`}
-                    onClick={() => actions.setHire(booked ? null : c.id)}
-                  >
-                    {booked ? label('team.offerBooked', stage) : label('team.offer', stage)}
-                  </button>
-                </Choices>
               </div>
             )
           })}
@@ -96,6 +91,7 @@ export function TeamPlan() {
           actions={actions}
         />
       )}
+      <HintLine term="hiring" hint={label('plan.hint.hiring', stage)} />
     </>
   )
 }
@@ -129,12 +125,10 @@ function MemberCard(props: {
   return (
     <>
       <SubHeading>{label('team.member', stage, { role: roleName(member.role, stage) })}</SubHeading>
-      <Row
+      <Market
         label={member.name}
         note={label('team.perMonth', stage, { amount: formatEuro(member.monthlyCents) })}
-      >
-        <span />
-      </Row>
+      />
       {member.working && member.role === 'developer' && (
         <>
           <Writing>{label('team.devWork', stage)}</Writing>
@@ -184,7 +178,7 @@ function MemberCard(props: {
         <button
           type="button"
           aria-pressed={props.letGo}
-          className={`${styles.button} ${props.letGo ? styles.primary : ''}`}
+          className={`${styles.chip} ${props.letGo ? styles.chipOn : ''}`}
           onClick={() => actions.setLetGo(!props.letGo)}
         >
           {props.letGo

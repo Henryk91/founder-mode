@@ -28,7 +28,17 @@ export type Tab = 'plan' | 'inbox' | 'market' | 'pipeline' | 'money'
 export type PlanSection = 'talk' | 'test' | 'build' | 'sell' | 'demos' | 'team' | 'rest'
 
 export type ExplainKey =
-  'runway' | 'cash' | 'energy' | 'hours' | 'talk' | 'test' | 'build' | 'sell' | 'demos' | 'hiring'
+  | 'runway'
+  | 'cash'
+  | 'energy'
+  | 'hours'
+  | 'talk'
+  | 'test'
+  | 'build'
+  | 'sell'
+  | 'demos'
+  | 'hiring'
+  | 'rest'
 
 export type SaveNotice = 'incompatible' | 'scenario_changed' | 'broken' | null
 

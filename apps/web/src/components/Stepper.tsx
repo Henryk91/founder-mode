@@ -43,7 +43,7 @@ export function Stepper({
           aria-label={label('stepper.minusBig', stage)}
           onClick={set(value - bigStep)}
         >
-          {`-${formatStep(bigStep)}`}
+          <span className={styles.stepFace}>{`-${formatStep(bigStep)}`}</span>
         </button>
       )}
       <button
@@ -53,7 +53,7 @@ export function Stepper({
         aria-label={label('stepper.minus', stage)}
         onClick={set(value - step)}
       >
-        {step === 1 ? '-' : `-${formatStep(step)}`}
+        <span className={styles.stepFace}>{step === 1 ? '−' : `-${formatStep(step)}`}</span>
       </button>
       <span className={styles.stepValue}>{display ?? value}</span>
       <button
@@ -63,7 +63,7 @@ export function Stepper({
         aria-label={label('stepper.plus', stage)}
         onClick={set(value + step)}
       >
-        {step === 1 ? '+' : `+${formatStep(step)}`}
+        <span className={styles.stepFace}>{step === 1 ? '+' : `+${formatStep(step)}`}</span>
       </button>
       {bigStep !== undefined && (
         <button
@@ -74,7 +74,7 @@ export function Stepper({
           aria-label={label('stepper.plusBig', stage)}
           onClick={set(value + bigStep)}
         >
-          {`+${formatStep(bigStep)}`}
+          <span className={styles.stepFace}>{`+${formatStep(bigStep)}`}</span>
         </button>
       )}
     </div>
