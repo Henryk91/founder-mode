@@ -1,5 +1,12 @@
 import type { Rng } from '../rng'
-import type { GameState, Invoice, MoneyMovement, WeekLedger, WeekPlan } from '../types'
+import type {
+  GameState,
+  HoursByActivity,
+  Invoice,
+  MoneyMovement,
+  WeekLedger,
+  WeekPlan,
+} from '../types'
 import { activeCustomers } from './customers'
 import { chaseInvoices, isUnpaid, issueInvoices, settleInvoices } from './invoices'
 
@@ -112,6 +119,8 @@ export function applyFinanceWeek(
     monthlyRevenueCents: 0,
     customers: 0,
     runwayWeeks: null,
+    energyEnd: state.founder.energy,
+    hours: { learning: 0, building: 0, selling: 0, admin: 0, rest: 0 },
   }
   const movements: MoneyMovement[] = (
     [
@@ -173,8 +182,8 @@ export function netChangeCents(l: WeekLedger): number {
  * costs is always in the window. Before that it uses the known costs: living costs, fixed costs
  * spread over the month, and what active customers pay. Null when the total is not shrinking.
  */
-/** Records where the week ended: revenue, customers and runway, after churn. */
-export function closeLedger(state: GameState): GameState {
+/** Records where the week ended: revenue, customers, runway and energy after churn, and its hours. */
+export function closeLedger(state: GameState, hours: HoursByActivity): GameState {
   const last = state.ledger.at(-1)
   if (!last) return state
   const active = activeCustomers(state)
@@ -182,6 +191,8 @@ export function closeLedger(state: GameState): GameState {
     ...last,
     monthlyRevenueCents: active.reduce((sum, c) => sum + c.priceCentsPerMonth, 0),
     customers: active.length,
+    energyEnd: state.founder.energy,
+    hours,
   }
   const ledger = [...state.ledger.slice(0, -1), closed]
   closed.runwayWeeks = runwayWeeks({ ...state, ledger })

@@ -78,7 +78,7 @@ describe('app smoke test', () => {
     expect(html(store)).toContain('No interviews yet. Plan some on the Plan tab')
   })
 
-  it('shows the ending of a finished run and offers a way back', () => {
+  it('shows the post-mortem of a finished run and offers the next run', () => {
     const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'end' })
     begin(store)
     while (store.getState().view?.status === 'running') {
@@ -86,8 +86,9 @@ describe('app smoke test', () => {
       store.getState().dismissReport()
     }
     const ended = html(store)
-    expect(ended).toContain('The run is over')
-    expect(ended).toContain('Back to start')
+    expect(ended).toContain('What happened')
+    expect(ended).toContain('New run')
+    expect(ended).toContain('Same market again')
     expect(ended).not.toContain('End week</button>')
   })
 
@@ -363,7 +364,7 @@ describe('energy', () => {
     expect(html(store)).toContain('Empty. One more week at 0 and you burn out.')
     overwork()
     expect(store.getState().view?.ending).toBe('burnout')
-    expect(html(store)).toContain('You ran on empty for too long.')
+    expect(html(store)).toContain('You burnt out in week 5')
   })
 })
 
@@ -537,15 +538,14 @@ describe('shutting down', () => {
     expect(view.week).toBe(2)
     expect(storage.current()!.actions.at(-1)).toEqual({ type: 'shutDown', week: 2 })
     const page = html(store)
-    expect(page).toContain('The run is over')
-    expect(page).toContain('You closed the company on purpose.')
-    expect(page).toContain('Back to start')
+    expect(page).toContain('You closed the company in week 2')
+    expect(page).toContain('New run')
     expect(page).not.toContain('End week</button>')
-    // Reloading shows the same ending.
+    // Reloading shows the same post-mortem.
     const again = createGameStore({ storage, makeSeed: () => 'x' })
     again.getState().continueRun()
     expect(again.getState().view!.ending).toBe('shut_down')
-    expect(html(again)).toContain('You closed the company on purpose.')
+    expect(html(again)).toContain('You closed the company in week 2')
     store.getState().leaveRun()
     expect(storage.current()).toBeNull()
   })

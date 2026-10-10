@@ -13,6 +13,7 @@ import { conditionsHold } from './conditions'
 import { activeCustomers } from './customers'
 import { committedHours } from './founder'
 import { isOverdue, nudgeInvoice } from './invoices'
+import { OddsTally } from './odds'
 import { qualityFor } from './product'
 import { addLeads } from './sales'
 
@@ -24,6 +25,8 @@ export type MessageOutcome = {
   lostHours: number
   costsCents: number
   incomeCents: number
+  /** Chance outcomes of cash effects, logged for the post-mortem. */
+  odds: OddsTally
 }
 
 const isOpenLead = (l: Lead) => l.stage === 'lead' || l.stage === 'demo' || l.stage === 'trial'
@@ -68,7 +71,14 @@ export function respond(state: GameState, messageId: string, choiceId: string): 
  */
 export function resolveMessages(input: GameState, rng: Rng): MessageOutcome {
   let state = input
-  const out: MessageOutcome = { state, entries: [], lostHours: 0, costsCents: 0, incomeCents: 0 }
+  const out: MessageOutcome = {
+    state,
+    entries: [],
+    lostHours: 0,
+    costsCents: 0,
+    incomeCents: 0,
+    odds: new OddsTally(state.week),
+  }
   const events: MessageEvent[] = []
   const inbox: Message[] = []
   for (const message of state.inbox) {
@@ -99,7 +109,7 @@ export function resolveMessages(input: GameState, rng: Rng): MessageOutcome {
       expired,
     })
   }
-  out.state = { ...state, inbox, eventLog: [...state.eventLog, ...events] }
+  out.state = { ...state, inbox, eventLog: [...state.eventLog, ...events, ...out.odds.events()] }
   return out
 }
 
@@ -113,7 +123,20 @@ function applyEffect(
   // The situation is checked first, so an effect that does not apply never rolls. A chance of 1
   // needs no roll either, so certain effects do not move the random sequence.
   if (!conditionsHold(state, effect.when)) return state
-  if (effect.chance < 1 && !rng.chance(effect.chance)) return state
+  if (effect.chance < 1) {
+    const hit = rng.chance(effect.chance)
+    if (effect.type === 'cash') {
+      out.odds.count(
+        'message',
+        null,
+        effect.chance,
+        hit ? 1 : 0,
+        effect.amountCents,
+        message.eventId,
+      )
+    }
+    if (!hit) return state
+  }
   const week = state.week
   switch (effect.type) {
     case 'cash':

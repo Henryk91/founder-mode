@@ -14,6 +14,7 @@ import type {
 import { isMonthEnd } from './finance'
 import { energyFactor } from './founder'
 import { coverage, fit, priceFactor } from './market'
+import { OddsTally } from './odds'
 import type { TeamOutput } from './team'
 
 /** A lead can take part in a demo when it asked for one and is still answering. */
@@ -211,6 +212,7 @@ export function applySales(
   const sellingAtStart = selling
   // Energy after this week's hours (step 3 runs first): a tired founder sells worse.
   const tired = energyFactor(state.founder, state.scenario)
+  const odds = new OddsTally(week)
 
   const update = (lead: Lead, change: LeadChange) =>
     entries.push({
@@ -267,7 +269,9 @@ export function applySales(
     lead.lastContactWeek = week
     touched.add(lead.id)
     const p = (cfg.demoToTrialBase + cfg.demoToTrialPerFit * fit(state, lead.segmentId)) * tired
-    if (rng.chance(p)) {
+    const trial = rng.chance(p)
+    odds.roll('demo', lead.segmentId, p, trial)
+    if (trial) {
       lead.stage = 'trial'
       lead.stageSinceWeek = week
       update(lead, 'trial_started')
@@ -281,7 +285,9 @@ export function applySales(
   for (const lead of leads) {
     if (lead.stage !== 'trial' || week - lead.stageSinceWeek < cfg.trialWeeks) continue
     const p = fit(state, lead.segmentId) * priceFactor(state, lead.segmentId) * tired
-    if (rng.chance(p)) {
+    const won = rng.chance(p)
+    odds.roll('trial', lead.segmentId, p, won)
+    if (won) {
       lead.stage = 'paying'
       lead.stageSinceWeek = week
       lead.lastContactWeek = week
@@ -308,7 +314,9 @@ export function applySales(
     const boost = followedUp.has(lead.id) ? cfg.followUpDemoBoost : 0
     const p =
       (cfg.leadToDemoBase * (cfg.leadToDemoOffset + cfg.leadToDemoPerPain * pain) + boost) * tired
-    if (rng.chance(p)) {
+    const agrees = rng.chance(p)
+    odds.roll('lead_demo', lead.segmentId, p, agrees)
+    if (agrees) {
       lead.stage = 'demo'
       lead.stageSinceWeek = week
       lead.lastContactWeek = week
@@ -363,7 +371,9 @@ export function applySales(
     const before = spent.get(key) ?? 0
     spent.set(key, before + item.hours)
     const hours = effectiveHours(before, item.hours, limit, cfg.saturatedFactor)
-    const count = randomRound(hours * response * (cfg.sellingBase + item.selling) * tired, rng)
+    const mean = hours * response * (cfg.sellingBase + item.selling) * tired
+    const count = randomRound(mean, rng)
+    odds.count('leads', item.segmentId, mean, count)
     for (let i = 0; i < count; i++) {
       const name = nextName(item.segmentId, rng)
       leads.push({
@@ -393,6 +403,7 @@ export function applySales(
       founder: { ...state.founder, skills: { ...state.founder.skills, selling } },
       leads,
       customers,
+      eventLog: [...state.eventLog, ...odds.events()],
     },
     entries,
     refundsCents,
@@ -413,10 +424,14 @@ export function applyChurn(
 ): { state: GameState; entries: ReportEntry[] } {
   if (!isMonthEnd(state, state.week)) return { state, entries: [] }
   const entries: ReportEntry[] = []
+  const odds = new OddsTally(state.week)
   const customers = state.customers.map((c) => {
     // Customers won this week have not had a month yet.
     if (c.churnedWeek !== null || c.sinceWeek >= state.week) return c
-    if (!rng.chance(churnChance(state, c.segmentId))) return c
+    const p = churnChance(state, c.segmentId)
+    const leaves = rng.chance(p)
+    odds.roll('churn', c.segmentId, p, leaves, c.priceCentsPerMonth)
+    if (!leaves) return c
     entries.push({
       kind: 'customer_churned',
       customerId: c.id,
@@ -425,5 +440,8 @@ export function applyChurn(
     })
     return { ...c, churnedWeek: state.week }
   })
-  return { state: { ...state, customers }, entries }
+  return {
+    state: { ...state, customers, eventLog: [...state.eventLog, ...odds.events()] },
+    entries,
+  }
 }

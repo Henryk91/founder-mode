@@ -112,7 +112,9 @@ describe('finance', () => {
   it('keeps all money in integer cents', () => {
     const s = play(newGame(), 40)
     for (const l of s.ledger) {
-      for (const v of Object.values(l)) expect(Number.isInteger(v)).toBe(true)
+      for (const [k, v] of Object.entries(l)) {
+        if (k.endsWith('Cents')) expect(Number.isInteger(v)).toBe(true)
+      }
     }
   })
 
@@ -172,6 +174,8 @@ describe('finance', () => {
       monthlyRevenueCents: 0,
       customers: 0,
       runwayWeeks: null,
+      energyEnd: 80,
+      hours: { learning: 0, building: 0, selling: 0, admin: 0, rest: 0 },
     })
     const base = newGame()
     const monthCost = 40_500 + 4 * 67_500 // 207,000

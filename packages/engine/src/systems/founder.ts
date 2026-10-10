@@ -1,4 +1,4 @@
-import type { FounderState, GameState, Scenario, WeekPlan } from '../types'
+import type { FounderState, GameState, HoursByActivity, Scenario, WeekPlan } from '../types'
 
 /** Hours of the answers given this week to inbox messages. They count against the week. */
 export function committedHours(state: Pick<GameState, 'inbox'>): number {
@@ -18,24 +18,39 @@ export function plannedHours(
   state: Pick<GameState, 'scenario' | 'inbox' | 'founder'>,
   plan: WeekPlan,
 ): number {
+  const h = hoursByActivity(state, plan)
+  return h.learning + h.building + h.selling + h.admin + h.rest
+}
+
+/**
+ * The week's hours by activity, as the post-mortem counts them: interviews, landing tests and
+ * pre-sales are learning; building and fixing are building; outreach, demos and follow ups are
+ * selling; chasing, the hiring search, inbox answers and lost hours are admin.
+ */
+export function hoursByActivity(
+  state: Pick<GameState, 'scenario' | 'inbox' | 'founder'>,
+  plan: WeekPlan,
+): HoursByActivity {
   const { scenario } = state
   const sum = (values: number[]) => values.reduce((a, b) => a + b, 0)
-  return (
-    sum(Object.values(plan.interviews)) * scenario.experiments.interview.hours +
-    sum(Object.values(plan.build)) +
-    plan.bugFixHours +
-    sum(Object.values(plan.outreach).map((o) => o.hours)) +
-    plan.demos.length * scenario.sales.demoHours +
-    plan.followUps.length * scenario.sales.followUpHours +
-    plan.restHours +
-    Object.values(plan.landing).filter((budget) => budget > 0).length *
-      scenario.experiments.landing.hours +
-    sum(Object.values(plan.presales)) * scenario.experiments.presale.hoursPerBatch +
-    plan.chase.length * scenario.finance.chaseHours +
-    (plan.searchRole === null ? 0 : scenario.team.searchHours) +
-    committedHours(state) +
-    state.founder.forcedHours
-  )
+  return {
+    learning:
+      sum(Object.values(plan.interviews)) * scenario.experiments.interview.hours +
+      Object.values(plan.landing).filter((budget) => budget > 0).length *
+        scenario.experiments.landing.hours +
+      sum(Object.values(plan.presales)) * scenario.experiments.presale.hoursPerBatch,
+    building: sum(Object.values(plan.build)) + plan.bugFixHours,
+    selling:
+      sum(Object.values(plan.outreach).map((o) => o.hours)) +
+      plan.demos.length * scenario.sales.demoHours +
+      plan.followUps.length * scenario.sales.followUpHours,
+    admin:
+      plan.chase.length * scenario.finance.chaseHours +
+      (plan.searchRole === null ? 0 : scenario.team.searchHours) +
+      committedHours(state) +
+      state.founder.forcedHours,
+    rest: plan.restHours,
+  }
 }
 
 /**

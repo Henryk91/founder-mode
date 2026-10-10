@@ -163,7 +163,6 @@ const labels = {
   'end.still_searching': 'Week {max}. The company is still alive and still not paying for itself.',
   'end.sustainable': 'Week {max}. The company pays for itself and for you. That is rare.',
   'end.stats': 'Weeks played: {weeks}. Customers now: {customers}.',
-  'end.backToStart': 'Back to start',
   'intro.step': 'Card {n} of {total}',
   'intro.next': 'Next',
   'intro.back': 'Back',
@@ -458,13 +457,190 @@ const labels = {
   'moment.hire_started.text':
     '{name} started today as your {role}. The coffee runs out twice as fast now.',
   'moment.next': 'Continue',
-  'moment.toWeek': 'See the last week',
 
   'results.group.money': 'Money',
   'results.group.sales': 'Sales',
   'results.group.product': 'Product',
   'results.group.learning': 'Learning',
   'results.group.founder': 'Founder',
+
+  'moment.toPostMortem': 'What happened',
+
+  'pm.title': 'What happened',
+  'pm.header': 'Week {week}: {ending}',
+  'pm.ending.bankrupt': 'out of money',
+  'pm.ending.burnout': 'burnt out',
+  'pm.ending.shut_down': 'closed',
+  'pm.ending.still_searching': 'still searching',
+  'pm.ending.sustainable': 'it pays for itself',
+  'pm.heading.next': 'Next time',
+  'pm.heading.markets': 'The truth about the markets',
+  'pm.heading.misreads': 'Misread signals',
+  'pm.heading.hours': 'Where the hours went',
+  'pm.heading.money': 'Money',
+  'pm.heading.luck': 'Luck',
+  'pm.heading.chain': 'How it came to this',
+  'pm.newRun': 'New run',
+  'pm.sameMarket': 'Same market again',
+  'pm.sameMarketHint': 'Same seed, so the same markets. Whether luck repeats depends on you.',
+  'pm.open': 'Show',
+  'pm.close': 'Hide',
+
+  'pm.cause.bankrupt_no_customers':
+    'The money ran out in week {week}. Nobody ever paid, and you and the company cost {costs} a month.',
+  'pm.cause.bankrupt_hire':
+    'The money ran out in week {week}. Revenue reached {peak} a month: enough without the salary ({without} a month), not with it ({costs}).',
+  'pm.cause.bankrupt_churn':
+    'The money ran out in week {week}. {lost} of {won} customers left again, and revenue ended at {revenue} a month against costs of {costs}.',
+  'pm.cause.bankrupt_below_costs':
+    'The money ran out in week {week}. Revenue peaked at {peak} a month, and you and the company cost {costs}.',
+  'pm.cause.burnout': 'You burnt out in week {week}, after {over} weeks above {base} hours.',
+  'pm.cause.still_searching':
+    'Week {week}, and still searching. Revenue covers {percent}% of what you and the company cost each month.',
+  'pm.cause.sustainable':
+    'Week {week}. For two months straight, customers have paid for everything, you included.',
+  'pm.cause.shut_down': 'You closed the company in week {week}, with about {runway} of money left.',
+  'pm.cause.shut_down_flat':
+    'You closed the company in week {week}, while the money was holding up.',
+
+  'pm.chain.week': 'Week {week}',
+  'pm.chain.savings_empty': 'Your savings ran out. The company pays your living costs from here.',
+  'pm.chain.first_customer': 'First paying customer: {name}, at {price} a month.',
+  'pm.chain.customer_won': '{name} signed. {customers} paying customers.',
+  'pm.chain.customer_lost': '{name} left. {customers} customers, {revenue} a month.',
+  'pm.chain.feature_shipped': 'Shipped {feature}.',
+  'pm.chain.hire_started': '{name} started.',
+  'pm.chain.hire_let_go': '{name} left the team.',
+  'pm.chain.price_changed': 'New price: {price} a month.',
+  'pm.chain.energy_low': 'Energy fell to {low} or below. Everything got harder.',
+  'pm.chain.energy_zero': 'Energy hit zero.',
+  'pm.chain.invoice_written_off': '{name} never paid {amount}.',
+  'pm.chain.covers_all_costs':
+    'Revenue reached {revenue} a month: everything covered, you included.',
+  'pm.chain.lead_declined': '{name} said no.',
+  'pm.chain.ending.bankrupt': 'Company cash below zero ({cash}). Closed.',
+  'pm.chain.ending.burnout': 'The third week on empty. You stop.',
+  'pm.chain.ending.shut_down': 'You closed the company.',
+  'pm.chain.ending.still_searching': 'Time is up.',
+  'pm.chain.ending.sustainable': 'It pays for itself.',
+
+  'pm.role.viable': 'The real market',
+  'pm.role.mediocre': 'Lukewarm',
+  'pm.role.trap': 'The polite trap',
+  'pm.market.pain': 'Real pain',
+  'pm.market.said': 'Interviews said',
+  'pm.market.saidValue.one': '{bucket} (1 interview)',
+  'pm.market.saidValue.other': '{bucket} ({n} interviews)',
+  'pm.market.notAsked': 'Nobody asked',
+  'pm.market.landing': 'Landing test',
+  'pm.market.landingValue': '{signups} of {visitors} visitors signed up',
+  'pm.market.presale': 'Pre-sale',
+  'pm.market.presaleValue': '{commits} of {prospects} paid a deposit at {price}',
+  'pm.market.notTried': 'Not tried',
+  'pm.market.wtp': 'Would pay',
+  'pm.market.wtpValue': 'up to about {wtp} a month. You asked {price}.',
+  'pm.market.customers': 'Customers',
+  'pm.market.customersValue.one': '1, at {prices}',
+  'pm.market.customersValue.other': '{n}, at {prices}',
+  'pm.market.customersNone': 'None',
+  'pm.market.mustHave': 'Must haves',
+  'pm.market.feature': '{feature}: {mentions}, {shipped}',
+  'pm.market.mentionsNone': 'never mentioned',
+  'pm.market.mentions.one': 'mentioned once',
+  'pm.market.mentions.other': 'mentioned {n} times',
+  'pm.market.shippedWeek': 'shipped week {week}',
+  'pm.market.neverBuilt': 'never built',
+
+  'pm.misread.interviews_high.politeness':
+    '{segment} sounded {said}, but really it was {pain}. People were being polite. More interviews would not have fixed it; asking for a deposit would.',
+  'pm.misread.interviews_high.chance':
+    '{segment} sounded {said}, but really it was {pain}. Unlucky answers: more interviews would likely have shown it.',
+  'pm.misread.interviews_low.chance':
+    '{segment} sounded {said}, but really it was {pain}. Unlucky answers: more interviews would likely have shown it.',
+  'pm.misread.interviewsNeeded': 'About {n} in all would have done.',
+  'pm.misread.experiment.landing':
+    'Landing test for {segment}, week {week}: {observed} sign ups from {size} visitors, where about {normal} was normal. One more test would likely have shown it.',
+  'pm.misread.experiment.presale':
+    'Pre-sale for {segment}, week {week}: {observed} of {size} paid a deposit, where about {normal} was normal. One more batch would likely have shown it.',
+  'pm.misread.went_against':
+    'Your {evidence} put {ranked} first, and that was the real market. Most of your time ({hours} h) went to {focus} instead.',
+  'pm.misread.evidence.presale': 'pre-sales',
+  'pm.misread.evidence.landing': 'landing tests',
+  'pm.misread.evidence.interviews': 'interviews',
+  'pm.misread.none': 'Your evidence pointed the right way.',
+
+  'pm.activity.learning': 'Learning',
+  'pm.activity.building': 'Building',
+  'pm.activity.selling': 'Selling',
+  'pm.activity.admin': 'Admin',
+  'pm.activity.rest': 'Rest',
+  'pm.hours.summary': '{total} h in all, most of it {activity}.',
+  'pm.hours.share': '{activity} {percent}%',
+  'pm.hours.over.one': 'One week above {base} h.',
+  'pm.hours.over.other': '{n} weeks above {base} h.',
+  'pm.hours.overNone': 'No week above {base} h.',
+  'pm.hours.focus': '{hours} h of selling went to {segment}.',
+
+  'pm.money.summaryEmpty': 'Savings gone by week {week}. Customers paid {paid} in all.',
+  'pm.money.summaryLeft': 'Savings left: {left}. Customers paid {paid} in all.',
+  'pm.money.savings': 'Your savings at the start: {start}.',
+  'pm.money.savingsEmpty': 'Gone by week {week}, {living} of it on rent and food.',
+  'pm.money.savingsLeft': '{living} of it went on rent and food.',
+  'pm.money.moved': 'Put into the company: {total} ({you} by you, {auto} automatically).',
+  'pm.money.movedNone': 'Put into the company: nothing.',
+  'pm.money.draw': 'The company paid your living costs after that: {amount}.',
+  'pm.money.paid': 'Customers paid {amount} in all. Best month: {peak}.',
+  'pm.money.hire':
+    'Your {role} cost {cost} and brought in {n} customers, {per} each. A customer was worth about {value}.',
+  'pm.money.hireNone': 'Your {role} cost {cost} and brought in no customers.',
+
+  'pm.luck.trial':
+    'Trials in {segment}: {observed} of {tries} became customers. About {expected} is normal.',
+  'pm.luck.demo':
+    'Demos in {segment}: {observed} of {tries} turned into trials. About {expected} is normal.',
+  'pm.luck.lead_demo':
+    'Leads in {segment} who agreed to a demo: {observed}. About {expected} is normal.',
+  'pm.luck.leads': 'Outreach to {segment} found {observed} leads. About {expected} is normal.',
+  'pm.luck.churn': 'Customers in {segment} who left: {observed}. About {expected} is normal.',
+  'pm.luck.never_pays': 'Invoices in {segment} never paid: {observed}. About {expected} is normal.',
+  'pm.luck.message': 'Inbox gambles: {observed} of {tries} came off. About {expected} is normal.',
+  'pm.luck.landing': 'Landing test in {segment}: {observed} sign ups. About {expected} is normal.',
+  'pm.luck.presale': 'Pre-sale in {segment}: {observed} deposits. About {expected} is normal.',
+  'pm.luck.changedChoice': 'This changed which market looked best.',
+  'pm.luck.helped': 'In your favour.',
+  'pm.luck.hurt': 'Against you.',
+  'pm.luck.even': 'Luck roughly evened out. The result came from the decisions.',
+  'pm.luck.against.one': 'Luck cost you about one customer.',
+  'pm.luck.against.other': 'Luck cost you about {n} customers.',
+  'pm.luck.for.one': 'Luck gave you about one extra customer.',
+  'pm.luck.for.other': 'Luck gave you about {n} extra customers.',
+  'pm.luck.wouldChange.loss':
+    'With average luck, revenue would have covered the costs. This one was bad luck.',
+  'pm.luck.wouldChange.win': 'Without that luck, revenue would not have covered the costs.',
+  'pm.luck.wouldNotChange': 'Average luck would not have changed the ending.',
+  'pm.luck.nothing': 'No chance outcome stood out.',
+
+  'pm.next.compare_markets':
+    'Before you commit to a market, ask a few people in each for a deposit. Compare deposits, not compliments.',
+  'pm.next.talk_more':
+    'You chose your market after only a few conversations. Next time, talk to more people there before you build.',
+  'pm.next.watch_energy':
+    'Watch the energy line in your week. Below 30 everything works less well, and rest is cheaper than burning out.',
+  'pm.next.listen_features':
+    'Your market kept naming features you never built. Count what people mention without being asked.',
+  'pm.next.check_price':
+    'Your price was above what your market would pay. Watch how trials end: people who like the demo and still say no are telling you about the price.',
+  'pm.next.watch_churn':
+    'Customers left nearly as fast as they came. Watch who leaves and when: bugs and missing features show up there first.',
+  'pm.next.hire_cost':
+    'Your hire cost more per customer than a customer was worth. Look at what each customer brings in before adding a salary.',
+  'pm.next.chase_invoices':
+    'Several invoices were never paid. Look at the overdue list each week; a reminder costs an hour.',
+  'pm.next.raise_price':
+    'Your customers would have paid far more than you asked. Next time, raise the price in steps and watch how trials end.',
+  'pm.next.sooner':
+    'It worked. Next time, look at how many weeks it took to cover your costs, and try to get there sooner.',
+  'pm.next.sample_sizes': 'Look at how many people stood behind each signal before you trusted it.',
 } satisfies Record<string, LabelEntry>
 
 export type LabelKey = keyof typeof labels

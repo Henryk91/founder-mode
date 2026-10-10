@@ -271,6 +271,8 @@ describe('results', () => {
         monthlyRevenueCents: 0,
         customers: 0,
         runwayWeeks: null,
+        energyEnd: 80,
+        hours: { learning: 0, building: 0, selling: 0, admin: 0, rest: 0 },
       },
       ending: null,
     }
@@ -291,7 +293,7 @@ describe('results', () => {
     expect(notableMoments(report, later).map((m) => m.id)).toEqual(['hire_started'])
   })
 
-  it('shows the ending as its own step, then the week and the way back', () => {
+  it('shows the ending as its own step, then the post-mortem', () => {
     const store = run('the-end')
     while (store.getState().view!.status === 'running') {
       store.getState().endWeek()
@@ -299,12 +301,12 @@ describe('results', () => {
     }
     const ending = text(store)
     expect(ending).toContain('The run is over')
-    expect(ending).toContain('See the last week')
-    expect(ending).not.toContain('Back to start')
+    expect(ending).toContain('What happened')
+    expect(ending).not.toContain('Same market again')
     store.getState().nextMoment()
     const after = text(store)
-    expect(after).toContain('Back to start')
-    expect(after).toContain('Money')
+    expect(after).toContain('Same market again')
+    expect(after).toContain('Next time')
   })
 })
 
