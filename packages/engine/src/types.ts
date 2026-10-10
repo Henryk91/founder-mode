@@ -70,6 +70,19 @@ export type GameState = {
   eventLog: LoggedEvent[]
   /** Milestones reached, in the order they were reached. */
   milestones: ReachedMilestone[]
+  /** Lasting effects that change the rules while they last, such as an office's. */
+  modifiers: Modifier[]
+}
+
+/**
+ * A lasting change to the rules: energy every week, and outreach response per channel. Added and
+ * replaced by effects (an office move replaces the office's modifier), never by time.
+ */
+export type Modifier = {
+  id: string
+  source: 'office'
+  energyPerWeek: number
+  channelFactors: Partial<Record<ChannelId, number>>
 }
 
 export type ReachedMilestone = { id: string; week: number }
@@ -109,6 +122,8 @@ export type CompanyState = {
   priceCentsPerMonth: number
   fixedCosts: FixedCost[]
   uiStage: UiStage
+  /** Id of the scenario office stage the company works from. */
+  officeStage: string
 }
 
 export type FeatureProgress = {
@@ -512,6 +527,8 @@ export type PlayerView = {
      */
     runwayWeeks: number | null
     uiStage: UiStage
+    /** Where the company works: an office stage of the scenario. */
+    officeStage: { id: string; name: string }
     /** The next month end, this week included: fixed costs go out and invoices are sent. */
     nextMonthEndWeek: number
   }
@@ -556,6 +573,8 @@ export type PlayerView = {
   /** Sum of the monthly prices of active customers. */
   monthlyRevenueCents: number
   segments: SegmentView[]
+  /** Demos held so far (by anyone) and how many of them became trials. Observed, not odds. */
+  funnel: { demosHeld: number; trialsFromDemos: number }
   milestones: {
     reached: MilestoneView[]
     /** The first milestone on the bar not reached yet, null when all are. */
@@ -739,6 +758,8 @@ export type WeekReport = {
   ending: EndingId | null
   /** Milestones reached this week, in scenario order. */
   milestones: MilestoneView[]
+  /** True in the one week the UI turned organised, so the results can say so once. */
+  uiStageChanged: boolean
 }
 
 export type LeadChange =

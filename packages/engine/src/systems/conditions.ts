@@ -13,6 +13,7 @@ export function hasHire(state: Pick<GameState, 'team'>): boolean {
 const METRICS: Record<ConditionPath, (state: GameState) => number> = {
   week: (s) => s.week,
   'customers.count': (s) => activeCustomers(s).length,
+  'customers.won': (s) => s.customers.length,
   'customers.churned': (s) => s.customers.filter((c) => c.churnedWeek !== null).length,
   'leads.open': (s) => s.scenario.segments.reduce((sum, seg) => sum + openLeadCount(s, seg.id), 0),
   'leads.waitingForDemo': (s) => s.leads.filter(canBookDemo).length,

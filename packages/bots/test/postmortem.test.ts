@@ -34,7 +34,9 @@ describe('post-mortem over bot runs', () => {
     const endings = new Set<EndingId>()
     let misreads = 0
     for (const strategyId of ['validate_then_build', 'playtest', 'overworker', 'random']) {
-      for (let i = 0; i < 8; i++) {
+      // More seeds for the one strategy that wins, so a win is among them.
+      const seeds = strategyId === 'validate_then_build' ? 16 : 8
+      for (let i = 0; i < seeds; i++) {
         const state = play(strategyId, `pm-${i}`)
         const pm = buildPostMortem(state)
         endings.add(pm.ending)

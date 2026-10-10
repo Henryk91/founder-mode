@@ -15,6 +15,7 @@ import { committedHours } from './founder'
 import { isOverdue, nudgeInvoice } from './invoices'
 import { OddsTally } from './odds'
 import { qualityFor } from './product'
+import { moveOffice } from './office'
 import { addLeads } from './sales'
 
 /** What resolving messages adds to the week besides changes to the state. */
@@ -200,6 +201,8 @@ function applyEffect(
     case 'lostHours':
       out.lostHours += effect.hours
       return state
+    case 'moveOffice':
+      return moveOffice(state, effect.stage)
     case 'fixedCost': {
       if (state.company.fixedCosts.some((c) => c.id === effect.id)) return state
       const cost = { id: effect.id, name: effect.name, monthlyCents: effect.monthlyCents }
@@ -233,6 +236,8 @@ function sender(state: GameState, event: ScenarioEvent, rng: Rng) {
 function eligibleEvents(state: GameState, taken: ReadonlySet<string>): ScenarioEvent[] {
   return state.scenario.events.filter((e) => {
     if (taken.has(e.id)) return false
+    // Triggered events arrive on their own (see `drawMessages`), never through the draw.
+    if (e.trigger.length > 0) return false
     const drawn = state.drawnEvents.filter((d) => d.eventId === e.id)
     if (e.once && drawn.length > 0) return false
     const cooldown = e.cooldownWeeks ?? state.scenario.inbox.cooldownWeeks
@@ -255,7 +260,18 @@ export function drawMessages(state: GameState, rng: Rng): GameState {
   const taken = new Set<string>()
   const added: Message[] = []
   const drawn: { eventId: string; week: number }[] = []
-  let open = state.inbox.filter((m) => m.status === 'open').length
+  let open = state.inbox.filter((m) => m.status === 'open' && !isTriggered(state, m)).length
+  // Triggered events arrive for sure the first week any trigger holds. They sit outside the
+  // draw: they never count as open messages for it and are made after it, so they never change
+  // which events are drawn.
+  const triggered = state.scenario.events.filter(
+    (e) =>
+      e.trigger.length > 0 &&
+      e.once &&
+      !state.drawnEvents.some((d) => d.eventId === e.id) &&
+      conditionsHold(state, e.when) &&
+      e.trigger.some((t) => conditionsHold(state, [t])),
+  )
   for (let slot = 0; slot < cfg.maxPerWeek && open < cfg.openLimit; slot++) {
     if (!rng.chance(cfg.drawChance)) continue
     const eligible = eligibleEvents(state, taken)
@@ -283,6 +299,11 @@ export function drawMessages(state: GameState, rng: Rng): GameState {
         added.push(makeMessage(state, event, from, arrival, 0))
       }
     }
+  }
+  for (const event of triggered) {
+    const from = sender(state, event, rng)
+    drawn.push({ eventId: event.id, week: arrival })
+    added.push(makeMessage(state, event, from, arrival, added.length))
   }
   if (added.length === 0) return state
   return {
@@ -325,11 +346,29 @@ function makeMessage(
         0,
       ),
       monthlyCostCents: c.effects.reduce(
-        (sum, e) => sum + (e.type === 'fixedCost' ? e.monthlyCents : 0),
+        (sum, e) =>
+          sum +
+          (e.type === 'fixedCost'
+            ? e.monthlyCents
+            : e.type === 'moveOffice'
+              ? officeRentChange(state, e.stage)
+              : 0),
         0,
       ),
     })),
     status: 'open',
     choiceId: null,
   }
+}
+
+/** What a move adds to the monthly costs: the new stage's rent minus the current one. */
+function officeRentChange(state: GameState, stageId: string): number {
+  const rent = (id: string) =>
+    state.scenario.officeStages.find((o) => o.id === id)?.monthlyCents ?? 0
+  return Math.max(0, rent(stageId) - rent(state.company.officeStage))
+}
+
+/** A message from an event that arrives by trigger rather than by the draw. */
+function isTriggered(state: GameState, m: Message): boolean {
+  return (state.scenario.events.find((e) => e.id === m.eventId)?.trigger.length ?? 0) > 0
 }

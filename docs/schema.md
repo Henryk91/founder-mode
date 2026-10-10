@@ -703,3 +703,13 @@ type PostMortem = {
 - `GameState.milestones: { id, week }[]`, in the order reached. `checkMilestones(state)` runs after the ending check in `endWeek` (step 11 after 12): a week counts as survived once it is over, unless it ended the run in bankruptcy, burnout or a shut down.
 - `WeekReport.milestones: MilestoneView[]` (`{ id, name, week }`) reached that week. `PlayerView.milestones: { reached: MilestoneView[]; next: NextMilestoneView | null }` with `NextMilestoneView = { id, name, unit: 'count' | 'cents' | 'weeks', current, target }`, the first milestone on the bar not yet reached. `PostMortem.milestones: MilestoneView[]`.
 - Milestones are derived from the actions, so saves replay to the same milestones; the scenario fingerprint changes, so saves from before get the "retuned" notice.
+
+### Phase 7 part 3: coworking desk and organised stage (engine 0.9.0)
+
+- `ENGINE_VERSION` 0.9.0: the offer arrives for sure and accepting changes rules, so old saves no longer replay the same.
+- Content: `Scenario.officeStages: { id, name, monthlyCents, energyPerWeek (default 0), channelFactors: Partial<Record<ChannelId, number>> }[]`, the first being the start. `Scenario.organisedAt: string[]`, milestone ids. Events gained `trigger: Condition[]` (default none): such an event (must be `once`) arrives for sure in the first week any trigger holds and `when` holds, never through the draw. New effect `{ type: 'moveOffice', stage }`. New condition path `customers.won` (customers ever won).
+- `GameState.company.officeStage` (stage id) and `GameState.modifiers: Modifier[]` with `Modifier = { id, source: 'office', energyPerWeek, channelFactors }`. `moveOffice(state, stage)` (`systems/office.ts`) puts the stage's rent under the fixed cost id `office` and replaces the office modifier. Each week `energyPerWeek(state)` is added to the energy change before the 0 to max clamp (`applyFounderWeek`); outreach response is multiplied by `channelFactor(state, channel)`.
+- Triggered messages sit outside the draw: they do not count as open messages for `openLimit` or the quiet-week guarantee, and are made after the draw, so they never change which events are drawn.
+- `MessageChoice.monthlyCostCents` counts what a move adds: the new stage's rent minus the current one.
+- `uiStage` turns `organised` in the week the first `organisedAt` milestone is reached (after milestones in `endWeek`). `WeekReport.uiStageChanged` is true in that week only.
+- `PlayerView.company.officeStage: { id, name }`; `PlayerView.funnel: { demosHeld, trialsFromDemos }` counted from the demo outcomes that happened (shown in the organised pipeline).

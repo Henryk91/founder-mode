@@ -279,6 +279,7 @@ describe('results', () => {
         { id: 'first_customer', name: 'First paying customer', week: 9 },
         { id: 'first_hire', name: 'First hire', week: 9 },
       ],
+      uiStageChanged: false,
     }
     const moments = notableMoments(report, view)
     expect(moments.map((m) => m.id)).toEqual(['first_customer'])

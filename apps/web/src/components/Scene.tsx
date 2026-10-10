@@ -6,12 +6,9 @@ import s from './Scene.module.css'
 /** The office stages of docs/scenario-kantino.md section 9. */
 export type OfficeStage = 'kitchen_table' | 'coworking_desk'
 
-/**
- * Where the company works. The engine has no office stage yet: the coworking desk arrives with
- * its inbox event in a later phase, so until then every run stays at the kitchen table.
- */
-export function officeStage(): OfficeStage {
-  return 'kitchen_table'
+/** Where the company works, from the engine. A stage without a drawing shows the kitchen table. */
+export function officeStage(view: PlayerView): OfficeStage {
+  return view.company.officeStage.id === 'coworking_desk' ? 'coworking_desk' : 'kitchen_table'
 }
 
 type Figure = { name: string; status: string }
@@ -63,7 +60,7 @@ export function Scene(props: { stage?: OfficeStage }) {
   const planned = useGame((st) => st.plannedHours)
   if (!view) return null
   const ui = view.company.uiStage
-  const office = props.stage ?? officeStage()
+  const office = props.stage ?? officeStage(view)
   const data = sceneData(view, planned)
   return (
     <div className={s.scene} role="img" aria-label={sceneLabel(office, data, ui)}>
@@ -82,7 +79,7 @@ export function SceneStrip() {
   const view = useGame((st) => st.view)
   if (!view) return null
   const ui = view.company.uiStage
-  const office = officeStage()
+  const office = officeStage(view)
   return (
     <div className={s.strip}>
       <svg className={s.stripSvg} viewBox="0 0 390 72" preserveAspectRatio="xMidYMid slice">

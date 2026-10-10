@@ -63,11 +63,14 @@ export function applyFounderWeek(
   scenario: Scenario,
   hours: number,
   restHours: number,
+  /** Energy from lasting modifiers, such as a better office. */
+  bonus = 0,
 ): FounderState {
   const rules = scenario.founder.energy
   const overtime = Math.max(0, hours - founder.baseHoursPerWeek)
   let delta = overtime * rules.perHourOverBase + restHours * rules.perRestHour
   if (overtime === 0) delta += rules.weekWithinBase
+  delta += bonus
   const energy = Math.min(rules.max, Math.max(0, founder.energy + delta))
   const weeksAtZeroEnergy = energy === 0 ? founder.weeksAtZeroEnergy + 1 : 0
   return { ...founder, energy, weeksAtZeroEnergy }

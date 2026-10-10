@@ -62,6 +62,12 @@ export function getView(state: GameState): PlayerView {
       monthlyFixedCostsCents: monthlyFixedCostsCents(state),
       runwayWeeks: runwayWeeks(state),
       uiStage: company.uiStage,
+      officeStage: {
+        id: company.officeStage,
+        name:
+          scenario.officeStages.find((o) => o.id === company.officeStage)?.name ??
+          company.officeStage,
+      },
       nextMonthEndWeek:
         Math.ceil(state.week / scenario.finance.weeksPerMonth) * scenario.finance.weeksPerMonth,
     },
@@ -204,6 +210,7 @@ export function getView(state: GameState): PlayerView {
       ),
       lastChannel: lastChannel(state, seg.id),
     })),
+    funnel: demoFunnel(state),
     milestones: { reached: reachedMilestones(state), next: nextMilestone(state) },
     history: state.ledger.map((l) => ({
       week: l.week,
@@ -282,4 +289,16 @@ export function interviewView(state: GameState, e: InterviewEvidence): Interview
       ? { id: feature.id, name: feature.name, quote: feature.mention }
       : null,
   }
+}
+
+/** Demos held and the trials they became, counted from what happened. */
+function demoFunnel(state: GameState): PlayerView['funnel'] {
+  let demosHeld = 0
+  let trialsFromDemos = 0
+  for (const e of state.eventLog) {
+    if (e.kind !== 'odds' || e.odds !== 'demo') continue
+    demosHeld += e.tries
+    trialsFromDemos += e.observed
+  }
+  return { demosHeld, trialsFromDemos }
 }

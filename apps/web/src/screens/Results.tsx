@@ -234,6 +234,15 @@ function WeekSummary({ report, view }: { report: WeekReport; view: PlayerView })
   return (
     <>
       <h2 className={styles.hand}>{label('results.title', stage, { week: report.week })}</h2>
+      {report.uiStageChanged && (
+        <section
+          className={`${styles.card} ${styles.sticky}`}
+          aria-label={label('results.organised.title', stage)}
+        >
+          <h3 className={styles.paperHead}>{label('results.organised.title', stage)}</h3>
+          <p>{label('results.organised.text', stage)}</p>
+        </section>
+      )}
       {report.milestones.length > 0 && (
         <section
           className={`${styles.card} ${styles.sticky}`}

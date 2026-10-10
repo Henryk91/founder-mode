@@ -9,6 +9,7 @@ import { applyChurn, applySales } from './systems/sales'
 import { applyTeam, teamOutput } from './systems/team'
 import { checkEnding } from './systems/endings'
 import { checkMilestones } from './systems/milestones'
+import { energyPerWeek } from './systems/office'
 import type { GameState, ReportEntry, WeekPlan, WeekReport } from './types'
 import { interviewView } from './view'
 
@@ -52,7 +53,13 @@ export function endWeek(
   const energyBefore = input.founder.energy
   state = {
     ...state,
-    founder: applyFounderWeek(state.founder, state.scenario, hours, plan.restHours),
+    founder: applyFounderWeek(
+      state.founder,
+      state.scenario,
+      hours,
+      plan.restHours,
+      energyPerWeek(state),
+    ),
   }
 
   // 4. Experiments: interviews now, landing page tests and pre-sales start and report when due
@@ -125,6 +132,11 @@ export function endWeek(
   if (ending) state = { ...state, status: 'ended', ending }
   const milestones = checkMilestones(state)
   state = milestones.state
+  // The one UI upgrade (plan section 4.12): organised at the first of the scenario's milestones.
+  const organise =
+    state.company.uiStage === 'scrappy' &&
+    state.milestones.some((m) => state.scenario.organisedAt.includes(m.id))
+  if (organise) state = { ...state, company: { ...state.company, uiStage: 'organised' } }
 
   // 13. Inbox events for next week
   if (state.status === 'running') state = drawMessages(state, rng)
@@ -140,6 +152,7 @@ export function endWeek(
     ledger: state.ledger.at(-1) ?? finance.ledger,
     ending,
     milestones: milestones.reached,
+    uiStageChanged: organise,
   }
   state = {
     ...state,

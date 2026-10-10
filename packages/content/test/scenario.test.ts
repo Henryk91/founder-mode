@@ -133,7 +133,9 @@ describe('content', () => {
                 ? [eur(fx.amountCents)]
                 : fx.type === 'fixedCost'
                   ? [eur(fx.monthlyCents)]
-                  : [],
+                  : fx.type === 'moveOffice'
+                    ? [eur(s.officeStages.find((o) => o.id === fx.stage)!.monthlyCents)]
+                    : [],
             ),
           ),
         )
@@ -141,6 +143,45 @@ describe('content', () => {
           expect([e.id, amounts.has(m[0])]).toEqual([e.id, true])
         }
       }
+    })
+
+    it('offers the coworking desk once, for sure, from week 8 or after the first customer', () => {
+      const desk = s.events.find((e) => e.id === 'coworking_desk')!
+      expect(desk.once).toBe(true)
+      expect(desk.trigger).toEqual([
+        { path: 'week', op: '>=', value: 7 },
+        { path: 'customers.won', op: '>=', value: 1 },
+      ])
+      const move = desk.choices.find((c) => c.id === 'move')!.effects[0]!
+      expect(move).toMatchObject({ type: 'moveOffice', stage: 'coworking_desk' })
+      expect(desk.choices.find((c) => c.id === desk.defaultChoice)!.effects).toEqual([])
+      const stage = s.officeStages.find((o) => o.id === 'coworking_desk')!
+      expect(stage).toMatchObject({
+        monthlyCents: 22_500,
+        energyPerWeek: 1,
+        channelFactors: { in_person: 1.3, phone: 1.15, cold_email: 1.15 },
+      })
+      expect(s.officeStages[0]!.id).toBe('kitchen_table')
+    })
+
+    it('refuses a triggered event that is not once, an unknown office stage, or an unknown milestone', () => {
+      const base = scenarioSources('kantino')
+      const founder = base.events.founder.replace(
+        'once: true\n    trigger:',
+        'once: false\n    cooldownWeeks: 4\n    trigger:',
+      )
+      expect(() => parseScenario({ ...base, events: { ...base.events, founder } })).toThrow(
+        /triggered event must be once/,
+      )
+      const moved = base.events.founder.replace('stage: coworking_desk', 'stage: penthouse')
+      expect(() => parseScenario({ ...base, events: { ...base.events, founder: moved } })).toThrow(
+        /unknown office stage penthouse/,
+      )
+      const scenario = base.scenario.replace(
+        'organisedAt: [first_hire, covers_company_costs]',
+        'organisedAt: [first_unicorn]',
+      )
+      expect(() => parseScenario({ ...base, scenario })).toThrow(/unknown milestone first_unicorn/)
     })
 
     it('gives every event a look, and uses all three', () => {

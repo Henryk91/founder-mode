@@ -6,6 +6,34 @@
 # look: letter (default), note for something personal, official for banks and offices.
 # Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
 events:
+  # The office stage move (spec section 9). It arrives for sure, once, from week 8 or after the
+  # first paying customer, whichever comes first. Conditions are checked at the end of the week
+  # before a message arrives, so `week >= 7` puts it on the desk in week 8. Its monthly cost and
+  # effects are the stage's.
+  - id: coworking_desk
+    area: founder
+    weight: 1
+    once: true
+    trigger: [week >= 7, customers.won >= 1]
+    from: none
+    sender: Werkraum Ost, coworking
+    look: letter
+    text: >-
+      A desk by the window has come free at Werkraum Ost, 225 EUR a month. Proper chairs,
+      coffee that someone else cleans up after, and forty people who might know an office
+      manager. Your kitchen table would get its breakfasts back.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the desk
+        hours: 2
+        effects:
+          - { type: moveOffice, stage: coworking_desk }
+      - id: stay
+        label: Stay at the kitchen table
+        hours: 0
+        effects: []
+
   - id: bad_sleep
     area: founder
     weight: 2

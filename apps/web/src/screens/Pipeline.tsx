@@ -1,4 +1,4 @@
-import type { LeadStage, LeadView } from '@founder-mode/engine'
+import type { LeadStage, LeadView, PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { count, label, type LabelKey } from '../labels'
 import { useGame } from '../useGame'
@@ -87,6 +87,7 @@ export function Pipeline() {
     <>
       <section className={board.board} aria-label={label('pipeline.title', stage)}>
         <h2 className={board.title}>{label('pipeline.title', stage)}</h2>
+        {stage === 'organised' && <DemoToTrial view={view} />}
         {open.length === 0 && view.customers.length === 0 ? (
           <p className={board.empty}>{label('pipeline.empty', stage)}</p>
         ) : (
@@ -162,4 +163,21 @@ export function Pipeline() {
 
 function tilt(i: number): React.CSSProperties {
   return { transform: `rotate(calc(var(--board-card-tilt) * ${TILTS[i % TILTS.length]}deg))` }
+}
+
+/** The organised stage's one new number: how many demos turned into trials. Observed, not odds. */
+function DemoToTrial({ view }: { view: PlayerView }) {
+  const stage = view.company.uiStage
+  const { demosHeld, trialsFromDemos } = view.funnel
+  return (
+    <p className={board.rate}>
+      {demosHeld === 0
+        ? label('pipeline.demoToTrialNone', stage)
+        : label('pipeline.demoToTrial', stage, {
+            percent: Math.round((100 * trialsFromDemos) / demosHeld),
+            trials: trialsFromDemos,
+            demos: demosHeld,
+          })}
+    </p>
+  )
 }

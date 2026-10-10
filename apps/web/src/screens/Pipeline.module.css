@@ -121,3 +121,12 @@
     display: none;
   }
 }
+
+/* Organised stage: demo to trial conversion under the title. */
+.rate {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--board-ink);
+}
