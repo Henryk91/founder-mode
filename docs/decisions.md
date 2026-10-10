@@ -221,3 +221,16 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Tuning round 2: referral chance 0.11 x fit (was 0.08); contractors in person 0.05 to 0.10 (was 0.04 to 0.09). Referrals bring 19% of customers in winning runs, well under the 40% cap.
 - Tuning round 3: small crews in person 0.06 to 0.12 (was 0.07 to 0.14), contractors phone 0.06 to 0.12 (was 0.055 to 0.11); offline mode in `cellar_signal` is a 10 h build that brings a bug (the reader explains instead); the thesis interviews in `master_project` cost 3 energy; leaving Zollstock's receipts risks 750 EUR (Kantino 600).
 - After three rounds Zollstock meets every target but 11 (blind effort +4.8) and the landing part of 13 (-1.0 points). Kantino's report is unchanged throughout.
+
+## After part C: events round and post-mortem line
+
+- Post-mortem: a scenario whose landing signal is weak by design carries `postMortemNotes.weakLanding` in its content (Zollstock: "In this market people rarely answer adverts, so the landing test told you little either way."). The three markets section shows it, as "About that test", for every market that had a landing test. Kantino carries none, so it shows nothing and its fingerprint is unchanged.
+
+- Events round (crash_report, apprentice_setup, guild_evening, the shared regional_grant), tried and reverted. Each effortful answer was made to pay only in the situation its text named (a long bug list, a full pipeline, something shipped, nearly out of money), with the reader following the texts. Blind effort did not fall: on the `test` seeds Zollstock went from +4.8 to +5.5, and Kantino, through the shared grant alone, from +3.9 to +4.6, failing its target 11. On 3000 seeds (`test`, `check`, `pol`), Zollstock's blind effort rose from +5.9 to +7.0 and the careful reader fell from 31.2% to 26.4%; Kantino's effort moved from +3.4 to +3.0. Measuring each event's share (the blind policy with one event left to its default, 1500 seeds) gave at most 1.5 points per event, about the noise of one changed roll, and after the changes the four were neutral or against the blind policy. Zollstock's excess is spread over many events, because leads and kept customers are worth more there, not concentrated in a few. Target 11 for Zollstock stays failing at +4.8 on the `test` seeds.
+
+### For Phase 8
+
+- Target 11 is judged on 1000 seeds, where one changed roll moves it by about 1.5 points. Judge it on 3000 seeds (Kantino +3.4, Zollstock +5.9 today), then do a wider pass over Zollstock's events rather than a few.
+
+- The trades yard desk is worth about +20 points to the careful bot when small crews are viable (z 7.0), about twice Kantino's desk (+10.7). Check whether it dominates the run: how often the winning runs in small crews are won by walk-ins, and whether a run that takes it ever needs another channel.
+- Kantino's careful bot still stops pre-selling at the first deposit (`presales: 'refute'`); Zollstock's uses every allowed batch (`'all'`). Align them in the Phase 8 balance pass and retune Kantino if needed.

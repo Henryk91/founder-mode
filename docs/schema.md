@@ -746,3 +746,8 @@ type PostMortem = {
 - `PostMortem.sources: { key, leads, customers }[]`: keys `outreach:<channel>`, `team:<channel>`, `landing`, `presale`, `inbox`, `walk_in`, `referral`; most customers first.
 - Scene: drawing `trades_yard`.
 - Bots: `RunResult.roles` (every segment's role, report only). `BotArgs.desk` and `deskComparison(scenario, runs, seedPrefix)` (`desk.ts`). `BOT_SCENARIOS.zollstock`. The reader's Zollstock table maps each event to its Kantino twin (`ZOLLSTOCK_TWINS`).
+
+### After part C: post-mortem landing line (engine 0.10.0, no replay change)
+
+- Content: `Scenario.postMortemNotes?: { weakLanding?: string }`, read from `messages/intro.yaml`. Set only where the landing signal is weak by design (Zollstock); absent in Kantino, whose fingerprint is unchanged.
+- `PostMortem.notes: { weakLanding: string | null }`. The markets section shows it ("About that test") for every market with a landing test.

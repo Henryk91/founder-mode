@@ -1015,3 +1015,7 @@ Still failing after three rounds:
 - Target 13, landing tests: switching them off costs 1.0 point (target 2). Zollstock's landing test is half as informative by design (spec section 5), and the careful bot drops a market on one noisy test below a fixed bar. The relative rule planned for Phase 8 should fix the bot side; if landing tests stay weak, the target may need to say "at least 2 points where the scenario makes them informative".
 
 Also worth knowing: in winning runs referrals bring 19.1% of customers (largest source in person, 27.1%); the first paying customer comes in week 5; the inbox runs dry in 0.1% of validate_then_build and presale_max runs (week 59). The desk after tuning, taken against declined: small crews viable +20.1 (z 7.0), mediocre -7.7 (z -2.9), trap -10.5 (z -3.8). It clearly helps and hurts as intended, perhaps more strongly than Kantino's (+10.7 / -13.6 / -9.6); the viable markets' spread holds at 12.7 because the reader only takes it when its evidence puts small crews first.
+
+### After part C: events round, reverted (no change to this report)
+
+Four events (crash_report, apprentice_setup, guild_evening, the shared regional_grant) were made situational to bring blind effort under 4. It rose instead: Zollstock +4.8 to +5.5 on the `test` seeds (+5.9 to +7.0 on 3000 seeds, reading 31.2% to 26.4%), and Kantino's target 11 failed at +4.6 through the shared grant. Reverted; both reports above stand. Details in `docs/decisions.md`.

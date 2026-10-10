@@ -1023,6 +1023,11 @@ export type PostMortem = {
     features: Record<FeatureId, string>
     buckets: Record<BucketId, string>
   }
+  /**
+   * Scenario text for the markets section. `weakLanding`: shown with every market that had a
+   * landing test, when the scenario's landing signal is weak by design; null otherwise.
+   */
+  notes: { weakLanding: string | null }
   cause: PostMortemCause
   /** Milestones reached over the run, in the order they were reached. */
   milestones: MilestoneView[]
