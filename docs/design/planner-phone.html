@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Planner proposal, phone</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&family=Caveat:wght@500;700&display=swap">
+<style>
+body{margin:0}
+button{font-family:inherit;cursor:pointer}
+.nb{background-color:#FBFCFD;background-image:repeating-linear-gradient(#FBFCFD 0 43px,#D9E3EA 43px 44px);border-left:10px solid #17212B;box-shadow:0 3px 0 #0E1F1E;border-radius:4px}
+.row{height:44px;display:flex;align-items:flex-end;gap:10px;padding:0 12px;box-sizing:border-box}
+.in{padding-left:34px}
+.hand{font-family:'Caveat',cursive;line-height:1;padding-bottom:7px;white-space:nowrap}
+.t0{font-weight:700;font-size:30px;color:#17212B}
+.t1{font-weight:700;font-size:26px;color:#17212B}
+.t2{font-weight:500;font-size:21px;color:#4B5A68;overflow:hidden;text-overflow:ellipsis}
+.lab{font-weight:500;font-size:23px;color:#17212B}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#17212B;padding-bottom:11px;white-space:nowrap}
+.grow{flex-grow:1;min-width:0}
+.arrow{font-size:13px;color:#17212B;padding-bottom:13px;width:14px}
+.step{align-self:center;display:flex;align-items:center}
+.sb{width:44px;height:44px;border:0;background:none;display:flex;align-items:center;justify-content:center;padding:0}
+.sb span{width:30px;height:30px;border-radius:15px;border:1.5px solid #7A8794;background:#FBFCFD;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;color:#17212B}
+.val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;min-width:30px;text-align:center}
+.pill{align-self:center;height:30px;padding:0 12px;border-radius:15px;border:1.5px solid #7A8794;background:#FBFCFD;font-weight:600;font-size:13px;color:#17212B}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #1D3836; font-family: 'IBM Plex Sans', sans-serif; color: #17212B; display: flex; flex-direction: column; overflow: hidden">
+
+<div style="height: 60px; flex-shrink: 0; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: #122624; color: #EAF2F0">
+<div><div style="font-weight: 700; font-size: 16px">Kantino</div><div style="font-size: 12px; color: #A8C2BE">Week 9 of 60</div></div>
+<div style="display: flex; gap: 8px"><button style="height: 44px; padding: 0 16px; border-radius: 22px; border: 2px solid #A8C2BE; background: none; color: #EAF2F0; font-weight: 700; font-size: 14px">Help</button><button style="height: 44px; padding: 0 18px; border: 0; border-radius: 22px; background: #FFD34D; color: #1B1500; font-weight: 700; font-size: 15px">End week</button></div>
+</div>
+<div style="height: 52px; flex-shrink: 0; padding: 0 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; background: #0E1F1E; color: #EAF2F0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">
+<div><div style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; color: #A8C2BE">CASH</div>€8,190</div>
+<div><div style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; color: #A8C2BE">RUNWAY</div>21 weeks</div>
+<div><div style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; color: #A8C2BE">REVENUE</div>€0</div>
+<div><div style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; color: #A8C2BE">CUSTOMERS</div>0</div>
+</div>
+
+<div style="flex-grow: 1; padding: 12px 12px 0; min-height: 0">
+<div class="nb">
+<div class="row"><span class="hand t0 grow">My week</span><span class="mono">41 of 50 h</span></div>
+<div class="row" style="align-items: center">
+<div style="flex-grow: 1; display: flex; height: 22px; border-radius: 11px; overflow: hidden; border: 1.5px solid #17212B; font-size: 11px; font-weight: 700; color: #FFFFFF">
+<div style="width: 20%; background: #2456D6"></div>
+<div style="width: 14%; background: #1B7A4B"></div>
+<div style="width: 48%; background: #5B3C8C; display: flex; align-items: center; padding-left: 8px">Learning 24 h</div>
+<div style="width: 18%; background: #FBFCFD; color: #17212B; display: flex; align-items: center; justify-content: center">free</div>
+</div>
+</div>
+<div class="row"><span class="hand lab grow">Energy 99 of 100</span><button class="pill">Same as last week</button></div>
+
+<div class="row"><span class="arrow">▾</span><span class="hand t1">Talk to people</span><span class="hand t2 grow">12 interviews</span><span class="mono">24 h</span></div>
+<div class="row in"><span class="hand lab grow">Small offices</span><div class="step"><button class="sb" aria-label="Less"><span>−</span></button><span class="val">4</span><button class="sb" aria-label="More"><span>+</span></button></div></div>
+<div class="row in"><span class="hand lab grow">Coworking spaces</span><div class="step"><button class="sb" aria-label="Less"><span>−</span></button><span class="val">4</span><button class="sb" aria-label="More"><span>+</span></button></div></div>
+<div class="row in"><span class="hand lab grow">Medical practices</span><div class="step"><button class="sb" aria-label="Less"><span>−</span></button><span class="val">4</span><button class="sb" aria-label="More"><span>+</span></button></div></div>
+<div class="row in"><span class="hand t2 grow" style="font-size: 19px">2 h each, answers at week end.</span><span class="hand t2" style="font-size: 19px; text-decoration: underline; color: #2456D6">more</span></div>
+
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Test the demand</span><span class="hand t2 grow">nothing yet</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Build and fix</span><span class="hand t2 grow">invoice export, bugs</span><span class="mono">7 h</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Find customers</span><span class="hand t2 grow">cold email, small offices</span><span class="mono">10 h</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Demos and follow ups</span><span class="hand t2 grow">none</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Hiring</span><span class="hand t2 grow">nobody yet</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Rest</span><span class="hand t2 grow">none</span></div>
+</div>
+</div>
+
+<div style="height: 64px; flex-shrink: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; text-align: center; background: #122624; color: #A8C2BE; font-size: 12px; font-weight: 600">
+<div>Inbox (3)</div><div style="color: #FFD34D; font-weight: 700">Plan</div><div>Who pays</div><div>Market</div><div>Money</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

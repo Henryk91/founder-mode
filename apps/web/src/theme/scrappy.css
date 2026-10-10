@@ -25,6 +25,8 @@
   --danger: #b3261e;
   --shadow: #0e1f1e;
   --focus: #2456d6;
+  /* Light border of steppers and pills; the tap target around them is 44 px. */
+  --control-line: #7a8794;
 
   /* Activity colours of the hours bar, white text on each. */
   --act-sales: #2456d6;

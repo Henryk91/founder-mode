@@ -110,17 +110,33 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
           }
         }
 
-        // Writing rests on its line: the baseline is the same distance from the top of every line.
-        const baselines: number[] = []
+        // Writing rests on its line: handwriting 37 px down (6 px above the rule), numbers 31.
+        const baselines: { mono: boolean; at: number }[] = []
         for (const el of notebook.querySelectorAll(
-          '[class*="_title_"], [class*="_sectionTitle_"], [class*="_label_"], [class*="_summary_"], [class*="_sub_"], [class*="_mono_"]',
+          '[class*="_title_"], [class*="_sectionTitle_"], [class*="_label_"], [class*="_summary_"], [class*="_hint_"], [class*="_sub_"], [class*="_mono_"]',
         )) {
           if (!el.textContent?.trim()) continue
           const probe = document.createElement('span')
           probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline'
           el.insertBefore(probe, el.firstChild)
-          baselines.push(probe.getBoundingClientRect().bottom - el.getBoundingClientRect().top)
+          baselines.push({
+            mono: /_mono_/.test(el.className),
+            at: probe.getBoundingClientRect().bottom - el.getBoundingClientRect().top,
+          })
           probe.remove()
+        }
+
+        // Controls: no "?" buttons, and every button has a tappable area of at least 44 x 44.
+        const questionMarks = [...notebook.querySelectorAll('button')].filter(
+          (b) => b.textContent?.trim() === '?',
+        ).length
+        const small: string[] = []
+        for (const b of notebook.querySelectorAll('button')) {
+          const r = b.getBoundingClientRect()
+          if (r.width === 0) continue
+          if (r.width < 43.5 || r.height < 43.5) {
+            small.push(`${b.textContent} ${r.width}x${r.height}`)
+          }
         }
 
         // In every row the label and its control share a vertical centre and sit together.
@@ -157,6 +173,8 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
           off,
           blocks,
           baselines,
+          questionMarks,
+          small,
           misaligned,
           gaps,
           rows,
@@ -173,9 +191,12 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
       expect(result.rows).toBeGreaterThanOrEqual(10)
       expect(result.misaligned).toEqual([])
       for (const b of result.baselines) {
-        expect(b).toBeGreaterThanOrEqual(30)
-        expect(b).toBeLessThanOrEqual(32)
+        const [lo, hi] = b.mono ? [30, 32] : [36, 38]
+        expect(b.at).toBeGreaterThanOrEqual(lo)
+        expect(b.at).toBeLessThanOrEqual(hi)
       }
+      expect(result.questionMarks).toBe(0)
+      expect(result.small).toEqual([])
       if (result.desk) {
         // Labels and controls sit together: no empty gulf between them.
         for (const gap of result.gaps) expect(gap).toBeLessThan(40)

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Planner proposal, desktop notebook</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&family=Caveat:wght@500;700&display=swap">
+<style>
+body{margin:0}
+button{font-family:inherit;cursor:pointer}
+.nb{background-color:#FBFCFD;background-image:repeating-linear-gradient(#FBFCFD 0 43px,#D9E3EA 43px 44px);border-left:12px solid #17212B;box-shadow:0 3px 0 #0E1F1E;border-radius:4px}
+.row{height:44px;display:flex;align-items:flex-end;gap:12px;padding:0 20px;box-sizing:border-box}
+.in{padding-left:46px}
+.hand{font-family:'Caveat',cursive;line-height:1;padding-bottom:6px;white-space:nowrap}
+.t0{font-weight:700;font-size:34px;color:#17212B}
+.t1{font-weight:700;font-size:28px;color:#17212B}
+.t2{font-weight:500;font-size:23px;color:#4B5A68}
+.lab{font-weight:500;font-size:24px;color:#17212B;width:220px;flex-shrink:0}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#17212B;padding-bottom:11px;white-space:nowrap}
+.grow{flex-grow:1;min-width:0}
+.arrow{font-size:14px;color:#17212B;padding-bottom:13px;width:14px}
+.step{align-self:center;display:flex;align-items:center;margin-right:14px}
+.sb{width:44px;height:44px;border:0;background:none;display:flex;align-items:center;justify-content:center;padding:0}
+.sb span{width:30px;height:30px;border-radius:15px;border:1.5px solid #7A8794;background:#FBFCFD;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;color:#17212B}
+.val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;min-width:44px;text-align:center}
+.pill{align-self:center;height:30px;padding:0 12px;border-radius:15px;border:1.5px solid #7A8794;background:#FBFCFD;font-weight:600;font-size:13px;color:#17212B}
+.on{background:#17212B;color:#FFFFFF;border-color:#17212B}
+</style>
+</helmet>
+<div style="width: 780px; height: 690px; box-sizing: border-box; background: #1D3836; padding: 18px; font-family: 'IBM Plex Sans', sans-serif; color: #17212B">
+<div class="nb">
+<div class="row"><span class="hand t0 grow">My week</span><span class="mono">41 of 50 h planned</span></div>
+<div class="row" style="align-items: center">
+<div style="flex-grow: 1; display: flex; height: 24px; border-radius: 12px; overflow: hidden; border: 1.5px solid #17212B; font-size: 12px; font-weight: 700; color: #FFFFFF">
+<div style="width: 20%; background: #2456D6; display: flex; align-items: center; padding-left: 10px">Sales 10 h</div>
+<div style="width: 14%; background: #1B7A4B; display: flex; align-items: center; padding-left: 10px">Building 7 h</div>
+<div style="width: 48%; background: #5B3C8C; display: flex; align-items: center; padding-left: 10px">Learning 24 h</div>
+<div style="width: 18%; background: #FBFCFD; color: #17212B; display: flex; align-items: center; justify-content: center">9 h free</div>
+</div>
+</div>
+<div class="row"><span class="hand t2" style="color: #17212B">Energy 99 of 100</span><span class="grow"></span><button class="pill">Same as last week</button></div>
+
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Talk to people</span><span class="hand t2 grow">12 interviews</span><span class="mono">24 h</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Test the demand</span><span class="hand t2 grow">nothing yet</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Build and fix</span><span class="hand t2 grow">invoice export for accounting, bug fixing</span><span class="mono">7 h</span></div>
+
+<div class="row"><span class="arrow">▾</span><span class="hand t1">Find customers</span><span class="hand t2 grow">cold email to small offices</span><span class="mono">10 h</span></div>
+<div class="row in"><span class="hand lab">Small offices</span><div class="step"><button class="sb" aria-label="Less"><span>−</span></button><span class="val">10 h</span><button class="sb" aria-label="More"><span>+</span></button></div><button class="pill on">Cold email</button><button class="pill">Phone</button><button class="pill">In person</button></div>
+<div class="row in"><span class="hand lab">Coworking spaces</span><div class="step"><button class="sb" aria-label="Less"><span>−</span></button><span class="val">0 h</span><button class="sb" aria-label="More"><span>+</span></button></div><button class="pill on">Cold email</button><button class="pill">Phone</button><button class="pill">In person</button></div>
+<div class="row in"><span class="hand lab">Medical practices</span><div class="step"><button class="sb" aria-label="Less"><span>−</span></button><span class="val">0 h</span><button class="sb" aria-label="More"><span>+</span></button></div><button class="pill on">Cold email</button><button class="pill">Phone</button><button class="pill">In person</button></div>
+<div class="row in"><span class="hand t2" style="font-size: 21px">Hours on one channel per market find leads. Channels wear out.</span><span class="hand t2" style="font-size: 21px; text-decoration: underline; color: #2456D6">more</span></div>
+
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Demos and follow ups</span><span class="hand t2 grow">none</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Hiring</span><span class="hand t2 grow">nobody yet, one hire allowed</span></div>
+<div class="row"><span class="arrow">▸</span><span class="hand t1">Rest</span><span class="hand t2 grow">none</span></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":780,"height":690}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

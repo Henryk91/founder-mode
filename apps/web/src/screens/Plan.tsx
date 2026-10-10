@@ -1,12 +1,11 @@
 import type { ChannelId, PlanIssue, PlayerView, WeekPlan } from '@founder-mode/engine'
-import { ExplainButton } from '../components/Explain'
 import { FounderNote } from '../components/FounderNote'
-import { Choices, Row, SubHeading, Writing } from '../components/Ruled'
+import { Choices, HintLine, Market, Row, SubHeading, Writing } from '../components/Ruled'
 import { Stepper } from '../components/Stepper'
 import { TeamPlan } from '../components/TeamPlan'
 import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type UiStage } from '../labels'
-import type { ExplainKey, PlanSection as SectionId } from '../store'
+import type { PlanSection as SectionId } from '../store'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 import plan from './Plan.module.css'
@@ -108,13 +107,13 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
   }
 }
 
-const SECTIONS: { id: SectionId; title: LabelKey; explain?: ExplainKey }[] = [
-  { id: 'talk', title: 'plan.section.talk', explain: 'talk' },
-  { id: 'test', title: 'plan.section.test', explain: 'test' },
-  { id: 'build', title: 'plan.section.build', explain: 'build' },
-  { id: 'sell', title: 'plan.section.sell', explain: 'sell' },
-  { id: 'demos', title: 'plan.section.demos', explain: 'demos' },
-  { id: 'team', title: 'plan.section.team', explain: 'hiring' },
+const SECTIONS: { id: SectionId; title: LabelKey }[] = [
+  { id: 'talk', title: 'plan.section.talk' },
+  { id: 'test', title: 'plan.section.test' },
+  { id: 'build', title: 'plan.section.build' },
+  { id: 'sell', title: 'plan.section.sell' },
+  { id: 'demos', title: 'plan.section.demos' },
+  { id: 'team', title: 'plan.section.team' },
   { id: 'rest', title: 'plan.section.rest' },
 ]
 
@@ -149,40 +148,30 @@ export function Plan() {
       <PlanNotes />
       <PlanHeader>
         <div className={plan.sections}>
-          {SECTIONS.map(({ id, title, explain }) => {
+          {SECTIONS.map(({ id, title }) => {
             const isOpen = open.includes(id)
             if (id === 'demos' && !hasDemosSection(view, draft)) return null
             const Body = bodies[id]
-            const toggleSection = () => toggle(id)
             return (
-              <section key={id} className={plan.section} aria-label={label(title, stage)}>
-                <div className={plan.sectionLine}>
-                  <button
-                    type="button"
-                    className={`${plan.toggle} ${plan.toggleTitle}`}
-                    aria-expanded={isOpen}
-                    aria-controls={`plan-${id}`}
-                    onClick={toggleSection}
-                  >
-                    <span className={plan.chevron} aria-hidden="true">
-                      {isOpen ? '▾' : '▸'}
-                    </span>
-                    <span className={plan.sectionTitle}>{label(title, stage)}</span>
-                  </button>
-                  {explain && <ExplainButton term={explain} />}
-                  <button
-                    type="button"
-                    className={`${plan.toggle} ${plan.toggleRest}`}
-                    aria-hidden="true"
-                    tabIndex={-1}
-                    onClick={toggleSection}
-                  >
-                    <span className={plan.summary}>{lines[id]}</span>
+              <section key={id} aria-label={label(title, stage)}>
+                <button
+                  type="button"
+                  className={plan.sectionLine}
+                  aria-expanded={isOpen}
+                  aria-controls={`plan-${id}`}
+                  onClick={() => toggle(id)}
+                >
+                  <span className={plan.arrow} aria-hidden="true">
+                    {isOpen ? '▾' : '▸'}
+                  </span>
+                  <span className={plan.sectionTitle}>{label(title, stage)}</span>
+                  <span className={plan.summary}>{lines[id]}</span>
+                  {hours[id] > 0 && (
                     <span className={`${plan.mono} ${plan.sectionHours}`}>
-                      {hours[id] > 0 ? label('unit.hours', stage, { n: hours[id] }) : ''}
+                      {label('unit.hours', stage, { n: hours[id] })}
                     </span>
-                  </button>
-                </div>
+                  )}
+                </button>
                 {isOpen && (
                   <div id={`plan-${id}`} className={plan.body}>
                     <Body />
@@ -304,9 +293,9 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
     <section className={plan.notebook} aria-label={label('plan.title', stage)}>
       <div className={plan.line}>
         <h2 className={plan.title}>{label('plan.title', stage)}</h2>
-        <ExplainButton term="hours" />
         <span className={`${plan.mono} ${plan.right} ${over ? plan.warnText : ''}`}>
-          {label(over ? 'plan.hoursOver' : 'plan.hours', stage, { planned, base })}
+          {label('plan.hours', stage, { planned, base })}
+          <span className={plan.suffix}>{label('plan.hours.planned', stage)}</span>
         </span>
       </div>
       <div className={plan.barRow}>
@@ -340,18 +329,15 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
           )}
         </div>
       </div>
-      <div className={`${plan.line} ${plan.wrap}`}>
-        <span className={plan.group}>
-          <span className={`${plan.label} ${lowEnergy ? plan.warnText : ''}`}>
-            {label('plan.energy', stage, {
-              energy: formatEnergy(founder.energy),
-              max: founder.maxEnergy,
-            })}
-          </span>
-          <ExplainButton term="energy" />
+      <div className={plan.line}>
+        <span className={`${plan.label} ${lowEnergy ? plan.warnText : ''}`}>
+          {label('plan.energy', stage, {
+            energy: formatEnergy(founder.energy),
+            max: founder.maxEnergy,
+          })}
         </span>
         {canRepeat && (
-          <button type="button" className={`${styles.button} ${plan.right}`} onClick={repeat}>
+          <button type="button" className={`${styles.chip} ${plan.right}`} onClick={repeat}>
             {label('plan.repeat', stage)}
           </button>
         )}
@@ -382,6 +368,12 @@ function TalkBody({ free }: { free: number }) {
           </Row>
         )
       })}
+      <HintLine
+        term="talk"
+        hint={label('plan.hint.talk', stage, {
+          hours: label('unit.hours', stage, { n: costs.interviewHours }),
+        })}
+      />
     </>
   )
 }
@@ -401,8 +393,10 @@ function TestBody({ free }: { free: number }) {
       {view.segments.map((seg) => {
         const budget = landing[seg.id] ?? 0
         return (
-          <Row key={seg.id} label={seg.name}>
-            {choices.map((cents) => {
+          <Market
+            key={seg.id}
+            label={seg.name}
+            choices={choices.map((cents) => {
               const on = budget === cents
               return (
                 <button
@@ -417,7 +411,7 @@ function TestBody({ free }: { free: number }) {
                 </button>
               )
             })}
-          </Row>
+          />
         )
       })}
       <SubHeading>{label('plan.test.presale', stage)}</SubHeading>
@@ -442,6 +436,7 @@ function TestBody({ free }: { free: number }) {
           </Row>
         )
       })}
+      <HintLine term="test" hint={label('plan.hint.test', stage)} />
     </>
   )
 }
@@ -495,6 +490,7 @@ function BuildBody({ free }: { free: number }) {
           />
         </Row>
       )}
+      <HintLine term="build" hint={label('plan.hint.build', stage)} />
     </>
   )
 }
@@ -511,33 +507,33 @@ function SellBody({ free }: { free: number }) {
         const channel: ChannelId = out?.channel ?? seg.lastChannel ?? view.channels[0] ?? 'phone'
         const hours = out?.hours ?? 0
         return (
-          <div key={seg.id}>
-            <Row label={seg.name}>
+          <Market
+            key={seg.id}
+            label={seg.name}
+            control={
               <Stepper
                 stage={stage}
                 value={hours}
-                bigStep={5}
                 max={hours + free}
                 display={label('unit.hours', stage, { n: hours })}
                 onChange={(n) => setOutreach(seg.id, channel, n)}
               />
-            </Row>
-            <Choices>
-              {view.channels.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  aria-pressed={c === channel}
-                  className={`${styles.chip} ${c === channel ? styles.chipOn : ''}`}
-                  onClick={() => setOutreach(seg.id, c, hours)}
-                >
-                  {label(`channel.${c}`, stage)}
-                </button>
-              ))}
-            </Choices>
-          </div>
+            }
+            choices={view.channels.map((c) => (
+              <button
+                key={c}
+                type="button"
+                aria-pressed={c === channel}
+                className={`${styles.chip} ${c === channel ? styles.chipOn : ''}`}
+                onClick={() => setOutreach(seg.id, c, hours)}
+              >
+                {label(`channel.${c}`, stage)}
+              </button>
+            ))}
+          />
         )
       })}
+      <HintLine term="sell" hint={label('plan.hint.sell', stage)} />
     </>
   )
 }
@@ -563,7 +559,7 @@ function DemosBody({ free }: { free: number }) {
               type="button"
               aria-pressed={booked}
               disabled={!booked && free < costs.demoHours}
-              className={`${styles.button} ${booked ? styles.primary : ''}`}
+              className={`${styles.chip} ${booked ? styles.chipOn : ''}`}
               onClick={() => toggleDemo(l.id)}
             >
               {booked
@@ -588,17 +584,18 @@ function DemosBody({ free }: { free: number }) {
         </Writing>
       )}
       <Choices>
-        <button type="button" className={styles.button} onClick={() => setTab('pipeline')}>
+        <button type="button" className={styles.chip} onClick={() => setTab('pipeline')}>
           {label('plan.demos.toPipeline', stage, { tab: label('tab.pipeline', stage) })}
         </button>
       </Choices>
       {view.invoices.some((i) => i.canChase) && (
         <Choices>
-          <button type="button" className={styles.button} onClick={() => setTab('money')}>
+          <button type="button" className={styles.chip} onClick={() => setTab('money')}>
             {label('plan.demos.toMoney', stage, { tab: label('tab.money', stage) })}
           </button>
         </Choices>
       )}
+      <HintLine term="demos" hint={label('plan.hint.demos', stage)} />
     </>
   )
 }
@@ -609,16 +606,18 @@ function RestBody({ free }: { free: number }) {
   const setRestHours = useGame((s) => s.setRestHours)
   const stage = view.company.uiStage
   return (
-    <Row label={label('plan.rest', stage)}>
-      <Stepper
-        stage={stage}
-        value={restHours}
-        bigStep={5}
-        max={restHours + free}
-        display={label('unit.hours', stage, { n: restHours })}
-        onChange={setRestHours}
-      />
-    </Row>
+    <>
+      <Row label={label('plan.rest', stage)}>
+        <Stepper
+          stage={stage}
+          value={restHours}
+          max={restHours + free}
+          display={label('unit.hours', stage, { n: restHours })}
+          onChange={setRestHours}
+        />
+      </Row>
+      <HintLine term="rest" hint={label('plan.hint.rest', stage)} />
+    </>
   )
 }
 
