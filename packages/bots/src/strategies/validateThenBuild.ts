@@ -314,7 +314,8 @@ function score(
 }
 
 /**
- * The inbox policy, using only what the message shows: hours, money now and money per month.
+ * The inbox policy, using only what the message shows: hours, money now (sure or at risk) and
+ * money per month.
  * For each open message, take the eligible choice that asks the most effort, where eligible means
  * no monthly cost, at most 6 h (8 h a week in all), and money only while it is at most a tenth of
  * the cash and leaves 4,500 EUR. A message whose best choice costs nothing is left alone, so its
@@ -326,16 +327,19 @@ export function answerInbox(view: PlayerView): { messageId: string; choiceId: st
   const cash = view.company.cashCents
   for (const m of view.inbox) {
     if (m.answeredChoiceId !== null) continue
-    const eligible = m.choices.filter(
-      (c) =>
-        c.monthlyCostCents === 0 &&
-        c.hours <= MESSAGE_HOURS_MAX &&
-        used + c.hours <= MESSAGE_HOURS_PER_WEEK &&
-        used + c.hours + view.forcedHours <= view.founder.maxHoursPerWeek &&
-        (c.costCents === 0 ||
-          (c.costCents <= cash * MESSAGE_CASH_SHARE &&
-            cash - c.costCents >= MESSAGE_CASH_FLOOR_CENTS)),
-    )
+    const eligible = m.choices
+      // A risk shown on the card counts as money, as a player reading only numbers would count it.
+      .map((c) => ({ ...c, costCents: c.costCents + c.possibleCostCents }))
+      .filter(
+        (c) =>
+          c.monthlyCostCents === 0 &&
+          c.hours <= MESSAGE_HOURS_MAX &&
+          used + c.hours <= MESSAGE_HOURS_PER_WEEK &&
+          used + c.hours + view.forcedHours <= view.founder.maxHoursPerWeek &&
+          (c.costCents === 0 ||
+            (c.costCents <= cash * MESSAGE_CASH_SHARE &&
+              cash - c.costCents >= MESSAGE_CASH_FLOOR_CENTS)),
+      )
     eligible.sort((a, b) => b.hours - a.hours || a.costCents - b.costCents)
     const best = eligible[0]
     if (!best || (best.hours === 0 && best.costCents === 0)) continue
