@@ -310,6 +310,18 @@
   background: var(--act-rest);
 }
 
+.milestones {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-hand);
+  font-size: 22px;
+  line-height: 1.2;
+}
+
 .actions {
   display: flex;
   flex-direction: column;

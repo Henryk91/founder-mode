@@ -1,4 +1,5 @@
 import { Explain } from '../components/Explain'
+import { MilestoneBar } from '../components/MilestoneBar'
 import { Scene } from '../components/Scene'
 import { TopBar } from '../components/TopBar'
 import { label } from '../labels'
@@ -38,6 +39,7 @@ export function DeskLayout(props: { main: React.ReactNode | null }) {
           <main className={styles.centre}>
             <Explain />
             <Scene />
+            <MilestoneBar />
             <nav className={styles.strip} aria-label={label('desk.centreNav', stage)}>
               {(['plan', 'market'] as const).map((t) => (
                 <button

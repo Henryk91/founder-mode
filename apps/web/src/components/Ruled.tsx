@@ -91,7 +91,10 @@ export function FeatureRow(props: {
       <Wrapped>{props.name}</Wrapped>
       <div className={plan.featureLine}>
         <span className={plan.progress} aria-hidden="true">
-          <span className={plan.progressFill} style={{ width: `${Math.round(share * 100)}%` }} />
+          <span
+            className={plan.progressFill}
+            style={{ transform: `scaleX(${share.toFixed(3)})` }}
+          />
         </span>
         <span className={`${plan.mono} ${plan.progressText}`}>{props.progressText}</span>
         <div className={`${plan.controls} ${plan.right}`}>{props.children}</div>

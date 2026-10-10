@@ -52,5 +52,6 @@ export function createGame(scenario: Scenario, seed: string): GameState {
     ledger: [],
     actionLog: [],
     eventLog: [],
+    milestones: [],
   }
 }

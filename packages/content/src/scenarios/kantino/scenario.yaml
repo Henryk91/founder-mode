@@ -218,3 +218,21 @@ segments:
     paymentDelayDaysMean: 20
     neverPaysShare: 0.08
     waitsForChaseShare: 0.25
+
+# Milestones (plan section 4.12). Revenue milestones cover the run's own monthly costs at the time:
+# company costs, or company costs plus living costs. onBar: false keeps one off the progress bar.
+milestones:
+  - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+  - { id: first_deposit, name: First deposit, kind: count, of: deposits, target: 1 }
+  - { id: first_customer, name: First paying customer, kind: count, of: customers, target: 1 }
+  - { id: covers_company_costs, name: Revenue covers company costs, kind: revenue, covers: company }
+  - {
+      id: covers_all_costs,
+      name: Revenue covers all costs,
+      you included,
+      kind: revenue,
+      covers: all,
+    }
+  - { id: first_hire, name: First hire, kind: count, of: hires, target: 1, onBar: false }
+  - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+  - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }

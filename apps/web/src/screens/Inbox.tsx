@@ -1,5 +1,6 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { Letter } from '../components/Letters'
+import { MilestoneBar } from '../components/MilestoneBar'
 import { count, label, type UiStage } from '../labels'
 import type { Tab } from '../store'
 import { useGame } from '../useGame'
@@ -19,6 +20,7 @@ export function Inbox(props: { desk?: boolean }) {
   const open = view.inbox.filter((m) => m.answeredChoiceId === null).length
   return (
     <>
+      {!props.desk && <MilestoneBar />}
       <h2 className={styles.hand}>
         {open > 0
           ? count('inbox.deskTitle', stage, open)

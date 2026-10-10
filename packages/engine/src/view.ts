@@ -2,6 +2,7 @@ import { interviewsOf, openLeadCount, presaleBatchesUsed } from './systems/exper
 import { monthlyFixedCostsCents, receivablesCents, runwayWeeks } from './systems/finance'
 import { committedHours } from './systems/founder'
 import { isOverdue, overdueWeeks } from './systems/invoices'
+import { nextMilestone, reachedMilestones } from './systems/milestones'
 import { workingMember } from './systems/team'
 import { activeCustomers } from './systems/customers'
 import { selectFounderNote } from './systems/guidance'
@@ -203,6 +204,7 @@ export function getView(state: GameState): PlayerView {
       ),
       lastChannel: lastChannel(state, seg.id),
     })),
+    milestones: { reached: reachedMilestones(state), next: nextMilestone(state) },
     history: state.ledger.map((l) => ({
       week: l.week,
       cashCents: l.cashEndCents,

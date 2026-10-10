@@ -1,6 +1,7 @@
 import { activeCustomers } from './systems/customers'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
+import { reachedMilestones } from './systems/milestones'
 import { hireEconomics, salaryId } from './systems/team'
 import type {
   Activity,
@@ -76,6 +77,7 @@ export function buildPostMortem(state: GameState): PostMortem {
       ),
     },
     cause,
+    milestones: reachedMilestones(state),
     chain: buildChain(state, cause),
     suggestions: buildSuggestions(state, markets, focus, cause),
     markets,

@@ -1,0 +1,37 @@
+/* "Next milestone": a dark strip with a yellow progress fill, as in desk-scrappy.html. */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--bar);
+  color: var(--on-dark);
+}
+
+.name {
+  font-weight: 600;
+}
+
+.track {
+  flex: 1 1 120px;
+  height: 12px;
+  border-radius: 6px;
+  background: #2c4a47;
+  overflow: hidden;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  transform-origin: left;
+  background: var(--primary);
+}
+
+.figures {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}

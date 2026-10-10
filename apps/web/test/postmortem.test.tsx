@@ -148,3 +148,36 @@ describe('post-mortem screen', () => {
     expect(runs[0]!.ending).toBe('bankrupt')
   })
 })
+
+describe('milestones on screen', () => {
+  it('shows the next milestone on the phone Inbox tab and on the desk, and a reached one on the results', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'ms-ui' })
+    store.getState().startRun()
+    while (store.getState().introStep !== null) store.getState().nextIntro()
+    store.getState().setTab('inbox')
+    expect(text(store, 'phone')).toContain('Next milestone: First interview')
+    expect(text(store, 'phone')).toContain('0 / 1')
+    store.getState().setTab('plan')
+    expect(text(store, 'phone')).not.toContain('Next milestone')
+    expect(text(store, 'desk')).toContain('Next milestone: First interview')
+
+    store.getState().setInterviews('coworking', 2)
+    store.getState().endWeek()
+    const results = text(store)
+    expect(results).toContain('Milestone reached')
+    expect(results).toContain('First interview')
+    expect(results).not.toContain('The run is over')
+    store.getState().dismissReport()
+    expect(text(store, 'desk')).toContain('Next milestone: First deposit')
+  })
+
+  it('lists the milestones reached in the post-mortem', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'ms-pm' })
+    store.getState().startRun()
+    store.getState().setInterviews('medical', 1)
+    playToEnd(store)
+    const page = text(store)
+    expect(page).toContain('Milestones')
+    expect(page).toContain('Week 1: First interview')
+  })
+})

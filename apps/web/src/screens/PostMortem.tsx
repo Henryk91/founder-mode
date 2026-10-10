@@ -232,6 +232,23 @@ export function PostMortem({ desk }: { desk: boolean }) {
     </Fold>
   )
 
+  const milestones = (
+    <section className={`${ui.card} ${styles.paper}`} aria-labelledby="pm-milestones">
+      <h2 id="pm-milestones" className={styles.head}>
+        {label('pm.heading.milestones', stage)}
+      </h2>
+      {pm.milestones.length === 0 ? (
+        <p>{label('pm.milestones.none', stage)}</p>
+      ) : (
+        <ul className={styles.milestones}>
+          {pm.milestones.map((m) => (
+            <li key={m.id}>{label('pm.milestones.item', stage, { week: m.week, name: m.name })}</li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+
   const actions = (
     <div className={styles.actions}>
       <button type="button" className={`${ui.button} ${ui.primary}`} onClick={newRun}>
@@ -268,6 +285,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
               {hours}
               {moneyFold}
               {luck}
+              {milestones}
               {actions}
             </div>
           </>
@@ -280,6 +298,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
             {hours}
             {moneyFold}
             {luck}
+            {milestones}
             {actions}
           </>
         )}

@@ -8,13 +8,14 @@ import { applyProduct } from './systems/product'
 import { applyChurn, applySales } from './systems/sales'
 import { applyTeam, teamOutput } from './systems/team'
 import { checkEnding } from './systems/endings'
+import { checkMilestones } from './systems/milestones'
 import type { GameState, ReportEntry, WeekPlan, WeekReport } from './types'
 import { interviewView } from './view'
 
 /**
  * Resolves one week (plan section 4.11). Throws if the plan is invalid; call `validatePlan`
- * first. The milestone step (11) arrives in Phase 7; there are no scheduled effects (10) yet,
- * because inbox effects land in step 2.
+ * first. Milestones (11) are checked after the ending (12), since surviving a week depends on
+ * it. There are no scheduled effects (10), because inbox effects land in step 2.
  */
 export function endWeek(
   input: GameState,
@@ -118,11 +119,12 @@ export function endWeek(
   state = closeLedger(state, activity)
 
   // 10. Scheduled effects: none, inbox effects land in step 2
-  // 11. Milestones: later (Phase 7)
 
-  // 12. Endings
+  // 12. Endings, then 11. milestones, which need to know whether this week ended the run
   const ending = checkEnding(state)
   if (ending) state = { ...state, status: 'ended', ending }
+  const milestones = checkMilestones(state)
+  state = milestones.state
 
   // 13. Inbox events for next week
   if (state.status === 'running') state = drawMessages(state, rng)
@@ -137,6 +139,7 @@ export function endWeek(
     entries,
     ledger: state.ledger.at(-1) ?? finance.ledger,
     ending,
+    milestones: milestones.reached,
   }
   state = {
     ...state,

@@ -334,6 +334,25 @@ export function companyNameCombinations(parts: { first: string[]; second: string
   return parts.first.flatMap((a) => parts.second.map((b) => `${a} ${b}`))
 }
 
+/**
+ * A milestone (plan section 4.12). Counts and weeks name their target; revenue milestones name the
+ * costs they cover, so their threshold is the run's own monthly costs at the time: company costs
+ * (fixed costs, salary included) or all costs (those plus the founder's living costs).
+ * `onBar: false` keeps a milestone off the progress bar (it may never happen, such as a hire).
+ */
+const MilestoneBase = { id: Id, name: z.string().min(1), onBar: z.boolean().default(true) }
+export const MilestoneSchema = z.discriminatedUnion('kind', [
+  z.object({
+    ...MilestoneBase,
+    kind: z.literal('count'),
+    of: z.enum(['interviews', 'deposits', 'customers', 'hires']),
+    target: z.number().int().positive(),
+  }),
+  z.object({ ...MilestoneBase, kind: z.literal('revenue'), covers: z.enum(['company', 'all']) }),
+  z.object({ ...MilestoneBase, kind: z.literal('weeks'), target: z.number().int().positive() }),
+])
+export type Milestone = z.infer<typeof MilestoneSchema>
+
 export const ScenarioFileSchema = z.object({
   id: Id,
   name: z.string().min(1),
@@ -384,6 +403,7 @@ export const ScenarioFileSchema = z.object({
   sales: SalesConfigSchema,
   roles: z.array(RoleSchema).min(1),
   segments: z.array(SegmentSchema).min(1),
+  milestones: z.array(MilestoneSchema).min(1),
 })
 
 // segment id -> bucket id -> quotes
@@ -413,6 +433,9 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
   for (const id of dupes(s.features.map((x) => x.id)))
     issue(`duplicate feature ${id}`, ['features'])
   for (const id of dupes(s.roles.map((x) => x.id))) issue(`duplicate role ${id}`, ['roles'])
+  for (const id of dupes(s.milestones.map((x) => x.id))) {
+    issue(`duplicate milestone ${id}`, ['milestones'])
+  }
 
   if (s.roles.length !== s.segments.length) {
     issue('there must be exactly one role per segment', ['roles'])
