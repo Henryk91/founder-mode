@@ -1,6 +1,14 @@
 import type { ChannelId, PlanIssue, PlayerView, WeekPlan } from '@founder-mode/engine'
 import { FounderNote } from '../components/FounderNote'
-import { Choices, HintLine, Market, Row, SubHeading, Writing } from '../components/Ruled'
+import {
+  Choices,
+  FeatureRow,
+  HintLine,
+  Market,
+  Row,
+  SubHeading,
+  Writing,
+} from '../components/Ruled'
 import { Stepper } from '../components/Stepper'
 import { TeamPlan } from '../components/TeamPlan'
 import { formatEnergy, formatEuro } from '../format'
@@ -441,6 +449,11 @@ function TestBody({ free }: { free: number }) {
   )
 }
 
+/** Hours planned this week on a stepper: "+5 h", or nothing at zero, so it never reads as progress. */
+function plannedText(hours: number, stage: UiStage): string {
+  return hours > 0 ? label('plan.plannedHours', stage, { n: hours }) : ''
+}
+
 function BuildBody({ free }: { free: number }) {
   const view = useGame((s) => s.view)!
   const build = useGame((s) => s.plan.build)
@@ -464,20 +477,34 @@ function BuildBody({ free }: { free: number }) {
         .map((f) => {
           const value = build[f.id] ?? 0
           return (
-            <Row key={f.id} label={f.name} note={`${f.progressHours + value}/${f.buildHours} h`}>
+            <FeatureRow
+              key={f.id}
+              name={f.name}
+              progressHours={f.progressHours}
+              buildHours={f.buildHours}
+              progressText={label('plan.progress', stage, {
+                done: f.progressHours,
+                total: f.buildHours,
+              })}
+            >
               <Stepper
                 stage={stage}
                 value={value}
+                display={plannedText(value, stage)}
+                hoursValue
                 step={5}
                 max={Math.min(f.remainingHours, value + free)}
                 onChange={(n) => setBuild(f.id, n)}
               />
-            </Row>
+            </FeatureRow>
           )
         })}
       {shipped.length > 0 && (
-        <Writing>
-          {label('plan.shippedList', stage, { names: shipped.map((f) => f.name).join(', ') })}
+        <Writing wrap>
+          {label('plan.shippedList', stage, {
+            n: shipped.length,
+            names: shipped.map((f) => f.name).join(', '),
+          })}
         </Writing>
       )}
       {product.bugs > 0 && (
@@ -485,6 +512,8 @@ function BuildBody({ free }: { free: number }) {
           <Stepper
             stage={stage}
             value={bugFixHours}
+            display={plannedText(bugFixHours, stage)}
+            hoursValue
             max={Math.min(product.fixableHours, bugFixHours + free)}
             onChange={setBugFixHours}
           />

@@ -379,3 +379,84 @@
 .more .moreText {
   color: inherit;
 }
+
+/*
+ * Handwriting that wraps instead of being cut off. Each wrapped line is one ruled line (44 px);
+ * the inner span moves the baselines onto the rules. Caveat's baseline sits 0.333 em below the
+ * centre of its line box, so it moves by --base minus half a line minus that.
+ */
+.wrapped {
+  --fs: var(--fs-label);
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--line);
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: var(--fs);
+  font-weight: 500;
+  line-height: var(--line);
+  padding-right: 0.3em;
+  overflow-wrap: anywhere;
+}
+
+.onRule {
+  position: relative;
+  top: calc(var(--base) - var(--line) / 2 - 0.333 * var(--fs));
+}
+
+/* A feature: its full name, then progress and stepper on the next line (one line on the desk). */
+.feature {
+  display: block;
+}
+
+.featureLine {
+  display: flex;
+  align-items: center;
+  column-gap: 6px;
+  height: var(--line);
+  padding-left: 12px;
+}
+
+/* Every stepper button keeps its 44 px; on a phone the buttons sit edge to edge here. */
+.featureLine > .controls {
+  column-gap: 0;
+}
+
+.progress {
+  flex: none;
+  width: 84px;
+  height: 8px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--act-build);
+}
+
+.progressText {
+  flex: none;
+  align-self: flex-start;
+  min-width: 7ch;
+  text-align: right;
+}
+
+:global([data-layout='desk']) .feature {
+  display: flex;
+  align-items: flex-start;
+  column-gap: 12px;
+}
+
+:global([data-layout='desk']) .featureLine {
+  flex: none;
+  column-gap: 10px;
+  padding-left: 0;
+}
+
+:global([data-layout='desk']) .featureLine > .progress {
+  width: 90px;
+}
