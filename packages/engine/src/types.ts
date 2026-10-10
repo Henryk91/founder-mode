@@ -68,6 +68,25 @@ export type GameState = {
   actionLog: LoggedAction[]
   /** Random outcomes with their expected values, for the post-mortem. */
   eventLog: LoggedEvent[]
+  /** Milestones reached, in the order they were reached. */
+  milestones: ReachedMilestone[]
+}
+
+export type ReachedMilestone = { id: string; week: number }
+
+/** A milestone with its name, for the view and the post-mortem. */
+export type MilestoneView = { id: string; name: string; week: number }
+
+/**
+ * The next milestone on the progress bar: how far along the run is. `unit` says how to read the
+ * numbers: a count, money in cents per month, or weeks.
+ */
+export type NextMilestoneView = {
+  id: string
+  name: string
+  unit: 'count' | 'cents' | 'weeks'
+  current: number
+  target: number
 }
 
 export type FounderState = {
@@ -537,6 +556,11 @@ export type PlayerView = {
   /** Sum of the monthly prices of active customers. */
   monthlyRevenueCents: number
   segments: SegmentView[]
+  milestones: {
+    reached: MilestoneView[]
+    /** The first milestone on the bar not reached yet, null when all are. */
+    next: NextMilestoneView | null
+  }
   history: {
     week: number
     cashCents: number
@@ -713,6 +737,8 @@ export type WeekReport = {
   entries: ReportEntry[]
   ledger: WeekLedger
   ending: EndingId | null
+  /** Milestones reached this week, in scenario order. */
+  milestones: MilestoneView[]
 }
 
 export type LeadChange =
@@ -946,6 +972,8 @@ export type PostMortem = {
     buckets: Record<BucketId, string>
   }
   cause: PostMortemCause
+  /** Milestones reached over the run, in the order they were reached. */
+  milestones: MilestoneView[]
   /** Up to three earlier steps, then every step of the final week, then the ending. */
   chain: ChainItem[]
   /** Every matching suggestion, best first. Always ends with `sample_sizes`. */

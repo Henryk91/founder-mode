@@ -170,6 +170,21 @@ Engine 0.7.0 made the hire junior and part time (was 4,200 and 3,800 at the old 
 
 The player may decline. The scene image follows the stage.
 
+## 9b. Milestones
+
+In display order. The progress bar shows the first one not reached yet, skipping those marked off the bar.
+
+| Id | Name | Reached when |
+|---|---|---|
+| `first_interview` | First interview | 1 interview |
+| `first_deposit` | First deposit | 1 pre-sale deposit |
+| `first_customer` | First paying customer | 1 customer (keeps its full screen moment) |
+| `covers_company_costs` | Revenue covers company costs | Monthly revenue at least the monthly company costs (tools, accountant, salary) |
+| `covers_all_costs` | Revenue covers all costs, you included | Monthly revenue at least company costs plus 4 weeks of living costs |
+| `first_hire` | First hire | The hire starts work. Not on the bar |
+| `weeks_26` | 26 weeks survived | Week 26 is over and did not end the run |
+| `weeks_52` | 52 weeks survived | Week 52 is over and did not end the run |
+
 ## 10. Rough sanity check (by hand, not simulated)
 
 A founder who identifies a viable small offices segment, ships its three must have features (85 h), and then spends about 15 h per week on outreach should get roughly one new lead per week early on and a new paying customer every two to three weeks, reaching profitability somewhere in the second half of the run. A founder who builds for the trap segment should get friendly interviews and almost no paying customers.

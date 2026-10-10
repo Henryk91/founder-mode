@@ -151,11 +151,11 @@ const LEAD_PRIORITY: Record<Extract<ReportEntry, { kind: 'lead_update' }>['chang
   lost_silent: 4,
 }
 
-type Moment = { id: 'first_customer' | 'hire_started' | 'ending'; title: string; text: string }
+type Moment = { id: 'first_customer' | 'ending'; title: string; text: string }
 
 /**
- * Notable moments get a full screen step before the week summary: the first paying customer, a
- * hire starting, and the end of the run. Milestones join them in Phase 7.
+ * Notable moments get a full screen step before the week summary: the first paying customer and
+ * the end of the run. Other milestones appear on the week summary itself.
  */
 export function notableMoments(report: WeekReport, view: PlayerView): Moment[] {
   const stage = view.company.uiStage
@@ -170,17 +170,6 @@ export function notableMoments(report: WeekReport, view: PlayerView): Moment[] {
       text: label('moment.first_customer.text', stage, {
         name: won.name,
         amount: formatEuro(price ?? view.company.priceCentsPerMonth),
-      }),
-    })
-  }
-  for (const e of report.entries) {
-    if (e.kind !== 'hire_started') continue
-    moments.push({
-      id: 'hire_started',
-      title: label('moment.hire_started.title', stage),
-      text: label('moment.hire_started.text', stage, {
-        name: e.name,
-        role: label(`team.role.${e.role}`, stage).toLowerCase(),
       }),
     })
   }
@@ -245,6 +234,23 @@ function WeekSummary({ report, view }: { report: WeekReport; view: PlayerView })
   return (
     <>
       <h2 className={styles.hand}>{label('results.title', stage, { week: report.week })}</h2>
+      {report.milestones.length > 0 && (
+        <section
+          className={`${styles.card} ${styles.sticky}`}
+          aria-label={count('results.milestones', stage, report.milestones.length)}
+        >
+          <h3 className={styles.paperHead}>
+            {count('results.milestones', stage, report.milestones.length)}
+          </h3>
+          <ul className={styles.list}>
+            {report.milestones.map((m) => (
+              <li key={m.id} className={styles.handText}>
+                {m.name}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {groups.map(([group, lines]) => (
         <section
           key={group}

@@ -289,7 +289,7 @@ const labels = {
     'Pre-sale in {segment}: {commits} of {prospects} prospects would pay.',
   'results.entry.candidates_ready.one': 'One {role} candidate is ready to meet.',
   'results.entry.candidates_ready.other': '{n} {role} candidates are ready to meet.',
-  'results.entry.hire_started': '{name} started work today.',
+  'results.entry.hire_started': '{name} started work today. The coffee runs out twice as fast now.',
   'results.entry.member_let_go': '{name} is gone. It cost {amount}.',
   'results.entry.team_output.developer': 'Your developer put in {hours} build hours.',
   'results.entry.team_output.salesperson': 'Your salesperson put in {hours} hours of selling.',
@@ -455,9 +455,6 @@ const labels = {
   'moment.first_customer.title': 'First paying customer',
   'moment.first_customer.text':
     '{name} will pay {amount} every month. Somebody, somewhere, wants this. Frame the first invoice.',
-  'moment.hire_started.title': 'You are not alone any more',
-  'moment.hire_started.text':
-    '{name} started today as your {role}. The coffee runs out twice as fast now.',
   'moment.next': 'Continue',
 
   'results.group.money': 'Money',
@@ -467,6 +464,17 @@ const labels = {
   'results.group.founder': 'Founder',
 
   'moment.toPostMortem': 'What happened',
+
+  'milestone.next': 'Next milestone: {name}',
+  'milestone.count': '{current} / {target}',
+  'milestone.weeks': '{current} / {target} weeks',
+  'milestone.cents': '{current} / {target} a month',
+  'milestone.allDone': 'Every milestone reached. Now keep it that way.',
+  'results.milestones.one': 'Milestone reached',
+  'results.milestones.other': 'Milestones reached',
+  'pm.heading.milestones': 'Milestones',
+  'pm.milestones.none': 'None reached this time.',
+  'pm.milestones.item': 'Week {week}: {name}',
 
   'pm.title': 'What happened',
   'pm.header': 'Week {week}: {ending}',

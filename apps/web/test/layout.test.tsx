@@ -15,7 +15,7 @@ import { headlineStats } from '../src/components/Headline'
 import { Scene } from '../src/components/Scene'
 import { upcoming, worry } from '../src/components/Statement'
 import { repeatPlan } from '../src/repeatPlan'
-import { notableMoments } from '../src/screens/Results'
+import { groupWeek, notableMoments } from '../src/screens/Results'
 import { memoryStorage } from '../src/storage'
 import { createGameStore } from '../src/store'
 import { StoreProvider } from '../src/useGame'
@@ -236,7 +236,7 @@ describe('results', () => {
     expect(text(store)).toContain('Next week')
   })
 
-  it('gives the first paying customer and a hire starting their own full screen step', () => {
+  it('gives only the first paying customer a full screen step; a hire and milestones go on the summary', () => {
     const store = run('moments')
     const view = store.getState().view!
     const report: WeekReport = {
@@ -275,11 +275,19 @@ describe('results', () => {
         hours: { learning: 0, building: 0, selling: 0, admin: 0, rest: 0 },
       },
       ending: null,
+      milestones: [
+        { id: 'first_customer', name: 'First paying customer', week: 9 },
+        { id: 'first_hire', name: 'First hire', week: 9 },
+      ],
     }
     const moments = notableMoments(report, view)
-    expect(moments.map((m) => m.id)).toEqual(['first_customer', 'hire_started'])
+    expect(moments.map((m) => m.id)).toEqual(['first_customer'])
     expect(moments[0]!.text).toContain('Werk Neun will pay €450 every month.')
-    expect(moments[1]!.text).toContain('Aylin Demir started today as your developer.')
+    const summary = groupWeek(report, view, 'scrappy')
+      .flatMap(([, lines]) => lines)
+      .map((l) => renderToString(<>{l.node}</>))
+      .join(' ')
+    expect(summary).toContain('Aylin Demir started work today.')
     // A second customer is no longer a moment.
     const weekEnd = (w: number, customers: number) => ({
       week: w,
@@ -290,7 +298,7 @@ describe('results', () => {
       runwayWeeks: null,
     })
     const later: PlayerView = { ...view, history: [weekEnd(7, 1), weekEnd(8, 2)] }
-    expect(notableMoments(report, later).map((m) => m.id)).toEqual(['hire_started'])
+    expect(notableMoments(report, later)).toEqual([])
   })
 
   it('shows the ending as its own step, then the post-mortem', () => {

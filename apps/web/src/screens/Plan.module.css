@@ -435,6 +435,7 @@
 .progressFill {
   display: block;
   height: 100%;
+  transform-origin: left;
   background: var(--act-build);
 }
 

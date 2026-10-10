@@ -36,6 +36,8 @@ export type {
   LeadView,
   PlanIssue,
   PostMortem,
+  MilestoneView,
+  NextMilestoneView,
   PostMortemCauseId,
   ChainItem,
   ChainKind,
