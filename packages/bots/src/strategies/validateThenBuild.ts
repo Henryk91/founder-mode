@@ -1,4 +1,4 @@
-import type { Scenario } from '@founder-mode/content'
+import type { Scenario, ScenarioId } from '@founder-mode/content'
 import type { MessageView, PlayerView, WeekPlan } from '@founder-mode/engine'
 import { PriceSearch, type PricingRule } from '../pricing'
 import {
@@ -55,7 +55,7 @@ const MESSAGE_CASH_FLOOR_CENTS = 450_000
 
 /**
  * How the inbox is answered: `reader` reads each message and picks the answer that suits it
- * (`READER_CHOICES`), `effort` takes the most effortful affordable choice without reading
+ * (`readerChoices`), `effort` takes the most effortful affordable choice without reading
  * (`answerInbox`), `cheapest` always takes the choice with the fewest hours and then the least
  * money (`cheapestInbox`), `none` leaves every message to its default.
  */
@@ -84,79 +84,42 @@ type ReaderRule = string | ((view: PlayerView, message: MessageView) => string)
 /**
  * What a careful reader answers, per kind of message. A function reads the situation the message
  * hints at: the pipeline, the sender, energy, cash, bugs. Messages not listed take their default.
+ * Shared events have one answer in every scenario; each scenario adds its own events.
  */
-const READER_CHOICES: Record<string, ReaderRule> = {
+const SHARED_READER: Record<string, ReaderRule> = {
   // validation
-  survey_offer: 'pass',
-  friend_of_friend: 'decline',
   startup_meetup: 'skip',
-  student_thesis: 'decline',
-  office_manager_forum: (v) => (thin(v) ? 'post' : 'skip'),
-  lunch_diary: 'decline',
   visitor_list: 'pass',
-  university_pilot: (v) => (v.customers.length <= 1 ? 'pilot' : 'decline'),
-  rival_customer: (v) => (thin(v) ? 'coffee' : 'skip'),
-  focus_group: 'pass',
-  online_poll: 'ignore',
   podcast_invite: (v) => (thin(v) ? 'record' : 'decline'),
-  tenant_survey: 'pass',
-  catering_inquiry: 'decline',
-  expert_interview: (v) => (v.customers.length === 0 ? 'meet' : 'decline'),
   // sales
-  referral: 'follow_up',
   discount_demand: 'hold',
   slow_lead: 'wait',
-  food_fair: 'pass',
   sales_coach: 'decline',
-  integration_question: 'honest',
-  competitor_launch: 'ignore',
-  supplier_form: (v, m) => (senderSilent(v, m) ? 'short' : 'leave'),
   chamber_breakfast: (v) => (thin(v) ? 'go' : 'skip'),
-  colleague_intro: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'intro' : 'later'),
-  coworking_open_day: (v) => (thin(v) ? 'go' : 'skip'),
   seven_questions: (v, m) => (senderSilent(v, m) ? 'answer' : 'later'),
   suspicious_price: (v, m) => (senderSilent(v, m) ? 'explain' : 'ignore'),
-  demo_no_show: (v, m) => (senderSilent(v, m) ? 'rebook' : 'drop'),
-  reseller_offer: (v) => (shipped(v) >= 3 ? 'sign' : 'decline'),
   trial_extension: (v, m) => (senderSilent(v, m) ? 'extend' : 'refuse'),
-  big_tender: 'decline',
-  newsletter_paragraph: (v) => (thin(v) ? 'write' : 'skip'),
   referral_reward: (v) => (thin(v) ? 'voucher' : 'thanks'),
-  returning_prospect: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'call' : 'later'),
   pilot_request: (v, m) => (senderSilent(v, m) ? 'counter' : 'decline'),
-  wedding_fair: 'decline',
   ballpark_call: (v, m) => (senderSilent(v, m) ? 'call' : 'demo'),
   business_park_flyers: (v) => (thin(v) ? 'flyers' : 'skip'),
   frequent_emails: 'back_off',
   letterhead_quote: 'pdf',
   // product
-  crash_report: 'patch',
-  restaurant_portal: 'decline',
   security_notice: 'patch',
   hosting_pricing: 'migrate',
-  font_complaint: 'thank',
-  reception_browser: 'explain',
-  dark_mode: 'later',
-  slow_order_page: (v) => (v.product.bugs >= 3 ? 'optimise' : 'reply'),
   missing_backups: 'backup',
   framework_upgrade: 'stay',
-  screen_reader: 'fix',
   bounty_hunter: (v) => (tight(v) ? 'fix' : 'pay'),
-  french_translation: 'decline',
   bug_weekend: (v) => (v.customers.length >= 1 ? 'sprint' : 'carry_on'),
   unused_feature: 'keep',
-  partner_directory: 'decline',
-  company_phones: 'fix',
-  whiteboard_menus: 'type_once',
   uptime_monitor: 'skip',
-  export_request: 'by_hand',
   // finance
   late_payer_first: 'reminder',
   filing_deadline: 'file',
   regional_grant: 'apply',
   laptop_fan: 'live_with_it',
   bank_fee: 'switch',
-  insurance_broker: 'decline',
   tax_letter: 'answer',
   invoice_app: 'pass',
   overdue_again: (v, m) => (senderOverdue(v, m) ? 'reminder' : 'wait'),
@@ -170,7 +133,6 @@ const READER_CHOICES: Record<string, ReaderRule> = {
   double_charge: 'refund',
   // founder
   bad_sleep: 'nap',
-  family_lunch: (v) => (tired(v) ? 'go' : 'stay'),
   flu: (v) => (v.founder.energy - 10 < v.founder.tiredBelow ? 'rest' : 'work_through'),
   old_boss: 'freelance',
   ten_k_run: (v) => (tired(v) ? 'train' : 'back_out'),
@@ -186,7 +148,6 @@ const READER_CHOICES: Record<string, ReaderRule> = {
   parents_visit: (v) => (tired(v) ? 'day' : 'coffee'),
   personal_tax: 'file',
   back_pain: (v) => (v.founder.energy <= 60 ? 'physio' : 'stretch'),
-  founder_dinner: (v) => (thin(v) ? 'go' : 'skip'),
   // team
   team_plan: 'session',
   raise_request: 'decline',
@@ -195,22 +156,81 @@ const READER_CHOICES: Record<string, ReaderRule> = {
   hire_idea: 'listen',
   hire_laptop: (v) => (tight(v) ? 'keep' : 'buy'),
   hire_feedback: 'session',
-  team_lunch: 'order',
   recruiter_call: 'talk',
   design_tool: 'decline',
   office_question: 'not_yet',
 }
 
-/** Events the reader has an answer for. Every scenario event should be here. */
-export const READER_EVENT_IDS: readonly string[] = Object.keys(READER_CHOICES)
+const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
+  kantino: {
+    // validation
+    survey_offer: 'pass',
+    friend_of_friend: 'decline',
+    student_thesis: 'decline',
+    office_manager_forum: (v) => (thin(v) ? 'post' : 'skip'),
+    lunch_diary: 'decline',
+    university_pilot: (v) => (v.customers.length <= 1 ? 'pilot' : 'decline'),
+    rival_customer: (v) => (thin(v) ? 'coffee' : 'skip'),
+    focus_group: 'pass',
+    online_poll: 'ignore',
+    tenant_survey: 'pass',
+    catering_inquiry: 'decline',
+    expert_interview: (v) => (v.customers.length === 0 ? 'meet' : 'decline'),
+    // sales
+    referral: 'follow_up',
+    food_fair: 'pass',
+    integration_question: 'honest',
+    competitor_launch: 'ignore',
+    supplier_form: (v, m) => (senderSilent(v, m) ? 'short' : 'leave'),
+    colleague_intro: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'intro' : 'later'),
+    coworking_open_day: (v) => (thin(v) ? 'go' : 'skip'),
+    demo_no_show: (v, m) => (senderSilent(v, m) ? 'rebook' : 'drop'),
+    reseller_offer: (v) => (shipped(v) >= 3 ? 'sign' : 'decline'),
+    big_tender: 'decline',
+    newsletter_paragraph: (v) => (thin(v) ? 'write' : 'skip'),
+    returning_prospect: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'call' : 'later'),
+    wedding_fair: 'decline',
+    // product
+    crash_report: 'patch',
+    restaurant_portal: 'decline',
+    font_complaint: 'thank',
+    reception_browser: 'explain',
+    dark_mode: 'later',
+    slow_order_page: (v) => (v.product.bugs >= 3 ? 'optimise' : 'reply'),
+    screen_reader: 'fix',
+    french_translation: 'decline',
+    partner_directory: 'decline',
+    company_phones: 'fix',
+    whiteboard_menus: 'type_once',
+    export_request: 'by_hand',
+    // finance
+    insurance_broker: 'decline',
+    // founder
+    family_lunch: (v) => (tired(v) ? 'go' : 'stay'),
+    founder_dinner: (v) => (thin(v) ? 'go' : 'skip'),
+    // team
+    team_lunch: 'order',
+  },
+}
+
+/** The reader's table for one scenario: the shared answers plus the scenario's own. */
+const readerChoices = (scenarioId: string): Record<string, ReaderRule> => ({
+  ...SHARED_READER,
+  ...(SCENARIO_READER as Record<string, Record<string, ReaderRule> | undefined>)[scenarioId],
+})
+
+/** Events the reader has an answer for in a scenario. Every scenario event should be here. */
+export const readerEventIds = (scenarioId: string): string[] =>
+  Object.keys(readerChoices(scenarioId))
 
 /** The reader's answers: the listed choice when its hours fit and its money leaves a cushion. */
 export function readInbox(view: PlayerView): { messageId: string; choiceId: string }[] {
   const answers: { messageId: string; choiceId: string }[] = []
   let used = view.committedHours
+  const table = readerChoices(view.scenarioId)
   for (const m of view.inbox) {
     if (m.answeredChoiceId !== null) continue
-    const rule = READER_CHOICES[m.eventId]
+    const rule = table[m.eventId]
     if (!rule) continue
     const id = typeof rule === 'function' ? rule(view, m) : rule
     const c = m.choices.find((x) => x.id === id)

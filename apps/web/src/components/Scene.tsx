@@ -3,12 +3,19 @@ import { label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
 import s from './Scene.module.css'
 
-/** The office stages of docs/scenario-kantino.md section 9. */
+/**
+ * The scene drawings. Office stages are scenario content; a stage is drawn by the drawing of the
+ * same id, and a stage without one shows the kitchen table. The chip names the stage as the
+ * scenario does.
+ */
 export type OfficeStage = 'kitchen_table' | 'coworking_desk'
 
-/** Where the company works, from the engine. A stage without a drawing shows the kitchen table. */
+const DRAWINGS: readonly OfficeStage[] = ['kitchen_table', 'coworking_desk']
+
+/** The drawing for where the company works, from the engine. */
 export function officeStage(view: PlayerView): OfficeStage {
-  return view.company.officeStage.id === 'coworking_desk' ? 'coworking_desk' : 'kitchen_table'
+  const id = view.company.officeStage.id
+  return DRAWINGS.find((d) => d === id) ?? 'kitchen_table'
 }
 
 type Figure = { name: string; status: string }
@@ -63,13 +70,17 @@ export function Scene(props: { stage?: OfficeStage }) {
   const office = props.stage ?? officeStage(view)
   const data = sceneData(view, planned)
   return (
-    <div className={s.scene} role="img" aria-label={sceneLabel(office, data, ui)}>
+    <div
+      className={s.scene}
+      role="img"
+      aria-label={sceneLabel(view.company.officeStage.name, data, ui)}
+    >
       {office === 'kitchen_table' ? (
         <KitchenTable data={data} ui={ui} />
       ) : (
         <CoworkingDesk data={data} ui={ui} />
       )}
-      <div className={s.chip}>{label(`scene.${office}`, ui)}</div>
+      <div className={s.chip}>{view.company.officeStage.name}</div>
     </div>
   )
 }
@@ -96,16 +107,16 @@ export function SceneStrip() {
       </svg>
       <div className={s.stripText}>
         <div className={s.where}>{label('scene.where', ui)}</div>
-        <div className={s.place}>{label(`scene.${office}`, ui)}</div>
+        <div className={s.place}>{view.company.officeStage.name}</div>
       </div>
     </div>
   )
 }
 
-function sceneLabel(office: OfficeStage, data: SceneData, ui: UiStage): string {
+function sceneLabel(place: string, data: SceneData, ui: UiStage): string {
   const people = [data.you, data.hire].filter((f): f is Figure => f !== null)
   return [
-    label(`scene.${office}`, ui),
+    place,
     ...people.map((f) => label('scene.figure', ui, { name: f.name, status: f.status })),
   ].join('. ')
 }

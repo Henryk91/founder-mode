@@ -26,8 +26,13 @@ export type Player = {
 export type Strategy = {
   id: string
   description: string
+  /** The description for one scenario, when it names that scenario's markets. */
+  describe?(scenario: Scenario): string
   create(scenario: Scenario, seed: string): Player
 }
+
+export const describeStrategy = (strategy: Strategy, scenario: Scenario): string =>
+  strategy.describe?.(scenario) ?? strategy.description
 
 /** Builds a week plan inside an hour budget. Every method takes what fits and returns it. */
 export class PlanBuilder {

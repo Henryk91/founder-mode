@@ -1,4 +1,4 @@
-import { loadScenario } from '@founder-mode/content'
+import { loadScenario, SCENARIO_IDS } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
 import { buildReport, evaluateTargets, marketSpread, median, winRateByMarket } from '../src/report'
 import { runGame } from '../src/simulate'
@@ -7,7 +7,7 @@ import { randomNoInbox } from '../src/strategies/random'
 import {
   answerInbox,
   cheapestInbox,
-  READER_EVENT_IDS,
+  readerEventIds,
   BEHAVIOUR_NAMES,
   hirePayback,
   rankMarkets,
@@ -231,19 +231,23 @@ describe('bots', () => {
       ])
     })
 
-    it('the reader has an answer for every event, and only for events that exist', () => {
-      // The books are their own behaviour, answered before the reader looks. So is an office move
-      // that brings walk-ins: taken only when the bot's evidence ranks that market first.
-      const officeMove = (e: (typeof scenario.events)[number]) =>
-        e.choices.some((c) => c.effects.some((fx) => fx.type === 'moveOffice'))
-      const ids = scenario.events
-        .filter((e) => e.id !== 'receipts_pile' && !officeMove(e))
-        .map((e) => e.id)
-      expect([...READER_EVENT_IDS].sort()).toEqual([...ids].sort())
-      for (const e of scenario.events) {
-        expect(e.choices.length).toBeGreaterThanOrEqual(2)
-      }
-    })
+    it.each(SCENARIO_IDS)(
+      'the reader has an answer for every %s event, and only for events that exist',
+      (id) => {
+        // The books are their own behaviour, answered before the reader looks. So is an office
+        // move that brings walk-ins: taken only when the bot's evidence ranks that market first.
+        const s = loadScenario(id)
+        const officeMove = (e: (typeof s.events)[number]) =>
+          e.choices.some((c) => c.effects.some((fx) => fx.type === 'moveOffice'))
+        const ids = s.events
+          .filter((e) => e.id !== 'receipts_pile' && !officeMove(e))
+          .map((e) => e.id)
+        expect(readerEventIds(id).sort()).toEqual([...ids].sort())
+        for (const e of s.events) {
+          expect(e.choices.length).toBeGreaterThanOrEqual(2)
+        }
+      },
+    )
   })
 
   it('switches single behaviours off, and names the variant after them', () => {

@@ -1,0 +1,72 @@
+# Inbox events shared by every scenario, validation area. Same format as a scenario's events
+# files. Nothing here may name a scenario's product, markets or features. A scenario places a
+# shared event in its own list with `- shared: <id>`; shared events it does not place come after
+# its own, in this order.
+events:
+  - id: startup_meetup
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Meetup organiser
+    text: >-
+      A founder meetup this week. Free pizza, many pitches, usually one useful conversation.
+      It is mostly the pizza.
+    defaultChoice: skip
+    choices:
+      - id: go
+        label: Go
+        hours: 4
+        effects:
+          - { type: energy, delta: 4 }
+          - { type: newLeads, count: 1, chance: 0.3 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: visitor_list
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Trade fair
+    text: >-
+      A trade fair sells last year's visitor list for 300 EUR. It has 2,000 entries, sorted by
+      the date the people on it stopped working there.
+    defaultChoice: pass
+    choices:
+      - id: buy
+        label: Buy the list
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: newLeads, count: 1, chance: 0.3 }
+      - id: pass
+        label: Pass
+        hours: 0
+
+  - id: podcast_invite
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: Podcast host
+    text: >-
+      A podcast about the future of work wants you as a guest. It has 300 listeners, and the
+      host's mother listens on two devices. Worth an afternoon if your pipeline is thin.
+      Otherwise it is an afternoon.
+    defaultChoice: decline
+    choices:
+      - id: record
+        label: Record an episode
+        hours: 3
+        effects:
+          - { type: newLeads, count: 1, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 2, when: [leads.open > 8] }
+          - { type: energy, delta: -2 }
+      - id: decline
+        label: Decline
+        hours: 0

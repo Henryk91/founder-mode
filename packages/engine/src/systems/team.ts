@@ -31,7 +31,7 @@ export type TeamOutput = {
 }
 
 /**
- * What the working team member produces this week (docs/scenario-kantino.md section 8).
+ * What the working team member produces this week (scenario spec section 8).
  * A developer builds `weeklyHours x skill` on the feature the plan names, never more than what
  * is left of it. A salesperson holds demos first, as many as the hours allow, then does outreach
  * where the plan says. Hours with nothing to do are lost.

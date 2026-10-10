@@ -5,6 +5,7 @@
 # An unanswered message takes its defaultChoice (which costs no hours) when it expires.
 # look: letter (default), note for something personal, official for banks and offices.
 # Every event is `once`, except those that recur on purpose, which set cooldownWeeks.
+# `- shared: <id>` places an event from src/shared/events here: the draw walks the list in order.
 events:
   - id: crash_report
     area: product
@@ -60,48 +61,8 @@ events:
         label: Decline politely
         hours: 0
 
-  - id: security_notice
-    area: product
-    weight: 2
-    once: true
-    when: [features.shipped >= 1]
-    from: none
-    sender: Forum thread
-    text: >-
-      A forum thread says a library you rely on has a security notice. Fixing it takes an
-      afternoon. Not fixing it takes longer, later.
-    defaultChoice: ignore
-    choices:
-      - id: patch
-        label: Patch it now
-        hours: 4
-      - id: ignore
-        label: Read it again tomorrow
-        hours: 0
-        effects:
-          - { type: bugs, delta: 2 }
-
-  - id: hosting_pricing
-    area: product
-    weight: 1
-    once: true
-    when: [week >= 3]
-    from: none
-    sender: Hosting provider
-    look: official
-    text: >-
-      Your hosting provider has changed its pricing. The new price is higher. The old plan is now
-      described as "legacy".
-    defaultChoice: accept
-    choices:
-      - id: migrate
-        label: Migrate it yourself
-        hours: 6
-      - id: accept
-        label: Accept the new price
-        hours: 0
-        effects:
-          - { type: fixedCost, id: hosting_upgrade, name: Hosting upgrade, monthlyCents: 3000 }
+  - shared: security_notice
+  - shared: hosting_pricing
 
   - id: font_complaint
     area: product
@@ -190,49 +151,8 @@ events:
         effects:
           - { type: churnChance, delta: 0.15, when: [bugs >= 3] }
 
-  - id: missing_backups
-    area: product
-    weight: 2
-    once: true
-    when: [features.shipped >= 2]
-    from: none
-    sender: Your conscience
-    look: note
-    text: >-
-      You realise the database has not been backed up since the day you set it up. Nothing has
-      gone wrong. Nothing has gone wrong yet.
-    defaultChoice: later
-    choices:
-      - id: backup
-        label: Set up backups
-        hours: 2
-      - id: later
-        label: Later, surely
-        hours: 0
-        effects:
-          - { type: bugs, delta: 3, chance: 0.25 }
-          - { type: lostHours, hours: 6, chance: 0.25 }
-
-  - id: framework_upgrade
-    area: product
-    weight: 2
-    once: true
-    when: [features.shipped >= 1, week >= 6]
-    from: none
-    sender: Release notes
-    text: >-
-      The framework you use has a new major version. The release notes say upgrading is easy,
-      in a tone that suggests otherwise.
-    defaultChoice: stay
-    choices:
-      - id: upgrade
-        label: Upgrade now
-        hours: 6
-        effects:
-          - { type: bugs, delta: 2, chance: 0.5 }
-      - id: stay
-        label: Stay on the old one
-        hours: 0
+  - shared: missing_backups
+  - shared: framework_upgrade
 
   - id: screen_reader
     area: product
@@ -257,31 +177,7 @@ events:
         effects:
           - { type: churnChance, delta: 0.08 }
 
-  - id: bounty_hunter
-    area: product
-    weight: 2
-    once: true
-    when: [features.shipped >= 1]
-    from: none
-    sender: Security researcher
-    text: >-
-      A stranger reports a security hole and asks for a bug bounty of 150 EUR. The hole is
-      real. The stranger's name is probably not.
-    defaultChoice: ignore
-    choices:
-      - id: pay
-        label: Pay and fix it
-        hours: 1
-        effects:
-          - { type: cash, amountCents: -15000 }
-      - id: fix
-        label: Fix it yourself
-        hours: 3
-      - id: ignore
-        label: Ignore it
-        hours: 0
-        effects:
-          - { type: bugs, delta: 2 }
+  - shared: bounty_hunter
 
   - id: french_translation
     area: product
@@ -304,48 +200,8 @@ events:
         label: Decline
         hours: 0
 
-  - id: bug_weekend
-    area: product
-    weight: 2
-    once: true
-    when: [bugs >= 3]
-    from: none
-    sender: Your bug list
-    look: note
-    text: >-
-      Your bug list is now long enough to need a table of contents. A focused day would clear
-      the worst of it, which matters most to the people who pay you.
-    defaultChoice: carry_on
-    choices:
-      - id: sprint
-        label: Spend a day on bugs
-        hours: 6
-        effects:
-          - { type: bugs, delta: -3 }
-      - id: carry_on
-        label: Carry on
-        hours: 0
-
-  - id: unused_feature
-    area: product
-    weight: 2
-    once: true
-    when: [features.shipped >= 3]
-    from: none
-    sender: Usage statistics
-    text: >-
-      Nobody has used one of your features in five weeks. You remember building it. You
-      remember it fondly.
-    defaultChoice: keep
-    choices:
-      - id: remove
-        label: Remove it
-        hours: 2
-        effects:
-          - { type: bugs, delta: -1 }
-      - id: keep
-        label: Keep it for sentimental reasons
-        hours: 0
+  - shared: bug_weekend
+  - shared: unused_feature
 
   - id: partner_directory
     area: product
@@ -419,30 +275,7 @@ events:
         effects:
           - { type: lostHours, hours: 1 }
 
-  - id: uptime_monitor
-    area: product
-    weight: 2
-    once: true
-    when: [features.shipped >= 1]
-    from: none
-    sender: Monitoring service
-    look: official
-    text: >-
-      A monitoring service offers outage alerts for 15 EUR a month. Without it you hear about
-      outages from customers, who are faster but less polite. With few customers, there is
-      hardly anyone to hear it from.
-    defaultChoice: skip
-    choices:
-      - id: subscribe
-        label: Subscribe
-        hours: 1
-        effects:
-          - { type: fixedCost, id: monitoring, name: Uptime monitoring, monthlyCents: 1500 }
-      - id: skip
-        label: Skip it
-        hours: 0
-        effects:
-          - { type: lostHours, hours: 4, chance: 0.5, when: [customers.count >= 3] }
+  - shared: uptime_monitor
 
   - id: export_request
     area: product

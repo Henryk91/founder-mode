@@ -19,6 +19,8 @@ export type ReportInput = {
   extras?: StrategyRuns[]
   /** Forced answer runs of validate_then_build, one per event and choice. */
   events?: EventChoiceRuns[]
+  /** The playtest bot's market, and what the hand playtest reached (`{week}` is the check week). */
+  playtest?: { segment: string; note: string | null }
 }
 
 /** The validate_then_build variants the targets are judged on. */
@@ -30,9 +32,6 @@ export const TARGET_STRATEGIES = [
 
 /** The hire variants, compared with plain validate_then_build in their own section. */
 const HIRE_STRATEGIES = ['validate_then_build_hire', 'validate_then_build_early_hire'] as const
-
-/** Heading of the hand written part of docs/balancing.md, kept when the report is rebuilt. */
-export const NOTES_HEADING = '## Tuning notes'
 
 export function median(values: readonly number[]): number | null {
   if (values.length === 0) return null
@@ -559,13 +558,15 @@ export function buildReport(input: ReportInput): string {
   }
 
   const playtest = input.strategies.find((s) => s.id === 'playtest')
-  if (playtest) {
-    const viable = playtest.results.filter((r) => r.viableSegment === 'coworking')
+  if (playtest && input.playtest) {
+    const { segment, note } = input.playtest
+    const viable = playtest.results.filter((r) => r.viableSegment === segment)
+    const handNote = note === null ? '' : `${note.replace('{week}', String(CHECK_WEEK))} `
     push(
       '',
-      '## Playtest strategy where coworking is viable',
+      `## Playtest strategy where ${segment} is viable`,
       '',
-      `The hand playtest found 9 customers and 2,700 EUR monthly revenue by week ${CHECK_WEEK}. Runs of the playtest bot where coworking was the viable market (${viable.length} runs):`,
+      `${handNote}Runs of the playtest bot where ${segment} was the viable market (${viable.length} runs):`,
       '',
       `- Median customers at week ${CHECK_WEEK}: ${fmtNum(median(viable.map((r) => r.customersAtCheck)))}`,
       `- Median monthly revenue at week ${CHECK_WEEK}: ${fmtEur(median(viable.map((r) => r.monthlyRevenueAtCheckCents)))}`,

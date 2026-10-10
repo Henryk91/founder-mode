@@ -9,8 +9,13 @@ describe('parseArgs', () => {
       out: 'docs/balancing.md',
       only: [],
       events: false,
+      scenario: null,
     })
     expect(parseArgs(['--events']).events).toBe(true)
+  })
+
+  it('reads the scenario to run', () => {
+    expect(parseArgs(['--scenario', 'kantino']).scenario).toBe('kantino')
   })
 
   it('reads the output path and a strategy filter', () => {

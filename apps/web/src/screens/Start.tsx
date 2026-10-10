@@ -7,9 +7,15 @@ import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 import startStyles from './Start.module.css'
 
-/** The Start screen: the paper with the way in, the tagline on a note, and the best runs. */
+/**
+ * The Start screen: the paper with the scenario picker and the way in, the tagline on a note, and
+ * the best runs. Continue, the seed and the best runs belong to the scenario picked.
+ */
 export function Start() {
   const hasSave = useGame((s) => s.hasSave)
+  const scenarios = useGame((s) => s.scenarios)
+  const scenarioId = useGame((s) => s.scenarioId)
+  const selectScenario = useGame((s) => s.selectScenario)
   const notice = useGame((s) => s.saveNotice)
   const startRun = useGame((s) => s.startRun)
   const continueRun = useGame((s) => s.continueRun)
@@ -27,6 +33,35 @@ export function Start() {
 
       <div className={`${styles.card} ${startStyles.paper}`}>
         <h1 className={startStyles.title}>{label('app.title', stage)}</h1>
+        <div role="group" aria-labelledby="pick-scenario" className={startStyles.picker}>
+          <h2 id="pick-scenario" className={startStyles.pickTitle}>
+            {label('start.pick', stage)}
+          </h2>
+          {scenarios.map((sc) => {
+            const picked = sc.id === scenarioId
+            return (
+              <button
+                key={sc.id}
+                type="button"
+                className={startStyles.option}
+                aria-pressed={picked}
+                onClick={() => selectScenario(sc.id)}
+              >
+                <span className={startStyles.optionName}>
+                  {sc.name}
+                  {picked && (
+                    <span className={startStyles.picked}>{label('start.picked', stage)}</span>
+                  )}
+                </span>
+                {sc.lines.map((line) => (
+                  <span key={line} className={startStyles.optionLine}>
+                    {line}
+                  </span>
+                ))}
+              </button>
+            )
+          })}
+        </div>
         {hasSave && (
           <button
             type="button"
@@ -61,18 +96,23 @@ export function Start() {
         {label('app.tagline', stage)}
       </p>
 
-      <BestRuns runs={runs} stage={stage} />
+      <BestRuns
+        runs={runs}
+        stage={stage}
+        scenario={scenarios.find((x) => x.id === scenarioId)?.name ?? ''}
+      />
     </main>
   )
 }
 
 /** "Your best runs": a dark panel as on the desk mockup. Every seed can be played again. */
-function BestRuns({ runs, stage }: { runs: RunRecord[]; stage: UiStage }) {
+function BestRuns(props: { runs: RunRecord[]; stage: UiStage; scenario: string }) {
+  const { runs, stage } = props
   const { ordinary, replays } = bestRuns(runs)
   return (
     <section className={startStyles.best} aria-labelledby="best-runs">
       <h2 id="best-runs" className={startStyles.bestTitle}>
-        {label('start.best.title', stage)}
+        {label('start.best.title', stage, { scenario: props.scenario })}
       </h2>
       {runs.length === 0 ? (
         <p className={startStyles.empty}>{label('start.best.empty', stage)}</p>

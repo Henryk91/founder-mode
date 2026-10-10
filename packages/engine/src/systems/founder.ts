@@ -54,7 +54,7 @@ export function hoursByActivity(
 }
 
 /**
- * Energy for the week (docs/scenario-kantino.md section 7). Hours above the base cost energy,
+ * Energy for the week (scenario spec section 7). Hours above the base cost energy,
  * rest restores it, and a week within the base gives a small bonus. Clamped to 0..max.
  * Counts the weeks in a row that end at 0, for the burnout ending.
  */

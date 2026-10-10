@@ -7,6 +7,8 @@ export type BotArgs = {
   only: string[]
   /** Also run every answer of every inbox event (slow). */
   events: boolean
+  /** Run only this scenario; null runs every scenario. */
+  scenario: string | null
 }
 
 export function parseArgs(argv: readonly string[]): BotArgs {
@@ -16,6 +18,7 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     out: 'docs/balancing.md',
     only: [],
     events: false,
+    scenario: null,
   }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
@@ -30,6 +33,9 @@ export function parseArgs(argv: readonly string[]): BotArgs {
       i++
     } else if (flag === '--out' && value !== undefined) {
       args.out = value
+      i++
+    } else if (flag === '--scenario' && value !== undefined) {
+      args.scenario = value
       i++
     } else if (flag === '--events') {
       args.events = true

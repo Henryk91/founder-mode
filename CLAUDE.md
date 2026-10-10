@@ -21,12 +21,12 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 - `pnpm dev`: run the web app
 - `pnpm test`: all tests
 - `pnpm lint`
-- `pnpm bots --runs 1000`: balancing report
+- `pnpm bots --runs 1000`: balancing report for every scenario (`--scenario <id>` for one)
 
 ## Structure
 
 - `packages/engine`: pure TypeScript simulation. No React, DOM, or Node APIs.
-- `packages/content`: YAML scenario data and zod schemas
+- `packages/content`: YAML scenario data (one folder per scenario, plus events shared by all in `src/shared`) and zod schemas
 - `packages/bots`: headless strategies and balancing report
 - `apps/web`: React UI
 
