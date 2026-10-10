@@ -2,7 +2,7 @@ import type { ChannelId, PlayerView, TeamRoleId } from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
-import { Choices, HintRow, Item, NameWithFigure } from './Ruled'
+import { Choices, Row, SubHeading, Writing } from './Ruled'
 import styles from './ui.module.css'
 
 const roleName = (role: TeamRoleId, stage: UiStage) => label(`team.role.${role}`, stage)
@@ -27,30 +27,18 @@ export function TeamPlan() {
   const hours = (n: number) => label('unit.hours', stage, { n })
   return (
     <>
-      <HintRow term="hiring">
-        {label('team.hint', stage, { hours: hours(costs.searchHours) })}
-      </HintRow>
-      {team.search && (
-        <p>
-          {label('team.searching', stage, {
-            role: roleName(team.search.role, stage),
-            week: team.search.readyWeek,
-          })}
-        </p>
-      )}
       {team.canSearch &&
         team.roles.map((r) => {
           const booked = plan.searchRole === r.id
           return (
-            <Item key={r.id}>
-              <NameWithFigure
-                name={roleName(r.id, stage)}
-                figure={label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
-                note={label('team.partTime', stage, {
-                  hours: label('unit.hours', stage, { n: r.weeklyHours }),
-                })}
-              />
-              <Choices columns="one">
+            <div key={r.id}>
+              <Row
+                label={roleName(r.id, stage)}
+                note={label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
+              >
+                <span />
+              </Row>
+              <Choices>
                 <button
                   type="button"
                   aria-pressed={booked}
@@ -62,25 +50,28 @@ export function TeamPlan() {
                     : label('team.search', stage, { role: roleName(r.id, stage) })}
                 </button>
               </Choices>
-            </Item>
+            </div>
           )
         })}
-      {team.hadHire && <p className={styles.hint}>{label('team.hadHire', stage)}</p>}
       {team.candidates.length > 0 && (
         <>
-          <p className={styles.subtitle}>{label('team.candidates', stage)}</p>
-          <p className={styles.hint}>{label('team.candidatesHint', stage)}</p>
+          <SubHeading>{label('team.candidates', stage)}</SubHeading>
           {team.candidates.map((c) => {
             const booked = plan.hire === c.id
             const monthly = team.roles.find((r) => r.id === c.role)?.monthlyCents ?? 0
             return (
-              <Item key={c.id}>
-                <NameWithFigure
-                  name={c.name}
-                  figure={label('team.perMonth', stage, { amount: formatEuro(monthly) })}
-                  note={`${roleName(c.role, stage)} · ${label('team.impression', stage, { impression: c.impression })}`}
-                />
-                <Choices columns="one">
+              <div key={c.id}>
+                <Row
+                  label={c.name}
+                  note={label('team.perMonth', stage, { amount: formatEuro(monthly) })}
+                >
+                  <span />
+                </Row>
+                <Writing>
+                  {roleName(c.role, stage)} ·{' '}
+                  {label('team.impression', stage, { impression: c.impression })}
+                </Writing>
+                <Choices>
                   <button
                     type="button"
                     aria-pressed={booked}
@@ -90,7 +81,7 @@ export function TeamPlan() {
                     {booked ? label('team.offerBooked', stage) : label('team.offer', stage)}
                   </button>
                 </Choices>
-              </Item>
+              </div>
             )
           })}
         </>
@@ -137,20 +128,16 @@ function MemberCard(props: {
   )
   return (
     <>
-      <p className={styles.subtitle}>
-        {label('team.member', stage, { role: roleName(member.role, stage) })}
-      </p>
-      <NameWithFigure
-        name={member.name}
-        figure={label('team.perMonth', stage, { amount: formatEuro(member.monthlyCents) })}
-        note={label(member.working ? 'team.working' : 'team.starts', stage, {
-          week: member.startWeek,
-        })}
-      />
+      <SubHeading>{label('team.member', stage, { role: roleName(member.role, stage) })}</SubHeading>
+      <Row
+        label={member.name}
+        note={label('team.perMonth', stage, { amount: formatEuro(member.monthlyCents) })}
+      >
+        <span />
+      </Row>
       {member.working && member.role === 'developer' && (
         <>
-          <p>{label('team.devWork', stage)}</p>
-          <p className={styles.hint}>{label('team.devHint', stage)}</p>
+          <Writing>{label('team.devWork', stage)}</Writing>
           <Choices>
             {chip(props.buildTarget === null, label('team.devNone', stage), () =>
               actions.setTeamBuild(null),
@@ -165,8 +152,7 @@ function MemberCard(props: {
       )}
       {member.working && member.role === 'salesperson' && (
         <>
-          <p>{label('team.salesWork', stage)}</p>
-          <p className={styles.hint}>{label('team.salesHint', stage)}</p>
+          <Writing>{label('team.salesWork', stage)}</Writing>
           <Choices>
             {chip(props.outreach === null, label('team.salesNone', stage), () =>
               actions.setTeamOutreach(null),
@@ -194,8 +180,7 @@ function MemberCard(props: {
           )}
         </>
       )}
-      <p className={styles.hint}>{label('team.letGoHint', stage)}</p>
-      <Choices columns="one">
+      <Choices>
         <button
           type="button"
           aria-pressed={props.letGo}

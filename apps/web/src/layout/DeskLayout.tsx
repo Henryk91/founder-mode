@@ -23,7 +23,7 @@ export function DeskLayout(props: { main: React.ReactNode | null }) {
   const centre = tab === 'market' ? 'market' : 'plan'
 
   return (
-    <div className={styles.desk} data-stage={stage}>
+    <div className={styles.desk} data-stage={stage} data-layout="desk">
       <TopBar wide />
       {props.main !== null ? (
         <main className={styles.deskSingle}>

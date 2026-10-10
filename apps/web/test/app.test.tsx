@@ -204,9 +204,10 @@ describe('onboarding', () => {
     const store = fresh()
     begin(store)
     const page = html(store)
-    expect(page).toContain('A normal week is 50 h. Up to 65 h is possible and costs energy.')
-    expect(page).toContain('0 h planned of a normal 50 h week')
+    expect(page).toContain('0 h planned of 50')
     expect(page).not.toContain('(up to 65)')
+    store.getState().openExplain('hours')
+    expect(html(store)).toContain('A normal week is 50 hours, and you can plan up to 65')
   })
 
   it('gives every Plan action a line about its cost, result and timing', () => {
@@ -217,16 +218,8 @@ describe('onboarding', () => {
     store.getState().dismissReport()
     openAll(store)
     const page = html(store).replace(/&#x27;/g, "'")
-    // Each section keeps to a line or two; the full account is behind its "?".
-    for (const line of [
-      'Each interview costs 2 h. The answer arrives at week end.',
-      'A feature ships once its hours are in. Shipping adds bugs.',
-      'Hours on one channel per market find leads. Channels wear out.',
-      'Costs the hours you set. Restores energy this week.',
-      'One part time hire at most. A search costs 6 h.',
-    ]) {
-      expect(page, line).toContain(line)
-    }
+    // No sentences on the ruled paper: the explanations open off it, from the "?".
+    expect(page).not.toContain('Restores energy this week.')
     for (const [key, line] of [
       ['talk', "Gives you one answer in the interviewee's own words about that market."],
       ['build', 'A feature ships once all its hours are in'],
@@ -239,7 +232,7 @@ describe('onboarding', () => {
       expect(html(store).replace(/&#x27;/g, "'"), key).toContain(line)
     }
     // Bug fixing appears once there are bugs to fix.
-    expect(page).toContain('Costs 4 h per bug and lifts quality.')
+    expect(page).toContain('Fix bugs')
   })
 
   it('has an empty state on every tab that says what fills it', () => {
@@ -387,11 +380,11 @@ describe('phase 4 screens', () => {
     store.getState().toggleSection('test')
     const page = html(store)
     expect(page).toContain('Test the demand')
-    expect(page).toContain('Landing page: Coworking spaces')
+    expect(page).toContain('Landing page tests')
+    expect(page).toContain('Pre-sales')
     expect(page).toContain('€300')
     expect(page).toContain('€750')
-    expect(page).toContain('Pre-sale: Medical practices')
-    expect(page).toContain('3 batches left in this market.')
+    expect(page).toContain('Medical practices')
     expect(page).not.toMatch(/[{}]/)
   })
 
@@ -456,20 +449,19 @@ describe('phase 4 screens', () => {
   it('books a search in the Hiring section of the Plan tab and shows the candidates later', () => {
     const store = fresh('p4-team')
     begin(store)
-    expect(text(store)).toContain('Hiring nobody yet, one hire allowed')
+    expect(text(store)).toContain('Hiring ? nobody yet, one hire allowed')
     store.getState().toggleSection('team')
     const page = html(store)
     expect(page).toContain('Look for a Developer')
     expect(page).toContain('€3,900 per month')
-    expect(page).toContain('Part time, 20 h a week')
     store.getState().setSearchRole('developer')
     expect(store.getState().plannedHours).toBe(6)
     expect(html(store)).toContain('Search booked (6 h). Tap to cancel.')
-    expect(text(store)).toContain('Hiring search for a Developer 6 h')
+    expect(text(store)).toContain('Hiring ? search for a Developer 6 h')
     store.getState().endWeek()
     store.getState().dismissReport()
     store.getState().toggleSection('team')
-    expect(html(store)).toContain('Looking for a Developer. Candidates arrive in week 3.')
+    expect(text(store)).toContain('Hiring ? candidates arrive in week 3')
     for (let i = 0; i < 2; i++) {
       store.getState().endWeek()
       store.getState().dismissReport()
@@ -615,10 +607,11 @@ describe('follow ups, costs and plurals', () => {
     expect(store.getState().plannedHours).toBe(1)
     expect(html(store)).toContain('Follow up booked, tap to cancel')
     store.getState().setTab('plan')
-    expect(text(store)).toContain('Demos and follow ups 1 follow up 1 h')
+    expect(text(store)).toContain('Demos and follow ups ? 1 follow up 1 h')
     store.getState().toggleSection('demos')
     expect(html(store)).toContain('1 follow up (1 h)')
-    expect(html(store)).toContain('A demo costs 3 h and can start a trial of 1 week.')
+    store.getState().openExplain('demos')
+    expect(html(store)).toContain('Costs 3 h per demo. A good demo starts a trial that runs 1 week')
   })
 
   it('says "1 batch left" and "2 batches left", and weeks in the singular', () => {
