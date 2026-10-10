@@ -83,6 +83,8 @@ export type Modifier = {
   source: 'office'
   energyPerWeek: number
   channelFactors: Partial<Record<ChannelId, number>>
+  /** Leads that walk in each week from one market, at a mean rate. Null for none. */
+  walkIns: { segmentId: SegmentId; leadsPerWeek: number } | null
 }
 
 export type ReachedMilestone = { id: string; week: number }
@@ -146,7 +148,7 @@ export type ProductState = {
 export type LeadStage = 'lead' | 'demo' | 'trial' | 'committed' | 'paying' | 'lost'
 
 /** How a lead was found: outreach, a landing page sign up, an inbox message, or the salesperson. */
-export type LeadSource = 'outreach' | 'landing' | 'inbox' | 'team' | 'presale'
+export type LeadSource = 'outreach' | 'landing' | 'inbox' | 'team' | 'presale' | 'walk_in'
 
 /** Observable facts only. */
 export type Lead = {
@@ -155,6 +157,8 @@ export type Lead = {
   segmentId: SegmentId
   stage: LeadStage
   source: LeadSource
+  /** For walk-ins: the office stage the lead walked in at. */
+  walkInFrom?: string
   /** The outreach channel that found the lead, for outreach by the founder or the salesperson. */
   channel?: ChannelId
   stageSinceWeek: number
@@ -414,7 +418,8 @@ export type OddsEvent = {
   unitCents: number
 }
 
-export type OddsKind = 'leads' | 'lead_demo' | 'demo' | 'trial' | 'churn' | 'never_pays' | 'message'
+export type OddsKind =
+  'leads' | 'lead_demo' | 'demo' | 'trial' | 'churn' | 'never_pays' | 'message' | 'walk_ins'
 
 /**
  * Money moving between the founder and the company.
@@ -635,6 +640,10 @@ export type LeadView = {
   canBookDemo: boolean
   /** True when the lead is open and a follow up can be booked. */
   canFollowUp: boolean
+  /** How the lead was found. */
+  source: LeadSource
+  /** For walk-ins: the name of the office stage they walked in at, else null. */
+  walkInFrom: string | null
 }
 
 export type CustomerView = {
@@ -804,6 +813,8 @@ export type ReportEntry =
       wornOut: boolean
     }
   | { kind: 'lead_update'; change: LeadChange; leadId: string; name: string; segmentId: SegmentId }
+  /** Leads that walked in at the office (`place` is the office stage's name). */
+  | { kind: 'walk_in_leads'; segmentId: SegmentId; count: number; place: string }
   | { kind: 'customer_churned'; customerId: string; name: string; segmentId: SegmentId }
 
 // ---------------------------------------------------------------------------
@@ -1021,6 +1032,8 @@ export type PostMortem = {
     peakRevenueCents: number
     hire: HireEconomicsView | null
   }
+  /** Leads that walked in at an office, and the customers they became, per office and market. */
+  walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]
   luck: {
     /** At most four, most important first. */
     items: LuckItem[]

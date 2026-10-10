@@ -230,3 +230,32 @@ describe('coworking desk and organised stage', () => {
     expect(text(store)).not.toContain('Getting organised')
   })
 })
+
+describe('walk-in leads', () => {
+  it('names walk-ins on the lead card, in the results and in the post-mortem', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'walk-in-ui' })
+    store.getState().startRun()
+    while (store.getState().introStep !== null) store.getState().nextIntro()
+    for (let w = 1; w < 8; w++) {
+      store.getState().endWeek()
+      store.getState().dismissReport()
+    }
+    const offer = store.getState().view!.inbox.find((m) => m.eventId === 'coworking_desk')!
+    expect(offer.text).toContain('coworking spaces')
+    store.getState().answer(offer.id, 'move')
+    let results = ''
+    for (let w = 0; w < 10 && !results.includes('walked up to you'); w++) {
+      store.getState().endWeek()
+      results = text(store)
+      store.getState().dismissReport()
+    }
+    expect(results).toMatch(/walked up to you at the coworking desk/)
+    store.getState().setTab('pipeline')
+    expect(text(store)).toContain('Walked in at the coworking desk')
+    playToEnd(store)
+    const pm = store.getState().postMortem!
+    const desk = pm.walkIns.find((w) => w.place === 'Coworking desk')!
+    expect(desk.leads).toBeGreaterThan(0)
+    expect(text(store)).toMatch(/Walk-ins \d+ leads? from the coworking desk, \d+ became customers/)
+  })
+})

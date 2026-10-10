@@ -164,9 +164,10 @@ describe('content', () => {
       expect(desk.choices.find((c) => c.id === desk.defaultChoice)!.effects).toEqual([])
       const stage = s.officeStages.find((o) => o.id === 'coworking_desk')!
       expect(stage).toMatchObject({
-        monthlyCents: 22_500,
-        energyPerWeek: 1,
-        channelFactors: { in_person: 1.3, phone: 1.15, cold_email: 1.15 },
+        monthlyCents: 37_500,
+        energyPerWeek: 0,
+        channelFactors: {},
+        walkIns: { segment: 'coworking', leadsPerWeek: 0.9 },
       })
       expect(s.officeStages[0]!.id).toBe('kitchen_table')
     })
@@ -189,6 +190,11 @@ describe('content', () => {
         'organisedAt: [first_unicorn]',
       )
       expect(() => parseScenario({ ...base, scenario })).toThrow(/unknown milestone first_unicorn/)
+      const walk = base.scenario.replace(
+        'walkIns: { segment: coworking',
+        'walkIns: { segment: bakeries',
+      )
+      expect(() => parseScenario({ ...base, scenario: walk })).toThrow(/unknown segment bakeries/)
     })
 
     it('gives every event a look, and uses all three', () => {

@@ -9,7 +9,7 @@ import { applyChurn, applySales } from './systems/sales'
 import { applyTeam, teamOutput } from './systems/team'
 import { checkEnding } from './systems/endings'
 import { checkMilestones } from './systems/milestones'
-import { energyPerWeek } from './systems/office'
+import { applyWalkIns, energyPerWeek } from './systems/office'
 import type { GameState, ReportEntry, WeekPlan, WeekReport } from './types'
 import { interviewView } from './view'
 
@@ -86,6 +86,9 @@ export function endWeek(
   state = sales.state
   entries.push(...sales.entries)
   extras.otherCostsCents += sales.refundsCents
+  const walkIns = applyWalkIns(state, rng)
+  state = walkIns.state
+  entries.push(...walkIns.entries)
 
   // 7. Team: letting go, offers, searches, starts
   const staff = applyTeam(state, plan, rng)

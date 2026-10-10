@@ -10,9 +10,10 @@ import {
   READER_EVENT_IDS,
   BEHAVIOUR_NAMES,
   hirePayback,
+  rankMarkets,
   withoutBehaviours,
 } from '../src/strategies/validateThenBuild'
-import { createGame, endWeek, getView, type PlayerView } from '@founder-mode/engine'
+import { createGame, endWeek, getView, respond, type PlayerView } from '@founder-mode/engine'
 
 const scenario = loadScenario('kantino')
 
@@ -231,8 +232,13 @@ describe('bots', () => {
     })
 
     it('the reader has an answer for every event, and only for events that exist', () => {
-      // The books are their own behaviour, answered before the reader looks.
-      const ids = scenario.events.map((e) => e.id).filter((id) => id !== 'receipts_pile')
+      // The books are their own behaviour, answered before the reader looks. So is an office move
+      // that brings walk-ins: taken only when the bot's evidence ranks that market first.
+      const officeMove = (e: (typeof scenario.events)[number]) =>
+        e.choices.some((c) => c.effects.some((fx) => fx.type === 'moveOffice'))
+      const ids = scenario.events
+        .filter((e) => e.id !== 'receipts_pile' && !officeMove(e))
+        .map((e) => e.id)
       expect([...READER_EVENT_IDS].sort()).toEqual([...ids].sort())
       for (const e of scenario.events) {
         expect(e.choices.length).toBeGreaterThanOrEqual(2)
@@ -325,5 +331,40 @@ describe('bots', () => {
     expect(median([])).toBeNull()
     expect(median([3, 1, 2])).toBe(2)
     expect(median([4, 1, 2, 3])).toBe(2.5)
+  })
+})
+
+describe('the coworking desk', () => {
+  it('is taken by the reading bot only when its own evidence ranks the walk-in market first', () => {
+    const scenario = loadScenario('kantino')
+    const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
+    let taken = 0
+    let declined = 0
+    for (let i = 0; i < 40; i++) {
+      const seed = `desk-${i}`
+      const player = strategy.create(scenario, seed)
+      let state = createGame(scenario, seed)
+      while (state.status === 'running' && state.company.officeStage === 'kitchen_table') {
+        const view = getView(state)
+        const offer = view.inbox.find(
+          (m) => m.eventId === 'coworking_desk' && m.answeredChoiceId === null,
+        )
+        const answers = player.respond?.(view) ?? []
+        if (offer) {
+          const first = rankMarkets(scenario, view)[0]?.id
+          const move = answers.some((a) => a.messageId === offer.id && a.choiceId === 'move')
+          if (move) taken++
+          else declined++
+          expect(move).toBe(first === 'coworking')
+          break
+        }
+        for (const a of answers) state = respond(state, a.messageId, a.choiceId)
+        const out = endWeek(state, player.plan(getView(state)))
+        player.observe?.(out.report, getView(out.state))
+        state = out.state
+      }
+    }
+    expect(taken).toBeGreaterThan(0)
+    expect(declined).toBeGreaterThan(0)
   })
 })

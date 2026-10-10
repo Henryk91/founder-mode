@@ -44,6 +44,8 @@ export function Pipeline() {
         <span className={board.name}>{l.name}</span>
         <span className={board.note}>
           {segmentName(l.segmentId)} ·{' '}
+          {l.walkInFrom !== null &&
+            `${label('pipeline.walkedIn', stage, { place: l.walkInFrom.toLowerCase() })} · `}
           {label('pipeline.lastContact', stage, { week: l.lastContactWeek })}
           {l.stage === 'trial' && ` · ${count('pipeline.trialWeeks', stage, l.weeksInStage)}`}
           {l.stage === 'committed' && ` · ${count('pipeline.depositWeeks', stage, l.weeksInStage)}`}

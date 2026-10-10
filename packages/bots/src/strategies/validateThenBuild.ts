@@ -169,8 +169,6 @@ const READER_CHOICES: Record<string, ReaderRule> = {
   equipment_grant: 'apply',
   double_charge: 'refund',
   // founder
-  // The desk costs rent every month: worth it once a customer pays and cash is not tight.
-  coworking_desk: (v) => (v.customers.length >= 1 && !tight(v) ? 'move' : 'stay'),
   bad_sleep: 'nap',
   family_lunch: (v) => (tired(v) ? 'go' : 'stay'),
   flu: (v) => (v.founder.energy - 10 < v.founder.tiredBelow ? 'rest' : 'work_through'),
@@ -305,6 +303,16 @@ function presaleRate(view: PlayerView, segmentId: string): number | null {
   return prospects ? sales.reduce((t, x) => t + x.commits, 0) / prospects : null
 }
 
+/** Markets by what the evidence on screen says: interviews, landing tests, pre-sales. Best first. */
+export function rankMarkets(scenario: Scenario, view: PlayerView): { id: string; score: number }[] {
+  return view.segments
+    .map((s) => {
+      const notes = segmentNotes(scenario, view, s.id)
+      return { id: s.id, score: score(notes, landingRate(view, s.id), presaleRate(view, s.id)) }
+    })
+    .sort((a, b) => b.score - a.score)
+}
+
 function score(
   notes: ReturnType<typeof segmentNotes>,
   landing: number | null,
@@ -392,16 +400,18 @@ export function validatingPlayer(
   let lastPlan: WeekPlan | null = null
   const impressionOrder = scenario.team.impressions.map((i) => i.name)
 
-  const ranked = (view: PlayerView) =>
-    view.segments
-      .map((s) => {
-        const notes = segmentNotes(scenario, view, s.id)
-        return {
-          id: s.id,
-          score: score(notes, landingRate(view, s.id), presaleRate(view, s.id)),
-        }
-      })
-      .sort((a, b) => b.score - a.score)
+  // Inbox events whose choice moves to an office with walk-in leads: event id -> choice, market.
+  const officeMoves = new Map<string, { choiceId: string; segmentId: string }>()
+  for (const e of scenario.events) {
+    for (const c of e.choices) {
+      for (const fx of c.effects) {
+        if (fx.type !== 'moveOffice') continue
+        const walkIns = scenario.officeStages.find((o) => o.id === fx.stage)?.walkIns
+        if (walkIns) officeMoves.set(e.id, { choiceId: c.id, segmentId: walkIns.segment })
+      }
+    }
+  }
+  const ranked = (view: PlayerView) => rankMarkets(scenario, view)
 
   /** Skill the bot expects from an impression label: the middle of its band. */
   const skillOf = (label: string | null): number => {
@@ -546,9 +556,22 @@ export function validatingPlayer(
         committedHours: view.committedHours + used,
         inbox: view.inbox.filter((m) => m.eventId !== BOOKS_EVENT),
       }
+      // An office move that brings walk-in leads: taken only when this bot's own evidence ranks
+      // that market first, else left to its default.
+      const moves =
+        behaviours.inbox === 'reader'
+          ? rest.inbox.flatMap((m) => {
+              const move = officeMoves.get(m.eventId)
+              if (!move || m.answeredChoiceId !== null) return []
+              return ranked(view)[0]?.id === move.segmentId
+                ? [{ messageId: m.id, choiceId: move.choiceId }]
+                : []
+            })
+          : []
       return [
         ...forcedAnswers,
         ...answers,
+        ...moves,
         ...(behaviours.inbox === 'reader'
           ? readInbox(rest)
           : behaviours.inbox === 'cheapest'

@@ -24,6 +24,11 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'bugs_fixed':
       return count('results.entry.bugs_fixed', stage, entry.count)
+    case 'walk_in_leads':
+      return count('results.entry.walk_in_leads', stage, entry.count, {
+        segment: segment(entry.segmentId),
+        place: entry.place.toLowerCase(),
+      })
     case 'new_leads': {
       const vars = {
         segment: segment(entry.segmentId),
@@ -120,6 +125,8 @@ function place(entry: ReportEntry): [Group, number] {
       return ['sales', 9]
     case 'new_leads':
       return ['sales', entry.count > 0 ? 4 : 2]
+    case 'walk_in_leads':
+      return ['sales', 4]
     case 'feature_shipped':
       return ['product', 7]
     case 'bugs_fixed':
