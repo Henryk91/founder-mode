@@ -96,6 +96,14 @@ export const SalesConfigSchema = z.object({
     perBug: Share,
     cap: Share,
   }),
+  // Referrals: every paying customer, every week, may bring one new lead in its own market with
+  // chance max(0, chancePerFit * fit - chancePerBug * bugs). A referred lead's weekly chance to ask
+  // for a demo is multiplied by (1 + demoBonus). All zero switches referrals off.
+  referral: z.object({
+    chancePerFit: Share,
+    chancePerBug: Share,
+    demoBonus: z.number().nonnegative(),
+  }),
 })
 
 export const LandingConfigSchema = z.object({

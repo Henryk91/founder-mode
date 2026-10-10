@@ -116,6 +116,93 @@ describe('content', () => {
     },
   )
 
+  it('Zollstock matches the scenario spec', () => {
+    const s = loadScenario('zollstock')
+    expect(s.segments.map((x) => x.id)).toEqual(['small_crews', 'contractors', 'maintenance'])
+    expect(s.features.map((f) => f.id)).toEqual([
+      'job_board',
+      'site_quotes',
+      'customer_texts',
+      'crew_dispatch',
+      'material_lists',
+      'recurring_jobs',
+      'photo_reports',
+      'client_marketplace',
+    ])
+    expect(s.sales.referral).toEqual({ chancePerFit: 0.08, chancePerBug: 0.01, demoBonus: 0.6 })
+    expect(s.experiments.landing).toMatchObject({ signupBase: 0.01, signupPerPain: 0.08 })
+    expect(s.start).toEqual(loadScenario('kantino').start)
+    expect(s.officeStages[1]).toMatchObject({
+      id: 'trades_yard',
+      monthlyCents: 37_500,
+      walkIns: { segment: 'small_crews', leadsPerWeek: 0.9 },
+    })
+    const yard = s.events.find((e) => e.id === 'trades_yard')!
+    expect(yard.trigger).toEqual(
+      loadScenario('kantino').events.find((e) => e.id === 'coworking_desk')!.trigger,
+    )
+    // Its own books and family event, under the ids the bots and the reader know.
+    expect(s.events.find((e) => e.id === 'receipts_pile')!.text).toContain('plasterboard')
+    expect(s.events.find((e) => e.id === 'family_lunch')!.text).toContain('dinner')
+    const own = s.events.length - 66
+    expect(own).toBe(43)
+  })
+
+  describe('scenarios do not borrow from each other', () => {
+    /** Every string a player can read: ids, conditions and other keys the engine reads are left out. */
+    const RULE_KEYS = new Set([
+      'id',
+      'area',
+      'from',
+      'look',
+      'defaultChoice',
+      'mustHave',
+      'organisedAt',
+      'path',
+      'op',
+      'type',
+      'skill',
+      'stage',
+      'segment',
+      'of',
+      'covers',
+      'kind',
+      'distinct',
+    ])
+    const texts = (value: unknown, key = ''): string[] => {
+      if (RULE_KEYS.has(key)) return []
+      if (typeof value === 'string') return [value]
+      if (Array.isArray(value)) return value.flatMap((v) => texts(v))
+      if (value && typeof value === 'object') {
+        return Object.entries(value).flatMap(([k, v]) => texts(v, k))
+      }
+      return []
+    }
+    const readable = (id: 'kantino' | 'zollstock') => {
+      const about = scenarioCatalogue().find((c) => c.id === id)!
+      return [...texts(loadScenario(id)), about.name, ...about.lines].join('\n').toLowerCase()
+    }
+    const forbidden = (id: 'kantino' | 'zollstock', extra: string[]) => [
+      loadScenario(id).name,
+      ...loadScenario(id).features.map((f) => f.name),
+      ...extra,
+    ]
+
+    it('no Zollstock text mentions lunch, Kantino or a Kantino feature', () => {
+      const text = readable('zollstock')
+      for (const word of forbidden('kantino', ['lunch'])) {
+        expect([word, text.includes(word.toLowerCase())]).toEqual([word, false])
+      }
+    })
+
+    it('no Kantino text mentions Zollstock or a Zollstock feature', () => {
+      const text = readable('kantino')
+      for (const word of forbidden('zollstock', [])) {
+        expect([word, text.includes(word.toLowerCase())]).toEqual([word, false])
+      }
+    })
+  })
+
   it('Kantino tells medical practices apart by surname', () => {
     expect(loadScenario('kantino').companyNames.medical?.distinct).toBe('second')
   })

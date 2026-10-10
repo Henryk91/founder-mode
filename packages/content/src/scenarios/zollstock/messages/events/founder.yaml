@@ -1,0 +1,75 @@
+# Zollstock inbox events, founder area. Same rules as Kantino's events files: text is 2 to 4
+# sentences, {name} is the customer or lead the message is from, conditions and effects from
+# schema.ts, choices show hours and money only. Each event takes the mechanics of a Kantino event
+# with a similar tension. Shared events (src/shared/events) follow these, in their own order.
+events:
+  - id: trades_yard
+    area: founder
+    weight: 1
+    once: true
+    trigger: [week >= 7, customers.won >= 1]
+    from: none
+    sender: 'Hofwerkstätten, trades yard'
+    look: letter
+    text: >-
+      A desk has come free in the office above a trades yard, 375 EUR a month. Downstairs are a joiner,
+      two electricians and a tiler, who all drink their coffee in the yard at seven. If small crews are
+      your market, that is a steady stream of introductions. If not, it is an expensive view of a
+      forklift.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the desk
+        hours: 2
+        effects:
+          - { type: moveOffice, stage: trades_yard }
+      - id: stay
+        label: Stay at the kitchen table
+        hours: 0
+        effects: []
+
+  - id: family_lunch
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Family
+    look: note
+    text: >-
+      Your family has noticed that you now exist mostly as a voice on the phone. Sunday dinner is at
+      six. Attendance is voluntary in the way tax is voluntary.
+    defaultChoice: stay
+    choices:
+      - id: go
+        label: Go
+        hours: 4
+        effects:
+          - { type: energy, delta: 10 }
+      - id: stay
+        label: Stay at the desk
+        hours: 0
+        effects:
+          - { type: energy, delta: -3 }
+
+  - id: founder_dinner
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 5]
+    from: none
+    sender: Founder group
+    text: >-
+      A group of founders meets once a month to complain in a structured way. They have a spare seat on
+      Thursday. One of them used to run a painting firm of twenty, if you are short of leads.
+    defaultChoice: skip
+    choices:
+      - id: go
+        label: Take the seat
+        hours: 3
+        effects:
+          - { type: energy, delta: 4 }
+          - { type: newLeads, count: 1, chance: 0.4, when: [leads.open <= 8] }
+      - id: skip
+        label: Skip it
+        hours: 0

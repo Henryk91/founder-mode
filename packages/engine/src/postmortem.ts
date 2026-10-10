@@ -10,6 +10,7 @@ import type {
   ExperimentEvent,
   GameState,
   HoursByActivity,
+  Lead,
   LuckItem,
   MarketTruth,
   Misread,
@@ -105,6 +106,7 @@ export function buildPostMortem(state: GameState): PostMortem {
       hire,
     },
     walkIns: walkInCounts(state),
+    sources: sourceCounts(state),
     luck,
   }
 }
@@ -127,6 +129,27 @@ function walkInCounts(state: GameState): PostMortem['walkIns'] {
     if (state.customers.some((c) => c.leadId === lead.id)) row.customers++
   }
   return out
+}
+
+/** The key a lead's source is counted under: outreach per channel, everything else by source. */
+function sourceKey(lead: Lead): string {
+  return (lead.source === 'outreach' || lead.source === 'team') && lead.channel
+    ? `${lead.source}:${lead.channel}`
+    : lead.source
+}
+
+/** Leads and the customers they became, per source, most customers first, then most leads. */
+function sourceCounts(state: GameState): PostMortem['sources'] {
+  const rows = new Map<string, { key: string; leads: number; customers: number }>()
+  const won = new Set(state.customers.map((c) => c.leadId))
+  for (const lead of state.leads) {
+    const key = sourceKey(lead)
+    const row = rows.get(key) ?? { key, leads: 0, customers: 0 }
+    row.leads++
+    if (won.has(lead.id)) row.customers++
+    rows.set(key, row)
+  }
+  return [...rows.values()].sort((a, b) => b.customers - a.customers || b.leads - a.leads)
 }
 
 // ---------------------------------------------------------------------------
@@ -621,6 +644,7 @@ function buildLuck(state: GameState, cause: PostMortemCause): PostMortem['luck']
         break
       case 'leads':
       case 'walk_ins':
+      case 'referrals':
         customers = diff * leadValue(seg)
         break
       case 'churn':

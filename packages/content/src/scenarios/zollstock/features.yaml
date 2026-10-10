@@ -1,0 +1,50 @@
+# Zollstock features (spec section 4). `mention` is what an interviewee says when asking for it.
+# Which segment needs which feature lives in scenario.yaml (segments[].mustHave) and stays hidden.
+
+- id: job_board
+  name: Job plan for the week
+  buildHours: 40
+  bugsOnShip: { min: 2, max: 3 }
+  mention: One page that says who goes where this week. That alone would save my Mondays.
+
+- id: site_quotes
+  name: Quotes written on site
+  buildHours: 25
+  bugsOnShip: { min: 1, max: 2 }
+  mention: If I could write the quote while I am still standing in their hallway, I would win half the jobs I lose.
+
+- id: customer_texts
+  name: Text messages to the customer
+  buildHours: 20
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Customers ring me ten times to ask when we are coming. A text saying "Tuesday, eight" would end that.
+
+- id: crew_dispatch
+  name: Several crews and vans
+  buildHours: 45
+  bugsOnShip: { min: 2, max: 3 }
+  mention: I have four crews and five vans and one whiteboard. I need to see all of them at once.
+
+- id: material_lists
+  name: Material list per job
+  buildHours: 50
+  bugsOnShip: { min: 2, max: 3 }
+  mention: Every job needs its own list of materials, so nobody drives back to the merchant for one box of screws.
+
+- id: recurring_jobs
+  name: Recurring jobs with checklists
+  buildHours: 30
+  bugsOnShip: { min: 1, max: 2 }
+  mention: The same buildings every month, the same checklist every time. It should plan itself.
+
+- id: photo_reports
+  name: Photo reports for the landlord
+  buildHours: 35
+  bugsOnShip: { min: 1, max: 2 }
+  mention: The landlords want proof. Photos with the date and the address on them, sent without me typing a word.
+
+- id: client_marketplace
+  name: Marketplace to find new clients
+  buildHours: 60
+  bugsOnShip: { min: 2, max: 3 }
+  mention: More customers, obviously. Everyone wants more customers.

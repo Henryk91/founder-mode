@@ -1,0 +1,47 @@
+# Onboarding text shown before week 1, and the founder's notes shown in weeks 1 to 4.
+# Placeholders: {name} is a plain number, {name:eur} is cents shown as euros.
+# Intro cards may use cash, savings, living, livingMonth, maxWeeks. Notes may use week, n, living.
+# Nothing here may reveal which segment is viable.
+intro:
+  cards:
+    - id: you
+      title: You
+      body: >-
+        You are a founder in Munich. The company account holds {cash:eur}, your savings hold
+        {savings:eur}, and staying alive costs {living:eur} a week, about {livingMonth:eur} a
+        month. You saved enough for about seven months. No staff, no customers, one folding rule.
+    - id: idea
+      title: The idea
+      body: >-
+        Zollstock is software for trade businesses: plan the week's jobs, write the quote on
+        site, and tell the customer when the van is coming. It does not exist yet. The trades run
+        on paper, phone calls and memory, and some of them like it that way.
+    - id: problem
+      title: The problem
+      body: >-
+        Three kinds of trade business might want it: small crews, contractors and property
+        maintenance firms. They do not answer cold email or click on adverts. They trust people
+        they have met, and people their friends have recommended. Some will be polite and never
+        pay, and you cannot tell which from here.
+    - id: goal
+      title: The goal
+      body: >-
+        Last {maxWeeks} weeks. To win, the company has to pay for itself and for you, with
+        customer money covering all costs for the last two months. Run out of money, yours
+        included, and it is over.
+
+# Chosen by simple rules from the current state, weeks 1 to 4 only. They describe, never advise.
+founderNotes:
+  first_week: >-
+    Week 1. No customers, no product, no evidence about any of the three markets. Every choice
+    this week is a guess, and some guesses cost more than others.
+  no_evidence: >-
+    Week {week}. Still no evidence about any market. Your savings pay {living:eur} a week
+    whatever you do.
+  only_interviews: >-
+    You have {n} interviews behind you. A tradesperson who says "sounds good" has not yet said
+    "how much".
+  built_unseen: >-
+    Something is built and no tradesperson has seen it. They rarely go looking for software.
+  leads_only: >-
+    You have {n} leads. A lead is a phone number, not a customer.

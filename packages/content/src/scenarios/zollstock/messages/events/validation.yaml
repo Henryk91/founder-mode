@@ -1,0 +1,273 @@
+# Zollstock inbox events, validation area. Same rules as Kantino's events files: text is 2 to 4
+# sentences, {name} is the customer or lead the message is from, conditions and effects from
+# schema.ts, choices show hours and money only. Each event takes the mechanics of a Kantino event
+# with a similar tension. Shared events (src/shared/events) follow these, in their own order.
+events:
+  - id: trade_survey
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 1]
+    from: none
+    sender: Trade association
+    text: >-
+      The regional trade association offers to survey 200 of its members for 600 EUR. The sample is
+      large. The questions are theirs, and the first one asks for a fax number.
+    defaultChoice: pass
+    choices:
+      - id: buy
+        label: Buy the survey
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: skill, skill: interviewing, delta: 0.03 }
+      - id: pass
+        label: Pass
+        hours: 0
+
+  - id: friend_plumber
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 1]
+    from: none
+    sender: A friend of a friend
+    look: note
+    text: >-
+      A friend of a friend is a plumber and offers a free chat about how she plans her week. She is
+      very supportive. She would be supportive of anything, and she has never planned a week.
+    defaultChoice: decline
+    choices:
+      - id: call
+        label: Take the call
+        hours: 2
+        effects:
+          - { type: lostHours, hours: 2 }
+      - id: decline
+        label: Politely decline
+        hours: 0
+
+  - id: master_project
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Master school student
+    text: >-
+      A student at the master craftsman school wants to write her final project about Zollstock and
+      needs four hours of your time. In return you get a chapter on how the trades plan their week. It
+      will be bound in leather and read by two examiners.
+    defaultChoice: decline
+    choices:
+      - id: help
+        label: Give the interviews
+        hours: 4
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: decline
+        label: Wish her luck
+        hours: 0
+
+  - id: trades_forum
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Forum digest
+    text: >-
+      A forum for tradespeople has a thread called "Planning software, does anyone actually use it". It
+      has 140 replies, most of them photos of other people's wiring. Joining in means answering
+      messages for days.
+    defaultChoice: skip
+    choices:
+      - id: post
+        label: Join the thread
+        hours: 2
+        effects:
+          - { type: newLeads, count: 1, chance: 0.5, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 2, when: [leads.open > 8] }
+      - id: lurk
+        label: Read the useful replies
+        hours: 1
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.01 }
+      - id: skip
+        label: Close the tab
+        hours: 0
+
+  - id: job_diary
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 1]
+    from: none
+    sender: Master painter
+    text: >-
+      A master painter you interviewed offers to keep a diary of her week: every job, every call, every
+      drive. She warns you it will mostly say "rain".
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Ask for the diary
+        hours: 1
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: decline
+        label: Thank her anyway
+        hours: 0
+
+  - id: vocational_school
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: Vocational school
+    text: >-
+      A vocational school wants to try Zollstock with its electrician apprentices, unpaid, for a term.
+      A first reference opens doors. A third reference mostly opens a group chat full of eighteen year
+      olds.
+    defaultChoice: decline
+    choices:
+      - id: pilot
+        label: Run the pilot
+        hours: 5
+        effects:
+          - { type: newLeads, count: 2, when: [customers.count <= 1] }
+          - { type: lostHours, hours: 3, when: [customers.count >= 2] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: rival_user
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Roofer
+    text: >-
+      A roofer gave up on a rival planning app after three weeks and would happily explain why, over
+      coffee at the builders' merchant. At length. With photos of every screen she hated, if you let
+      her.
+    defaultChoice: skip
+    choices:
+      - id: coffee
+        label: Buy her a coffee
+        hours: 2
+        effects:
+          - { type: newLeads, count: 1, chance: 0.4 }
+          - { type: skill, skill: interviewing, delta: 0.01 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: workshop_panel
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Research agency
+    text: >-
+      An agency offers a panel of eight master tradespeople for 900 EUR, rolls and coffee included.
+      Three of them will arrive late from a job, and one will be on the phone to a customer the whole
+      time.
+    defaultChoice: pass
+    choices:
+      - id: book
+        label: Book it
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -90000 }
+          - { type: skill, skill: interviewing, delta: 0.03 }
+      - id: pass
+        label: Pass
+        hours: 0
+
+  - id: online_poll
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Social network
+    text: >-
+      Your poll about job planning got 312 votes. 290 of them came from people who sell software. One
+      of them has asked whether you would like a demo.
+    defaultChoice: ignore
+    choices:
+      - id: analyse
+        label: Go through the votes
+        hours: 2
+      - id: ignore
+        label: Let it scroll away
+        hours: 0
+
+  - id: landlord_survey
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Property manager
+    text: >-
+      A property manager is surveying the landlords she works for and will add two questions of yours
+      for 400 EUR. The other questions are about bins.
+    defaultChoice: pass
+    choices:
+      - id: buy
+        label: Add the questions
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: newLeads, count: 1, chance: 0.5 }
+      - id: pass
+        label: Pass
+        hours: 0
+
+  - id: diy_inquiry
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Keen amateur
+    text: >-
+      A man renovating his own flat asks whether Zollstock would help him plan his bathroom. It would
+      not. He is keen anyway and would like a call to discuss tiles.
+    defaultChoice: decline
+    choices:
+      - id: call
+        label: Take the call
+        hours: 2
+        effects:
+          - { type: lostHours, hours: 2 }
+      - id: decline
+        label: Explain and decline
+        hours: 0
+
+  - id: expert_interview
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 1, week <= 12]
+    from: none
+    sender: Retired master plumber
+    text: >-
+      A retired master plumber who ran a firm of thirty for forty years offers an hour of her time.
+      Before your first customer, that is an hour of priceless context. After it, it is an hour of
+      stories.
+    defaultChoice: decline
+    choices:
+      - id: meet
+        label: Meet her
+        hours: 2
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.03, when: [customers.count == 0] }
+          - { type: skill, skill: selling, delta: 0.02, when: [customers.count == 0] }
+      - id: decline
+        label: Decline
+        hours: 0

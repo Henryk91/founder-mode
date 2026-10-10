@@ -1,0 +1,303 @@
+# Zollstock inbox events, sales area. Same rules as Kantino's events files: text is 2 to 4
+# sentences, {name} is the customer or lead the message is from, conditions and effects from
+# schema.ts, choices show hours and money only. Each event takes the mechanics of a Kantino event
+# with a similar tension. Shared events (src/shared/events) follow these, in their own order.
+events:
+  - id: site_visit
+    area: sales
+    weight: 3
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} offers to take you along to a site visit on Friday, to show the app to the general
+      contractor. It is half a day in a van that smells of solvent. The contractor hires a lot of
+      crews.
+    defaultChoice: ignore
+    choices:
+      - id: follow_up
+        label: Go along
+        hours: 4
+        effects:
+          - { type: newLeads, count: 1 }
+      - id: ignore
+        label: Not this week
+        hours: 0
+
+  - id: trade_fair
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 4, cashEur >= 3000]
+    from: none
+    sender: Trade fair
+    text: >-
+      A trade fair in February offers a booth for 1,350 EUR. Hall 4 is cold and most visitors are
+      looking for cheap drills. A few of them run firms.
+    defaultChoice: pass
+    choices:
+      - id: booth
+        label: Take the booth
+        hours: 8
+        effects:
+          - { type: cash, amountCents: -135000 }
+          - { type: newLeads, count: 3 }
+          - { type: energy, delta: -4 }
+      - id: pass
+        label: Pass
+        hours: 0
+
+  - id: payroll_question
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.waitingForDemo >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} asks whether Zollstock also does payroll. It does not. They are still waiting for their
+      demo, and now they are waiting for an answer too.
+    defaultChoice: ignore
+    choices:
+      - id: promise
+        label: Say yes and work it out later
+        hours: 3
+        effects:
+          - { type: touchLead }
+          - { type: bugs, delta: 2 }
+          - { type: lostHours, hours: 3 }
+      - id: honest
+        label: Be honest about it
+        hours: 1
+        effects:
+          - { type: touchLead }
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: ignore
+        label: Do not answer yet
+        hours: 0
+
+  - id: competitor_flyers
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: Builders' merchant
+    text: >-
+      A rival planning app has left flyers at the builders' merchant, next to the free coffee. The
+      flyers are glossy. The app on them has a different name from the one on its website.
+    defaultChoice: ignore
+    choices:
+      - id: study
+        label: Study it properly
+        hours: 3
+        effects:
+          - { type: energy, delta: -3 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+
+  - id: subcontractor_form
+    area: sales
+    weight: 2
+    once: true
+    when: [leads.waitingForDemo >= 1]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} would like you to fill in their subcontractor form first. It is 22 pages long and asks for
+      your liability insurance, your scaffolding licence and, probably by mistake, your blood group.
+    defaultChoice: leave
+    choices:
+      - id: fill
+        label: Fill it in
+        hours: 4
+        effects:
+          - { type: touchLead }
+      - id: short
+        label: Ask for the short version
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.5 }
+      - id: leave
+        label: Leave it for now
+        hours: 0
+
+  - id: flatmate_intro
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Old flatmate
+    look: note
+    text: >-
+      Your old flatmate's sister runs a heating firm and has agreed to talk to you. She has twenty
+      minutes on Tuesday, in her van. Worth it if you have room for another lead.
+    defaultChoice: later
+    choices:
+      - id: intro
+        label: Take the introduction
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1, when: [leads.open <= 12] }
+          - { type: lostHours, hours: 2, when: [leads.open > 12] }
+      - id: later
+        label: Maybe later
+        hours: 0
+
+  - id: guild_evening
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: Master electrician
+    text: >-
+      Meisterin Kerschbaum offers to show Zollstock at her guild evening on Thursday. Forty
+      tradespeople, one projector, and a buffet that closes at eight. Good for meeting people, less
+      good if you already have more people than evenings.
+    defaultChoice: skip
+    choices:
+      - id: go
+        label: Do the talk
+        hours: 4
+        effects:
+          - { type: newLeads, count: 2, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 3, when: [leads.open > 8] }
+          - { type: energy, delta: -3 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: voice_message
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: lead
+    sender: Prospect
+    text: >-
+      {name} has sent a voice message of four minutes. The first minute is a drill. The rest is either
+      a complaint or a question, and you will only know by listening.
+    defaultChoice: drop
+    choices:
+      - id: rebook
+        label: Listen and call back
+        hours: 1
+        effects:
+          - { type: touchLead, chance: 0.6 }
+      - id: drop
+        label: Leave it
+        hours: 0
+
+  - id: wholesaler_counter
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: Trade wholesaler
+    text: >-
+      A trade wholesaler offers to recommend Zollstock at its counter, if you train the counter staff.
+      Every electrician in the district passes there before seven. They will need a finished product to
+      point at.
+    defaultChoice: decline
+    choices:
+      - id: sign
+        label: Train their staff
+        hours: 5
+        effects:
+          - { type: newLeads, count: 2, when: [features.shipped >= 3] }
+          - { type: lostHours, hours: 3, when: [features.shipped <= 2] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: public_tender
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 5]
+    from: none
+    sender: Building department
+    look: official
+    text: >-
+      The city's building department invites bids for planning software for its own maintenance crews.
+      The bid needs forty pages and a reference customer with at least 200 users.
+    defaultChoice: decline
+    choices:
+      - id: bid
+        label: Write the bid
+        hours: 6
+        effects:
+          - { type: energy, delta: -4 }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: guild_newsletter
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Guild newsletter
+    text: >-
+      The guild newsletter wants a short paragraph about Zollstock by Thursday, and would like it
+      shorter than that. Readers will phone, which helps only if you have time to phone back.
+    defaultChoice: skip
+    choices:
+      - id: write
+        label: Write the paragraph
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1, chance: 0.5, when: [leads.open <= 8] }
+          - { type: lostHours, hours: 2, when: [leads.open > 8] }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: returning_prospect
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: Plumbing firm
+    text: >-
+      A plumbing firm that said no earlier this year writes again. The owner's daughter has taken over,
+      with opinions about paper and a budget.
+    defaultChoice: later
+    choices:
+      - id: call
+        label: Call them this week
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1 }
+      - id: later
+        label: Reply later
+        hours: 0
+
+  - id: christmas_market
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Your cousin
+    look: note
+    text: >-
+      Your cousin offers you a corner of her mulled wine stand at the Christmas market. Nobody at a
+      Christmas market is buying planning software for tradespeople. Your cousin disagrees, loudly.
+    defaultChoice: decline
+    choices:
+      - id: go
+        label: Take the corner
+        hours: 5
+        effects:
+          - { type: energy, delta: -3 }
+      - id: decline
+        label: Decline
+        hours: 0

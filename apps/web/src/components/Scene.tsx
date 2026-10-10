@@ -8,9 +8,9 @@ import s from './Scene.module.css'
  * same id, and a stage without one shows the kitchen table. The chip names the stage as the
  * scenario does.
  */
-export type OfficeStage = 'kitchen_table' | 'coworking_desk'
+export type OfficeStage = 'kitchen_table' | 'coworking_desk' | 'trades_yard'
 
-const DRAWINGS: readonly OfficeStage[] = ['kitchen_table', 'coworking_desk']
+const DRAWINGS: readonly OfficeStage[] = ['kitchen_table', 'coworking_desk', 'trades_yard']
 
 /** The drawing for where the company works, from the engine. */
 export function officeStage(view: PlayerView): OfficeStage {
@@ -77,8 +77,10 @@ export function Scene(props: { stage?: OfficeStage }) {
     >
       {office === 'kitchen_table' ? (
         <KitchenTable data={data} ui={ui} />
-      ) : (
+      ) : office === 'coworking_desk' ? (
         <CoworkingDesk data={data} ui={ui} />
+      ) : (
+        <TradesYard data={data} ui={ui} />
       )}
       <div className={s.chip}>{view.company.officeStage.name}</div>
     </div>
@@ -278,6 +280,52 @@ function CoworkingDesk({ data, ui }: { data: SceneData; ui: UiStage }) {
         <rect className={s.chair} x="428" y="166" width="44" height="58" rx="8" />
       )}
       <Labels x={150} figure={data.you} />
+      <rect className={s.pot} x="690" y="268" width="26" height="30" />
+      <circle className={s.plant} cx="703" cy="250" r="16" />
+    </svg>
+  )
+}
+
+/** A desk in a trades yard (Zollstock): a workbench, a pegboard of tools, a van outside. */
+function TradesYard({ data, ui }: { data: SceneData; ui: UiStage }) {
+  return (
+    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
+      <rect className={s.wall} x="0" y="0" width="732" height="250" />
+      <rect className={s.floor} x="0" y="250" width="732" height="80" />
+      <rect className={s.skirting} x="0" y="246" width="732" height="6" />
+      {/* window onto the yard, with a van parked outside */}
+      <rect className={s.sky} x="250" y="36" width="250" height="120" />
+      <rect className={s.skyline} x="250" y="128" width="250" height="28" />
+      <rect className={s.counter} x="300" y="96" width="120" height="44" rx="6" />
+      <rect className={s.counter} x="420" y="110" width="40" height="30" rx="4" />
+      <rect className={s.screen} x="428" y="114" width="24" height="12" rx="2" />
+      <rect className={s.paper} x="318" y="108" width="70" height="10" />
+      <circle className={s.wood} cx="330" cy="142" r="9" />
+      <circle className={s.wood} cx="438" cy="142" r="9" />
+      <rect className={s.frame} x="250" y="36" width="250" height="120" />
+      <line className={s.frame} x1="375" y1="36" x2="375" y2="156" />
+      {/* pegboard with tools */}
+      <rect className={s.paper} x="24" y="40" width="190" height="110" rx="3" />
+      <rect className={s.line} x="24" y="40" width="190" height="110" rx="3" />
+      <rect className={s.ink} x="44" y="58" width="6" height="56" />
+      <rect className={s.ink} x="38" y="58" width="18" height="10" />
+      <rect className={s.ink} x="78" y="62" width="40" height="5" />
+      <rect className={s.ink} x="78" y="80" width="56" height="5" />
+      <rect className={s.wood} x="150" y="56" width="12" height="70" />
+      <rect className={s.sticky} x="176" y="58" width="28" height="28" />
+      <CustomerCards x={600} y={52} names={data.customers} ui={ui} />
+      {/* the workbench */}
+      <rect className={s.desk} x="40" y="214" width="320" height="18" rx="2" />
+      <rect className={s.wood} x="54" y="232" width="12" height="40" />
+      <rect className={s.wood} x="334" y="232" width="12" height="40" />
+      <rect className={s.wood} x="60" y="252" width="280" height="6" />
+      <Person x={150} who="you" slump={data.slumped} />
+      <rect className={s.screen} x="130" y="192" width="40" height="22" rx="2" />
+      <rect className={s.mug} x="204" y="198" width="14" height="16" rx="2" />
+      <rect className={s.paper} x="250" y="206" width="60" height="8" />
+      {data.hire && <Person x={270} who="hire" />}
+      <Labels x={150} figure={data.you} />
+      {data.hire && <Labels x={270} figure={data.hire} />}
       <rect className={s.pot} x="690" y="268" width="26" height="30" />
       <circle className={s.plant} cx="703" cy="250" r="16" />
     </svg>

@@ -112,6 +112,8 @@ As Kantino, plus one new mechanic.
 | A referred lead's weekly chance to ask for a demo | x 1.6 | not applicable |
 | Shown to the player | The lead card says "Recommended by" and the customer's name. The weekly results name the referral | not applicable |
 
+As built: `sales.referral` in scenario.yaml holds `chancePerFit` (0.08), `chancePerBug` (0.01) and `demoBonus` (0.6, so x 1.6). Kantino sets all three to 0. Only customers paying since an earlier week refer, in the order they were won, once per week each; a chance of 0 never rolls.
+
 Engine requirements:
 - Both numbers are scenario values. With them at 0, behaviour and the Kantino bot report must be identical to before.
 - A lead records its source: outreach channel, landing test, or referral.
@@ -131,21 +133,21 @@ The office stage is scenario content. Kantino's second office is a coworking des
 | Stage | Trigger | Effect |
 |---|---|---|
 | Kitchen table | Start | None |
-| Desk in a trades yard | Offered once by an inbox event, in week 8 or the week after the first paying customer, whichever comes first | Company cost of 225 per month, energy +1 per week, and walk-in leads from `small_crews`: about one new lead every two weeks from the workshops next door |
+| Desk in a trades yard | Offered once by the inbox event `trades_yard`, in week 8 or the week after the first paying customer, whichever comes first | Company cost of 375 per month and walk-in leads from `small_crews`, 0.9 a week on average, from the workshops downstairs. No energy effect |
 
 Same logic as Kantino's desk: if small crews are the real market, the yard feeds you leads without outreach hours. If they are the polite trap, it fills the pipeline with friendly neighbours who never pay and pulls you towards the wrong market.
 
-Start from Kantino's final desk values once they are tuned. The scene needs a third drawing for this stage, in the same muted style: a workbench, a van outside the window.
+Values are Kantino's final desk (375 per month, 0.9 walk-ins a week); this spec first said 225 per month, energy +1 and one lead every two weeks, written before Kantino's desk was tuned. Taking it against declining on the same 1000 seeds (`pnpm bots --desk`, `validate_then_build`), split by the real role of small crews: viable +7.7 points (z 3.5), mediocre -3.3 (z -2.3), trap -5.2 (z -3.1). It clearly helps when small crews are the real market and clearly hurts when they are the trap. The scene has its own drawing: a workbench, a pegboard of tools, a van outside the window.
 
 ## 10. Content
 
 | Type | Target |
 |---|---|
 | Intro cards | 4, same structure as Kantino. Card 2 describes Zollstock, card 3 the three trade segments and that tradespeople trust people, not adverts |
-| Events specific to this scenario | At least 25, to replace Kantino's lunch specific ones. Ideas below |
+| Events specific to this scenario | 43, matching Kantino's spread by area (12 validation, 13 sales, 12 product, 2 finance, 3 founder, 1 team), so the total of 109 matches Kantino's and a 60 week run never runs out. Includes its own `receipts_pile` (the books) and `family_lunch` (a Sunday dinner), under Kantino's ids. Each takes the mechanics of a Kantino event with a similar tension. Ideas below |
 | General events | Shared with Kantino (accountant, laptop, family, bank and so on) |
 | Interview quotes | At least 10 per bucket per segment |
-| Company names | Pools large enough that a 60 week run never repeats a name, and no two open leads share a first word. Pattern: surname plus trade, such as "Elektro Brandl", "Haustechnik Sommer", "Dachdeckerei Lechner". No real firms |
+| Company names | Pools large enough that a 60 week run never repeats a name. Pattern: trade word plus surname, such as "Elektro Aschauer", "Bauunternehmung Nagengast". Two open leads of a market never share the surname (the distinctive word). Surnames are deliberately uncommon so few generated names match real firms, and nothing negative is said about any firm that is not generated per run |
 | Founder's notes and help text | Any line that mentions lunch or Kantino gets a Zollstock version |
 
 Event ideas (Claude Code writes the texts, 2 to 4 sentences, dry humour):

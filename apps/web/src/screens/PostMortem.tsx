@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type {
   Activity,
   ChainItem,
+  ChannelId,
   LuckItem,
   MarketTruth,
   Misread,
@@ -153,6 +154,22 @@ export function PostMortem({ desk }: { desk: boolean }) {
             segment: t.segment(pm.hours.focusSegmentId),
           })}
         </p>
+      )}
+      <p>{label('pm.sources.title', stage)}</p>
+      {pm.sources.some((x) => x.customers > 0) ? (
+        <ul className={styles.lines}>
+          {pm.sources.map((x) => (
+            <li key={x.key}>
+              {label('pm.sources.item', stage, {
+                source: sourceName(x.key, stage),
+                customers: x.customers,
+                leads: x.leads,
+              })}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>{label('pm.sources.none', stage)}</p>
       )}
     </Fold>
   )
@@ -311,6 +328,26 @@ export function PostMortem({ desk }: { desk: boolean }) {
       </main>
     </div>
   )
+}
+
+/** The name of a post-mortem source key: `outreach:<channel>`, `team:<channel>`, or a source. */
+export function sourceName(key: string, stage: UiStage): string {
+  const [source, channel] = key.split(':')
+  const ch = channel ? label(`channel.${channel as ChannelId}`, stage) : ''
+  switch (source) {
+    case 'outreach':
+      return label('pm.source.outreach', stage, { channel: ch })
+    case 'team':
+      return label('pm.source.team', stage, { channel: ch.toLowerCase() })
+    case 'landing':
+    case 'presale':
+    case 'inbox':
+    case 'walk_in':
+    case 'referral':
+      return label(`pm.source.${source}`, stage)
+    default:
+      return key
+  }
 }
 
 /** A post-mortem section that is open on the desk, and a summary line that opens on tap on the phone. */

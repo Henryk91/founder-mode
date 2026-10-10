@@ -162,6 +162,7 @@ const SHARED_READER: Record<string, ReaderRule> = {
 }
 
 const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
+  zollstock: {},
   kantino: {
     // validation
     survey_offer: 'pass',
@@ -212,6 +213,57 @@ const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
     team_lunch: 'order',
   },
 }
+
+/**
+ * Zollstock's own events take the mechanics of a Kantino event with a similar tension (content
+ * generator, docs/decisions.md), so the reader answers each as it answers that twin.
+ */
+const ZOLLSTOCK_TWINS: Record<string, string> = {
+  trade_survey: 'survey_offer',
+  friend_plumber: 'friend_of_friend',
+  master_project: 'student_thesis',
+  trades_forum: 'office_manager_forum',
+  job_diary: 'lunch_diary',
+  vocational_school: 'university_pilot',
+  rival_user: 'rival_customer',
+  workshop_panel: 'focus_group',
+  online_poll: 'online_poll',
+  landlord_survey: 'tenant_survey',
+  diy_inquiry: 'catering_inquiry',
+  expert_interview: 'expert_interview',
+  site_visit: 'referral',
+  trade_fair: 'food_fair',
+  payroll_question: 'integration_question',
+  competitor_flyers: 'competitor_launch',
+  subcontractor_form: 'supplier_form',
+  flatmate_intro: 'colleague_intro',
+  guild_evening: 'coworking_open_day',
+  voice_message: 'demo_no_show',
+  wholesaler_counter: 'reseller_offer',
+  public_tender: 'big_tender',
+  guild_newsletter: 'newsletter_paragraph',
+  returning_prospect: 'returning_prospect',
+  christmas_market: 'wedding_fair',
+  crash_report: 'crash_report',
+  marketplace_pitch: 'restaurant_portal',
+  tiny_buttons: 'font_complaint',
+  no_typing: 'reception_browser',
+  sunlight_mode: 'dark_mode',
+  slow_job_plan: 'slow_order_page',
+  apprentice_setup: 'screen_reader',
+  bavarian_translation: 'french_translation',
+  accounting_partner: 'partner_directory',
+  cellar_signal: 'company_phones',
+  paper_job_sheets: 'whiteboard_menus',
+  job_export: 'export_request',
+  trade_insurance: 'insurance_broker',
+  family_lunch: 'family_lunch',
+  founder_dinner: 'founder_dinner',
+  hire_site_day: 'team_lunch',
+}
+SCENARIO_READER.zollstock = Object.fromEntries(
+  Object.entries(ZOLLSTOCK_TWINS).map(([id, twin]) => [id, SCENARIO_READER.kantino[twin]!]),
+)
 
 /** The reader's table for one scenario: the shared answers plus the scenario's own. */
 const readerChoices = (scenarioId: string): Record<string, ReaderRule> => ({

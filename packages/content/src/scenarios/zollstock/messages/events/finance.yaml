@@ -1,0 +1,54 @@
+# Zollstock inbox events, finance area. Same rules as Kantino's events files: text is 2 to 4
+# sentences, {name} is the customer or lead the message is from, conditions and effects from
+# schema.ts, choices show hours and money only. Each event takes the mechanics of a Kantino event
+# with a similar tension. Shared events (src/shared/events) follow these, in their own order.
+events:
+  - id: receipts_pile
+    area: finance
+    weight: 40
+    cooldownWeeks: 5
+    when: [week >= 3]
+    from: none
+    sender: Accountant
+    look: official
+    text: >-
+      Your accountant would like the receipts for the last few weeks. Some are in a shoebox. One is
+      written on a strip of plasterboard, in carpenter's pencil.
+    defaultChoice: later
+    choices:
+      - id: sort
+        label: Sort them tonight
+        hours: 3
+      - id: send
+        label: Pay the accountant to sort them
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -22500 }
+      - id: later
+        label: Later
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -60000, chance: 0.5 }
+          - { type: lostHours, hours: 4, chance: 0.5 }
+
+  - id: trade_insurance
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Insurance broker
+    look: official
+    text: >-
+      A broker offers a startup package covering cyber risk, legal costs and "damage from incorrect
+      measurements". It costs 60 EUR a month. The broker calls it peace of mind, twice.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Sign up
+        hours: 1
+        effects:
+          - { type: fixedCost, id: insurance, name: Startup insurance, monthlyCents: 6000 }
+      - id: decline
+        label: Decline
+        hours: 0

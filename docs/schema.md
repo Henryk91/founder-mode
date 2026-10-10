@@ -736,3 +736,13 @@ type PostMortem = {
 - `SaveStorage` is per scenario: `load(scenarioId)`, `save(file)` (under `file.scenarioId`), `clear(scenarioId)`; browser key `founder-mode.save.v1.<scenarioId>`, with a save under the old key `founder-mode.save.v1` moved on first load. `memoryStorage().current(scenarioId?)`. `ProfileStorage` gained `lastScenario()` and `setLastScenario(id)` (browser key `founder-mode.scenario.v1`).
 - Scene: the drawing is chosen by `view.company.officeStage.id` (`kitchen_table`, `coworking_desk`, else the kitchen table); the chip shows `officeStage.name`. The labels `scene.kitchen_table` and `scene.coworking_desk` are gone.
 - Bots: `BotArgs.scenario: string | null`. `ReportInput.playtest?: { segment, note }`. `Strategy.describe?(scenario)` and `describeStrategy`. `readerEventIds(scenarioId)` replaces `READER_EVENT_IDS`. `BOT_SCENARIOS` (`packages/bots/src/scenarios.ts`) holds the playtest market, features and channel per scenario. `asSection` and `mergeReportFile` (`reportFile.ts`) write one `#` section per scenario.
+
+### Second scenario, part B: Zollstock (engine 0.10.0)
+
+- Content: `SalesConfig.referral: { chancePerFit, chancePerBug, demoBonus }` (all required; zero switches referrals off). Scenario `zollstock` in `SCENARIO_IDS`, with its own folder; its events place no shared events, so shared ones follow its own per area.
+- `LeadSource` gained `referral`; `Lead.referredBy?: string` (customer id). `LeadView.channel: ChannelId | null` and `LeadView.referredBy: string | null` (the customer's name).
+- `applyReferrals(state, rng)` and `referralChance(state, segmentId)` (`systems/sales.ts`), after walk-ins in step 6: per customer paying since an earlier week, chance `max(0, chancePerFit * fit - chancePerBug * bugs)`; no roll at 0. Referred leads ask for a demo with the weekly chance x (1 + `demoBonus`).
+- `ReportEntry` `{ kind: 'referral_lead', segmentId, leadId, name, from }`. `OddsKind` gained `referrals`.
+- `PostMortem.sources: { key, leads, customers }[]`: keys `outreach:<channel>`, `team:<channel>`, `landing`, `presale`, `inbox`, `walk_in`, `referral`; most customers first.
+- Scene: drawing `trades_yard`.
+- Bots: `RunResult.roles` (every segment's role, report only). `BotArgs.desk` and `deskComparison(scenario, runs, seedPrefix)` (`desk.ts`). `BOT_SCENARIOS.zollstock`. The reader's Zollstock table maps each event to its Kantino twin (`ZOLLSTOCK_TWINS`).

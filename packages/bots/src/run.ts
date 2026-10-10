@@ -4,6 +4,7 @@ import { loadScenario, scenarioCatalogue, type Scenario } from '@founder-mode/co
 import { ENGINE_VERSION } from '@founder-mode/engine'
 import { parseArgs } from './args'
 import { buildReport, evaluateTargets, TARGET_STRATEGIES, type StrategyRuns } from './report'
+import { deskComparison } from './desk'
 import { asSection, mergeReportFile } from './reportFile'
 import { botScenario } from './scenarios'
 import { runGame } from './simulate'
@@ -94,6 +95,12 @@ function reportFor(scenario: Scenario): string {
     }
   }
   return buildReport(input)
+}
+
+if (args.desk) {
+  for (const c of chosen)
+    console.log(`\n${deskComparison(loadScenario(c.id), args.runs, args.seedPrefix)}`)
+  process.exit(0)
 }
 
 const reports = new Map(chosen.map((c) => [c.id, reportFor(loadScenario(c.id))] as const))

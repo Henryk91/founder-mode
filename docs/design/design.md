@@ -22,7 +22,7 @@ Do not implement these even though they appear in the pictures:
 - Jonas the cofounder (the sticky note, the figure in the scene, the Team entry with equity)
 - Markus Vogt the angel investor
 - The tax office VAT message as a real tax rule (a simple fixed cost event is fine)
-- "Stage 2 of 5" office stages: the MVP has two (kitchen table, coworking desk)
+- "Stage 2 of 5" office stages: the MVP has two per scenario (kitchen table, then Kantino's coworking desk or Zollstock's desk in a trades yard, each with its own drawing)
 - Everything in `desk-established.html`
 
 Aylin (the hired developer) and the open "Sales hire" seat do match the MVP's single hire system, with the limit of one hire in total.

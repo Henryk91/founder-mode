@@ -1,0 +1,282 @@
+# Zollstock inbox events, product area. Same rules as Kantino's events files: text is 2 to 4
+# sentences, {name} is the customer or lead the message is from, conditions and effects from
+# schema.ts, choices show hours and money only. Each event takes the mechanics of a Kantino event
+# with a similar tension. Shared events (src/shared/events) follow these, in their own order.
+events:
+  - id: crash_report
+    area: product
+    weight: 3
+    once: true
+    when: [customers.count >= 1, bugs >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says the job plan showed Tuesday's jobs on Wednesday. Two crews drove to the same kitchen,
+      and another customer waited all day for nobody.
+    defaultChoice: nothing
+    choices:
+      - id: patch
+        label: Drop everything and patch it
+        hours: 4
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: apologise
+        label: Send a careful apology
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.05 }
+      - id: nothing
+        label: Do nothing
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.1 }
+
+  - id: marketplace_pitch
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: Roofer
+    text: >-
+      A roofer says you should build a marketplace where homeowners find tradespeople. She would use
+      it. She is also the only one who has asked, and she is booked until June.
+    defaultChoice: decline
+    choices:
+      - id: promise
+        label: Promise to look into it
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 6 }
+      - id: chat
+        label: Hear her out
+        hours: 2
+        effects:
+          - { type: lostHours, hours: 3 }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: tiny_buttons
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says the buttons are too small for fingers that have held a hammer for thirty years. They
+      sent a photo of a thumb next to the screen, for scale.
+    defaultChoice: thank
+    choices:
+      - id: redesign
+        label: Make the buttons bigger
+        hours: 4
+      - id: thank
+        label: Thank them for the feedback
+        hours: 0
+
+  - id: no_typing
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name}'s crew boss says her people will not type anything, ever. She says it kindly, the way you
+      would explain the weather to a child. She would accept buttons. Big ones.
+    defaultChoice: ignore
+    choices:
+      - id: support
+        label: Build a big button mode
+        hours: 5
+      - id: explain
+        label: Suggest voice notes for now
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.03 }
+      - id: ignore
+        label: Thank her and hope
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.1 }
+
+  - id: sunlight_mode
+    area: product
+    weight: 2
+    once: true
+    when: [features.shipped >= 1]
+    from: none
+    sender: User
+    text: >-
+      A user asks for a mode that can be read in bright sunlight on a scaffold. They use Zollstock for
+      about two minutes a day, at seven in the morning, mostly in the dark.
+    defaultChoice: later
+    choices:
+      - id: build
+        label: Build a high contrast mode
+        hours: 5
+      - id: later
+        label: Add it to the list
+        hours: 0
+
+  - id: slow_job_plan
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says the job plan takes eight seconds to load in the van. With a long bug list that is a
+      symptom. With a short one it is the van.
+    defaultChoice: reply
+    choices:
+      - id: optimise
+        label: Profile and fix it
+        hours: 3
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: reply
+        label: Suggest parking somewhere else
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.15, when: [bugs >= 3] }
+
+  - id: apprentice_setup
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name}'s apprentice set up the whole firm in Zollstock over a weekend. Every job now belongs to
+      the apprentice, including the ones from 2019. In fairness, the import made it far too easy.
+    defaultChoice: later
+    choices:
+      - id: fix
+        label: Fix the import and tidy up
+        hours: 4
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: later
+        label: Send a link to the help page
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.08 }
+
+  - id: bavarian_translation
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: Freelance translator
+    text: >-
+      A freelancer offers to translate Zollstock into Bavarian for 600 EUR. Your users already speak
+      Bavarian. They also read standard German, when pushed.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Commission it
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -60000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: accounting_partner
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Accounting software
+    text: >-
+      An accounting software firm offers an integration partnership. You would be listed among 400
+      partners, sorted alphabetically, under Z.
+    defaultChoice: decline
+    choices:
+      - id: integrate
+        label: Build the integration
+        hours: 6
+        effects:
+          - { type: newLeads, count: 1, chance: 0.3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: cellar_signal
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1, features.shipped >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says the app goes blank in cellars, and half their work happens in cellars. They would
+      like it to work without signal. They have said so three times, each time from a cellar.
+    defaultChoice: ignore
+    choices:
+      - id: fix
+        label: Make it work offline
+        hours: 4
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: workaround
+        label: Explain how it catches up later
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.04 }
+      - id: ignore
+        label: Hope they stay upstairs
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.15 }
+
+  - id: paper_job_sheets
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} would like to photograph their paper job sheets instead of typing them. The sheets are
+      carbon copies, filled in on a knee, in the rain.
+    defaultChoice: type_once
+    choices:
+      - id: build
+        label: Build photo upload
+        hours: 5
+        effects:
+          - { type: bugs, delta: 1 }
+      - id: type_once
+        label: Offer to type them in once
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 1 }
+
+  - id: job_export
+    area: product
+    weight: 2
+    once: true
+    when: [customers.count >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} asks for a monthly list of every job, for their tax adviser. She prints everything and
+      files it in folders by colour.
+    defaultChoice: by_hand
+    choices:
+      - id: build
+        label: Build the export
+        hours: 4
+      - id: by_hand
+        label: Send one by hand
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 1 }

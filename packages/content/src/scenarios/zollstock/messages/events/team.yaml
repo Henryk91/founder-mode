@@ -1,0 +1,27 @@
+# Zollstock inbox events, team area. Same rules as Kantino's events files: text is 2 to 4
+# sentences, {name} is the customer or lead the message is from, conditions and effects from
+# schema.ts, choices show hours and money only. Each event takes the mechanics of a Kantino event
+# with a similar tension. Shared events (src/shared/events) follow these, in their own order.
+events:
+  - id: hire_site_day
+    area: team
+    weight: 2
+    once: true
+    when: [hasHire >= 1, features.shipped >= 1]
+    from: none
+    sender: Your hire
+    look: note
+    text: >-
+      Your hire suggests you both spend a day on a building site, watching people use Zollstock with
+      gloves on. Two hard hats cost 40 EUR. Neither of you has ever worn one for work.
+    defaultChoice: skip
+    choices:
+      - id: order
+        label: Buy the hats and go
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -4000 }
+          - { type: bugs, delta: -1 }
+      - id: skip
+        label: Stay at your desks
+        hours: 0
