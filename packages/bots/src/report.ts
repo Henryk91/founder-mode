@@ -1,5 +1,6 @@
 import type { RunResult } from './simulate'
 import { CHECK_WEEK, EVIDENCE_WEEK, PACING_WEEKS } from './simulate'
+import { combined, fmtMargin, medianMargin, pairedMargin, rateMargin, ratioMargin } from './margin'
 
 export type StrategyRuns = {
   id: string
@@ -30,6 +31,9 @@ export const TARGET_STRATEGIES = [
   'validate_then_build_early_hire',
 ] as const
 
+/** validate_then_build itself, run with the inbox policies when they use more seeds. */
+const READER_ID = 'validate_then_build inbox:reader'
+
 /** The hire variants, compared with plain validate_then_build in their own section. */
 const HIRE_STRATEGIES = ['validate_then_build_hire', 'validate_then_build_early_hire'] as const
 
@@ -48,8 +52,11 @@ const fmtEur = (cents: number | null) =>
 
 export const isLoss = (r: RunResult) => r.ending !== 'sustainable'
 
-/** A target of plan section 7. `value` is '-' when the runs it needs were not part of the input. */
-export type Target = { id: number; text: string; value: string; pass: boolean }
+/**
+ * A target of plan section 7. `value` is '-' when the runs it needs were not part of the input.
+ * `margin` is the 95% margin of error of the value ('' where it has none, such as a count).
+ */
+export type Target = { id: number; text: string; value: string; margin: string; pass: boolean }
 
 const wins = (rs: readonly RunResult[]) => rs.filter((r) => r.ending === 'sustainable')
 
@@ -177,6 +184,13 @@ export function evaluateTargets(
     const s = find(input, id)
     return s ? pct(wins(s.results).length, s.results.length) : null
   }
+  const winMargin = (id: string) => {
+    const s = find(input, id)
+    return s ? fmtMargin(rateMargin(wins(s.results).length, s.results.length)) : ''
+  }
+  const wonList = (id: string) => (find(input, id)?.results ?? []).map(winsOf)
+  /** Margin of the difference `b - a` in win rate, on the same seeds. */
+  const diffMargin = (a: string, b: string) => pairedMargin(wonList(a), wonList(b))
   const buildOnly = winRate('build_only')
   const vtb = winRate(vtbId)
   const plain = winRate('validate_then_build')
@@ -203,12 +217,23 @@ export function evaluateTargets(
   }
   const paceVtb = decisionShare('validate_then_build')
   const pacePlay = decisionShare('playtest')
+  const paceMargin = (id: string) => {
+    const rs = find(input, id)?.results ?? []
+    return ratioMargin(
+      rs.map((r) => r.decisionWeeks),
+      rs.map((r) => r.pacingWeeks),
+    )
+  }
   const rows = input.events ? eventRows(plainRuns, input.events) : []
   const measured = rows.filter((r) => r.seeds >= EVENT_MIN_SEEDS)
   const cheapShare = pct(measured.filter((r) => r.favoursCheap).length, measured.length)
   const none = winRate('validate_then_build inbox:none')
   const effort = winRate('validate_then_build inbox:effort')
   const cheapest = winRate('validate_then_build inbox:cheapest')
+  // The inbox policies may run on more seeds than the rest; reading is then their own reader run.
+  const readerId = find(input, READER_ID) ? READER_ID : 'validate_then_build'
+  const reading = winRate(readerId)
+  const inboxSeeds = find(input, 'validate_then_build inbox:none')?.results.length ?? 0
   const repeated = input.strategies.reduce(
     (t, st) => t + st.results.reduce((u, r) => u + r.repeatedEvents, 0),
     0,
@@ -221,60 +246,93 @@ export function evaluateTargets(
   const presaleMax = winRate('presale_max')
   const shares = customerShares(plainRuns)
   const topShare = shares[0]
+  const shareMargin = topShare
+    ? ratioMargin(
+        wins(plainRuns).map((r) => r.customersBySource[topShare.key] ?? 0),
+        wins(plainRuns).map((r) =>
+          Object.values(r.customersBySource).reduce((a: number, b: number) => a + b, 0),
+        ),
+      )
+    : 0
+  const spreadMargin = (() => {
+    const markets = [...new Set(vtbRuns.map((r) => r.viableSegment))]
+    const byMarket = winRateByMarket(vtbRuns, markets).sort((a, b) => a.rate - b.rate)
+    const lo = byMarket[0]
+    const hi = byMarket[byMarket.length - 1]
+    if (!lo || !hi) return 0
+    const m = (x: typeof lo) => rateMargin(Math.round((x.rate * x.runs) / 100), x.runs)
+    return combined(m(lo), m(hi))
+  })()
+  const blindBest = [
+    { id: 'validate_then_build inbox:none', rate: none },
+    { id: 'validate_then_build inbox:effort', rate: effort },
+    { id: 'validate_then_build inbox:cheapest', rate: cheapest },
+  ].sort((a, b) => (b.rate ?? 0) - (a.rate ?? 0))[0]!
   const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
   return [
     {
       id: 1,
       text: 'build_only reaches Sustainable business in under 5% of runs',
       value: buildOnly === null ? '-' : fmtPct(buildOnly),
+      margin: winMargin('build_only'),
       pass: buildOnly !== null && buildOnly < 5,
     },
     {
       id: 2,
       text: 'validate_then_build reaches it in 25 to 45% of runs',
       value: vtb === null ? '-' : fmtPct(vtb),
+      margin: winMargin(vtbId),
       pass: vtb !== null && vtb >= 25 && vtb <= 45,
     },
     {
       id: 3,
       text: 'No strategy exceeds 60%',
       value: top ? `${top.id} ${fmtPct(top.rate)}` : '-',
+      margin: top ? winMargin(top.id) : '',
       pass: !top || top.rate <= 60,
     },
     {
       id: 4,
       text: 'Median run length of losing runs (all strategies) is between week 20 and week 40',
       value: `week ${fmtNum(losingMedian, 1)}`,
+      margin: fmtMargin(medianMargin(losing)),
       pass: losingMedian !== null && losingMedian >= 20 && losingMedian <= 40,
     },
     {
       id: 5,
-      text: '1000 runs complete in under 60 seconds (slowest strategy)',
+      text: '1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run)',
       value: `${slowest.toFixed(1)} s per 1000 runs`,
+      margin: '',
       pass: slowest < 60,
     },
     {
       id: 6,
       text: 'validate_then_build win rates across the three viable markets lie within 15 points',
       value: `${spread.toFixed(1)} points`,
+      margin: fmtMargin(spreadMargin),
       pass: vtbRuns.length > 0 && spread <= 15,
     },
     {
       id: 7,
       text: 'validate_then_build gets its first paying customer between week 4 and 10 in the median winning run',
       value: `week ${fmtNum(firstWin, 1)}`,
+      margin: fmtMargin(medianMargin(firstCustomerWeeks(wins(vtbRuns)))),
       pass: firstWin !== null && firstWin >= 4 && firstWin <= 10,
     },
     {
       id: 8,
       text: 'By week 10, at least 70% of validate_then_build runs have a paying customer or have left a market that is not viable',
       value: evidence.length ? fmtPct(evidenceShare) : '-',
+      margin: fmtMargin(
+        rateMargin(evidence.filter((r) => r.evidenceByCheck).length, evidence.length),
+      ),
       pass: evidence.length > 0 && evidenceShare >= 70,
     },
     {
       id: 9,
       text: 'In weeks 1 to 20, at least 85% of weeks bring decision news, for validate_then_build and playtest',
       value: `${paceVtb === null ? '-' : fmtPct(paceVtb)} and ${pacePlay === null ? '-' : fmtPct(pacePlay)}`,
+      margin: `${fmtMargin(paceMargin('validate_then_build'))} and ${fmtMargin(paceMargin('playtest'))}`,
       pass: paceVtb !== null && pacePlay !== null && paceVtb >= 85 && pacePlay >= 85,
     },
     {
@@ -283,23 +341,25 @@ export function evaluateTargets(
       value: measured.length
         ? `${measured.filter((r) => r.favoursCheap).length} of ${measured.length} (${fmtPct(cheapShare)})`
         : '-',
+      margin: '',
       pass: measured.length > 0 && cheapShare >= 100 / 3,
     },
     {
       id: 11,
-      text: 'Blind inbox policies (most effort, always cheapest) each lie within 4 points of leaving messages alone; reading beats all three by at least 4',
+      text: `Blind inbox policies (most effort, always cheapest) each lie within 4 points of leaving messages alone; reading beats all three by at least 4${inboxSeeds && inboxSeeds !== input.runs ? ` (on ${inboxSeeds} seeds)` : ''}`,
       value:
-        none === null || effort === null || cheapest === null || plain === null
+        none === null || effort === null || cheapest === null || reading === null
           ? '-'
-          : `effort ${signed(effort - none)}, cheapest ${signed(cheapest - none)}, reading ${signed(plain - none)}`,
+          : `effort ${signed(effort - none)}, cheapest ${signed(cheapest - none)}, reading ${signed(reading - none)}`,
+      margin: `${fmtMargin(diffMargin('validate_then_build inbox:none', 'validate_then_build inbox:effort'))}, ${fmtMargin(diffMargin('validate_then_build inbox:none', 'validate_then_build inbox:cheapest'))}, ${fmtMargin(diffMargin(blindBest.id, readerId))} over the best blind`,
       pass:
         none !== null &&
         effort !== null &&
         cheapest !== null &&
-        plain !== null &&
+        reading !== null &&
         Math.abs(effort - none) <= 4 &&
         Math.abs(cheapest - none) <= 4 &&
-        plain - Math.max(none, effort, cheapest) >= 4,
+        reading - Math.max(none, effort, cheapest) >= 4,
     },
     {
       id: 13,
@@ -309,24 +369,30 @@ export function evaluateTargets(
           p ? `${n} ${signed(p.change)} (${p.onlyFull}/${p.onlyOther})` : `${n} -`,
         )
         .join(', '),
+      margin: offs
+        .map(({ n }) => fmtMargin(diffMargin('validate_then_build', `validate_then_build -${n}`)))
+        .join(', '),
       pass: offs.every(({ p }) => !!p && p.change <= -2 && p.onlyFull > p.onlyOther),
     },
     {
       id: 14,
       text: 'presale_max does not beat validate_then_build by more than 3 points',
       value: presaleMax === null || plain === null ? '-' : `${signed(presaleMax - plain)} points`,
+      margin: fmtMargin(diffMargin('validate_then_build', 'presale_max')),
       pass: presaleMax !== null && plain !== null && presaleMax - plain <= 3,
     },
     {
       id: 15,
       text: 'No single action (outreach counted per channel) finds more than 40% of the customers in winning validate_then_build runs',
       value: topShare ? `${topShare.key} ${fmtPct(topShare.share)}` : '-',
+      margin: topShare ? fmtMargin(shareMargin) : '',
       pass: !!topShare && topShare.share <= 40,
     },
     {
       id: 16,
       text: 'No run of any strategy brings an event twice, except events that recur on purpose',
       value: `${repeated} repeats`,
+      margin: '',
       pass: repeated === 0,
     },
   ]
@@ -341,10 +407,11 @@ function targetRows(input: ReportInput): string[] {
   if (!first) return []
   const met = (t: Target) => (t.value === '-' ? 'not measured' : t.pass ? 'yes' : 'no')
   return first.map((t, i) => {
-    if (!PER_VARIANT.has(t.id)) return `| ${t.id} | ${t.text} | ${t.value} | ${met(t)} | | | | |`
-    const cells = columns.map((c) => {
+    if (!PER_VARIANT.has(t.id))
+      return `| ${t.id} | ${t.text} | ${t.value} | ${t.margin} | ${met(t)} | | | | |`
+    const cells = columns.map((c, j) => {
       const u = c[i] as Target
-      return `${u.value} | ${met(u)}`
+      return j === 0 ? `${u.value} | ${u.margin} | ${met(u)}` : `${u.value} | ${met(u)}`
     })
     return `| ${t.id} | ${t.text} | ${cells.join(' | ')} |`
   })
@@ -398,10 +465,10 @@ export function buildReport(input: ReportInput): string {
     '',
     '## Targets (plan section 7)',
     '',
-    `Targets are judged on \`validate_then_build\`. Targets 2, 6, 7 and 8 are also shown for the hire variants, for information only: the hire is meant to pay rarely (decisions log), so those columns are not expected to hold.`,
+    `Targets are judged on \`validate_then_build\`. Targets 2, 6, 7 and 8 are also shown for the hire variants, for information only: the hire is meant to pay rarely (decisions log), so those columns are not expected to hold. The margin is half the width of a 95% interval; differences between strategies are paired on the same seeds.`,
     '',
-    `| # | Target | ${TARGET_STRATEGIES.map((id, i) => `${id} | ${i === 0 ? 'Met' : 'Would meet (info)'}`).join(' | ')} |`,
-    `|---|---|${TARGET_STRATEGIES.map(() => '---|---').join('|')}|`,
+    `| # | Target | ${TARGET_STRATEGIES.map((id, i) => `${id} | ${i === 0 ? 'Margin | Met' : 'Would meet (info)'}`).join(' | ')} |`,
+    `|---|---|${TARGET_STRATEGIES.map((_, i) => (i === 0 ? '---|---|---' : '---|---')).join('|')}|`,
     ...targetRows(input),
     '',
     '## Endings',
@@ -668,7 +735,7 @@ export function buildReport(input: ReportInput): string {
     }
   }
 
-  const plainAll = find(input, 'validate_then_build')
+  const plainAll = find(input, READER_ID) ?? find(input, 'validate_then_build')
   if (plainAll) {
     const variants = ['inbox:none', 'inbox:effort', 'inbox:cheapest'].flatMap((v) => {
       const x = find(input, `validate_then_build ${v}`)
@@ -680,7 +747,8 @@ export function buildReport(input: ReportInput): string {
         '',
         '## Inbox policies',
         '',
-        '`validate_then_build` with four ways of answering the inbox, same seeds. Reading picks the answer each message deserves in the situation it arrives in (`readInbox`); blind effort takes the most effortful affordable choice without reading (`answerInbox`); always cheapest takes the choice with the fewest hours, then the least money (`cheapestInbox`); none leaves every message to its default.',
+        `\`validate_then_build\` with four ways of answering the inbox, same ${plainAll.results.length} seeds.` +
+          ' Reading picks the answer each message deserves in the situation it arrives in (`readInbox`); blind effort takes the most effortful affordable choice without reading (`answerInbox`); always cheapest takes the choice with the fewest hours, then the least money (`cheapestInbox`); none leaves every message to its default.',
         '',
         '| Policy | Win rate | Against none (points) | Won only with this policy | Won only with none |',
         '|---|---|---|---|---|',

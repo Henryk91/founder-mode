@@ -1,3 +1,5 @@
+import { availableParallelism } from 'node:os'
+
 export type BotArgs = {
   runs: number
   seedPrefix: string
@@ -11,7 +13,15 @@ export type BotArgs = {
   scenario: string | null
   /** Instead of the report, compare taking the office with walk-ins against declining it. */
   desk: boolean
+  /** Processes that play the seeds. 1 plays everything in this process. */
+  jobs: number
+  /** Report parts to run: main, paired, inbox, events. `--events` adds events. */
+  parts: string[]
+  /** Seeds for the inbox policies of target 11; defaults to `runs`. */
+  inboxRuns: number
 }
+
+const PARTS = ['main', 'paired', 'inbox', 'events']
 
 export function parseArgs(argv: readonly string[]): BotArgs {
   const args: BotArgs = {
@@ -22,6 +32,9 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     events: false,
     scenario: null,
     desk: false,
+    jobs: Math.max(1, availableParallelism() - 1),
+    parts: ['main', 'paired', 'inbox'],
+    inboxRuns: 0,
   }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
@@ -40,6 +53,23 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     } else if (flag === '--scenario' && value !== undefined) {
       args.scenario = value
       i++
+    } else if (flag === '--jobs' && value !== undefined) {
+      const jobs = Number.parseInt(value, 10)
+      if (!Number.isInteger(jobs) || jobs < 1) throw new Error(`Invalid --jobs value: ${value}`)
+      args.jobs = jobs
+      i++
+    } else if (flag === '--parts' && value !== undefined) {
+      const parts = value.split(',').filter(Boolean)
+      const unknown = parts.filter((p) => !PARTS.includes(p))
+      if (unknown.length) throw new Error(`Unknown --parts: ${unknown.join(', ')}`)
+      args.parts = parts
+      i++
+    } else if (flag === '--inbox-runs' && value !== undefined) {
+      const runs = Number.parseInt(value, 10)
+      if (!Number.isInteger(runs) || runs < 1)
+        throw new Error(`Invalid --inbox-runs value: ${value}`)
+      args.inboxRuns = runs
+      i++
     } else if (flag === '--desk') {
       args.desk = true
     } else if (flag === '--events') {
@@ -49,5 +79,8 @@ export function parseArgs(argv: readonly string[]): BotArgs {
       i++
     }
   }
+  if (args.events && !args.parts.includes('events')) args.parts = [...args.parts, 'events']
+  args.events = args.parts.includes('events')
+  if (args.inboxRuns === 0) args.inboxRuns = args.runs
   return args
 }
