@@ -1,8 +1,9 @@
+/* The Start screen in the scrappy style: paper, a note, and the dark best runs panel. */
 .start {
   min-height: 100%;
-  max-width: 440px;
+  max-width: 460px;
   margin: 0 auto;
-  padding: 24px 14px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -22,8 +23,93 @@
   line-height: 1;
 }
 
-.tagline {
+.note {
   margin: 0;
-  color: var(--ink-muted);
-  font-size: 16px;
+  font-family: var(--font-hand);
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 1.15;
+  transform: rotate(-1.2deg);
+}
+
+/* "Your best runs", as on desk-scrappy.html. */
+.best {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--bar);
+  color: var(--on-dark);
+  font-size: 13px;
+}
+
+.bestTitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--on-dark-muted);
+}
+
+.empty {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.rows {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: 10px;
+  min-height: 44px;
+}
+
+.row dt {
+  min-width: 0;
+}
+
+.row dd {
+  margin: 0;
+}
+
+.indent dt {
+  padding-left: 14px;
+}
+
+.value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.seedCell {
+  justify-self: end;
+}
+
+/* A seed to play again: a small pill inside a 44 px tap target. */
+.seed {
+  min-height: 44px;
+  max-width: 132px;
+  padding: 0 10px;
+  border: 1.5px solid var(--on-dark-muted);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--on-dark);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

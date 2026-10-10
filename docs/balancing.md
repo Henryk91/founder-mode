@@ -509,3 +509,18 @@ Every monetary constant was multiplied by 1.5 (see `docs/decisions.md`), and the
 The hire variants moved slightly (the developer's hours changed): validate_then_build_hire 1.2% and validate_then_build_early_hire 9.3% wins.
 
 - Phase 5 (engine 0.8.0, `--events`): 108 events, all once except the books. With the new events as first written, validate_then_build fell to 24.6%, blind effort rose to +4.8 and switching off the books cost 0.5 points. Changes: situational lead events now cost 2 to 3 h on follow ups when more than 8 leads are open, the books weight went from 3 to 40 (about 7 arrivals a run again), and the reader migrates the hosting, switches the bank and skips the uptime monitor (monthly costs cost several points each). Result: validate_then_build 25.8%, effort +3.9, cheapest +1.7, reading +11.8, books -3.7, no repeats, a dry inbox week in 0.1% of runs. Seed prefix `check` gives 25.9%, effort +1.7, cheapest -2.6, reading +9.8.
+
+### Phase 7: coworking desk (engine 0.9.0)
+
+The desk offer arrives for sure in week 8 or after the first customer; `validate_then_build` takes it once it has a paying customer and cash is not tight.
+
+| Desk | validate_then_build | Note |
+|---|---|---|
+| Never taken | 26.3% | The offer itself changes nothing once it sits outside the random draw |
+| Spec: 375 EUR, in person x 1.2, +1 energy | 17.1% | Fails target 2; winning runs clear "covers all costs" by a thin margin |
+| 150 EUR, same effects | 21.8% | Rent alone cannot be cut far enough |
+| 225 EUR, in person x 1.3, phone and cold email x 1.15, +1 energy | 26.4% | Chosen: about neutral, every target holds |
+
+With the offer first counted as an open message, blind effort drifted to +4.7 (target 11) even though no blind policy takes the desk; triggered messages now sit outside the draw and it is back to +3.9. Answering it the same way every time: move 26.1%, stay 25.8%.
+
+The organised stage arrives with the first customer in nearly every run (company costs are 405 EUR a month, one customer pays 450), weeks 4 to 6 for `validate_then_build`.
