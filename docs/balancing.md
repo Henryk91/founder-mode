@@ -12,7 +12,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 2 | validate_then_build reaches it in 25 to 45% of runs | 25.8% | yes | 0.6% | no | 9.7% | no |
 | 3 | No strategy exceeds 60% | validate_then_build 25.8% | yes | | | | |
 | 4 | Median run length of losing runs (all strategies) is between week 20 and week 40 | week 29.0 | yes | | | | |
-| 5 | 1000 runs complete in under 60 seconds (slowest strategy) | 5.9 s per 1000 runs | yes | | | | |
+| 5 | 1000 runs complete in under 60 seconds (slowest strategy) | 4.8 s per 1000 runs | yes | | | | |
 | 6 | validate_then_build win rates across the three viable markets lie within 15 points | 6.2 points | yes | 0.6 points | yes | 4.0 points | yes |
 | 7 | validate_then_build gets its first paying customer between week 4 and 10 in the median winning run | week 5.0 | yes | week 5.0 | yes | week 6.0 | yes |
 | 8 | By week 10, at least 70% of validate_then_build runs have a paying customer or have left a market that is not viable | 92.1% | yes | 92.1% | yes | 92.1% | yes |
@@ -396,16 +396,16 @@ Runs where answering made the run last longer: 382, shorter: 448, same length: 1
 
 ## Strategies
 
-- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (1.8 s for 1000 runs)
+- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (1.7 s for 1000 runs)
 - `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (0.6 s for 1000 runs)
-- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (0.9 s for 1000 runs)
-- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. Drops a market below 7% landing sign ups, or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (4.3 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (3.7 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (2.7 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (4.2 s for 1000 runs)
-- `price_aware`: Plays like validate_then_build and raises the price by 150 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays. (5.9 s for 1000 runs)
+- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (1.0 s for 1000 runs)
+- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. Drops a market below 7% landing sign ups, or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (4.8 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (3.8 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (2.8 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (4.3 s for 1000 runs)
+- `price_aware`: Plays like validate_then_build and raises the price by 150 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays. (4.4 s for 1000 runs)
 - `overworker`: Plays like validate_then_build, but plans 65 h every week. (0.3 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (0.9 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (0.8 s for 1000 runs)
 
 ## Tuning notes
 
