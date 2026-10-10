@@ -242,3 +242,8 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Landing tests: the fixed bars (7% Kantino, 3.7% Zollstock) are gone. The careful bot drops a tested market when another tested market drew more sign ups by 1.5 standard errors or more (two proportion test), and ranks markets by how many standard errors their sign up rate lies above or below all tested markets together. Thresholds 1.0, 1.5 and 2.0 gave the same win rates within noise; 1.5 is the middle.
 - Pre-sales: Kantino's careful bot pitches every batch its chosen market allows, one a week, as Zollstock's did (`BOT_SCENARIOS` keeps only the playtest market). Kantino's `validate_then_build` went from 28.8% to 36.2% (4.1 batches a run, was 2.1); `presale_max` is now 8 points behind it.
 - `docs/balancing.md` is not regenerated in this part: by the owner's rule the full report with the event table runs at the end of Part 3.
+
+## Phase 8: judging on more seeds
+
+- Targets 6, 11 and 13 are judged on 10,000 seeds (`--wide-runs 10000`), the rest on 1000. On 10,000 seeds Kantino's target 6 is 11.3 ±2.3 points (at 1000 it read 15.2 ±7.3) and its books are worth -2.9 ±1.0 (1000: -2.0 ±3.3); Zollstock's landing tests stay at -1.1 ±1.1.
+- The paired and inbox parts play `validate_then_build` once more on the wide seeds, under the id `validate_then_build inbox:reader`, and targets 6, 11 and 13 compare against that run.

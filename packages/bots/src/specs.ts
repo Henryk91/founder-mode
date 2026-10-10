@@ -46,11 +46,13 @@ export const ABLATION_SPECS: StrategySpec[] = [
 ]
 
 /**
- * The inbox policies of target 11, and a reading run that plays validate_then_build itself, so
- * the policies can run on more seeds than the rest of the report.
+ * validate_then_build itself under another id, run on the seeds of the paired and inbox parts, so
+ * those parts can use more seeds than the rest of the report (targets 6, 11 and 13).
  */
+export const READER_SPEC: StrategySpec = { kind: 'inbox', policy: 'reader' }
+
+/** The inbox policies of target 11. */
 export const INBOX_SPECS: StrategySpec[] = [
-  { kind: 'inbox', policy: 'reader' },
   { kind: 'inbox', policy: 'none' },
   { kind: 'inbox', policy: 'effort' },
   { kind: 'inbox', policy: 'cheapest' },

@@ -17,8 +17,8 @@ export type BotArgs = {
   jobs: number
   /** Report parts to run: main, paired, inbox, events. `--events` adds events. */
   parts: string[]
-  /** Seeds for the inbox policies of target 11; defaults to `runs`. */
-  inboxRuns: number
+  /** Seeds for the paired and inbox parts (targets 6, 11 and 13); defaults to `runs`. */
+  wideRuns: number
 }
 
 const PARTS = ['main', 'paired', 'inbox', 'events']
@@ -34,7 +34,7 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     desk: false,
     jobs: Math.max(1, availableParallelism() - 1),
     parts: ['main', 'paired', 'inbox'],
-    inboxRuns: 0,
+    wideRuns: 0,
   }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
@@ -64,11 +64,11 @@ export function parseArgs(argv: readonly string[]): BotArgs {
       if (unknown.length) throw new Error(`Unknown --parts: ${unknown.join(', ')}`)
       args.parts = parts
       i++
-    } else if (flag === '--inbox-runs' && value !== undefined) {
+    } else if (flag === '--wide-runs' && value !== undefined) {
       const runs = Number.parseInt(value, 10)
       if (!Number.isInteger(runs) || runs < 1)
-        throw new Error(`Invalid --inbox-runs value: ${value}`)
-      args.inboxRuns = runs
+        throw new Error(`Invalid --wide-runs value: ${value}`)
+      args.wideRuns = runs
       i++
     } else if (flag === '--desk') {
       args.desk = true
@@ -81,6 +81,6 @@ export function parseArgs(argv: readonly string[]): BotArgs {
   }
   if (args.events && !args.parts.includes('events')) args.parts = [...args.parts, 'events']
   args.events = args.parts.includes('events')
-  if (args.inboxRuns === 0) args.inboxRuns = args.runs
+  if (args.wideRuns === 0) args.wideRuns = args.runs
   return args
 }

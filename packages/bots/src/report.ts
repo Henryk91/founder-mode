@@ -201,7 +201,15 @@ export function evaluateTargets(
   const slowest = Math.max(...input.strategies.map((s) => (s.seconds * 1000) / s.results.length))
   const vtbRuns = find(input, vtbId)?.results ?? []
   const plainRuns = find(input, 'validate_then_build')?.results ?? []
-  const spread = marketSpread(vtbRuns)
+  // Targets 6, 11 and 13 may run on more seeds (`--wide-runs`), against a reading run of
+  // validate_then_build on those seeds.
+  const wide = find(input, READER_ID)
+  const wideNote =
+    wide && wide.results.length !== input.runs ? ` (on ${wide.results.length} seeds)` : ''
+  const spreadRuns = vtbId === 'validate_then_build' && wide ? wide.results : vtbRuns
+  const pairedId = wide ? READER_ID : 'validate_then_build'
+  const pairedRuns = wide ? wide.results : plainRuns
+  const spread = marketSpread(spreadRuns)
   const firstWin = median(firstCustomerWeeks(wins(vtbRuns)))
   const evidence = vtbRuns.filter((r) => r.evidenceByCheck !== null)
   const evidenceShare = pct(evidence.filter((r) => r.evidenceByCheck).length, evidence.length)
@@ -233,14 +241,13 @@ export function evaluateTargets(
   // The inbox policies may run on more seeds than the rest; reading is then their own reader run.
   const readerId = find(input, READER_ID) ? READER_ID : 'validate_then_build'
   const reading = winRate(readerId)
-  const inboxSeeds = find(input, 'validate_then_build inbox:none')?.results.length ?? 0
   const repeated = input.strategies.reduce(
     (t, st) => t + st.results.reduce((u, r) => u + r.repeatedEvents, 0),
     0,
   )
   const behaviour = (name: string) => {
     const v = find(input, `validate_then_build -${name}`)
-    return v ? paired(plainRuns, v.results) : null
+    return v ? paired(pairedRuns, v.results) : null
   }
   const offs = ['chase', 'landing', 'books'].map((n) => ({ n, p: behaviour(n) }))
   const presaleMax = winRate('presale_max')
@@ -255,8 +262,8 @@ export function evaluateTargets(
       )
     : 0
   const spreadMargin = (() => {
-    const markets = [...new Set(vtbRuns.map((r) => r.viableSegment))]
-    const byMarket = winRateByMarket(vtbRuns, markets).sort((a, b) => a.rate - b.rate)
+    const markets = [...new Set(spreadRuns.map((r) => r.viableSegment))]
+    const byMarket = winRateByMarket(spreadRuns, markets).sort((a, b) => a.rate - b.rate)
     const lo = byMarket[0]
     const hi = byMarket[byMarket.length - 1]
     if (!lo || !hi) return 0
@@ -307,10 +314,10 @@ export function evaluateTargets(
     },
     {
       id: 6,
-      text: 'validate_then_build win rates across the three viable markets lie within 15 points',
+      text: `validate_then_build win rates across the three viable markets lie within 15 points${vtbId === 'validate_then_build' ? wideNote : ''}`,
       value: `${spread.toFixed(1)} points`,
       margin: fmtMargin(spreadMargin),
-      pass: vtbRuns.length > 0 && spread <= 15,
+      pass: spreadRuns.length > 0 && spread <= 15,
     },
     {
       id: 7,
@@ -346,7 +353,7 @@ export function evaluateTargets(
     },
     {
       id: 11,
-      text: `Blind inbox policies (most effort, always cheapest) each lie within 4 points of leaving messages alone; reading beats all three by at least 4${inboxSeeds && inboxSeeds !== input.runs ? ` (on ${inboxSeeds} seeds)` : ''}`,
+      text: `Blind inbox policies (most effort, always cheapest) each lie within 4 points of leaving messages alone; reading beats all three by at least 4${wideNote}`,
       value:
         none === null || effort === null || cheapest === null || reading === null
           ? '-'
@@ -363,14 +370,14 @@ export function evaluateTargets(
     },
     {
       id: 13,
-      text: 'Switching off chase, landing tests or books each costs at least 2 points, with more seeds won only with it',
+      text: `Switching off chase, landing tests or books each costs at least 2 points, with more seeds won only with it${wideNote}`,
       value: offs
         .map(({ n, p }) =>
           p ? `${n} ${signed(p.change)} (${p.onlyFull}/${p.onlyOther})` : `${n} -`,
         )
         .join(', '),
       margin: offs
-        .map(({ n }) => fmtMargin(diffMargin('validate_then_build', `validate_then_build -${n}`)))
+        .map(({ n }) => fmtMargin(diffMargin(pairedId, `validate_then_build -${n}`)))
         .join(', '),
       pass: offs.every(({ p }) => !!p && p.change <= -2 && p.onlyFull > p.onlyOther),
     },
@@ -663,14 +670,19 @@ export function buildReport(input: ReportInput): string {
   }
 
   for (const id of TARGET_STRATEGIES) {
-    const full = input.strategies.find((x) => x.id === id)
     const variants = (input.ablations ?? []).filter((x) => x.id.startsWith(`${id} `))
+    // Compare on the same seeds: the wide reading run when the variants ran on more seeds.
+    const reader = find(input, READER_ID)
+    const full =
+      reader && reader.results.length === variants[0]?.results.length
+        ? reader
+        : input.strategies.find((x) => x.id === id)
     if (!full || variants.length === 0) continue
     push(
       '',
       `## What each behaviour changed: ${id}`,
       '',
-      'Same seeds, one behaviour switched off at a time. "Won only with" counts seeds the full strategy wins and this variant does not; "won only without" the other way round. The win rate of one 1000 run batch is uncertain by about 1.2 points on its own; the paired counts show how many seeds actually flipped.',
+      `Same ${full.results.length} seeds, one behaviour switched off at a time. "Won only with" counts seeds the full strategy wins and this variant does not; "won only without" the other way round. The paired counts show how many seeds actually flipped; the margin of each change is in the targets table (target 13).`,
       '',
       '| Variant | Win rate | Change (points) | Won only with | Won only without | Bankrupt | Median losing run length |',
       '|---|---|---|---|---|---|---|',
