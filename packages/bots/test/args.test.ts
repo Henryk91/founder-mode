@@ -12,12 +12,12 @@ describe('parseArgs', () => {
       scenario: null,
       desk: false,
       jobs: expect.any(Number),
-      parts: ['main', 'paired', 'inbox'],
+      parts: ['main', 'paired', 'inbox', 'price'],
       wideRuns: 1000,
     })
     expect(parseArgs(['--events']).events).toBe(true)
     expect(parseArgs(['--jobs', '4']).jobs).toBe(4)
-    expect(parseArgs(['--events']).parts).toEqual(['main', 'paired', 'inbox', 'events'])
+    expect(parseArgs(['--events']).parts).toEqual(['main', 'paired', 'inbox', 'price', 'events'])
     expect(parseArgs(['--parts', 'main,inbox', '--wide-runs', '5000'])).toMatchObject({
       parts: ['main', 'inbox'],
       wideRuns: 5000,

@@ -3,6 +3,9 @@ import { STRATEGIES } from './strategies'
 import { randomNoInbox } from './strategies/random'
 import {
   BEHAVIOUR_NAMES,
+  fixedPrice,
+  priceAware,
+  priceRecipe,
   forcedAnswer,
   withInbox,
   withoutBehaviours,
@@ -20,6 +23,7 @@ export type StrategySpec =
   | { kind: 'randomNoInbox' }
   | { kind: 'inbox'; policy: InboxPolicy }
   | { kind: 'forced'; eventId: string; choiceId: string }
+  | { kind: 'pricing'; pricer: 'search' | 'recipe' | 'fixed'; multiple?: number }
 
 export function strategyOf(spec: StrategySpec): Strategy {
   switch (spec.kind) {
@@ -36,6 +40,15 @@ export function strategyOf(spec: StrategySpec): Strategy {
       return withInbox(spec.policy)
     case 'forced':
       return forcedAnswer(spec.eventId, spec.choiceId)
+    case 'pricing': {
+      const base =
+        spec.pricer === 'search'
+          ? priceAware
+          : spec.pricer === 'recipe'
+            ? priceRecipe
+            : fixedPrice(spec.multiple ?? 1)
+      return { ...base, id: pricingId(spec) }
+    }
   }
 }
 
@@ -56,4 +69,17 @@ export const INBOX_SPECS: StrategySpec[] = [
   { kind: 'inbox', policy: 'none' },
   { kind: 'inbox', policy: 'effort' },
   { kind: 'inbox', policy: 'cheapest' },
+]
+
+/** Report ids of the pricing runs on the wide seeds, apart from `price_aware` in the main part. */
+export function pricingId(spec: { pricer: 'search' | 'recipe' | 'fixed'; multiple?: number }) {
+  return spec.pricer === 'fixed' ? `pricing:fixed x${spec.multiple}` : `pricing:${spec.pricer}`
+}
+
+/** The pricing runs of target 17: the search, the recipe, and fixed 1.5 and 2 times the default. */
+export const PRICING_SPECS: StrategySpec[] = [
+  { kind: 'pricing', pricer: 'search' },
+  { kind: 'pricing', pricer: 'recipe' },
+  { kind: 'pricing', pricer: 'fixed', multiple: 1.5 },
+  { kind: 'pricing', pricer: 'fixed', multiple: 2 },
 ]
