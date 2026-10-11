@@ -135,9 +135,10 @@ describe('bots', () => {
   it('validate_then_build tests demand, runs pre-sales, and keeps the books and the invoices tidy', () => {
     const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
     const runs = Array.from({ length: 20 }, (_, i) => runGame(scenario, strategy, `p4-${i}`))
-    for (const r of runs) {
-      expect(r.landingTests).toBe(2)
-    }
+    // Two small tests, and two larger ones when the first did not separate the markets
+    for (const r of runs) expect([2, 4]).toContain(r.landingTests)
+    expect(runs.some((r) => r.landingTests === 2)).toBe(true)
+    expect(runs.some((r) => r.landingTests === 4)).toBe(true)
     expect(runs.some((r) => r.presaleBatches > 0)).toBe(true)
     expect(runs.some((r) => r.invoicesIssued > 0)).toBe(true)
   })
