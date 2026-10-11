@@ -42,7 +42,7 @@ Identical to Kantino (same founder, same costs, same price, same price curve, pr
 | Id | `small_crews` | `contractors` | `maintenance` |
 | Description shown to player | Electricians, plumbers and painters with 3 to 8 people | Building firms with several crews and 10 to 40 people | Firms that look after buildings for landlords, on recurring contracts |
 | Size (reachable companies) | 900 to 2200 | 120 to 320 | 350 to 1000 |
-| Willingness to pay per month | 375 to 720 | 900 to 2250 | 390 to 630 |
+| Willingness to pay per month | 375 to 720 | 700 to 1000 (Phase 8; was 900 to 2250) | 390 to 630 |
 | Must have features | `job_board`, `site_quotes`, `customer_texts` | `job_board`, `crew_dispatch`, `material_lists` | `job_board`, `recurring_jobs`, `photo_reports` |
 | Channel response: cold email | 0.008 to 0.025 | 0.02 to 0.045 | 0.015 to 0.035 |
 | Channel response: phone | 0.045 to 0.09 | 0.06 to 0.12 | 0.06 to 0.12 |

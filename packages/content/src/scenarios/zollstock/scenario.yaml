@@ -221,7 +221,7 @@ segments:
     name: Contractors
     description: Building firms with several crews and 10 to 40 people
     size: { min: 120, max: 320 }
-    wtpCents: { min: 90000, max: 225000 }
+    wtpCents: { min: 70000, max: 100000 }
     mustHave: [job_board, crew_dispatch, material_lists]
     channelResponse:
       cold_email: { min: 0.02, max: 0.045 }
