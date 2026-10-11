@@ -1,6 +1,6 @@
 import type { Scenario, ScenarioId } from '@founder-mode/content'
 import type { MessageView, PlayerView, WeekPlan } from '@founder-mode/engine'
-import { PriceSearch, type PricingRule } from '../pricing'
+import { FixedPrice, PriceRecipe, PriceSearch, type Pricer, type SearchRule } from '../pricing'
 import {
   bookableLeads,
   ChannelLog,
@@ -509,11 +509,11 @@ export function cheapestInbox(view: PlayerView): { messageId: string; choiceId: 
 export function validatingPlayer(
   scenario: Scenario,
   budget: number,
-  pricing: PricingRule | null = null,
+  pricing: (() => Pricer) | null = null,
   behaviours: Behaviours = ALL_BEHAVIOURS,
 ): Player {
   const channels = new ChannelLog(scenario.sales)
-  const prices = pricing ? new PriceSearch(pricing) : null
+  const prices = pricing ? pricing() : null
   let lastView: PlayerView | null = null
   const abandoned = new Set<string>()
   let target: string | null = null
@@ -804,7 +804,7 @@ export function validatingPlayer(
     },
     observe(report) {
       if (lastPlan) channels.record(lastPlan, report)
-      if (prices && lastView) prices.observe(lastView, report)
+      if (prices && lastView) prices.observe(lastView, report, target)
     },
   }
 }
@@ -885,13 +885,35 @@ export function withInbox(inbox: InboxPolicy): Strategy {
   }
 }
 
-export const PRICE_RULE: PricingRule = { stepCents: 15_000, window: 4, threshold: 0.4 }
+/**
+ * Steps of a fifth of the price, judged on 2 trials that said yes or no over the price. Of steps
+ * of 0.2 and 0.3, windows of 2 and 3, and stepping down at a third or a half, this did best
+ * (Phase 8, 10,000 seeds); all lay within about a point of each other.
+ */
+export const PRICE_RULE: SearchRule = { stepShare: 0.2, window: 2, tooMany: 0.5 }
 
 export const priceAware: Strategy = {
   id: 'price_aware',
   description:
-    'Plays like validate_then_build and raises the price by 150 EUR after every 4 trial results at a price of which at least 40% became customers. Below that it goes back one step and stays.',
-  create: (scenario) => validatingPlayer(scenario, 50, PRICE_RULE),
+    'Plays like validate_then_build and searches for its price from what it sees in its own market: after 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it.',
+  create: (scenario) => validatingPlayer(scenario, 50, () => new PriceSearch(PRICE_RULE)),
+}
+
+/** The recipe for comparison: a fifth up every 3 weeks until the first "too expensive". */
+export const priceRecipe: Strategy = {
+  id: 'price_recipe',
+  description:
+    'Plays like validate_then_build and raises the price by a fifth every 3 weeks until it sees its first "Too expensive" (a trial or a customer, any market), then goes back one step and never changes it again.',
+  create: (scenario) => validatingPlayer(scenario, 50, () => new PriceRecipe(0.2, 3)),
+}
+
+/** validate_then_build at a fixed multiple of the default price, for target 17. */
+export function fixedPrice(multiple: number): Strategy {
+  return {
+    id: `fixed_price x${multiple}`,
+    description: `validate_then_build at ${multiple} times the default price from week 1.`,
+    create: (scenario) => validatingPlayer(scenario, 50, () => new FixedPrice(multiple)),
+  }
 }
 
 export const overworker: Strategy = {

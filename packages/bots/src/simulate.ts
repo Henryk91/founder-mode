@@ -74,6 +74,10 @@ export type RunResult = {
   firstCustomerWeek: number | null
   /** Monthly price at the end of the run. */
   finalPriceCents: number
+  /** Weeks in which the plan changed the price. */
+  priceChanges: number
+  /** Hidden truth, read by the report only: every segment's willingness to pay. */
+  wtpCents: Record<string, number>
   customersEnd: number
   /** Company cash plus personal savings at the end. */
   finalWealthCents: number
@@ -175,6 +179,7 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
   let hours = 0
   let outreachHours = 0
   let weeks = 0
+  let priceChanges = 0
   let firstReport: WeekReport | null = null
   let firstWeekInterviews: number | null = null
   const focus: (string | null)[] = []
@@ -190,6 +195,11 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
       state = respond(state, answer.messageId, answer.choiceId)
     }
     const plan = player.plan(getView(state))
+    if (
+      plan.priceCentsPerMonth !== null &&
+      plan.priceCentsPerMonth !== state.company.priceCentsPerMonth
+    )
+      priceChanges++
     const issues = validatePlan(state, plan)
     if (issues.length > 0) {
       throw new Error(
@@ -268,6 +278,10 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     peakCustomers,
     firstCustomerWeek: state.customers[0]?.sinceWeek ?? null,
     finalPriceCents: state.company.priceCentsPerMonth,
+    priceChanges,
+    wtpCents: Object.fromEntries(
+      Object.entries(state.hidden.segments).map(([id, h]) => [id, h.wtpCents]),
+    ),
     customersEnd: state.customers.filter((c) => c.churnedWeek === null).length,
     finalWealthCents: state.company.cashCents + state.founder.savingsCents,
     hiredWeek: state.team.members[0]?.offerWeek ?? null,

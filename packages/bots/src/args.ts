@@ -15,13 +15,13 @@ export type BotArgs = {
   desk: boolean
   /** Processes that play the seeds. 1 plays everything in this process. */
   jobs: number
-  /** Report parts to run: main, paired, inbox, events. `--events` adds events. */
+  /** Report parts to run: main, paired, inbox, price, events. `--events` adds events. */
   parts: string[]
-  /** Seeds for the paired and inbox parts (targets 6, 11 and 13); defaults to `runs`. */
+  /** Seeds for the paired, inbox and price parts (targets 6, 11, 13 and 17); defaults to `runs`. */
   wideRuns: number
 }
 
-const PARTS = ['main', 'paired', 'inbox', 'events']
+const PARTS = ['main', 'paired', 'inbox', 'price', 'events']
 
 export function parseArgs(argv: readonly string[]): BotArgs {
   const args: BotArgs = {
@@ -33,7 +33,7 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     scenario: null,
     desk: false,
     jobs: Math.max(1, availableParallelism() - 1),
-    parts: ['main', 'paired', 'inbox'],
+    parts: ['main', 'paired', 'inbox', 'price'],
     wideRuns: 0,
   }
   for (let i = 0; i < argv.length; i++) {

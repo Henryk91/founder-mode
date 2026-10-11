@@ -402,6 +402,100 @@ export function evaluateTargets(
       margin: '',
       pass: repeated === 0,
     },
+    pricingTarget(input),
+  ]
+}
+
+const SEARCH_ID = 'pricing:search'
+const PRICING_IDS = [SEARCH_ID, 'pricing:recipe', 'pricing:fixed x1.5', 'pricing:fixed x2'] as const
+
+/**
+ * Target 17: on the wide seeds, the price search beats the default price by at least 3 points,
+ * leads in at least two of the three viable markets, stays at most 10 points ahead, and twice the
+ * default price loses to the default.
+ */
+function pricingTarget(input: ReportInput): Target {
+  const text =
+    'A price search that reads only the screen beats the default price by 3 to 10 points, ahead in at least two of three viable markets; twice the default price loses to the default'
+  const reader = find(input, READER_ID)
+  const search = find(input, SEARCH_ID)
+  const double = find(input, 'pricing:fixed x2')
+  if (!reader || !search || !double) return { id: 17, text, value: '-', margin: '', pass: false }
+  const rate = (rs: readonly RunResult[]) => pct(wins(rs).length, rs.length)
+  const gain = rate(search.results) - rate(reader.results)
+  const doubleGain = rate(double.results) - rate(reader.results)
+  const markets = [...new Set(reader.results.map((r) => r.viableSegment))].sort()
+  const ahead = markets.filter((m) => {
+    const keep = (rs: readonly RunResult[]) => rs.filter((r) => r.viableSegment === m)
+    return rate(keep(search.results)) > rate(keep(reader.results))
+  }).length
+  const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
+  const margin = (other: StrategyRuns) =>
+    fmtMargin(pairedMargin(reader.results.map(winsOf), other.results.map(winsOf)))
+  return {
+    id: 17,
+    text: `${text} (on ${reader.results.length} seeds)`,
+    value: `search ${signed(gain)}, ahead in ${ahead} of ${markets.length} markets; twice the default ${signed(doubleGain)}`,
+    margin: `${margin(search)}, ${margin(double)}`,
+    pass: gain >= 3 && gain <= 10 && ahead >= 2 && doubleGain < 0,
+  }
+}
+
+/** Win rates of the pricing runs by viable market, and where the search and the recipe end up. */
+function pricingRows(input: ReportInput): string[] {
+  const reader = find(input, READER_ID)
+  const runs = PRICING_IDS.map((id) => find(input, id))
+  if (!reader || runs.some((r) => !r)) return []
+  const all = [reader, ...(runs as StrategyRuns[])]
+  const markets = [...new Set(reader.results.map((r) => r.viableSegment))].sort()
+  const rate = (rs: readonly RunResult[]) => pct(wins(rs).length, rs.length)
+  const inMarket = (s: StrategyRuns, m: string | null) =>
+    m === null ? s.results : s.results.filter((r) => r.viableSegment === m)
+  const cell = (s: StrategyRuns, m: string | null) => {
+    const base = rate(inMarket(reader, m))
+    const r = rate(inMarket(s, m))
+    if (s === reader) return fmtPct(r)
+    const p = pairedMargin(inMarket(reader, m).map(winsOf), inMarket(s, m).map(winsOf))
+    return `${fmtPct(r)} (${r - base >= 0 ? '+' : ''}${(r - base).toFixed(1)} ${fmtMargin(p)})`
+  }
+  const names: Record<string, string> = {
+    [READER_ID]: 'default price (validate_then_build)',
+    [SEARCH_ID]: 'search (price_aware)',
+    'pricing:recipe': 'recipe (price_recipe)',
+    'pricing:fixed x1.5': '1.5 times the default',
+    'pricing:fixed x2': '2 times the default',
+  }
+  // Final price over what the viable market would pay: report only, never shown to the player.
+  const share = (rs: readonly RunResult[]) =>
+    median(rs.map((r) => r.finalPriceCents / (r.wtpCents[r.viableSegment] ?? 1)))
+  const changes = (rs: readonly RunResult[]) =>
+    rs.length ? rs.reduce((t, r) => t + r.priceChanges, 0) / rs.length : null
+  const moving = all.filter((s) => s.id === SEARCH_ID || s.id === 'pricing:recipe')
+  return [
+    '',
+    '## Pricing (target 17)',
+    '',
+    `\`validate_then_build\` at different prices, same ${reader.results.length} seeds. Points against the default price, with the paired margin. The search reads only what the screen shows: trials in its market that said yes or "too expensive", and customers who left over the price. The recipe raises a fifth every 3 weeks until its first "too expensive", then goes one step back for good.`,
+    '',
+    `| Pricing | All | ${markets.join(' | ')} |`,
+    `|---|---|${markets.map(() => '---').join('|')}|`,
+    ...all.map(
+      (s) =>
+        `| ${names[s.id] ?? s.id} | ${cell(s, null)} | ${markets.map((m) => cell(s, m)).join(' | ')} |`,
+    ),
+    '',
+    'Where the moving prices end, by viable market: the median final price as a share of what that market would pay (hidden, report only), in all runs and in winning runs, and price changes per run.',
+    '',
+    `| Pricing | ${markets.map((m) => `${m}: all / wins / changes`).join(' | ')} |`,
+    `|---|${markets.map(() => '---').join('|')}|`,
+    ...moving.map((s) => {
+      const cells = markets.map((m) => {
+        const rs = inMarket(s, m)
+        const f = (x: number | null) => (x === null ? '-' : x.toFixed(2))
+        return `${f(share(rs))} / ${f(share(wins(rs)))} / ${f(changes(rs))}`
+      })
+      return `| ${names[s.id] ?? s.id} | ${cells.join(' | ')} |`
+    }),
   ]
 }
 
@@ -525,6 +619,8 @@ export function buildReport(input: ReportInput): string {
       }),
     )
   }
+
+  push(...pricingRows(input))
 
   const weekBins: [number, number][] = [
     [1, 10],

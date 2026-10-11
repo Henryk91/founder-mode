@@ -8,7 +8,14 @@ import { deskComparison } from './desk'
 import { asSection, mergeReportFile } from './reportFile'
 import { botScenario } from './scenarios'
 import { runTasks, type Task, type TaskDone } from './pool'
-import { ABLATION_SPECS, INBOX_SPECS, READER_SPEC, strategyOf, type StrategySpec } from './specs'
+import {
+  ABLATION_SPECS,
+  INBOX_SPECS,
+  PRICING_SPECS,
+  READER_SPEC,
+  strategyOf,
+  type StrategySpec,
+} from './specs'
 import { STRATEGIES } from './strategies'
 import { describeStrategy, type Strategy } from './strategy'
 
@@ -30,7 +37,7 @@ const strategies = args.only.length
  * target 11 (both on `--wide-runs` seeds, with a reading run on the same seeds), `events` every answer
  * of every event.
  */
-type Part = 'main' | 'paired' | 'inbox' | 'events'
+type Part = 'main' | 'paired' | 'inbox' | 'price' | 'events'
 type Planned = { strategy: Strategy; spec: StrategySpec; part: Part; runs: number }
 
 /** Every strategy one scenario's report needs, with the spec a worker builds it from. */
@@ -50,12 +57,14 @@ function planFor(scenario: Scenario): Planned[] {
   // Leave-one-out runs of validate_then_build. Only for the report, so they stay out of the
   // strategy list that the targets look at.
   // The reading run that targets 6, 11 and 13 are judged against, on the wide seeds; once.
-  const wideParts = (['paired', 'inbox'] as const).filter((p) => args.parts.includes(p))
+  const wideParts = (['paired', 'inbox', 'price'] as const).filter((p) => args.parts.includes(p))
   if (full && wideParts[0]) out.push(plan(READER_SPEC, wideParts[0], args.wideRuns))
   if (full && args.parts.includes('paired'))
     out.push(...ABLATION_SPECS.map((spec) => plan(spec, 'paired', args.wideRuns)))
   if (full && args.parts.includes('inbox'))
     out.push(...INBOX_SPECS.map((spec) => plan(spec, 'inbox', args.wideRuns)))
+  if (full && args.parts.includes('price'))
+    out.push(...PRICING_SPECS.map((spec) => plan(spec, 'price', args.wideRuns)))
   // Every answer of every event, forced, on validate_then_build. Slow, so only on request.
   if (args.parts.includes('events'))
     for (const e of scenario.events)
@@ -108,7 +117,12 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
     seedPrefix: args.seedPrefix,
     strategies: runs((p) => p.part === 'main' && p.spec.kind === 'listed'),
     ablations: runs((p) => p.spec.kind === 'without'),
-    extras: runs((p) => (p.part === 'main' && p.spec.kind !== 'listed') || p.spec.kind === 'inbox'),
+    extras: runs(
+      (p) =>
+        (p.part === 'main' && p.spec.kind !== 'listed') ||
+        p.spec.kind === 'inbox' ||
+        p.spec.kind === 'pricing',
+    ),
     ...(events ? { events } : {}),
     playtest: { segment, note },
   }
@@ -133,7 +147,7 @@ const loaded = chosen.map((c) => loadScenario(c.id))
 const plans = loaded.map(planFor)
 const done = plans.map((p) => p.map((): TaskDone => ({ results: [], seconds: 0 })))
 const timings: string[] = []
-for (const part of ['main', 'paired', 'inbox', 'events'] as const) {
+for (const part of ['main', 'paired', 'inbox', 'price', 'events'] as const) {
   const index = plans.flatMap((p, s) => p.flatMap((x, i) => (x.part === part ? [{ s, i }] : [])))
   if (index.length === 0) continue
   const tasks = index.map(({ s, i }): Task => {
@@ -159,7 +173,7 @@ const reports = new Map(
   loaded.map((scenario, i) => [scenario.id, reportFor(scenario, plans[i]!, done[i]!)] as const),
 )
 console.log(`\nTimings\n${timings.join('\n')}`)
-const skipped = (['main', 'paired', 'inbox', 'events'] as const).filter(
+const skipped = (['main', 'paired', 'inbox', 'price', 'events'] as const).filter(
   (p) => !args.parts.includes(p),
 )
 if (skipped.length) console.log(`Skipped parts: ${skipped.join(', ')}`)
