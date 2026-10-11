@@ -704,7 +704,7 @@ export function validatingPlayer(
       const b = new PlanBuilder(view, budget)
       const ids = view.segments.map((s) => s.id)
       lastView = view
-      if (prices) b.price(prices.price(view))
+      if (prices && view.week <= 2) b.price(prices.price(view, null))
       if (behaviours.chase) b.chase(CHASE_PER_WEEK)
 
       // Week 1: interviews only. Week 2: a landing page test where the interviews point, more
@@ -749,6 +749,7 @@ export function validatingPlayer(
         target =
           ranked(view).find((r) => !abandoned.has(r.id))?.id ?? ranked(view)[0]?.id ?? ids[0]!
       }
+      if (prices) b.price(prices.price(view, target))
       const notes = segmentNotes(scenario, view, target)
       const wanted = notes.mentions.map(([f]) => f)
       const unshipped = wanted.filter(
@@ -886,16 +887,22 @@ export function withInbox(inbox: InboxPolicy): Strategy {
 }
 
 /**
- * Steps of a fifth of the price, judged on 2 trials that said yes or no over the price. Of steps
- * of 0.2 and 0.3, windows of 2 and 3, and stepping down at a third or a half, this did best
- * (Phase 8, 10,000 seeds); all lay within about a point of each other.
+ * Steps of a fifth of the price, judged on 2 trials that said yes or no over the price. With two
+ * or more budget quotes in its market it starts at 0.9 times their average and stays between 0.75
+ * and 1.05 times it. Starts of 0.8 to 1.0 and bands up to 1.1 all lay within about a point
+ * (Phase 8, 10,000 seeds).
  */
-export const PRICE_RULE: SearchRule = { stepShare: 0.2, window: 2, tooMany: 0.5 }
+export const PRICE_RULE: SearchRule = {
+  stepShare: 0.2,
+  window: 2,
+  tooMany: 0.5,
+  hints: { minHints: 2, start: 0.9, low: 0.75, high: 1.05 },
+}
 
 export const priceAware: Strategy = {
   id: 'price_aware',
   description:
-    'Plays like validate_then_build and searches for its price from what it sees in its own market: after 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it.',
+    'Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it.',
   create: (scenario) => validatingPlayer(scenario, 50, () => new PriceSearch(PRICE_RULE)),
 }
 

@@ -483,7 +483,7 @@ Targets for the early MVP (judged on `validate_then_build`; revised after the Ph
 14. `presale_max` does not beat `validate_then_build` by more than 3 points
 15. No single action (outreach counted per channel) finds more than 40% of the customers in winning `validate_then_build` runs
 16. No run of any strategy brings an event twice, except events that recur on purpose
-17. Price is a decision (Phase 8): on 10,000 seeds, a price search that reads only the screen (`price_aware`) beats `validate_then_build` at the default price by 3 to 10 points and is ahead in at least two of the three viable markets; twice the default price loses to the default
+17. Price is a decision (Phase 8): on 10,000 seeds, in each scenario, a price bot that reads only the screen (`price_aware`) beats `validate_then_build` at the default price by at least 3 points overall, loses at most 1 point in any single viable market, and is at most 10 points ahead overall (and under target 3's 60%); a fixed price at twice the default loses to the default in at least two of the three viable markets
 
 If a target fails, tune scenario values first and formulas second, and record the change in `docs/decisions.md`.
 

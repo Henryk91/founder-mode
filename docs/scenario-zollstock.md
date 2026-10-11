@@ -22,7 +22,7 @@ Tradespeople do not read cold email and do not click on ads. They decide on trus
 
 ## 2. Starting values
 
-Identical to Kantino (same founder, same costs, same price, same price curve and price churn from Phase 8, same run length):
+Identical to Kantino (same founder, same costs, same price, same price curve, price churn and budget quotes (chance and noise) from Phase 8, with its own quote texts, same run length):
 
 | Value | Start |
 |---|---|

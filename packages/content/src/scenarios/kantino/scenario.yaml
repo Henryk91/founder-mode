@@ -52,6 +52,9 @@ experiments:
     skillCap: 0.8
     mentionBase: 0.3
     mentionPerPain: 0.3
+    # About one interview in four names a budget, within about a quarter either side.
+    budgetChance: 0.25
+    budgetNoiseSd: 0.25
     buckets:
       - { id: not_a_problem, name: Not a problem, below: 0.2 }
       - { id: mild, name: Mild, below: 0.4 }
@@ -202,6 +205,13 @@ segments:
     paymentDelayDaysMean: 5
     neverPaysShare: 0.05
     waitsForChaseShare: 0.25
+    # Budget quotes: some interviews name a rough monthly figure, honest on average.
+    budgetQuotes:
+      - 'Between takeaways and the time it eats, lunch costs us about {amount} a month. Nobody budgets for it.'
+      - 'Our office manager reckons the lunch chaos costs about {amount} a month of her time alone.'
+      - 'We would pay something like {amount} a month if the lunch spreadsheet went away for good.'
+      - 'I signed off roughly {amount} a month for team lunches last year. Most of it went on delivery fees.'
+      - 'A caterer quoted us about {amount} a month. We laughed, then we did the maths.'
 
   - id: coworking
     name: Coworking spaces
@@ -216,6 +226,13 @@ segments:
     paymentDelayDaysMean: 12
     neverPaysShare: 0.03
     waitsForChaseShare: 0.25
+    # Budget quotes: some interviews name a rough monthly figure, honest on average.
+    budgetQuotes:
+      - 'We pay the caterer about {amount} a month and still get complaints on the community board.'
+      - 'If it kept tenants from leaving, about {amount} a month would be a bargain.'
+      - 'Billing lunch across our sites costs about {amount} a month in admin. The admin is me.'
+      - 'Our last lunch partner charged about {amount} a month. They went bust, which tells you something.'
+      - "The members' café loses about {amount} a month. Lunch is where it bleeds."
 
   - id: medical
     name: Medical practices
@@ -230,6 +247,13 @@ segments:
     paymentDelayDaysMean: 20
     neverPaysShare: 0.08
     waitsForChaseShare: 0.25
+    # Budget quotes: some interviews name a rough monthly figure, honest on average.
+    budgetQuotes:
+      - "Staff lunches run to about {amount} a month, mostly cold sandwiches at four o'clock."
+      - 'Our practice manager spends about {amount} a month of her time on lunch orders. Officially she does rotas.'
+      - 'We set aside roughly {amount} a month for staff meals. It never quite stretches.'
+      - 'The pharmacy rep used to bring lunch. Replacing that costs us about {amount} a month.'
+      - 'I would sign off about {amount} a month if reception stopped being a canteen.'
 
 # Milestones (plan section 4.12). Revenue milestones cover the run's own monthly costs at the time:
 # company costs, or company costs plus living costs. onBar: false keeps one off the progress bar.

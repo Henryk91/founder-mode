@@ -23,6 +23,11 @@ function answerCounts(interviews: InterviewView[]): [string, number][] {
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
 }
 
+/** A budget quote with its rough figure filled in. */
+export function budgetText(budget: { quote: string; amountCents: number }): string {
+  return budget.quote.replace('{amount}', formatEuro(budget.amountCents))
+}
+
 /** The individual interview quotes of one market, newest first, behind a tap. */
 function Quotes({ interviews }: { interviews: InterviewView[] }) {
   const [open, setOpen] = useState(false)
@@ -56,6 +61,9 @@ function Quotes({ interviews }: { interviews: InterviewView[] }) {
                 </span>
               </div>
               <blockquote className={styles.quote}>{iv.quote}</blockquote>
+              {iv.budget && (
+                <blockquote className={styles.quote}>{budgetText(iv.budget)}</blockquote>
+              )}
               {iv.mentionedFeature && (
                 <>
                   <span className={styles.hint}>

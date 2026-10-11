@@ -461,6 +461,12 @@ function marketTruth(state: GameState, segmentId: SegmentId): MarketTruth {
     customerPricesCents: [...new Set(customers.map((c) => c.priceCentsPerMonth))].sort(
       (a, b) => a - b,
     ),
+    budgetHints: (() => {
+      const named = ivs.flatMap((iv) => (iv.budget ? [iv.budget.amountCents] : []))
+      if (named.length === 0) return null
+      const mean = named.reduce((a, b) => a + b, 0) / named.length
+      return { count: named.length, meanCents: Math.round(mean / 1000) * 1000 }
+    })(),
     priceNos: {
       trials: state.leads.filter((l) => l.segmentId === segmentId && l.lostReason === 'price')
         .length,

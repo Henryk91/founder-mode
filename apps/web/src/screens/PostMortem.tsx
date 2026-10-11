@@ -441,6 +441,16 @@ function MarketCard({
         price: formatEuro(t.view.company.priceCentsPerMonth),
       }),
     ],
+    ...(m.budgetHints
+      ? [
+          [
+            label('pm.market.budgetHints', stage),
+            count('pm.market.budgetHintsValue', stage, m.budgetHints.count, {
+              amount: formatEuro(m.budgetHints.meanCents),
+            }),
+          ] as [string, string],
+        ]
+      : []),
     ...(m.priceNos.trials + m.priceNos.cancellations > 0
       ? [
           [

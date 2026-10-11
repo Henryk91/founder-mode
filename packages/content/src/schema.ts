@@ -36,6 +36,9 @@ export const SegmentSchema = z.object({
   // Share of invoices that are only paid once the player chases them (the customer waits to be
   // asked). Unchased, they are written off like any unpaid invoice.
   waitsForChaseShare: Share,
+  // What an interviewee says about money, now and then: rough, in the market's own words. Each
+  // holds {amount}, a noisy, rounded figure around what the market would pay a month.
+  budgetQuotes: z.array(z.string().refine((q) => q.includes('{amount}'), 'needs {amount}')).min(4),
 })
 
 // A role sets hidden pain and politeness. Roles are shuffled across segments per run.
@@ -59,6 +62,10 @@ export const InterviewConfigSchema = z.object({
   skillCap: Share,
   mentionBase: Share,
   mentionPerPain: Share,
+  // Chance an interview includes a budget quote, and its noise: the amount is willingness to pay
+  // times (1 + N(0, budgetNoiseSd)), kept within 0.4 to 1.8 times it, then rounded.
+  budgetChance: Share,
+  budgetNoiseSd: z.number().nonnegative(),
   buckets: z.array(InterviewBucketSchema).min(2),
 })
 

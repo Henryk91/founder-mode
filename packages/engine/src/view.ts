@@ -298,6 +298,15 @@ export function interviewView(state: GameState, e: InterviewEvidence): Interview
     mentionedFeature: feature
       ? { id: feature.id, name: feature.name, quote: feature.mention }
       : null,
+    budget: e.budget
+      ? {
+          quote:
+            scenario.segments.find((s) => s.id === e.segmentId)?.budgetQuotes[
+              e.budget.quoteIndex
+            ] ?? '',
+          amountCents: e.budget.amountCents,
+        }
+      : null,
   }
 }
 
