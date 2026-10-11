@@ -51,7 +51,11 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
     case 'lead_update':
       return label(`results.entry.${entry.change}`, stage, { name: entry.name })
     case 'customer_churned':
-      return label('results.entry.customer_churned', stage, { name: entry.name })
+      return label(
+        entry.overPrice ? 'results.entry.customer_churned_price' : 'results.entry.customer_churned',
+        stage,
+        { name: entry.name },
+      )
     case 'invoices_issued':
       return count('results.entry.invoices_issued', stage, entry.count, {
         amount: formatEuro(entry.amountCents),
@@ -162,6 +166,7 @@ const LEAD_PRIORITY: Record<Extract<ReportEntry, { kind: 'lead_update' }>['chang
   wants_demo: 5,
   went_silent: 5,
   declined: 4,
+  declined_price: 4,
   lost_silent: 4,
 }
 

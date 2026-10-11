@@ -17,6 +17,20 @@ const TILTS = [-1, 1, -1.2, 0.8, 1.5, -0.8]
 
 /** The corkboard: columns by stage, a pinned card per lead. Demos and follow ups book here. */
 /** How a lead was found, as its card says it. */
+/** Why a lost lead was lost, as the lost list shows it. */
+export function lostText(l: LeadView, stage: UiStage): string {
+  switch (l.lostReason) {
+    case 'silent':
+      return label('pipeline.lostSilent', stage)
+    case 'refunded':
+      return label('pipeline.lostRefunded', stage)
+    case 'price':
+      return label('pipeline.lostPrice', stage)
+    default:
+      return label('pipeline.lostDeclined', stage)
+  }
+}
+
 export function leadSource(l: LeadView, stage: UiStage): string {
   switch (l.source) {
     case 'walk_in':
@@ -161,13 +175,7 @@ export function Pipeline() {
               .map((l) => (
                 <li key={l.id} className={styles.rowHead}>
                   <span>{l.name}</span>
-                  <span className={styles.hint}>
-                    {l.lostReason === 'silent'
-                      ? label('pipeline.lostSilent', stage)
-                      : l.lostReason === 'refunded'
-                        ? label('pipeline.lostRefunded', stage)
-                        : label('pipeline.lostDeclined', stage)}
-                  </span>
+                  <span className={styles.hint}>{lostText(l, stage)}</span>
                 </li>
               ))}
           </ul>

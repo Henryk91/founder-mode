@@ -36,7 +36,7 @@ export class PriceSearch {
       if (e.change === 'won') {
         this.wins++
         this.ended++
-      } else if (e.change === 'declined') {
+      } else if (e.change === 'declined' || e.change === 'declined_price') {
         this.ended++
       }
     }

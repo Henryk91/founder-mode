@@ -273,6 +273,7 @@ const item = (week: number, kind: ChainKind, extra: Partial<ChainItem> = {}): Ch
   customers: null,
   cents: null,
   ending: null,
+  overPrice: false,
   ...extra,
 })
 
@@ -324,6 +325,7 @@ function chainCandidates(state: GameState, cause: PostMortemCause): ChainItem[] 
           segmentId: c.segmentId,
           customers: ledgerAt(c.churnedWeek)?.customers ?? null,
           cents: ledgerAt(c.churnedWeek)?.monthlyRevenueCents ?? null,
+          overPrice: c.churnReason === 'price',
         }),
       )
     }
@@ -375,8 +377,15 @@ function chainCandidates(state: GameState, cause: PostMortemCause): ChainItem[] 
   }
   // Declined demos and trials only count in the final week, where nothing else shows them.
   for (const l of state.leads) {
-    if (l.stage === 'lost' && l.lostReason === 'declined' && l.stageSinceWeek === state.week) {
-      out.push(item(state.week, 'lead_declined', { name: l.name, segmentId: l.segmentId }))
+    const declined = l.lostReason === 'declined' || l.lostReason === 'price'
+    if (l.stage === 'lost' && declined && l.stageSinceWeek === state.week) {
+      out.push(
+        item(state.week, 'lead_declined', {
+          name: l.name,
+          segmentId: l.segmentId,
+          overPrice: l.lostReason === 'price',
+        }),
+      )
     }
   }
   return out
@@ -452,6 +461,11 @@ function marketTruth(state: GameState, segmentId: SegmentId): MarketTruth {
     customerPricesCents: [...new Set(customers.map((c) => c.priceCentsPerMonth))].sort(
       (a, b) => a - b,
     ),
+    priceNos: {
+      trials: state.leads.filter((l) => l.segmentId === segmentId && l.lostReason === 'price')
+        .length,
+      cancellations: customers.filter((c) => c.churnReason === 'price').length,
+    },
     mustHave: hidden.mustHave.map((featureId) => ({
       featureId,
       mentions: ivs.filter((iv) => iv.mentionedFeatureId === featureId).length,

@@ -441,6 +441,17 @@ function MarketCard({
         price: formatEuro(t.view.company.priceCentsPerMonth),
       }),
     ],
+    ...(m.priceNos.trials + m.priceNos.cancellations > 0
+      ? [
+          [
+            label('pm.market.priceNos', stage),
+            label('pm.market.priceNosValue', stage, {
+              trials: m.priceNos.trials,
+              cancellations: m.priceNos.cancellations,
+            }),
+          ] as [string, string],
+        ]
+      : []),
     [
       label('pm.market.customers', stage),
       m.customersWon > 0
@@ -552,6 +563,19 @@ class Text {
       case 'energy_low':
         return label('pm.chain.energy_low', s, {
           low: this.view.founder.lowEnergyBelow,
+        })
+      case 'customer_lost':
+      case 'lead_declined':
+        if (c.overPrice)
+          return label(`pm.chain.${c.kind}_price`, s, {
+            name: c.name ?? '',
+            customers: c.customers ?? 0,
+            revenue: formatEuro(c.cents ?? 0),
+          })
+        return label(`pm.chain.${c.kind}`, s, {
+          name: c.name ?? '',
+          customers: c.customers ?? 0,
+          revenue: formatEuro(c.cents ?? 0),
         })
       default:
         return label(`pm.chain.${c.kind}`, s, {

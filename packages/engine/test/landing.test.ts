@@ -1,3 +1,4 @@
+import { priceFactor } from '../src/systems/market'
 import { describe, expect, it } from 'vitest'
 import { endWeek, getView, validatePlan } from '../src/index'
 import { newGame, plan, quietKantino } from './helpers'
@@ -98,7 +99,11 @@ describe('landing page tests', () => {
     const logged = s.eventLog.filter((e) => e.kind === 'landing')
     expect(logged).toHaveLength(1)
     expect(logged[0]).toMatchObject({ segmentId: 'coworking' })
-    expect((logged[0] as { expected: number }).expected).toBeCloseTo(133 * (0.02 + 0.15 * 0.5), 6)
+    const factor = priceFactor(s, 'coworking')
+    expect((logged[0] as { expected: number }).expected).toBeCloseTo(
+      133 * (0.02 + 0.15 * 0.5) * factor,
+      6,
+    )
   })
 
   it('rejects a budget that is not one of the scenario budgets', () => {

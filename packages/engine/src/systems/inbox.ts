@@ -185,6 +185,7 @@ function applyEffect(
         customerId: target.id,
         name: target.name,
         segmentId: target.segmentId,
+        overPrice: false,
       })
       return { ...state, customers }
     }

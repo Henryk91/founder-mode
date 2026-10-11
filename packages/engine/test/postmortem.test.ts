@@ -112,3 +112,51 @@ describe('post-mortem', () => {
     expect(view).not.toContain('"odds"')
   })
 })
+
+describe('post-mortem: price', () => {
+  it('counts trials and customers lost over the price per market, and says so in the chain', () => {
+    const s = idleBankrupt()
+    const priced: GameState = {
+      ...s,
+      leads: [
+        {
+          id: 'lead_1',
+          name: 'Kanzlei Rautenberg',
+          segmentId: 'small_offices',
+          stage: 'lost',
+          source: 'outreach',
+          stageSinceWeek: s.week,
+          lastContactWeek: s.week,
+          silentSinceWeek: null,
+          lostReason: 'price',
+        },
+      ],
+      customers: [
+        {
+          id: 'customer_1',
+          leadId: 'lead_9',
+          name: 'Praxis Ostwald',
+          segmentId: 'small_offices',
+          sinceWeek: 2,
+          churnedWeek: 6,
+          churnReason: 'price',
+          priceCentsPerMonth: 90_000,
+        },
+      ],
+    }
+    const pm = buildPostMortem(priced)
+    const market = pm.markets.find((m) => m.segmentId === 'small_offices')!
+    expect(market.priceNos).toEqual({ trials: 1, cancellations: 1 })
+    expect(pm.markets.find((m) => m.segmentId === 'coworking')!.priceNos).toEqual({
+      trials: 0,
+      cancellations: 0,
+    })
+    expect(pm.chain).toContainEqual(
+      expect.objectContaining({
+        kind: 'lead_declined',
+        name: 'Kanzlei Rautenberg',
+        overPrice: true,
+      }),
+    )
+  })
+})

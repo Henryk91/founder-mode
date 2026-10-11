@@ -126,7 +126,7 @@ Funnel formulas are in the implementation plan, section 4.5. The scenario sets t
 |---|---|---|
 | Lead to demo per week | 0.18 x (0.4 + 0.6 x pain) | 0.25 x (0.4 + 0.6 x pain) |
 | Demo to trial | 0.05 + 0.40 x fit | 0.20 + 0.60 x fit |
-| Monthly churn | 0.03 + 0.20 x (1 - fit) + 0.01 x bugs, capped at 0.6 | 0.02 + 0.25 x (1 - fit) + 0.01 x bugs |
+| Monthly churn | 0.03 + 0.20 x (1 - fit) + 0.01 x bugs, plus 0.15 x (price / willingness to pay - 1) above the willingness to pay (Phase 8), capped at 0.6 | 0.02 + 0.25 x (1 - fit) + 0.01 x bugs |
 
 Reason: a bot that found the viable market ended with about 19 customers when 7 make the company profitable, so finding the market was the whole game. Now fewer demos turn into trials and selling skill grows half as fast. Churn stays moderate (about 11% a month for a good fit without bugs), because a leaky bucket is less fun than a slow funnel; a churn of 0.06 + 0.45 x misfit was tried and gave 20 to 30% a month for products that fit.
 
@@ -198,5 +198,7 @@ A founder who identifies a viable small offices segment, ships its three must ha
 This estimate is a back of the envelope calculation. Treat the bot report as the real answer.
 
 ## 11. Phase 4 and engine 0.7.0 values
+
+Price (Phase 8, engine 0.11.0): with r = price / willingness to pay, the price factor is (1 + e^(-13.5)) / (1 + e^(10 x (r - 1.35))): 1 at no price, 0.97 at r 1, 0.82 at 1.2, a half at 1.35. It scales trials becoming customers, landing sign ups and pre-sale deposits. A trial lost to the price says so; a customer leaving over the price says so. Calibrated so the careful bot at the default price plays as before (target 2 within 1 point, 6 within 1, 7 within half a week).
 
 Landing test 8 h, ads 300 or 750 EUR, 225 cents per visitor, 1 week, 5 sign ups per lead. Pre-sale 6 h per batch of 5 cold prospects, 1 week, commit rate 0.25 x pain x price factor, at most 3 batches per market, refund after 8 weeks. Invoices due after 14 days, written off 8 weeks after due, chase 1 h for 0.3; a quarter of invoices wait for a chase. Books: the accountant's message from week 3, weight 40 (Phase 5, to keep about 7 arrivals a run among 108 events), cooldown 5 weeks: sort (3 h), pay 225 EUR, or later (half the time a 600 EUR fine, half the time 4 h lost). Hire as in section 8, impression labels weak below 0.7, solid below 0.95, strong below 1.1. Inbox: up to 3 draws a week at 0.4 each, plus one guaranteed draw in a week without a new message while fewer than 2 are open; open 2 weeks, at most 4 open. Since Phase 5 every event arrives once per run except the books, which set their own cooldown; the inbox cooldown of 8 weeks no longer applies to any event. The coworking desk (section 9) arrived in Phase 7.

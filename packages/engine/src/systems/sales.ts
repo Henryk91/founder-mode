@@ -13,7 +13,7 @@ import type {
 } from '../types'
 import { isMonthEnd } from './finance'
 import { energyFactor } from './founder'
-import { coverage, fit, priceFactor } from './market'
+import { coverage, fit, priceChurn, priceFactor } from './market'
 import { channelFactor } from './office'
 import { OddsTally } from './odds'
 import type { TeamOutput } from './team'
@@ -285,8 +285,11 @@ export function applySales(
   // 2. Trials
   for (const lead of leads) {
     if (lead.stage !== 'trial' || week - lead.stageSinceWeek < cfg.trialWeeks) continue
-    const p = fit(state, lead.segmentId) * priceFactor(state, lead.segmentId) * tired
-    const won = rng.chance(p)
+    // One draw: below p a yes; between p and the chance without the price, a no over the price.
+    const withoutPrice = fit(state, lead.segmentId) * tired
+    const p = withoutPrice * priceFactor(state, lead.segmentId)
+    const draw = rng.next()
+    const won = draw < p
     odds.roll('trial', lead.segmentId, p, won)
     if (won) {
       lead.stage = 'paying'
@@ -302,6 +305,9 @@ export function applySales(
         priceCentsPerMonth: state.company.priceCentsPerMonth,
       })
       update(lead, 'won')
+    } else if (draw < withoutPrice) {
+      lose(lead, 'price')
+      update(lead, 'declined_price')
     } else {
       lose(lead, 'declined')
       update(lead, 'declined')
@@ -458,10 +464,17 @@ export function applyReferrals(
   return { state: { ...out, eventLog: [...out.eventLog, ...events] }, entries }
 }
 
-/** Chance that an active customer leaves at a month end. */
-export function churnChance(state: GameState, segmentId: SegmentId): number {
+/**
+ * Chance that an active customer leaves at a month end. With `priceCents` (the customer's own
+ * price) it includes the share that comes from the price; without, it leaves that share out.
+ */
+export function churnChance(state: GameState, segmentId: SegmentId, priceCents?: number): number {
   const c = state.scenario.sales.churn
-  const p = c.base + c.perMisfit * (1 - fit(state, segmentId)) + c.perBug * state.product.bugs
+  const p =
+    c.base +
+    c.perMisfit * (1 - fit(state, segmentId)) +
+    c.perBug * state.product.bugs +
+    (priceCents === undefined ? 0 : priceChurn(state, segmentId, priceCents))
   return Math.min(c.cap, p)
 }
 
@@ -476,17 +489,23 @@ export function applyChurn(
   const customers = state.customers.map((c) => {
     // Customers won this week have not had a month yet.
     if (c.churnedWeek !== null || c.sinceWeek >= state.week) return c
-    const p = churnChance(state, c.segmentId)
-    const leaves = rng.chance(p)
+    // One draw: above the chance without the price share, a customer who leaves says it was price.
+    const p = churnChance(state, c.segmentId, c.priceCentsPerMonth)
+    const draw = rng.next()
+    const leaves = draw < p
     odds.roll('churn', c.segmentId, p, leaves, c.priceCentsPerMonth)
     if (!leaves) return c
+    const overPrice = draw >= churnChance(state, c.segmentId)
     entries.push({
       kind: 'customer_churned',
       customerId: c.id,
       name: c.name,
       segmentId: c.segmentId,
+      overPrice,
     })
-    return { ...c, churnedWeek: state.week }
+    return overPrice
+      ? { ...c, churnedWeek: state.week, churnReason: 'price' as const }
+      : { ...c, churnedWeek: state.week }
   })
   return {
     state: { ...state, customers, eventLog: [...state.eventLog, ...odds.events()] },

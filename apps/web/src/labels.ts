@@ -111,6 +111,7 @@ const labels = {
   'pipeline.trialWeeks.other': 'Trial for {n} weeks',
   'pipeline.silent': 'Not answering',
   'pipeline.lostDeclined': 'Said no',
+  'pipeline.lostPrice': 'Too expensive',
   'pipeline.lostRefunded': 'Deposit refunded',
   'pipeline.depositWeeks.one': 'deposit paid {n} week ago',
   'pipeline.depositWeeks.other': 'deposit paid {n} weeks ago',
@@ -177,12 +178,16 @@ const labels = {
   'results.entry.trial_started': '{name} liked the demo and started a trial.',
   'results.entry.won': '{name} signed up and will pay every month.',
   'results.entry.declined': '{name} said no thanks.',
+  'results.entry.declined_price':
+    '{name} liked the trial but said no to the price. Their budget had other plans.',
   'results.entry.went_silent': '{name} stopped answering.',
   'results.entry.lost_silent': '{name} is gone for good.',
   'results.entry.committed':
     '{name} paid a deposit of one month. They will pay monthly once the product does what they need.',
   'results.entry.refunded': '{name} got their deposit back. The product never got there in time.',
   'results.entry.customer_churned': '{name} cancelled.',
+  'results.entry.customer_churned_price':
+    '{name} cancelled. They said it costs more than it saves them.',
 
   'end.title': 'The run is over',
   'end.bankrupt': 'The money ran out, yours included. The company is closed.',
@@ -547,6 +552,8 @@ const labels = {
   'pm.chain.first_customer': 'First paying customer: {name}, at {price} a month.',
   'pm.chain.customer_won': '{name} signed. {customers} paying customers.',
   'pm.chain.customer_lost': '{name} left. {customers} customers, {revenue} a month.',
+  'pm.chain.customer_lost_price':
+    '{name} left over the price. {customers} customers, {revenue} a month.',
   'pm.chain.feature_shipped': 'Shipped {feature}.',
   'pm.chain.hire_started': '{name} started.',
   'pm.chain.hire_let_go': '{name} left the team.',
@@ -557,6 +564,7 @@ const labels = {
   'pm.chain.covers_all_costs':
     'Revenue reached {revenue} a month: everything covered, you included.',
   'pm.chain.lead_declined': '{name} said no.',
+  'pm.chain.lead_declined_price': '{name} said no to the price.',
   'pm.chain.ending.bankrupt': 'Company cash below zero ({cash}). Closed.',
   'pm.chain.ending.burnout': 'The third week on empty. You stop.',
   'pm.chain.ending.shut_down': 'You closed the company.',
@@ -579,6 +587,8 @@ const labels = {
   'pm.market.notTried': 'Not tried',
   'pm.market.wtp': 'Would pay',
   'pm.market.wtpValue': 'up to about {wtp} a month. You asked {price}.',
+  'pm.market.priceNos': 'Over the price',
+  'pm.market.priceNosValue': '{trials} said no after a trial, {cancellations} cancelled',
   'pm.market.customers': 'Customers',
   'pm.market.customersValue.one': '1, at {prices}',
   'pm.market.customersValue.other': '{n}, at {prices}',

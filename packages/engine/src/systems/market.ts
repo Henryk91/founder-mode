@@ -57,11 +57,35 @@ export function fit(state: GameState, segmentId: SegmentId): number {
   )
 }
 
-/** 1 up to the willingness to pay, then falling off as exp(-slope * (price / wtp - 1)). */
+/**
+ * How the current price changes a yes in a segment: 1 at a price of 0, falling smoothly as the
+ * price nears and passes the willingness to pay (a logistic curve in price / wtp, scenario
+ * `sales.price`).
+ */
 export function priceFactor(state: GameState, segmentId: SegmentId): number {
   const hidden = state.hidden.segments[segmentId]
   if (!hidden) return 0
-  const price = state.company.priceCentsPerMonth
-  if (price <= hidden.wtpCents) return 1
-  return expNeg(state.scenario.sales.priceSlope * (price / hidden.wtpCents - 1))
+  return priceCurve(state.scenario, state.company.priceCentsPerMonth / hidden.wtpCents)
+}
+
+/** (1 + e^(-k m)) / (1 + e^(k (r - m))), computed with expNeg only. */
+export function priceCurve(scenario: Scenario, ratio: number): number {
+  const { midpoint, steepness } = scenario.sales.price
+  const x = steepness * (ratio - midpoint)
+  const atZero = 1 + expNeg(steepness * midpoint)
+  if (x <= 0) return atZero / (1 + expNeg(-x))
+  const shrink = expNeg(x)
+  // e^x = 1 / shrink; past about e^60 nobody says yes.
+  return shrink === 0 ? 0 : (atZero * shrink) / (shrink + 1)
+}
+
+/**
+ * The part of a customer's monthly chance to leave that comes from their own price:
+ * perPrice * max(0, price / wtp - priceFrom).
+ */
+export function priceChurn(state: GameState, segmentId: SegmentId, priceCents: number): number {
+  const hidden = state.hidden.segments[segmentId]
+  if (!hidden) return 0
+  const { priceFrom, perPrice } = state.scenario.sales.churn
+  return perPrice * Math.max(0, priceCents / hidden.wtpCents - priceFrom)
 }
