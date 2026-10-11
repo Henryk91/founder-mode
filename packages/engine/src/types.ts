@@ -177,7 +177,8 @@ export type Lead = {
 }
 
 /** Why a lead was lost. `refunded`: a deposit was paid back because the product did not ship. */
-export type LostReason = 'declined' | 'silent' | 'refunded'
+/** `price`: the trial ended in a no that the lead put down to the price. */
+export type LostReason = 'declined' | 'price' | 'silent' | 'refunded'
 
 export type Customer = {
   id: string
@@ -186,6 +187,8 @@ export type Customer = {
   segmentId: SegmentId
   sinceWeek: number
   churnedWeek: number | null
+  /** Set when the customer said they left over the price. */
+  churnReason?: 'price'
   /** The monthly price agreed when the customer signed. Later price changes do not touch it. */
   priceCentsPerMonth: number
   /** Months already paid for, by a pre-sale deposit. These month ends send no invoice. */
@@ -794,6 +797,7 @@ export type LeadChange =
   | 'trial_started'
   | 'won'
   | 'declined'
+  | 'declined_price'
   | 'went_silent'
   | 'lost_silent'
   | 'committed'
@@ -835,7 +839,14 @@ export type ReportEntry =
   | { kind: 'walk_in_leads'; segmentId: SegmentId; count: number; place: string }
   /** A paying customer (`from`) recommended the company to a new lead (`name`). */
   | { kind: 'referral_lead'; segmentId: SegmentId; leadId: string; name: string; from: string }
-  | { kind: 'customer_churned'; customerId: string; name: string; segmentId: SegmentId }
+  | {
+      kind: 'customer_churned'
+      customerId: string
+      name: string
+      segmentId: SegmentId
+      /** The customer said the price was why they left. */
+      overPrice: boolean
+    }
 
 // ---------------------------------------------------------------------------
 // Saves
@@ -918,6 +929,8 @@ export type ChainItem = {
   cents: number | null
   /** The ending, for `ending`. */
   ending: EndingId | null
+  /** For `customer_lost` and `lead_declined`: they said it was the price. */
+  overPrice: boolean
 }
 
 export type MarketFeature = {
@@ -945,6 +958,8 @@ export type MarketTruth = {
   customersWon: number
   /** Distinct prices customers of this market signed at, lowest first. */
   customerPricesCents: number[]
+  /** Trials that ended in a no over the price, and customers who left over it. */
+  priceNos: { trials: number; cancellations: number }
   mustHave: MarketFeature[]
 }
 

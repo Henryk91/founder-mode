@@ -399,3 +399,103 @@ describe('lead names', () => {
     }
   })
 })
+
+describe('price', () => {
+  const customer = (id: string, sinceWeek: number) => ({
+    id,
+    leadId: id,
+    name: id,
+    segmentId: 'small_offices',
+    sinceWeek,
+    churnedWeek: null,
+    priceCentsPerMonth: 45_000,
+  })
+  const trialAt = (seed: string, ratio: number) => {
+    const s = withLeads([lead({ stage: 'trial', stageSinceWeek: 1 })], { pain: 1, shipped: true })
+    const wtp = s.hidden.segments.small_offices!.wtpCents
+    const game = newGame(seed)
+    return {
+      ...s,
+      rng: game.rng,
+      week: 3,
+      company: { ...s.company, priceCentsPerMonth: Math.max(1, Math.round(wtp * ratio)) },
+    }
+  }
+
+  it('tells a trial lost over the price apart from a plain no', () => {
+    const count = { won: 0, price: 0, declined: 0 }
+    for (let i = 0; i < 200; i++) {
+      const r = endWeek(trialAt(`p${i}`, 1.5), plan())
+      const l = r.state.leads[0]!
+      if (l.stage === 'paying') count.won++
+      else if (l.lostReason === 'price') {
+        count.price++
+        expect(r.report.entries).toContainEqual(
+          expect.objectContaining({ kind: 'lead_update', change: 'declined_price' }),
+        )
+        expect(getView(r.state).leads[0]!.lostReason).toBe('price')
+      } else if (l.lostReason === 'declined') count.declined++
+    }
+    // At 1.5 times what they would pay, most trials that would have said yes say no to the price.
+    expect(count.price).toBeGreaterThan(count.won)
+    expect(count.declined).toBeGreaterThan(0)
+  })
+
+  it('names the price for nobody when the price is far below what they would pay', () => {
+    for (let i = 0; i < 100; i++) {
+      const l = endWeek(trialAt(`q${i}`, 0.1), plan()).state.leads[0]!
+      expect(l.lostReason).not.toBe('price')
+    }
+  })
+
+  it('adds a price share to churn only above what the customer would pay', () => {
+    const s = newGame('churn-price')
+    const wtp = s.hidden.segments.small_offices!.wtpCents
+    const { perPrice, priceFrom } = s.scenario.sales.churn
+    const without = churnChance(s, 'small_offices')
+    expect(churnChance(s, 'small_offices', wtp)).toBeCloseTo(without, 10)
+    expect(churnChance(s, 'small_offices', Math.round(wtp / 2))).toBeCloseTo(without, 10)
+    expect(churnChance(s, 'small_offices', wtp * 2)).toBeCloseTo(
+      Math.min(s.scenario.sales.churn.cap, without + perPrice * (2 - priceFrom)),
+      6,
+    )
+  })
+
+  it('tells the player when a customer leaves over the price', () => {
+    let overPrice = 0
+    let other = 0
+    for (let i = 0; i < 300; i++) {
+      const base = newGame(`cp${i}`)
+      const wtp = base.hidden.segments.small_offices!.wtpCents
+      const s = {
+        ...base,
+        week: 4,
+        customers: [{ ...customer('customer_1', 1), priceCentsPerMonth: wtp * 3 }],
+      }
+      const r = endWeek(s, plan())
+      const c = r.state.customers[0]!
+      if (c.churnedWeek === null) continue
+      const entry = r.report.entries.find((e) => e.kind === 'customer_churned')
+      expect(entry).toMatchObject({ overPrice: c.churnReason === 'price' })
+      if (c.churnReason === 'price') overPrice++
+      else other++
+    }
+    // Twice what they would pay above the line: the price is the larger share of leaving.
+    expect(overPrice).toBeGreaterThan(other)
+    expect(other).toBeGreaterThan(0)
+  })
+
+  it('never puts a churn down to the price at the price they would pay', () => {
+    for (let i = 0; i < 200; i++) {
+      const base = newGame(`cq${i}`)
+      const wtp = base.hidden.segments.small_offices!.wtpCents
+      const s = {
+        ...base,
+        week: 4,
+        customers: [{ ...customer('customer_1', 1), priceCentsPerMonth: wtp }],
+      }
+      const r = endWeek(s, plan())
+      expect(r.state.customers[0]!.churnReason).toBeUndefined()
+    }
+  })
+})

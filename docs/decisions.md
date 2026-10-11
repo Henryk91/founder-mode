@@ -247,3 +247,10 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 
 - Targets 6, 11 and 13 are judged on 10,000 seeds (`--wide-runs 10000`), the rest on 1000. On 10,000 seeds Kantino's target 6 is 11.3 ±2.3 points (at 1000 it read 15.2 ±7.3) and its books are worth -2.9 ±1.0 (1000: -2.0 ±3.3); Zollstock's landing tests stay at -1.1 ±1.1.
 - The paired and inbox parts play `validate_then_build` once more on the wide seeds, under the id `validate_then_build inbox:reader`, and targets 6, 11 and 13 compare against that run.
+
+## Phase 8, part 3 step 1: price as a decision (engine 0.11.0)
+
+- Price factor: a smooth logistic in r = price / willingness to pay, (1 + e^(-k m)) / (1 + e^(k (r - m))), replacing "1 up to the willingness to pay, exp(-2 (r - 1)) above". Customers above their willingness to pay also churn more: +perPrice x (r - priceFrom). A customer keeps the price they signed at (the engine already did this; nothing changed there).
+- One draw decides each trial and each churn, as before, so the random sequence is unchanged; where the draw falls tells whether the no or the cancellation was over the price. The player sees "Too expensive" on the lost list, a results line, and in the post-mortem a count per market and the chain step.
+- Calibration (careful bot at the default price, 10,000 seeds, against Part 1: Kantino 35.9 / 11.3 / week 6.0, Zollstock 30.1 / 11.9 / week 5.0). Midpoint 1.15, steepness 8, churn 0.05 from r 0.8: -5.6 and -5.5 points. The curve alone at midpoint 1.3, steepness 10 fit; churn from r 0.8 cost the default bot about 1.5 points, because medical and small offices sit near their willingness to pay at 450 EUR. Final: midpoint 1.35, steepness 10, churn 0.15 from r 1.0, in both scenarios.
+- Consequence of the gate: below about 0.9 times the willingness to pay a raise costs almost nothing; the trade-off sits between 0.9 and 1.4 times it. Target 17 (step 2) shows whether that is enough of a decision.

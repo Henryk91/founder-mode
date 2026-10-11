@@ -89,7 +89,7 @@ type Lead = {
   stageSinceWeek: number
   lastContactWeek: number
   silentSinceWeek: number | null   // set when the lead stops answering; silent leads cannot progress
-  lostReason: 'declined' | 'silent' | null
+  lostReason: 'declined' | 'price' | 'silent' | 'refunded' | null
 }
 
 type Customer = {
@@ -99,6 +99,7 @@ type Customer = {
   segmentId: SegmentId
   sinceWeek: number
   churnedWeek: number | null    // null while active
+  churnReason?: 'price'         // set when they said they left over the price
   priceCentsPerMonth: number    // the price when they signed; later price changes do not touch it
 }
 ```
@@ -106,7 +107,7 @@ type Customer = {
 Stage rules (plan 4.5, numbers in `scenario.sales`), in the order `systems/sales.ts` applies them each week:
 
 1. A demo held this week (`plan.demos`): `demoToTrialBase + demoToTrialPerFit * fit` to become a `trial`, else lost (`declined`). Raises `skills.selling` by `skillGainPerDemo`, capped.
-2. A trial older than `trialWeeks`: `fit * priceFactor` to become `paying` (a `Customer` is created), else lost (`declined`).
+2. A trial older than `trialWeeks`: `fit * priceFactor` to become `paying` (a `Customer` is created), else lost. One draw decides: below `fit * priceFactor` a yes, between that and `fit` a no over the price (`price`, change `declined_price`), above `fit` a plain no (`declined`).
 3. An answering `lead`: `leadToDemoBase * (leadToDemoOffset + leadToDemoPerPain * pain)` to become `demo`.
 4. A `lead` or `demo` that was not touched this week goes silent with `ghostChancePerWeek`; a silent lead is lost (`silent`) after `silentWeeksToLose`.
 5. Outreach finds `floor(x)` leads, plus one with probability `x - floor(x)`, where `x = hours * channelResponse * (sellingBase + skills.selling)`.
@@ -115,9 +116,9 @@ Steps 1 to 3 and 5 are multiplied by `founder.energy.lowFactor` while energy, af
 
 Endings are checked in this order: bankrupt, burnout (`weeksAtZeroEnergy >= burnoutWeeks`), then the week limit.
 
-`fit = pain * coverage * (fitBase + fitPerQuality * quality / 100)`, `coverage` is the shipped share of the segment's must have features, and `priceFactor` is 1 up to the willingness to pay and `exp(-priceSlope * (price / wtp - 1))` above it. `exp` is computed in `math.ts` from pure arithmetic, because `Math.exp` is not bit identical across engines.
+`fit = pain * coverage * (fitBase + fitPerQuality * quality / 100)`, `coverage` is the shipped share of the segment's must have features, and `priceFactor = (1 + e^(-k m)) / (1 + e^(k (r - m)))` with `r = price / wtp`, `m = sales.price.midpoint`, `k = sales.price.steepness` (engine 0.11.0; before, 1 up to the willingness to pay and `exp(-priceSlope * (r - 1))` above). It is 1 at a price of 0 and falls smoothly. `exp` is computed in `math.ts` from pure arithmetic, because `Math.exp` is not bit identical across engines.
 
-Churn runs on every month end for customers won in an earlier week: `min(cap, base + perMisfit * (1 - fit) + perBug * bugs)`.
+Churn runs on every month end for customers won in an earlier week: `min(cap, base + perMisfit * (1 - fit) + perBug * bugs + perPrice * max(0, r - priceFrom))`, with `r` the customer's own price over the willingness to pay. One draw decides; a customer who leaves with a draw above the chance without the price share left over the price (`churnReason: 'price'`, `overPrice` on the report entry).
 
 ### HiddenSegment
 
@@ -354,7 +355,7 @@ type LeadView = {
   weeksInStage: number
   lastContactWeek: number
   silent: boolean
-  lostReason: 'declined' | 'silent' | null
+  lostReason: 'declined' | 'price' | 'silent' | 'refunded' | null
   canBookDemo: boolean            // stage 'demo' and still answering
 }
 
@@ -411,9 +412,9 @@ type ReportEntry =
   | { kind: 'bugs_fixed'; count: number }
   | { kind: 'new_leads'; segmentId: SegmentId; channel: ChannelId; count: number }   // count may be 0
   | { kind: 'lead_update'; change: LeadChange; leadId: string; name: string; segmentId: SegmentId }
-  | { kind: 'customer_churned'; customerId: string; name: string; segmentId: SegmentId }
+  | { kind: 'customer_churned'; customerId: string; name: string; segmentId: SegmentId; overPrice: boolean }
 
-type LeadChange = 'wants_demo' | 'trial_started' | 'won' | 'declined' | 'went_silent' | 'lost_silent'
+type LeadChange = 'wants_demo' | 'trial_started' | 'won' | 'declined' | 'declined_price' | 'went_silent' | 'lost_silent'
 
 // More kinds arrive with later systems. Entries are in resolution order: product, sales, finance, churn.
 ```
@@ -534,8 +535,8 @@ type SalesConfig = {
   silentWeeksToLose: number
   skillGainPerDemo: number
   skillCap: number
-  priceSlope: number              // priceFactor = exp(-priceSlope * (price / wtp - 1)) above wtp
-  churn: { base: number; perMisfit: number; perBug: number; cap: number }
+  price: { midpoint: number; steepness: number }   // priceFactor curve in price / wtp
+  churn: { base: number; perMisfit: number; perBug: number; priceFrom: number; perPrice: number; cap: number }
 }
 ```
 
@@ -751,3 +752,13 @@ type PostMortem = {
 
 - Content: `Scenario.postMortemNotes?: { weakLanding?: string }`, read from `messages/intro.yaml`. Set only where the landing signal is weak by design (Zollstock); absent in Kantino, whose fingerprint is unchanged.
 - `PostMortem.notes: { weakLanding: string | null }`. The markets section shows it ("About that test") for every market with a landing test.
+
+### Phase 8: price as a decision (engine 0.11.0)
+
+- Content: `SalesConfig.priceSlope` is replaced by `SalesConfig.price: { midpoint, steepness }`; `SalesConfig.churn` gained `priceFrom` and `perPrice`. Both scenarios: midpoint 1.35, steepness 10, priceFrom 1.0, perPrice 0.15.
+- `priceFactor(state, segmentId)` uses `priceCurve(scenario, ratio)` (`systems/market.ts`); `priceChurn(state, segmentId, priceCents)` is the price share of churn. `churnChance(state, segmentId, priceCents?)` includes it only with a price.
+- `LostReason` gained `price`; `LeadChange` gained `declined_price`. `Customer.churnReason?: 'price'`. `ReportEntry` `customer_churned` gained `overPrice: boolean` (false for a customer an inbox answer lost).
+- `ChainItem.overPrice: boolean` (for `customer_lost` and `lead_declined`); a final week `lead_declined` now also covers trials lost over the price. `MarketTruth.priceNos: { trials, cancellations }`.
+- A price change still applies to new customers only: every customer keeps the price they signed at, a pre-sale customer the price of the pitch.
+- Web: labels `pipeline.lostPrice`, `results.entry.declined_price`, `results.entry.customer_churned_price`, `pm.chain.customer_lost_price`, `pm.chain.lead_declined_price`, `pm.market.priceNos`, `pm.market.priceNosValue`. `lostText(lead, stage)` (`screens/Pipeline.tsx`).
+- Saves from 0.10.0 get the restart notice.

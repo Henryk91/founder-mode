@@ -110,9 +110,28 @@ describe('product', () => {
         segId,
       ),
     ).toBeCloseTo(hidden.pain * (0.2 + 0.5 * 0.7), 10)
-    expect(priceFactor({ ...s, company: { ...s.company, priceCentsPerMonth: 1 } }, segId)).toBe(1)
-    const double = { ...s, company: { ...s.company, priceCentsPerMonth: hidden.wtpCents * 2 } }
-    expect(priceFactor(double, segId)).toBeCloseTo(Math.exp(-2), 8)
+    const at = (ratio: number) =>
+      priceFactor(
+        {
+          ...s,
+          company: { ...s.company, priceCentsPerMonth: Math.round(hidden.wtpCents * ratio) },
+        },
+        segId,
+      )
+    // (1 + e^(-k m)) / (1 + e^(k (r - m))), m 1.35, k 10
+    const curve = (r: number) => (1 + Math.exp(-13.5)) / (1 + Math.exp(10 * (r - 1.35)))
+    for (const r of [0.3, 0.9, 1, 1.2, 1.35, 1.5, 2]) expect(at(r)).toBeCloseTo(curve(r), 3)
+    expect(at(0)).toBeCloseTo(1, 8)
+    expect(at(1.35)).toBeCloseTo(0.5, 3)
+    // Smooth: every step up in price costs some yeses
+    for (const [a, b] of [
+      [0.5, 0.7],
+      [0.9, 1],
+      [1, 1.1],
+      [1.4, 1.6],
+    ])
+      expect(at(b!)).toBeLessThan(at(a!))
+    expect(at(10)).toBe(0)
   })
 
   it('shows the product in the view without the must have mapping', () => {

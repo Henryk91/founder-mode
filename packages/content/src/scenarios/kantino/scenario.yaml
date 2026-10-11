@@ -99,11 +99,18 @@ sales:
   silentWeeksToLose: 4
   skillGainPerDemo: 0.005
   skillCap: 0.8
-  priceSlope: 2
+  # Price against willingness to pay (r = price / wtp): a yes stays nearly as likely up to about
+  # r 0.9, then gets rarer smoothly (0.97 at r 1, 0.82 at 1.2, a half at the midpoint, 0.24 at
+  # 1.5). Calibrated so the default price plays as before (Phase 8 gate).
+  price: { midpoint: 1.35, steepness: 10 }
   churn:
     base: 0.03
     perMisfit: 0.2
     perBug: 0.01
+    # Customers paying more than what they would pay leave more often: +0.15 a month per 100%
+    # above it, on top of the rest.
+    priceFrom: 1.0
+    perPrice: 0.15
     cap: 0.6
   # Referrals are off in Kantino: office managers do not recommend lunch tools to each other.
   referral:

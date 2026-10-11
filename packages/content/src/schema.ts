@@ -88,12 +88,23 @@ export const SalesConfigSchema = z.object({
   silentWeeksToLose: z.number().int().positive(),
   skillGainPerDemo: z.number().nonnegative(),
   skillCap: Share,
-  // Price above willingness to pay: exp(-priceSlope * (price / wtp - 1))
-  priceSlope: z.number().nonnegative(),
+  // How price changes a yes, by r = price / willingness to pay. The factor is
+  // (1 + e^(-steepness * midpoint)) / (1 + e^(steepness * (r - midpoint))): 1 at a price of 0,
+  // falling smoothly as r grows, about a half at the midpoint. It scales trials becoming
+  // customers, landing page sign ups and pre-sale deposits.
+  price: z.object({
+    midpoint: z.number().positive(),
+    steepness: z.number().positive(),
+  }),
+  // Monthly chance a customer leaves: base + perMisfit * (1 - fit) + perBug * bugs
+  // + perPrice * max(0, r - priceFrom), with r the customer's own price / willingness to pay,
+  // capped at cap.
   churn: z.object({
     base: Share,
     perMisfit: Share,
     perBug: Share,
+    priceFrom: z.number().nonnegative(),
+    perPrice: Share,
     cap: Share,
   }),
   // Referrals: every paying customer, every week, may bring one new lead in its own market with
