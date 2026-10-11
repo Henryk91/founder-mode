@@ -268,3 +268,9 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - About one interview in four names a rough monthly figure (chance 0.25, noise 0.25, rounded like speech), from its own random stream, so the default price careful bot plays every seed exactly as before (gate: identical numbers). Five quotes per market in each scenario's voice.
 - `price_aware` reads them: with two or more in its market it starts at 0.9 times their average and searches between 0.75 and 1.05 times it. Starts of 0.8 to 1.0 and bands up to 1.1 lay within about a point.
 - Target 17 reworded (owner): at least 3 points overall, at most 1 point lost in any viable market, at most 10 points ahead; twice the default loses in at least two of three viable markets. Result: +12.5 (Kantino) and +14.4 (Zollstock), no market lost; fails only the cap of 10. Coworking reaches 72.5%, contractors 61.1%. To trim in step 4.
+
+## Phase 8, part 3 step 3A: trimming the rich markets
+
+- Hint-reading `price_aware` against the default price bot, 10,000 seeds, by the rich market's range: 900 to 2,250 gave +12.5 / +14.4 (coworking 72.5%, contractors 61.1%); 900 to 1,500 gave +10.9 / +12.4 (69.8%, 56.2%); 900 to 1,050 gave +9.3 / +10.1 (66.5%, 51.5%). The floor binds: once the price is about right, the rich market is easy for other reasons (a fixed 900 EUR wins 83% where coworking is viable).
+- Zollstock: contractors would pay 700 to 1,000 (owner's decision). Hint bot +8.0 ±0.9, contractors 45.8%, 38.1% overall, target 17 passes; default price bot 30.1% / 11.8 / week 5.0, inside the gate.
+- Kantino: coworking 700 to 1,000 with phone and in person response at 0.9, 0.85 and 0.82 of before. Coworking for the hint bot: 61.3%, 60.1%, 60.3%: it stops falling near 60. Target 7 for the default bot moved from week 6.0 to 5.0 in all three, though the mean first customer week moved only from 5.75 to 5.67 (the median of whole weeks crossed 5.5). Not committed; owner to decide.
