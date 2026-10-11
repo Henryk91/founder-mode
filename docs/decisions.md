@@ -276,3 +276,7 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Kantino: coworking 700 to 1,000 with phone and in person response at 0.9, 0.85 and 0.82 of before. Coworking for the hint bot: 61.3%, 60.1%, 60.3%: it stops falling near 60. Target 7 for the default bot moved from week 6.0 to 5.0 in all three, though the mean first customer week moved only from 5.75 to 5.67 (the median of whole weeks crossed 5.5). Not committed; owner to decide.
 - Kantino (owner's decision): coworking would pay 700 to 1,000, phone 0.0425 to 0.0935 and in person 0.051 to 0.102 (0.85 of before). Hint bot +8.4 ±1.0, coworking 60.1% (counted as at the limit of 60), 42.7% overall, target 17 passes. Default price bot 34.3% (was 35.9), target 6 6.7 (was 11.3).
 - Target 7 is reported as the median and the mean first customer week, and changes are judged by the mean (owner): the median of whole weeks jumped from 6 to 5 while the mean moved from 5.75 to 5.67.
+
+## Phase 8, part 3 step 3B
+
+- Landing tests (bots only): when the first two landing tests do not separate the markets (neither is behind by the 1.5 standard error rule), the careful bot runs one larger test (750 EUR) in each, once. The rule is the same in every scenario, so Kantino's bot does it too. On 10,000 seeds, switching landing tests off now costs Zollstock 3.0 ±1.1 points (was 0.9) and Kantino 4.6 (was 2.5); no exemption needed. `validate_then_build` won 37.7% in Kantino (was 35.4) and 32.8% in Zollstock (was 31.0) on 1000 seeds.

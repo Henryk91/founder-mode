@@ -80,9 +80,10 @@ export class PlanBuilder {
     return n
   }
 
-  /** A landing page test with the smallest ad budget, if the hours fit. */
-  landing(segmentId: string): boolean {
-    const budget = this.view.costs.landingBudgetsCents[0]
+  /** A landing page test with the smallest (or the largest) ad budget, if the hours fit. */
+  landing(segmentId: string, size: 'small' | 'large' = 'small'): boolean {
+    const budgets = this.view.costs.landingBudgetsCents
+    const budget = size === 'small' ? budgets[0] : budgets[budgets.length - 1]
     if (budget === undefined || this.free < this.view.costs.landingHours) return false
     this.plan.landing[segmentId] = budget
     this.free -= this.view.costs.landingHours

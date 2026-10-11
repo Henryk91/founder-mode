@@ -518,6 +518,7 @@ export function validatingPlayer(
   const abandoned = new Set<string>()
   let target: string | null = null
   let sellingSince: number | null = null
+  let largerLanding = false
   let lastPlan: WeekPlan | null = null
   const impressionOrder = scenario.team.impressions.map((i) => i.name)
 
@@ -745,6 +746,16 @@ export function validatingPlayer(
           }
         }
       }
+      // First landing results that do not separate the markets: one larger test in each, once.
+      if (behaviours.landing && !largerLanding) {
+        const tested = view.segments.filter((s) => s.landingTests.length > 0)
+        const waitingLanding = view.pendingExperiments.some((e) => e.kind === 'landing')
+        if (tested.length >= 2 && !waitingLanding) {
+          largerLanding = true
+          if (!tested.some((s) => landingBehind(view, s.id)))
+            for (const s of tested) if (!abandoned.has(s.id)) b.landing(s.id, 'large')
+        }
+      }
       if (target === null) {
         target =
           ranked(view).find((r) => !abandoned.has(r.id))?.id ?? ranked(view)[0]?.id ?? ids[0]!
@@ -811,7 +822,7 @@ export function validatingPlayer(
 }
 
 const DESCRIPTION =
-  'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
+  'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
 
 export const validateThenBuild: Strategy = {
   id: 'validate_then_build',
