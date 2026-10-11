@@ -217,12 +217,12 @@ segments:
     name: Coworking spaces
     description: Shared workspaces with many small tenants
     size: { min: 100, max: 300 }
-    wtpCents: { min: 90000, max: 225000 }
+    wtpCents: { min: 70000, max: 100000 }
     mustHave: [basic_ordering, multi_site, member_billing]
     channelResponse:
       cold_email: { min: 0.025, max: 0.06 }
-      phone: { min: 0.05, max: 0.11 }
-      in_person: { min: 0.06, max: 0.12 }
+      phone: { min: 0.0425, max: 0.0935 }
+      in_person: { min: 0.051, max: 0.102 }
     paymentDelayDaysMean: 12
     neverPaysShare: 0.03
     waitsForChaseShare: 0.25

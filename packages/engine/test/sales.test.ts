@@ -105,7 +105,7 @@ describe('outreach', () => {
     }
     const names = s.leads.map((l) => l.name)
     expect(new Set(names).size).toBe(names.length)
-    expect(names.length).toBeGreaterThan(60)
+    expect(names.length).toBeGreaterThan(50)
     for (const name of names) expect(name).not.toMatch(/ \d+$/)
   })
 
