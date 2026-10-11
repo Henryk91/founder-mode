@@ -134,7 +134,7 @@ describe('content', () => {
     expect(s.start).toEqual(loadScenario('kantino').start)
     expect(s.officeStages[1]).toMatchObject({
       id: 'trades_yard',
-      monthlyCents: 37_500,
+      monthlyCents: 47_500,
       walkIns: { segment: 'small_crews', leadsPerWeek: 0.9 },
     })
     const yard = s.events.find((e) => e.id === 'trades_yard')!

@@ -113,13 +113,13 @@ const SHARED_READER: Record<string, ReaderRule> = {
   frequent_emails: 'back_off',
   letterhead_quote: 'pdf',
   // product
-  security_notice: 'patch',
+  security_notice: (v) => (v.customers.length >= 1 ? 'patch' : 'ignore'),
   hosting_pricing: 'migrate',
   missing_backups: 'backup',
   framework_upgrade: 'stay',
-  bounty_hunter: (v) => (tight(v) ? 'fix' : 'pay'),
+  bounty_hunter: (v) => (v.customers.length === 0 ? 'ignore' : tight(v) ? 'fix' : 'pay'),
   bug_weekend: (v) => (v.customers.length >= 1 ? 'sprint' : 'carry_on'),
-  unused_feature: 'keep',
+  unused_feature: (v) => (v.product.bugs >= 3 ? 'remove' : 'keep'),
   uptime_monitor: 'skip',
   // finance
   late_payer_first: 'reminder',
@@ -322,10 +322,15 @@ export type Behaviours = {
   books: boolean
   followUps: boolean
   hire: HireRule
-  /** `careful`: up to two batches in the chosen market. `max`: every batch allowed, everywhere. */
-  presales: 'careful' | 'max'
+  /**
+   * `careful`: every batch the chosen market allows, one a week. `one`: only the first batch, in
+   * week 2 (for the report's pre-sale check). `max`: every batch allowed, everywhere.
+   */
+  presales: 'careful' | 'one' | 'max'
   /** For the event table: always answer this event with this choice. */
   forced?: { eventId: string; choiceId: string }
+  /** For measuring an event's share of an inbox policy: leave this event to its default. */
+  skipEvent?: string
 }
 
 export const ALL_BEHAVIOURS: Behaviours = {
@@ -651,7 +656,9 @@ export function validatingPlayer(
       const view = {
         ...input,
         committedHours: input.committedHours + forcedHours,
-        inbox: input.inbox.filter((m) => !forced || m.eventId !== forced.eventId),
+        inbox: input.inbox.filter(
+          (m) => (!forced || m.eventId !== forced.eventId) && m.eventId !== behaviours.skipEvent,
+        ),
       }
       // The books are their own behaviour: sorted by hand, or left to the default.
       const books = view.inbox.filter(
@@ -786,7 +793,7 @@ export function validatingPlayer(
       const commits = sales.reduce((t, x) => t + x.commits, 0)
       if (behaviours.presales === 'max') {
         for (const r of ranked(view)) if (!abandoned.has(r.id)) while (b.presale(r.id));
-      } else if (!waiting) {
+      } else if (!waiting && behaviours.presales === 'careful') {
         b.presale(target)
       }
       const refuted =

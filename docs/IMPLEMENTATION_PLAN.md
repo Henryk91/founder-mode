@@ -477,7 +477,7 @@ Targets for the early MVP (judged on `validate_then_build`; revised after the Ph
 8. By week 10, at least 70% of `validate_then_build` runs have a paying customer or have left a market that is not viable
 9. In weeks 1 to 20, at least 85% of weeks bring decision news (a new message, a lead that moved, an experiment result, a lost customer or invoice, candidates), for `validate_then_build` and `playtest`
 10. At least a third of inbox events (seen in 150 or more of 1000 seeds) are best answered by their cheapest choice
-11. A blind policy that takes the most effortful affordable answer beats leaving every message alone by at most 4 points; reading the messages beats it by at least 4
+11. A blind inbox policy (the most effortful affordable answer, or always the cheapest) gains at most a third of what reading the messages gains over leaving every message alone; reading beats every blind policy by at least 4 points (Phase 8; was: blind effort within 4 points of leaving messages alone)
 12. Dropped: hires by the payback rule were to win as often as plain play. No salary pays back within the run; the hire is a choice that rarely pays
 13. Switching off chasing, landing tests or the books each costs `validate_then_build` at least 2 points, with more seeds won only with it than only without
 14. `presale_max` does not beat `validate_then_build` by more than 3 points

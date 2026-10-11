@@ -286,7 +286,7 @@ officeStages:
   - { id: kitchen_table, name: Kitchen table, monthlyCents: 0 }
   - id: trades_yard
     name: Desk in a trades yard
-    monthlyCents: 37500
+    monthlyCents: 47500
     walkIns: { segment: small_crews, leadsPerWeek: 0.9 }
 
 # The UI turns organised at the first of these milestones (plan section 4.12): the first hire, or
