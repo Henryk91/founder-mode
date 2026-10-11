@@ -118,6 +118,8 @@ export type RunResult = {
   /** Landing page tests and pre-sale batches the run paid for. */
   landingTests: number
   presaleBatches: number
+  /** The market of the first pre-sale batch, or null without one. */
+  firstPresaleSegment: string | null
   /** Book requests left to their gamble ('later'), and invoices written off, over the run. */
   booksLeft: number
   writtenOffInvoices: number
@@ -313,6 +315,12 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
         t + (a.type === 'endWeek' ? Object.values(a.plan.presales).reduce((x, y) => x + y, 0) : 0),
       0,
     ),
+    firstPresaleSegment:
+      state.actionLog.flatMap((a) =>
+        a.type === 'endWeek'
+          ? Object.entries(a.plan.presales).flatMap(([id, n]) => (n > 0 ? [id] : []))
+          : [],
+      )[0] ?? null,
     booksLeft: state.eventLog.filter(
       (e) => e.kind === 'message' && e.eventId === 'receipts_pile' && e.choiceId === 'later',
     ).length,

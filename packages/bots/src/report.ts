@@ -367,19 +367,19 @@ export function evaluateTargets(
     },
     {
       id: 11,
-      text: `Blind inbox policies (most effort, always cheapest) each lie within 4 points of leaving messages alone; reading beats all three by at least 4${wideNote}`,
+      text: `Each blind inbox policy (most effort, always cheapest) gains at most a third of what reading the messages gains over leaving them alone; reading beats every blind policy by at least 4 points${wideNote}`,
       value:
         none === null || effort === null || cheapest === null || reading === null
           ? '-'
-          : `effort ${signed(effort - none)}, cheapest ${signed(cheapest - none)}, reading ${signed(reading - none)}`,
+          : `effort ${signed(effort - none)} (${Math.round((100 * (effort - none)) / (reading - none))}% of reading), cheapest ${signed(cheapest - none)}, reading ${signed(reading - none)}`,
       margin: `${fmtMargin(diffMargin('validate_then_build inbox:none', 'validate_then_build inbox:effort'))}, ${fmtMargin(diffMargin('validate_then_build inbox:none', 'validate_then_build inbox:cheapest'))}, ${fmtMargin(diffMargin(blindBest.id, readerId))} over the best blind`,
       pass:
         none !== null &&
         effort !== null &&
         cheapest !== null &&
         reading !== null &&
-        Math.abs(effort - none) <= 4 &&
-        Math.abs(cheapest - none) <= 4 &&
+        effort - none <= (reading - none) / 3 &&
+        cheapest - none <= (reading - none) / 3 &&
         reading - Math.max(none, effort, cheapest) >= 4,
     },
     {

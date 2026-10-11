@@ -137,7 +137,7 @@ events:
         label: Profile and fix it
         hours: 3
         effects:
-          - { type: bugs, delta: -1 }
+          - { type: bugs, delta: -1, when: [bugs >= 3] }
       - id: reply
         label: Suggest parking somewhere else
         hours: 0

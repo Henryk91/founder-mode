@@ -135,11 +135,11 @@ The office stage is scenario content. Kantino's second office is a coworking des
 | Stage | Trigger | Effect |
 |---|---|---|
 | Kitchen table | Start | None |
-| Desk in a trades yard | Offered once by the inbox event `trades_yard`, in week 8 or the week after the first paying customer, whichever comes first | Company cost of 375 per month and walk-in leads from `small_crews`, 0.9 a week on average, from the workshops downstairs. No energy effect |
+| Desk in a trades yard | Offered once by the inbox event `trades_yard`, in week 8 or the week after the first paying customer, whichever comes first | Company cost of 475 per month (Phase 8; was 375) and walk-in leads from `small_crews`, 0.9 a week on average, from the workshops downstairs. No energy effect |
 
 Same logic as Kantino's desk: if small crews are the real market, the yard feeds you leads without outreach hours. If they are the polite trap, it fills the pipeline with friendly neighbours who never pay and pulls you towards the wrong market.
 
-Values are Kantino's final desk (375 per month, 0.9 walk-ins a week); this spec first said 225 per month, energy +1 and one lead every two weeks, written before Kantino's desk was tuned. Taking it against declining on the same 1000 seeds (`pnpm bots --desk`, `validate_then_build`), split by the real role of small crews: viable +7.7 points (z 3.5), mediocre -3.3 (z -2.3), trap -5.2 (z -3.1). It clearly helps when small crews are the real market and clearly hurts when they are the trap. After tuning (part C, careful bot using all its pre-sales): viable +20.1 (z 7.0), mediocre -7.7 (z -2.9), trap -10.5 (z -3.8). The scene has its own drawing: a workbench, a pegboard of tools, a van outside the window.
+Values are Kantino's final desk (375 per month, 0.9 walk-ins a week); this spec first said 225 per month, energy +1 and one lead every two weeks, written before Kantino's desk was tuned. Taking it against declining on the same 1000 seeds (`pnpm bots --desk`, `validate_then_build`), split by the real role of small crews: viable +7.7 points (z 3.5), mediocre -3.3 (z -2.3), trap -5.2 (z -3.1). It clearly helps when small crews are the real market and clearly hurts when they are the trap. After tuning (part C, careful bot using all its pre-sales): viable +20.1 (z 7.0), mediocre -7.7 (z -2.9), trap -10.5 (z -3.8). Phase 8: rent 475, so that taking the desk without evidence comes out slightly negative, as in Kantino (10,000 seeds: all runs -3.2 against Kantino's -3.5; viable +12.3, mediocre -10.3, trap -11.3). The scene has its own drawing: a workbench, a pegboard of tools, a van outside the window.
 
 ## 9c. Events changed in tuning
 

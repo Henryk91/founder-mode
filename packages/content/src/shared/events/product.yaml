@@ -12,7 +12,7 @@ events:
     sender: Forum thread
     text: >-
       A forum thread says a library you rely on has a security notice. Fixing it takes an
-      afternoon. Not fixing it takes longer, later.
+      afternoon. Not fixing it takes longer, later, once there are customers to annoy.
     defaultChoice: ignore
     choices:
       - id: patch
@@ -22,7 +22,7 @@ events:
         label: Read it again tomorrow
         hours: 0
         effects:
-          - { type: bugs, delta: 2 }
+          - { type: bugs, delta: 2, when: [customers.count >= 1] }
 
   - id: hosting_pricing
     area: product
@@ -99,7 +99,8 @@ events:
     sender: Security researcher
     text: >-
       A stranger reports a security hole and asks for a bug bounty of 150 EUR. The hole is
-      real. The stranger's name is probably not.
+      real. The stranger's name is probably not. Until someone pays you, there is nothing
+      behind the hole worth taking.
     defaultChoice: ignore
     choices:
       - id: pay
@@ -114,7 +115,7 @@ events:
         label: Ignore it
         hours: 0
         effects:
-          - { type: bugs, delta: 2 }
+          - { type: bugs, delta: 2, when: [customers.count >= 1] }
 
   - id: bug_weekend
     area: product
@@ -147,14 +148,14 @@ events:
     sender: Usage statistics
     text: >-
       Nobody has used one of your features in five weeks. You remember building it. You
-      remember it fondly.
+      remember it fondly. If the bug list is long, some of it probably lives in there.
     defaultChoice: keep
     choices:
       - id: remove
         label: Remove it
         hours: 2
         effects:
-          - { type: bugs, delta: -1 }
+          - { type: bugs, delta: -1, when: [bugs >= 3] }
       - id: keep
         label: Keep it for sentimental reasons
         hours: 0
