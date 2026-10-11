@@ -762,3 +762,11 @@ type PostMortem = {
 - A price change still applies to new customers only: every customer keeps the price they signed at, a pre-sale customer the price of the pitch.
 - Web: labels `pipeline.lostPrice`, `results.entry.declined_price`, `results.entry.customer_churned_price`, `pm.chain.customer_lost_price`, `pm.chain.lead_declined_price`, `pm.market.priceNos`, `pm.market.priceNosValue`. `lostText(lead, stage)` (`screens/Pipeline.tsx`).
 - Saves from 0.10.0 get the restart notice.
+
+### Phase 8: budget quotes in interviews (engine 0.11.0, no change to the main random sequence)
+
+- Content: `Segment.budgetQuotes: string[]` (at least 4, each with `{amount}`), `InterviewConfig.budgetChance` and `budgetNoiseSd`. Both scenarios: 5 quotes per market, chance 0.25, noise 0.25.
+- `budgetHint(state, segmentId, index)` (`systems/experiments.ts`): interview number `index` of a segment has a budget quote with `budgetChance`; the amount is `wtpCents * (1 + N(0, budgetNoiseSd))`, kept within 0.4 to 1.8 times it, rounded to 50 EUR below 1,000 EUR and to 100 EUR above. It draws from its own stream, seeded by `${seed}/budget/${segmentId}/${index}`, so the game's `rng` is untouched. Willingness to pay is drawn per segment from the segment's range and has no link to the role.
+- `InterviewEvidence.budget?: { quoteIndex, amountCents }`; `InterviewView.budget: { quote, amountCents } | null` (the quote with `{amount}` unfilled; the web fills it with `formatEuro`, `budgetText` in `screens/Market.tsx`). `MarketTruth.budgetHints: { count, meanCents } | null`.
+- Web: the Market screen shows a budget quote as one more quote under the interview; labels `pm.market.budgetHints`, `pm.market.budgetHintsValue.one/other` next to "Would pay".
+- Bots: `Pricer.price(view, focus)`; `budgetHints(view, segmentId)`; `SearchRule.hints`. Report part `price` (`--parts`), `RunResult.priceChanges` and `RunResult.wtpCents` (report only).

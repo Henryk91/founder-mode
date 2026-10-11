@@ -57,3 +57,12 @@ describe('price in words', () => {
     expect(churned(false)).toBe('Kanzlei Rautenberg cancelled.')
   })
 })
+
+describe('budget quotes', () => {
+  it('fill in the rough figure in euros', async () => {
+    const { budgetText } = await import('../src/screens/Market')
+    expect(budgetText({ quote: 'We pay about {amount} a month.', amountCents: 200_000 })).toBe(
+      'We pay about €2,000 a month.',
+    )
+  })
+})

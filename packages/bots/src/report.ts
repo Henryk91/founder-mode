@@ -410,34 +410,35 @@ const SEARCH_ID = 'pricing:search'
 const PRICING_IDS = [SEARCH_ID, 'pricing:recipe', 'pricing:fixed x1.5', 'pricing:fixed x2'] as const
 
 /**
- * Target 17: on the wide seeds, the price search beats the default price by at least 3 points,
- * leads in at least two of the three viable markets, stays at most 10 points ahead, and twice the
- * default price loses to the default.
+ * Target 17: on the wide seeds, the price search beats the default price by 3 to 10 points
+ * overall, loses at most 1 point in any viable market, and twice the default price loses to the
+ * default in at least two of the three viable markets.
  */
 function pricingTarget(input: ReportInput): Target {
   const text =
-    'A price search that reads only the screen beats the default price by 3 to 10 points, ahead in at least two of three viable markets; twice the default price loses to the default'
+    'A price search that reads only the screen beats the default price by 3 to 10 points and loses at most 1 point in any viable market; twice the default loses in at least two of three'
   const reader = find(input, READER_ID)
   const search = find(input, SEARCH_ID)
   const double = find(input, 'pricing:fixed x2')
   if (!reader || !search || !double) return { id: 17, text, value: '-', margin: '', pass: false }
   const rate = (rs: readonly RunResult[]) => pct(wins(rs).length, rs.length)
   const gain = rate(search.results) - rate(reader.results)
-  const doubleGain = rate(double.results) - rate(reader.results)
   const markets = [...new Set(reader.results.map((r) => r.viableSegment))].sort()
-  const ahead = markets.filter((m) => {
-    const keep = (rs: readonly RunResult[]) => rs.filter((r) => r.viableSegment === m)
-    return rate(keep(search.results)) > rate(keep(reader.results))
-  }).length
+  const inMarket = (rs: readonly RunResult[], m: string) => rs.filter((r) => r.viableSegment === m)
+  const change = (other: StrategyRuns, m: string) =>
+    rate(inMarket(other.results, m)) - rate(inMarket(reader.results, m))
+  const worst = Math.min(...markets.map((m) => change(search, m)))
+  const doubleLoses = markets.filter((m) => change(double, m) < 0).length
   const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
-  const margin = (other: StrategyRuns) =>
-    fmtMargin(pairedMargin(reader.results.map(winsOf), other.results.map(winsOf)))
+  const marketMargin = (other: StrategyRuns, m: string) =>
+    pairedMargin(inMarket(reader.results, m).map(winsOf), inMarket(other.results, m).map(winsOf))
+  const worstMarket = markets.find((m) => change(search, m) === worst) ?? markets[0]!
   return {
     id: 17,
     text: `${text} (on ${reader.results.length} seeds)`,
-    value: `search ${signed(gain)}, ahead in ${ahead} of ${markets.length} markets; twice the default ${signed(doubleGain)}`,
-    margin: `${margin(search)}, ${margin(double)}`,
-    pass: gain >= 3 && gain <= 10 && ahead >= 2 && doubleGain < 0,
+    value: `search ${signed(gain)}, worst market ${worstMarket} ${signed(worst)}; twice the default loses in ${doubleLoses} of ${markets.length}`,
+    margin: `${fmtMargin(pairedMargin(reader.results.map(winsOf), search.results.map(winsOf)))}, ${fmtMargin(marketMargin(search, worstMarket))}`,
+    pass: gain >= 3 && gain <= 10 && worst >= -1 && doubleLoses >= 2,
   }
 }
 
@@ -483,6 +484,8 @@ function pricingRows(input: ReportInput): string[] {
       (s) =>
         `| ${names[s.id] ?? s.id} | ${cell(s, null)} | ${markets.map((m) => cell(s, m)).join(' | ')} |`,
     ),
+    '',
+    `Spread across viable markets (largest minus smallest win rate, information only; target 6 is judged at the default price): default ${marketSpread(reader.results).toFixed(1)} points, search ${marketSpread(find(input, SEARCH_ID)!.results).toFixed(1)} points.`,
     '',
     'Where the moving prices end, by viable market: the median final price as a share of what that market would pay (hidden, report only), in all runs and in winning runs, and price changes per run.',
     '',

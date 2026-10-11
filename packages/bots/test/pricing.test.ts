@@ -42,52 +42,52 @@ function week(
 
 describe('pricers', () => {
   it('search: raises after a clean window, lowers when half said no over the price', () => {
-    const p = new PriceSearch({ stepShare: 0.2, window: 3, tooMany: 0.5 })
-    const start = p.price(base)
+    const p = new PriceSearch({ stepShare: 0.2, window: 3, tooMany: 0.5, hints: null })
+    const start = p.price(base, MARKET)
     const w1 = week(3, ['won', 'won', 'won'])
     p.observe(w1.view, w1.report, MARKET)
-    expect(p.price(base)).toBe(Math.round((start * 1.2) / 1000) * 1000)
+    expect(p.price(base, MARKET)).toBe(Math.round((start * 1.2) / 1000) * 1000)
     const w2 = week(4, ['won', 'declined_price', 'declined_price'])
     p.observe(w2.view, w2.report, MARKET)
-    expect(p.price(base)).toBe(start)
+    expect(p.price(base, MARKET)).toBe(start)
   })
 
   it('search: keeps the price after a window with a single no over the price', () => {
-    const p = new PriceSearch({ stepShare: 0.2, window: 3, tooMany: 0.5 })
-    const start = p.price(base)
+    const p = new PriceSearch({ stepShare: 0.2, window: 3, tooMany: 0.5, hints: null })
+    const start = p.price(base, MARKET)
     const w = week(3, ['won', 'won', 'declined_price'])
     p.observe(w.view, w.report, MARKET)
-    expect(p.price(base)).toBe(start)
+    expect(p.price(base, MARKET)).toBe(start)
   })
 
   it('search: plain nos and other markets do not count, a cancellation over the price lowers', () => {
-    const p = new PriceSearch({ stepShare: 0.2, window: 3, tooMany: 0.5 })
-    const start = p.price(base)
+    const p = new PriceSearch({ stepShare: 0.2, window: 3, tooMany: 0.5, hints: null })
+    const start = p.price(base, MARKET)
     const w = week(3, ['declined', 'declined', 'declined'])
     p.observe(w.view, w.report, MARKET)
     p.observe(w.view, w.report, 'medical')
-    expect(p.price(base)).toBe(start)
+    expect(p.price(base, MARKET)).toBe(start)
     const c = week(4, [], true)
     p.observe(c.view, c.report, MARKET)
-    expect(p.price(base)).toBeLessThan(start)
+    expect(p.price(base, MARKET)).toBeLessThan(start)
   })
 
   it('search: tries a ceiling again only after two clean windows below it', () => {
-    const p = new PriceSearch({ stepShare: 0.2, window: 3, tooMany: 0.5 })
-    const start = p.price(base)
+    const p = new PriceSearch({ stepShare: 0.2, window: 3, tooMany: 0.5, hints: null })
+    const start = p.price(base, MARKET)
     const clean = (w: number) => week(w, ['won', 'won', 'won'])
     let w = clean(3)
     p.observe(w.view, w.report, MARKET)
-    const high = p.price(base)
+    const high = p.price(base, MARKET)
     w = week(4, ['declined_price', 'declined_price', 'won'])
     p.observe(w.view, w.report, MARKET)
-    expect(p.price(base)).toBe(start)
+    expect(p.price(base, MARKET)).toBe(start)
     w = clean(5)
     p.observe(w.view, w.report, MARKET)
-    expect(p.price(base)).toBe(start)
+    expect(p.price(base, MARKET)).toBe(start)
     w = clean(6)
     p.observe(w.view, w.report, MARKET)
-    expect(p.price(base)).toBe(high)
+    expect(p.price(base, MARKET)).toBe(high)
   })
 
   it('recipe: a step every few weeks until the first too expensive, then one back for good', () => {
@@ -107,5 +107,50 @@ describe('pricers', () => {
 
   it('fixed: a multiple of the default from the first week', () => {
     expect(new FixedPrice(2).price(base)).toBe(base.company.priceCentsPerMonth * 2)
+  })
+})
+
+describe('reading budget quotes', () => {
+  const RULE = {
+    stepShare: 0.2,
+    window: 2,
+    tooMany: 0.5,
+    hints: { minHints: 2, start: 0.9, low: 0.75, high: 1.05 },
+  }
+  const withHints = (amounts: number[]): PlayerView => ({
+    ...base,
+    segments: base.segments.map((s) =>
+      s.id === MARKET
+        ? {
+            ...s,
+            interviews: amounts.map((amountCents, i) => ({
+              week: 1,
+              segmentId: MARKET,
+              bucketId: 'painful',
+              bucketName: 'Painful',
+              quote: `Quote ${i}`,
+              mentionedFeature: null,
+              budget: { quote: 'About {amount} a month.', amountCents },
+            })),
+          }
+        : s,
+    ),
+  })
+
+  it('waits for two quotes, then starts at 0.9 times their average', () => {
+    const p = new PriceSearch(RULE)
+    expect(p.price(withHints([200_000]), MARKET)).toBe(base.company.priceCentsPerMonth)
+    expect(p.price(withHints([200_000, 160_000]), MARKET)).toBe(162_000)
+  })
+
+  it('searches only within the band around what the quotes said', () => {
+    const p = new PriceSearch(RULE)
+    const view = withHints([100_000, 100_000])
+    expect(p.price(view, MARKET)).toBe(90_000)
+    for (let w = 3; w < 10; w++) {
+      const clean = week(w, ['won', 'won'])
+      p.observe(clean.view, clean.report, MARKET)
+    }
+    expect(p.price(view, MARKET)).toBe(105_000)
   })
 })

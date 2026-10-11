@@ -5,8 +5,8 @@ import type { PlayerView, WeekReport } from '@founder-mode/engine'
  * was made from, that week's report, and the market the bot sells in.
  */
 export interface Pricer {
-  /** The price to plan this week. */
-  price(view: PlayerView): number
+  /** The price to plan this week, with the market the bot sells in (null before it chose). */
+  price(view: PlayerView, focus: string | null): number
   observe(before: PlayerView, report: WeekReport, focus: string | null): void
 }
 
@@ -37,6 +37,12 @@ const priceCancellations = (report: WeekReport, focus: string | null) =>
       e.kind === 'customer_churned' && e.overPrice && (focus === null || e.segmentId === focus),
   ).length
 
+/** Budget figures named in a market's interviews, as the screen shows them. */
+export function budgetHints(view: PlayerView, segmentId: string): number[] {
+  const seg = view.segments.find((s) => s.id === segmentId)
+  return (seg?.interviews ?? []).flatMap((iv) => (iv.budget ? [iv.budget.amountCents] : []))
+}
+
 export type SearchRule = {
   /** Price raise per step, as a share of the current price. */
   stepShare: number
@@ -44,6 +50,11 @@ export type SearchRule = {
   window: number
   /** Step down when at least this share of them said no over the price. */
   tooMany: number
+  /**
+   * Reading budget quotes: with at least `minHints` in its market, start at `start` times their
+   * average and search only between `low` and `high` times it. Null ignores them.
+   */
+  hints: { minHints: number; start: number; low: number; high: number } | null
 }
 
 /**
@@ -59,11 +70,28 @@ export class PriceSearch implements Pricer {
   private priceNos = 0
   private ceiling: number | null = null
   private cleanBelowCeiling = 0
+  private anchored: { focus: string; count: number; mean: number } | null = null
 
   constructor(private readonly rule: SearchRule) {}
 
-  price(view: PlayerView): number {
+  price(view: PlayerView, focus: string | null): number {
     this.target ??= view.company.priceCentsPerMonth
+    const h = this.rule.hints
+    if (h && focus !== null) {
+      const hints = budgetHints(view, focus)
+      if (hints.length >= h.minHints) {
+        const mean = hints.reduce((a, b) => a + b, 0) / hints.length
+        // A new market, or new quotes in it: start again from what they said.
+        if (this.anchored?.focus !== focus || this.anchored.count !== hints.length) {
+          this.anchored = { focus, count: hints.length, mean }
+          this.target = round(mean * h.start)
+          this.ceiling = null
+          this.wins = 0
+          this.priceNos = 0
+        }
+        this.target = Math.min(round(mean * h.high), Math.max(round(mean * h.low), this.target))
+      }
+    }
     return this.target
   }
 

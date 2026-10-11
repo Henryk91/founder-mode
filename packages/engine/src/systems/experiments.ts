@@ -1,4 +1,4 @@
-import type { Rng } from '../rng'
+import { Rng, seedRng } from '../rng'
 import type {
   Evidence,
   ExperimentEvent,
@@ -7,6 +7,7 @@ import type {
   InterviewEvidence,
   PendingExperiment,
   ReportEntry,
+  SegmentId,
   WeekPlan,
 } from '../types'
 import { priceFactor } from './market'
@@ -50,6 +51,32 @@ function pickQuote(
 }
 
 /**
+ * The budget quote of a segment's interview number `index`, if it has one. Drawn from its own
+ * stream (seeded by the run's seed, segment and index), so budget quotes never shift the game's
+ * main random sequence. The amount is honest on average and rounded like speech: to 50 EUR below
+ * 1,000 EUR, to 100 EUR above.
+ */
+export function budgetHint(
+  state: GameState,
+  segmentId: SegmentId,
+  index: number,
+): { quoteIndex: number; amountCents: number } | null {
+  const cfg = state.scenario.experiments.interview
+  const quotes = state.scenario.segments.find((s) => s.id === segmentId)?.budgetQuotes ?? []
+  const hidden = state.hidden.segments[segmentId]
+  if (!hidden || quotes.length === 0) return null
+  const r = new Rng(seedRng(`${state.seed}/budget/${segmentId}/${index}`))
+  if (!r.chance(cfg.budgetChance)) return null
+  const factor = Math.min(1.8, Math.max(0.4, 1 + r.normal(cfg.budgetNoiseSd)))
+  const raw = hidden.wtpCents * factor
+  const step = raw < 100_000 ? 5_000 : 10_000
+  return {
+    quoteIndex: r.int(0, quotes.length - 1),
+    amountCents: Math.max(step, Math.round(raw / step) * step),
+  }
+}
+
+/**
  * Runs the planned interviews (plan section 4.4). Each interview reads
  * `pain + politeness * (1 - interviewing) + N(0, sd)`, shows only the bucket and a quote, and
  * raises the interviewing skill. Segments run in scenario order, so the plan's key order does
@@ -83,6 +110,10 @@ export function runInterviews(
       )
       const mentions = rng.chance(cfg.mentionBase + cfg.mentionPerPain * hidden.pain)
       const mentionedFeatureId = mentions ? rng.pick(hidden.mustHave) : null
+      const asked =
+        interviewsOf(state.knowledge[seg.id] ?? []).length +
+        outcomes.filter((o) => o.evidence.segmentId === seg.id).length
+      const budget = budgetHint(state, seg.id, asked)
 
       outcomes.push({
         evidence: {
@@ -92,6 +123,7 @@ export function runInterviews(
           bucketId,
           quoteIndex,
           mentionedFeatureId,
+          ...(budget ? { budget } : {}),
         },
         event: { kind: 'interview', week: state.week, segmentId: seg.id, expected, observed },
       })

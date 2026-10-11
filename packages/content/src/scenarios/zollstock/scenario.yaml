@@ -53,6 +53,9 @@ experiments:
     skillCap: 0.8
     mentionBase: 0.3
     mentionPerPain: 0.3
+    # About one interview in four names a budget, within about a quarter either side.
+    budgetChance: 0.25
+    budgetNoiseSd: 0.25
     buckets:
       - { id: not_a_problem, name: Not a problem, below: 0.2 }
       - { id: mild, name: Mild, below: 0.4 }
@@ -206,6 +209,13 @@ segments:
     paymentDelayDaysMean: 10
     neverPaysShare: 0.06
     waitsForChaseShare: 0.25
+    # Budget quotes: some interviews name a rough monthly figure, honest on average.
+    budgetQuotes:
+      - 'Lost hours on the wrong site cost me about {amount} a month. My van knows every detour.'
+      - 'My partner does the paperwork evenings. Call it {amount} a month if I got an invoice for it.'
+      - 'I would pay about {amount} a month if the job list stopped living on the dashboard.'
+      - 'Missed call-backs cost us roughly {amount} a month. The customer just rings the next plumber.'
+      - 'The software the wholesaler pushed costs about {amount} a month. Nobody on the crew opens it.'
 
   - id: contractors
     name: Contractors
@@ -222,6 +232,13 @@ segments:
     paymentDelayDaysMean: 25
     neverPaysShare: 0.03
     waitsForChaseShare: 0.25
+    # Budget quotes: some interviews name a rough monthly figure, honest on average.
+    budgetQuotes:
+      - 'Crews standing around waiting for material cost us about {amount} a month, easily.'
+      - 'We pay a site coordinator, and part of that, about {amount} a month, is just ringing people.'
+      - 'If it kept three crews on the right sites, about {amount} a month would not hurt.'
+      - 'Our last planning tool cost about {amount} a month. The foremen went back to the whiteboard.'
+      - 'Wrong deliveries alone run to about {amount} a month. The skip hire people love us.'
 
   - id: maintenance
     name: Property maintenance
@@ -237,6 +254,13 @@ segments:
     paymentDelayDaysMean: 15
     neverPaysShare: 0.05
     waitsForChaseShare: 0.25
+    # Budget quotes: some interviews name a rough monthly figure, honest on average.
+    budgetQuotes:
+      - 'Chasing who fixed what in which building costs about {amount} a month in office hours.'
+      - 'The landlords want reports. Writing them costs us roughly {amount} a month.'
+      - 'We budget about {amount} a month for admin on the contracts. It is never enough.'
+      - 'A call-out we forget to bill is about {amount} a month gone, on a good month.'
+      - 'I would pay about {amount} a month if the caretakers stopped texting me photos at night.'
 
 # Milestones (plan section 4.12). Revenue milestones cover the run's own monthly costs at the time:
 # company costs, or company costs plus living costs. onBar: false keeps one off the progress bar.

@@ -216,6 +216,8 @@ export type InterviewEvidence = {
   quoteIndex: number
   /** A must have feature the interviewee asked for in their own words, if any. */
   mentionedFeatureId: FeatureId | null
+  /** A budget quote (index into the segment's `budgetQuotes`) and the amount it names. */
+  budget?: { quoteIndex: number; amountCents: number }
 }
 
 export type LandingEvidence = {
@@ -774,6 +776,8 @@ export type InterviewView = {
   bucketName: string
   quote: string
   mentionedFeature: { id: FeatureId; name: string; quote: string } | null
+  /** What the interviewee said about money: the quote holds {amount}, rough and rounded. */
+  budget: { quote: string; amountCents: number } | null
 }
 
 export type WeekReport = {
@@ -960,6 +964,8 @@ export type MarketTruth = {
   customerPricesCents: number[]
   /** Trials that ended in a no over the price, and customers who left over it. */
   priceNos: { trials: number; cancellations: number }
+  /** Budget quotes heard in interviews and the average figure they named, or null without. */
+  budgetHints: { count: number; meanCents: number } | null
   mustHave: MarketFeature[]
 }
 
