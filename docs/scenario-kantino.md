@@ -40,16 +40,18 @@ Cash and savings together last about 30 weeks (7.5 months) at 3,105 a month with
 | Id | `small_offices` | `coworking` | `medical` |
 | Description shown to player | Agencies and firms with 10 to 50 staff | Shared workspaces with many small tenants | Doctors and dentists with shift based teams |
 | Size (reachable companies) | 800 to 2000 | 100 to 300 | 400 to 1200 |
-| Willingness to pay per month | 375 to 720 | 900 to 2250 | 390 to 630 |
+| Willingness to pay per month | 375 to 720 | 700 to 1000 (Phase 8; was 900 to 2250) | 390 to 630 |
 | Must have features | `basic_ordering`, `invoice_export`, `chat_integration` | `basic_ordering`, `multi_site`, `member_billing` | `basic_ordering`, `allergy_filter`, `shift_schedule` |
 | Channel response: cold email | 0.05 to 0.10 | 0.025 to 0.06 | 0.04 to 0.08 |
-| Channel response: phone | 0.04 to 0.075 | 0.05 to 0.11 | 0.06 to 0.125 |
-| Channel response: in person | 0.025 to 0.125 | 0.06 to 0.12 | 0.06 to 0.12 |
+| Channel response: phone | 0.04 to 0.075 | 0.0425 to 0.0935 (Phase 8; was 0.05 to 0.11) | 0.06 to 0.125 |
+| Channel response: in person | 0.025 to 0.125 | 0.051 to 0.102 (Phase 8; was 0.06 to 0.12) | 0.06 to 0.12 |
 | Invoice lateness, mean days | 5 | 12 | 20 |
 | Share that never pays | 5% | 3% | 8% |
 | Share that pays only once chased | 25% | 25% | 25% |
 
 Each value given as a range is drawn uniformly at game creation from the seed.
+
+Phase 8: coworking would pay 700 to 1,000 (was 900 to 2,250) and its phone and in person response is 0.85 of before, so reading the budget quotes and pricing right is worth about 8 points, not 13, with coworking at about 60% for the hint-reading price bot. Zollstock's contractors mirror the price range.
 
 Engine 0.7.0: willingness to pay medical 260 to 420 (was 180 to 320) and small offices 250 to 480 (was 200 to 450), at the old money scale, because at the default price a viable medical market sat below it in 86% of runs. Tuning round 1 raised medical cold email (was 0.01 to 0.03) and in person (was 0.05 to 0.10) and lowered coworking in person (was 0.075 to 0.15). All money then scaled by 1.5.
 

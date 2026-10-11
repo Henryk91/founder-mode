@@ -211,6 +211,20 @@ export function evaluateTargets(
   const pairedRuns = wide ? wide.results : plainRuns
   const spread = marketSpread(spreadRuns)
   const firstWin = median(firstCustomerWeeks(wins(vtbRuns)))
+  // Changes are judged by the mean: the median of whole weeks jumps when it crosses a half.
+  const firstWeeks = firstCustomerWeeks(wins(vtbRuns))
+  const firstMean = firstWeeks.length
+    ? firstWeeks.reduce((a, b) => a + b, 0) / firstWeeks.length
+    : null
+  const firstMeanMargin =
+    firstMean === null || firstWeeks.length < 2
+      ? 0
+      : 1.96 *
+        Math.sqrt(
+          firstWeeks.reduce((t, w) => t + (w - firstMean) ** 2, 0) /
+            (firstWeeks.length - 1) /
+            firstWeeks.length,
+        )
   const evidence = vtbRuns.filter((r) => r.evidenceByCheck !== null)
   const evidenceShare = pct(evidence.filter((r) => r.evidenceByCheck).length, evidence.length)
   const decisionShare = (id: string) => {
@@ -322,8 +336,8 @@ export function evaluateTargets(
     {
       id: 7,
       text: 'validate_then_build gets its first paying customer between week 4 and 10 in the median winning run',
-      value: `week ${fmtNum(firstWin, 1)}`,
-      margin: fmtMargin(medianMargin(firstCustomerWeeks(wins(vtbRuns)))),
+      value: `week ${fmtNum(firstWin, 1)} (mean ${fmtNum(firstMean, 2)})`,
+      margin: `${fmtMargin(medianMargin(firstCustomerWeeks(wins(vtbRuns))))} (mean ${fmtMargin(firstMeanMargin, 2)})`,
       pass: firstWin !== null && firstWin >= 4 && firstWin <= 10,
     },
     {
