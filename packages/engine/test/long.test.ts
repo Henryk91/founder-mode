@@ -194,6 +194,32 @@ describe('several hires in long mode', () => {
   })
 })
 
+describe('part time hires in long mode', () => {
+  it('pays and works half, and is refused where the role has one kind', () => {
+    let s = createGame(quietLong(), 'part')
+    s = { ...s, company: { ...s.company, cashCents: 100_000_000 } }
+    s = endWeek(s, plan({ searchRole: 'developer', searchPartTime: true })).state
+    expect(getView(s).team.search).toMatchObject({ role: 'developer', partTime: true })
+    s = endWeek(s, plan()).state
+    s = endWeek(s, plan()).state
+    const candidate = getView(s).team.candidates[0]!
+    expect(candidate.partTime).toBe(true)
+    s = endWeek(s, plan({ hire: candidate.id })).state
+    for (let i = 0; i < 2; i++) s = endWeek(s, plan()).state
+    const member = getView(s).team.members[0]!
+    expect(member).toMatchObject({ partTime: true, monthlyCents: 350000, weeklyHours: 20 })
+    expect(s.company.fixedCosts.find((c) => c.id === `salary_${member.id}`)?.monthlyCents).toBe(
+      350000,
+    )
+    expect(getView(s).team.roles[0]!.partTime).toEqual({ monthlyCents: 350000, weeklyHours: 20 })
+    const std = createGame(loadScenario('kantino'), 'part')
+    expect(getView(std).team.roles[0]!.partTime).toBeNull()
+    expect(validatePlan(std, plan({ searchRole: 'developer', searchPartTime: true }))).toEqual([
+      { code: 'part_time_not_offered' },
+    ])
+  })
+})
+
 describe('saves per mode', () => {
   it('records the mode, replays a long run, and refuses the other mode', () => {
     let s = createGame(quietLong(), 'save-long')

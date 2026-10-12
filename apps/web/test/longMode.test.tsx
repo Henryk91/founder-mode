@@ -42,7 +42,12 @@ describe('long mode in the web app', () => {
     expect(page).toContain('Week 2 of 104')
     store.getState().toggleSection('team')
     expect(text(store)).toContain('nobody yet, up to 4 at once')
-    expect(text(store)).toContain('Developer €7,000 per month')
+    expect(text(store)).toContain('Developer, full time €7,000 per month')
+    expect(text(store)).toContain('Developer, part time €3,500 per month')
+    store.getState().setSearchRole('developer', true)
+    expect(store.getState().plan).toMatchObject({ searchRole: 'developer', searchPartTime: true })
+    store.getState().setSearchRole('developer')
+    expect('searchPartTime' in store.getState().plan).toBe(false)
   })
 
   it('keeps saves and best runs apart per mode', () => {

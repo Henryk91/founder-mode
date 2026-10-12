@@ -1,4 +1,4 @@
-import type { Scenario } from '@founder-mode/content'
+import type { GameMode, Scenario } from '@founder-mode/content'
 import {
   emptyPlan,
   type ChannelId,
@@ -29,6 +29,8 @@ export type Strategy = {
   /** The description for one scenario, when it names that scenario's markets. */
   describe?(scenario: Scenario): string
   create(scenario: Scenario, seed: string): Player
+  /** The modes it is played in, all when missing (the long mode team variants: long only). */
+  modes?: GameMode[]
   /** For report diagnostics only: the scenario this strategy is played on, from the real one. */
   adapt?(scenario: Scenario): Scenario
 }
@@ -46,7 +48,9 @@ export class PlanBuilder {
     budget: number,
   ) {
     // Hours already taken by answers to messages and by earlier penalties come off the budget.
-    const taken = view.committedHours + view.forcedHours
+    // So do the hours the working team takes (long mode, 2 h each).
+    const manage = view.team.members.reduce((t, m) => t + (m.working ? m.managementHours : 0), 0)
+    const taken = view.committedHours + view.forcedHours + manage
     this.free = Math.max(0, Math.min(budget, view.founder.maxHoursPerWeek) - taken)
   }
 

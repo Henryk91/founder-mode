@@ -170,7 +170,8 @@ export type UiActions = {
   setPresales(segmentId: string, batches: number): void
   toggleChase(invoiceId: string): void
   toggleFollowUp(leadId: string): void
-  setSearchRole(role: TeamRoleId | null): void
+  /** Starts a search in this role (part time where the role offers it), or cancels it with null. */
+  setSearchRole(role: TeamRoleId | null, partTime?: boolean): void
   setHire(candidateId: string | null): void
   /** Lets this member go this week, or takes it back with null. */
   setLetGo(memberId: string | null): void
@@ -562,7 +563,14 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
             ? p.chase.filter((id) => id !== invoiceId)
             : [...p.chase, invoiceId],
         })),
-      setSearchRole: (role) => editPlan((p) => ({ ...p, searchRole: role })),
+      setSearchRole: (role, partTime = false) =>
+        editPlan((p) => {
+          // Full time leaves the field out, so a 60 week plan keeps its old shape.
+          const next: WeekPlan = { ...p, searchRole: role }
+          delete next.searchPartTime
+          if (role !== null && partTime) next.searchPartTime = true
+          return next
+        }),
       setHire: (candidateId) => editPlan((p) => ({ ...p, hire: candidateId })),
       setLetGo: (memberId) => editPlan((p) => ({ ...p, letGo: memberId })),
       setTeamTask: (memberId, task) =>

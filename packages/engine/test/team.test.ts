@@ -24,7 +24,11 @@ describe('team search', () => {
     const s = quiet()
     const r = endWeek(s, plan({ searchRole: 'developer', ...book }))
     expect(r.report.plannedHours).toBe(6)
-    expect(getView(r.state).team.search).toEqual({ role: 'developer', readyWeek: 3 })
+    expect(getView(r.state).team.search).toEqual({
+      role: 'developer',
+      readyWeek: 3,
+      partTime: false,
+    })
     expect(getView(r.state).team.candidates).toEqual([])
     expect(getView(r.state).team.canSearch).toBe(false)
     const w2 = endWeek(r.state, plan(book))

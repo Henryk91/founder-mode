@@ -32,6 +32,18 @@ export function canHire(state: Pick<GameState, 'team' | 'scenario'>): boolean {
   )
 }
 
+/**
+ * Salary and hours of a role, or of its part time terms for a part time search, candidate or
+ * member. The 60 week game has one kind per role.
+ */
+export function roleTerms(
+  state: Pick<GameState, 'scenario'>,
+  who: { role: TeamRoleId; partTime?: true | boolean },
+): { monthlyCents: number; weeklyHours: number } {
+  const cfg = state.scenario.team.roles[who.role]
+  return who.partTime && cfg.partTime ? cfg.partTime : cfg
+}
+
 /** Founder hours the working team takes this week (long mode: 2 h each). */
 export function managementHours(state: Pick<GameState, 'team' | 'week' | 'scenario'>): number {
   return (state.scenario.team.managementHoursPerMember ?? 0) * workingMembers(state).length
@@ -70,7 +82,7 @@ export function teamOutput(state: GameState, plan: WeekPlan): TeamOutput[] {
   for (const member of workingMembers(state)) {
     const cfg = state.scenario.team.roles[member.role]
     const skill = state.hidden.teamSkills[member.id] ?? 0
-    const hours = Math.floor(cfg.weeklyHours * skill)
+    const hours = Math.floor(roleTerms(state, member).weeklyHours * skill)
     const task = plan.teamTasks[member.id]
     const out: TeamOutput = {
       memberId: member.id,
@@ -140,7 +152,7 @@ export function applyTeam(
   if (plan.letGo !== null) {
     const member = members.find((m) => m.id === plan.letGo && m.letGoWeek === null)
     if (member) {
-      const monthly = cfg.roles[member.role].monthlyCents
+      const monthly = roleTerms(state, member).monthlyCents
       const cost = Math.round((monthly * cfg.severanceWeeks) / state.scenario.finance.weeksPerMonth)
       severanceCents += cost
       members = members.map((m) => (m === member ? { ...m, letGoWeek: week } : m))
@@ -158,6 +170,7 @@ export function applyTeam(
           id: candidate.id,
           name: candidate.name,
           role: candidate.role,
+          ...(candidate.partTime ? { partTime: true as const } : {}),
           offerWeek: week,
           startWeek: week + cfg.startWeeks,
           letGoWeek: null,
@@ -170,6 +183,7 @@ export function applyTeam(
 
   if (plan.searchRole) {
     search = { role: plan.searchRole, readyWeek: week + cfg.searchWeeks }
+    if (plan.searchPartTime) search.partTime = true
     candidates = []
   }
 
@@ -181,7 +195,7 @@ export function applyTeam(
       {
         id: salaryId(m),
         name: `${cfg.roles[m.role].name}: ${m.name}`,
-        monthlyCents: cfg.roles[m.role].monthlyCents,
+        monthlyCents: roleTerms(state, m).monthlyCents,
       },
     ]
     entries.push({ kind: 'hire_started', name: m.name, role: m.role })
@@ -203,6 +217,7 @@ export function applyTeam(
         name: names[i % names.length] ?? `Candidate ${i + 1}`,
         role: search.role,
         impressionId: label?.id ?? cfg.impressions[0]?.id ?? '',
+        ...(search.partTime ? { partTime: true as const } : {}),
       } satisfies Candidate)
     }
     entries.push({ kind: 'candidates_ready', role: search.role, count: candidates.length })
@@ -499,7 +514,7 @@ export function hireEconomics(
 ): HireEconomics | null {
   if (!member) return null
   const cfg = state.scenario.team
-  const monthly = cfg.roles[member.role].monthlyCents
+  const monthly = roleTerms(state, member).monthlyCents
   const lastWeek = member.letGoWeek !== null ? member.letGoWeek - 1 : state.ledger.length
   const perMonth = state.scenario.finance.weeksPerMonth
   let months = 0

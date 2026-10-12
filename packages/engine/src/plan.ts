@@ -201,6 +201,12 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
   if (plan.searchRole !== null && (team.search !== null || !canHire(state))) {
     issues.push({ code: 'search_not_allowed' })
   }
+  if (
+    plan.searchPartTime &&
+    (plan.searchRole === null || !state.scenario.team.roles[plan.searchRole].partTime)
+  ) {
+    issues.push({ code: 'part_time_not_offered' })
+  }
   if (plan.hire !== null) {
     const candidate = team.candidates.find((c) => c.id === plan.hire)
     if (!candidate || !canHire(state) || plan.letGo !== null)

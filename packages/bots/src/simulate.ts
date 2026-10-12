@@ -17,6 +17,11 @@ import type { Strategy } from './strategy'
 export const CHECK_WEEK = 15
 /** Pacing is measured over the opening weeks, where hand play felt empty. */
 export const PACING_WEEKS = 20
+/** Long mode's second year starts in this week (target 26 measures decision news from here). */
+export const YEAR2_WEEK = 53
+/** Long mode runs are split by where they stood at the end of the 60 week game (target 28). */
+export const STANDARD_WEEKS = 60
+
 /** By this week a careful player should have a customer or have left a market that is not viable. */
 export const EVIDENCE_WEEK = 10
 
@@ -90,6 +95,20 @@ export type RunResult = {
   /** Weeks with a new message, a lead that moved, an experiment result, or a lost customer. */
   decisionWeeks: number
   messageWeeks: number
+  /** Long mode: weeks played from YEAR2_WEEK on, and how many brought decision news (0 otherwise). */
+  year2Weeks: number
+  year2DecisionWeeks: number
+  /**
+   * Long mode: the run at the end of week STANDARD_WEEKS. `profitable`: running and profitable in
+   * each of the last two months (the 60 week win test), `alive`: running but not that, `over`:
+   * ended before. Null in the 60 week game.
+   */
+  at60: 'profitable' | 'alive' | 'over' | null
+  /** Every offer made, in order: week, role and part time. */
+  hires: { week: number; role: 'developer' | 'salesperson'; partTime: boolean }[]
+  /** Hires let go over the run, and people on the team (working or starting) at the end. */
+  lettingsGo: number
+  teamAtEnd: number
   /** Ids of the inbox events that arrived, in order. */
   eventsSeen: string[]
   /**
@@ -112,6 +131,8 @@ export type RunResult = {
    * worked on in the freelancer's first week of work, and what freelancers cost and delivered.
    */
   freelance: {
+    /** Role of the first booking. */
+    role: 'developer' | 'salesperson'
     market: string | null
     bookedWeek: number
     costCents: number
@@ -177,6 +198,23 @@ function repeats(scenario: Scenario, drawn: readonly { eventId: string }[]): num
   return ids.length - new Set(ids).size
 }
 
+/** The engine's win test over the ledger so far: revenue covers every cost in each last month. */
+function profitableMonths(state: GameState, months: number): boolean {
+  const per = state.scenario.finance.weeksPerMonth
+  if (state.ledger.length < months * per) return false
+  for (let m = 0; m < months; m++) {
+    const end = state.ledger.length - m * per
+    const month = state.ledger.slice(end - per, end)
+    const revenue = month.reduce((t, l) => t + l.revenueCents, 0)
+    const costs = month.reduce(
+      (t, l) => t + l.fixedCostsCents + l.freelanceCents + l.livingCostsCents,
+      0,
+    )
+    if (revenue < costs) return false
+  }
+  return true
+}
+
 const monthlyRevenue = (s: GameState) =>
   s.customers.filter((c) => c.churnedWeek === null).reduce((t, c) => t + c.priceCentsPerMonth, 0)
 
@@ -204,6 +242,9 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
   let messageWeeks = 0
   let dryWeeks = 0
   let firstDryWeek: number | null = null
+  let year2Weeks = 0
+  let year2DecisionWeeks = 0
+  let at60: RunResult['at60'] = scenario.maxWeeks > STANDARD_WEEKS ? 'over' : null
 
   while (state.status === 'running') {
     for (const answer of player.respond?.(getView(state)) ?? []) {
@@ -246,6 +287,14 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
       if (result.report.entries.some(isNoteworthy) || arrived) noteworthyWeeks++
       if (arrived) messageWeeks++
       if (arrived || result.report.entries.some(isDecisive)) decisionWeeks++
+    }
+    if (at60 !== null && result.report.week >= YEAR2_WEEK) {
+      year2Weeks++
+      const arrived = state.inbox.length > inboxBefore
+      if (arrived || result.report.entries.some(isDecisive)) year2DecisionWeeks++
+    }
+    if (at60 !== null && result.report.week === STANDARD_WEEKS && state.status === 'running') {
+      at60 = profitableMonths(state, 2) ? 'profitable' : 'alive'
     }
     if (state.status === 'running') {
       const open = state.inbox.filter((m) => m.status === 'open').length
@@ -315,6 +364,16 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     noteworthyWeeks,
     decisionWeeks,
     messageWeeks,
+    year2Weeks,
+    year2DecisionWeeks,
+    at60,
+    hires: state.team.members.map((m) => ({
+      week: m.offerWeek,
+      role: m.role,
+      partTime: m.partTime === true,
+    })),
+    lettingsGo: state.team.members.filter((m) => m.letGoWeek !== null).length,
+    teamAtEnd: state.team.members.filter((m) => m.letGoWeek === null).length,
     eventsSeen: state.drawnEvents.map((d) => d.eventId),
     dryWeeks,
     firstDryWeek,
@@ -323,6 +382,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     customersBySource,
     hire: hireEconomics(state),
     freelance: freelanceAt && {
+      role: state.team.freelancers[0]?.role ?? 'developer',
       market: freelanceAt.market,
       bookedWeek: freelanceAt.week,
       costCents: state.ledger.reduce((t, l) => t + l.freelanceCents, 0),

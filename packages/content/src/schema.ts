@@ -178,6 +178,10 @@ export const TeamRoleSchema = z.object({
   skill: rangeOf(z.number().positive()),
   // Selling skill of their own outreach. Without it, outreach uses the founder's skill.
   selling: Share.optional(),
+  // Long mode: the same role part time, offered beside the full time one. Absent: one kind only.
+  partTime: z
+    .object({ monthlyCents: Cents.positive(), weeklyHours: z.number().int().positive() })
+    .optional(),
 })
 
 /**

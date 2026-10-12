@@ -17,7 +17,8 @@ export type BotArgs = {
   jobs: number
   /**
    * Report parts to run: main, paired, inbox, price, freelance, events. `--events` adds events.
-   * `tired` (the energy check of target 19) runs only when asked for.
+   * `tired` (the energy check of target 19), `team` (long mode team variants on the wide seeds)
+   * and `energy` (the energy curve) run only when asked for.
    */
   parts: string[]
   /** Seeds for the paired, inbox and price parts (targets 6, 11, 13 and 17); defaults to `runs`. */
@@ -38,7 +39,7 @@ export type FreelanceArg = {
   weeks: number | null
 }
 
-const PARTS = ['main', 'paired', 'inbox', 'price', 'freelance', 'tired', 'events']
+const PARTS = ['main', 'paired', 'inbox', 'price', 'freelance', 'tired', 'team', 'energy', 'events']
 
 /** `developer:20`, `developer:20:0`, `salesperson:20:0:8`. */
 export function parseFreelance(text: string): FreelanceArg {
