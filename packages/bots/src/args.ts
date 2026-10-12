@@ -27,6 +27,8 @@ export type BotArgs = {
    * an optional rate in EUR per hour (`:0` for a free freelancer) and, for a salesperson, weeks.
    */
   freelance: FreelanceArg[]
+  /** Run length: the 60 week game (default), long mode, or every mode a scenario has. */
+  mode: 'standard' | 'long' | 'all'
 }
 
 export type FreelanceArg = {
@@ -61,6 +63,7 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     parts: ['main', 'paired', 'inbox', 'price', 'freelance'],
     wideRuns: 0,
     freelance: [],
+    mode: 'standard',
   }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
@@ -98,6 +101,12 @@ export function parseArgs(argv: readonly string[]): BotArgs {
       i++
     } else if (flag === '--freelance' && value !== undefined) {
       args.freelance = value.split(',').filter(Boolean).map(parseFreelance)
+      i++
+    } else if (flag === '--mode' && value !== undefined) {
+      if (value !== 'standard' && value !== 'long' && value !== 'all') {
+        throw new Error(`Invalid --mode value: ${value}`)
+      }
+      args.mode = value
       i++
     } else if (flag === '--desk') {
       args.desk = true

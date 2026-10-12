@@ -315,3 +315,51 @@ officeStages:
 # The UI turns organised at the first of these milestones (plan section 4.12): the first hire, or
 # revenue covering all costs. Company costs alone came with the first customer; see decisions.
 organisedAt: [first_hire, covers_all_costs]
+
+# Long mode (Phase 9 part C): 104 weeks, laid over everything above. Objects merge, lists replace.
+# The 60 week game never sees this block, so its values and fingerprint stay as they are.
+modes:
+  long:
+    maxWeeks: 104
+    # A long game should prove it lasts: profitable in each of the last three months.
+    win: { profitableMonths: 3 }
+    founder:
+      # Year 2 costs more: living costs rise by a tenth from week 53.
+      livingSteps:
+        - { week: 53, centsPerWeek: 74250 }
+    sales:
+      # Markets run out of new leads: response falls with the share of companies already found.
+      marketSaturation: { floor: 0.3 }
+    team:
+      maxMembers: 4
+      maxHires: 8
+      managementHoursPerMember: 2
+      # Full time and realistic for Munich (docs/phase9-proposal.md 8.1): gross salary plus about
+      # 21% employer's social security, over 13 game months of 4 weeks a year. Developer 75,000
+      # EUR gross, salesperson 65,000 EUR fixed.
+      roles:
+        developer:
+          name: Developer
+          monthlyCents: 700000
+          weeklyHours: 40
+        salesperson:
+          name: Salesperson
+          monthlyCents: 605000
+          weeklyHours: 40
+    milestones:
+      - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+      - { id: first_deposit, name: First deposit, kind: count, of: deposits, target: 1 }
+      - { id: first_customer, name: First paying customer, kind: count, of: customers, target: 1 }
+      - id: covers_company_costs
+        name: 'Monthly revenue covers company costs'
+        kind: revenue
+        covers: company
+      - id: covers_all_costs
+        name: 'Monthly revenue covers all costs, you included'
+        kind: revenue
+        covers: all
+      - { id: first_hire, name: First hire, kind: count, of: hires, target: 1, onBar: false }
+      - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+      - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+      - { id: weeks_78, name: 78 weeks survived, kind: weeks, target: 78 }
+      - { id: weeks_104, name: 104 weeks survived, kind: weeks, target: 104 }

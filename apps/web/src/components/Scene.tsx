@@ -39,7 +39,8 @@ function sceneData(view: PlayerView, plannedHours: number): SceneData {
         : founder.energy < founder.tiredBelow
           ? 'scene.you.tired'
           : 'scene.you.rested'
-  const member = view.team.member
+  // The scene has room for one more person: the first hire.
+  const member = view.team.members[0]
   return {
     slumped: founder.energy < founder.lowEnergyBelow,
     you: {

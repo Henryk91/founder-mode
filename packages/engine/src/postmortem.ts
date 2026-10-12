@@ -2,7 +2,7 @@ import { activeCustomers } from './systems/customers'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
 import { reachedMilestones } from './systems/milestones'
-import { freelanceEconomics, hireEconomics, salaryId } from './systems/team'
+import { freelanceEconomics, hiresEconomics, salaryId } from './systems/team'
 import type {
   Activity,
   ChainItem,
@@ -56,7 +56,7 @@ export function buildPostMortem(state: GameState): PostMortem {
   const misreads = buildMisreads(state, markets, focus)
   const hours = sumHours(state)
   const luck = buildLuck(state, cause)
-  const hire = hireEconomics(state)
+  const hires = hiresEconomics(state)
   const moves = (kind: string) =>
     state.eventLog.reduce(
       (t, e) => (e.kind === kind && 'amountCents' in e ? t + e.amountCents : t),
@@ -104,7 +104,7 @@ export function buildPostMortem(state: GameState): PostMortem {
       companyPaidYouCents: moves('founder_draw'),
       customersPaidCents: state.ledger.reduce((t, l) => t + l.revenueCents, 0),
       peakRevenueCents: cause.peakRevenueCents,
-      hire,
+      hires,
       freelance: freelanceEconomics(state),
     },
     walkIns: walkInCounts(state),
@@ -166,11 +166,14 @@ const bucketIds = (state: GameState) =>
   state.scenario.experiments.interview.buckets.map((b) => b.id)
 
 function monthlyCosts(state: GameState, withHire: boolean): number {
-  const member = state.team.members[0]
-  const salary =
-    member && !withHire
-      ? (state.company.fixedCosts.find((c) => c.id === salaryId(member))?.monthlyCents ?? 0)
-      : 0
+  // Without the hires: every salary still among the fixed costs comes off.
+  const salary = withHire
+    ? 0
+    : state.team.members.reduce(
+        (t, m) =>
+          t + (state.company.fixedCosts.find((c) => c.id === salaryId(m))?.monthlyCents ?? 0),
+        0,
+      )
   return (
     monthlyFixedCostsCents(state) -
     salary +
@@ -773,7 +776,7 @@ function buildSuggestions(
   // Deposits compare markets; sign ups and compliments cost nothing to give.
   const presold = markets.filter((m) => m.presale !== null).length
   const price = state.company.priceCentsPerMonth
-  const hire = hireEconomics(state)
+  const hires = hiresEconomics(state)
   const writtenOff = state.invoices.filter((i) => i.writtenOffWeek !== null).length
   const won = cause.id === 'sustainable'
   const rules: [SuggestionId, boolean][] = [
@@ -790,10 +793,12 @@ function buildSuggestions(
     ['watch_churn', cause.customersWon >= 2 && cause.customersLost * 2 >= cause.customersWon],
     [
       'hire_cost',
-      hire !== null &&
-        (hire.costPerCustomerCents === null ||
+      hires.some(
+        (hire) =>
+          hire.costPerCustomerCents === null ||
           hire.lifetimeValueCents === null ||
-          hire.costPerCustomerCents > hire.lifetimeValueCents),
+          hire.costPerCustomerCents > hire.lifetimeValueCents,
+      ),
     ],
     ['chase_invoices', writtenOff >= WRITTEN_OFF_LESSON],
     ['raise_price', won && focusMarket !== null && price * 2 <= focusMarket.wtpCents],

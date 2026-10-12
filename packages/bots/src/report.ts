@@ -23,6 +23,8 @@ export type ReportInput = {
   events?: EventChoiceRuns[]
   /** The playtest bot's market, and what the hand playtest reached (`{week}` is the check week). */
   playtest?: { segment: string; note: string | null }
+  /** Run length, for long mode; the 60 week report leaves it out and keeps its old layout. */
+  maxWeeks?: number
   /** Build hours of each market's must have features, for the freelancer split (target 19). */
   marketBuildHours?: Record<string, number>
 }
@@ -838,21 +840,18 @@ export function buildReport(input: ReportInput): string {
   push(...freelanceRows(input))
   push(...tiredRows(input))
 
-  const weekBins: [number, number][] = [
-    [1, 10],
-    [11, 20],
-    [21, 30],
-    [31, 40],
-    [41, 50],
-    [51, 60],
-    [61, 70],
-    [71, 78],
-  ]
+  // The 60 week report keeps its old bins (up to 78, the run length before engine 0.7.0); a
+  // longer run gets ten week bins up to its last week.
+  const last = input.maxWeeks ?? 78
+  const weekBins: [number, number][] = Array.from(
+    { length: Math.ceil((last - 70) / 10) + 7 },
+    (_, i) => [i * 10 + 1, Math.min(last, i * 10 + 10)],
+  )
   push(
     '',
     '## Week the run ended',
     '',
-    'Share of all runs per strategy, by the week the run ended. Runs that reach the last week end in week 78, won or not.',
+    `Share of all runs per strategy, by the week the run ended. Runs that reach the last week end in week ${last}, won or not.`,
     '',
     `| Strategy | ${weekBins.map(([a, b]) => `${a} to ${b}`).join(' | ')} |`,
     `|---|${weekBins.map(() => '---').join('|')}|`,

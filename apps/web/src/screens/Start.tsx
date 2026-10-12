@@ -16,6 +16,8 @@ export function Start() {
   const scenarios = useGame((s) => s.scenarios)
   const scenarioId = useGame((s) => s.scenarioId)
   const selectScenario = useGame((s) => s.selectScenario)
+  const mode = useGame((s) => s.mode)
+  const selectMode = useGame((s) => s.selectMode)
   const notice = useGame((s) => s.saveNotice)
   const storageNotice = useGame((s) => s.storageNotice)
   const runsNotice = useGame((s) => s.runsNotice)
@@ -68,6 +70,39 @@ export function Start() {
             )
           })}
         </div>
+        {(scenarios.find((x) => x.id === scenarioId)?.modes.length ?? 1) > 1 && (
+          <div role="group" aria-labelledby="pick-mode" className={startStyles.picker}>
+            <h2 id="pick-mode" className={startStyles.pickTitle}>
+              {label('start.mode', stage)}
+            </h2>
+            {scenarios
+              .find((x) => x.id === scenarioId)!
+              .modes.map((m) => {
+                const picked = m === mode
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    className={startStyles.option}
+                    aria-pressed={picked}
+                    onClick={() => selectMode(m)}
+                  >
+                    <span className={startStyles.optionName}>
+                      {label(`start.mode.${m}`, stage)}
+                      {picked && (
+                        <span className={startStyles.picked}>{label('start.picked', stage)}</span>
+                      )}
+                    </span>
+                    {m === 'long' && (
+                      <span className={startStyles.optionLine}>
+                        {label('start.mode.longLine', stage)}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+          </div>
+        )}
         {hasSave && (
           <button
             type="button"
@@ -106,19 +141,22 @@ export function Start() {
         runs={runs}
         stage={stage}
         scenario={scenarios.find((x) => x.id === scenarioId)?.name ?? ''}
+        long={mode === 'long'}
       />
     </main>
   )
 }
 
 /** "Your best runs": a dark panel as on the desk mockup. Every seed can be played again. */
-function BestRuns(props: { runs: RunRecord[]; stage: UiStage; scenario: string }) {
+function BestRuns(props: { runs: RunRecord[]; stage: UiStage; scenario: string; long: boolean }) {
   const { runs, stage } = props
   const { ordinary, replays } = bestRuns(runs)
   return (
     <section className={startStyles.best} aria-labelledby="best-runs">
       <h2 id="best-runs" className={startStyles.bestTitle}>
-        {label('start.best.title', stage, { scenario: props.scenario })}
+        {label(props.long ? 'start.best.titleLong' : 'start.best.title', stage, {
+          scenario: props.scenario,
+        })}
       </h2>
       {runs.length === 0 ? (
         <p className={startStyles.empty}>{label('start.best.empty', stage)}</p>

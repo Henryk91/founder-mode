@@ -1,7 +1,7 @@
 import type { EndingId, GameState } from '../types'
 import { profitableForMonths } from './finance'
 
-/** Profitable for the last 8 weeks, as two 4 week months. */
+/** Profitable for the last 8 weeks, as two 4 week months, unless the scenario says otherwise. */
 const SUSTAINABLE_MONTHS = 2
 
 /**
@@ -15,7 +15,8 @@ export function checkEnding(state: GameState): EndingId | null {
     return 'burnout'
   }
   if (state.week >= state.scenario.maxWeeks) {
-    return profitableForMonths(state, SUSTAINABLE_MONTHS) ? 'sustainable' : 'still_searching'
+    const months = state.scenario.win?.profitableMonths ?? SUSTAINABLE_MONTHS
+    return profitableForMonths(state, months) ? 'sustainable' : 'still_searching'
   }
   return null
 }

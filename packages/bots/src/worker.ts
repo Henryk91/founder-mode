@@ -7,17 +7,16 @@ import { strategyOf } from './specs'
 const scenarios = new Map<string, Scenario>()
 
 process.on('message', (job: Job) => {
-  let scenario = scenarios.get(job.scenarioId)
+  const key = `${job.scenarioId}/${job.mode}`
+  let scenario = scenarios.get(key)
   if (!scenario) {
-    scenario = loadScenario(job.scenarioId)
-    scenarios.set(job.scenarioId, scenario)
+    scenario = loadScenario(job.scenarioId, job.mode)
+    scenarios.set(key, scenario)
   }
   const strategy = strategyOf(job.spec)
   const start = performance.now()
   const results = []
-  for (let i = job.from; i < job.to; i++) {
-    results.push(runGame(scenario, strategy, `${job.seedPrefix}-${i}`))
-  }
+  for (const i of job.seeds) results.push(runGame(scenario, strategy, `${job.seedPrefix}-${i}`))
   const done: JobDone = { id: job.id, results, seconds: (performance.now() - start) / 1000 }
   process.send!(done)
 })

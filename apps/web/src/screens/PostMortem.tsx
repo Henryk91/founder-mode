@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type {
+  HireEconomicsView,
   Activity,
   ChainItem,
   ChannelId,
@@ -225,7 +226,9 @@ export function PostMortem({ desk }: { desk: boolean }) {
           peak: formatEuro(money.peakRevenueCents),
         })}
       </p>
-      {money.hire && <p>{t.hire()}</p>}
+      {money.hires.map((h, i) => (
+        <p key={i}>{t.hire(h)}</p>
+      ))}
       {money.freelance && <p>{t.freelance()}</p>}
     </Fold>
   )
@@ -694,8 +697,7 @@ class Text {
     return parts.join(' ')
   }
 
-  hire(): string {
-    const h = this.pm.money.hire!
+  hire(h: HireEconomicsView): string {
     const role = label(`team.role.${h.role}`, this.stage).toLowerCase()
     if (h.customersGained === 0 || h.costPerCustomerCents === null) {
       return label('pm.money.hireNone', this.stage, { role, cost: formatEuro(h.costCents) })

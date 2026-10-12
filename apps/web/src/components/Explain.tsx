@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { PlayerView } from '@founder-mode/engine'
 import type { ExplainKey } from '../store'
-import { count, label } from '../labels'
+import { count, label, type LabelKey, type LabelVars } from '../labels'
 import { useGame } from '../useGame'
 import styles from './ui.module.css'
 
@@ -41,7 +41,7 @@ export function Explain() {
     low: founder?.lowEnergyBelow ?? 0,
     tired: founder?.tiredBelow ?? 0,
     weeks: count('unit.weeks', stage, founder?.burnoutWeeks ?? 0),
-    ...(costs && explainVars(key, costs, unit, weeks)),
+    ...(costs && explainVars(key, costs, unit, weeks, (k, v) => label(k, stage, v))),
   }
   return (
     <section
@@ -71,6 +71,7 @@ function explainVars(
   costs: Costs,
   hours: (n: number) => string,
   weeks: (n: number) => string,
+  text: (key: LabelKey, vars: LabelVars) => string,
 ): Record<string, string | number> {
   switch (key) {
     case 'talk':
@@ -95,6 +96,14 @@ function explainVars(
         weeks: weeks(costs.searchWeeks),
         start: weeks(costs.startWeeks),
         notice: weeks(costs.freelanceNoticeWeeks),
+        limit:
+          costs.teamMaxMembers > 1
+            ? text('explain.hiring.limitTeam', {
+                n: costs.teamMaxMembers,
+                hires: costs.teamMaxHires,
+                manage: hours(costs.managementHoursPerMember),
+              })
+            : text('explain.hiring.limitOne', {}),
       }
     default:
       return {}

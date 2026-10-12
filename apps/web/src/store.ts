@@ -28,6 +28,8 @@ import {
   type SuggestionId,
   type TeamRoleId,
   type FreelancePlan,
+  type GameMode,
+  type TeamTask,
   type WeekPlan,
   type WeekReport,
 } from '@founder-mode/engine'
@@ -36,6 +38,7 @@ import { carryFreelance, repeatPlan } from './repeatPlan'
 import {
   MAX_RUNS,
   memoryProfiles,
+  slotOf,
   UNREADABLE,
   type ProfileStorage,
   type ProfileTrouble,
@@ -125,11 +128,15 @@ export type UiState = {
   scenarios: ScenarioAbout[]
   /** The scenario picked on the Start screen: new runs, Continue and best runs are its own. */
   scenarioId: ScenarioId
+  /** The run length picked on the Start screen, among the scenario's modes. */
+  mode: GameMode
 }
 
 export type UiActions = {
   /** Picks the scenario on the Start screen. Does nothing while a run is open. */
   selectScenario(id: ScenarioId): void
+  /** Picks the run length on the Start screen. Does nothing while a run is open. */
+  selectMode(mode: GameMode): void
   startRun(seed?: string): void
   /** A new run with a new seed, straight from the post-mortem. */
   newRun(): void
@@ -165,9 +172,10 @@ export type UiActions = {
   toggleFollowUp(leadId: string): void
   setSearchRole(role: TeamRoleId | null): void
   setHire(candidateId: string | null): void
-  setLetGo(letGo: boolean): void
-  setTeamBuild(featureId: string | null): void
-  setTeamOutreach(target: { segmentId: string; channel: ChannelId } | null): void
+  /** Lets this member go this week, or takes it back with null. */
+  setLetGo(memberId: string | null): void
+  /** What one team member does this week; null leaves them without a task. */
+  setTeamTask(memberId: string, task: TeamTask | null): void
   /** Changes part of the freelancer plan: booking, hours, notice, or their task. */
   setFreelance(change: Partial<FreelancePlan>): void
   /** Answers a message now: its hours count at once, its effects land when the week ends. */
@@ -192,8 +200,8 @@ export type GameStore = UiState & UiActions
 export type StoreDeps = {
   storage: SaveStorage
   makeSeed: () => string
-  /** Loads a scenario by id. The built in scenarios unless given. */
-  scenario?: (id: ScenarioId) => Scenario
+  /** Loads a scenario by id, for a mode. The built in scenarios unless given. */
+  scenario?: (id: ScenarioId, mode: GameMode) => Scenario
   /** Best runs, the last suggestion and the last scenario picked. In memory unless given. */
   profiles?: ProfileStorage
   /** Scenarios offered on the Start screen. The built in ones unless given. */
@@ -212,12 +220,24 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
   const picked = profiles.lastScenario()
   const firstId: ScenarioId =
     scenarios.find((x) => x.id === picked)?.id ?? scenarios[0]?.id ?? SCENARIO_IDS[0]
+  /** The modes a scenario offers: the 60 week game, and long mode where it has one. */
+  const modesOf = (id: ScenarioId): GameMode[] =>
+    scenarios.find((x) => x.id === id)?.modes ?? ['standard']
+  /** A mode the scenario has: the one asked for, else the 60 week game. */
+  const modeFor = (id: ScenarioId, mode: string | null): GameMode =>
+    modesOf(id).find((m) => m === mode) ?? 'standard'
+  const firstMode = modeFor(firstId, profiles.lastMode())
+  const firstSlot = slotOf(firstId, firstMode)
+  /** A game's slot: its scenario and mode. */
+  const slotOfGame = (state: GameState) => slotOf(state.scenarioId, state.scenario.mode)
   /** The game the post-mortem below belongs to, so it is built once per finished run. */
   let mortemOf: GameState | null = null
   let mortem: { postMortem: PostMortem; suggestion: SuggestionId } | null = null
 
-  const firstRuns = profiles.load(firstId).runs
-  const firstRunsNotice: ProfileTrouble | null = profiles.unreadable(firstId) ? 'unreadable' : null
+  const firstRuns = profiles.load(firstSlot).runs
+  const firstRunsNotice: ProfileTrouble | null = profiles.unreadable(firstSlot)
+    ? 'unreadable'
+    : null
   /** The storage warning was shown in this session, so a failing save does not repeat it. */
   let storageWarned = false
 
@@ -272,8 +292,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
     const finish = (state: GameState) => {
       if (mortemOf === state && mortem) return mortem
       const postMortem = buildPostMortem(state)
-      const profile = profiles.load(state.scenarioId)
-      if (profiles.unreadable(state.scenarioId)) set({ runsNotice: 'unreadable' })
+      const slot = slotOfGame(state)
+      const profile = profiles.load(slot)
+      if (profiles.unreadable(slot)) set({ runsNotice: 'unreadable' })
       const current = profile.current?.seed === state.seed ? profile.current : null
       let suggestion = current?.suggestion ?? null
       if (suggestion === null) {
@@ -290,7 +311,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
             peakRevenueCents: postMortem.cause.peakRevenueCents,
           },
         ].slice(-MAX_RUNS)
-        keepRuns(state.scenarioId, {
+        keepRuns(slot, {
           current: { seed: state.seed, replay: current?.replay ?? false, suggestion },
           lastSuggestion: suggestion,
           runs,
@@ -307,12 +328,19 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       refresh({ plan: change(get().plan) })
     }
 
-    const start = (seed: string, replay: boolean, scenarioId: ScenarioId = get().scenarioId) => {
-      const state = createGame(getScenario(scenarioId), seed)
+    const start = (
+      seed: string,
+      replay: boolean,
+      scenarioId: ScenarioId = get().scenarioId,
+      mode: GameMode = get().mode,
+    ) => {
+      const state = createGame(getScenario(scenarioId, mode), seed)
       profiles.setLastScenario(scenarioId)
+      profiles.setLastMode(mode)
       persist(toSave(state))
-      const profile = profiles.load(state.scenarioId)
-      keepRuns(state.scenarioId, {
+      const slot = slotOfGame(state)
+      const profile = profiles.load(slot)
+      keepRuns(slot, {
         ...profile,
         current: { seed: state.seed, replay, suggestion: null },
       })
@@ -320,6 +348,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       // The intro belongs to a new run only; Continue goes straight to the game.
       set({
         scenarioId,
+        mode,
         hasSave: true,
         introStep: getView(state).guidance.intro.length > 0 ? 0 : null,
       })
@@ -349,7 +378,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       issues: [],
       report: null,
       tab: 'plan',
-      hasSave: deps.storage.load(firstId) !== null,
+      hasSave: deps.storage.load(firstSlot) !== null,
       saveNotice: null,
       storageNotice: deps.storage.available() ? null : 'unavailable',
       runsNotice: firstRunsNotice,
@@ -366,15 +395,32 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       runs: firstRuns,
       scenarios,
       scenarioId: firstId,
+      mode: firstMode,
 
       selectScenario(id) {
         if (game || !scenarios.some((x) => x.id === id)) return
         profiles.setLastScenario(id)
+        const mode = modeFor(id, get().mode)
+        const slot = slotOf(id, mode)
         set({
           scenarioId: id,
-          hasSave: deps.storage.load(id) !== null,
-          runs: profiles.load(id).runs,
-          runsNotice: runsTrouble(id),
+          mode,
+          hasSave: deps.storage.load(slot) !== null,
+          runs: profiles.load(slot).runs,
+          runsNotice: runsTrouble(slot),
+          saveNotice: null,
+        })
+      },
+      selectMode(mode) {
+        const id = get().scenarioId
+        if (game || !modesOf(id).includes(mode)) return
+        profiles.setLastMode(mode)
+        const slot = slotOf(id, mode)
+        set({
+          mode,
+          hasSave: deps.storage.load(slot) !== null,
+          runs: profiles.load(slot).runs,
+          runsNotice: runsTrouble(slot),
           saveNotice: null,
         })
       },
@@ -386,24 +432,26 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       },
       sameMarketAgain() {
         if (!game || game.status !== 'ended') return
-        start(game.seed, true, game.scenarioId as ScenarioId)
+        start(game.seed, true, game.scenarioId as ScenarioId, game.scenario.mode ?? 'standard')
       },
       replaySeed(seed) {
         start(seed, true)
       },
       continueRun() {
         const id = get().scenarioId
-        const file = deps.storage.load(id)
+        const mode = get().mode
+        const slot = slotOf(id, mode)
+        const file = deps.storage.load(slot)
         if (!file) {
           set({ hasSave: false })
           return
         }
         if (file === UNREADABLE) {
-          deps.storage.clear(id)
+          deps.storage.clear(slot)
           set({ hasSave: false, saveNotice: 'broken' })
           return
         }
-        const scenario = getScenario(id)
+        const scenario = getScenario(id, mode)
         const problem = saveProblem(scenario, file)
         if (problem === 'engine_version' && isNewerVersion(file.engineVersion, ENGINE_VERSION)) {
           // This page is older than the save: a reload brings the version that can continue it,
@@ -413,7 +461,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         }
         if (problem) {
           // Plan section 4.14: warn and start fresh instead of replaying a different game.
-          deps.storage.clear(id)
+          deps.storage.clear(slot)
           set({
             hasSave: false,
             saveNotice: problem === 'scenario_changed' ? 'scenario_changed' : 'incompatible',
@@ -423,7 +471,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         try {
           begin(replay(scenario, file))
         } catch {
-          deps.storage.clear(id)
+          deps.storage.clear(slot)
           set({ hasSave: false, saveNotice: 'broken' })
         }
       },
@@ -431,10 +479,11 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       leaveRun() {
         // Finished runs are not worth continuing, running ones stay saved.
         if (game?.status === 'ended') {
-          deps.storage.clear(game.scenarioId)
+          const slot = slotOfGame(game)
+          deps.storage.clear(slot)
           set({ hasSave: false })
-          const profile = profiles.load(game.scenarioId)
-          keepRuns(game.scenarioId, { ...profile, current: null })
+          const profile = profiles.load(slot)
+          keepRuns(slot, { ...profile, current: null })
         }
         game = null
         refresh({ report: null, tab: 'plan', introStep: null, helpOpen: false, explain: null })
@@ -444,7 +493,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         game = null
         mortemOf = null
         mortem = null
-        const id = get().scenarioId
+        const slot = slotOf(get().scenarioId, get().mode)
         refresh({
           report: null,
           tab: 'plan',
@@ -453,7 +502,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           explain: null,
           postMortem: null,
           suggestion: null,
-          hasSave: deps.storage.load(id) !== null,
+          hasSave: deps.storage.load(slot) !== null,
         })
       },
 
@@ -515,9 +564,14 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         })),
       setSearchRole: (role) => editPlan((p) => ({ ...p, searchRole: role })),
       setHire: (candidateId) => editPlan((p) => ({ ...p, hire: candidateId })),
-      setLetGo: (letGo) => editPlan((p) => ({ ...p, letGo })),
-      setTeamBuild: (featureId) => editPlan((p) => ({ ...p, teamBuild: featureId })),
-      setTeamOutreach: (target) => editPlan((p) => ({ ...p, teamOutreach: target })),
+      setLetGo: (memberId) => editPlan((p) => ({ ...p, letGo: memberId })),
+      setTeamTask: (memberId, task) =>
+        editPlan((p) => {
+          const teamTasks = { ...p.teamTasks }
+          if (task) teamTasks[memberId] = task
+          else delete teamTasks[memberId]
+          return { ...p, teamTasks }
+        }),
       setFreelance: (change) =>
         editPlan((p) => ({ ...p, freelance: { ...p.freelance, ...change } })),
       answer(messageId, choiceId) {

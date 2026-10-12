@@ -3,7 +3,7 @@ import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
 import { canBookDemo, canFollowUp } from './systems/sales'
 import { plannedHours } from './systems/founder'
-import { openBooking } from './systems/team'
+import { activeMembers, canHire, openBooking } from './systems/team'
 import type { GameState, PlanIssue, WeekPlan } from './types'
 
 export function emptyPlan(): WeekPlan {
@@ -22,9 +22,8 @@ export function emptyPlan(): WeekPlan {
     chase: [],
     searchRole: null,
     hire: null,
-    letGo: false,
-    teamBuild: null,
-    teamOutreach: null,
+    letGo: null,
+    teamTasks: {},
     freelance: { book: null, hoursPerWeek: null, end: false, build: null, outreach: null },
   }
 }
@@ -40,7 +39,7 @@ export function clonePlan(plan: WeekPlan): WeekPlan {
     presales: { ...plan.presales },
     chase: [...plan.chase],
     followUps: [...plan.followUps],
-    teamOutreach: plan.teamOutreach ? { ...plan.teamOutreach } : null,
+    teamTasks: Object.fromEntries(Object.entries(plan.teamTasks).map(([k, v]) => [k, { ...v }])),
     freelance: {
       ...plan.freelance,
       book: plan.freelance.book ? { ...plan.freelance.book } : null,
@@ -199,26 +198,25 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
   }
 
   const { team } = state
-  const hired = team.members.length > 0
-  if (plan.searchRole !== null && (hired || team.search !== null)) {
+  if (plan.searchRole !== null && (team.search !== null || !canHire(state))) {
     issues.push({ code: 'search_not_allowed' })
   }
   if (plan.hire !== null) {
     const candidate = team.candidates.find((c) => c.id === plan.hire)
-    if (!candidate || hired || plan.letGo)
+    if (!candidate || !canHire(state) || plan.letGo !== null)
       issues.push({ code: 'invalid_hire', candidateId: plan.hire })
   }
-  if (plan.letGo && !team.members.some((m) => m.letGoWeek === null)) {
+  if (plan.letGo !== null && !activeMembers(state).some((m) => m.id === plan.letGo)) {
     issues.push({ code: 'let_go_not_allowed' })
   }
-  if (plan.teamBuild !== null && !state.product.features.some((f) => f.id === plan.teamBuild)) {
-    issues.push({ code: 'invalid_team_work' })
-  }
-  if (plan.teamOutreach) {
-    const hidden = state.hidden.segments[plan.teamOutreach.segmentId]
-    if (!hidden || !Object.hasOwn(hidden.channelResponse, plan.teamOutreach.channel)) {
-      issues.push({ code: 'invalid_team_work' })
-    }
+  for (const [memberId, task] of Object.entries(plan.teamTasks)) {
+    const member = activeMembers(state).find((m) => m.id === memberId)
+    const valid =
+      member !== undefined &&
+      (task.kind === 'build'
+        ? state.product.features.some((f) => f.id === task.featureId)
+        : Object.hasOwn(state.hidden.segments[task.segmentId]?.channelResponse ?? {}, task.channel))
+    if (!valid) issues.push({ code: 'invalid_team_work' })
   }
 
   if (!freelanceValid(state, plan)) issues.push({ code: 'invalid_freelance' })

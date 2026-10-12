@@ -11,6 +11,7 @@ export function toSave(state: GameState): SaveFile {
     engineVersion: state.engineVersion,
     scenarioId: state.scenarioId,
     scenarioHash: scenarioHash(state.scenario),
+    ...(state.scenario.mode ? { mode: state.scenario.mode } : {}),
     seed: state.seed,
     actions: state.actionLog.map((a) =>
       a.type === 'endWeek' ? { ...a, plan: clonePlan(a.plan) } : { ...a },
@@ -25,6 +26,7 @@ export function toSave(state: GameState): SaveFile {
 export function saveProblem(scenario: Scenario, save: SaveFile): SaveProblem | null {
   if (save.engineVersion !== ENGINE_VERSION) return 'engine_version'
   if (save.scenarioId !== scenario.id) return 'scenario_id'
+  if ((save.mode ?? 'standard') !== (scenario.mode ?? 'standard')) return 'mode'
   if (save.scenarioHash !== scenarioHash(scenario)) return 'scenario_changed'
   return null
 }
@@ -33,6 +35,8 @@ const PROBLEM_TEXT: Record<SaveProblem, (scenario: Scenario, save: SaveFile) => 
   engine_version: (_, save) =>
     `Save is from engine ${save.engineVersion}, this is ${ENGINE_VERSION}`,
   scenario_id: (scenario, save) => `Save is for scenario ${save.scenarioId}, not ${scenario.id}`,
+  mode: (scenario, save) =>
+    `Save is for ${save.mode ?? 'standard'} mode, not ${scenario.mode ?? 'standard'}`,
   scenario_changed: (scenario, save) =>
     `Save was made with other values for scenario ${scenario.id} ` +
     `(hash ${save.scenarioHash ?? 'missing'}, now ${scenarioHash(scenario)}). ` +

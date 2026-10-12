@@ -7,7 +7,7 @@ export { checkPlan, clonePlan, emptyPlan, validatePlan } from './plan'
 export type { PlanCheck } from './plan'
 export { endWeek, shutDown } from './turn'
 export { respond } from './systems/inbox'
-export { hireEconomics } from './systems/team'
+export { hireEconomics, hiresEconomics } from './systems/team'
 export { buildPostMortem } from './postmortem'
 export type { HireEconomics } from './systems/team'
 export { replay, saveProblem, toSave } from './save'
@@ -29,11 +29,14 @@ export type {
   MessageView,
   PendingExperimentView,
   TeamView,
+  TeamTask,
+  GameMode,
   FreelancePlan,
   FreelanceView,
   FreelancerView,
   FreelanceBooking,
   FreelanceEconomicsView,
+  HireEconomicsView,
   LandingView,
   PresaleView,
   LeadChange,

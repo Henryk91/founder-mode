@@ -621,7 +621,9 @@ export function validatingPlayer(
     const team = view.team
     const unshipped = wanted.filter((f) => !view.product.features.find((x) => x.id === f)?.shipped)
     const money = view.company.cashCents + Math.max(0, view.founder.savingsCents)
-    if (team.candidates.length > 0 && !team.member) {
+    // The bots make one hire at most, in every mode (long mode's several hires are for Part C).
+    const first = team.members.length === 0 && team.hiresLeft > 0
+    if (team.candidates.length > 0 && first) {
       const best = [...team.candidates].sort(
         (x, y) => impressionOrder.indexOf(y.impression) - impressionOrder.indexOf(x.impression),
       )[0]
@@ -631,7 +633,7 @@ export function validatingPlayer(
         const pay = bestPayback(view, unshipped, market, start, best.role, skillOf(best.impression))
         if (pay && pay.value > 0) b.plan.hire = best.id
       }
-    } else if (team.canSearch && team.candidates.length === 0 && !team.hadHire) {
+    } else if (team.canSearch && team.candidates.length === 0 && first) {
       if (b.free >= view.costs.searchHours) {
         let role: 'developer' | 'salesperson' | null = null
         if (behaviours.hire === 'covered') {
@@ -650,14 +652,17 @@ export function validatingPlayer(
         }
       }
     }
-    if (team.member?.working && team.member.role === 'developer') {
-      const next = unshipped[0] ?? view.product.features.find((f) => !f.shipped)?.id
-      b.plan.teamBuild = next ?? null
-    }
-    if (team.member?.working && team.member.role === 'salesperson' && market) {
-      b.plan.teamOutreach = {
-        segmentId: market,
-        channel: channels.choose(market, view.channels, 0),
+    for (const member of team.members) {
+      if (!member.working) continue
+      if (member.role === 'developer') {
+        const next = unshipped[0] ?? view.product.features.find((f) => !f.shipped)?.id
+        if (next) b.plan.teamTasks[member.id] = { kind: 'build', featureId: next }
+      } else if (market) {
+        b.plan.teamTasks[member.id] = {
+          kind: 'outreach',
+          segmentId: market,
+          channel: channels.choose(market, view.channels, 0),
+        }
       }
     }
   }

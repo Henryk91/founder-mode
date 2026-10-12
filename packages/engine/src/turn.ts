@@ -2,7 +2,7 @@ import { clonePlan, validatePlan } from './plan'
 import { Rng } from './rng'
 import { resolveExperiments, runInterviews, startExperiments } from './systems/experiments'
 import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
-import { applyFounderWeek, hoursByActivity } from './systems/founder'
+import { applyFounderWeek, hoursByActivity, livingCostsFor } from './systems/founder'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
 import { applyChurn, applyReferrals, applySales } from './systems/sales'
@@ -56,7 +56,16 @@ export function endWeek(
     state = { ...state, company: { ...state.company, priceCentsPerMonth: plan.priceCentsPerMonth } }
   }
 
-  // 3. Founder: hours and energy
+  // 3. Founder: living costs that change this week (long mode), hours and energy
+  const living = livingCostsFor(state.scenario, state.week, state.founder.livingCostCentsPerWeek)
+  if (living !== state.founder.livingCostCentsPerWeek) {
+    entries.push({
+      kind: 'living_costs_changed',
+      fromCents: state.founder.livingCostCentsPerWeek,
+      toCents: living,
+    })
+    state = { ...state, founder: { ...state.founder, livingCostCentsPerWeek: living } }
+  }
   const energyBefore = input.founder.energy
   state = {
     ...state,
@@ -83,8 +92,9 @@ export function endWeek(
   // 5. Product: bug fixing, build progress, shipping. A working developer or freelance developer
   // adds build hours.
   const team = teamOutput(state, plan)
-  if (team && team.hours > 0)
-    entries.push({ kind: 'team_output', role: team.role, hours: team.hours })
+  for (const t of team) {
+    if (t.hours > 0) entries.push({ kind: 'team_output', role: t.role, hours: t.hours })
+  }
   const freelance = freelanceOutput(state, plan, team)
   const product = applyProduct(state, plan, rng, team, freelance)
   state = product.state

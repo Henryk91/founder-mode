@@ -1,4 +1,11 @@
-import type { ChannelId, FreelancePlan, PlayerView, TeamRoleId } from '@founder-mode/engine'
+import type {
+  ChannelId,
+  FreelancePlan,
+  MemberView,
+  PlayerView,
+  TeamRoleId,
+  TeamTask,
+} from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { count, label, type UiStage } from '../labels'
 import { useGame } from '../useGame'
@@ -8,8 +15,9 @@ import styles from './ui.module.css'
 const roleName = (role: TeamRoleId, stage: UiStage) => label(`team.role.${role}`, stage)
 
 /**
- * The hiring section of the Plan tab. One hire at most: search, meet candidates, make an offer,
- * point them at work, or let go. Below it the freelancer: booked by the week, never the hire.
+ * The hiring section of the Plan tab: search, meet candidates, make an offer, point each hire at
+ * work, or let one go. One hire in the 60 week game, a small team in long mode. Below it the
+ * freelancer: booked by the week, never a hire.
  */
 export function TeamPlan() {
   const view = useGame((s) => s.view)
@@ -18,8 +26,7 @@ export function TeamPlan() {
     setSearchRole: useGame((s) => s.setSearchRole),
     setHire: useGame((s) => s.setHire),
     setLetGo: useGame((s) => s.setLetGo),
-    setTeamBuild: useGame((s) => s.setTeamBuild),
-    setTeamOutreach: useGame((s) => s.setTeamOutreach),
+    setTeamTask: useGame((s) => s.setTeamTask),
   }
   const setFreelance = useGame((s) => s.setFreelance)
   if (!view) return null
@@ -36,22 +43,17 @@ export function TeamPlan() {
               key={r.id}
               label={roleName(r.id, stage)}
               note={label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
-              choices={
-                <button
-                  type="button"
-                  aria-pressed={booked}
-                  className={`${styles.chip} ${booked ? styles.chipOn : ''}`}
-                  onClick={() => actions.setSearchRole(booked ? null : r.id)}
-                >
-                  {booked
-                    ? label('team.searchBooked', stage, { hours: hours(costs.searchHours) })
-                    : label('team.search', stage, { role: roleName(r.id, stage) })}
-                </button>
-              }
+              choices={chip(
+                booked,
+                booked
+                  ? label('team.searchBooked', stage, { hours: hours(costs.searchHours) })
+                  : label('team.search', stage, { role: roleName(r.id, stage) }),
+                () => actions.setSearchRole(booked ? null : r.id),
+              )}
             />
           )
         })}
-      {team.candidates.length > 0 && (
+      {team.candidates.length > 0 && team.canHire && (
         <>
           <SubHeading>{label('team.candidates', stage)}</SubHeading>
           {team.candidates.map((c) => {
@@ -62,16 +64,11 @@ export function TeamPlan() {
                 <Market
                   label={c.name}
                   note={label('team.perMonth', stage, { amount: formatEuro(monthly) })}
-                  choices={
-                    <button
-                      type="button"
-                      aria-pressed={booked}
-                      className={`${styles.chip} ${booked ? styles.chipOn : ''}`}
-                      onClick={() => actions.setHire(booked ? null : c.id)}
-                    >
-                      {booked ? label('team.offerBooked', stage) : label('team.offer', stage)}
-                    </button>
-                  }
+                  choices={chip(
+                    booked,
+                    booked ? label('team.offerBooked', stage) : label('team.offer', stage),
+                    () => actions.setHire(booked ? null : c.id),
+                  )}
                 />
                 <Writing>
                   {roleName(c.role, stage)} ·{' '}
@@ -82,18 +79,22 @@ export function TeamPlan() {
           })}
         </>
       )}
-      {team.member && (
+      {team.members.map((m) => (
         <MemberCard
+          key={m.id}
           view={view}
           stage={stage}
-          buildTarget={plan.teamBuild}
-          outreach={plan.teamOutreach}
-          letGo={plan.letGo}
+          member={m}
+          task={plan.teamTasks[m.id] ?? null}
+          letGo={plan.letGo === m.id}
           actions={actions}
         />
-      )}
+      ))}
       <FreelancePlanRows view={view} stage={stage} draft={plan.freelance} set={setFreelance} />
-      <HintLine term="hiring" hint={label('plan.hint.hiring', stage)} />
+      <HintLine
+        term="hiring"
+        hint={label(team.maxMembers > 1 ? 'plan.hint.hiringTeam' : 'plan.hint.hiring', stage)}
+      />
     </>
   )
 }
@@ -101,29 +102,17 @@ export function TeamPlan() {
 function MemberCard(props: {
   view: PlayerView
   stage: UiStage
-  buildTarget: string | null
-  outreach: { segmentId: string; channel: ChannelId } | null
+  member: MemberView
+  task: TeamTask | null
   letGo: boolean
   actions: {
-    setLetGo: (v: boolean) => void
-    setTeamBuild: (id: string | null) => void
-    setTeamOutreach: (t: { segmentId: string; channel: ChannelId } | null) => void
+    setLetGo: (memberId: string | null) => void
+    setTeamTask: (memberId: string, task: TeamTask | null) => void
   }
 }) {
-  const { view, stage, actions } = props
-  const member = view.team.member
-  if (!member) return null
-  const chip = (on: boolean, text: string, onClick: () => void) => (
-    <button
-      key={text}
-      type="button"
-      aria-pressed={on}
-      className={`${styles.chip} ${on ? styles.chipOn : ''}`}
-      onClick={onClick}
-    >
-      {text}
-    </button>
-  )
+  const { view, stage, member, task, actions } = props
+  const setTask = (t: TeamTask | null) => actions.setTeamTask(member.id, t)
+  const outreach = task?.kind === 'outreach' ? task : null
   return (
     <>
       <SubHeading>{label('team.member', stage, { role: roleName(member.role, stage) })}</SubHeading>
@@ -131,17 +120,24 @@ function MemberCard(props: {
         label={member.name}
         note={label('team.perMonth', stage, { amount: formatEuro(member.monthlyCents) })}
       />
+      {member.managementHours > 0 && (
+        <Writing>
+          {label('team.manage', stage, {
+            hours: label('unit.hours', stage, { n: member.managementHours }),
+          })}
+        </Writing>
+      )}
       {member.working && member.role === 'developer' && (
         <>
           <Writing>{label('team.devWork', stage)}</Writing>
           <Choices>
-            {chip(props.buildTarget === null, label('team.devNone', stage), () =>
-              actions.setTeamBuild(null),
-            )}
+            {chip(task === null, label('team.devNone', stage), () => setTask(null))}
             {view.product.features
               .filter((f) => !f.shipped)
               .map((f) =>
-                chip(props.buildTarget === f.id, f.name, () => actions.setTeamBuild(f.id)),
+                chip(task?.kind === 'build' && task.featureId === f.id, f.name, () =>
+                  setTask({ kind: 'build', featureId: f.id }),
+                ),
               )}
           </Choices>
         </>
@@ -150,26 +146,22 @@ function MemberCard(props: {
         <>
           <Writing>{label('team.salesWork', stage)}</Writing>
           <Choices>
-            {chip(props.outreach === null, label('team.salesNone', stage), () =>
-              actions.setTeamOutreach(null),
-            )}
+            {chip(outreach === null, label('team.salesNone', stage), () => setTask(null))}
             {view.segments.map((seg) =>
-              chip(props.outreach?.segmentId === seg.id, seg.name, () =>
-                actions.setTeamOutreach({
+              chip(outreach?.segmentId === seg.id, seg.name, () =>
+                setTask({
+                  kind: 'outreach',
                   segmentId: seg.id,
                   channel: seg.lastChannel ?? view.channels[0] ?? 'phone',
                 }),
               ),
             )}
           </Choices>
-          {props.outreach && (
+          {outreach && (
             <Choices>
-              {view.channels.map((c) =>
-                chip(props.outreach?.channel === c, label(`channel.${c}`, stage), () =>
-                  actions.setTeamOutreach({
-                    segmentId: props.outreach?.segmentId ?? '',
-                    channel: c,
-                  }),
+              {view.channels.map((c: ChannelId) =>
+                chip(outreach.channel === c, label(`channel.${c}`, stage), () =>
+                  setTask({ kind: 'outreach', segmentId: outreach.segmentId, channel: c }),
                 ),
               )}
             </Choices>
@@ -177,16 +169,13 @@ function MemberCard(props: {
         </>
       )}
       <Choices>
-        <button
-          type="button"
-          aria-pressed={props.letGo}
-          className={`${styles.chip} ${props.letGo ? styles.chipOn : ''}`}
-          onClick={() => actions.setLetGo(!props.letGo)}
-        >
-          {props.letGo
+        {chip(
+          props.letGo,
+          props.letGo
             ? label('team.letGoBooked', stage)
-            : label('team.letGo', stage, { cost: formatEuro(member.letGoCostCents) })}
-        </button>
+            : label('team.letGo', stage, { cost: formatEuro(member.letGoCostCents) }),
+          () => actions.setLetGo(props.letGo ? null : member.id),
+        )}
       </Choices>
     </>
   )

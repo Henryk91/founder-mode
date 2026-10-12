@@ -178,6 +178,21 @@ Rented by the week, in both run lengths. Never counts as the one hire.
 
 No hidden values and no random draws of its own: a run that never books one plays exactly as before.
 
+## 8c. Long mode (Phase 9 part C)
+
+104 weeks, picked on the Start screen, defined in `scenario.yaml` under `modes.long` and laid over everything else. Values below are the starting point of Part C, before any tuning.
+
+| Value | 60 weeks | Long mode |
+|---|---|---|
+| Weeks | 60 | 104 |
+| Win | Profitable in each of the last 2 months | Profitable in each of the last 3 months |
+| Living costs | 675 a week | 675, then 742.50 a week from week 53 |
+| Markets running out | No | Outreach response x max(0.3, 1 - leads found there / reachable companies), using the size column of 3.1 |
+| Hires | One, part time (section 8) | Up to 4 at once, 8 in all, full time 40 h: developer 7,000, salesperson 6,050 a month (Munich, `docs/phase9-proposal.md` 8.1); 2 h of the founder's week each |
+| Milestones | Up to 52 weeks survived | Adds 78 and 104 weeks survived |
+
+Everything else (starting money, markets, features, events, freelancer) is the 60 week game's.
+
 ## 9. Office stages
 
 | Stage | Trigger | Effect |

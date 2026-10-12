@@ -7,8 +7,12 @@ import {
   bookedHours,
   freelanceWorkHours,
   freelancerIn,
+  activeMembers,
+  canHire,
+  maxHires,
+  maxMembers,
   openBooking,
-  workingMember,
+  workingMembers,
 } from './systems/team'
 import { activeCustomers } from './systems/customers'
 import { selectFounderNote } from './systems/guidance'
@@ -40,6 +44,7 @@ export function getView(state: GameState): PlayerView {
   return {
     scenarioId: state.scenarioId,
     scenarioName: scenario.name,
+    mode: scenario.mode ?? 'standard',
     seed: state.seed,
     week: state.week,
     maxWeeks: scenario.maxWeeks,
@@ -57,6 +62,10 @@ export function getView(state: GameState): PlayerView {
       savingsCents: founder.savingsCents,
       livingCostCentsPerWeek: founder.livingCostCentsPerWeek,
       livingCostCentsPerMonth: founder.livingCostCentsPerWeek * scenario.finance.weeksPerMonth,
+      nextLivingStep:
+        (scenario.founder.livingSteps ?? [])
+          .filter((step) => step.week > state.week)
+          .map((step) => ({ week: step.week, centsPerWeek: step.centsPerWeek }))[0] ?? null,
     },
     company: {
       cashCents: company.cashCents,
@@ -101,6 +110,9 @@ export function getView(state: GameState): PlayerView {
       searchWeeks: scenario.team.searchWeeks,
       startWeeks: scenario.team.startWeeks,
       freelanceNoticeWeeks: scenario.team.freelance.noticeWeeks,
+      teamMaxMembers: scenario.team.maxMembers ?? 1,
+      teamMaxHires: scenario.team.maxHires ?? 1,
+      managementHoursPerMember: scenario.team.managementHoursPerMember ?? 0,
     },
     committedHours: committedHours(state),
     forcedHours: founder.forcedHours,
@@ -245,12 +257,12 @@ export function getView(state: GameState): PlayerView {
 function teamView(state: GameState): TeamView {
   const cfg = state.scenario.team
   const { team } = state
-  const hired = team.members.length > 0
-  const current = team.members.find((m) => m.letGoWeek === null) ?? null
   const impression = (id: string) => cfg.impressions.find((b) => b.id === id)?.name ?? id
   const monthly = (role: 'developer' | 'salesperson') => cfg.roles[role].monthlyCents
+  const working = new Set(workingMembers(state).map((m) => m.id))
   return {
-    canSearch: !hired && team.search === null,
+    canSearch: team.search === null && canHire(state),
+    canHire: canHire(state),
     roles: (['developer', 'salesperson'] as const).map((id) => ({
       id,
       name: cfg.roles[id].name,
@@ -264,21 +276,21 @@ function teamView(state: GameState): TeamView {
       role: c.role,
       impression: impression(c.impressionId),
     })),
-    member: current
-      ? {
-          id: current.id,
-          name: current.name,
-          role: current.role,
-          roleName: cfg.roles[current.role].name,
-          monthlyCents: monthly(current.role),
-          startWeek: current.startWeek,
-          working: workingMember(state)?.id === current.id,
-          letGoCostCents: Math.round(
-            (monthly(current.role) * cfg.severanceWeeks) / state.scenario.finance.weeksPerMonth,
-          ),
-        }
-      : null,
-    hadHire: hired && current === null,
+    members: activeMembers(state).map((m) => ({
+      id: m.id,
+      name: m.name,
+      role: m.role,
+      roleName: cfg.roles[m.role].name,
+      monthlyCents: monthly(m.role),
+      startWeek: m.startWeek,
+      working: working.has(m.id),
+      letGoCostCents: Math.round(
+        (monthly(m.role) * cfg.severanceWeeks) / state.scenario.finance.weeksPerMonth,
+      ),
+      managementHours: cfg.managementHoursPerMember ?? 0,
+    })),
+    maxMembers: maxMembers(state),
+    hiresLeft: Math.max(0, maxHires(state) - team.members.length),
     freelance: freelanceView(state),
   }
 }
