@@ -96,6 +96,20 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
         for (const tab of tabs) {
           await page.locator('nav button').filter({ hasText: tab }).first().click()
           await check(tab)
+          if (tab === 'Plan') {
+            // Scrolled down, the band under the top bar shows the hours instead of the numbers.
+            for (const title of ['Talk', 'Test', 'Build']) {
+              await page
+                .getByRole('button', { name: new RegExp(`^${title}`) })
+                .first()
+                .click()
+            }
+            await page.evaluate(() => document.querySelector('main')!.scrollTo(0, 10_000))
+            await page.waitForSelector('[data-show="hours"]')
+            await page.waitForTimeout(250)
+            await check('Plan, scrolled')
+            await page.evaluate(() => document.querySelector('main')!.scrollTo(0, 0))
+          }
         }
         await page.getByRole('button', { name: 'Help' }).click()
         await check('help')
@@ -125,8 +139,9 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
           const el = document.activeElement as HTMLElement
           return { tag: el.tagName, text: el.textContent ?? '' }
         })
-      // The intro card's heading takes focus, so the new screen is read out.
-      expect((await focused()).tag).toBe('H1')
+      // The intro card's heading takes focus, so the new screen is read out. Focus moves in an
+      // effect after the new screen renders, so give it a moment.
+      await expect.poll(async () => (await focused()).tag).toBe('H1')
       for (let i = 0; i < 6; i++) {
         const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
         if (await next.count()) await next.first().focus()

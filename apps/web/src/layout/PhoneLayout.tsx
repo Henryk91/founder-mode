@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Explain } from '../components/Explain'
 import { SceneStrip } from '../components/Scene'
 import { StorageNote } from '../components/StorageNote'
@@ -5,6 +6,7 @@ import { TopBar } from '../components/TopBar'
 import { label } from '../labels'
 import type { Tab } from '../store'
 import { useGame } from '../useGame'
+import { HoursBarOutOfView } from './hoursBar'
 import { SCREENS, TABS } from './screens'
 import styles from './Layout.module.css'
 
@@ -16,15 +18,17 @@ export function PhoneLayout(props: { main: React.ReactNode | null }) {
   const stage = view.company.uiStage
   const openMessages = view.inbox.filter((m) => m.answeredChoiceId === null).length
   const Screen = SCREENS[tab]
+  const [barOut, setBarOut] = useState(false)
+  const onPlan = props.main === null && tab === 'plan'
 
   return (
     <div className={styles.phone} data-stage={stage} data-layout="phone">
-      <TopBar wide={false} />
+      <TopBar wide={false} planHours={onPlan ? barOut : null} />
       {props.main === null && tab === 'inbox' && <SceneStrip />}
       <main className={styles.phoneContent}>
         <StorageNote />
         <Explain />
-        {props.main ?? <Screen />}
+        <HoursBarOutOfView value={setBarOut}>{props.main ?? <Screen />}</HoursBarOutOfView>
       </main>
       {props.main === null && (
         <nav className={styles.tabs} aria-label={label('tab.nav', stage)}>

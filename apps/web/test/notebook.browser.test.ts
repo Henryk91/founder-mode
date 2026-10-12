@@ -458,4 +458,102 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
     expect(wrong).toEqual([])
     await page.close()
   }, 90_000)
+
+  it('swaps the numbers band for the hours once the hours bar scrolls away, on the phone Plan tab', async () => {
+    const page = await planTab(390, 844)
+    for (const title of ['Talk', 'Test', 'Build']) {
+      await page
+        .getByRole('button', { name: new RegExp(`^${title}`) })
+        .first()
+        .click()
+    }
+    await page
+      .getByRole('button', { name: /^5 more hours on / })
+      .first()
+      .click()
+    const band = () =>
+      page.evaluate(() => {
+        const swap = document.querySelector('[data-show]')!
+        const [numbers, hours] = [...swap.children] as HTMLElement[]
+        return {
+          show: swap.getAttribute('data-show'),
+          height: swap.getBoundingClientRect().height,
+          mainTop: document.querySelector('main')!.getBoundingClientRect().top,
+          numbers: getComputedStyle(numbers!).opacity,
+          hours: getComputedStyle(hours!).opacity,
+          hoursText: hours!.textContent,
+          hidden: hours!.querySelector('[aria-hidden="true"]') !== null,
+          fade: getComputedStyle(hours!).transitionDuration,
+        }
+      })
+    const scrollTo = (top: number) =>
+      page.evaluate((top) => document.querySelector('main')!.scrollTo(0, top), top)
+    const showing = (what: string) =>
+      page.waitForFunction(
+        (what) => document.querySelector('[data-show]')?.getAttribute('data-show') === what,
+        what,
+      )
+
+    // Planning scrolled the notebook down to the stepper; start from the top.
+    await scrollTo(0)
+    await showing('numbers')
+    await page.waitForTimeout(250)
+    const top = await band()
+    expect(top.numbers).toBe('1')
+    expect(top.hours).toBe('0')
+    // Scrolled a little, the notebook's own bar still shows: no swap yet.
+    await scrollTo(60)
+    await page.waitForTimeout(100)
+    expect((await band()).show).toBe('numbers')
+
+    await scrollTo(800)
+    await showing('hours')
+    await page.waitForTimeout(250)
+    const down = await band()
+    expect(down.hoursText).toBe('5 of 50 h · 45 h free')
+    expect(down.hidden).toBe(true)
+    expect(down.hours).toBe('1')
+    expect(down.numbers).toBe('0')
+    // Same height in the same place: nothing below moves.
+    expect(down.height).toBe(top.height)
+    expect(down.mainTop).toBe(top.mainTop)
+    expect(parseFloat(down.fade)).toBeLessThanOrEqual(0.2)
+
+    // A number taking keyboard focus brings the numbers back while it has it.
+    await page.getByRole('button', { name: /^Cash/ }).focus()
+    await page.waitForTimeout(250)
+    expect((await band()).numbers).toBe('1')
+    await page.evaluate(() => (document.activeElement as HTMLElement).blur())
+
+    await scrollTo(0)
+    await showing('numbers')
+
+    // No fade for anyone who asked for less motion.
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    expect(parseFloat((await band()).fade)).toBeLessThan(0.001)
+
+    // Other tabs keep the numbers band as it was.
+    await page.getByRole('button', { name: /^Inbox/ }).click()
+    expect(await page.locator('[data-show]').count()).toBe(0)
+    await page.close()
+  }, 60_000)
+
+  it('keeps the numbers in the desk bar while the planner scrolls', async () => {
+    const page = await planTab(1280, 700)
+    for (const title of ['Talk', 'Test', 'Build']) {
+      await page
+        .getByRole('button', { name: new RegExp(`^${title}`) })
+        .first()
+        .click()
+    }
+    await page.evaluate(() => {
+      const notebook = document.querySelector('section[aria-label="My week"]')!
+      notebook
+        .closest('[class*="_centre_"], [class*="_left_"], [class*="_right_"]')!
+        .scrollTo(0, 800)
+    })
+    await page.waitForTimeout(100)
+    expect(await page.locator('[data-show]').count()).toBe(0)
+    await page.close()
+  }, 60_000)
 }

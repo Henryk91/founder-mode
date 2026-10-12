@@ -1,4 +1,5 @@
 import type { ChannelId, PlanIssue, PlayerView, WeekPlan } from '@founder-mode/engine'
+import { useContext, useEffect, useRef } from 'react'
 import { FounderNote } from '../components/FounderNote'
 import {
   Choices,
@@ -14,6 +15,7 @@ import { TeamPlan } from '../components/TeamPlan'
 import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type UiStage } from '../labels'
 import type { PlanSection as SectionId } from '../store'
+import { HoursBarOutOfView } from '../layout/hoursBar'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 import plan from './Plan.module.css'
@@ -25,7 +27,7 @@ function capFor(current: number, freeHours: number, hoursPerUnit: number, hardMa
 
 const sum = (values: number[]) => values.reduce((a, b) => a + b, 0)
 
-type Activity = 'sales' | 'build' | 'learn' | 'admin' | 'rest'
+export type Activity = 'sales' | 'build' | 'learn' | 'admin' | 'rest'
 
 /** Planned hours by activity, for the hours bar. Admin is everything else already booked. */
 export function hoursByActivity(
@@ -218,7 +220,7 @@ function hasDemosSection(view: PlayerView, p: WeekPlan): boolean {
   )
 }
 
-const ACTIVITIES: { id: Activity; key: LabelKey }[] = [
+export const ACTIVITIES: { id: Activity; key: LabelKey }[] = [
   { id: 'sales', key: 'plan.act.sales' },
   { id: 'build', key: 'plan.act.build' },
   { id: 'learn', key: 'plan.act.learn' },
@@ -295,6 +297,8 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
   const planned = useGame((s) => s.plannedHours)
   const canRepeat = useGame((s) => s.canRepeat)
   const repeat = useGame((s) => s.repeatLastWeek)
+  const barRow = useRef<HTMLDivElement>(null)
+  useHoursBarWatch(barRow)
   if (!view) return null
   const stage = view.company.uiStage
   const { founder } = view
@@ -321,7 +325,7 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
           <span className={plan.suffix}>{label('plan.hours.planned', stage)}</span>
         </span>
       </div>
-      <div className={plan.barRow}>
+      <div className={plan.barRow} ref={barRow}>
         <div
           className={`${plan.bar} ${over ? plan.barOver : ''} ${planned === 0 ? plan.barEmpty : ''}`}
           role="img"
@@ -368,6 +372,31 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
       {children}
     </section>
   )
+}
+
+/**
+ * On the phone, tells the layout whether the hours bar has scrolled up out of view, so the band
+ * under the top bar can show the hours instead. A bar still below the screen has not been passed.
+ */
+function useHoursBarWatch(target: React.RefObject<HTMLElement | null>) {
+  const report = useContext(HoursBarOutOfView)
+  useEffect(() => {
+    const el = target.current
+    if (!report || !el || typeof IntersectionObserver === 'undefined') return
+    const watch = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return
+        const top = entry.rootBounds?.top ?? 0
+        report(!entry.isIntersecting && entry.boundingClientRect.bottom <= top)
+      },
+      { root: el.closest('main') },
+    )
+    watch.observe(el)
+    return () => {
+      watch.disconnect()
+      report(false)
+    }
+  }, [report, target])
 }
 
 function TalkBody({ free }: { free: number }) {

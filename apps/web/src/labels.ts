@@ -297,6 +297,7 @@ const labels = {
   'note.dismiss': 'Dismiss',
   'plan.hours': '{planned} of {base} h',
   'plan.hours.planned': ' planned',
+  'plan.band': '{hours} · {free} free',
   'plan.more': 'more',
   'plan.hint.talk': '{hours} each, answers at week end.',
   'plan.hint.test': 'See who pays before you build.',

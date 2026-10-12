@@ -1,0 +1,63 @@
+/* The hours bar of the notebook (Plan.module.css), small enough for the phone's numbers band. */
+.band {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px;
+}
+
+.bar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  height: 22px;
+  border: 1.5px solid var(--paper);
+  border-radius: 11px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.empty {
+  border-style: dashed;
+  border-color: var(--on-dark-muted);
+  background: transparent;
+}
+
+.over {
+  border-color: var(--warn-on-dark);
+}
+
+.segment {
+  min-width: 0;
+}
+
+.sales {
+  background: var(--act-sales);
+}
+.build {
+  background: var(--act-build);
+}
+.learn {
+  background: var(--act-learn);
+}
+.admin {
+  background: var(--act-admin);
+}
+.rest {
+  background: var(--act-rest);
+}
+
+.text {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--on-dark);
+}
+
+.warn {
+  color: var(--warn-on-dark);
+}
