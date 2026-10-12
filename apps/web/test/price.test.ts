@@ -21,6 +21,7 @@ const lost = (lostReason: LeadView['lostReason']): LeadView => ({
   walkInFrom: null,
   channel: 'phone',
   referredBy: null,
+  foundBy: null,
 })
 
 describe('price in words', () => {

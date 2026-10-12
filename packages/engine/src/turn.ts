@@ -12,6 +12,7 @@ import {
   freelanceBillCents,
   freelanceOutput,
   freelancerIn,
+  teamChases,
   teamOutput,
 } from './systems/team'
 import { checkEnding } from './systems/endings'
@@ -96,6 +97,9 @@ export function endWeek(
     if (t.hours > 0) entries.push({ kind: 'team_output', role: t.role, hours: t.hours })
   }
   const freelance = freelanceOutput(state, plan, team)
+  const delegatedChases = [...teamChases(team), ...(freelance?.chases ?? [])]
+  if (delegatedChases.length > 0)
+    entries.push({ kind: 'team_chased', count: delegatedChases.length })
   const product = applyProduct(state, plan, rng, team, freelance)
   state = product.state
   entries.push(...product.entries)
@@ -133,7 +137,7 @@ export function endWeek(
   entries.push(...freelancing.entries)
 
   // 8. Finance: transfers, costs, chasing, payments, invoices at month end
-  const finance = applyFinanceWeek(state, plan, extras, rng)
+  const finance = applyFinanceWeek(state, plan, extras, rng, delegatedChases)
   state = finance.state
   entries.push(...finance.movements)
   if (finance.issued.length > 0) {

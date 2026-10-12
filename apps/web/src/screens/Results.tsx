@@ -102,6 +102,8 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'team_output':
       return label(`results.entry.team_output.${entry.role}`, stage, { hours: entry.hours })
+    case 'team_chased':
+      return count('results.entry.team_chased', stage, entry.count)
     case 'living_costs_changed':
       return label('results.entry.living_costs_changed', stage, {
         amount: formatEuro(entry.toCents),
@@ -190,6 +192,8 @@ function place(entry: ReportEntry): [Group, number] {
       return ['product', 3]
     case 'team_output':
       return entry.role === 'developer' ? ['product', 3] : ['sales', 3]
+    case 'team_chased':
+      return ['money', 3]
     case 'freelance_output':
       return entry.role === 'developer' ? ['product', 3] : ['sales', 3]
     case 'freelance_bill':

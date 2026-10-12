@@ -18,6 +18,7 @@ const lead = (over: Partial<LeadView>): LeadView => ({
   walkInFrom: null,
   channel: null,
   referredBy: null,
+  foundBy: null,
   ...over,
 })
 
