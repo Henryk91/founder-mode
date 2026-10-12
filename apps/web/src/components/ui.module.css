@@ -76,8 +76,15 @@
   font-weight: 700;
 }
 
+/*
+ * Disabled controls: muted ink and a light dashed border on their own paper fill, not faded out.
+ * Muted ink is 6.9:1 on paper, the border 3.6:1; the dashes say "not now" without colour.
+ */
 .button:disabled {
-  opacity: 0.45;
+  border-color: var(--control-line);
+  border-style: dashed;
+  background: var(--paper);
+  color: var(--ink-muted);
   cursor: not-allowed;
 }
 
@@ -120,8 +127,12 @@
 }
 
 .chip:disabled {
-  opacity: 0.4;
+  color: var(--ink-muted);
   cursor: not-allowed;
+}
+
+.chip:disabled::before {
+  border-style: dashed;
 }
 
 .chipOn {
@@ -179,8 +190,12 @@
 }
 
 .stepButton:disabled {
-  opacity: 0.35;
+  color: var(--ink-muted);
   cursor: not-allowed;
+}
+
+.stepButton:disabled .stepFace {
+  border-style: dashed;
 }
 
 .stepValue {

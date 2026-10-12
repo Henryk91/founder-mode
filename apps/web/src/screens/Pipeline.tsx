@@ -60,6 +60,11 @@ export function Pipeline() {
   const lost = view.leads.filter((l) => l.stage === 'lost')
   const free = view.founder.maxHoursPerWeek - planned
   const hours = (n: number) => label('unit.hours', stage, { n })
+  const outOfHours = open.some(
+    (l) =>
+      (l.canFollowUp && !followUps.includes(l.id) && free < view.costs.followUpHours) ||
+      (l.canBookDemo && !demos.includes(l.id) && free < view.costs.demoHours),
+  )
 
   const card = (l: LeadView, i: number) => {
     const booked = demos.includes(l.id)
@@ -123,6 +128,7 @@ export function Pipeline() {
       <section className={board.board} aria-label={label('pipeline.title', stage)}>
         <h2 className={board.title}>{label('pipeline.title', stage)}</h2>
         {stage === 'organised' && <DemoToTrial view={view} />}
+        {outOfHours && <p className={board.rate}>{label('noHours', stage)}</p>}
         {open.length === 0 && view.customers.length === 0 ? (
           <p className={board.empty}>{label('pipeline.empty', stage)}</p>
         ) : (

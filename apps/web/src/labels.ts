@@ -51,6 +51,9 @@ const labels = {
 
   'bar.week': 'Week {week} of {max}',
   'bar.endWeek': 'End week',
+  'bar.endWeekBlocked': 'Fix the plan first',
+  /** Next to buttons that are off because the week's hours are used up. */
+  noHours: 'No hours left this week.',
 
   'tab.plan': 'Plan',
   'tab.market': 'Market',
@@ -286,10 +289,10 @@ const labels = {
   'plan.hours.planned': ' planned',
   'plan.more': 'more',
   'plan.hint.talk': '{hours} each, answers at week end.',
-  'plan.hint.test': 'Tests show who would pay before you build.',
-  'plan.hint.build': 'A feature ships once its hours are in.',
-  'plan.hint.sell': 'Hours on one channel per market find leads. Channels wear out.',
-  'plan.hint.demos': 'A demo can start a trial, and a trial a customer.',
+  'plan.hint.test': 'See who pays before you build.',
+  'plan.hint.build': 'Ships once all its hours are in.',
+  'plan.hint.sell': 'Hours find leads. Channels tire.',
+  'plan.hint.demos': 'Demo, then trial, then customer.',
   'plan.hint.rest': 'Restores energy this week.',
   'plan.hint.hiring': 'One part time hire at most.',
   'explain.rest.title': 'Rest',

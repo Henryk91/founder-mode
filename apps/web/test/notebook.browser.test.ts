@@ -226,6 +226,49 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
     }, 60_000)
   }
 
+  it('fits every hint on one line at 375 px, and shows a disabled control without fading it', async () => {
+    const page = await planTab(375, 812)
+    for (const title of ['Talk to people', 'Test the demand', 'Build and fix', 'Find customers']) {
+      await page
+        .getByRole('button', { name: new RegExp(title) })
+        .first()
+        .click()
+    }
+    await page
+      .getByRole('button', { name: /Hiring/ })
+      .first()
+      .click()
+    await page.getByRole('button', { name: /^Rest/ }).first().click()
+    // Every free hour into rest: the + buttons are now disabled.
+    for (let i = 0; i < 120; i++) {
+      const more = page.getByRole('button', { name: 'More rest hours' })
+      if (await more.isDisabled()) break
+      await more.click()
+    }
+    const r = await page.evaluate(() => {
+      const hints = [...document.querySelectorAll('[class*="_hintText_"]')].map((h) => ({
+        text: h.textContent,
+        height: h.getBoundingClientRect().height,
+      }))
+      const off = document.querySelector<HTMLButtonElement>('button[aria-label="More rest hours"]')!
+      const face = off.querySelector('span')!
+      return {
+        hints,
+        disabled: off.disabled,
+        opacity: getComputedStyle(off).opacity,
+        color: getComputedStyle(off).color,
+        border: getComputedStyle(face).borderStyle,
+      }
+    })
+    expect(r.hints.length).toBeGreaterThanOrEqual(6)
+    for (const h of r.hints) expect(h, h.text ?? '').toMatchObject({ height: 44 })
+    expect(r.disabled).toBe(true)
+    expect(r.opacity).toBe('1')
+    expect(r.color).toBe('rgb(75, 90, 104)')
+    expect(r.border).toBe('dashed')
+    await page.close()
+  }, 60_000)
+
   for (const [width, desk] of [
     [375, false],
     [1440, true],

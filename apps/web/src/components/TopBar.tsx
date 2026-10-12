@@ -38,7 +38,7 @@ export function TopBar(props: { wide: boolean }) {
           disabled={issues > 0}
           onClick={endWeek}
         >
-          {label('bar.endWeek', stage)}
+          {label(issues > 0 ? 'bar.endWeekBlocked' : 'bar.endWeek', stage)}
         </button>
       )}
     </div>

@@ -399,6 +399,9 @@ function TestBody({ free }: { free: number }) {
   return (
     <>
       <SubHeading>{label('plan.test.landing', stage)}</SubHeading>
+      {free < costs.landingHours && view.segments.some((seg) => (landing[seg.id] ?? 0) === 0) && (
+        <Writing>{label('noHours', stage)}</Writing>
+      )}
       {view.segments.map((seg) => {
         const budget = landing[seg.id] ?? 0
         return (
@@ -589,6 +592,9 @@ function DemosBody({ free }: { free: number }) {
   return (
     <>
       {wanting.length === 0 && <Writing>{label('plan.demos.noneWanted', stage)}</Writing>}
+      {wanting.some((l) => !p.demos.includes(l.id)) && free < costs.demoHours && (
+        <Writing>{label('noHours', stage)}</Writing>
+      )}
       {wanting.map((l) => {
         const booked = p.demos.includes(l.id)
         const text = booked

@@ -94,7 +94,13 @@ export default tseslint.config(
 
   // Node side: bots CLI and config files.
   {
-    files: ['packages/bots/**/*.ts', '*.config.{js,ts}', 'apps/web/vite.config.ts'],
+    files: [
+      'packages/bots/**/*.ts',
+      '*.config.{js,ts}',
+      'apps/web/vite.config.ts',
+      'apps/web/build/**/*.ts',
+      'apps/web/scripts/**/*.mjs',
+    ],
     languageOptions: { globals: globals.node },
   },
 

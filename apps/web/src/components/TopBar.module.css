@@ -63,6 +63,13 @@
   font-size: 15px;
 }
 
+/* On the dark bar: muted light text and a dashed outline instead of the yellow (8.4:1). */
+.actions .endWeek:disabled {
+  border: 2px dashed var(--on-dark-muted);
+  background: transparent;
+  color: var(--on-dark-muted);
+}
+
 .wide .endWeek {
   min-height: 46px;
   padding: 0 24px;
