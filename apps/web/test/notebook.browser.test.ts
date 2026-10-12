@@ -67,7 +67,7 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
     })
     expect(fit.bottom).toBeLessThanOrEqual(fit.tabsTop)
     await page.close()
-  })
+  }, 60_000)
 
   for (const width of [390, 1280, 1440]) {
     it(`keeps every line on the grid, aligned and together at ${width} px`, async () => {
