@@ -467,7 +467,7 @@ function BuildBody({ free }: { free: number }) {
   const shipped = product.features.filter((f) => f.shipped)
   return (
     <>
-      <Writing>
+      <Writing wrap>
         {product.bugs > 0
           ? count('plan.bugs', stage, product.bugs)
           : label('plan.bugs.none', stage)}

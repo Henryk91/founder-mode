@@ -64,6 +64,9 @@
   font-size: 12px;
   color: var(--on-dark-muted);
   white-space: nowrap;
+  /* Never into the next column: a change too long for its column is cut. */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .good {

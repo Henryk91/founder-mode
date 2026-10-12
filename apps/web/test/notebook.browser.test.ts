@@ -89,6 +89,11 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
         .click()
       await page.getByRole('button', { name: /^Rest/ }).first().click()
 
+      // The longest kind of name a row gets, as two medical practices of one market can.
+      await page.evaluate(() => {
+        const first = document.querySelector('[class*="_row_"] > :first-child')!
+        first.firstChild!.textContent = 'Frauenarztpraxis Dr. Bauer-Lechner und Partner'
+      })
       const result = await page.evaluate((line) => {
         const notebook = document.querySelector('section[aria-label="My week"]')!
         const top0 = notebook.getBoundingClientRect().top
@@ -144,13 +149,13 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
           }
         }
 
-        // In every row the label and its control share a vertical centre and sit together.
+        // In every row the control sits centred on the label's first line, close beside it.
         const centre = (r: DOMRect) => r.top + r.height / 2
         const misaligned: string[] = []
         const gaps: number[] = []
         let rows = 0
         for (const row of notebook.querySelectorAll('[class*="_row_"]')) {
-          const label = row.querySelector('[class*="_label_"]')
+          const label = row.querySelector('[class*="_label_"], [class*="_wrapped_"]')
           const control = [...row.querySelectorAll('[class*="_controls_"] button')].find(
             (b) => b.getBoundingClientRect().height > 0,
           )
@@ -158,12 +163,21 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
           rows++
           const l = label.getBoundingClientRect()
           const c = control.getBoundingClientRect()
-          if (Math.abs(centre(l) - centre(c)) > 1) {
-            misaligned.push(`${label.textContent}: label ${centre(l)} control ${centre(c)}`)
+          if (Math.abs(l.top + line / 2 - centre(c)) > 1) {
+            misaligned.push(`${label.textContent}: line ${l.top + line / 2} control ${centre(c)}`)
           }
           const first = row.querySelector('[class*="_controls_"]')!.getBoundingClientRect()
           gaps.push(first.left - l.right)
         }
+
+        // Names in rows are never cut short: they wrap onto further lines instead.
+        const cut = [...notebook.querySelectorAll('[class*="_row_"] > :first-child')]
+          .filter(
+            (el) =>
+              el.scrollWidth > el.clientWidth + 1 ||
+              getComputedStyle(el).textOverflow === 'ellipsis',
+          )
+          .map((el) => el.textContent)
 
         // Open sections let the rules run through.
         const bodies = [...notebook.querySelectorAll('[id^="plan-"]')]
@@ -183,6 +197,7 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
           misaligned,
           gaps,
           rows,
+          cut,
           bodies: bodies.length,
           opaque: opaque.length,
           overflowing: tooWide.map((e) => `${e.tagName}.${e.className}`),
@@ -195,6 +210,7 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
       expect(result.opaque).toBe(0)
       expect(result.rows).toBeGreaterThanOrEqual(10)
       expect(result.misaligned).toEqual([])
+      expect(result.cut).toEqual([])
       for (const b of result.baselines) {
         const [lo, hi] = b.mono ? [30, 32] : [36, 38]
         expect(b.at).toBeGreaterThanOrEqual(lo)

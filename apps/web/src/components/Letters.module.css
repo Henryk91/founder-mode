@@ -63,6 +63,11 @@
   color: var(--ink-muted);
 }
 
+.week {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .sticky .expires {
   color: var(--on-sticky);
 }

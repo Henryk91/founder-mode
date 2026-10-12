@@ -14,7 +14,7 @@ export function StorageNote(props: { finished?: boolean }) {
   const runsText = runs === 'unsaved' || (props.finished && runs === 'unreadable')
   if (!storage && !runsText) return null
   return (
-    <section className={`${styles.card} ${styles.sticky}`} role="status">
+    <section className={`${styles.card} ${styles.sticky} ${styles.notice}`} role="status">
       {storage && <p>{label(`storage.notice.${storage}`, stage)}</p>}
       {runsText && runs && <p>{label(`runs.notice.${runs}`, stage)}</p>}
       {storage && (
