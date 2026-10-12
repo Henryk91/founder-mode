@@ -1,8 +1,9 @@
-import { presaleBatchesUsed } from './systems/experiments'
+import { landingTestsUsed, presaleBatchesUsed } from './systems/experiments'
 import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
 import { canBookDemo, canFollowUp } from './systems/sales'
 import { plannedHours } from './systems/founder'
+import { cloneFundingPlan, fundingValid } from './systems/funding'
 import { activeMembers, canHire, openBooking } from './systems/team'
 import type { GameState, PlanIssue, WeekPlan } from './types'
 
@@ -45,6 +46,7 @@ export function clonePlan(plan: WeekPlan): WeekPlan {
       book: plan.freelance.book ? { ...plan.freelance.book } : null,
       outreach: plan.freelance.outreach ? { ...plan.freelance.outreach } : null,
     },
+    ...(plan.funding ? { funding: cloneFundingPlan(plan.funding) } : {}),
   }
 }
 
@@ -163,6 +165,12 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
       issues.push({ code: 'invalid_number', field: `landing.${segmentId}` })
     } else if (budget > 0 && !landing.budgetsCents.includes(budget)) {
       issues.push({ code: 'invalid_budget', segmentId })
+    } else if (
+      budget > 0 &&
+      landing.maxTestsPerSegment !== undefined &&
+      landingTestsUsed(state, segmentId, plan) > landing.maxTestsPerSegment
+    ) {
+      issues.push({ code: 'landing_limit', segmentId })
     }
   }
   for (const [segmentId, batches] of Object.entries(plan.presales)) {
@@ -230,6 +238,7 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
   }
 
   if (!freelanceValid(state, plan)) issues.push({ code: 'invalid_freelance' })
+  if (!fundingValid(state, plan)) issues.push({ code: 'invalid_funding' })
 
   // Hours only make sense once every number is valid.
   if (!issues.some((i) => i.code === 'invalid_number')) {

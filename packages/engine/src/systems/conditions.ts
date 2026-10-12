@@ -1,6 +1,7 @@
 import type { Condition, ConditionPath } from '@founder-mode/content'
 import type { GameState } from '../types'
 import { activeCustomers } from './customers'
+import { moodLevel } from './funding'
 import { openLeadCount } from './experiments'
 import { isUnpaid, maxOverdueDays } from './invoices'
 import { canBookDemo } from './sales'
@@ -28,6 +29,9 @@ const METRICS: Record<ConditionPath, (state: GameState) => number> = {
   hasHire: (s) => (hasHire(s) ? 1 : 0),
   monthlyRevenueEur: (s) =>
     Math.floor(activeCustomers(s).reduce((sum, c) => sum + c.priceCentsPerMonth, 0) / 100),
+  'funding.raised': (s) => s.funding.stakes.length,
+  'funding.mood': moodLevel,
+  'funding.milestoneMissed': (s) => (s.funding.milestone?.status === 'missed' ? 1 : 0),
 }
 
 function holds(value: number, c: Condition): boolean {

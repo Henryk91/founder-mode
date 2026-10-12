@@ -139,6 +139,9 @@ export const LandingConfigSchema = z.object({
   signupPerPain: Share,
   // Every this many sign ups become one open lead when the result comes in.
   signupsPerLead: z.number().int().positive(),
+  // Long mode: landing page tests a market may have over the run, so money cannot buy leads
+  // without limit. Absent: no limit.
+  maxTestsPerSegment: z.number().int().positive().optional(),
 })
 
 export const PresaleConfigSchema = z.object({
@@ -229,6 +232,78 @@ export const TeamConfigSchema = z.object({
   managementHoursPerMember: z.number().int().nonnegative().optional(),
 })
 
+/**
+ * A funding round type (Phase 9 Part D, long mode). Raising is a pipeline: `prepHours` once when
+ * the round starts, a first meeting for every `pitchHoursPerMeeting` of pitching (the meeting
+ * included),
+ * a second look (`secondLookHours`) with an interested investor, a term sheet open for
+ * `termSheetWeeks`, then `closingWeeks` (with `dueDiligenceHours` in the first) until the money
+ * arrives. The bar is public: `barMonthlyCents` of monthly revenue scores 1 before growth.
+ */
+export const RoundConfigSchema = z.object({
+  name: z.string().min(1),
+  prepHours: z.number().int().nonnegative(),
+  pitchHoursPerMeeting: z.number().int().positive(),
+  secondLookHours: z.number().int().nonnegative(),
+  termSheetWeeks: z.number().int().positive(),
+  closingWeeks: z.number().int().positive(),
+  dueDiligenceHours: z.number().int().nonnegative(),
+  barMonthlyCents: Cents.positive(),
+  // The bar as investors state it, shown in the round's description.
+  barText: z.string().min(1),
+  amountCents: rangeOf(Cents.positive()),
+  // Pre-money valuation: the larger of the floor and this multiple of yearly revenue.
+  preMoneyFloorCents: Cents.positive(),
+  revenueMultiple: z.number().positive(),
+  // A growth milestone in the terms: monthly revenue this many times that at signing, within weeks.
+  milestone: z
+    .object({ multiple: z.number().positive(), weeks: z.number().int().positive() })
+    .optional(),
+  // Withdrawn in due diligence when monthly revenue fell by more than this share since the offer.
+  withdrawDrop: Share.optional(),
+  investors: z.array(z.string().min(1)).min(1),
+})
+
+export const FundingConfigSchema = z.object({
+  rounds: z.object({ angel: RoundConfigSchema, seed: RoundConfigSchema }),
+  // Hidden appetite of each investor: the score they need, uniform in this range.
+  appetite: rangeOf(z.number().positive()),
+  noiseSd: z.number().nonnegative(),
+  pitchBase: z.number().nonnegative(),
+  pitchPerSelling: z.number().nonnegative(),
+  growthWeight: z.number().nonnegative(),
+  growthFactor: rangeOf(z.number().positive()),
+  // Below this growth over 12 weeks a low score passes as "growth is flat".
+  flatGrowth: z.number(),
+  // Hard reasons to pass, before the score.
+  runwayMarginWeeks: z.number().int().nonnegative(),
+  churnShare: Share,
+  focusShare: Share,
+  // Investor updates at each month end, and the hidden confidence they move.
+  updates: z.object({
+    properHours: z.number().nonnegative(),
+    shortHours: z.number().nonnegative(),
+    proper: z.number(),
+    short: z.number(),
+    none: z.number(),
+    revenueUp: z.number(),
+    revenueDown: z.number(),
+    milestoneMissed: z.number(),
+  }),
+  startConfidence: Share,
+  // Mood shown to the player: worried below the first, pleased from the second.
+  moodAt: z.object({ patient: Share, pleased: Share }),
+  // The visible value rule for ownership: this multiple of yearly revenue plus cash.
+  valueRevenueMultiple: z.number().nonnegative(),
+  // The "Growing" ending for a run that raised money: runway at the last 4 weeks' burn, and
+  // growth of monthly revenue over the last 13 weeks.
+  growing: z.object({ runwayMonths: z.number().positive(), quarterGrowth: z.number() }),
+})
+export type FundingConfig = z.infer<typeof FundingConfigSchema>
+export type RoundConfig = z.infer<typeof RoundConfigSchema>
+export const ROUND_IDS = ['angel', 'seed'] as const
+export type RoundId = (typeof ROUND_IDS)[number]
+
 export const InboxConfigSchema = z.object({
   // Most new messages per week, and the chance that each slot is filled if an event is eligible.
   maxPerWeek: z.number().int().positive(),
@@ -261,6 +336,11 @@ export const CONDITION_PATHS = [
   'features.shipped',
   'hasHire',
   'monthlyRevenueEur',
+  // Funding (long mode): rounds closed, the investors' mood (0 worried, 1 patient, 2 pleased; -1
+  // without investors), and 1 once a growth milestone in the terms was missed.
+  'funding.raised',
+  'funding.mood',
+  'funding.milestoneMissed',
 ] as const
 export type ConditionPath = (typeof CONDITION_PATHS)[number]
 export const CONDITION_OPS = ['>=', '<=', '>', '<', '==', '!='] as const
@@ -315,6 +395,8 @@ export const EffectSchema = z.discriminatedUnion('type', [
   // Moves the company to one of the scenario's office stages: its monthly cost and its lasting
   // effects (energy each week, outreach response by channel) replace the previous stage's.
   z.object({ type: z.literal('moveOffice'), stage: Id, ...fx }),
+  // The investors' confidence moves by this much (0 to 1). Nothing happens without investors.
+  z.object({ type: z.literal('investorConfidence'), delta: z.number(), ...fx }),
   z.object({
     type: z.literal('fixedCost'),
     id: Id,
@@ -504,6 +586,8 @@ export const ScenarioFileSchema = z.object({
   officeStages: z.array(OfficeStageSchema).min(1),
   // The UI turns organised at the first of these milestones.
   organisedAt: z.array(Id).min(1),
+  // Long mode: raising money from angels and a seed fund (Part D). Absent: no funding.
+  funding: FundingConfigSchema.optional(),
 })
 
 // segment id -> bucket id -> quotes

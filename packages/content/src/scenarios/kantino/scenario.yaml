@@ -354,6 +354,82 @@ modes:
           # A professional seller: better than a founder at the skill cap (0.8), C3 plan 3.1.
           selling: 1.0
           partTime: { monthlyCents: 302500, weeklyHours: 20 }
+    experiments:
+      # Money cannot buy leads without limit: three landing tests per market (Part D).
+      landing: { maxTestsPerSegment: 3 }
+    # Raising money (Part D, docs/phase9-proposal.md section 11). Amounts are realistic for a
+    # Munich start-up (8.1 and 11.4); the pre-money floors are estimates.
+    funding:
+      rounds:
+        angel:
+          name: Angel round
+          prepHours: 8
+          pitchHoursPerMeeting: 3
+          secondLookHours: 3
+          termSheetWeeks: 2
+          closingWeeks: 2
+          dueDiligenceHours: 0
+          barMonthlyCents: 200000
+          barText: We back companies with paying customers and revenue that grows.
+          amountCents: { min: 10000000, max: 25000000 }
+          preMoneyFloorCents: 150000000
+          revenueMultiple: 20
+          investors:
+            - Margit Ostler
+            - Benedikt Rauch
+            - Yasemin Kurt
+            - Eckart Leuthold
+            - Hanne Wiesinger
+            - Ruben Albers
+            - Sieglinde Maurer
+            - Tarek Haddad
+            - Ottilie Brem
+            - Carsten Vogl
+        seed:
+          name: Seed round
+          prepHours: 12
+          pitchHoursPerMeeting: 3
+          secondLookHours: 4
+          termSheetWeeks: 2
+          closingWeeks: 4
+          dueDiligenceHours: 6
+          barMonthlyCents: 1000000
+          barText: We look for monthly revenue around 10,000 EUR, growing every month.
+          amountCents: { min: 100000000, max: 250000000 }
+          preMoneyFloorCents: 500000000
+          revenueMultiple: 25
+          milestone: { multiple: 2, weeks: 26 }
+          withdrawDrop: 0.1
+          investors:
+            - Isarwerk Ventures
+            - Gruenspan Capital
+            - Alpenkamm Partners
+            - Leopold Seed Fund
+            - Brennerhof Capital
+            - Nordbahn Ventures
+      appetite: { min: 0.8, max: 1.25 }
+      noiseSd: 0.25
+      pitchBase: 0.85
+      pitchPerSelling: 0.3
+      growthWeight: 2
+      growthFactor: { min: 0.5, max: 2 }
+      flatGrowth: 0.05
+      runwayMarginWeeks: 4
+      churnShare: 0.33
+      focusShare: 0.6
+      updates:
+        properHours: 2
+        shortHours: 1
+        proper: 0.08
+        short: 0.02
+        none: -0.06
+        revenueUp: 0.04
+        revenueDown: -0.04
+        milestoneMissed: -0.2
+      startConfidence: 0.6
+      moodAt: { patient: 0.4, pleased: 0.7 }
+      valueRevenueMultiple: 8
+      growing: { runwayMonths: 12, quarterGrowth: 0.1 }
     milestones:
       - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
       - { id: first_deposit, name: First deposit, kind: count, of: deposits, target: 1 }

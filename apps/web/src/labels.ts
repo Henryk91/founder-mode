@@ -235,6 +235,8 @@ const labels = {
     'You ran on empty for too long. The doctor said rest, and this time you listened. The company is closed.',
   'end.still_searching': 'Week {max}. The company is still alive and still not paying for itself.',
   'end.sustainable': 'Week {max}. The company pays for itself and for you. That is rare.',
+  'end.growing':
+    'Week {max}. Still burning money, but there is a year of it in the bank and revenue is growing. The investors are happy, for now.',
   'end.stats': 'Weeks played: {weeks}. Customers now: {customers}.',
   'intro.step': 'Card {n} of {total}',
   'intro.next': 'Next',
@@ -373,6 +375,32 @@ const labels = {
   'results.entry.member_let_go': '{name} is gone. It cost {amount}.',
   'results.entry.team_output.developer': 'Your developer put in {hours} build hours.',
   'results.entry.team_output.salesperson': 'Your salesperson put in {hours} hours of selling.',
+  'funding.round.angel': 'angel round',
+  'funding.round.seed': 'seed round',
+  'funding.reason.too_early': 'too early, come back with paying customers',
+  'funding.reason.runway': 'you would run out of money before they could close',
+  'funding.reason.churn': 'too many customers leave',
+  'funding.reason.focus': 'they do not see a focus',
+  'funding.reason.growth_flat': 'growth is flat',
+  'funding.reason.more_revenue': 'come back with more revenue',
+  'funding.reason.revenue_dropped': 'revenue dropped while they looked',
+  'results.entry.round_started': 'You started an {round}. The deck is done, more or less.',
+  'results.entry.round_stopped': 'You stopped the {round}. The investors will survive.',
+  'results.entry.investor_met.interested': '{name} wants a second look.',
+  'results.entry.investor_met.passed': '{name} passed: {reason}.',
+  'results.entry.second_look.offered': '{name} liked the second look.',
+  'results.entry.second_look.passed': '{name} passed after a second look: {reason}.',
+  'results.entry.term_sheet': '{name} offers {amount} for {share}% of the company.',
+  'results.entry.terms_accepted':
+    'You accepted the terms from {name}. The money arrives in week {week}.',
+  'results.entry.terms_lapsed': 'The terms from {name} lapsed.',
+  'results.entry.terms_withdrawn': '{name} withdrew the terms: {reason}.',
+  'results.entry.round_closed': '{name} invested {amount} for {share}% of the company.',
+  'results.entry.investor_update.proper': 'You sent the investors a proper update.',
+  'results.entry.investor_update.short': 'You sent the investors a short update.',
+  'results.entry.investor_update.none': 'The investors heard nothing from you this month.',
+  'results.entry.milestone_met': 'You reached the growth target in the terms: {amount} a month.',
+  'results.entry.milestone_missed': 'You missed the growth target in the terms: {amount} a month.',
   'results.entry.team_chased.one': 'Your team chased {n} late invoice for you.',
   'results.entry.team_chased.other': 'Your team chased {n} late invoices for you.',
   'results.entry.living_costs_changed':
@@ -619,6 +647,7 @@ const labels = {
   'pm.ending.shut_down': 'closed',
   'pm.ending.still_searching': 'still searching',
   'pm.ending.sustainable': 'it pays for itself',
+  'pm.ending.growing': "growing on investors' money",
   'pm.heading.next': 'Next time',
   'pm.heading.markets': 'The truth about the markets',
   'pm.heading.misreads': 'Misread signals',
@@ -648,6 +677,12 @@ const labels = {
   'pm.cause.sustainable':
     'Week {week}. For two months straight, customers have paid for everything, you included.',
   'pm.cause.shut_down': 'You closed the company in week {week}, with about {runway} of money left.',
+  'pm.cause.bankrupt_while_raising':
+    'The money ran out in week {week}, while you were still raising. Investors pay at closing, not at the first meeting.',
+  'pm.cause.bankrupt_after_raise':
+    'The money ran out in week {week}, after you had raised. Revenue peaked at {peak} a month against costs of {costs}: the investment bought time, not customers.',
+  'pm.cause.growing':
+    'Week {week}. The company still costs more than it earns, but revenue is growing and the money lasts another year.',
   'pm.cause.shut_down_flat':
     'You closed the company in week {week}, while the money was holding up.',
 
@@ -676,6 +711,7 @@ const labels = {
   'pm.chain.ending.shut_down': 'You closed the company.',
   'pm.chain.ending.still_searching': 'Time is up.',
   'pm.chain.ending.sustainable': 'It pays for itself.',
+  'pm.chain.ending.growing': "Growing, on investors' money.",
 
   'pm.role.viable': 'The real market',
   'pm.role.mediocre': 'Lukewarm',

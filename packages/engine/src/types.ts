@@ -11,7 +11,14 @@ export type RngState = { a: number; b: number; c: number; d: number }
 
 export type { ChannelId }
 
-export type EndingId = 'bankrupt' | 'burnout' | 'shut_down' | 'still_searching' | 'sustainable'
+export type EndingId =
+  | 'bankrupt'
+  | 'burnout'
+  | 'shut_down'
+  | 'still_searching'
+  | 'sustainable'
+  /** Long mode with funding: raised money, still burning it, with runway and growth (Part D). */
+  | 'growing'
 export type UiStage = 'scrappy' | 'organised'
 
 // ---------------------------------------------------------------------------
@@ -46,6 +53,8 @@ export type GameState = {
     waitsForChase: string[]
     /** True skill of every candidate and team member. Keyed by candidate id. */
     teamSkills: Record<string, number>
+    /** Funding (long mode): each investor's appetite, and the investors' confidence (0 to 1). */
+    funding: HiddenFunding
   }
 
   /** What the player has observed, per segment. */
@@ -62,6 +71,8 @@ export type GameState = {
   /** Events that were drawn, for `once` and the cooldown. */
   drawnEvents: { eventId: string; week: number }[]
   team: TeamState
+  /** Raising money (long mode, Part D). Empty in a run that never raises. */
+  funding: FundingState
   /** One entry per resolved week, oldest first. */
   ledger: WeekLedger[]
   /** Everything needed to rebuild this state from the seed. */
@@ -88,6 +99,74 @@ export type Modifier = {
 }
 
 export type ReachedMilestone = { id: string; week: number }
+
+// ---------------------------------------------------------------------------
+// Funding (Phase 9 Part D, long mode)
+
+export type RoundId = 'angel' | 'seed'
+
+/**
+ * Where an investor stands: `interested` after a good first meeting (a second look may be booked),
+ * `offered` with a term sheet open, `accepted` while closing, `closed` once the money arrived;
+ * `passed` with a reason, `declined` by the founder, `lapsed` when a term sheet or the round ran
+ * out, `withdrawn` in due diligence.
+ */
+export type InvestorStage =
+  'interested' | 'passed' | 'offered' | 'declined' | 'lapsed' | 'accepted' | 'withdrawn' | 'closed'
+
+/** Why an investor passed or withdrew, from what they can see. */
+export type PassReason =
+  'too_early' | 'runway' | 'churn' | 'focus' | 'growth_flat' | 'more_revenue' | 'revenue_dropped'
+
+export type TermSheet = {
+  amountCents: number
+  preMoneyCents: number
+  /** Share of the company after the money, in basis points (100 = 1%). */
+  shareBp: number
+  /** A growth milestone in the terms: monthly revenue by a week. */
+  milestone: { monthlyCents: number; byWeek: number } | null
+  /** Last week the term sheet can be accepted. */
+  expiresWeek: number
+  /** Monthly revenue when it was offered, for due diligence. */
+  monthlyAtOffer: number
+}
+
+export type Investor = {
+  id: string
+  name: string
+  round: RoundId
+  metWeek: number
+  stage: InvestorStage
+  reason: PassReason | null
+  terms: TermSheet | null
+  /** Week the money arrives, once the terms are accepted. */
+  closeWeek: number | null
+}
+
+/** A closed round on the cap table: the share it bought, of the company at that time. */
+export type Stake = {
+  investorId: string
+  name: string
+  round: RoundId
+  amountCents: number
+  shareBp: number
+  week: number
+}
+
+export type FundingState = {
+  /** The open round, or null. `next` is the next investor of the round's shuffled pool. */
+  round: { id: RoundId; startWeek: number; pool: string[]; next: number } | null
+  investors: Investor[]
+  stakes: Stake[]
+  /** The open growth milestone of the last terms, if any. */
+  milestone: { monthlyCents: number; byWeek: number; status: 'open' | 'met' | 'missed' } | null
+}
+
+export type HiddenFunding = {
+  /** Score each investor needs, keyed by investor id. */
+  appetite: Record<string, number>
+  confidence: number
+}
 
 /** A milestone with its name, for the view and the post-mortem. */
 export type MilestoneView = { id: string; name: string; week: number }
@@ -389,6 +468,11 @@ export type WeekLedger = {
   otherCostsCents: number
   /** Money from inbox choices. */
   otherIncomeCents: number
+  /**
+   * Investment that arrived at a round's closing (Part D). Never revenue, never in the net change
+   * that runway counts, never in the win test.
+   */
+  investmentCents: number
   cashEndCents: number
   savingsEndCents: number
   /** Monthly revenue of active customers at the end of the week, after churn. */
@@ -533,6 +617,8 @@ export type WeekPlan = {
    * with a task that does not suit their role, does nothing.
    */
   teamTasks: Record<string, TeamTask>
+  /** Raising money (long mode with funding). Missing means nothing this week. */
+  funding?: FundingPlan
 }
 
 /**
@@ -544,6 +630,21 @@ export type TeamTask =
   | { kind: 'build'; featureId: FeatureId; admin?: boolean }
   | { kind: 'outreach'; segmentId: SegmentId; channel: ChannelId; admin?: boolean }
   | { kind: 'admin' }
+
+/**
+ * Raising money (long mode). `start` opens a round; `pitchHours` bring first meetings; second
+ * looks are booked by investor id; a term sheet is accepted or declined by investor id; `stop`
+ * closes the round to new meetings; `update` answers the investors at a month end.
+ */
+export type FundingPlan = {
+  start: RoundId | null
+  pitchHours: number
+  secondLooks: string[]
+  accept: string | null
+  decline: string[]
+  stop: boolean
+  update: 'proper' | 'short' | null
+}
 
 export type FreelancePlan = {
   /** Book a freelancer in this role for this many hours a week. They start next week. */
@@ -586,6 +687,9 @@ export type PlanIssue =
   | { code: 'let_go_not_allowed' }
   | { code: 'invalid_team_work' }
   | { code: 'invalid_freelance' }
+  | { code: 'invalid_funding' }
+  /** Long mode: the market has had every landing test allowed. */
+  | { code: 'landing_limit'; segmentId: string }
 
 // ---------------------------------------------------------------------------
 // What the UI receives. Contains no hidden values.
@@ -675,6 +779,8 @@ export type PlayerView = {
   receivablesCents: number
   inbox: MessageView[]
   team: TeamView
+  /** Raising money, in long mode with funding; null otherwise. */
+  funding: FundingView | null
   /** Landing page tests and pre-sales still running. */
   pendingExperiments: PendingExperimentView[]
   guidance: GuidanceView
@@ -824,6 +930,58 @@ export type MemberView = {
   managementHours: number
 }
 
+/** A funding round type as the Raise section describes it: rules and the public bar. */
+export type RoundView = {
+  id: RoundId
+  name: string
+  barText: string
+  prepHours: number
+  pitchHoursPerMeeting: number
+  secondLookHours: number
+  termSheetWeeks: number
+  closingWeeks: number
+  dueDiligenceHours: number
+  amountCents: { min: number; max: number }
+}
+
+export type InvestorView = {
+  id: string
+  name: string
+  round: RoundId
+  metWeek: number
+  stage: InvestorStage
+  reason: PassReason | null
+  terms: TermSheet | null
+  closeWeek: number | null
+}
+
+/** Raising money as the player sees it. The investors' confidence shows only as their mood. */
+export type FundingView = {
+  rounds: RoundView[]
+  round: { id: RoundId; name: string; startWeek: number; investorsLeft: number } | null
+  /** A round may be started: none is open and none is closing. */
+  canStart: boolean
+  investors: InvestorView[]
+  /** Owners now: the founder first, then each investor, as shares in basis points. */
+  capTable: {
+    name: string
+    round: RoundId | null
+    shareBp: number
+    amountCents: number
+    week: number | null
+  }[]
+  founderShareBp: number
+  raisedCents: number
+  mood: 'worried' | 'patient' | 'pleased' | null
+  milestone: FundingState['milestone']
+  /** An investor update is due this week (a month end with investors on board). */
+  updateDue: boolean
+  updateHours: { proper: number; short: number }
+  /** The company's value by the visible rule: a multiple of yearly revenue plus cash. */
+  valueCents: number
+  valueRevenueMultiple: number
+}
+
 /** The freelancer as the Plan tab shows them. Rules of the game, no hidden values. */
 export type FreelanceView = {
   roles: { id: TeamRoleId; name: string; centsPerHour: number }[]
@@ -906,6 +1064,8 @@ export type SegmentView = {
   openLeads: number
   /** Pre-sale batches still allowed in this market, after the ones already run. */
   presaleBatchesLeft: number
+  /** Landing page tests still allowed in this market (long mode), or null for no limit. */
+  landingTestsLeft: number | null
   /** Outreach channel picked for this segment in the latest plan that had one, else null. */
   lastChannel: ChannelId | null
 }
@@ -968,6 +1128,18 @@ export type ReportEntry =
   | { kind: 'hire_started'; name: string; role: TeamRoleId }
   | { kind: 'member_let_go'; name: string; costCents: number }
   | { kind: 'team_output'; role: TeamRoleId; hours: number }
+  /** Funding (Part D). */
+  | { kind: 'round_started'; round: RoundId }
+  | { kind: 'round_stopped'; round: RoundId }
+  | { kind: 'investor_met'; name: string; interested: boolean; reason: PassReason | null }
+  | { kind: 'second_look'; name: string; offered: boolean; reason: PassReason | null }
+  | { kind: 'term_sheet'; name: string; amountCents: number; shareBp: number }
+  | { kind: 'terms_accepted'; name: string; closeWeek: number }
+  | { kind: 'terms_lapsed'; name: string }
+  | { kind: 'terms_withdrawn'; name: string; reason: PassReason }
+  | { kind: 'round_closed'; name: string; round: RoundId; amountCents: number; shareBp: number }
+  | { kind: 'investor_update'; update: 'proper' | 'short' | 'none' }
+  | { kind: 'funding_milestone'; met: boolean; monthlyCents: number }
   /** Overdue invoices the team and the freelancer chased on the founder's behalf this week. */
   | { kind: 'team_chased'; count: number }
   /** Living costs changed this week (long mode). */
@@ -1048,6 +1220,10 @@ export type PostMortemCauseId =
   | 'still_searching'
   | 'sustainable'
   | 'shut_down'
+  /** Part D: the money ran out with a round open or closing, or after raising. */
+  | 'bankrupt_while_raising'
+  | 'bankrupt_after_raise'
+  | 'growing'
 
 export type PostMortemCause = {
   id: PostMortemCauseId
@@ -1204,6 +1380,19 @@ export type SuggestionId =
   | 'sooner'
   | 'sample_sizes'
 
+/** What raising brought, for the post-mortem. Values by the visible rule, 0 when bankrupt. */
+export type FundingEconomics = {
+  roundsStarted: number
+  investorsMet: number
+  raisedCents: number
+  stakes: Stake[]
+  founderShareBp: number
+  companyValueCents: number
+  founderValueCents: number
+  /** Hours spent raising: decks, pitching, second looks, updates. */
+  hours: number
+}
+
 export type PostMortem = {
   scenarioId: string
   seed: string
@@ -1251,6 +1440,8 @@ export type PostMortem = {
     /** Every hire of the run, in hiring order. */
     hires: HireEconomicsView[]
     freelance: FreelanceEconomicsView | null
+    /** Raising money (long mode): null when no round was ever started. */
+    funding: FundingEconomics | null
   }
   /** Leads that walked in at an office, and the customers they became, per office and market. */
   walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]

@@ -1,4 +1,5 @@
 import type { FounderState, GameState, HoursByActivity, Scenario, WeekPlan } from '../types'
+import { fundingHours } from './funding'
 import { managementHours } from './team'
 
 /** Hours of the answers given this week to inbox messages. They count against the week. */
@@ -51,7 +52,8 @@ export function hoursByActivity(
       (plan.searchRole === null ? 0 : scenario.team.searchHours) +
       committedHours(state) +
       state.founder.forcedHours +
-      managementHours(state),
+      managementHours(state) +
+      fundingHours(state as GameState, plan),
     rest: plan.restHours,
   }
 }
