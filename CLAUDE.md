@@ -23,6 +23,7 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 - `pnpm test`: all tests
 - `pnpm lint`
 - `pnpm bots --runs 1000`: balancing report for every scenario (`--scenario <id>` for one)
+- `pnpm seeds`: rewrite `docs/seeds.md` (seeds per ending) after the engine, content or bots change
 
 ## Structure
 

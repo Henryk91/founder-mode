@@ -610,12 +610,14 @@ Zollstock (`docs/scenario-zollstock.md`), with the engine made scenario independ
 ### Phase 8: Hardening (about 1 week)
 
 - Final balancing pass for both scenarios, update `docs/balancing.md`. Replace the careful bot's fixed landing bars (7% Kantino, 3.7% Zollstock) with a relative rule that compares markets with each other. **Done** (2026-10, engine 0.11.0): relative landing rule, larger landing tests when the first do not separate the markets, price as a decision (smooth price curve, price churn, "too expensive" reasons, budget quotes in interviews; targets 17 and 18), target 11 made relative, six events made situational, desk and market values retuned. Every target 1 to 18 passes in both scenarios on the agreed sample sizes; see `docs/balancing.md` and `docs/decisions.md` (Phase 8)
-- Save version check
-- Accessibility: contrast, touch targets of 44 px or more, real buttons, keyboard focus
-- Performance check on a mid range phone
-- Static build and deploy to GitHub Pages (details below)
+- Save version check. **Done** (Part 4): older engine, newer engine, retuned scenario, unreadable save, blocked or full storage and unreadable best runs each get a short notice, and a UI crash offers a way back without writing the save
+- Accessibility: contrast, touch targets of 44 px or more, real buttons, keyboard focus. **Done** (Part 4): axe checks the main screens in a browser test
+- Performance check on a mid range phone. **Done** (Part 4): LCP 2.38 s on slow 4G at 4x CPU, End week under 30 ms
+- Static build and deploy to GitHub Pages (details below). **Done**: `.github/workflows/deploy.yml`
 
 **Done when:** a new player can finish a run without explanation, and a push to `main` publishes the game at the live URL. This is the early MVP.
+
+**Status: the early MVP is complete** (2026-10-12, engine 0.11.0, local tag `mvp-early`). Seeds that reach every ending are in `docs/seeds.md`.
 
 #### Deployment: GitHub Pages
 
@@ -705,6 +707,27 @@ jobs:
 ```
 
 The workflow follows the one used in the owner's other projects, adapted for pnpm, the monorepo output path, and with lint and tests added before the build so a failing engine is never deployed.
+
+### After the early MVP
+
+Parked ideas, not designed yet. Each needs its own plan and an entry in `docs/decisions.md` before any code:
+
+- A long mode of 104 weeks
+- Funding
+- Cofounders
+- A freelancer instead of a hire
+- Events whose outcomes depend on the situation
+- A shared "capacity that expires" system for tourism scenarios: an outdoor adventure company first, then a restaurant, then a hotel
+- The established UI stage
+- Real illustration
+- Sound
+- Cloud saves
+
+Known leftovers:
+
+- Six bot targets sit exactly at their limit (within their own margin of error), in `docs/balancing.md`: Kantino 17, 18 and the books part of 13; Zollstock 11, the worst market of 17, and the landing part of 13. Any tuning change can tip one of them.
+- A segment's market size is drawn in `drawHiddenSegments` but used nowhere in the engine.
+- First load LCP is 2.38 s against a 2.5 s target, so the margin is small. The JS (200 kB gzipped) is what the first paint waits for.
 
 ---
 

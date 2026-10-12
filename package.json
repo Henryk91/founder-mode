@@ -14,7 +14,8 @@
     "lint": "eslint . && prettier --check . && pnpm -r typecheck",
     "format": "prettier --write .",
     "typecheck": "pnpm -r typecheck",
-    "bots": "pnpm --filter @founder-mode/bots bots"
+    "bots": "pnpm --filter @founder-mode/bots bots",
+    "seeds": "pnpm --filter @founder-mode/bots seeds"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
