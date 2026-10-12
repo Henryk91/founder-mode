@@ -323,3 +323,9 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 
 - Seeds per ending: `pnpm seeds` writes `docs/seeds.md`, and `packages/bots/test/seeds.test.ts` replays every row from that file. No bot quits on its own, so a shut down is the careful bot to week 10 and then Shut down. A run can already start on any seed from the Start screen in every build, so no dev-only way in was added.
 - `docs/balancing.md` still matches: since the balance commit the engine, content, strategies and report are unchanged, and the scenario hashes in the production build (Kantino `993bc4ff98608801`, Zollstock `b82a9fdd47c8e7bf`) equal those in Node. The report was not rerun.
+
+## Phase 9, part A: proposals and the owner's answers
+
+- `docs/phase9-proposal.md` holds the design for the freelancer (B), long mode of 104 weeks (C), funding (D) and their UI (E), with targets 19 to 37. Approved with three corrections: freelancer against hire is a real choice only in long mode; more hires come in Part C; Part B should need no retune.
+- Answers: the reference bot never books a freelancer in the 60 week game (a separate bot measures target 19; in long mode it may); ownership is shown in the post-mortem and best runs, never decides the ending; "Growing" wins only with 12 months of runway and revenue growth over the last quarter; angel and seed only, amount and equity only; one save per scenario and mode; year 2 brings only the living cost rise and markets running out of leads; realistic Munich money and full time salaries in long mode (sources in the proposal, 8.1); Kantino long mode first; full report with events per mode only at the end of a part.
+- Investors and term sheets leave the out of scope list. A competitor joins the parked ideas.
