@@ -318,3 +318,8 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - The phone layout's maximum width goes from 560 to 720 px. At 1199 px the notebook keeps its phone layout, the pipeline shows its four columns side by side, and every tab still reads well.
 - Disabled controls keep full opacity: muted ink (6.9:1) and a dashed light border (3.6:1 against their own paper fill). On the bar, End week is a dashed outline and reads "Fix the plan first" while the plan has a problem. "No hours left this week." appears where hours block a demo, follow up, chase or landing test.
 - Fonts are subset to Latin-1 plus euro and minus (`pnpm --filter @founder-mode/web fonts`), with `font-display: swap`. Caveat only goes from 49.7 to 46.8 kB: its size is in the outlines and alternates, which make it look handwritten. Plex shrinks by about 15%, and the build ships 7 font files instead of about 60. LCP 2.38 s, median of 5 (was 2.39): the first paint waits for the JS, not the fonts.
+
+## Phase 8, part 5: wrap up
+
+- Seeds per ending: `pnpm seeds` writes `docs/seeds.md`, and `packages/bots/test/seeds.test.ts` replays every row from that file. No bot quits on its own, so a shut down is the careful bot to week 10 and then Shut down. A run can already start on any seed from the Start screen in every build, so no dev-only way in was added.
+- `docs/balancing.md` still matches: since the balance commit the engine, content, strategies and report are unchanged, and the scenario hashes in the production build (Kantino `993bc4ff98608801`, Zollstock `b82a9fdd47c8e7bf`) equal those in Node. The report was not rerun.
