@@ -1,22 +1,16 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { chromium, type Browser, type Page } from 'playwright-core'
+import type { Browser, Page } from 'playwright-core'
 import { createServer, type ViteDevServer } from 'vite'
+import { CHROMIUM, WEBKIT, type Engine } from './browsers'
 
 /**
  * Accessibility in a real browser: axe on the main screens at phone and desk width, keyboard
- * focus, and the focus ring. Skipped where no Chrome is installed (set CHROME_PATH).
+ * focus, and the focus ring. Runs in Chrome, and axe also in WebKit at iPhone widths; each is
+ * skipped where that browser is not installed.
  */
-const chromePath = [
-  process.env['CHROME_PATH'],
-  '/usr/bin/google-chrome',
-  '/usr/bin/google-chrome-stable',
-  '/usr/bin/chromium',
-  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-].find((p): p is string => !!p && existsSync(p))
-
 const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8')
 
 type Violation = { id: string; nodes: string[] }
@@ -43,9 +37,10 @@ async function axe(page: Page): Promise<Violation[]> {
   })
 }
 
-describe.skipIf(!chromePath)('accessibility in the browser', () => {
+describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
   let server: ViteDevServer
   let browser: Browser
+  let webkit: Browser | null = null
   let url = ''
 
   beforeAll(async () => {
@@ -56,113 +51,133 @@ describe.skipIf(!chromePath)('accessibility in the browser', () => {
     })
     await server.listen()
     url = server.resolvedUrls?.local[0] ?? ''
-    browser = await chromium.launch({ executablePath: chromePath! })
+    const launch = (e: Engine | null) => e && e.type.launch(e.options)
+    browser = (await launch(CHROMIUM))!
+    webkit = await launch(WEBKIT)
   }, 60_000)
 
   afterAll(async () => {
     await browser?.close()
+    await webkit?.close()
     await server?.close()
   })
 
-  async function open(width: number): Promise<Page> {
-    const page = await browser.newPage({ viewport: { width, height: 900 } })
+  async function open(width: number, using: Browser = browser): Promise<Page> {
+    const page = await using.newPage({ viewport: { width, height: 900 } })
     await page.goto(url)
     await page.evaluate(() => localStorage.clear())
     await page.reload()
     return page
   }
 
-  for (const width of [375, 1440]) {
-    it(`finds nothing to fix with axe on the main screens at ${width} px`, async () => {
-      const page = await open(width)
-      const found: Record<string, Violation[]> = {}
-      const check = async (name: string) => {
-        const v = await axe(page)
-        if (v.length > 0) found[name] = v
+  for (const [engine, width] of [
+    [CHROMIUM, 375],
+    [CHROMIUM, 1440],
+    [WEBKIT, 390],
+    [WEBKIT, 430],
+  ] as const) {
+    it.skipIf(!engine)(
+      `finds nothing to fix with axe on the main screens at ${width} px in ${engine?.name}`,
+      async () => {
+        const page = await open(width, engine === WEBKIT ? webkit! : browser)
+        const found: Record<string, Violation[]> = {}
+        const check = async (name: string) => {
+          const v = await axe(page)
+          if (v.length > 0) found[name] = v
+        }
+        await check('start')
+        await page.getByRole('button', { name: 'New run' }).click()
+        await check('intro')
+        for (let i = 0; i < 6; i++) {
+          const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
+          if (await next.count()) await next.first().click()
+        }
+        const tabs = width < 1200 ? ['Inbox', 'Plan', 'Who pays', 'Market', 'Money'] : ['Market']
+        for (const tab of tabs) {
+          await page.locator('nav button').filter({ hasText: tab }).first().click()
+          await check(tab)
+        }
+        await page.getByRole('button', { name: 'Help' }).click()
+        await check('help')
+        await page.getByRole('button', { name: 'Back to the game' }).click()
+        await page.getByRole('button', { name: 'End week' }).click()
+        await check('results')
+        expect(found).toEqual({})
+        await page.close()
+      },
+      90_000,
+    )
+  }
+
+  it.skipIf(!CHROMIUM)(
+    'moves focus to the new screen and shows a ring on every surface',
+    async () => {
+      const page = await open(1440)
+      // Keyboard only: Tab to New run and press Enter.
+      for (let i = 0; i < 20; i++) {
+        await page.keyboard.press('Tab')
+        const name = await page.evaluate(() => document.activeElement?.textContent ?? '')
+        if (name === 'New run') break
       }
-      await check('start')
+      await page.keyboard.press('Enter')
+      const focused = () =>
+        page.evaluate(() => {
+          const el = document.activeElement as HTMLElement
+          return { tag: el.tagName, text: el.textContent ?? '' }
+        })
+      // The intro card's heading takes focus, so the new screen is read out.
+      expect((await focused()).tag).toBe('H1')
+      for (let i = 0; i < 6; i++) {
+        const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
+        if (await next.count()) await next.first().focus()
+        if (await next.count()) await page.keyboard.press('Enter')
+      }
+      expect(await focused()).toEqual({ tag: 'H1', text: 'Kantino' })
+
+      // Every control the keyboard reaches shows a ring that stands out from what is behind it.
+      const rings: string[] = []
+      for (let i = 0; i < 40; i++) {
+        await page.keyboard.press('Tab')
+        const ring = await page.evaluate(() => {
+          const el = document.activeElement as HTMLElement
+          // Past the last control, Tab leaves the page for the browser's own controls.
+          if (el === document.body) return ''
+          const cs = getComputedStyle(el)
+          return cs.outlineStyle !== 'none' && cs.boxShadow.includes('255, 211, 77')
+            ? ''
+            : `${el.tagName} ${el.textContent?.slice(0, 30)}`
+        })
+        if (ring) rings.push(ring)
+      }
+      expect(rings).toEqual([])
+
+      // End week by keyboard: focus lands on the week's results.
+      await page.getByRole('button', { name: 'End week' }).focus()
+      await page.keyboard.press('Enter')
+      expect((await focused()).text).toMatch(/^Week 1$/)
+      await page.close()
+    },
+    90_000,
+  )
+
+  it.skipIf(!CHROMIUM)(
+    'closes an explanation with Escape and gives focus back to what opened it',
+    async () => {
+      const page = await open(1440)
       await page.getByRole('button', { name: 'New run' }).click()
-      await check('intro')
       for (let i = 0; i < 6; i++) {
         const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
         if (await next.count()) await next.first().click()
       }
-      const tabs = width < 1200 ? ['Inbox', 'Plan', 'Who pays', 'Market', 'Money'] : ['Market']
-      for (const tab of tabs) {
-        await page.locator('nav button').filter({ hasText: tab }).first().click()
-        await check(tab)
-      }
-      await page.getByRole('button', { name: 'Help' }).click()
-      await check('help')
-      await page.getByRole('button', { name: 'Back to the game' }).click()
-      await page.getByRole('button', { name: 'End week' }).click()
-      await check('results')
-      expect(found).toEqual({})
+      const cash = page.getByRole('button', { name: /^Cash/ })
+      await cash.focus()
+      await page.keyboard.press('Enter')
+      expect(await page.evaluate(() => document.activeElement?.getAttribute('role'))).toBe('note')
+      await page.keyboard.press('Escape')
+      expect(await page.getByRole('note').count()).toBe(0)
+      expect(await page.evaluate(() => document.activeElement?.textContent ?? '')).toMatch(/^Cash/)
       await page.close()
-    }, 90_000)
-  }
-
-  it('moves focus to the new screen and shows a ring on every surface', async () => {
-    const page = await open(1440)
-    // Keyboard only: Tab to New run and press Enter.
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press('Tab')
-      const name = await page.evaluate(() => document.activeElement?.textContent ?? '')
-      if (name === 'New run') break
-    }
-    await page.keyboard.press('Enter')
-    const focused = () =>
-      page.evaluate(() => {
-        const el = document.activeElement as HTMLElement
-        return { tag: el.tagName, text: el.textContent ?? '' }
-      })
-    // The intro card's heading takes focus, so the new screen is read out.
-    expect((await focused()).tag).toBe('H1')
-    for (let i = 0; i < 6; i++) {
-      const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
-      if (await next.count()) await next.first().focus()
-      if (await next.count()) await page.keyboard.press('Enter')
-    }
-    expect(await focused()).toEqual({ tag: 'H1', text: 'Kantino' })
-
-    // Every control the keyboard reaches shows a ring that stands out from what is behind it.
-    const rings: string[] = []
-    for (let i = 0; i < 40; i++) {
-      await page.keyboard.press('Tab')
-      const ring = await page.evaluate(() => {
-        const el = document.activeElement as HTMLElement
-        // Past the last control, Tab leaves the page for the browser's own controls.
-        if (el === document.body) return ''
-        const cs = getComputedStyle(el)
-        return cs.outlineStyle !== 'none' && cs.boxShadow.includes('255, 211, 77')
-          ? ''
-          : `${el.tagName} ${el.textContent?.slice(0, 30)}`
-      })
-      if (ring) rings.push(ring)
-    }
-    expect(rings).toEqual([])
-
-    // End week by keyboard: focus lands on the week's results.
-    await page.getByRole('button', { name: 'End week' }).focus()
-    await page.keyboard.press('Enter')
-    expect((await focused()).text).toMatch(/^Week 1$/)
-    await page.close()
-  }, 90_000)
-
-  it('closes an explanation with Escape and gives focus back to what opened it', async () => {
-    const page = await open(1440)
-    await page.getByRole('button', { name: 'New run' }).click()
-    for (let i = 0; i < 6; i++) {
-      const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
-      if (await next.count()) await next.first().click()
-    }
-    const cash = page.getByRole('button', { name: /^Cash/ })
-    await cash.focus()
-    await page.keyboard.press('Enter')
-    expect(await page.evaluate(() => document.activeElement?.getAttribute('role'))).toBe('note')
-    await page.keyboard.press('Escape')
-    expect(await page.getByRole('note').count()).toBe(0)
-    expect(await page.evaluate(() => document.activeElement?.textContent ?? '')).toMatch(/^Cash/)
-    await page.close()
-  }, 60_000)
+    },
+    60_000,
+  )
 })
