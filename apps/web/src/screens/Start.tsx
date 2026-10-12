@@ -32,7 +32,9 @@ export function Start() {
       )}
 
       <div className={`${styles.card} ${startStyles.paper}`}>
-        <h1 className={startStyles.title}>{label('app.title', stage)}</h1>
+        <h1 className={startStyles.title} tabIndex={-1} data-autofocus>
+          {label('app.title', stage)}
+        </h1>
         <div role="group" aria-labelledby="pick-scenario" className={startStyles.picker}>
           <h2 id="pick-scenario" className={startStyles.pickTitle}>
             {label('start.pick', stage)}

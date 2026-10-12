@@ -24,7 +24,9 @@
   --warn-on-dark: #ffb37a;
   --danger: #b3261e;
   --shadow: #0e1f1e;
-  --focus: #2456d6;
+  /* Keyboard focus: an ink ring inside a yellow one (see index.css). */
+  --focus-inner: #17212b;
+  --focus-outer: #ffd34d;
   /* Light border of steppers and pills; the tap target around them is 44 px. */
   --control-line: #7a8794;
 

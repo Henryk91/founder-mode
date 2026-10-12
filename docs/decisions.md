@@ -302,3 +302,9 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 
 - Full report (`pnpm bots --runs 1000 --wide-runs 10000 --seed-prefix test --events`, about 23 minutes on 9 processes: main 25 s, paired 212 s, inbox 63 s, price 150 s, events 904 s). Every target 1 to 18 passes in both scenarios. At the limit (within its own margin): Kantino 17 (gain +9.2 ±1.0 against a cap of 10), 18 (23.6 ±2.3 against 25) and the books in 13 (-2.8 ±1.0); Zollstock 11 (33% of reading), 17's worst market (maintenance -1.5 ±1.5) and landing in 13 (-2.6 ±1.1).
 - Target 10, now that the event table runs again: Kantino 47 of 95 events favour the cheap answer (was 54 before Part 1), Zollstock 46 of 95 (was 40).
+
+## Phase 8, part 4: hardening
+
+- Accessibility. Focus ring: ink inside, highlighter yellow outside (`--focus-inner`, `--focus-outer`). The old blue ring measured 2.0:1 on the desk, 2.5:1 on the bar and 2.7:1 on cork. Every text token pair passes 4.5:1, the tightest being white on the Rest segment and warn on sticky, both 4.93.
+- On each new screen, focus moves to its heading (`data-autofocus`), because the pressed button has often just gone. Explain takes focus, closes with Escape and gives focus back. The company name is the game's `h1`. Desk columns scroll on their own, so each can take focus. Steppers and repeated buttons are named after what they change ("More hours for Small offices", "Follow up (1 h): Praxis Dr. Jansen").
+- `lang="en-GB"`. A reduced motion guard is in place, though nothing animates today.

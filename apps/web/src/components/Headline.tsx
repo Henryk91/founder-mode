@@ -8,7 +8,8 @@ import styles from './Headline.module.css'
 /** Changes are measured over this many resolved weeks (plan section 6.4). */
 export const CHANGE_WEEKS = 4
 
-type Change = { text: string; good: boolean | null }
+/** `text` is shown, `spoken` is read out instead of its arrows. */
+type Change = { text: string; spoken: string; good: boolean | null }
 
 type Stat = {
   id: 'cash' | 'runway' | 'revenue' | 'customers'
@@ -71,17 +72,34 @@ export function headlineStats(view: PlayerView): Stat[] {
 }
 
 function delta(stage: UiStage, d: number, format: (n: number) => string): Change {
-  if (d === 0) return { text: label('stat.same', stage), good: null }
+  if (d === 0)
+    return { text: label('stat.same', stage), spoken: label('stat.same', stage), good: null }
+  const value = format(Math.abs(d))
   return {
-    text: label(d > 0 ? 'stat.up' : 'stat.down', stage, { value: format(Math.abs(d)) }),
+    text: label(d > 0 ? 'stat.up' : 'stat.down', stage, { value }),
+    spoken: label(d > 0 ? 'stat.upSpoken' : 'stat.downSpoken', stage, { value }),
     good: d > 0,
   }
 }
 
 function runwayChange(stage: UiStage, was: number | null, now: number | null): Change {
-  if (was === null && now === null) return { text: label('stat.same', stage), good: null }
-  if (now === null) return { text: label('stat.runway.nowSafe', stage), good: true }
-  if (was === null) return { text: label('stat.runway.nowShrinking', stage), good: false }
+  if (was === null && now === null) {
+    return { text: label('stat.same', stage), spoken: label('stat.same', stage), good: null }
+  }
+  if (now === null) {
+    return {
+      text: label('stat.runway.nowSafe', stage),
+      spoken: label('stat.runway.nowSafeSpoken', stage),
+      good: true,
+    }
+  }
+  if (was === null) {
+    return {
+      text: label('stat.runway.nowShrinking', stage),
+      spoken: label('stat.runway.nowShrinkingSpoken', stage),
+      good: false,
+    }
+  }
   return delta(stage, now - was, (n) => count('unit.weeks', stage, n))
 }
 
@@ -116,8 +134,10 @@ export function Headline(props: { size: 'band' | 'bar' }) {
                       : ''
                 }`}
               >
-                {stat.change.text}
-                <span className="visually-hidden"> {period}</span>
+                <span aria-hidden="true">{stat.change.text}</span>
+                <span className="visually-hidden">
+                  {stat.change.spoken} {period}
+                </span>
               </span>
             )}
           </>

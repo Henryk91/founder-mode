@@ -63,6 +63,10 @@
   padding: 14px;
 }
 
+/*
+ * The columns scroll on their own. Their 6 px of side padding, taken back by the margins, leaves
+ * room for the focus ring, which the scrolling would otherwise clip.
+ */
 .left,
 .centre,
 .right {
@@ -71,11 +75,12 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding-bottom: 14px;
+  margin: -6px -6px 0;
+  padding: 6px 6px 14px;
 }
 
 .left {
-  width: 350px;
+  width: 362px;
   flex-shrink: 0;
 }
 
@@ -85,7 +90,7 @@
 }
 
 .right {
-  width: 290px;
+  width: 302px;
   flex-shrink: 0;
 }
 

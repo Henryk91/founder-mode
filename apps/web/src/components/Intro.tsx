@@ -30,7 +30,9 @@ export function Intro() {
         {label('intro.step', stage, { n: step + 1, total: cards.length })}
       </p>
       <section className={`${styles.card} ${introStyles.card}`} aria-label={card.title}>
-        <h1 className={styles.title}>{card.title}</h1>
+        <h1 className={styles.title} tabIndex={-1} data-autofocus>
+          {card.title}
+        </h1>
         <p className={introStyles.body}>{fillText(card.body, values)}</p>
       </section>
       <div className={introStyles.buttons}>

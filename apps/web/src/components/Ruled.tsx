@@ -83,6 +83,8 @@ export function FeatureRow(props: {
   progressHours: number
   buildHours: number
   progressText: string
+  /** The same in words, for screen readers. */
+  progressSpoken: string
   children: React.ReactNode
 }) {
   const share = props.buildHours > 0 ? props.progressHours / props.buildHours : 0
@@ -96,7 +98,10 @@ export function FeatureRow(props: {
             style={{ transform: `scaleX(${share.toFixed(3)})` }}
           />
         </span>
-        <span className={`${plan.mono} ${plan.progressText}`}>{props.progressText}</span>
+        <span className={`${plan.mono} ${plan.progressText}`}>
+          <span aria-hidden="true">{props.progressText}</span>
+          <span className="visually-hidden">{props.progressSpoken}</span>
+        </span>
         <div className={`${plan.controls} ${plan.right}`}>{props.children}</div>
       </div>
     </div>

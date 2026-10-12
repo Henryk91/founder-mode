@@ -18,7 +18,9 @@ export function TopBar(props: { wide: boolean }) {
   const stage = view.company.uiStage
   const name = (
     <div className={styles.who}>
-      <div className={styles.name}>{view.scenarioName}</div>
+      <h1 className={styles.name} tabIndex={-1} data-autofocus>
+        {view.scenarioName}
+      </h1>
       <div className={styles.week}>
         {label('bar.week', stage, { week: view.week, max: view.maxWeeks })}
       </div>

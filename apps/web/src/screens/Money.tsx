@@ -78,6 +78,8 @@ export function Money() {
         <Stepper
           stage={stage}
           value={price}
+          what={label('money.price', stage)}
+          names={{ minus: 'stepper.price.minus', plus: 'stepper.price.plus' }}
           step={PRICE_STEP_CENTS}
           bigStep={PRICE_BIG_STEP_CENTS}
           min={PRICE_MIN_CENTS}
@@ -95,6 +97,8 @@ export function Money() {
         <Stepper
           stage={stage}
           value={transfer}
+          what={label('money.transfer', stage)}
+          names={{ minus: 'stepper.transfer.minus', plus: 'stepper.transfer.plus' }}
           step={SMALL_STEP_CENTS}
           bigStep={BIG_STEP_CENTS}
           max={Math.max(0, founder.savingsCents)}
@@ -123,6 +127,11 @@ export function Money() {
                 const booked = chase.includes(inv.id)
                 const canBook =
                   booked || planned + view.costs.chaseHours <= view.founder.maxHoursPerWeek
+                const chaseText = booked
+                  ? label('money.chaseBooked', stage)
+                  : label('money.chase', stage, {
+                      hours: label('unit.hours', stage, { n: view.costs.chaseHours }),
+                    })
                 return (
                   <li key={inv.id} className={styles.row}>
                     <div className={styles.rowHead}>
@@ -144,13 +153,13 @@ export function Money() {
                         aria-pressed={booked}
                         disabled={!canBook}
                         className={`${styles.button} ${booked ? styles.primary : ''}`}
+                        aria-label={label('aria.forName', stage, {
+                          action: chaseText,
+                          name: inv.customerName,
+                        })}
                         onClick={() => toggleChase(inv.id)}
                       >
-                        {booked
-                          ? label('money.chaseBooked', stage)
-                          : label('money.chase', stage, {
-                              hours: label('unit.hours', stage, { n: view.costs.chaseHours }),
-                            })}
+                        {chaseText}
                       </button>
                     )}
                   </li>
@@ -172,10 +181,12 @@ export function Money() {
             <button type="button" className={styles.button} onClick={shutDown}>
               {label('money.shutDownYes', stage)}
             </button>
+            {/* The question takes focus; the safe answer is the one under it. */}
             <button
               type="button"
               className={`${styles.button} ${styles.primary}`}
               onClick={cancelShutDown}
+              autoFocus
             >
               {label('money.shutDownNo', stage)}
             </button>

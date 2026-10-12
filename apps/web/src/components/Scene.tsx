@@ -94,8 +94,13 @@ export function SceneStrip() {
   const ui = view.company.uiStage
   const office = officeStage(view)
   return (
-    <div className={s.strip}>
-      <svg className={s.stripSvg} viewBox="0 0 390 72" preserveAspectRatio="xMidYMid slice">
+    <section className={s.strip} aria-label={label('scene.where', ui)}>
+      <svg
+        className={s.stripSvg}
+        aria-hidden="true"
+        viewBox="0 0 390 72"
+        preserveAspectRatio="xMidYMid slice"
+      >
         <rect className={s.floor} x="0" y="60" width="390" height="12" />
         <rect className={s.sky} x="200" y="8" width="76" height="34" />
         <rect className={s.sky} x="292" y="8" width="76" height="34" />
@@ -111,7 +116,7 @@ export function SceneStrip() {
         <div className={s.where}>{label('scene.where', ui)}</div>
         <div className={s.place}>{view.company.officeStage.name}</div>
       </div>
-    </div>
+    </section>
   )
 }
 

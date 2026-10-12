@@ -19,6 +19,15 @@
   background: var(--bar);
 }
 
+.heading {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  font: inherit;
+}
+
 .company {
   font-weight: 700;
   font-size: 17px;
