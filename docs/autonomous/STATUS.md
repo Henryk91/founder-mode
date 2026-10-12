@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 1 (Part D, funding), sub-step D0: read the proposal's funding parts, design note and file list
-Last commit: Step 0 done, tag phase9-c3
-Next action: Write the funding design (proposal section 3 plus plan step 1 and 3.1 point 8) into docs/phase9-proposal.md section 11, deciding open points; check early whether funded hires create revenue growth.
+Step: 1 (Part D, funding), sub-step D2: funding bots and targets 31 to 37
+Last commit: b8757b3 D1: funding engine (long mode)
+Next action: Add the raise rules to the careful bot (traction, early, always, late; update policies), a `funding` report part on the wide seeds, targets 31 to 37 in the long report; measure, then tune within the budget.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
