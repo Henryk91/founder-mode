@@ -1,14 +1,14 @@
 # Autonomous run status
 
 ## Current
-Step: 2 (Part E: Phase 9 UI, docs, report), sub-step E1: UI for funding, team chasing, landing limit, ownership
-Last commit: Step 1 done, tag phase9-d
-Next action: Finish and commit the drafted UI (Raise section, chasing chip, cap table, statement, post-mortem, best runs, landing left), run the browser tests (long mode axe and notebook at 375 to 1440 px, both engines), then docs and full reports for both modes.
+Step: 3 (situational events system), sub-step S1: design and file list
+Last commit: Step 2 done, tag phase9-done
+Next action: Add sender conditions (sender.overdue, sender.silent) and a few visible state paths to the condition language, declare the sender situation on invoicePayChance effects (identical games), derive the reader's answers from declared conditions for the converted events, prove the 60 week game and Kantino long identical.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
 - [x] Step 1: funding (tag phase9-d)
-- [ ] Step 2: Phase 9 UI, docs, report (tag phase9-done)
+- [x] Step 2: Phase 9 UI, docs, report (tag phase9-done)
 - [ ] Step 3: situational events system (tag situational-events)
 - [ ] Step 4: tourism engine (tag tourism-engine)
 - [ ] Step 5: outdoor adventure company (tag scenario-outdoor)
