@@ -154,14 +154,16 @@ export function Plan() {
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   const hours = sectionHours(view, draft)
   const lines = summaries(view, draft, stage)
-  const bodies: Record<SectionId, () => React.JSX.Element> = {
-    talk: () => <TalkBody free={free} />,
-    test: () => <TestBody free={free} />,
-    build: () => <BuildBody free={free} />,
-    sell: () => <SellBody free={free} />,
-    demos: () => <DemosBody free={free} />,
-    team: () => <TeamPlan />,
-    rest: () => <RestBody free={free} />,
+  // Elements, not components made here: a component defined during render is a new type each
+  // time, so React would rebuild the open section on every tap and the browser lose its place.
+  const bodies: Record<SectionId, React.JSX.Element> = {
+    talk: <TalkBody free={free} />,
+    test: <TestBody free={free} />,
+    build: <BuildBody free={free} />,
+    sell: <SellBody free={free} />,
+    demos: <DemosBody free={free} />,
+    team: <TeamPlan />,
+    rest: <RestBody free={free} />,
   }
 
   return (
@@ -173,7 +175,6 @@ export function Plan() {
           {SECTIONS.map(({ id, title }) => {
             const isOpen = open.includes(id)
             if (id === 'demos' && !hasDemosSection(view, draft)) return null
-            const Body = bodies[id]
             return (
               <section key={id} aria-label={label(title, stage)}>
                 <button
@@ -196,7 +197,7 @@ export function Plan() {
                 </button>
                 {isOpen && (
                   <div id={`plan-${id}`} className={plan.body}>
-                    <Body />
+                    {bodies[id]}
                   </div>
                 )}
               </section>
