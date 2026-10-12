@@ -805,6 +805,8 @@ export type PlayerView = {
     monthlyRevenueCents: number
     customers: number
     runwayWeeks: number | null
+    /** Money from investors that arrived that week (Part D), never revenue. */
+    investmentCents: number
   }[]
 }
 

@@ -11,6 +11,7 @@ import {
   Writing,
 } from '../components/Ruled'
 import { Stepper } from '../components/Stepper'
+import { RaisePlan, raiseHours, raiseSummary } from '../components/RaisePlan'
 import { TeamPlan } from '../components/TeamPlan'
 import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type UiStage } from '../labels'
@@ -64,6 +65,7 @@ function sectionHours(view: PlayerView, p: WeekPlan): Record<SectionId, number> 
       p.followUps.length * costs.followUpHours +
       p.chase.length * costs.chaseHours,
     team: p.searchRole === null ? 0 : costs.searchHours,
+    raise: raiseHours(view, p.funding),
     rest: p.restHours,
   }
 }
@@ -127,6 +129,7 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
       ...(p.chase.length > 0 ? [count('plan.sum.chase', stage, p.chase.length)] : []),
     ]),
     team: freelanceLine ? (idle ? freelanceLine : `${team}, ${freelanceLine}`) : team,
+    raise: raiseSummary(view, p.funding, stage),
     rest: p.restHours > 0 ? label('unit.hours', stage, { n: p.restHours }) : none,
   }
 }
@@ -138,6 +141,7 @@ const SECTIONS: { id: SectionId; title: LabelKey }[] = [
   { id: 'sell', title: 'plan.section.sell' },
   { id: 'demos', title: 'plan.section.demos' },
   { id: 'team', title: 'plan.section.team' },
+  { id: 'raise', title: 'plan.section.raise' },
   { id: 'rest', title: 'plan.section.rest' },
 ]
 
@@ -165,6 +169,7 @@ export function Plan() {
     sell: <SellBody free={free} />,
     demos: <DemosBody free={free} />,
     team: <TeamPlan />,
+    raise: <RaisePlan />,
     rest: <RestBody free={free} />,
   }
 
@@ -177,6 +182,8 @@ export function Plan() {
           {SECTIONS.map(({ id, title }) => {
             const isOpen = open.includes(id)
             if (id === 'demos' && !hasDemosSection(view, draft)) return null
+            // Raising exists only in long mode with funding.
+            if (id === 'raise' && !view.funding) return null
             return (
               <section key={id} aria-label={label(title, stage)}>
                 <button
@@ -450,10 +457,17 @@ function TestBody({ free }: { free: number }) {
       )}
       {view.segments.map((seg) => {
         const budget = landing[seg.id] ?? 0
+        // Long mode allows a few tests per market; the 60 week game has no limit (null).
+        const used = seg.landingTestsLeft !== null && seg.landingTestsLeft <= 0
         return (
           <Market
             key={seg.id}
             label={seg.name}
+            note={
+              seg.landingTestsLeft === null
+                ? undefined
+                : count('plan.landing.left', stage, seg.landingTestsLeft)
+            }
             choices={choices.map((cents) => {
               const on = budget === cents
               return (
@@ -461,7 +475,7 @@ function TestBody({ free }: { free: number }) {
                   key={cents}
                   type="button"
                   aria-pressed={on}
-                  disabled={!on && cents > 0 && budget === 0 && free < costs.landingHours}
+                  disabled={!on && cents > 0 && budget === 0 && (used || free < costs.landingHours)}
                   className={`${styles.chip} ${on ? styles.chipOn : ''}`}
                   onClick={() => setLanding(seg.id, cents)}
                 >

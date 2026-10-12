@@ -121,6 +121,7 @@ describe('hidden boundary', () => {
         cashCents: 900_000,
         savingsCents: 1_357_500,
         monthlyRevenueCents: 0,
+        investmentCents: 0,
         customers: 0,
         runwayWeeks: v.company.runwayWeeks,
       },

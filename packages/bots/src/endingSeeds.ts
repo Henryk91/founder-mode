@@ -13,6 +13,8 @@ import { STRATEGIES } from './strategies'
 /** One known way to an ending: a seed and the bot that plays it there. */
 export type EndingSeed = {
   scenario: string
+  /** Long mode (104 weeks); missing for the 60 week game. */
+  mode?: 'long'
   ending: EndingId
   /** A bot strategy id, or `shut_down@<week>`: the careful bot plays to that week, then quits. */
   strategy: string
@@ -21,15 +23,23 @@ export type EndingSeed = {
   week: number
 }
 
-/** Every ending, and the bots that tend to reach it, most likely first. */
-export const ENDING_ROUTES: { ending: EndingId; strategies: string[] }[] = [
+/**
+ * Every ending, and the bots that tend to reach it, most likely first. `long`: only in long mode,
+ * where a funded company can end Growing.
+ */
+export const ENDING_ROUTES: { ending: EndingId; strategies: string[]; long?: true }[] = [
   { ending: 'sustainable', strategies: ['validate_then_build', 'price_aware'] },
   { ending: 'still_searching', strategies: ['validate_then_build', 'sell_first'] },
   { ending: 'bankrupt', strategies: ['build_only', 'random'] },
   { ending: 'burnout', strategies: ['overworker', 'random'] },
   // No bot quits on its own: shutting down is the player's choice.
   { ending: 'shut_down', strategies: ['shut_down@10'] },
+  { ending: 'growing', strategies: ['raise_late', 'raise_on_traction'], long: true },
 ]
+
+/** The endings a scenario can reach in its mode. */
+export const routesFor = (scenario: Scenario) =>
+  ENDING_ROUTES.filter((r) => !r.long || scenario.mode === 'long')
 
 /** Seeds tried per ending, as `ending-<n>`. */
 const MAX_TRIES = 400
@@ -65,14 +75,21 @@ export function playSeed(
 /** Finds `count` seeds per ending for one scenario, trying each ending's bots in order. */
 export function findEndingSeeds(scenario: Scenario, count = 3): EndingSeed[] {
   const found: EndingSeed[] = []
-  for (const { ending, strategies } of ENDING_ROUTES) {
+  for (const { ending, strategies } of routesFor(scenario)) {
     let got = 0
     for (const strategy of strategies) {
       for (let n = 1; n <= MAX_TRIES && got < count; n++) {
         const seed = `ending-${n}`
         const r = playSeed(scenario, strategy, seed)
         if (r.ending !== ending) continue
-        found.push({ scenario: scenario.id, ending, strategy, seed, week: r.week })
+        found.push({
+          scenario: scenario.id,
+          ...(scenario.mode === 'long' ? { mode: 'long' as const } : {}),
+          ending,
+          strategy,
+          seed,
+          week: r.week,
+        })
         got++
       }
       if (got >= count) break
@@ -90,7 +107,8 @@ export function seedsTable(rows: EndingSeed[]): string {
     HEADER,
     '|---|---|---|---|---|',
     ...rows.map(
-      (r) => `| ${r.scenario} | ${r.ending} | \`${r.strategy}\` | \`${r.seed}\` | ${r.week} |`,
+      (r) =>
+        `| ${r.scenario}${r.mode ? ' (long)' : ''} | ${r.ending} | \`${r.strategy}\` | \`${r.seed}\` | ${r.week} |`,
     ),
   ].join('\n')
 }
@@ -107,8 +125,10 @@ export function parseSeedsTable(markdown: string): EndingSeed[] {
       .split('|')
       .slice(1, -1)
       .map((c) => c.trim().replace(/`/g, ''))
+    const long = scenario!.endsWith(' (long)')
     rows.push({
-      scenario: scenario!,
+      scenario: long ? scenario!.replace(' (long)', '') : scenario!,
+      ...(long ? { mode: 'long' as const } : {}),
       ending: ending as EndingId,
       strategy: strategy!,
       seed: seed!,

@@ -163,6 +163,8 @@ export type RunRecord = {
   ending: EndingId
   weeks: number
   peakRevenueCents: number
+  /** Long mode with funding: the founder's share at the end in basis points; absent before. */
+  founderShareBp?: number
 }
 
 /** What the game remembers about one scenario in one mode across runs. Local to this browser. */

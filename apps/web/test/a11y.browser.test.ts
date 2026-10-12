@@ -123,6 +123,70 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
     )
   }
 
+  // Long mode (Phase 9): the team, the freelancer, raising money, and the cap table, at every
+  // width the plan names, in both engines.
+  for (const [engine, width] of [
+    [CHROMIUM, 375],
+    [CHROMIUM, 390],
+    [CHROMIUM, 430],
+    [CHROMIUM, 1440],
+    [WEBKIT, 375],
+    [WEBKIT, 390],
+    [WEBKIT, 430],
+    [WEBKIT, 1440],
+  ] as const) {
+    it.skipIf(!engine)(
+      `finds nothing to fix with axe in long mode at ${width} px in ${engine?.name}`,
+      async () => {
+        const page = await open(width, engine === WEBKIT ? webkit! : browser)
+        const found: Record<string, Violation[]> = {}
+        const check = async (name: string) => {
+          const v = await axe(page)
+          if (v.length > 0) found[name] = v
+        }
+        await page.getByRole('button', { name: /^104 weeks/ }).click()
+        await check('start, long')
+        await page.getByRole('button', { name: 'New run' }).click()
+        for (let i = 0; i < 6; i++) {
+          const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
+          if (await next.count()) await next.first().click()
+        }
+        if (width < 1200)
+          await page.locator('nav button').filter({ hasText: 'Plan' }).first().click()
+        for (const title of [/^Hiring/, /^Money from investors/]) {
+          await page.getByRole('button', { name: title }).first().click()
+        }
+        await page
+          .getByRole('button', { name: /^10 h:/ })
+          .first()
+          .click()
+        await page
+          .getByRole('button', { name: /^Start \(8 h of deck\)/ })
+          .first()
+          .click()
+        await check('Plan, hiring and raising')
+        await page.getByRole('button', { name: 'End week' }).click()
+        await check('results, long')
+        await page.getByRole('button', { name: 'Next week' }).first().click()
+        if (width < 1200) {
+          await page.locator('nav button').filter({ hasText: 'Plan' }).first().click()
+        }
+        await page
+          .getByRole('button', { name: /^Money from investors/ })
+          .first()
+          .click()
+        await check('Plan, open round')
+        if (width < 1200) {
+          await page.locator('nav button').filter({ hasText: 'Money' }).first().click()
+          await check('Money, long')
+        }
+        expect(found).toEqual({})
+        await page.close()
+      },
+      90_000,
+    )
+  }
+
   it.skipIf(!CHROMIUM)(
     'moves focus to the new screen and shows a ring on every surface',
     async () => {

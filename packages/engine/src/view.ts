@@ -266,6 +266,7 @@ export function getView(state: GameState): PlayerView {
       monthlyRevenueCents: l.monthlyRevenueCents,
       customers: l.customers,
       runwayWeeks: l.runwayWeeks,
+      investmentCents: l.investmentCents,
     })),
   }
 }

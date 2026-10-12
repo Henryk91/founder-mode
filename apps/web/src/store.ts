@@ -28,6 +28,7 @@ import {
   type SuggestionId,
   type TeamRoleId,
   type FreelancePlan,
+  type FundingPlan,
   type GameMode,
   type TeamTask,
   type WeekPlan,
@@ -49,7 +50,7 @@ import {
 export type Tab = 'plan' | 'inbox' | 'market' | 'pipeline' | 'money'
 
 /** The collapsible sections of the Plan tab. */
-export type PlanSection = 'talk' | 'test' | 'build' | 'sell' | 'demos' | 'team' | 'rest'
+export type PlanSection = 'talk' | 'test' | 'build' | 'sell' | 'demos' | 'team' | 'raise' | 'rest'
 
 export type ExplainKey =
   | 'runway'
@@ -62,6 +63,7 @@ export type ExplainKey =
   | 'sell'
   | 'demos'
   | 'hiring'
+  | 'raise'
   | 'rest'
 
 /**
@@ -179,6 +181,8 @@ export type UiActions = {
   setTeamTask(memberId: string, task: TeamTask | null): void
   /** Changes part of the freelancer plan: booking, hours, notice, or their task. */
   setFreelance(change: Partial<FreelancePlan>): void
+  /** Changes part of the raising plan (long mode): a round, pitching, second looks, terms, update. */
+  setFunding(change: Partial<FundingPlan>): void
   /** Answers a message now: its hours count at once, its effects land when the week ends. */
   answer(messageId: string, choiceId: string): void
   /** First step of shutting down: shows the question. Nothing happens to the run yet. */
@@ -310,6 +314,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
             ending: postMortem.ending,
             weeks: postMortem.week,
             peakRevenueCents: postMortem.cause.peakRevenueCents,
+            ...(postMortem.money.funding
+              ? { founderShareBp: postMortem.money.funding.founderShareBp }
+              : {}),
           },
         ].slice(-MAX_RUNS)
         keepRuns(slot, {
@@ -582,6 +589,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         }),
       setFreelance: (change) =>
         editPlan((p) => ({ ...p, freelance: { ...p.freelance, ...change } })),
+      setFunding: (change) =>
+        editPlan((p) => ({ ...p, funding: { ...(p.funding ?? noFunding()), ...change } })),
       answer(messageId, choiceId) {
         if (!game || game.status !== 'running') return
         try {
@@ -638,3 +647,14 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
 
   return store
 }
+
+/** A raising plan with nothing in it. */
+export const noFunding = (): FundingPlan => ({
+  start: null,
+  pitchHours: 0,
+  secondLooks: [],
+  accept: null,
+  decline: [],
+  stop: false,
+  update: null,
+})

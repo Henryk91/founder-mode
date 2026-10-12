@@ -8,7 +8,7 @@ export type Bests = {
   longest: RunRecord | null
   /** Highest monthly revenue, null while no run had a paying customer. */
   revenue: RunRecord | null
-  /** Runs that ended sustainable, highest revenue first, at most three. */
+  /** Runs that ended sustainable or growing, highest revenue first, at most three. */
   wins: RunRecord[]
   winCount: number
 }
@@ -29,7 +29,8 @@ export function bests(runs: readonly RunRecord[]): Bests {
       revenue = r
     }
   }
-  const won = runs.filter((r) => r.ending === 'sustainable')
+  // Growing (long mode, after raising) is a win too.
+  const won = runs.filter((r) => r.ending === 'sustainable' || r.ending === 'growing')
   const wins = [...won].sort((a, b) => b.peakRevenueCents - a.peakRevenueCents).slice(0, MAX_WINS)
   return { longest, revenue, wins, winCount: won.length }
 }

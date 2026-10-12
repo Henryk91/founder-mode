@@ -16,6 +16,7 @@ export function BankStatement({ view }: { view: PlayerView }) {
     .map((h, i) => ({
       week: h.week,
       change: h.cashCents - (view.history[i - 1]?.cashCents ?? h.cashCents),
+      investment: h.investmentCents,
     }))
     .slice(1)
     .slice(-STATEMENT_LINES)
@@ -39,7 +40,15 @@ export function BankStatement({ view }: { view: PlayerView }) {
         <ul className={styles.lines}>
           {lines.map((l) => (
             <li key={l.week} className={styles.line}>
-              <span>{label('money.historyRow', stage, { week: l.week })}</span>
+              <span>
+                {label(
+                  l.investment > 0 ? 'money.historyRowInvestment' : 'money.historyRow',
+                  stage,
+                  {
+                    week: l.week,
+                  },
+                )}
+              </span>
               <span className={l.change > 0 ? styles.up : undefined}>{signed(l.change)}</span>
             </li>
           ))}
