@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 0 (C3), sub-step C3b-1: long mode basics from plan 3.1 points 1 to 3
-Last commit: 9dd4eb7 Docs: autonomous plan and the three tourism scenario specs
-Next action: Read the reference docs and the long mode bot code, then apply plan 3.1 points 1 to 3 (channel limit 24 h, selling 1.0, chasing scaled by customers, results-based let-go, chasing as a team task, careful bot reads hints in long mode).
+Step: 0 (C3), sub-step C3b-2: the expansion situation (plan 3.1 point 4b) and target 29 as restated
+Last commit: 499eeba C3b-1: long mode basics, chasing and admin by the team
+Next action: Build the expansion bot pair (team and solo) and measure target 29's situations on 10,000 seeds; then target 20, 23, the inbox goal and the full long report.
 
 ## Checklist
 - [ ] Step 0: C3 (tag phase9-c3)
@@ -20,6 +20,7 @@ Next action: Read the reference docs and the long mode bot code, then apply plan
 (none yet)
 
 ## For Henry to review (non-blocking)
-(none yet)
+- Chasing and admin is an add-on to a member's task, not only a role of its own (decisions, C3b).
+- Every careful-bot variant reads price hints in long mode, so price_aware equals validate_then_build there (decisions, C3b).
 
 ## Stopped
