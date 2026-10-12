@@ -1,28 +1,22 @@
-import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { chromium, type Browser, type Page } from 'playwright-core'
+import type { Browser, Page } from 'playwright-core'
 import { createServer, type ViteDevServer } from 'vite'
 import { loadScenario } from '@founder-mode/content'
+import { CHROMIUM, WEBKIT, type Engine } from './browsers'
 
 /**
  * The ruled notebook of the Plan tab, measured in a real browser: layout cannot be checked in the
- * string renderer the other tests use. Skipped where no Chrome is installed (set CHROME_PATH to
- * point at one).
+ * string renderer the other tests use. Runs in Chrome and in WebKit (the engine of every iPhone
+ * browser), each skipped where it is not installed.
  */
 const LINE = 44
 
-const chromePath = [
-  process.env['CHROME_PATH'],
-  '/usr/bin/google-chrome',
-  '/usr/bin/google-chrome-stable',
-  '/usr/bin/chromium',
-  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-].find((p): p is string => !!p && existsSync(p))
+/** Which widths each engine is measured at. WebKit takes the common iPhone widths. */
+type Widths = { grid: number[]; features: number[] }
 
-describe.skipIf(!chromePath)('the planner notebook', () => {
+describe.skipIf(!CHROMIUM && !WEBKIT)('the planner notebook', () => {
   let server: ViteDevServer
-  let browser: Browser
   let url = ''
 
   beforeAll(async () => {
@@ -33,18 +27,41 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
     })
     await server.listen()
     url = server.resolvedUrls?.local[0] ?? ''
-    browser = await chromium.launch({ executablePath: chromePath! })
   }, 60_000)
 
   afterAll(async () => {
-    await browser?.close()
     await server?.close()
   })
 
+  suite(CHROMIUM, { grid: [390, 1280, 1440], features: [375, 1440] })
+  suite(WEBKIT, { grid: [], features: [] })
+
+  function suite(engine: Engine | null, widths: Widths) {
+    describe.skipIf(!engine)(`in ${engine?.name ?? 'a browser that is not installed'}`, () => {
+      let browser: Browser
+
+      beforeAll(async () => {
+        browser = await engine!.type.launch(engine!.options)
+      }, 60_000)
+
+      afterAll(async () => {
+        await browser?.close()
+      })
+
+      tests(
+        () => browser,
+        () => url,
+        widths,
+      )
+    })
+  }
+})
+
+function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) {
   /** A new run on the Plan tab, week 1 note dismissed, every section closed. */
-  async function planTab(width: number, height: number): Promise<Page> {
-    const page = await browser.newPage({ viewport: { width, height } })
-    await page.goto(url)
+  async function planTab(width: number, height: number, touch = false): Promise<Page> {
+    const page = await getBrowser().newPage({ viewport: { width, height }, hasTouch: touch })
+    await page.goto(getUrl())
     await page.getByRole('button', { name: 'New run' }).click()
     for (let i = 0; i < 6; i++) {
       const next = page.getByRole('button', { name: /^(Next|Start week 1)/ }).first()
@@ -69,7 +86,7 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
     await page.close()
   }, 60_000)
 
-  for (const width of [390, 1280, 1440]) {
+  for (const width of widths.grid) {
     it(`keeps every line on the grid, aligned and together at ${width} px`, async () => {
       const page = await planTab(width, 1000)
       for (const title of [
@@ -269,10 +286,8 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
     await page.close()
   }, 60_000)
 
-  for (const [width, desk] of [
-    [375, false],
-    [1440, true],
-  ] as const) {
+  for (const width of widths.features) {
+    const desk = width >= 1200
     it(`shows every unshipped feature's full name and progress at ${width} px, nothing clipped`, async () => {
       const page = await planTab(width, 1000)
       await page
@@ -346,4 +361,46 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
       await page.close()
     }, 60_000)
   }
-})
+
+  it('keeps the scroll position and focus when a stepper far down is tapped', async () => {
+    const page = await planTab(390, 844, true)
+    for (const title of ['Talk to people', 'Test the demand', 'Build and fix']) {
+      await page
+        .getByRole('button', { name: new RegExp(title) })
+        .first()
+        .click()
+    }
+    const plus = page.getByRole('button', { name: /^5 more hours on / }).last()
+    await plus.scrollIntoViewIfNeeded()
+    // Mark the button: a rebuilt section would replace it with a new, unmarked one.
+    await plus.evaluate((b) => b.setAttribute('data-tapped', ''))
+    const where = () =>
+      page.evaluate(() => {
+        const main = document.querySelector('main')!
+        const active = document.activeElement
+        return {
+          top: main.scrollTop,
+          left: main.scrollLeft,
+          page: window.scrollY,
+          focus:
+            active === document.body
+              ? 'body'
+              : active?.hasAttribute('data-tapped')
+                ? 'the tapped button'
+                : `${active?.tagName} ${active?.textContent?.slice(0, 30)}`,
+        }
+      })
+    const before = await where()
+    expect(before.top).toBeGreaterThan(400)
+    for (let i = 0; i < 3; i++) await plus.tap()
+    const after = await where()
+    expect(await page.locator('[data-tapped]').count()).toBe(1)
+    expect(await plus.evaluate((b) => b.previousElementSibling?.textContent)).toBe('+15 h')
+    expect(after.top).toBe(before.top)
+    expect(after.left).toBe(before.left)
+    expect(after.page).toBe(before.page)
+    // Chrome focuses a tapped button, WebKit does not; either way focus never jumps elsewhere.
+    expect(['body', 'the tapped button']).toContain(after.focus)
+    await page.close()
+  }, 60_000)
+}
