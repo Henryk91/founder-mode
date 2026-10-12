@@ -276,6 +276,9 @@ SCENARIO_READER.zollstock = {
   site_visit: (v) => (thin(v) ? 'follow_up' : 'ignore'),
   // Offline mode is a 10 h build for one loud customer (round 3); explaining keeps most of them.
   cellar_signal: 'workaround',
+  // Phase 8: the effortful answer pays only in the situation the text names.
+  crash_report: (v) => (v.product.bugs >= 3 ? 'patch' : 'apologise'),
+  apprentice_setup: (v) => (v.customers.length >= 3 ? 'fix' : 'later'),
 }
 
 /** The reader's table for one scenario: the shared answers plus the scenario's own. */

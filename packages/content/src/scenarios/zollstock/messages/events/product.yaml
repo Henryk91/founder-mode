@@ -12,14 +12,15 @@ events:
     sender: Customer
     text: >-
       {name} says the job plan showed Tuesday's jobs on Wednesday. Two crews drove to the same kitchen,
-      and another customer waited all day for nobody.
+      and another customer waited all day for nobody. With a long bug list it will not be the
+      last double booking.
     defaultChoice: nothing
     choices:
       - id: patch
         label: Drop everything and patch it
         hours: 4
         effects:
-          - { type: bugs, delta: -1 }
+          - { type: bugs, delta: -1, when: [bugs >= 3] }
       - id: apologise
         label: Send a careful apology
         hours: 1
@@ -153,14 +154,15 @@ events:
     sender: Customer
     text: >-
       {name}'s apprentice set up the whole firm in Zollstock over a weekend. Every job now belongs to
-      the apprentice, including the ones from 2019. In fairness, the import made it far too easy.
+      the apprentice, including the ones from 2019. In fairness, the import made it far too easy. One
+      firm is a story; with a few firms importing, it becomes a pattern.
     defaultChoice: later
     choices:
       - id: fix
         label: Fix the import and tidy up
         hours: 4
         effects:
-          - { type: bugs, delta: -1 }
+          - { type: bugs, delta: -1, when: [customers.count >= 3] }
       - id: later
         label: Send a link to the help page
         hours: 0
