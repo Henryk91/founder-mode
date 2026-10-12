@@ -22,7 +22,7 @@ Tradespeople do not read cold email and do not click on ads. They decide on trus
 
 ## 2. Starting values
 
-Identical to Kantino (same founder, same costs, same price, same price curve, price churn and budget quotes (chance and noise) from Phase 8, with its own quote texts, same run length):
+Identical to Kantino (same founder, same costs, same price, same price curve, price churn and budget quote noise from Phase 8, with its own quote texts and one interview in four naming a budget (Kantino: one in six); Kantino's Phase 8 demo to trial trim (0.35 x fit) does not apply here (0.40 x fit), same run length):
 
 | Value | Start |
 |---|---|
@@ -41,7 +41,7 @@ Identical to Kantino (same founder, same costs, same price, same price curve, pr
 |---|---|---|---|
 | Id | `small_crews` | `contractors` | `maintenance` |
 | Description shown to player | Electricians, plumbers and painters with 3 to 8 people | Building firms with several crews and 10 to 40 people | Firms that look after buildings for landlords, on recurring contracts |
-| Size (reachable companies) | 900 to 2200 | 120 to 320 | 350 to 1000 |
+| Size (reachable companies; not used by the engine yet) | 900 to 2200 | 120 to 320 | 350 to 1000 |
 | Willingness to pay per month | 375 to 720 | 700 to 1000 (Phase 8; was 900 to 2250) | 390 to 630 |
 | Must have features | `job_board`, `site_quotes`, `customer_texts` | `job_board`, `crew_dispatch`, `material_lists` | `job_board`, `recurring_jobs`, `photo_reports` |
 | Channel response: cold email | 0.008 to 0.025 | 0.02 to 0.045 | 0.015 to 0.035 |

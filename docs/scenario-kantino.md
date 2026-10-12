@@ -39,19 +39,19 @@ Cash and savings together last about 30 weeks (7.5 months) at 3,105 a month with
 |---|---|---|---|
 | Id | `small_offices` | `coworking` | `medical` |
 | Description shown to player | Agencies and firms with 10 to 50 staff | Shared workspaces with many small tenants | Doctors and dentists with shift based teams |
-| Size (reachable companies) | 800 to 2000 | 100 to 300 | 400 to 1200 |
-| Willingness to pay per month | 375 to 720 | 700 to 1000 (Phase 8; was 900 to 2250) | 390 to 630 |
+| Size (reachable companies; not used by the engine yet) | 800 to 2000 | 100 to 300 | 400 to 1200 |
+| Willingness to pay per month | 375 to 720 | 700 to 1000 (Phase 8; was 900 to 2250) | 450 to 700 (Phase 8; was 390 to 630) |
 | Must have features | `basic_ordering`, `invoice_export`, `chat_integration` | `basic_ordering`, `multi_site`, `member_billing` | `basic_ordering`, `allergy_filter`, `shift_schedule` |
 | Channel response: cold email | 0.05 to 0.10 | 0.025 to 0.06 | 0.04 to 0.08 |
-| Channel response: phone | 0.04 to 0.075 | 0.0425 to 0.0935 (Phase 8; was 0.05 to 0.11) | 0.06 to 0.125 |
-| Channel response: in person | 0.025 to 0.125 | 0.051 to 0.102 (Phase 8; was 0.06 to 0.12) | 0.06 to 0.12 |
+| Channel response: phone | 0.04 to 0.075 | 0.0425 to 0.0935 (Phase 8; was 0.05 to 0.11) | 0.066 to 0.1375 (Phase 8; was 0.06 to 0.125) |
+| Channel response: in person | 0.025 to 0.125 | 0.051 to 0.102 (Phase 8; was 0.06 to 0.12) | 0.066 to 0.132 (Phase 8; was 0.06 to 0.12) |
 | Invoice lateness, mean days | 5 | 12 | 20 |
 | Share that never pays | 5% | 3% | 8% |
 | Share that pays only once chased | 25% | 25% | 25% |
 
 Each value given as a range is drawn uniformly at game creation from the seed.
 
-Phase 8: coworking would pay 700 to 1,000 (was 900 to 2,250) and its phone and in person response is 0.85 of before, so reading the budget quotes and pricing right is worth about 8 points, not 13, with coworking at about 60% for the hint-reading price bot. Zollstock's contractors mirror the price range.
+Phase 8: coworking would pay 700 to 1,000 (was 900 to 2,250) and its phone and in person response is 0.85 of before, so reading the budget quotes and pricing right is worth about 8 points, not 13, with coworking at about 60% for the hint-reading price bot. Zollstock's contractors mirror the price range. Step 4 then lifted medical (would pay 450 to 700, phone and in person +10%), so a careful pricer gains a little there too, trimmed every market slightly (demo to trial 0.35 x fit, was 0.40), and made budget quotes rarer (one interview in six, Zollstock one in four): the hint-reading price bot is 9.2 points ahead of the default price, 41.2% overall, with a spread of 23.6 across viable markets.
 
 Engine 0.7.0: willingness to pay medical 260 to 420 (was 180 to 320) and small offices 250 to 480 (was 200 to 450), at the old money scale, because at the default price a viable medical market sat below it in 86% of runs. Tuning round 1 raised medical cold email (was 0.01 to 0.03) and in person (was 0.05 to 0.10) and lowered coworking in person (was 0.075 to 0.15). All money then scaled by 1.5.
 
@@ -127,7 +127,7 @@ Funnel formulas are in the implementation plan, section 4.5. The scenario sets t
 | Constant | Value | Was before Phase 3 tuning |
 |---|---|---|
 | Lead to demo per week | 0.18 x (0.4 + 0.6 x pain) | 0.25 x (0.4 + 0.6 x pain) |
-| Demo to trial | 0.05 + 0.40 x fit | 0.20 + 0.60 x fit |
+| Demo to trial | 0.05 + 0.35 x fit (Phase 8; was 0.40) | 0.20 + 0.60 x fit |
 | Monthly churn | 0.03 + 0.20 x (1 - fit) + 0.01 x bugs, plus 0.15 x (price / willingness to pay - 1) above the willingness to pay (Phase 8), capped at 0.6 | 0.02 + 0.25 x (1 - fit) + 0.01 x bugs |
 
 Reason: a bot that found the viable market ended with about 19 customers when 7 make the company profitable, so finding the market was the whole game. Now fewer demos turn into trials and selling skill grows half as fast. Churn stays moderate (about 11% a month for a good fit without bugs), because a leaky bucket is less fun than a slow funnel; a churn of 0.06 + 0.45 x misfit was tried and gave 20 to 30% a month for products that fit.
@@ -201,7 +201,7 @@ This estimate is a back of the envelope calculation. Treat the bot report as the
 
 ## 11. Phase 4 and engine 0.7.0 values
 
-Budget quotes (Phase 8): about one interview in four also names a rough monthly figure in the market's own words, honest on average (willingness to pay times 1 + N(0, 0.25)), rounded to 50 EUR below 1,000 and 100 EUR above. Five quotes per market in the scenario YAML.
+Budget quotes (Phase 8): about one interview in six (Zollstock: one in four) also names a rough monthly figure in the market's own words, honest on average (willingness to pay times 1 + N(0, 0.25)), rounded to 50 EUR below 1,000 and 100 EUR above. Five quotes per market in the scenario YAML.
 
 Price (Phase 8, engine 0.11.0): with r = price / willingness to pay, the price factor is (1 + e^(-13.5)) / (1 + e^(10 x (r - 1.35))): 1 at no price, 0.97 at r 1, 0.82 at 1.2, a half at 1.35. It scales trials becoming customers, landing sign ups and pre-sale deposits. A trial lost to the price says so; a customer leaving over the price says so. Calibrated so the careful bot at the default price plays as before (target 2 within 1 point, 6 within 1, 7 within half a week).
 
