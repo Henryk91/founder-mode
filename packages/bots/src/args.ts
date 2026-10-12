@@ -41,7 +41,18 @@ export type FreelanceArg = {
   weeks: number | null
 }
 
-const PARTS = ['main', 'paired', 'inbox', 'price', 'freelance', 'tired', 'team', 'energy', 'events']
+const PARTS = [
+  'main',
+  'paired',
+  'inbox',
+  'price',
+  'freelance',
+  'tired',
+  'team',
+  'funding',
+  'energy',
+  'events',
+]
 
 /** `developer:20`, `developer:20:0`, `salesperson:20:0:8`. */
 export function parseFreelance(text: string): FreelanceArg {

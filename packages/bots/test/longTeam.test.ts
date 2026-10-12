@@ -6,7 +6,12 @@ import { runGame, type RunResult } from '../src/simulate'
 import { strategyOf } from '../src/specs'
 import { STRATEGIES } from '../src/strategies'
 import { PlanBuilder, describeStrategy } from '../src/strategy'
-import { TEAM_VARIANTS, validateThenBuild } from '../src/strategies/validateThenBuild'
+import {
+  FUNDING_VARIANTS,
+  fundingVariant,
+  TEAM_VARIANTS,
+  validateThenBuild,
+} from '../src/strategies/validateThenBuild'
 
 const long = loadScenario('kantino', 'long')
 const byId = (id: string) => STRATEGIES.find((s) => s.id === id)!
@@ -156,5 +161,23 @@ describe('long mode chasing and pricing (C3)', () => {
     expect(handed).toBeGreaterThan(0)
     expect(founderChasesWithTeam).toBe(0)
     expect(priced).toBeGreaterThan(0)
+  })
+})
+
+describe('raising bots (Part D)', () => {
+  it('play long runs with valid plans, and only the raisers raise', () => {
+    const scenario = loadScenario('kantino', 'long')
+    for (const v of FUNDING_VARIANTS) {
+      const results = Array.from({ length: 4 }, (_, i) =>
+        runGame(scenario, fundingVariant(v.id), `raise-${i}`),
+      )
+      for (const r of results) expect(r.funding).not.toBeNull()
+      if (v.raise.when === 'early') {
+        expect(results.every((r) => (r.funding?.roundsStarted ?? 0) > 0)).toBe(true)
+      }
+    }
+    const boot = runGame(scenario, validateThenBuild, 'raise-0')
+    expect(boot.funding?.roundsStarted).toBe(0)
+    expect(boot.funding?.founderShareBp).toBe(10_000)
   })
 })

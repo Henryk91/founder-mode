@@ -1,7 +1,7 @@
 import type { RunResult } from './simulate'
 import { CHECK_WEEK, EVIDENCE_WEEK, PACING_WEEKS, STANDARD_WEEKS } from './simulate'
 import { EARLY_HIRE_WIDE_ID, FREELANCE_TARGET_ID } from './specs'
-import { energyRows, longTargetRows, teamRows } from './longReport'
+import { energyRows, fundingRows, longTargetRows, teamRows } from './longReport'
 import { combined, fmtMargin, medianMargin, pairedMargin, rateMargin, ratioMargin } from './margin'
 
 export type StrategyRuns = {
@@ -56,7 +56,9 @@ export const fmtNum = (n: number | null, digits = 0) => (n === null ? '-' : n.to
 const fmtEur = (cents: number | null) =>
   cents === null ? '-' : `${Math.round(cents / 100).toLocaleString('en-GB')} EUR`
 
-export const isLoss = (r: RunResult) => r.ending !== 'sustainable'
+/** A win: Sustainable, or Growing for a funded run in long mode (Part D). */
+export const isWin = (r: RunResult) => r.ending === 'sustainable' || r.ending === 'growing'
+export const isLoss = (r: RunResult) => !isWin(r)
 
 /**
  * A target of plan section 7. `value` is '-' when the runs it needs were not part of the input.
@@ -64,7 +66,7 @@ export const isLoss = (r: RunResult) => r.ending !== 'sustainable'
  */
 export type Target = { id: number; text: string; value: string; margin: string; pass: boolean }
 
-export const wins = (rs: readonly RunResult[]) => rs.filter((r) => r.ending === 'sustainable')
+export const wins = (rs: readonly RunResult[]) => rs.filter(isWin)
 
 /** Win rate in percent per viable market, in the given market order. */
 export function winRateByMarket(results: readonly RunResult[], markets: readonly string[]) {
@@ -735,7 +737,7 @@ function targetRows(input: ReportInput): string[] {
 }
 
 export function winsOf(r: RunResult) {
-  return r.ending === 'sustainable'
+  return isWin(r)
 }
 
 /** Win rate comparison of a full strategy with versions that lack some behaviours. */
@@ -838,19 +840,25 @@ export function buildReport(input: ReportInput): string {
       `|---|---|${TARGET_STRATEGIES.map((_, i) => (i === 0 ? '---|---|---' : '---|---')).join('|')}|`,
       ...targetRows(input),
     )
+  const growingCol = input.strategies.some((x) => x.results.some((r) => r.ending === 'growing'))
   push(
     '',
     '## Endings',
     '',
-    '| Strategy | Sustainable | Still searching | Bankrupt | Burnout | Shut down | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |',
-    '|---|---|---|---|---|---|---|---|---|---|',
+    // Growing (Part D) gets a column only where a run ended that way, so other reports keep theirs.
+    growingCol
+      ? '| Strategy | Sustainable | Growing | Still searching | Bankrupt | Burnout | Shut down | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |'
+      : '| Strategy | Sustainable | Still searching | Bankrupt | Burnout | Shut down | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |',
+    growingCol
+      ? '|---|---|---|---|---|---|---|---|---|---|---|'
+      : '|---|---|---|---|---|---|---|---|---|---|',
   )
   for (const s of input.strategies) {
     const n = s.results.length
     const count = (e: string) => s.results.filter((r) => r.ending === e).length
     const bankrupt = s.results.filter((r) => r.ending === 'bankrupt').map((r) => r.weeks)
     push(
-      `| ${s.id} | ${fmtPct(pct(count('sustainable'), n))} | ${fmtPct(pct(count('still_searching'), n))} | ${fmtPct(pct(count('bankrupt'), n))} | ${fmtPct(pct(count('burnout'), n))} | ${fmtPct(pct(count('shut_down'), n))} | ${fmtNum(median(bankrupt))} | ${fmtNum(median(s.results.filter(isLoss).map((r) => r.weeks)))} | ${fmtEur(median(s.results.map((r) => r.peakMonthlyRevenueCents)))} | ${fmtNum(median(s.results.map((r) => r.customersEnd)))} |`,
+      `| ${s.id} | ${fmtPct(pct(count('sustainable'), n))} | ${growingCol ? `${fmtPct(pct(count('growing'), n))} | ` : ''}${fmtPct(pct(count('still_searching'), n))} | ${fmtPct(pct(count('bankrupt'), n))} | ${fmtPct(pct(count('burnout'), n))} | ${fmtPct(pct(count('shut_down'), n))} | ${fmtNum(median(bankrupt))} | ${fmtNum(median(s.results.filter(isLoss).map((r) => r.weeks)))} | ${fmtEur(median(s.results.map((r) => r.peakMonthlyRevenueCents)))} | ${fmtNum(median(s.results.map((r) => r.customersEnd)))} |`,
     )
   }
 
@@ -892,7 +900,7 @@ export function buildReport(input: ReportInput): string {
   push(...freelanceRows(input))
   push(...tiredRows(input))
   push(...chaseRows(input))
-  if (long) push(...teamRows(input))
+  if (long) push(...teamRows(input), ...fundingRows(input))
   push(...energyRows(input))
 
   // The 60 week report keeps its old bins (up to 78, the run length before engine 0.7.0); a

@@ -38,9 +38,13 @@ describe('bots', () => {
       'validate_then_build_expand',
       'validate_then_build_expand_solo',
       'validate_then_build_founder_chases',
+      'raise_on_traction',
+      'raise_early',
+      'raise_always',
+      'raise_late',
     ])
-    // The team variants are long mode only.
-    expect(STRATEGIES.filter((s) => s.modes?.includes('long')).length).toBe(7)
+    // The team variants and the raising bots are long mode only.
+    expect(STRATEGIES.filter((s) => s.modes?.includes('long')).length).toBe(11)
   })
 
   it.each(STRATEGIES.map((s) => [s.id, s] as const))(
@@ -257,7 +261,10 @@ describe('bots', () => {
           e.choices.some((c) => c.effects.some((fx) => fx.type === 'moveOffice'))
         // The second year's events are shared by every scenario with a long mode; the reader
         // answers them in every scenario, ready for when it gets one.
-        const year2 = eventsIn(scenarioSources(id).longEvents).map((e) => (e as { id: string }).id)
+        const year2 = [
+          ...eventsIn(scenarioSources(id).longEvents),
+          ...eventsIn(scenarioSources(id).fundingEvents ?? ''),
+        ].map((e) => (e as { id: string }).id)
         const ids = [...s.events.map((e) => e.id), ...year2].filter(
           (eid) => eid !== 'receipts_pile' && !s.events.some((e) => e.id === eid && officeMove(e)),
         )

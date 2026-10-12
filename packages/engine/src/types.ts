@@ -942,6 +942,8 @@ export type RoundView = {
   closingWeeks: number
   dueDiligenceHours: number
   amountCents: { min: number; max: number }
+  /** Investors of this kind not met yet in this run; a round needs at least one. */
+  investorsLeft: number
 }
 
 export type InvestorView = {
@@ -1391,6 +1393,8 @@ export type FundingEconomics = {
   founderValueCents: number
   /** Hours spent raising: decks, pitching, second looks, updates. */
   hours: number
+  /** Investors met before there was a paying customer, every one of whom passed as too early. */
+  pitchedTooEarly: number
 }
 
 export type PostMortem = {

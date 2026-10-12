@@ -1,6 +1,7 @@
 # Inbox events about investors (Phase 9 Part D), long mode only. Shared by every scenario with a
 # funding block. Each waits until a round has closed (`funding.raised >= 1`), so a run that never
-# raises sees none of them and plays as before. Mood: 0 worried, 1 patient, 2 pleased.
+# raises sees none of them and plays as before. Mood: 0 worried, 1 patient, 2 pleased. Two recur on
+# purpose, every 8 weeks while the mood lasts: the check-in (worried) and the introductions (pleased).
 events:
   # --- Pressure, when the investors are worried
 
@@ -61,7 +62,9 @@ events:
   - id: investor_checkin
     area: finance
     weight: 3
-    once: true
+    once: false
+    # Recurs on purpose: investors keep doing this while the mood lasts.
+    cooldownWeeks: 8
     when: [funding.raised >= 1, funding.mood == 0]
     from: none
     sender: Your investor
@@ -209,20 +212,23 @@ events:
   - id: investor_intro
     area: finance
     weight: 3
-    once: true
+    once: false
+    # Recurs on purpose: investors keep doing this while the mood lasts.
+    cooldownWeeks: 8
     when: [funding.raised >= 1, funding.mood == 2]
     from: none
     sender: Your investor
     text: >-
       Your investor is pleased with the last update and offers to introduce you to two companies
-      they know. They mention you "at every dinner now", which explains a lot.
+      they know, and a third who owes them a favour. They mention you "at every dinner now", which
+      explains a lot.
     defaultChoice: later
     choices:
       - id: calls
         label: Take both introductions
         hours: 2
         effects:
-          - { type: newLeads, count: 2 }
+          - { type: newLeads, count: 3 }
       - id: later
         label: Ask them to hold the thought
         hours: 0
