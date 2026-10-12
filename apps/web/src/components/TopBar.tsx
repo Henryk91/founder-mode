@@ -1,14 +1,18 @@
 import { label } from '../labels'
 import { useGame } from '../useGame'
 import { Headline } from './Headline'
+import { HoursBand } from './HoursBand'
 import styles from './TopBar.module.css'
 import ui from './ui.module.css'
 
 /**
  * Pinned on every screen: company, week, Help and End week, with the headline numbers. On the
  * phone the numbers sit in a band below, at the desk they share one 68 px bar.
+ *
+ * On the phone's Plan tab `planHours` is set: true while the notebook's hours bar is scrolled out
+ * of view, and the band then shows the week's hours instead of the numbers, at the same height.
  */
-export function TopBar(props: { wide: boolean }) {
+export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
   const view = useGame((s) => s.view)
   const issues = useGame((s) => s.issues.length)
   const showingReport = useGame((s) => s.report !== null)
@@ -60,7 +64,18 @@ export function TopBar(props: { wide: boolean }) {
         {name}
         {actions}
       </div>
-      <Headline size="band" />
+      {props.planHours == null ? (
+        <Headline size="band" />
+      ) : (
+        <div className={styles.swap} data-show={props.planHours ? 'hours' : 'numbers'}>
+          <div className={styles.numbers}>
+            <Headline size="band" />
+          </div>
+          <div className={styles.hours}>
+            <HoursBand />
+          </div>
+        </div>
+      )}
     </header>
   )
 }

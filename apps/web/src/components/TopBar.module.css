@@ -75,3 +75,37 @@
   padding: 0 24px;
   font-size: 16px;
 }
+
+/*
+ * The phone's Plan tab: the numbers and the hours share the band's one cell, so the band keeps
+ * the numbers' height whichever shows. Screen readers always have the numbers (the hours are
+ * aria-hidden), and a number taking keyboard focus brings them back into view.
+ */
+.swap {
+  display: grid;
+  background: var(--shadow);
+}
+
+/* A short fade, which index.css turns off for anyone who asked for less motion. */
+.swap > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+  transition: opacity 150ms ease;
+}
+
+.hours {
+  display: flex;
+  align-items: center;
+}
+
+.swap[data-show='numbers'] > .hours,
+.swap[data-show='hours'] > .numbers,
+.swap[data-show='hours']:focus-within > .hours {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.swap[data-show='hours']:focus-within > .numbers {
+  opacity: 1;
+  pointer-events: auto;
+}
