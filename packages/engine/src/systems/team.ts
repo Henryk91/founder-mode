@@ -9,6 +9,7 @@ import type {
   TeamRoleId,
   WeekPlan,
 } from '../types'
+import { isOverdue } from './invoices'
 import { canBookDemo } from './sales'
 
 /** Members who work this week: started and not let go, in hiring order. */
@@ -63,7 +64,41 @@ export type TeamOutput = {
   outreach: OutreachItem | null
   /** Selling skill used for the member's outreach. */
   selling: number
+  /** Overdue invoices the member chases (task `admin`). */
+  chases: string[]
 }
+
+/**
+ * Overdue invoices someone other than the founder may chase this week, oldest first: not in the
+ * founder's own chase list and not taken by anyone before them.
+ */
+function chaseable(state: GameState, plan: WeekPlan, taken: ReadonlySet<string>): string[] {
+  return state.invoices
+    .filter((i) => isOverdue(i, state.week) && !plan.chase.includes(i.id) && !taken.has(i.id))
+    .map((i) => i.id)
+}
+
+/** Takes as many chases as `hours` allow from what is left; returns the hours left over. */
+function takeChases(
+  state: GameState,
+  plan: WeekPlan,
+  taken: Set<string>,
+  hours: number,
+  into: string[],
+): number {
+  const per = state.scenario.finance.chaseHours
+  let free = hours
+  for (const id of chaseable(state, plan, taken)) {
+    if (free < per) break
+    into.push(id)
+    taken.add(id)
+    free -= per
+  }
+  return free
+}
+
+/** Invoices the team chases this week, member by member. */
+export const teamChases = (team: readonly TeamOutput[]): string[] => team.flatMap((t) => t.chases)
 
 /** Build hours of every output on one feature. */
 export const teamBuildOn = (team: readonly TeamOutput[], featureId: FeatureId): number =>
@@ -74,11 +109,13 @@ export const teamBuildOn = (team: readonly TeamOutput[], featureId: FeatureId): 
  * hiring order. A developer builds `weeklyHours x skill` on the feature their task names, never
  * more than the founder and earlier members leave of it. A salesperson holds demos first, as many
  * as the hours allow and no demo someone else holds, then does outreach where their task says.
- * Hours with nothing to do are lost.
+ * A member on chasing and admin (`admin`) chases overdue invoices first and works with the hours
+ * left. Hours with nothing to do are lost.
  */
 export function teamOutput(state: GameState, plan: WeekPlan): TeamOutput[] {
   const outputs: TeamOutput[] = []
   const booked = new Set(plan.demos)
+  const chased = new Set<string>()
   for (const member of workingMembers(state)) {
     const cfg = state.scenario.team.roles[member.role]
     const skill = state.hidden.teamSkills[member.id] ?? 0
@@ -92,8 +129,14 @@ export function teamOutput(state: GameState, plan: WeekPlan): TeamOutput[] {
       demos: [],
       outreach: null,
       selling: cfg.selling ?? state.founder.skills.selling,
+      chases: [],
     }
     outputs.push(out)
+
+    let free = hours
+    if (task && (task.kind === 'admin' || task.admin)) {
+      free = takeChases(state, plan, chased, hours, out.chases)
+    }
 
     if (member.role === 'developer') {
       const target = task?.kind === 'build' ? task.featureId : null
@@ -105,13 +148,12 @@ export function teamOutput(state: GameState, plan: WeekPlan): TeamOutput[] {
           progress.progressHours -
           (plan.build[target] ?? 0) -
           teamBuildOn(outputs, target)
-        const built = Math.max(0, Math.min(hours, left))
+        const built = Math.max(0, Math.min(free, left))
         if (built > 0) out.build[target] = built
       }
       continue
     }
 
-    let free = hours
     const demoHours = state.scenario.sales.demoHours
     for (const lead of state.leads) {
       if (free < demoHours) break
@@ -273,12 +315,15 @@ export type FreelanceOutput = {
   build: Record<FeatureId, number>
   outreach: OutreachItem | null
   selling: number
+  /** Overdue invoices the freelancer chases (`admin` in the plan). */
+  chases: string[]
 }
 
 /**
  * What the freelancer produces this week. A developer builds the feature the plan names, never
  * more than what the founder and the hire leave of it. A salesperson does outreach where the plan
- * says and holds no demos. Hours with nothing to do are lost, and still billed.
+ * says and holds no demos. On chasing and admin, either role chases overdue invoices the founder
+ * and the team leave instead. Hours with nothing to do are lost, and still billed.
  */
 export function freelanceOutput(
   state: GameState,
@@ -297,7 +342,11 @@ export function freelanceOutput(
     build: {},
     outreach: null,
     selling: cfg.roles[f.role].selling ?? state.founder.skills.selling,
+    chases: [],
   }
+  const free = plan.freelance.admin
+    ? takeChases(state, plan, new Set(teamChases(team)), hours, out.chases)
+    : hours
   if (f.role === 'developer') {
     const target = plan.freelance.build
     const def = target ? state.scenario.features.find((x) => x.id === target) : undefined
@@ -308,11 +357,11 @@ export function freelanceOutput(
         progress.progressHours -
         (plan.build[target] ?? 0) -
         teamBuildOn(team, target)
-      const built = Math.max(0, Math.min(hours, left))
+      const built = Math.max(0, Math.min(free, left))
       if (built > 0) out.build[target] = built
     }
-  } else if (plan.freelance.outreach && hours > 0) {
-    out.outreach = { ...plan.freelance.outreach, hours }
+  } else if (plan.freelance.outreach && free > 0) {
+    out.outreach = { ...plan.freelance.outreach, hours: free }
   }
   return out
 }
@@ -353,7 +402,9 @@ export function applyFreelance(
 
   if (output) {
     const worked =
-      Object.values(output.build).reduce((t, h) => t + h, 0) + (output.outreach?.hours ?? 0)
+      Object.values(output.build).reduce((t, h) => t + h, 0) +
+      (output.outreach?.hours ?? 0) +
+      output.chases.length * input.scenario.finance.chaseHours
     freelancers = freelancers.map((f) =>
       f.id === output.bookingId ? { ...f, workedHours: f.workedHours + worked } : f,
     )

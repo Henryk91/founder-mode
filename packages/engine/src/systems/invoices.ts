@@ -106,12 +106,18 @@ export function nudgeInvoice(
 
 /**
  * Chasing an overdue invoice gets it paid in the following week with the scenario's chance,
- * unless the customer will never pay. The player cannot tell the difference beforehand.
+ * unless the customer will never pay. The player cannot tell the difference beforehand. The
+ * founder's chases are rolled first, then those of the team and the freelancer (`delegated`).
  */
-export function chaseInvoices(state: GameState, plan: WeekPlan, rng: Rng): GameState {
-  if (plan.chase.length === 0) return state
+export function chaseInvoices(
+  state: GameState,
+  plan: WeekPlan,
+  rng: Rng,
+  delegated: readonly string[] = [],
+): GameState {
+  if (plan.chase.length === 0 && delegated.length === 0) return state
   let money = { payWeeks: state.hidden.payWeeks, waitsForChase: state.hidden.waitsForChase }
-  for (const id of plan.chase) {
+  for (const id of [...plan.chase, ...delegated]) {
     // The roll is always made, so a never payer does not change the random sequence.
     if (rng.chance(state.scenario.finance.chaseBoost)) money = nudgeInvoice(money, id, state.week)
   }

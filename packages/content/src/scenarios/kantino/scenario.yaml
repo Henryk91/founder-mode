@@ -330,6 +330,9 @@ modes:
     sales:
       # Markets run out of new leads: response falls with the share of companies already found.
       marketSaturation: { floor: 0.3 }
+      # A channel wears out after 24 h a week over three weeks (12 in the 60 week game), so a
+      # salesperson beside the founder is not selling only in worn out channels (C3, plan 3.1).
+      saturationHours: 24
     team:
       maxMembers: 4
       maxHires: 8
@@ -348,6 +351,8 @@ modes:
           name: Salesperson
           monthlyCents: 605000
           weeklyHours: 40
+          # A professional seller: better than a founder at the skill cap (0.8), C3 plan 3.1.
+          selling: 1.0
           partTime: { monthlyCents: 302500, weeklyHours: 20 }
     milestones:
       - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }

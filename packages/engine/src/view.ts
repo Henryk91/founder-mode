@@ -204,6 +204,7 @@ export function getView(state: GameState): PlayerView {
         l.referredBy === undefined
           ? null
           : (state.customers.find((c) => c.id === l.referredBy)?.name ?? null),
+      foundBy: l.source === 'team' ? (l.foundBy ?? state.team.members[0]?.id ?? null) : null,
     })),
     customers: activeCustomers(state).map((c) => ({
       id: c.id,

@@ -219,9 +219,13 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
     const member = activeMembers(state).find((m) => m.id === memberId)
     const valid =
       member !== undefined &&
-      (task.kind === 'build'
-        ? state.product.features.some((f) => f.id === task.featureId)
-        : Object.hasOwn(state.hidden.segments[task.segmentId]?.channelResponse ?? {}, task.channel))
+      (task.kind === 'admin' ||
+        (task.kind === 'build'
+          ? state.product.features.some((f) => f.id === task.featureId)
+          : Object.hasOwn(
+              state.hidden.segments[task.segmentId]?.channelResponse ?? {},
+              task.channel,
+            )))
     if (!valid) issues.push({ code: 'invalid_team_work' })
   }
 

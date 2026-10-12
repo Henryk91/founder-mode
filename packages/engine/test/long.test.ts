@@ -44,7 +44,10 @@ describe('long mode in the content', () => {
     // Objects merge: the rest of the founder block is the 60 week one.
     expect(s.founder.energy).toEqual(loadScenario('kantino').founder.energy)
     expect(s.team.roles.developer).toMatchObject({ monthlyCents: 700000, weeklyHours: 40 })
-    expect(s.team.roles.salesperson).toMatchObject({ monthlyCents: 605000, selling: 0.3 })
+    expect(s.team.roles.salesperson).toMatchObject({ monthlyCents: 605000, selling: 1.0 })
+    // A channel wears out later in long mode (C3); the 60 week game keeps 12 h.
+    expect(s.sales.saturationHours).toBe(24)
+    expect(loadScenario('kantino').sales.saturationHours).toBe(12)
     expect(s.milestones.map((m) => m.id)).toContain('weeks_104')
     expect(scenarioHash(s)).not.toBe(scenarioHash(loadScenario('kantino')))
     expect(scenarioModes('kantino')).toEqual(['standard', 'long'])

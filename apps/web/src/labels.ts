@@ -373,6 +373,8 @@ const labels = {
   'results.entry.member_let_go': '{name} is gone. It cost {amount}.',
   'results.entry.team_output.developer': 'Your developer put in {hours} build hours.',
   'results.entry.team_output.salesperson': 'Your salesperson put in {hours} hours of selling.',
+  'results.entry.team_chased.one': 'Your team chased {n} late invoice for you.',
+  'results.entry.team_chased.other': 'Your team chased {n} late invoices for you.',
   'results.entry.living_costs_changed':
     'The landlord found a new number. Your living costs are {amount} a week from now on.',
   'results.entry.freelance_booked':

@@ -21,6 +21,11 @@ const CHANNEL_TRIAL_HOURS = 10
 const PIVOT_AFTER_WEEKS = 12
 /** Overdue invoices chased per week. */
 const CHASE_PER_WEEK = 3
+/**
+ * Long mode (C3): one more chase a week for every this many customers, so chasing keeps up with a
+ * growing company. The 60 week game keeps `CHASE_PER_WEEK`.
+ */
+const CUSTOMERS_PER_CHASE = 3
 /** Pre-sale batches without a deposit that refute the chosen market. */
 const MAX_PRESALE_BATCHES = 2
 /**
@@ -66,6 +71,12 @@ const HIRE_HORIZON_WEEKS = 26
 const LET_GO_MONTHS = 3
 const SETTLE_WEEKS = 8
 const BACKLOG_HOURS = 40
+/**
+ * A salesperson is let go after `RESULTS_WEEKS` of work unless the customers they found pay at
+ * least `RESULTS_SHARE` of their salary (C3a round 3, plan 3.1).
+ */
+const RESULTS_WEEKS = 16
+const RESULTS_SHARE = 0.5
 /** Hiring on savings: the first search once building starts, while money holds this many salaries. */
 const SAVINGS_SALARIES = 3
 /** ...and that hire is kept until the runway shown falls below this many months. */
@@ -448,6 +459,12 @@ export type Behaviours = {
   forced?: { eventId: string; choiceId: string }
   /** For measuring an event's share of an inbox policy: leave this event to its default. */
   skipEvent?: string
+  /**
+   * Long mode: who chases late invoices once someone is on the team. `team` (the default): the
+   * founder stops chasing and the first working member does it as part of their task; `founder`:
+   * the founder keeps chasing.
+   */
+  chaseBy?: 'team' | 'founder'
 }
 
 /**
@@ -646,7 +663,10 @@ export function validatingPlayer(
   behaviours: Behaviours = ALL_BEHAVIOURS,
 ): Player {
   const channels = new ChannelLog(scenario.sales)
-  const prices = pricing ? pricing() : null
+  const long = scenario.mode === 'long'
+  // In long mode a careful player reads the budget hints and the trials' answers to set its price
+  // (plan 3.1), as `price_aware` does.
+  const prices = pricing ? pricing() : long ? new PriceSearch(PRICE_RULE) : null
   let lastView: PlayerView | null = null
   const abandoned = new Set<string>()
   let target: string | null = null
@@ -779,6 +799,16 @@ export function validatingPlayer(
     }
   }
 
+  /** Monthly revenue from customers whose lead this member found, as the pipeline shows it. */
+  const foundRevenue = (view: PlayerView, memberId: string): number => {
+    const names = new Set(
+      view.leads.filter((l) => l.foundBy === memberId && l.stage === 'paying').map((l) => l.name),
+    )
+    return view.customers
+      .filter((c) => names.has(c.name))
+      .reduce((t, c) => t + c.priceCentsPerMonth, 0)
+  }
+
   const moneyOf = (view: PlayerView) =>
     view.company.cashCents + Math.max(0, view.founder.savingsCents)
   /**
@@ -837,8 +867,16 @@ export function validatingPlayer(
     const nothingToBuild = view.product.features.every((f) => f.shipped)
     const floor = rule.start === 'savings' ? SAVINGS_LET_GO_MONTHS : LET_GO_MONTHS
     const idleDev = members.find((m) => m.working && m.role === 'developer' && nothingToBuild)
+    const unpaid = members.find(
+      (m) =>
+        m.working &&
+        m.role === 'salesperson' &&
+        view.week - m.startWeek >= RESULTS_WEEKS &&
+        foundRevenue(view, m.id) < RESULTS_SHARE * m.monthlyCents,
+    )
     if (newest && short(view, floor)) b.plan.letGo = newest.id
     else if (idleDev) b.plan.letGo = idleDev.id
+    else if (unpaid) b.plan.letGo = unpaid.id
     const beforeFirstHire = team.hiresLeft === view.costs.teamMaxHires
 
     const role = limitingRole(view, unshipped)
@@ -885,6 +923,27 @@ export function validatingPlayer(
         }
       }
     }
+  }
+
+  /**
+   * Long mode chasing, once the team's week is planned. With someone working on the team who
+   * stays (`chaseBy` team), the first of them chases late invoices before their own work, and the
+   * founder does not. Otherwise the founder chases `CHASE_PER_WEEK`, or one more for every
+   * `CUSTOMERS_PER_CHASE` customers.
+   */
+  const chasing = (b: PlanBuilder, view: PlayerView) => {
+    if (!long || !behaviours.chase) return
+    const member =
+      (behaviours.chaseBy ?? 'team') === 'team'
+        ? view.team.members.find((m) => m.working && m.id !== b.plan.letGo)
+        : undefined
+    if (member) {
+      const task = b.plan.teamTasks[member.id]
+      b.plan.teamTasks[member.id] =
+        task && task.kind !== 'admin' ? { ...task, admin: true } : { kind: 'admin' }
+      return
+    }
+    b.chase(Math.max(CHASE_PER_WEEK, Math.ceil(view.customers.length / CUSTOMERS_PER_CHASE)))
   }
 
   /** `behaviours.situation`: one extra person for a burst or steady work, then let go. */
@@ -1183,7 +1242,8 @@ export function validatingPlayer(
       const ids = view.segments.map((s) => s.id)
       lastView = view
       if (prices && view.week <= 2) b.price(prices.price(view, null))
-      if (behaviours.chase) b.chase(CHASE_PER_WEEK)
+      // Long mode chases after the team's week is planned (`chasing`), so a hire can take it over.
+      if (behaviours.chase && !long) b.chase(CHASE_PER_WEEK)
 
       // Week 1: interviews only. Week 2: a landing page test where the interviews point, more
       // interviews there, and the feature everyone asks for.
@@ -1250,6 +1310,7 @@ export function validatingPlayer(
       if (behaviours.hire !== 'none') staffing(b, view, wanted, target)
       growing(b, view, unshipped, target)
       situational(b, view, unshipped, target)
+      chasing(b, view)
       b.demos(bookableLeads(view, target))
       b.demos(bookableLeads(view))
       if (behaviours.followUps) b.followUp(FOLLOW_UPS_PER_WEEK, target)

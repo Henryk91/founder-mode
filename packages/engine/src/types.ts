@@ -535,9 +535,15 @@ export type WeekPlan = {
   teamTasks: Record<string, TeamTask>
 }
 
+/**
+ * Chasing and admin (Phase 9 C3): with `admin`, or as the task `admin` on its own, the member first
+ * chases overdue invoices the founder does not, oldest first, `chaseHours` each, then does the rest
+ * of the task with the hours left. A salesperson holds demos with any hours left either way.
+ */
 export type TeamTask =
-  | { kind: 'build'; featureId: FeatureId }
-  | { kind: 'outreach'; segmentId: SegmentId; channel: ChannelId }
+  | { kind: 'build'; featureId: FeatureId; admin?: boolean }
+  | { kind: 'outreach'; segmentId: SegmentId; channel: ChannelId; admin?: boolean }
+  | { kind: 'admin' }
 
 export type FreelancePlan = {
   /** Book a freelancer in this role for this many hours a week. They start next week. */
@@ -550,6 +556,11 @@ export type FreelancePlan = {
   build: FeatureId | null
   /** Where a freelance salesperson does outreach. */
   outreach: { segmentId: SegmentId; channel: ChannelId } | null
+  /**
+   * Chasing and admin: the freelancer first chases overdue invoices the founder and the team do
+   * not, oldest first, then builds or does outreach with the hours left. Missing means false.
+   */
+  admin?: boolean
 }
 
 export type PlanIssue =
@@ -744,6 +755,8 @@ export type LeadView = {
   channel: ChannelId | null
   /** For referrals: the name of the customer who recommended the company, else null. */
   referredBy: string | null
+  /** For a lead a team member found: that member's id, else null. */
+  foundBy: string | null
 }
 
 export type CustomerView = {
@@ -955,6 +968,8 @@ export type ReportEntry =
   | { kind: 'hire_started'; name: string; role: TeamRoleId }
   | { kind: 'member_let_go'; name: string; costCents: number }
   | { kind: 'team_output'; role: TeamRoleId; hours: number }
+  /** Overdue invoices the team and the freelancer chased on the founder's behalf this week. */
+  | { kind: 'team_chased'; count: number }
   /** Living costs changed this week (long mode). */
   | { kind: 'living_costs_changed'; fromCents: number; toCents: number }
   | {

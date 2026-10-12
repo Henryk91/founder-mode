@@ -66,6 +66,7 @@ export function applyFinanceWeek(
   plan: WeekPlan,
   extras: WeekExtras,
   rng: Rng,
+  delegatedChases: readonly string[] = [],
 ): {
   state: GameState
   ledger: WeekLedger
@@ -76,7 +77,7 @@ export function applyFinanceWeek(
   /** Customers whose service stopped this week because an invoice was written off. */
   stopped: string[]
 } {
-  let state = chaseInvoices(input, plan, rng)
+  let state = chaseInvoices(input, plan, rng, delegatedChases)
   let cash = state.company.cashCents
   let savings = state.founder.savingsCents
 
