@@ -35,9 +35,12 @@ describe('bots', () => {
       'validate_then_build_savings_hire',
       'validate_then_build_part_time',
       'validate_then_build_freelance_first',
+      'validate_then_build_expand',
+      'validate_then_build_expand_solo',
+      'validate_then_build_founder_chases',
     ])
     // The team variants are long mode only.
-    expect(STRATEGIES.filter((s) => s.modes?.includes('long')).length).toBe(4)
+    expect(STRATEGIES.filter((s) => s.modes?.includes('long')).length).toBe(7)
   })
 
   it.each(STRATEGIES.map((s) => [s.id, s] as const))(

@@ -243,9 +243,12 @@ export class ChannelLog {
     return back.reduce((t, w) => t + (w.get(`${segmentId}/${channel}`) ?? 0), 0)
   }
 
-  /** Hours that would count for finding leads if `hours` were spent on the channel now. */
-  effective(segmentId: string, channel: ChannelId, hours: number): number {
-    const before = this.recentHours(segmentId, channel)
+  /**
+   * Hours that would count for finding leads if `hours` were spent on the channel now, after
+   * `already` hours planned on it this week by someone else.
+   */
+  effective(segmentId: string, channel: ChannelId, hours: number, already = 0): number {
+    const before = this.recentHours(segmentId, channel) + already
     const full = Math.max(0, Math.min(hours, this.limit - before))
     return full + (hours - full) * this.sales.saturatedFactor
   }
@@ -291,13 +294,15 @@ export class ChannelLog {
     channels: readonly ChannelId[],
     minHours: number,
     hours = 0,
+    planned: Partial<Record<ChannelId, number>> = {},
   ): ChannelId {
     const untried = channels.find((c) => this.hours(segmentId, c) < minHours)
     if (untried) return untried
     let best = channels[0] as ChannelId
     let bestLeads = -1
     for (const c of channels) {
-      const leads = this.rate(segmentId, c) * this.effective(segmentId, c, Math.max(1, hours))
+      const leads =
+        this.rate(segmentId, c) * this.effective(segmentId, c, Math.max(1, hours), planned[c] ?? 0)
       if (leads > bestLeads) {
         best = c
         bestLeads = leads

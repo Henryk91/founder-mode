@@ -1,5 +1,5 @@
 import { loadScenario } from '@founder-mode/content'
-import { createGame, emptyPlan, getView } from '@founder-mode/engine'
+import { createGame, emptyPlan, endWeek, getView, respond } from '@founder-mode/engine'
 import { describe, expect, it } from 'vitest'
 import { buildReport } from '../src/report'
 import { runGame, type RunResult } from '../src/simulate'
@@ -123,5 +123,38 @@ describe('long mode team rules', () => {
     expect(report).toContain('## Year 2 (target 28)')
     expect(report).toContain('## Energy curve')
     expect(report).not.toContain('## Targets (plan section 7)')
+  })
+})
+
+describe('long mode chasing and pricing (C3)', () => {
+  it('hands chasing to the first working member and prices from the hints', () => {
+    const scenario = loadScenario('kantino', 'long')
+    let handed = 0
+    let founderChasesWithTeam = 0
+    let priced = 0
+    for (let i = 0; i < 6; i++) {
+      const seed = `c3-${i}`
+      let state = createGame(scenario, seed)
+      const player = validateThenBuild.create(scenario, seed)
+      while (state.status === 'running') {
+        for (const a of player.respond?.(getView(state)) ?? [])
+          state = respond(state, a.messageId, a.choiceId)
+        const view = getView(state)
+        const plan = player.plan(view)
+        if (plan.priceCentsPerMonth !== null) priced++
+        const working = view.team.members.filter((m) => m.working && m.id !== plan.letGo)
+        if (working.length > 0) {
+          const task = plan.teamTasks[working[0]!.id]
+          if (task && (task.kind === 'admin' || task.admin)) handed++
+          founderChasesWithTeam += plan.chase.length
+        }
+        const r = endWeek(state, plan)
+        player.observe?.(r.report, getView(r.state))
+        state = r.state
+      }
+    }
+    expect(handed).toBeGreaterThan(0)
+    expect(founderChasesWithTeam).toBe(0)
+    expect(priced).toBeGreaterThan(0)
   })
 })

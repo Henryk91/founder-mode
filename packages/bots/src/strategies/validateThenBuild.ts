@@ -1,5 +1,5 @@
-import type { Scenario, ScenarioId } from '@founder-mode/content'
-import type { MessageView, PlayerView, WeekPlan } from '@founder-mode/engine'
+import { loadScenario, type Scenario, type ScenarioId } from '@founder-mode/content'
+import type { ChannelId, MessageView, PlayerView, WeekPlan } from '@founder-mode/engine'
 import { FixedPrice, PriceRecipe, PriceSearch, type Pricer, type SearchRule } from '../pricing'
 import {
   bookableLeads,
@@ -77,6 +77,21 @@ const BACKLOG_HOURS = 40
  */
 const RESULTS_WEEKS = 16
 const RESULTS_SHARE = 0.5
+/**
+ * Expansion (plan 3.1 point 4b): from week `EXPAND_FROM`, once the founder's leads per outreach hour
+ * in the first market over the last `RATE_WEEKS` weeks of selling fall below `DRY_SHARE` of its best
+ * `RATE_WEEKS` so far (the founder's selling skill grows, so the first weeks are not the best
+ * yardstick), the bot opens the best ranked other market. It interviews there until
+ * `SECOND_INTERVIEWS`, builds what those interviews ask for (the founder up to
+ * `SECOND_BUILD_HOURS` a week), then sells there with half its outreach. Without a customer there
+ * `SECOND_GIVE_UP_WEEKS` after it started selling there, it gives the second market up.
+ */
+const EXPAND_FROM = 53
+const RATE_WEEKS = 8
+const DRY_SHARE = 0.6
+const SECOND_INTERVIEWS = 12
+const SECOND_BUILD_HOURS = 20
+const SECOND_GIVE_UP_WEEKS = 16
 /** Hiring on savings: the first search once building starts, while money holds this many salaries. */
 const SAVINGS_SALARIES = 3
 /** ...and that hire is kept until the runway shown falls below this many months. */
@@ -459,6 +474,14 @@ export type Behaviours = {
   forced?: { eventId: string; choiceId: string }
   /** For measuring an event's share of an inbox policy: leave this event to its default. */
   skipEvent?: string
+  /** For measuring the second year's events: leave every long mode only event to its default. */
+  skipYear2?: boolean
+  /**
+   * Long mode: open a second market once the first runs out of new leads in year 2 (plan 3.1
+   * point 4b). With a team rule the hires serve it: a developer builds its features, then a
+   * salesperson sells there.
+   */
+  expand?: boolean
   /**
    * Long mode: who chases late invoices once someone is on the team. `team` (the default): the
    * founder stops chasing and the first working member does it as part of their task; `founder`:
@@ -682,6 +705,32 @@ export function validatingPlayer(
         ? CAREFUL_TEAM
         : null
   const impressionOrder = scenario.team.impressions.map((i) => i.name)
+  const year2 = behaviours.skipYear2 ? year2EventIds(scenario) : new Set<string>()
+
+  // Expansion (`behaviours.expand`): the second market, the first market's founder outreach per
+  // week of selling (hours and leads, only weeks without team outreach there), and when selling in
+  // the second market began.
+  let second: string | null = null
+  let expanded = false
+  let secondSince: number | null = null
+  let secondUnshipped: string[] = []
+  /** The second market's interviews are in and at most one of its features is left to build. */
+  let secondReady = false
+  const firstRates: { hours: number; leads: number }[] = []
+  const rateOf = (xs: readonly { hours: number; leads: number }[]) => {
+    const h = xs.reduce((t, x) => t + x.hours, 0)
+    return h > 0 ? xs.reduce((t, x) => t + x.leads, 0) / h : 0
+  }
+  /** The first market runs out of new leads: recent leads per hour below `DRY_SHARE` of the best. */
+  let bestRate = 0
+  const firstRunsDry = () => {
+    if (firstRates.length < RATE_WEEKS) return false
+    const recent = rateOf(firstRates.slice(-RATE_WEEKS))
+    bestRate = Math.max(bestRate, recent)
+    return firstRates.length >= 2 * RATE_WEEKS && recent < DRY_SHARE * bestRate
+  }
+  /** Features still to build: the second market's first, then the first market's. */
+  const toBuild = (unshipped: string[]) => [...secondUnshipped, ...unshipped]
 
   // Inbox events whose choice moves to an office with walk-in leads: event id -> choice, market.
   const officeMoves = new Map<string, { choiceId: string; segmentId: string }>()
@@ -866,7 +915,12 @@ export function validatingPlayer(
     const newest = members[members.length - 1]
     const nothingToBuild = view.product.features.every((f) => f.shipped)
     const floor = rule.start === 'savings' ? SAVINGS_LET_GO_MONTHS : LET_GO_MONTHS
-    const idleDev = members.find((m) => m.working && m.role === 'developer' && nothingToBuild)
+    const idleDev = members.find(
+      (m) =>
+        m.working &&
+        m.role === 'developer' &&
+        (second !== null ? toBuild(unshipped).length === 0 : nothingToBuild),
+    )
     const unpaid = members.find(
       (m) =>
         m.working &&
@@ -879,7 +933,7 @@ export function validatingPlayer(
     else if (unpaid) b.plan.letGo = unpaid.id
     const beforeFirstHire = team.hiresLeft === view.costs.teamMaxHires
 
-    const role = limitingRole(view, unshipped)
+    const role = limitingRole(view, second !== null ? toBuild(unshipped) : unshipped)
     const salary = salaryOf(view, role, rule.partTime)
     const startWeek = view.week + view.costs.searchWeeks + view.costs.startWeeks
     const firstOnSavings = rule.start === 'savings' && beforeFirstHire
@@ -910,16 +964,19 @@ export function validatingPlayer(
       if (rule.partTime) b.plan.searchPartTime = true
       b.free -= view.costs.searchHours
     }
+    // With a second market open, developers build its features first and salespeople sell there
+    // once at most one of them is left.
+    const sellIn = second !== null && secondReady ? second : market
     for (const member of members) {
       if (!member.working || member.id === b.plan.letGo) continue
       if (member.role === 'developer') {
-        const next = unshipped[0] ?? view.product.features.find((f) => !f.shipped)?.id
+        const next = toBuild(unshipped)[0] ?? view.product.features.find((f) => !f.shipped)?.id
         if (next) b.plan.teamTasks[member.id] = { kind: 'build', featureId: next }
-      } else if (market) {
+      } else if (sellIn) {
         b.plan.teamTasks[member.id] = {
           kind: 'outreach',
-          segmentId: market,
-          channel: channels.choose(market, view.channels, 0),
+          segmentId: sellIn,
+          channel: channels.choose(sellIn, view.channels, 0),
         }
       }
     }
@@ -946,6 +1003,45 @@ export function validatingPlayer(
     b.chase(Math.max(CHASE_PER_WEEK, Math.ceil(view.customers.length / CUSTOMERS_PER_CHASE)))
   }
 
+  /**
+   * Long mode: once the founder's outreach is planned, each salesperson and a freelance
+   * salesperson take the channel in their market that finds the most leads after the hours
+   * already planned on it this week, so they do not wear out the founder's channel.
+   */
+  const placeHelpers = (b: PlanBuilder, view: PlayerView) => {
+    if (!long) return
+    const planned = new Map<string, Partial<Record<ChannelId, number>>>()
+    const add = (segmentId: string, channel: ChannelId, hours: number) => {
+      const m = planned.get(segmentId) ?? {}
+      m[channel] = (m[channel] ?? 0) + hours
+      planned.set(segmentId, m)
+    }
+    for (const [seg, out] of Object.entries(b.plan.outreach)) add(seg, out.channel, out.hours)
+    for (const m of view.team.members) {
+      const task = b.plan.teamTasks[m.id]
+      if (task?.kind !== 'outreach') continue
+      const hours = m.weeklyHours * ASSUMED_SKILL
+      const channel = channels.choose(
+        task.segmentId,
+        view.channels,
+        0,
+        hours,
+        planned.get(task.segmentId),
+      )
+      b.plan.teamTasks[m.id] = { ...task, channel }
+      add(task.segmentId, channel, hours)
+    }
+    const fo = b.plan.freelance.outreach
+    const cur = view.team.freelance.current
+    if (fo && cur) {
+      const hours = cur.workHoursThisWeek
+      b.plan.freelance.outreach = {
+        ...fo,
+        channel: channels.choose(fo.segmentId, view.channels, 0, hours, planned.get(fo.segmentId)),
+      }
+    }
+  }
+
   /** `behaviours.situation`: one extra person for a burst or steady work, then let go. */
   let situationUsed = false
   const situational = (
@@ -957,8 +1053,17 @@ export function validatingPlayer(
     const sit = behaviours.situation
     if (!sit) return
     const role = sit.kind === 'burst' ? 'developer' : 'salesperson'
+    // Steady work starts once the business can carry a part time salesperson by the careful
+    // rule (a month makes money, money covers what they add to the loss for six months, and a
+    // hire's horizon is left), the same week for the freelancer and the hire.
     const want =
-      sit.kind === 'burst' ? view.week >= 3 && unshipped.length > 0 : view.customers.length > 0
+      sit.kind === 'burst'
+        ? view.week >= 3 && unshipped.length > 0
+        : view.customers.length > 0 &&
+          (lastMonth(view) ?? -1) >= 0 &&
+          covers(view, salaryOf(view, 'salesperson', true), HIRE_RUNWAY_MONTHS) &&
+          view.maxWeeks - (view.week + view.costs.searchWeeks + view.costs.startWeeks) + 1 >=
+            HIRE_HORIZON_WEEKS
     const done = (sit.kind === 'burst' && unshipped.length === 0) || short(view, LET_GO_MONTHS)
     const outreach = () =>
       market ? { segmentId: market, channel: channels.choose(market, view.channels, 0) } : null
@@ -1181,7 +1286,10 @@ export function validatingPlayer(
         ...input,
         committedHours: input.committedHours + forcedHours,
         inbox: input.inbox.filter(
-          (m) => (!forced || m.eventId !== forced.eventId) && m.eventId !== behaviours.skipEvent,
+          (m) =>
+            (!forced || m.eventId !== forced.eventId) &&
+            m.eventId !== behaviours.skipEvent &&
+            !year2.has(m.eventId),
         ),
       }
       // The books are their own behaviour: sorted by hand, or left to the default.
@@ -1307,6 +1415,33 @@ export function validatingPlayer(
         (f) => !view.product.features.find((x) => x.id === f)?.shipped,
       )
 
+      // Expansion: open the second market once the first runs dry in year 2, learn what it asks
+      // for, and give it up if selling there finds nobody.
+      const dry = behaviours.expand && !expanded && firstRunsDry()
+      if (dry && view.week >= EXPAND_FROM) {
+        expanded = true
+        second =
+          ranked(view).find((r) => r.id !== target && !abandoned.has(r.id))?.id ??
+          ranked(view).find((r) => r.id !== target)?.id ??
+          null
+      }
+      if (second !== null) {
+        const wanted2 = segmentNotes(scenario, view, second).mentions.map(([f]) => f)
+        secondUnshipped = wanted2.filter(
+          (f) => !view.product.features.find((x) => x.id === f)?.shipped && !unshipped.includes(f),
+        )
+        secondReady =
+          segmentNotes(scenario, view, second).interviews >= SECOND_INTERVIEWS &&
+          secondUnshipped.length <= 1
+        const here = view.customers.filter((c) => c.segmentId === second).length
+        if (secondSince !== null && view.week - secondSince >= SECOND_GIVE_UP_WEEKS && here === 0) {
+          abandoned.add(second)
+          second = null
+          secondUnshipped = []
+          secondReady = false
+        }
+      }
+
       if (behaviours.hire !== 'none') staffing(b, view, wanted, target)
       growing(b, view, unshipped, target)
       situational(b, view, unshipped, target)
@@ -1314,10 +1449,17 @@ export function validatingPlayer(
       b.demos(bookableLeads(view, target))
       b.demos(bookableLeads(view))
       if (behaviours.followUps) b.followUp(FOLLOW_UPS_PER_WEEK, target)
+      if (behaviours.followUps && second !== null) b.followUp(FOLLOW_UPS_PER_WEEK, second)
       if (view.product.bugs >= BUG_LIMIT) b.fixBugs(BUG_FIX_HOURS)
       // Keep listening until a few different features have come up.
       if (wanted.length < 3 && notes.interviews < 20) b.interviews(target, 3)
       for (const f of unshipped) b.build(f, MAX_BUILD_HOURS - (b.plan.build[f] ?? 0))
+      if (second !== null) {
+        const heard = segmentNotes(scenario, view, second).interviews
+        if (heard < SECOND_INTERVIEWS) b.interviews(second, SECOND_INTERVIEWS - heard)
+        let left = SECOND_BUILD_HOURS
+        for (const f of secondUnshipped) left -= b.build(f, Math.min(left, MAX_BUILD_HOURS))
+      }
       freelancing(b, view, unshipped)
       tiredRenting(b, view, unshipped)
 
@@ -1339,11 +1481,20 @@ export function validatingPlayer(
         prospects >= MAX_PRESALE_BATCHES * view.costs.presaleBatchSize &&
         commits === 0
 
+      // With the second market's features built, half of the outreach goes there.
+      if (second !== null && secondReady && b.free > 0) {
+        secondSince ??= view.week
+        const half = Math.floor(b.free / 2)
+        const channel = channels.choose(second, view.channels, CHANNEL_TRIAL_HOURS, half)
+        b.outreach(second, channel, half)
+      }
       if (unshipped.length <= 1 && wanted.length > 0) {
         sellingSince ??= view.week
         const channel = channels.choose(target, view.channels, CHANNEL_TRIAL_HOURS, b.free)
         b.outreach(target, channel, b.free)
       }
+
+      placeHelpers(b, view)
 
       const customersHere = view.customers.filter((c) => c.segmentId === target).length
       if (
@@ -1361,6 +1512,23 @@ export function validatingPlayer(
     },
     observe(report) {
       if (lastPlan) channels.record(lastPlan, report)
+      // The first market's founder outreach, for expansion: weeks where only the founder sold there.
+      const out = target !== null ? lastPlan?.outreach[target] : undefined
+      const teamThere =
+        lastPlan !== null &&
+        Object.values(lastPlan.teamTasks).some(
+          (t) => t.kind === 'outreach' && t.segmentId === target,
+        )
+      if (behaviours.expand && out && out.hours > 0 && !teamThere) {
+        const leads = report.entries.reduce(
+          (t, e) =>
+            e.kind === 'new_leads' && e.segmentId === target && e.channel === out.channel
+              ? t + e.count
+              : t,
+          0,
+        )
+        firstRates.push({ hours: out.hours, leads })
+      }
       if (prices && lastView) prices.observe(lastView, report, target)
     },
   }
@@ -1400,6 +1568,8 @@ export const TEAM_VARIANTS: {
   id: string
   team: TeamRule | null
   description: string
+  /** Behaviours beside the team rule. */
+  extra?: Partial<Behaviours>
 }[] = [
   {
     id: 'validate_then_build_solo',
@@ -1423,6 +1593,26 @@ export const TEAM_VARIANTS: {
     team: { ...CAREFUL_TEAM, freelanceFirst: true },
     description: `Plays like validate_then_build, and until its first hire is on the way rents a ${FIRST_FREELANCE_HOURS} h freelancer in the role that limits it. A developer for the build, as a burst: from week 3, while the features its market asks for need ${BACKLOG_HOURS} h or more and cash and savings cover the whole build left at the freelancer's rate plus ${FIRST_FREELANCE_MONTHS} months of the current loss. A salesperson for the pipeline, steady: from the first paying customer, while cash and savings would pay the added loss for ${FIRST_FREELANCE_MONTHS} months. Gives notice when the role needed changes, the runway shown falls below ${LET_GO_MONTHS} months, or the reference rule starts a search for a hire.`,
   },
+  {
+    id: 'validate_then_build_expand',
+    team: CAREFUL_TEAM,
+    extra: { expand: true },
+    description: `Plays like validate_then_build, and from week ${EXPAND_FROM}, once its leads per outreach hour in its market over the last ${RATE_WEEKS} weeks of selling fall below ${DRY_SHARE * 100}% of its best ${RATE_WEEKS} weeks so far, opens the best ranked other market: interviews there until it has heard ${SECOND_INTERVIEWS}, builds what they ask for (up to ${SECOND_BUILD_HOURS} h a week itself), then sells there with half its outreach, and gives it up after ${SECOND_GIVE_UP_WEEKS} weeks of selling there without a customer. Its team rule serves the second market: a developer while its features need ${BACKLOG_HOURS} h, building them first, then a salesperson selling there.`,
+  },
+  {
+    id: 'validate_then_build_expand_solo',
+    team: null,
+    extra: { expand: true },
+    description:
+      'Plays like validate_then_build_expand, but never hires or rents anyone: the founder opens the second market alone.',
+  },
+  {
+    id: 'validate_then_build_founder_chases',
+    team: CAREFUL_TEAM,
+    extra: { chaseBy: 'founder' },
+    description:
+      'Plays like validate_then_build, but the founder keeps chasing late invoices when someone is on the team, instead of handing it to them.',
+  },
 ]
 
 export const teamVariant = (id: string): Strategy => {
@@ -1430,7 +1620,7 @@ export const teamVariant = (id: string): Strategy => {
   const sit = SITUATION_VARIANTS.find((x) => x.id === id)
   if (!v && !sit) throw new Error(`Unknown team variant ${id}`)
   const behaviours: Behaviours = v
-    ? { ...ALL_BEHAVIOURS, team: v.team }
+    ? { ...ALL_BEHAVIOURS, ...v.extra, team: v.team }
     : { ...ALL_BEHAVIOURS, team: null, situation: sit!.situation }
   return {
     id,
@@ -1456,7 +1646,7 @@ export const SITUATION_VARIANTS: { id: string; situation: Situation; description
 ).map(([kind, by]) => ({
   id: `validate_then_build_${kind}_${by}`,
   situation: { kind, by },
-  description: `Plays like validate_then_build_solo, plus ${by === 'freelancer' ? `a ${FIRST_FREELANCE_HOURS} h freelance` : 'a part time (20 h)'} ${kind === 'burst' ? 'developer for the build, looked for in week 3 and kept until the features its market asks for have shipped' : 'salesperson for selling, looked for from the first paying customer and kept to the end'}${by === 'hire' ? ', the best impression of the candidates' : ''}. Lets them go once the runway shown falls below ${LET_GO_MONTHS} months.`,
+  description: `Plays like validate_then_build_solo, plus ${by === 'freelancer' ? `a ${FIRST_FREELANCE_HOURS} h freelance` : 'a part time (20 h)'} ${kind === 'burst' ? 'developer for the build, looked for in week 3 and kept until the features its market asks for have shipped' : `salesperson for selling, looked for once the business can carry a part time salesperson (a month makes money, cash and savings cover what they add to the loss for ${HIRE_RUNWAY_MONTHS} months, and ${HIRE_HORIZON_WEEKS} weeks are left once they would start) and kept to the end`}${by === 'hire' ? ', the best impression of the candidates' : ''}. Lets them go once the runway shown falls below ${LET_GO_MONTHS} months.`,
 }))
 
 /** The switchable behaviours, for leave-one-out runs. */
@@ -1502,12 +1692,20 @@ export function forcedAnswer(eventId: string, choiceId: string): Strategy {
 }
 
 /** validate_then_build with another inbox policy, for the inbox comparison in the report. */
-export function withInbox(inbox: InboxPolicy): Strategy {
+export function withInbox(inbox: InboxPolicy, skipYear2 = false): Strategy {
   return {
-    id: `validate_then_build inbox:${inbox}`,
-    description: `validate_then_build with the ${inbox} inbox policy.`,
-    create: (scenario) => validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, inbox }),
+    id: `validate_then_build inbox:${inbox}${skipYear2 ? ' -year2' : ''}`,
+    description: `validate_then_build with the ${inbox} inbox policy${skipYear2 ? ', leaving every second year event to its default' : ''}.`,
+    create: (scenario) =>
+      validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, inbox, skipYear2 }),
   }
+}
+
+/** Events of a long mode scenario that its 60 week game does not have: the second year's. */
+export function year2EventIds(scenario: Scenario): Set<string> {
+  if (scenario.mode !== 'long') return new Set()
+  const standard = new Set(loadScenario(scenario.id as ScenarioId).events.map((e) => e.id))
+  return new Set(scenario.events.map((e) => e.id).filter((id) => !standard.has(id)))
 }
 
 /**

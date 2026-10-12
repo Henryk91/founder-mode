@@ -26,7 +26,7 @@ export type StrategySpec =
   | { kind: 'listed'; id: string }
   | { kind: 'without'; off: BehaviourName[] }
   | { kind: 'randomNoInbox' }
-  | { kind: 'inbox'; policy: InboxPolicy }
+  | { kind: 'inbox'; policy: InboxPolicy; skipYear2?: boolean }
   | { kind: 'forced'; eventId: string; choiceId: string }
   | { kind: 'pricing'; pricer: 'search' | 'recipe' | 'fixed'; multiple?: number }
   | {
@@ -57,7 +57,7 @@ export function strategyOf(spec: StrategySpec): Strategy {
     case 'randomNoInbox':
       return randomNoInbox
     case 'inbox':
-      return withInbox(spec.policy)
+      return withInbox(spec.policy, spec.skipYear2)
     case 'forced':
       return forcedAnswer(spec.eventId, spec.choiceId)
     case 'pricing': {
@@ -154,6 +154,9 @@ export const TEAM_SPECS: StrategySpec[] = [
   'validate_then_build_freelance_first',
   'validate_then_build_part_time',
   'validate_then_build_savings_hire',
+  'validate_then_build_expand',
+  'validate_then_build_expand_solo',
+  'validate_then_build_founder_chases',
   ...SITUATION_VARIANTS.map((v) => v.id),
 ].map((id) => ({ kind: 'team', id }))
 
@@ -183,6 +186,12 @@ export const ABLATION_SPECS: StrategySpec[] = [
  * those parts can use more seeds than the rest of the report (targets 6, 11 and 13).
  */
 export const READER_SPEC: StrategySpec = { kind: 'inbox', policy: 'reader' }
+
+/** Long mode: reading and blind effort with the second year's events left to their defaults. */
+export const YEAR2_INBOX_SPECS: StrategySpec[] = [
+  { kind: 'inbox', policy: 'reader', skipYear2: true },
+  { kind: 'inbox', policy: 'effort', skipYear2: true },
+]
 
 /** The inbox policies of target 11. */
 export const INBOX_SPECS: StrategySpec[] = [
