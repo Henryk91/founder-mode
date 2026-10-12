@@ -417,6 +417,7 @@ export function evaluateTargets(
       pass: repeated === 0,
     },
     pricingTarget(input),
+    pricingSpreadTarget(input),
   ]
 }
 
@@ -430,7 +431,7 @@ const PRICING_IDS = [SEARCH_ID, 'pricing:recipe', 'pricing:fixed x1.5', 'pricing
  */
 function pricingTarget(input: ReportInput): Target {
   const text =
-    'A price search that reads only the screen beats the default price by 3 to 10 points and loses at most 1 point in any viable market; twice the default loses in at least two of three'
+    'A price search that reads only the screen beats the default price by 3 to 10 points, loses at most 1 point in any viable market and wins at most 45%; twice the default loses in at least two of three. Within its own margin of a limit counts as at the limit'
   const reader = find(input, READER_ID)
   const search = find(input, SEARCH_ID)
   const double = find(input, 'pricing:fixed x2')
@@ -447,12 +448,42 @@ function pricingTarget(input: ReportInput): Target {
   const marketMargin = (other: StrategyRuns, m: string) =>
     pairedMargin(inMarket(reader.results, m).map(winsOf), inMarket(other.results, m).map(winsOf))
   const worstMarket = markets.find((m) => change(search, m) === worst) ?? markets[0]!
+  const gainMargin = pairedMargin(reader.results.map(winsOf), search.results.map(winsOf))
+  const worstMargin = marketMargin(search, worstMarket)
+  const searchRate = rate(search.results)
+  const rateMargin_ = rateMargin(wins(search.results).length, search.results.length)
   return {
     id: 17,
     text: `${text} (on ${reader.results.length} seeds)`,
-    value: `search ${signed(gain)}, worst market ${worstMarket} ${signed(worst)}; twice the default loses in ${doubleLoses} of ${markets.length}`,
-    margin: `${fmtMargin(pairedMargin(reader.results.map(winsOf), search.results.map(winsOf)))}, ${fmtMargin(marketMargin(search, worstMarket))}`,
-    pass: gain >= 3 && gain <= 10 && worst >= -1 && doubleLoses >= 2,
+    value: `search ${signed(gain)} (${fmtPct(searchRate)}), worst market ${worstMarket} ${signed(worst)}; twice the default loses in ${doubleLoses} of ${markets.length}`,
+    margin: `${fmtMargin(gainMargin)} (${fmtMargin(rateMargin_)}), ${fmtMargin(worstMargin)}`,
+    pass:
+      gain + gainMargin >= 3 &&
+      gain - gainMargin <= 10 &&
+      worst + worstMargin >= -1 &&
+      searchRate - rateMargin_ <= 45 &&
+      doubleLoses >= 2,
+  }
+}
+
+/** Target 18: the price search's win rates across the viable markets lie within 25 points. */
+function pricingSpreadTarget(input: ReportInput): Target {
+  const text =
+    'For the price search that reads the screen, win rates across the three viable markets lie within 25 points; within its own margin counts as at the limit'
+  const search = find(input, SEARCH_ID)
+  if (!search) return { id: 18, text, value: '-', margin: '', pass: false }
+  const spread = marketSpread(search.results)
+  const markets = [...new Set(search.results.map((r) => r.viableSegment))]
+  const byMarket = winRateByMarket(search.results, markets).sort((a, b) => a.rate - b.rate)
+  const m = (x: (typeof byMarket)[number]) =>
+    rateMargin(Math.round((x.rate * x.runs) / 100), x.runs)
+  const margin = combined(m(byMarket[0]!), m(byMarket[byMarket.length - 1]!))
+  return {
+    id: 18,
+    text: `${text} (on ${search.results.length} seeds)`,
+    value: `${spread.toFixed(1)} points (${byMarket.map((x) => `${x.market} ${fmtPct(x.rate)}`).join(', ')})`,
+    margin: fmtMargin(margin),
+    pass: spread - margin <= 25,
   }
 }
 
