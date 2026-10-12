@@ -22,7 +22,7 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 - `pnpm dev`: run the web app
 - `pnpm test`: all tests
 - `pnpm lint`
-- `pnpm bots --runs 1000`: balancing report for every scenario (`--scenario <id>` for one)
+- `pnpm bots --runs 1000`: balancing report for every scenario in the 60 week game (`--scenario <id>` for one, `--mode long` or `--mode all` for long mode)
 - `pnpm seeds`: rewrite `docs/seeds.md` (seeds per ending) after the engine, content or bots change
 
 ## Structure

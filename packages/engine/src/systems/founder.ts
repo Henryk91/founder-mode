@@ -1,4 +1,5 @@
 import type { FounderState, GameState, HoursByActivity, Scenario, WeekPlan } from '../types'
+import { managementHours } from './team'
 
 /** Hours of the answers given this week to inbox messages. They count against the week. */
 export function committedHours(state: Pick<GameState, 'inbox'>): number {
@@ -15,7 +16,7 @@ export function committedHours(state: Pick<GameState, 'inbox'>): number {
  * taken out of this week by earlier penalties. Rest counts as planned time.
  */
 export function plannedHours(
-  state: Pick<GameState, 'scenario' | 'inbox' | 'founder'>,
+  state: Pick<GameState, 'scenario' | 'inbox' | 'founder' | 'team' | 'week'>,
   plan: WeekPlan,
 ): number {
   const h = hoursByActivity(state, plan)
@@ -25,10 +26,11 @@ export function plannedHours(
 /**
  * The week's hours by activity, as the post-mortem counts them: interviews, landing tests and
  * pre-sales are learning; building and fixing are building; outreach, demos and follow ups are
- * selling; chasing, the hiring search, inbox answers and lost hours are admin.
+ * selling; chasing, the hiring search, inbox answers, lost hours and (long mode) managing the
+ * team are admin.
  */
 export function hoursByActivity(
-  state: Pick<GameState, 'scenario' | 'inbox' | 'founder'>,
+  state: Pick<GameState, 'scenario' | 'inbox' | 'founder' | 'team' | 'week'>,
   plan: WeekPlan,
 ): HoursByActivity {
   const { scenario } = state
@@ -48,7 +50,8 @@ export function hoursByActivity(
       plan.chase.length * scenario.finance.chaseHours +
       (plan.searchRole === null ? 0 : scenario.team.searchHours) +
       committedHours(state) +
-      state.founder.forcedHours,
+      state.founder.forcedHours +
+      managementHours(state),
     rest: plan.restHours,
   }
 }
@@ -85,4 +88,15 @@ export function energyFactor(founder: FounderState, scenario: Scenario): number 
   if (founder.energy >= fullAt) return 1
   if (founder.energy <= lowBelow) return lowFactor
   return lowFactor + ((1 - lowFactor) * (founder.energy - lowBelow)) / (fullAt - lowBelow)
+}
+
+/**
+ * Living costs per week in `week`: the last of the scenario's living steps that has begun, else
+ * `current`. Without steps (the 60 week game) always `current`.
+ */
+export function livingCostsFor(scenario: Scenario, week: number, current: number): number {
+  let cost = current
+  for (const step of scenario.founder.livingSteps ?? [])
+    if (week >= step.week) cost = step.centsPerWeek
+  return cost
 }

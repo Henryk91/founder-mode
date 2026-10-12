@@ -122,6 +122,9 @@ export const SalesConfigSchema = z.object({
     chancePerBug: Share,
     demoBonus: z.number().nonnegative(),
   }),
+  // Long mode (Phase 9): a market runs out of new leads. Outreach response there is multiplied by
+  // max(floor, 1 - leads found there so far / the market's reachable companies). Absent: off.
+  marketSaturation: z.object({ floor: Share }).optional(),
 })
 
 export const LandingConfigSchema = z.object({
@@ -215,6 +218,11 @@ export const TeamConfigSchema = z.object({
   roles: z.object({ developer: TeamRoleSchema, salesperson: TeamRoleSchema }),
   candidateNames: z.array(z.string().min(1)).min(1),
   freelance: FreelanceConfigSchema,
+  // Long mode (Phase 9). People working at once, and hires over the whole run, both 1 when absent:
+  // the early MVP's one hire. Founder hours each working member takes a week, 0 when absent.
+  maxMembers: z.number().int().positive().optional(),
+  maxHires: z.number().int().positive().optional(),
+  managementHoursPerMember: z.number().int().nonnegative().optional(),
 })
 
 export const InboxConfigSchema = z.object({
@@ -425,10 +433,18 @@ export const OfficeStageSchema = z.object({
 })
 export type OfficeStage = z.infer<typeof OfficeStageSchema>
 
+/** The run lengths a scenario can be played in. `standard` is the 60 week game. */
+export const GAME_MODES = ['standard', 'long'] as const
+export type GameMode = (typeof GAME_MODES)[number]
+
 export const ScenarioFileSchema = z.object({
   id: Id,
   name: z.string().min(1),
+  // Set only on a scenario resolved for long mode (`loadScenario(id, 'long')`).
+  mode: z.literal('long').optional(),
   maxWeeks: z.number().int().positive(),
+  // Profitable in each of this many last months wins the run at maxWeeks. 2 when absent.
+  win: z.object({ profitableMonths: z.number().int().positive() }).optional(),
   start: z.object({
     cashCents: Cents,
     savingsCents: Cents,
@@ -454,6 +470,10 @@ export const ScenarioFileSchema = z.object({
       // Weeks in a row at 0 energy that end the run with burnout.
       burnoutWeeks: z.number().int().positive(),
     }),
+    // Long mode: living costs per week from a week on, in order. Absent: they never change.
+    livingSteps: z
+      .array(z.object({ week: z.number().int().positive(), centsPerWeek: Cents.nonnegative() }))
+      .optional(),
   }),
   finance: FinanceConfigSchema,
   experiments: z.object({

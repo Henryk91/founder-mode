@@ -1,18 +1,28 @@
-import type { EndingId, SaveFile, SuggestionId } from '@founder-mode/engine'
+import type { EndingId, GameMode, SaveFile, SuggestionId } from '@founder-mode/engine'
+
+/**
+ * Where a scenario's run of one mode lives: its save and its best runs. The 60 week game keeps
+ * the scenario id, so its keys are those of every earlier version; long mode adds `.long`.
+ */
+export const slotOf = (scenarioId: string, mode: GameMode = 'standard'): string =>
+  mode === 'standard' ? scenarioId : `${scenarioId}.${mode}`
+
+/** The slot a save file belongs to. */
+export const slotOfSave = (file: SaveFile): string => slotOf(file.scenarioId, file.mode)
 
 /** A stored save that is there but cannot be used as one: not JSON, or not shaped like a save. */
 export const UNREADABLE = 'unreadable'
 
 /**
- * Where the autosaves live, one per scenario, so each scenario can be continued on its own.
- * Injected so tests and private windows need no browser storage.
+ * Where the autosaves live, one per scenario and mode (`slotOf`), so each can be continued on its
+ * own. Injected so tests and private windows need no browser storage.
  */
 export type SaveStorage = {
-  /** The save, null when there is none, or `UNREADABLE` when one is there but broken. */
-  load(scenarioId: string): SaveFile | typeof UNREADABLE | null
-  /** Saves under the file's own scenario. False when the browser would not store it. */
+  /** The save in a slot, null when there is none, or `UNREADABLE` when it is broken. */
+  load(slot: string): SaveFile | typeof UNREADABLE | null
+  /** Saves under the file's own slot. False when the browser would not store it. */
   save(file: SaveFile): boolean
-  clear(scenarioId: string): void
+  clear(slot: string): void
   /** False when this browser keeps nothing at all, as in some private windows. */
   available(): boolean
 }
@@ -31,6 +41,7 @@ export function isSaveFile(x: unknown): x is SaveFile {
     typeof f['scenarioId'] === 'string' &&
     typeof f['seed'] === 'string' &&
     (f['scenarioHash'] === undefined || typeof f['scenarioHash'] === 'string') &&
+    (f['mode'] === undefined || f['mode'] === 'long') &&
     Array.isArray(f['actions']) &&
     f['actions'].every(
       (a) =>
@@ -88,7 +99,7 @@ export function browserStorage(): SaveStorage {
     },
     save(file) {
       try {
-        window.localStorage.setItem(saveKey(file.scenarioId), JSON.stringify(file))
+        window.localStorage.setItem(saveKey(slotOfSave(file)), JSON.stringify(file))
         return true
       } catch {
         // The run continues, it just cannot be continued later. The store says so.
@@ -118,8 +129,8 @@ export function memoryStorage(
   current(scenarioId?: string): SaveFile | null
 } {
   const files = new Map<string, string>(Object.entries(options.raw ?? {}))
-  let last = initial?.scenarioId ?? ''
-  if (initial) files.set(initial.scenarioId, JSON.stringify(initial))
+  let last = initial ? slotOfSave(initial) : ''
+  if (initial) files.set(slotOfSave(initial), JSON.stringify(initial))
   const read = (id: string) => {
     const raw = files.get(id)
     return raw === undefined ? null : readSave(raw)
@@ -128,8 +139,8 @@ export function memoryStorage(
     load: (id) => read(id),
     save: (f) => {
       if (options.full || options.unavailable) return false
-      files.set(f.scenarioId, JSON.stringify(f))
-      last = f.scenarioId
+      files.set(slotOfSave(f), JSON.stringify(f))
+      last = slotOfSave(f)
       return true
     },
     clear: (id) => {
@@ -154,7 +165,7 @@ export type RunRecord = {
   peakRevenueCents: number
 }
 
-/** What the game remembers about one scenario across runs. Local to this browser. */
+/** What the game remembers about one scenario in one mode across runs. Local to this browser. */
 export type Profile = {
   /** The run being played, from its start until it is left. */
   current: { seed: string; replay: boolean; suggestion: SuggestionId | null } | null
@@ -183,6 +194,9 @@ export type ProfileStorage = {
   /** The scenario picked last on the Start screen, so the game opens on it next time. */
   lastScenario(): string | null
   setLastScenario(scenarioId: string): void
+  /** The run length picked last on the Start screen. */
+  lastMode(): string | null
+  setLastMode(mode: string): void
 }
 
 const profileKey = (scenarioId: string) => `founder-mode.profile.v1.${scenarioId}`
@@ -190,6 +204,7 @@ const profileKey = (scenarioId: string) => `founder-mode.profile.v1.${scenarioId
 export const unreadableProfileKey = (scenarioId: string) =>
   `founder-mode.profile.v1.${scenarioId}.unreadable`
 const SCENARIO_KEY = 'founder-mode.scenario.v1'
+const MODE_KEY = 'founder-mode.mode.v1'
 
 const isRun = (r: unknown): r is RunRecord => {
   if (typeof r !== 'object' || r === null) return false
@@ -262,6 +277,20 @@ export function browserProfiles(): ProfileStorage {
         // Next time the game opens on the first scenario instead.
       }
     },
+    lastMode() {
+      try {
+        return window.localStorage.getItem(MODE_KEY)
+      } catch {
+        return null
+      }
+    },
+    setLastMode(mode) {
+      try {
+        window.localStorage.setItem(MODE_KEY, mode)
+      } catch {
+        // Next time the game opens on the 60 week game instead.
+      }
+    },
   }
 }
 
@@ -271,10 +300,15 @@ export function memoryProfiles(options: { raw?: Record<string, string>; full?: b
   const broken = new Set<string>()
   const aside = new Map<string, string>()
   let picked: string | null = null
+  let pickedMode: string | null = null
   const storage: ProfileStorage & { aside(scenarioId: string): string | null } = {
     lastScenario: () => picked,
     setLastScenario: (id) => {
       picked = id
+    },
+    lastMode: () => pickedMode,
+    setLastMode: (mode) => {
+      pickedMode = mode
     },
     load: (id) => {
       const raw = all.get(id)

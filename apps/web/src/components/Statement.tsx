@@ -112,11 +112,19 @@ export function upcoming(view: PlayerView): Upcoming[] {
       warn: false,
     })
   }
-  const member = view.team.member
-  if (member && !member.working) {
+  for (const member of view.team.members) {
+    if (member.working) continue
     items.push({
       week: member.startWeek,
       text: label('coming.hireStarts', stage, { name: member.name }),
+      warn: false,
+    })
+  }
+  const living = view.founder.nextLivingStep
+  if (living) {
+    items.push({
+      week: living.week,
+      text: label('coming.livingRise', stage, { amount: formatEuro(living.centsPerWeek) }),
       warn: false,
     })
   }

@@ -1,13 +1,20 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { loadScenario, scenarioCatalogue, type Scenario } from '@founder-mode/content'
+import {
+  loadScenario,
+  scenarioCatalogue,
+  type GameMode,
+  type Scenario,
+  type ScenarioAbout,
+} from '@founder-mode/content'
 import { ENGINE_VERSION } from '@founder-mode/engine'
 import { parseArgs } from './args'
 import { buildReport, evaluateTargets, TARGET_STRATEGIES, type StrategyRuns } from './report'
 import { deskComparison } from './desk'
-import { asSection, mergeReportFile } from './reportFile'
+import { asSection, mergeReportFile, type ScenarioSection } from './reportFile'
 import { botScenario } from './scenarios'
-import { runTasks, type Task, type TaskDone } from './pool'
+import { runTasks, taskSeeds, type Task, type TaskDone } from './pool'
+import type { RunResult } from './simulate'
 import {
   ABLATION_SPECS,
   FREELANCE_TARGET_SPEC,
@@ -29,6 +36,18 @@ if (chosen.length === 0) {
     `Unknown scenario ${args.scenario}. Known: ${catalogue.map((c) => c.id).join(', ')}`,
   )
 }
+/** A scenario in one mode: one section of the report. */
+type Unit = { about: ScenarioAbout; mode: GameMode; scenario: Scenario; section: ScenarioSection }
+const modesFor = (about: ScenarioAbout): GameMode[] =>
+  about.modes.filter((m) => args.mode === 'all' || args.mode === m)
+const sectionOf = (about: ScenarioAbout, mode: GameMode): ScenarioSection =>
+  mode === 'standard'
+    ? { id: about.id, name: about.name, flags: `--scenario ${about.id}` }
+    : {
+        id: `${about.id}/${mode}`,
+        name: `${about.name}, long mode`,
+        flags: `--scenario ${about.id} --mode ${mode}`,
+      }
 const strategies = args.only.length
   ? STRATEGIES.filter((s) => args.only.includes(s.id))
   : STRATEGIES
@@ -55,6 +74,9 @@ function planFor(scenario: Scenario): Planned[] {
   if (args.parts.includes('main')) {
     out.push(...strategies.map((s) => plan({ kind: 'listed', id: s.id }, 'main')))
     if (full) out.push(plan({ kind: 'randomNoInbox' }, 'main'))
+  } else if (args.parts.includes('events')) {
+    // The event table reuses the careful bot's runs on seeds where an event never arrives.
+    out.push(plan({ kind: 'listed', id: 'validate_then_build' }, 'main'))
   }
   // Leave-one-out runs of validate_then_build. Only for the report, so they stay out of the
   // strategy list that the targets look at.
@@ -134,6 +156,7 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
 
   const { segment, note } = botScenario(scenario.id).playtest
   const input = {
+    ...(scenario.mode ? { maxWeeks: scenario.maxWeeks } : {}),
     engineVersion: ENGINE_VERSION,
     runs: args.runs,
     seedPrefix: args.seedPrefix,
@@ -161,7 +184,7 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
     ),
   }
   for (const id of TARGET_STRATEGIES.slice(0, 1)) {
-    console.log(`\nTargets for ${scenario.id}, ${id}`)
+    console.log(`\nTargets for ${scenario.id}${scenario.mode ? ` (${scenario.mode})` : ''}, ${id}`)
     for (const t of evaluateTargets(input, id)) {
       const status = t.value === '-' ? '----' : t.pass ? 'ok  ' : 'FAIL'
       console.log(`${status} ${t.id}. ${t.text}: ${t.value}${t.margin ? ` (${t.margin})` : ''}`)
@@ -176,35 +199,83 @@ if (args.desk) {
   process.exit(0)
 }
 
-// Each part runs on its own, timed; within a part every scenario's runs share one pool.
-const loaded = chosen.map((c) => loadScenario(c.id))
-const plans = loaded.map(planFor)
+/**
+ * A forced answer game is the careful bot's own game until the event arrives, so on a seed where
+ * the careful bot never saw the event the result is the same. Those seeds are not played again:
+ * the careful bot's result is reused under the forced strategy's id.
+ */
+function forcedSeeds(task: Task, reader: RunResult[] | undefined): number[] | undefined {
+  if (task.spec.kind !== 'forced' || !reader) return undefined
+  const eventId = task.spec.eventId
+  return taskSeeds(task).filter((i) => reader[i]?.eventsSeen.includes(eventId) ?? true)
+}
+
+function withReused(task: Task, played: TaskDone, reader: RunResult[], id: string): TaskDone {
+  if (!task.seeds) return played
+  const byIndex = new Map(task.seeds.map((seed, k) => [seed, played.results[k]!] as const))
+  const results = Array.from(
+    { length: task.runs },
+    (_, i) => byIndex.get(i) ?? { ...reader[i]!, strategy: id },
+  )
+  return { results, seconds: played.seconds }
+}
+
+// Each part runs on its own, timed; within a part every unit's runs share one pool.
+const units: Unit[] = chosen.flatMap((about) =>
+  modesFor(about).map((mode) => ({
+    about,
+    mode,
+    scenario: loadScenario(about.id, mode),
+    section: sectionOf(about, mode),
+  })),
+)
+if (units.length === 0) throw new Error(`No scenario has mode ${args.mode}`)
+const plans = units.map((u) => planFor(u.scenario))
 const done = plans.map((p) => p.map((): TaskDone => ({ results: [], seconds: 0 })))
 const timings: string[] = []
+const readerOf = (s: number): RunResult[] | undefined => {
+  const i = plans[s]!.findIndex((p) => p.part === 'main' && p.strategy.id === 'validate_then_build')
+  return i >= 0 ? done[s]![i]!.results : undefined
+}
 for (const part of ['main', 'paired', 'inbox', 'price', 'freelance', 'tired', 'events'] as const) {
   const index = plans.flatMap((p, s) => p.flatMap((x, i) => (x.part === part ? [{ s, i }] : [])))
   if (index.length === 0) continue
   const tasks = index.map(({ s, i }): Task => {
-    const p = plans[s]![i]!
-    return { scenarioId: chosen[s]!.id, spec: p.spec, seedPrefix: args.seedPrefix, runs: p.runs }
+    const p = plans[s]!
+    const task: Task = {
+      scenarioId: units[s]!.about.id,
+      mode: units[s]!.mode,
+      spec: p[i]!.spec,
+      seedPrefix: args.seedPrefix,
+      runs: p[i]!.runs,
+    }
+    const seeds = forcedSeeds(task, readerOf(s))
+    return seeds ? { ...task, seeds } : task
   })
   const started = performance.now()
   const finished = await runTasks(tasks, args.jobs, (task, d) => {
     if (task.spec.kind !== 'forced')
       console.log(
-        `${task.scenarioId} ${strategyOf(task.spec).id}: ${task.runs} runs in ${d.seconds.toFixed(1)} s`,
+        `${task.scenarioId}${task.mode === 'standard' ? '' : ` (${task.mode})`} ${strategyOf(task.spec).id}: ${task.runs} runs in ${d.seconds.toFixed(1)} s`,
       )
   })
-  index.forEach(({ s, i }, k) => (done[s]![i] = finished[k]!))
+  index.forEach(({ s, i }, k) => {
+    const reader = readerOf(s)
+    done[s]![i] = reader
+      ? withReused(tasks[k]!, finished[k]!, reader, plans[s]![i]!.strategy.id)
+      : finished[k]!
+  })
   const wall = (performance.now() - started) / 1000
   const cpu = finished.reduce((t, d) => t + d.seconds, 0)
+  const played = tasks.reduce((t, x) => t + taskSeeds(x).length, 0)
+  const all = tasks.reduce((t, x) => t + x.runs, 0)
   timings.push(
-    `${part}: ${tasks.length} strategy runs, ${wall.toFixed(0)} s (${cpu.toFixed(0)} s of play over ${args.jobs} processes)`,
+    `${part}: ${tasks.length} strategy runs, ${wall.toFixed(0)} s (${cpu.toFixed(0)} s of play over ${args.jobs} processes)${played < all ? `, ${played} of ${all} games played, the rest reused` : ''}`,
   )
   console.log(`Part ${timings[timings.length - 1]}`)
 }
 const reports = new Map(
-  loaded.map((scenario, i) => [scenario.id, reportFor(scenario, plans[i]!, done[i]!)] as const),
+  units.map((u, i) => [u.section.id, reportFor(u.scenario, plans[i]!, done[i]!)] as const),
 )
 console.log(`\nTimings\n${timings.join('\n')}`)
 const skipped = (
@@ -218,7 +289,10 @@ if (args.out === '-') {
   // pnpm runs the script inside packages/bots; the path is relative to the repo root.
   const path = resolve(import.meta.dirname, '../../..', args.out)
   const old = existsSync(path) ? readFileSync(path, 'utf8') : null
-  const sections = new Map(chosen.map((c) => [c.id, asSection(reports.get(c.id)!, c)] as const))
-  writeFileSync(path, mergeReportFile(old, catalogue, sections))
+  const sections = new Map(
+    units.map((u) => [u.section.id, asSection(reports.get(u.section.id)!, u.section)] as const),
+  )
+  const order = catalogue.flatMap((about) => about.modes.map((mode) => sectionOf(about, mode)))
+  writeFileSync(path, mergeReportFile(old, order, sections))
   console.log(`Report written to ${args.out}`)
 }

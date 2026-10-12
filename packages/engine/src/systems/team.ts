@@ -11,14 +11,36 @@ import type {
 } from '../types'
 import { canBookDemo } from './sales'
 
-/** The team member who works this week: started, and not let go. */
-export function workingMember(state: GameState): TeamMember | null {
-  return state.team.members.find((m) => m.letGoWeek === null && state.week >= m.startWeek) ?? null
+/** Members who work this week: started and not let go, in hiring order. */
+export function workingMembers(state: Pick<GameState, 'team' | 'week'>): TeamMember[] {
+  return state.team.members.filter((m) => m.letGoWeek === null && state.week >= m.startWeek)
+}
+
+/** Members hired and not let go, working or still starting. */
+export function activeMembers(state: Pick<GameState, 'team'>): TeamMember[] {
+  return state.team.members.filter((m) => m.letGoWeek === null)
+}
+
+/** People who may work at once, and hires over the run: 1 and 1 in the 60 week game. */
+export const maxMembers = (s: Pick<GameState, 'scenario'>) => s.scenario.team.maxMembers ?? 1
+export const maxHires = (s: Pick<GameState, 'scenario'>) => s.scenario.team.maxHires ?? 1
+
+/** Room for one more person: the team is not full and hires are left. */
+export function canHire(state: Pick<GameState, 'team' | 'scenario'>): boolean {
+  return (
+    activeMembers(state).length < maxMembers(state) && state.team.members.length < maxHires(state)
+  )
+}
+
+/** Founder hours the working team takes this week (long mode: 2 h each). */
+export function managementHours(state: Pick<GameState, 'team' | 'week' | 'scenario'>): number {
+  return (state.scenario.team.managementHoursPerMember ?? 0) * workingMembers(state).length
 }
 
 export type OutreachItem = { segmentId: string; channel: string; hours: number }
 
 export type TeamOutput = {
+  memberId: string
   role: TeamRoleId
   /** Hours of work the member puts in this week. */
   hours: number
@@ -31,57 +53,71 @@ export type TeamOutput = {
   selling: number
 }
 
+/** Build hours of every output on one feature. */
+export const teamBuildOn = (team: readonly TeamOutput[], featureId: FeatureId): number =>
+  team.reduce((t, o) => t + (o.build[featureId] ?? 0), 0)
+
 /**
- * What the working team member produces this week (scenario spec section 8).
- * A developer builds `weeklyHours x skill` on the feature the plan names, never more than what
- * is left of it. A salesperson holds demos first, as many as the hours allow, then does outreach
- * where the plan says. Hours with nothing to do are lost.
+ * What the working team produces this week (scenario spec section 8), member by member in
+ * hiring order. A developer builds `weeklyHours x skill` on the feature their task names, never
+ * more than the founder and earlier members leave of it. A salesperson holds demos first, as many
+ * as the hours allow and no demo someone else holds, then does outreach where their task says.
+ * Hours with nothing to do are lost.
  */
-export function teamOutput(state: GameState, plan: WeekPlan): TeamOutput | null {
-  const member = workingMember(state)
-  if (!member) return null
-  const cfg = state.scenario.team.roles[member.role]
-  const skill = state.hidden.teamSkills[member.id] ?? 0
-  const hours = Math.floor(cfg.weeklyHours * skill)
-  const out: TeamOutput = {
-    role: member.role,
-    hours,
-    build: {},
-    demos: [],
-    outreach: null,
-    selling: cfg.selling ?? state.founder.skills.selling,
-  }
-
-  if (member.role === 'developer') {
-    const target = plan.teamBuild
-    const def = target ? state.scenario.features.find((f) => f.id === target) : undefined
-    const progress = target ? state.product.features.find((f) => f.id === target) : undefined
-    if (target && def && progress && progress.shippedWeek === null) {
-      const left = def.buildHours - progress.progressHours - (plan.build[target] ?? 0)
-      const built = Math.max(0, Math.min(hours, left))
-      if (built > 0) out.build[target] = built
+export function teamOutput(state: GameState, plan: WeekPlan): TeamOutput[] {
+  const outputs: TeamOutput[] = []
+  const booked = new Set(plan.demos)
+  for (const member of workingMembers(state)) {
+    const cfg = state.scenario.team.roles[member.role]
+    const skill = state.hidden.teamSkills[member.id] ?? 0
+    const hours = Math.floor(cfg.weeklyHours * skill)
+    const task = plan.teamTasks[member.id]
+    const out: TeamOutput = {
+      memberId: member.id,
+      role: member.role,
+      hours,
+      build: {},
+      demos: [],
+      outreach: null,
+      selling: cfg.selling ?? state.founder.skills.selling,
     }
-    return out
-  }
+    outputs.push(out)
 
-  let free = hours
-  const demoHours = state.scenario.sales.demoHours
-  for (const lead of state.leads) {
-    if (free < demoHours) break
-    if (!canBookDemo(lead) || plan.demos.includes(lead.id)) continue
-    out.demos.push(lead.id)
-    free -= demoHours
+    if (member.role === 'developer') {
+      const target = task?.kind === 'build' ? task.featureId : null
+      const def = target ? state.scenario.features.find((f) => f.id === target) : undefined
+      const progress = target ? state.product.features.find((f) => f.id === target) : undefined
+      if (target && def && progress && progress.shippedWeek === null) {
+        const left =
+          def.buildHours -
+          progress.progressHours -
+          (plan.build[target] ?? 0) -
+          teamBuildOn(outputs, target)
+        const built = Math.max(0, Math.min(hours, left))
+        if (built > 0) out.build[target] = built
+      }
+      continue
+    }
+
+    let free = hours
+    const demoHours = state.scenario.sales.demoHours
+    for (const lead of state.leads) {
+      if (free < demoHours) break
+      if (!canBookDemo(lead) || booked.has(lead.id)) continue
+      out.demos.push(lead.id)
+      booked.add(lead.id)
+      free -= demoHours
+    }
+    if (task?.kind === 'outreach' && free > 0) {
+      out.outreach = { segmentId: task.segmentId, channel: task.channel, hours: free }
+    }
   }
-  const target = plan.teamOutreach
-  if (target && free > 0) {
-    out.outreach = { segmentId: target.segmentId, channel: target.channel, hours: free }
-  }
-  return out
+  return outputs
 }
 
 /**
  * Team step (plan section 4.9), in this order:
- * 1. letting the member go: one month of salary at the scenario's severance weeks,
+ * 1. letting a member go: their salary for the scenario's severance weeks,
  * 2. an offer to a candidate: they start `startWeeks` later,
  * 3. a new search: replaces candidates not hired,
  * 4. a hire whose start has come: their salary becomes a fixed cost,
@@ -101,8 +137,8 @@ export function applyTeam(
   let members = state.team.members
   let fixedCosts = state.company.fixedCosts
 
-  if (plan.letGo) {
-    const member = members.find((m) => m.letGoWeek === null)
+  if (plan.letGo !== null) {
+    const member = members.find((m) => m.id === plan.letGo && m.letGoWeek === null)
     if (member) {
       const monthly = cfg.roles[member.role].monthlyCents
       const cost = Math.round((monthly * cfg.severanceWeeks) / state.scenario.finance.weeksPerMonth)
@@ -232,7 +268,7 @@ export type FreelanceOutput = {
 export function freelanceOutput(
   state: GameState,
   plan: WeekPlan,
-  team: TeamOutput | null,
+  team: readonly TeamOutput[],
 ): FreelanceOutput | null {
   const f = freelancerIn(state, state.week)
   if (!f) return null
@@ -256,7 +292,7 @@ export function freelanceOutput(
         def.buildHours -
         progress.progressHours -
         (plan.build[target] ?? 0) -
-        (team?.build[target] ?? 0)
+        teamBuildOn(team, target)
       const built = Math.max(0, Math.min(hours, left))
       if (built > 0) out.build[target] = built
     }
@@ -378,6 +414,14 @@ export function applyFreelance(
   }
 }
 
+/** `hireEconomics` for every hire of the run, in hiring order. */
+export function hiresEconomics(state: GameState): HireEconomics[] {
+  return state.team.members.flatMap((m) => {
+    const e = hireEconomics(state, m)
+    return e ? [e] : []
+  })
+}
+
 export type FreelanceEconomics = {
   roles: TeamRoleId[]
   costCents: number
@@ -445,11 +489,14 @@ export type HireEconomics = {
 }
 
 /**
- * For the post-mortem of a run with a hire: what each customer the hire brought in cost, next to
- * what a customer was worth. Null without a hire. Built from observable state only.
+ * For the post-mortem of a run with a hire: what each customer that hire (the first, unless
+ * another is given) brought in cost, next to what a customer was worth. Null without a hire.
+ * Built from observable state only.
  */
-export function hireEconomics(state: GameState): HireEconomics | null {
-  const member = state.team.members[0]
+export function hireEconomics(
+  state: GameState,
+  member: TeamMember | undefined = state.team.members[0],
+): HireEconomics | null {
   if (!member) return null
   const cfg = state.scenario.team
   const monthly = cfg.roles[member.role].monthlyCents
@@ -463,9 +510,12 @@ export function hireEconomics(state: GameState): HireEconomics | null {
       : 0
   const costCents = months * monthly + severance
   const sourceOf = (leadId: string) => state.leads.find((l) => l.id === leadId)
-  const customersGained = state.customers.filter(
-    (c) => sourceOf(c.leadId)?.source === 'team',
-  ).length
+  // A lead found by the team carries the member who found it; older leads only say "team".
+  const foundHere = (leadId: string) => {
+    const lead = sourceOf(leadId)
+    return lead?.source === 'team' && (lead.foundBy ?? state.team.members[0]?.id) === member.id
+  }
+  const customersGained = state.customers.filter((c) => foundHere(c.leadId)).length
   const received =
     state.invoices.filter((i) => i.paidWeek !== null).reduce((t, i) => t + i.amountCents, 0) +
     state.customers.reduce((t, c) => t + (sourceOf(c.leadId)?.depositCents ?? 0), 0)

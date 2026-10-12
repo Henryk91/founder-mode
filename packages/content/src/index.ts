@@ -7,8 +7,11 @@ export {
   eventsIn,
   isScenarioId,
   loadScenario,
+  mergeOverride,
+  modesIn,
   parseScenario,
   scenarioCatalogue,
+  scenarioModes,
   scenarioSources,
 } from './load'
 export type { ScenarioAbout, ScenarioId, ScenarioSources } from './load'

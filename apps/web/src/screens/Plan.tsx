@@ -84,18 +84,26 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
         segment: segment(id),
       }),
     )
-  const member = view.team.member
+  const members = view.team.members
+  // Nothing under way in hiring: the line then names the freelancer alone, if there is one.
+  const idle =
+    !view.team.search &&
+    p.searchRole === null &&
+    view.team.candidates.length === 0 &&
+    members.length === 0
   const team = view.team.search
     ? label('plan.sum.searching', stage, { week: view.team.search.readyWeek })
     : p.searchRole !== null
       ? label('plan.sum.search', stage, { role: label(`team.role.${p.searchRole}`, stage) })
       : view.team.candidates.length > 0
         ? count('plan.sum.candidates', stage, view.team.candidates.length)
-        : member
-          ? label('plan.sum.member', stage, { name: member.name })
-          : view.team.hadHire
+        : members.length > 0
+          ? label('plan.sum.member', stage, { name: members.map((m) => m.name).join(', ') })
+          : view.team.hiresLeft === 0
             ? none
-            : label('plan.sum.noHire', stage)
+            : view.team.maxMembers > 1
+              ? label('plan.sum.noHireTeam', stage, { n: view.team.maxMembers })
+              : label('plan.sum.noHire', stage)
   const freelancer = view.team.freelance.current
   const freelanceLine = p.freelance.book
     ? label('plan.sum.freelanceBook', stage)
@@ -116,11 +124,7 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
       ...(p.followUps.length > 0 ? [count('plan.sum.followUps', stage, p.followUps.length)] : []),
       ...(p.chase.length > 0 ? [count('plan.sum.chase', stage, p.chase.length)] : []),
     ]),
-    team: freelanceLine
-      ? team === none || team === label('plan.sum.noHire', stage)
-        ? freelanceLine
-        : `${team}, ${freelanceLine}`
-      : team,
+    team: freelanceLine ? (idle ? freelanceLine : `${team}, ${freelanceLine}`) : team,
     rest: p.restHours > 0 ? label('unit.hours', stage, { n: p.restHours }) : none,
   }
 }

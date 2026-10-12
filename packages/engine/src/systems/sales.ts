@@ -173,6 +173,19 @@ export function effectiveHours(
   return full + (hours - full) * factor
 }
 
+/**
+ * Long mode: how much of a market is still unreached. Outreach response there is multiplied by
+ * max(floor, 1 - leads found there before this week / the market's reachable companies). 1 when
+ * the scenario has no market saturation (the 60 week game).
+ */
+export function marketFactor(state: GameState, segmentId: SegmentId): number {
+  const sat = state.scenario.sales.marketSaturation
+  const size = state.hidden.segments[segmentId]?.size ?? 0
+  if (!sat || size <= 0) return 1
+  const found = state.leads.filter((l) => l.segmentId === segmentId).length
+  return Math.max(sat.floor, 1 - found / size)
+}
+
 /** floor(x), plus one more with probability equal to the fraction. */
 function randomRound(x: number, rng: Rng): number {
   const whole = Math.floor(x)
@@ -196,7 +209,7 @@ export function applySales(
   state: GameState,
   plan: WeekPlan,
   rng: Rng,
-  team: TeamOutput | null = null,
+  team: readonly TeamOutput[] = [],
   freelance: FreelanceOutput | null = null,
 ): { state: GameState; entries: ReportEntry[]; refundsCents: number } {
   const cfg = state.scenario.sales
@@ -207,7 +220,7 @@ export function applySales(
   const leads: Lead[] = state.leads.map((l) => ({ ...l }))
   const customers: Customer[] = [...state.customers]
   const founderDemoIds = new Set(plan.demos)
-  const demoIds = new Set([...plan.demos, ...(team?.demos ?? [])])
+  const demoIds = new Set([...plan.demos, ...team.flatMap((t) => t.demos)])
   const touched = new Set<string>()
   const followedUp = new Set(plan.followUps)
   let selling = state.founder.skills.selling
@@ -359,6 +372,7 @@ export function applySales(
     hours: number
     source: LeadSource
     selling: number
+    foundBy?: string
   }[] = []
   for (const seg of state.scenario.segments) {
     const out = plan.outreach[seg.id]
@@ -366,12 +380,14 @@ export function applySales(
       items.push({ segmentId: seg.id, ...out, source: 'outreach', selling: sellingAtStart })
     }
   }
-  if (team?.outreach) {
+  for (const t of team) {
+    if (!t.outreach) continue
     items.push({
-      ...team.outreach,
-      channel: team.outreach.channel as ChannelId,
+      ...t.outreach,
+      channel: t.outreach.channel as ChannelId,
       source: 'team',
-      selling: team.selling,
+      selling: t.selling,
+      foundBy: t.memberId,
     })
   }
   if (freelance?.outreach) {
@@ -388,7 +404,8 @@ export function applySales(
   for (const item of items) {
     const response =
       (state.hidden.segments[item.segmentId]?.channelResponse[item.channel] ?? 0) *
-      channelFactor(state, item.channel)
+      channelFactor(state, item.channel) *
+      marketFactor(state, item.segmentId)
     const key = `${item.segmentId}/${item.channel}`
     const before = spent.get(key) ?? 0
     spent.set(key, before + item.hours)
@@ -405,6 +422,7 @@ export function applySales(
         stage: 'lead',
         source: item.source,
         channel: item.channel,
+        ...(item.foundBy !== undefined ? { foundBy: item.foundBy } : {}),
         stageSinceWeek: week,
         lastContactWeek: week,
         silentSinceWeek: null,

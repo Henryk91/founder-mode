@@ -14,9 +14,14 @@ const report = (n: number) =>
   ].join('\n')
 
 const order = [
-  { id: 'kantino', name: 'Kantino' },
-  { id: 'zollstock', name: 'Zollstock' },
+  { id: 'kantino', name: 'Kantino', flags: '--scenario kantino' },
+  { id: 'zollstock', name: 'Zollstock', flags: '--scenario zollstock' },
 ]
+const longKantino = {
+  id: 'kantino/long',
+  name: 'Kantino, long mode',
+  flags: '--scenario kantino --mode long',
+}
 
 describe('the report file', () => {
   it('turns a report into a scenario section with the scenario in its command', () => {
@@ -24,6 +29,32 @@ describe('the report file', () => {
     expect(section.split('\n')[0]).toBe('# Kantino')
     expect(section).toContain('`pnpm bots --runs 10 --seed-prefix test --scenario kantino`')
     expect(section).toContain('## Targets (plan section 7)\n\n| # | Target |\n')
+    const long = asSection(report(10), longKantino)
+    expect(long.split('\n')[0]).toBe('# Kantino, long mode')
+    expect(long).toContain('--scenario kantino --mode long`')
+  })
+
+  it('keeps a long mode section apart from the 60 week one', () => {
+    const both = [order[0]!, longKantino, order[1]!]
+    const first = mergeReportFile(
+      null,
+      both,
+      new Map([
+        ['kantino', asSection(report(1), order[0]!)],
+        ['kantino/long', asSection(report(2), longKantino)],
+      ]),
+    )
+    const second = mergeReportFile(
+      first,
+      both,
+      new Map([['kantino/long', asSection(report(3), longKantino)]]),
+    )
+    expect(second).toContain('# Kantino\n')
+    expect(second).toContain('--runs 1 ')
+    expect(second).toContain('# Kantino, long mode\n')
+    expect(second).toContain('--runs 3 ')
+    expect(second).not.toContain('--runs 2 ')
+    expect(second.indexOf('# Kantino\n')).toBeLessThan(second.indexOf('# Kantino, long mode'))
   })
 
   it('replaces the sections run, keeps the others and the notes, in scenario order', () => {

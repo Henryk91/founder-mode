@@ -1,6 +1,6 @@
-import type { ChannelId, MessageLook, Scenario, TeamRoleId } from '@founder-mode/content'
+import type { ChannelId, GameMode, MessageLook, Scenario, TeamRoleId } from '@founder-mode/content'
 
-export type { Scenario, TeamRoleId }
+export type { GameMode, Scenario, TeamRoleId }
 
 export type SegmentId = string
 export type FeatureId = string
@@ -167,6 +167,8 @@ export type Lead = {
   channel?: ChannelId
   /** For referrals: the id of the customer who recommended the company. */
   referredBy?: string
+  /** For leads a team member found: that member's id. */
+  foundBy?: string
   stageSinceWeek: number
   lastContactWeek: number
   /** Week in which the lead stopped answering, or null. Silent leads cannot progress. */
@@ -507,15 +509,21 @@ export type WeekPlan = {
   searchRole: TeamRoleId | null
   /** Make an offer to this candidate. */
   hire: string | null
-  /** Let the current team member go. */
-  letGo: boolean
+  /** Let this team member go (a member id), or null. */
+  letGo: string | null
   /** The freelancer: booking, notice, hours, and what they work on this week. */
   freelance: FreelancePlan
-  /** The feature a developer works on. */
-  teamBuild: FeatureId | null
-  /** Where a salesperson does outreach, after holding every demo they can. */
-  teamOutreach: { segmentId: SegmentId; channel: ChannelId } | null
+  /**
+   * What each working team member does this week, by member id: a developer builds a feature, a
+   * salesperson does outreach after holding every demo they can. A member without a task, or
+   * with a task that does not suit their role, does nothing.
+   */
+  teamTasks: Record<string, TeamTask>
 }
+
+export type TeamTask =
+  | { kind: 'build'; featureId: FeatureId }
+  | { kind: 'outreach'; segmentId: SegmentId; channel: ChannelId }
 
 export type FreelancePlan = {
   /** Book a freelancer in this role for this many hours a week. They start next week. */
@@ -559,6 +567,8 @@ export type PlanIssue =
 export type PlayerView = {
   scenarioId: string
   scenarioName: string
+  /** `standard` (60 weeks) or `long` (104 weeks). */
+  mode: GameMode
   seed: string
   week: number
   maxWeeks: number
@@ -581,6 +591,8 @@ export type PlayerView = {
     livingCostCentsPerWeek: number
     /** Living costs over one game month (weeksPerMonth weeks). */
     livingCostCentsPerMonth: number
+    /** The next scheduled change of living costs (long mode, week 53), or null. */
+    nextLivingStep: { week: number; centsPerWeek: number } | null
   }
   company: {
     cashCents: number
@@ -624,6 +636,10 @@ export type PlayerView = {
     startWeeks: number
     /** Weeks a freelancer keeps working (and billing) after notice. */
     freelanceNoticeWeeks: number
+    /** People who may work at once, hires over the run, founder hours each takes a week. */
+    teamMaxMembers: number
+    teamMaxHires: number
+    managementHoursPerMember: number
   }
   /** Hours already spent this week by answers to messages, and by earlier penalties. */
   committedHours: number
@@ -772,6 +788,8 @@ export type MemberView = {
   startWeek: number
   working: boolean
   letGoCostCents: number
+  /** Founder hours this member takes every week they work. */
+  managementHours: number
 }
 
 /** The freelancer as the Plan tab shows them. Rules of the game, no hidden values. */
@@ -807,14 +825,19 @@ export type FreelancerView = {
 }
 
 export type TeamView = {
-  /** False once someone was hired, or while a search is running. */
+  /** False while a search runs, or when no more people can be hired or added. */
   canSearch: boolean
+  /** False when the team is full or every hire of the run is used. */
+  canHire: boolean
   roles: { id: TeamRoleId; name: string; monthlyCents: number; weeklyHours: number }[]
   search: { role: TeamRoleId; readyWeek: number } | null
   candidates: CandidateView[]
-  member: MemberView | null
-  /** True once someone has been hired and let go: the early MVP allows one hire. */
-  hadHire: boolean
+  /** Everyone hired and not let go, in hiring order, working or still starting. */
+  members: MemberView[]
+  /** People who may work at once (1 in the 60 week game). */
+  maxMembers: number
+  /** Hires still allowed in this run (the 60 week game allows one in all). */
+  hiresLeft: number
   freelance: FreelanceView
 }
 
@@ -905,6 +928,8 @@ export type ReportEntry =
   | { kind: 'hire_started'; name: string; role: TeamRoleId }
   | { kind: 'member_let_go'; name: string; costCents: number }
   | { kind: 'team_output'; role: TeamRoleId; hours: number }
+  /** Living costs changed this week (long mode). */
+  | { kind: 'living_costs_changed'; fromCents: number; toCents: number }
   | {
       kind: 'freelance_booked'
       name: string
@@ -959,12 +984,14 @@ export type SaveFile = {
   scenarioId: string
   /** Fingerprint of the scenario's numbers and texts. Missing in saves made before 0.4.0. */
   scenarioHash?: string
+  /** `long` for a long mode run; missing for the 60 week game, as in every older save. */
+  mode?: 'long'
   seed: string
   actions: LoggedAction[]
 }
 
 /** Why a save cannot be continued. */
-export type SaveProblem = 'engine_version' | 'scenario_id' | 'scenario_changed'
+export type SaveProblem = 'engine_version' | 'scenario_id' | 'scenario_changed' | 'mode'
 
 // ---------------------------------------------------------------------------
 // Post-mortem. Built only after the run has ended; reveals hidden values on purpose.
@@ -1175,7 +1202,8 @@ export type PostMortem = {
     companyPaidYouCents: number
     customersPaidCents: number
     peakRevenueCents: number
-    hire: HireEconomicsView | null
+    /** Every hire of the run, in hiring order. */
+    hires: HireEconomicsView[]
     freelance: FreelanceEconomicsView | null
   }
   /** Leads that walked in at an office, and the customers they became, per office and market. */

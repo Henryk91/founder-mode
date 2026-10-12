@@ -26,12 +26,14 @@ export function repeatPlan(last: WeekPlan, view: PlayerView): WeekPlan {
     if (batches > 0) plan.presales[seg.id] = batches
   }
   plan.restHours = last.restHours
-  const member = view.team.member
-  if (member?.working) {
-    const target = view.product.features.find((f) => f.id === last.teamBuild)
-    if (member.role === 'developer' && target && !target.shipped) plan.teamBuild = target.id
-    if (member.role === 'salesperson' && last.teamOutreach) {
-      plan.teamOutreach = { ...last.teamOutreach }
+  for (const member of view.team.members) {
+    const task = last.teamTasks[member.id]
+    if (!member.working || !task) continue
+    if (task.kind === 'build') {
+      const target = view.product.features.find((f) => f.id === task.featureId)
+      if (member.role === 'developer' && target && !target.shipped) plan.teamTasks[member.id] = task
+    } else if (member.role === 'salesperson') {
+      plan.teamTasks[member.id] = { ...task }
     }
   }
   plan.freelance = carryFreelance(last, view)

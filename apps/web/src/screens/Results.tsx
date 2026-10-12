@@ -96,6 +96,10 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'team_output':
       return label(`results.entry.team_output.${entry.role}`, stage, { hours: entry.hours })
+    case 'living_costs_changed':
+      return label('results.entry.living_costs_changed', stage, {
+        amount: formatEuro(entry.toCents),
+      })
     case 'freelance_booked':
       return label('results.entry.freelance_booked', stage, {
         name: entry.name,
@@ -184,6 +188,8 @@ function place(entry: ReportEntry): [Group, number] {
       return entry.role === 'developer' ? ['product', 3] : ['sales', 3]
     case 'freelance_bill':
       return ['money', 3]
+    case 'living_costs_changed':
+      return ['money', 7]
     case 'freelance_booked':
     case 'freelance_notice':
     case 'freelance_ended':

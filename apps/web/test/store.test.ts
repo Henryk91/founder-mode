@@ -240,8 +240,8 @@ describe('scenario picker', () => {
   // A second scenario with its own id, so per scenario state can be told apart.
   const other = 'kantino_two' as ScenarioId
   const catalogue = (): ScenarioAbout[] => [
-    { id: 'kantino', name: 'Kantino', lines: ['a', 'b'] },
-    { id: other, name: 'Kantino Two', lines: ['c', 'd'] },
+    { id: 'kantino', name: 'Kantino', lines: ['a', 'b'], modes: ['standard'] },
+    { id: other, name: 'Kantino Two', lines: ['c', 'd'], modes: ['standard'] },
   ]
   const load = (id: ScenarioId): Scenario => ({ ...loadScenario('kantino'), id, name: String(id) })
   const setupTwo = (storage = memoryStorage(), profiles = memoryProfiles()) => {

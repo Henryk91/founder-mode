@@ -15,7 +15,11 @@ describe('parseArgs', () => {
       parts: ['main', 'paired', 'inbox', 'price', 'freelance'],
       wideRuns: 1000,
       freelance: [],
+      mode: 'standard',
     })
+    expect(parseArgs(['--mode', 'long']).mode).toBe('long')
+    expect(parseArgs(['--mode', 'all']).mode).toBe('all')
+    expect(() => parseArgs(['--mode', 'short'])).toThrow()
     expect(parseArgs(['--events']).events).toBe(true)
     expect(parseArgs(['--jobs', '4']).jobs).toBe(4)
     expect(parseArgs(['--events']).parts).toEqual([

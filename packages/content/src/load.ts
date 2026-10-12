@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./yaml.d.ts" />
 import { parse } from 'yaml'
-import { EVENT_AREAS, ScenarioSchema, type EventArea, type Scenario } from './schema'
+import { EVENT_AREAS, ScenarioSchema, type EventArea, type GameMode, type Scenario } from './schema'
 import sharedValidation from './shared/events/validation.yaml?raw'
 import sharedSales from './shared/events/sales.yaml?raw'
 import sharedProduct from './shared/events/product.yaml?raw'
@@ -102,7 +102,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
 }
 
 /** What the Start screen shows about a scenario before a run exists. Not part of the game rules. */
-export type ScenarioAbout = { id: ScenarioId; name: string; lines: string[] }
+export type ScenarioAbout = { id: ScenarioId; name: string; lines: string[]; modes: GameMode[] }
 
 const ABOUT: Record<ScenarioId, string> = {
   kantino: kantinoAbout,
@@ -150,9 +150,45 @@ export function areaEvents(area: EventArea, own: string, shared: string): unknow
   return [...list, ...pool.filter((e) => !placed.has(entryKey(e).id))]
 }
 
+const isObject = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v)
+
+/**
+ * `base` with `over` laid on top: objects merge key by key, everything else (numbers, strings,
+ * arrays) is replaced. Neither input is changed.
+ */
+export function mergeOverride(base: unknown, over: unknown): unknown {
+  if (!isObject(base) || !isObject(over)) return over
+  const out: Record<string, unknown> = { ...base }
+  for (const [k, v] of Object.entries(over)) out[k] = k in base ? mergeOverride(base[k], v) : v
+  return out
+}
+
+/**
+ * The scenario file for one mode. The 60 week game is the file without its `modes` block, so its
+ * parsed scenario and fingerprint are exactly those of a file that never had one. Long mode lays
+ * `modes.long` over the file and marks the result `mode: long`.
+ */
+function fileForMode(file: unknown, mode: GameMode, id: string): unknown {
+  if (!isObject(file)) return file
+  const { modes, ...rest } = file
+  if (mode === 'standard') return rest
+  const over = isObject(modes) ? modes[mode] : undefined
+  if (!isObject(over)) throw new Error(`scenario ${id} has no ${mode} mode`)
+  return { ...(mergeOverride(rest, over) as Record<string, unknown>), mode }
+}
+
+/** The modes a scenario's file defines: always the 60 week game, plus any `modes` block. */
+export function modesIn(source: string): GameMode[] {
+  const file: unknown = parse(source)
+  const modes = isObject(file) && isObject(file['modes']) ? Object.keys(file['modes']) : []
+  return ['standard', ...(modes.includes('long') ? (['long'] as const) : [])]
+}
+
 /** Parses and validates the YAML files of one scenario. Throws on any schema error. */
-export function parseScenario(sources: ScenarioSources): Scenario {
-  const file: unknown = parse(sources.scenario)
+export function parseScenario(sources: ScenarioSources, mode: GameMode = 'standard'): Scenario {
+  const raw: unknown = parse(sources.scenario)
+  const file = fileForMode(raw, mode, String(isObject(raw) ? raw['id'] : ''))
   const intro: unknown = parse(sources.intro)
   const events = EVENT_AREAS.flatMap((area) =>
     areaEvents(area, sources.events[area], sources.sharedEvents[area]),
@@ -175,9 +211,14 @@ export function eventsIn(source: string): unknown[] {
   return Array.isArray(events) ? events : []
 }
 
-/** Returns a freshly parsed copy of a built in scenario. */
-export function loadScenario(id: ScenarioId): Scenario {
-  return parseScenario(SOURCES[id])
+/** Returns a freshly parsed copy of a built in scenario, for the 60 week game or long mode. */
+export function loadScenario(id: ScenarioId, mode: GameMode = 'standard'): Scenario {
+  return parseScenario(SOURCES[id], mode)
+}
+
+/** The modes a built in scenario can be played in. */
+export function scenarioModes(id: ScenarioId): GameMode[] {
+  return modesIn(SOURCES[id].scenario)
 }
 
 export function scenarioSources(id: ScenarioId): ScenarioSources {
@@ -192,6 +233,6 @@ export function scenarioCatalogue(): ScenarioAbout[] {
     if (typeof about.name !== 'string' || lines.length !== 2) {
       throw new Error(`${id}/about.yaml needs a name and exactly two lines`)
     }
-    return { id, name: about.name, lines }
+    return { id, name: about.name, lines, modes: scenarioModes(id) }
   })
 }

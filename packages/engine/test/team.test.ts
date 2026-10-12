@@ -84,7 +84,7 @@ describe('a hire', () => {
   it('starts 2 weeks after the offer, and the salary is a fixed cost from then on', () => {
     let s = hired('start', 'developer')
     expect(s.week).toBe(5)
-    expect(getView(s).team.member).toMatchObject({
+    expect(getView(s).team.members[0]).toMatchObject({
       roleName: 'Developer',
       startWeek: 6,
       working: false,
@@ -107,7 +107,7 @@ describe('a hire', () => {
     const skill = s.hidden.teamSkills[s.team.members[0]!.id]!
     for (let i = 0; i < 3; i++) s = endWeek(s, plan(book)).state
     expect(s.week).toBe(8)
-    const r = endWeek(s, plan({ teamBuild: 'basic_ordering', ...book }))
+    const r = endWeek(s, plan({ teamTasks: tasks(s, 'basic_ordering'), ...book }))
     const built = Math.floor(20 * skill)
     expect(r.report.entries).toContainEqual({
       kind: 'team_output',
@@ -132,7 +132,7 @@ describe('a hire', () => {
       !s.product.features.find((f) => f.id === 'basic_ordering')!.shippedWeek &&
       guard++ < 10
     ) {
-      s = endWeek(s, plan({ teamBuild: 'basic_ordering', ...book })).state
+      s = endWeek(s, plan({ teamTasks: tasks(s, 'basic_ordering'), ...book })).state
     }
     const f = s.product.features.find((x) => x.id === 'basic_ordering')!
     expect(f.progressHours).toBe(def.buildHours)
@@ -150,7 +150,12 @@ describe('a hire', () => {
     }
     const r = endWeek(
       s,
-      plan({ teamOutreach: { segmentId: 'coworking', channel: 'phone' }, ...book }),
+      plan({
+        teamTasks: {
+          [s.team.members[0]!.id]: { kind: 'outreach', segmentId: 'coworking', channel: 'phone' },
+        },
+        ...book,
+      }),
     )
     // Both demos were held, so neither lead is waiting for one any more.
     for (const id of ['lead_1', 'lead_2']) {
@@ -173,7 +178,7 @@ describe('a hire', () => {
     let s = hired('letgo', 'developer')
     for (let i = 0; i < 3; i++) s = endWeek(s, plan(book)).state
     const before = s.company.cashCents
-    const r = endWeek(s, plan({ letGo: true, ...book }))
+    const r = endWeek(s, plan({ letGo: s.team.members[0]!.id, ...book }))
     expect(r.report.entries).toContainEqual({
       kind: 'member_let_go',
       name: s.team.members[0]!.name,
@@ -184,15 +189,17 @@ describe('a hire', () => {
       before - 390_000 - r.report.ledger.fixedCostsCents - r.report.ledger.founderDrawCents,
     )
     expect(r.state.company.fixedCosts).toHaveLength(2)
-    expect(getView(r.state).team.member).toBeNull()
-    expect(getView(r.state).team.hadHire).toBe(true)
+    expect(getView(r.state).team.members).toEqual([])
+    expect(getView(r.state).team.hiresLeft).toBe(0)
     expect(getView(r.state).team.canSearch).toBe(false)
-    expect(validatePlan(r.state, plan({ letGo: true }))).toEqual([{ code: 'let_go_not_allowed' }])
+    expect(validatePlan(r.state, plan({ letGo: s.team.members[0]!.id }))).toEqual([
+      { code: 'let_go_not_allowed' },
+    ])
   })
 
   it('can be let go before the start, without a salary ever being paid', () => {
     const s = hired('early', 'developer')
-    const r = endWeek(s, plan({ letGo: true, ...book }))
+    const r = endWeek(s, plan({ letGo: s.team.members[0]!.id, ...book }))
     expect(r.state.company.fixedCosts).toHaveLength(2)
     let t = r.state
     for (let i = 0; i < 5; i++) t = endWeek(t, plan(book)).state
@@ -204,13 +211,21 @@ describe('a hire', () => {
     expect(validatePlan(s, plan({ hire: 'candidate_9_9' }))).toEqual([
       { code: 'invalid_hire', candidateId: 'candidate_9_9' },
     ])
-    expect(validatePlan(s, plan({ teamBuild: 'nonsense' }))).toEqual([
-      { code: 'invalid_team_work' },
-    ])
+    expect(
+      validatePlan(
+        s,
+        plan({ teamTasks: { nobody: { kind: 'build', featureId: 'basic_ordering' } } }),
+      ),
+    ).toEqual([{ code: 'invalid_team_work' }])
   })
 })
 
-const hasOne = (s: GameState) => getView(s).team.member?.working === true
+const hasOne = (s: GameState) => getView(s).team.members[0]?.working === true
+
+/** The first member builds this feature. */
+const tasks = (s: GameState, featureId: string) => ({
+  [s.team.members[0]!.id]: { kind: 'build' as const, featureId },
+})
 
 describe('hire economics for the post-mortem', () => {
   it('is null without a hire, and counts salary, customers found and their value with one', () => {

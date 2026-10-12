@@ -1,6 +1,6 @@
 import type { Rng } from '../rng'
 import type { GameState, ProductState, ReportEntry, WeekPlan } from '../types'
-import type { FreelanceOutput, TeamOutput } from './team'
+import { teamBuildOn, type FreelanceOutput, type TeamOutput } from './team'
 
 export function initialProduct(state: Pick<GameState, 'scenario'>): ProductState {
   const { scenario } = state
@@ -34,7 +34,7 @@ export function applyProduct(
   state: GameState,
   plan: WeekPlan,
   rng: Rng,
-  team: TeamOutput | null = null,
+  team: readonly TeamOutput[] = [],
   freelance: FreelanceOutput | null = null,
 ): { state: GameState; entries: ReportEntry[] } {
   const { scenario } = state
@@ -54,7 +54,7 @@ export function applyProduct(
   for (const id of Object.keys(freelance?.build ?? {})) touched.add(id)
   let freelanceBugs = state.team.freelanceBugs
   const features = state.product.features.map((f) => {
-    const hours = (plan.build[f.id] ?? 0) + (team?.build[f.id] ?? 0) + (freelance?.build[f.id] ?? 0)
+    const hours = (plan.build[f.id] ?? 0) + teamBuildOn(team, f.id) + (freelance?.build[f.id] ?? 0)
     if (hours === 0 || f.shippedWeek !== null) return f
     const def = scenario.features.find((x) => x.id === f.id)
     if (!def) throw new Error(`Unknown feature ${f.id}`)
