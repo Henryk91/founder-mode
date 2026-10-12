@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { StoreApi } from 'zustand/vanilla'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { Help } from './components/Help'
 import { Intro } from './components/Intro'
 import { DeskLayout } from './layout/DeskLayout'
@@ -17,7 +18,9 @@ export type LayoutChoice = 'desk' | 'phone'
 export function App({ store, layout }: { store: StoreApi<GameStore>; layout?: LayoutChoice }) {
   return (
     <StoreProvider value={store}>
-      <Root layout={layout} />
+      <ErrorBoundary store={store}>
+        <Root layout={layout} />
+      </ErrorBoundary>
     </StoreProvider>
   )
 }

@@ -27,10 +27,27 @@ const labels = {
   'start.best.play': '{seed}',
   'start.best.playAria': 'Play seed {seed} again',
   'start.notice.incompatible':
-    'That save came from an older version of the game and cannot be continued. Start a new run.',
-  'start.notice.broken': 'That save could not be read. Start a new run.',
+    'That save is from an older version of the game, and the rules have moved on since. It cannot be continued. Your best runs are still here.',
+  'start.notice.newer':
+    'That save is from a newer version of the game than this page. Reload the page to continue it. A new run here would replace it.',
+  'start.notice.broken':
+    'That save could not be read, so it has gone in the bin. Your best runs are stored apart from it.',
   'start.notice.scenario_changed':
-    'That save was made with different game numbers. The game has been retuned since, so the run cannot be continued. Start a new run.',
+    'The numbers have been retuned since that save, so it would play out differently. It cannot be continued. Your best runs are still here.',
+  'storage.notice.unavailable':
+    'This browser is not keeping anything for us, perhaps a private window. You can play, but closing the tab ends the run and nothing goes into your best runs.',
+  'storage.notice.full':
+    'The browser would not take the last save, probably because its storage is full. The run goes on, but if the tab closes, it is gone.',
+  'storage.notice.dismiss': 'Understood',
+  'runs.notice.unreadable':
+    'Your best runs could not be read, so the list starts again. The old one is kept aside in this browser, in case someone can rescue it.',
+  'runs.notice.unsaved':
+    'The browser would not store your best runs. They last until this tab closes.',
+  'crash.title': 'Something broke',
+  'crash.text':
+    'Something in the game fell over. Your save is untouched: it was last written when you last answered a message or ended a week.',
+  'crash.retry': 'Try again',
+  'crash.start': 'Back to the start',
 
   'bar.week': 'Week {week} of {max}',
   'bar.endWeek': 'End week',

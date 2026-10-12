@@ -17,6 +17,8 @@ export function Start() {
   const scenarioId = useGame((s) => s.scenarioId)
   const selectScenario = useGame((s) => s.selectScenario)
   const notice = useGame((s) => s.saveNotice)
+  const storageNotice = useGame((s) => s.storageNotice)
+  const runsNotice = useGame((s) => s.runsNotice)
   const startRun = useGame((s) => s.startRun)
   const continueRun = useGame((s) => s.continueRun)
   const runs = useGame((s) => s.runs)
@@ -25,9 +27,11 @@ export function Start() {
 
   return (
     <main className={startStyles.start}>
-      {notice && (
+      {(notice || storageNotice || runsNotice) && (
         <div className={`${styles.card} ${styles.sticky}`} role="status">
-          <p>{label(`start.notice.${notice}`, stage)}</p>
+          {notice && <p>{label(`start.notice.${notice}`, stage)}</p>}
+          {storageNotice && <p>{label(`storage.notice.${storageNotice}`, stage)}</p>}
+          {runsNotice && <p>{label(`runs.notice.${runsNotice}`, stage)}</p>}
         </div>
       )}
 

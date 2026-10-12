@@ -131,6 +131,8 @@ describe.skipIf(!chromePath)('accessibility in the browser', () => {
       await page.keyboard.press('Tab')
       const ring = await page.evaluate(() => {
         const el = document.activeElement as HTMLElement
+        // Past the last control, Tab leaves the page for the browser's own controls.
+        if (el === document.body) return ''
         const cs = getComputedStyle(el)
         return cs.outlineStyle !== 'none' && cs.boxShadow.includes('255, 211, 77')
           ? ''
