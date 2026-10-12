@@ -6,7 +6,14 @@ import { applyFounderWeek, hoursByActivity } from './systems/founder'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
 import { applyChurn, applyReferrals, applySales } from './systems/sales'
-import { applyTeam, teamOutput } from './systems/team'
+import {
+  applyFreelance,
+  applyTeam,
+  freelanceBillCents,
+  freelanceOutput,
+  freelancerIn,
+  teamOutput,
+} from './systems/team'
 import { checkEnding } from './systems/endings'
 import { checkMilestones } from './systems/milestones'
 import { applyWalkIns, energyPerWeek } from './systems/office'
@@ -73,16 +80,18 @@ export function endWeek(
   entries.push(...results.entries)
   extras.depositsCents += results.depositsCents
 
-  // 5. Product: bug fixing, build progress, shipping. A working developer adds build hours.
+  // 5. Product: bug fixing, build progress, shipping. A working developer or freelance developer
+  // adds build hours.
   const team = teamOutput(state, plan)
   if (team && team.hours > 0)
     entries.push({ kind: 'team_output', role: team.role, hours: team.hours })
-  const product = applyProduct(state, plan, rng, team)
+  const freelance = freelanceOutput(state, plan, team)
+  const product = applyProduct(state, plan, rng, team, freelance)
   state = product.state
   entries.push(...product.entries)
 
   // 6. Sales: demos, trials, new leads, ghosting. A working salesperson helps.
-  const sales = applySales(state, plan, rng, team)
+  const sales = applySales(state, plan, rng, team, freelance)
   state = sales.state
   entries.push(...sales.entries)
   extras.otherCostsCents += sales.refundsCents
@@ -98,6 +107,20 @@ export function endWeek(
   state = staff.state
   entries.push(...staff.entries)
   extras.otherCostsCents += staff.severanceCents
+  // The freelancer's bill for this week, then bookings, notice and hours from next week.
+  const booked = freelancerIn(state, state.week)
+  extras.freelanceCents = freelanceBillCents(state, state.week)
+  if (booked && extras.freelanceCents > 0) {
+    entries.push({
+      kind: 'freelance_bill',
+      name: booked.name,
+      amountCents: extras.freelanceCents,
+      hours: extras.freelanceCents / state.scenario.team.freelance.roles[booked.role].centsPerHour,
+    })
+  }
+  const freelancing = applyFreelance(state, plan, freelance)
+  state = freelancing.state
+  entries.push(...freelancing.entries)
 
   // 8. Finance: transfers, costs, chasing, payments, invoices at month end
   const finance = applyFinanceWeek(state, plan, extras, rng)

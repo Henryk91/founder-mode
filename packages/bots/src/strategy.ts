@@ -29,6 +29,8 @@ export type Strategy = {
   /** The description for one scenario, when it names that scenario's markets. */
   describe?(scenario: Scenario): string
   create(scenario: Scenario, seed: string): Player
+  /** For report diagnostics only: the scenario this strategy is played on, from the real one. */
+  adapt?(scenario: Scenario): Scenario
 }
 
 export const describeStrategy = (strategy: Strategy, scenario: Scenario): string =>

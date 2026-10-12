@@ -477,6 +477,63 @@ describe('phase 4 screens', () => {
     expect(candidates).toContain('Make an offer')
   })
 
+  it('books a freelancer in the Hiring section, gives them work, and gives notice', () => {
+    const store = fresh('p9-freelance')
+    begin(store)
+    store.getState().toggleSection('team')
+    let page = text(store)
+    expect(page).toContain('Freelancer')
+    expect(page).toContain('Freelance developer €68 an hour')
+    expect(page).toContain('20 h: €1,360 a week')
+    expect(page).toContain('One extra bug per feature.')
+    expect(page).toContain('Outreach only, no demos.')
+    expect(page).toContain('18 h of 20 h become work.')
+    expect(page).toContain('The first week at half pace.')
+    store.getState().setFreelance({ book: { role: 'developer', hoursPerWeek: 20 } })
+    expect(store.getState().plannedHours).toBe(0)
+    page = text(store)
+    expect(page).toContain(
+      'Booked: freelance developer, 20 h a week, from next week. Tap to cancel.',
+    )
+    expect(page).toContain('Hiring booking a freelancer')
+    store.getState().endWeek()
+    expect(text(store)).toContain(
+      'Arne Lindgren is booked as your freelance developer, 20 h a week from week 2.',
+    )
+    store.getState().dismissReport()
+    store.getState().toggleSection('team')
+    page = text(store)
+    expect(page).toContain('Hiring freelancer Arne Lindgren')
+    expect(page).toContain('Your freelance developer')
+    expect(page).toContain('Arne Lindgren 20 h, €1,360 a week')
+    expect(page).toContain('First week: 9 h of work.')
+    expect(page).toContain('The freelancer builds')
+    // Still allowed: the one hire.
+    expect(page).toContain('Look for a Developer')
+    store.getState().setFreelance({ build: 'basic_ordering' })
+    store.getState().endWeek()
+    page = text(store)
+    expect(page).toContain(
+      'Your freelancer put in 9 build hours, most of the week went on reading your code.',
+    )
+    expect(page).toContain('Arne Lindgren billed €1,360 for 20 h.')
+    expect(page).toContain('Company paid €1,360')
+    store.getState().dismissReport()
+    // The task carries over to the next week's draft.
+    expect(store.getState().plan.freelance.build).toBe('basic_ordering')
+    store.getState().setTab('money')
+    expect(text(store)).toContain('Freelancer, billed every week €1,360')
+    store.getState().setTab('plan')
+    store.getState().toggleSection('team')
+    store.getState().setFreelance({ end: true })
+    expect(text(store)).toContain('Notice this week. Tap to take it back.')
+    store.getState().endWeek()
+    expect(text(store)).toContain('Arne Lindgren has your notice. Last week: week 4.')
+    store.getState().dismissReport()
+    store.getState().toggleSection('team')
+    expect(text(store)).toContain('Last week: week 4.')
+  })
+
   it('shows invoices on the Money tab, with a chase button when one is overdue', () => {
     const store = fresh('p4-money')
     begin(store)

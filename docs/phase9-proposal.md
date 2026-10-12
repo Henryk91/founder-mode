@@ -470,3 +470,22 @@ What this means for long mode (to settle in Parts C and D, not now):
 - A freelance developer at 90 EUR an hour is about 1.4 times a full time employee's cost per hour (91,000 EUR over about 1,650 working hours is 55 EUR), which matches the starting ratio of 1.4 proposed in 1.3.
 
 The competitor joins the parked ideas in the plan.
+
+---
+
+## 9. Part B result: the freelancer (engine 0.12.0)
+
+Built as proposed in section 1, with the owner's answers. Details and numbers are in `docs/decisions.md` (Phase 9, part B) and `docs/balancing.md` ("The freelancer (target 19)").
+
+- **No extra random draws:** with nobody booked, main and paired on 10,000 seeds are identical to engine 0.11.0, and every reference number in `docs/balancing.md` matches.
+- **Free freelancer, 60 weeks:** a developer for the build is worth about +1.3 points; a salesperson for 8 weeks about +2. The founder builds a market in 3 to 4 weeks alone, so a rented developer has little to do (median 17 hours).
+- **Price:** 1.4 times the hire's hourly cost, 68 EUR (developer) and 58 EUR (salesperson). It already loses about 4 points at 1.0 times; break-even is about 12 EUR an hour.
+- **Target 19 fails at any realistic price,** as the hire's old target 12 did. The freelancer is never the right call in the bootstrapped 60 weeks with these bots.
+
+Options for target 19 (owner to choose):
+
+| Option | What | Effect |
+|---|---|---|
+| **A (recommended)** | Restate 19 for 60 weeks as a lesson that holds today: "renting never beats doing the work yourself, and a short rental costs less than a hire" (the freelancer bot loses fewer points than `validate_then_build_early_hire`), and move "the right call in some situations" to target 20 in long mode, where salaries and money are larger | No change to the game. The 60 week lesson becomes "your own hours are the cheapest" |
+| B | Make the founder's hours scarcer in 60 weeks (for example a slower build, or outreach that needs more hours), so renting can pay | Moves all 18 targets; a retune of the 60 week game that Part B was meant to avoid |
+| C | Drop target 19, like target 12 | Simplest; the freelancer stays a choice that rarely pays |

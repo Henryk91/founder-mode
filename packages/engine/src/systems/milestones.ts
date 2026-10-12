@@ -1,7 +1,7 @@
 import type { Milestone } from '@founder-mode/content'
 import type { GameState, MilestoneView, NextMilestoneView, ReachedMilestone } from '../types'
 import { activeCustomers } from './customers'
-import { monthlyFixedCostsCents } from './finance'
+import { monthlyCompanyCostsCents } from './finance'
 
 /** Endings in which the weeks of the final week still count as survived. */
 const SURVIVED = new Set(['still_searching', 'sustainable'])
@@ -14,7 +14,7 @@ function progress(state: GameState, m: Milestone): { current: number; target: nu
     case 'revenue': {
       const revenue = activeCustomers(state).reduce((t, c) => t + c.priceCentsPerMonth, 0)
       const living = state.founder.livingCostCentsPerWeek * state.scenario.finance.weeksPerMonth
-      const costs = monthlyFixedCostsCents(state) + (m.covers === 'all' ? living : 0)
+      const costs = monthlyCompanyCostsCents(state) + (m.covers === 'all' ? living : 0)
       return { current: revenue, target: costs }
     }
     case 'weeks': {

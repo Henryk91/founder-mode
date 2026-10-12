@@ -10,6 +10,7 @@ import { botScenario } from './scenarios'
 import { runTasks, type Task, type TaskDone } from './pool'
 import {
   ABLATION_SPECS,
+  FREELANCE_TARGET_SPEC,
   INBOX_SPECS,
   PRICING_SPECS,
   READER_SPEC,
@@ -37,7 +38,7 @@ const strategies = args.only.length
  * target 11 (both on `--wide-runs` seeds, with a reading run on the same seeds), `events` every answer
  * of every event.
  */
-type Part = 'main' | 'paired' | 'inbox' | 'price' | 'events'
+type Part = 'main' | 'paired' | 'inbox' | 'price' | 'freelance' | 'events'
 type Planned = { strategy: Strategy; spec: StrategySpec; part: Part; runs: number }
 
 /** Every strategy one scenario's report needs, with the spec a worker builds it from. */
@@ -57,7 +58,9 @@ function planFor(scenario: Scenario): Planned[] {
   // Leave-one-out runs of validate_then_build. Only for the report, so they stay out of the
   // strategy list that the targets look at.
   // The reading run that targets 6, 11 and 13 are judged against, on the wide seeds; once.
-  const wideParts = (['paired', 'inbox', 'price'] as const).filter((p) => args.parts.includes(p))
+  const wideParts = (['paired', 'inbox', 'price', 'freelance'] as const).filter((p) =>
+    args.parts.includes(p),
+  )
   if (full && wideParts[0]) out.push(plan(READER_SPEC, wideParts[0], args.wideRuns))
   if (full && args.parts.includes('paired'))
     out.push(...ABLATION_SPECS.map((spec) => plan(spec, 'paired', args.wideRuns)))
@@ -65,6 +68,20 @@ function planFor(scenario: Scenario): Planned[] {
     out.push(...INBOX_SPECS.map((spec) => plan(spec, 'inbox', args.wideRuns)))
   if (full && args.parts.includes('price'))
     out.push(...PRICING_SPECS.map((spec) => plan(spec, 'price', args.wideRuns)))
+  // Target 19's freelancer, and any extra freelancer runs asked for, on the wide seeds.
+  if (full && args.parts.includes('freelance')) {
+    out.push(plan(FREELANCE_TARGET_SPEC, 'freelance', args.wideRuns))
+    for (const f of args.freelance) {
+      const spec: StrategySpec = {
+        kind: 'freelance',
+        role: f.role,
+        hours: f.hours,
+        centsPerHour: f.eurPerHour === null ? null : Math.round(f.eurPerHour * 100),
+        weeks: f.weeks,
+      }
+      out.push(plan(spec, 'freelance', args.wideRuns))
+    }
+  }
   // Every answer of every event, forced, on validate_then_build. Slow, so only on request.
   if (args.parts.includes('events'))
     for (const e of scenario.events)
@@ -121,10 +138,20 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
       (p) =>
         (p.part === 'main' && p.spec.kind !== 'listed') ||
         p.spec.kind === 'inbox' ||
-        p.spec.kind === 'pricing',
+        p.spec.kind === 'pricing' ||
+        p.spec.kind === 'freelance',
     ),
     ...(events ? { events } : {}),
     playtest: { segment, note },
+    marketBuildHours: Object.fromEntries(
+      scenario.segments.map((seg) => [
+        seg.id,
+        seg.mustHave.reduce(
+          (t, f) => t + (scenario.features.find((x) => x.id === f)?.buildHours ?? 0),
+          0,
+        ),
+      ]),
+    ),
   }
   for (const id of TARGET_STRATEGIES.slice(0, 1)) {
     console.log(`\nTargets for ${scenario.id}, ${id}`)
@@ -147,7 +174,7 @@ const loaded = chosen.map((c) => loadScenario(c.id))
 const plans = loaded.map(planFor)
 const done = plans.map((p) => p.map((): TaskDone => ({ results: [], seconds: 0 })))
 const timings: string[] = []
-for (const part of ['main', 'paired', 'inbox', 'price', 'events'] as const) {
+for (const part of ['main', 'paired', 'inbox', 'price', 'freelance', 'events'] as const) {
   const index = plans.flatMap((p, s) => p.flatMap((x, i) => (x.part === part ? [{ s, i }] : [])))
   if (index.length === 0) continue
   const tasks = index.map(({ s, i }): Task => {
@@ -173,7 +200,7 @@ const reports = new Map(
   loaded.map((scenario, i) => [scenario.id, reportFor(scenario, plans[i]!, done[i]!)] as const),
 )
 console.log(`\nTimings\n${timings.join('\n')}`)
-const skipped = (['main', 'paired', 'inbox', 'price', 'events'] as const).filter(
+const skipped = (['main', 'paired', 'inbox', 'price', 'freelance', 'events'] as const).filter(
   (p) => !args.parts.includes(p),
 )
 if (skipped.length) console.log(`Skipped parts: ${skipped.join(', ')}`)

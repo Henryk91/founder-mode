@@ -96,6 +96,12 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
           : view.team.hadHire
             ? none
             : label('plan.sum.noHire', stage)
+  const freelancer = view.team.freelance.current
+  const freelanceLine = p.freelance.book
+    ? label('plan.sum.freelanceBook', stage)
+    : freelancer
+      ? label('plan.sum.freelancer', stage, { name: freelancer.name })
+      : null
 
   return {
     talk: interviews > 0 ? count('plan.sum.interviews', stage, interviews) : none,
@@ -110,7 +116,11 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
       ...(p.followUps.length > 0 ? [count('plan.sum.followUps', stage, p.followUps.length)] : []),
       ...(p.chase.length > 0 ? [count('plan.sum.chase', stage, p.chase.length)] : []),
     ]),
-    team,
+    team: freelanceLine
+      ? team === none || team === label('plan.sum.noHire', stage)
+        ? freelanceLine
+        : `${team}, ${freelanceLine}`
+      : team,
     rest: p.restHours > 0 ? label('unit.hours', stage, { n: p.restHours }) : none,
   }
 }

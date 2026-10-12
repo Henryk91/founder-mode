@@ -1,5 +1,6 @@
 import type { RunResult } from './simulate'
 import { CHECK_WEEK, EVIDENCE_WEEK, PACING_WEEKS } from './simulate'
+import { FREELANCE_TARGET_ID } from './specs'
 import { combined, fmtMargin, medianMargin, pairedMargin, rateMargin, ratioMargin } from './margin'
 
 export type StrategyRuns = {
@@ -22,6 +23,8 @@ export type ReportInput = {
   events?: EventChoiceRuns[]
   /** The playtest bot's market, and what the hand playtest reached (`{week}` is the check week). */
   playtest?: { segment: string; note: string | null }
+  /** Build hours of each market's must have features, for the freelancer split (target 19). */
+  marketBuildHours?: Record<string, number>
 }
 
 /** The validate_then_build variants the targets are judged on. */
@@ -418,7 +421,139 @@ export function evaluateTargets(
     },
     pricingTarget(input),
     pricingSpreadTarget(input),
+    freelanceTarget(input),
   ]
+}
+
+/** Builds of at least this many hours are long, of at most `SHORT_BUILD` short (target 19). */
+const LONG_BUILD = 120
+const SHORT_BUILD = 90
+
+type FreelanceSplit = { label: string; seeds: number[] }
+
+/**
+ * Seeds of a freelancer run grouped by the build hours of the market it booked for: every seed,
+ * then each build size, then seeds where it never booked (identical to plain play).
+ */
+function freelanceSplits(input: ReportInput, runs: StrategyRuns): FreelanceSplit[] {
+  const hours = input.marketBuildHours ?? {}
+  const sizes = [...new Set(Object.values(hours))].sort((a, b) => a - b)
+  const all = runs.results.map((_, i) => i)
+  const of = (r: RunResult) => (r.freelance?.market ? hours[r.freelance.market] : undefined)
+  return [
+    { label: 'all', seeds: all },
+    ...sizes.map((h) => ({
+      label: `${h} h (${Object.keys(hours)
+        .filter((m) => hours[m] === h)
+        .join(', ')})`,
+      seeds: all.filter((i) => of(runs.results[i]!) === h),
+    })),
+    { label: 'never booked', seeds: all.filter((i) => runs.results[i]!.freelance === null) },
+  ]
+}
+
+/** Paired change in points of `other` against `base` on some seeds, with its margin. */
+function pairedOn(base: StrategyRuns, other: StrategyRuns, seeds: number[]) {
+  const b = seeds.map((i) => winsOf(base.results[i]!))
+  const o = seeds.map((i) => winsOf(other.results[i]!))
+  const rate = (xs: boolean[]) => pct(xs.filter(Boolean).length, xs.length)
+  return { change: rate(o) - rate(b), margin: pairedMargin(b, o), n: seeds.length }
+}
+
+/**
+ * Target 19 (60 weeks): renting a developer for the build pays when the build is long and does
+ * not when it is short, and is no default. Against validate_then_build on the same wide seeds,
+ * split by the build hours of the market the bot booked for: at least +2 points where the build
+ * takes 120 h or more, at most 0 where it takes 90 h or less, at most +5 overall. Within its own
+ * margin of a limit counts as at the limit.
+ */
+function freelanceTarget(input: ReportInput): Target {
+  const text =
+    'A freelance developer for the build gains at least 2 points where the chosen market needs 120 h or more of building, gains nothing where it needs 90 h or less, and is at most 5 points ahead overall. Within its own margin of a limit counts as at the limit'
+  const reader = find(input, READER_ID)
+  const runs = find(input, FREELANCE_TARGET_ID)
+  if (!reader || !runs) return { id: 19, text, value: '-', margin: '', pass: false }
+  const hours = input.marketBuildHours ?? {}
+  const all = runs.results.map((_, i) => i)
+  const sized = (keep: (h: number) => boolean) =>
+    all.filter((i) => {
+      const m = runs.results[i]!.freelance?.market
+      return m !== undefined && m !== null && keep(hours[m] ?? 0)
+    })
+  const overall = pairedOn(reader, runs, all)
+  const long = pairedOn(
+    reader,
+    runs,
+    sized((h) => h >= LONG_BUILD),
+  )
+  const short = pairedOn(
+    reader,
+    runs,
+    sized((h) => h <= SHORT_BUILD),
+  )
+  const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
+  return {
+    id: 19,
+    text: `${text} (on ${reader.results.length} seeds)`,
+    value: `long builds ${signed(long.change)} (${long.n} seeds), short builds ${signed(short.change)} (${short.n}), all ${signed(overall.change)}`,
+    margin: `${fmtMargin(long.margin)}, ${fmtMargin(short.margin)}, ${fmtMargin(overall.margin)}`,
+    pass:
+      long.n > 0 &&
+      short.n > 0 &&
+      long.change + long.margin >= 2 &&
+      short.change - short.margin <= 0 &&
+      overall.change - overall.margin <= 5,
+  }
+}
+
+/** The freelancer runs against plain play on the same seeds, by build size and by market role. */
+function freelanceRows(input: ReportInput): string[] {
+  const reader = find(input, READER_ID)
+  const runs = (input.extras ?? []).filter((x) => x.id.startsWith('freelance:'))
+  if (!reader || runs.length === 0) return []
+  const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
+  const cell = (r: StrategyRuns, seeds: number[]) => {
+    if (seeds.length === 0) return '-'
+    const p = pairedOn(reader, r, seeds)
+    return `${signed(p.change)} ${fmtMargin(p.margin)} (${p.n})`
+  }
+  const splits = freelanceSplits(input, runs[0]!)
+  const roles = [...new Set(reader.results.flatMap((r) => Object.values(r.roles)))].sort()
+  const out = [
+    '',
+    '## The freelancer (target 19)',
+    '',
+    `Each freelancer run plays like \`validate_then_build\` until it books, on the same ${reader.results.length} seeds. Points against plain play (paired margin, seeds). Split by the build hours of the must haves of the market the bot was working on when it booked; "never booked" seeds play exactly as plain. A developer is booked from the first week with a chosen market and unbuilt wanted features, on the wanted feature with the most hours left, until they have shipped; a salesperson from the first paying customer for a fixed number of weeks.`,
+    '',
+    `| Run | ${splits.map((x) => x.label).join(' | ')} | Booked | Median cost | Median weeks | Median hours of work |`,
+    `|---|${splits.map(() => '---').join('|')}|---|---|---|---|`,
+  ]
+  for (const r of runs) {
+    const own = freelanceSplits(input, r)
+    const booked = r.results.filter((x) => x.freelance !== null)
+    out.push(
+      `| ${r.id} | ${own.map((x) => cell(r, x.seeds)).join(' | ')} | ${fmtPct(pct(booked.length, r.results.length))} | ${fmtEur(median(booked.map((x) => x.freelance!.costCents)))} | ${fmtNum(median(booked.map((x) => x.freelance!.weeks)))} | ${fmtNum(median(booked.map((x) => x.freelance!.workedHours)))} |`,
+    )
+  }
+  out.push(
+    '',
+    'By the real role of the market the bot booked for (hidden, report only):',
+    '',
+    `| Run | ${roles.join(' | ')} |`,
+    `|---|${roles.map(() => '---').join('|')}|`,
+  )
+  for (const r of runs) {
+    const cells = roles.map((role) =>
+      cell(
+        r,
+        r.results
+          .map((x, i) => (x.freelance?.market && x.roles[x.freelance.market] === role ? i : -1))
+          .filter((i) => i >= 0),
+      ),
+    )
+    out.push(`| ${r.id} | ${cells.join(' | ')} |`)
+  }
+  return out
 }
 
 const SEARCH_ID = 'pricing:search'
@@ -588,13 +723,14 @@ function behaviourRows(full: StrategyRuns, variants: StrategyRuns[]): string[] {
     const bankrupt = s.results.filter((r) => r.ending === 'bankrupt').length
     return `| ${label} | ${fmtPct(pct(w, n))} | ${(pct(w, n) - pct(fullWins, n)).toFixed(1)} | ${onlyFull} | ${onlyThis} | ${fmtPct(pct(bankrupt, n))} | ${fmtNum(median(s.results.filter(isLoss).map((r) => r.weeks)))} |`
   }
-  const most = Math.max(
-    ...variants.map((v) => v.id.slice(full.id.length).split(' -').filter(Boolean).length),
-  )
+  // A variant's id is its base id followed by ` -name` per behaviour switched off. The full run
+  // may have another id (the wide reading run), so the names are read from the variant's own id.
+  const offOf = (v: StrategyRuns) => v.id.split(' -').slice(1)
+  const most = Math.max(...variants.map((v) => offOf(v).length))
   return [
     row('all behaviours', full),
     ...variants.map((v) => {
-      const off = v.id.slice(full.id.length).split(' -').filter(Boolean)
+      const off = offOf(v)
       return row(off.length === most && most > 1 ? 'without all' : `without ${off.join(', ')}`, v)
     }),
   ]
@@ -669,6 +805,7 @@ export function buildReport(input: ReportInput): string {
   }
 
   push(...pricingRows(input))
+  push(...freelanceRows(input))
 
   const weekBins: [number, number][] = [
     [1, 10],

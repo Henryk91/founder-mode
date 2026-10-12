@@ -27,11 +27,12 @@ import {
   type SaveFile,
   type SuggestionId,
   type TeamRoleId,
+  type FreelancePlan,
   type WeekPlan,
   type WeekReport,
 } from '@founder-mode/engine'
 import { createStore, type StoreApi } from 'zustand/vanilla'
-import { repeatPlan } from './repeatPlan'
+import { carryFreelance, repeatPlan } from './repeatPlan'
 import {
   MAX_RUNS,
   memoryProfiles,
@@ -167,6 +168,8 @@ export type UiActions = {
   setLetGo(letGo: boolean): void
   setTeamBuild(featureId: string | null): void
   setTeamOutreach(target: { segmentId: string; channel: ChannelId } | null): void
+  /** Changes part of the freelancer plan: booking, hours, notice, or their task. */
+  setFreelance(change: Partial<FreelancePlan>): void
   /** Answers a message now: its hours count at once, its effects land when the week ends. */
   answer(messageId: string, choiceId: string): void
   /** First step of shutting down: shows the question. Nothing happens to the run yet. */
@@ -515,6 +518,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       setLetGo: (letGo) => editPlan((p) => ({ ...p, letGo })),
       setTeamBuild: (featureId) => editPlan((p) => ({ ...p, teamBuild: featureId })),
       setTeamOutreach: (target) => editPlan((p) => ({ ...p, teamOutreach: target })),
+      setFreelance: (change) =>
+        editPlan((p) => ({ ...p, freelance: { ...p.freelance, ...change } })),
       answer(messageId, choiceId) {
         if (!game || game.status !== 'running') return
         try {
@@ -541,8 +546,10 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         const result = endWeek(game, plan)
         game = result.state
         persist(toSave(game))
+        const next = emptyPlan()
+        if (game.status === 'running') next.freelance = carryFreelance(plan, getView(game))
         refresh({
-          plan: emptyPlan(),
+          plan: next,
           report: result.report,
           shutDownAsked: false,
           openSections: [],

@@ -29,6 +29,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 16 | No run of any strategy brings an event twice, except events that recur on purpose | 0 repeats |  | yes | | | | |
 | 17 | A price search that reads only the screen beats the default price by 3 to 10 points, loses at most 1 point in any viable market and wins at most 45%; twice the default loses in at least two of three. Within its own margin of a limit counts as at the limit (on 10000 seeds) | search +9.2 (41.2%), worst market small_offices +1.6; twice the default loses in 2 of 3 | ±1.0 (±1.0), ±1.7 | yes | | | | |
 | 18 | For the price search that reads the screen, win rates across the three viable markets lie within 25 points; within its own margin counts as at the limit (on 10000 seeds) | 23.6 points (small_offices 32.6%, medical 34.7%, coworking 56.1%) | ±2.3 | yes | | | | |
+| 19 | A freelance developer for the build gains at least 2 points where the chosen market needs 120 h or more of building, gains nothing where it needs 90 h or less, and is at most 5 points ahead overall. Within its own margin of a limit counts as at the limit (on 10000 seeds) | long builds -9.6 (3246 seeds), short builds -4.8 (3613), all -5.9 | ±1.9, ±1.7, ±1.1 | no | | | | |
 
 ## Endings
 
@@ -92,6 +93,36 @@ Where the moving prices end, by viable market: the median final price as a share
 |---|---|---|---|
 | search (price_aware) | 0.96 / 1.01 / 4.32 | 1.02 / 1.03 / 4.12 | 1.02 / 1.02 / 3.76 |
 | recipe (price_recipe) | 1.29 / 1.17 / 6.99 | 1.44 / 1.18 / 5.76 | 1.51 / 1.17 / 5.77 |
+
+## The freelancer (target 19)
+
+Each freelancer run plays like `validate_then_build` until it books, on the same 10000 seeds. Points against plain play (paired margin, seeds). Split by the build hours of the must haves of the market the bot was working on when it booked; "never booked" seeds play exactly as plain. A developer is booked from the first week with a chosen market and unbuilt wanted features, on the wanted feature with the most hours left, until they have shipped; a salesperson from the first paying customer for a fixed number of weeks.
+
+| Run | all | 85 h (small_offices) | 105 h (medical) | 135 h (coworking) | never booked | Booked | Median cost | Median weeks | Median hours of work |
+|---|---|---|---|---|---|---|---|---|---|
+| freelance:developer 20h | -5.9 ±1.1 (10000) | -4.8 ±1.7 (3613) | -3.4 ±1.9 (3141) | -9.6 ±1.9 (3246) | - | 100.0% | 4,080 EUR | 3 | 17 |
+| freelance:developer 20h at 0 EUR | +1.3 ±1.1 (10000) | +0.2 ±1.7 (3613) | +3.2 ±1.9 (3141) | +0.7 ±1.9 (3246) | - | 100.0% | 0 EUR | 0 | 17 |
+| freelance:developer 20h at 49 EUR | -3.9 ±1.1 (10000) | -3.5 ±1.7 (3613) | -1.3 ±1.9 (3141) | -6.8 ±1.9 (3246) | - | 100.0% | 2,940 EUR | 3 | 17 |
+| freelance:developer 10h at 0 EUR | +0.8 ±1.0 (10000) | +0.6 ±1.7 (3613) | +1.4 ±1.9 (3141) | +0.6 ±1.9 (3246) | - | 100.0% | 0 EUR | 0 | 13 |
+| freelance:developer 10h | -3.0 ±1.0 (10000) | -2.5 ±1.7 (3613) | -1.8 ±1.9 (3141) | -4.7 ±1.9 (3246) | - | 100.0% | 2,040 EUR | 3 | 13 |
+| freelance:salesperson 20h 8w at 0 EUR | +2.0 ±1.0 (10000) | +1.5 ±1.8 (3193) | +3.3 ±1.8 (3349) | +1.1 ±1.8 (3320) | +0.0 ±0.0 (30) | 99.7% | 0 EUR | 0 | 135 |
+| freelance:salesperson 10h 8w at 0 EUR | +1.0 ±1.0 (10000) | +0.9 ±1.8 (3193) | +2.3 ±1.8 (3349) | -0.3 ±1.8 (3320) | +0.0 ±0.0 (30) | 99.7% | 0 EUR | 0 | 67 |
+| freelance:salesperson 10h 8w at 41 EUR | -4.4 ±1.0 (10000) | -2.2 ±1.8 (3193) | -4.1 ±1.7 (3349) | -7.0 ±1.7 (3320) | +0.0 ±0.0 (30) | 99.7% | 3,280 EUR | 8 | 67 |
+| freelance:salesperson 10h 8w | -7.4 ±1.0 (10000) | -5.5 ±1.7 (3193) | -6.4 ±1.7 (3349) | -10.5 ±1.7 (3320) | +0.0 ±0.0 (30) | 99.7% | 4,640 EUR | 8 | 67 |
+
+By the real role of the market the bot booked for (hidden, report only):
+
+| Run | mediocre | trap | viable |
+|---|---|---|---|
+| freelance:developer 20h | -2.1 ±1.7 (2212) | -4.8 ±3.8 (478) | -7.2 ±1.3 (7310) |
+| freelance:developer 20h at 0 EUR | +2.0 ±1.8 (2212) | -2.3 ±3.6 (478) | +1.4 ±1.3 (7310) |
+| freelance:developer 20h at 49 EUR | -1.4 ±1.7 (2212) | -1.5 ±3.9 (478) | -4.8 ±1.3 (7310) |
+| freelance:developer 10h at 0 EUR | +1.5 ±1.7 (2212) | -2.3 ±3.4 (478) | +0.8 ±1.3 (7310) |
+| freelance:developer 10h | -0.8 ±1.7 (2212) | -3.6 ±3.6 (478) | -3.6 ±1.3 (7310) |
+| freelance:salesperson 20h 8w at 0 EUR | +1.2 ±1.2 (1637) | -0.8 ±3.0 (594) | +2.4 ±1.3 (7631) |
+| freelance:salesperson 10h 8w at 0 EUR | +0.0 ±1.1 (1637) | +1.0 ±3.1 (594) | +1.2 ±1.3 (7631) |
+| freelance:salesperson 10h 8w at 41 EUR | -1.3 ±0.9 (1637) | -5.1 ±2.7 (594) | -5.1 ±1.3 (7631) |
+| freelance:salesperson 10h 8w | -1.8 ±0.9 (1637) | -7.2 ±2.6 (594) | -8.7 ±1.2 (7631) |
 
 ## Week the run ended
 
@@ -205,11 +236,11 @@ Same 10000 seeds, one behaviour switched off at a time. "Won only with" counts s
 | Variant | Win rate | Change (points) | Won only with | Won only without | Bankrupt | Median losing run length |
 |---|---|---|---|---|---|---|
 | all behaviours | 32.1% | 0.0 | 0 | 0 | 46.1% | 44 |
-| without  | 18.7% | -13.3 | 2126 | 793 | 63.9% | 40 |
-| without  | 20.9% | -11.2 | 1785 | 664 | 61.7% | 41 |
-| without  | 27.3% | -4.8 | 1812 | 1333 | 51.0% | 44 |
-| without  | 29.3% | -2.8 | 1549 | 1273 | 54.7% | 40 |
-| without  | 16.5% | -15.6 | 2233 | 676 | 61.4% | 42 |
+| without inbox | 18.7% | -13.3 | 2126 | 793 | 63.9% | 40 |
+| without chase | 20.9% | -11.2 | 1785 | 664 | 61.7% | 41 |
+| without landing | 27.3% | -4.8 | 1812 | 1333 | 51.0% | 44 |
+| without books | 29.3% | -2.8 | 1549 | 1273 | 54.7% | 40 |
+| without followUps | 16.5% | -15.6 | 2233 | 676 | 61.4% | 42 |
 | without all | 1.4% | -30.6 | 3111 | 50 | 95.5% | 35 |
 
 ## The hire
@@ -462,6 +493,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 16 | No run of any strategy brings an event twice, except events that recur on purpose | 0 repeats |  | yes | | | | |
 | 17 | A price search that reads only the screen beats the default price by 3 to 10 points, loses at most 1 point in any viable market and wins at most 45%; twice the default loses in at least two of three. Within its own margin of a limit counts as at the limit (on 10000 seeds) | search +7.8 (37.4%), worst market maintenance -1.5; twice the default loses in 2 of 3 | ±1.0 (±0.9), ±1.5 | yes | | | | |
 | 18 | For the price search that reads the screen, win rates across the three viable markets lie within 25 points; within its own margin counts as at the limit (on 10000 seeds) | 18.5 points (maintenance 28.2%, small_crews 37.1%, contractors 46.7%) | ±2.3 | yes | | | | |
+| 19 | A freelance developer for the build gains at least 2 points where the chosen market needs 120 h or more of building, gains nothing where it needs 90 h or less, and is at most 5 points ahead overall. Within its own margin of a limit counts as at the limit (on 10000 seeds) | long builds -7.3 (3246 seeds), short builds -7.4 (3613), all -6.6 | ±1.7, ±1.7, ±1.0 | no | | | | |
 
 ## Endings
 
@@ -525,6 +557,36 @@ Where the moving prices end, by viable market: the median final price as a share
 |---|---|---|---|
 | search (price_aware) | 0.96 / 1.00 / 3.95 | 1.01 / 1.01 / 3.88 | 1.01 / 1.01 / 4.19 |
 | recipe (price_recipe) | 1.34 / 1.17 / 7.26 | 1.60 / 1.22 / 5.77 | 1.49 / 1.18 / 5.66 |
+
+## The freelancer (target 19)
+
+Each freelancer run plays like `validate_then_build` until it books, on the same 10000 seeds. Points against plain play (paired margin, seeds). Split by the build hours of the must haves of the market the bot was working on when it booked; "never booked" seeds play exactly as plain. A developer is booked from the first week with a chosen market and unbuilt wanted features, on the wanted feature with the most hours left, until they have shipped; a salesperson from the first paying customer for a fixed number of weeks.
+
+| Run | all | 85 h (small_crews) | 105 h (maintenance) | 135 h (contractors) | never booked | Booked | Median cost | Median weeks | Median hours of work |
+|---|---|---|---|---|---|---|---|---|---|
+| freelance:developer 20h | -6.6 ±1.0 (10000) | -7.4 ±1.7 (3613) | -5.1 ±1.8 (3141) | -7.3 ±1.7 (3246) | - | 100.0% | 4,080 EUR | 3 | 17 |
+| freelance:developer 20h at 0 EUR | +1.3 ±1.0 (10000) | +0.7 ±1.7 (3613) | +2.0 ±1.8 (3141) | +1.3 ±1.8 (3246) | - | 100.0% | 0 EUR | 0 | 17 |
+| freelance:developer 20h at 49 EUR | -3.8 ±1.0 (10000) | -3.8 ±1.7 (3613) | -4.0 ±1.8 (3141) | -3.6 ±1.8 (3246) | - | 100.0% | 2,940 EUR | 3 | 17 |
+| freelance:developer 10h at 0 EUR | +0.8 ±1.0 (10000) | +0.5 ±1.6 (3613) | +1.2 ±1.8 (3141) | +0.7 ±1.8 (3246) | - | 100.0% | 0 EUR | 0 | 13 |
+| freelance:developer 10h | -2.4 ±1.0 (10000) | -2.9 ±1.7 (3613) | -1.5 ±1.8 (3141) | -2.6 ±1.7 (3246) | - | 100.0% | 2,040 EUR | 3 | 13 |
+| freelance:salesperson 20h 8w at 0 EUR | +2.2 ±1.0 (10000) | +2.4 ±1.7 (3276) | +2.2 ±1.7 (3246) | +1.9 ±1.7 (3339) | +0.0 ±0.0 (31) | 99.7% | 0 EUR | 0 | 135 |
+| freelance:salesperson 10h 8w at 0 EUR | +1.3 ±1.0 (10000) | +1.7 ±1.7 (3276) | +1.2 ±1.7 (3246) | +1.1 ±1.6 (3339) | +0.0 ±0.0 (31) | 99.7% | 0 EUR | 0 | 67 |
+| freelance:salesperson 10h 8w at 41 EUR | -4.1 ±0.9 (10000) | -5.9 ±1.6 (3276) | -2.8 ±1.7 (3246) | -3.7 ±1.6 (3339) | +0.0 ±0.0 (31) | 99.7% | 3,280 EUR | 8 | 67 |
+| freelance:salesperson 10h 8w | -8.0 ±0.9 (10000) | -10.9 ±1.6 (3276) | -6.6 ±1.7 (3246) | -6.6 ±1.6 (3339) | +0.0 ±0.0 (31) | 99.7% | 4,640 EUR | 8 | 67 |
+
+By the real role of the market the bot booked for (hidden, report only):
+
+| Run | mediocre | trap | viable |
+|---|---|---|---|
+| freelance:developer 20h | -2.4 ±1.5 (2212) | -4.4 ±3.1 (478) | -8.1 ±1.3 (7310) |
+| freelance:developer 20h at 0 EUR | +2.2 ±1.6 (2212) | +2.7 ±3.0 (478) | +1.0 ±1.3 (7310) |
+| freelance:developer 20h at 49 EUR | -0.0 ±1.6 (2212) | -2.9 ±2.9 (478) | -5.0 ±1.3 (7310) |
+| freelance:developer 10h at 0 EUR | +1.8 ±1.6 (2212) | +0.4 ±3.1 (478) | +0.5 ±1.3 (7310) |
+| freelance:developer 10h | +0.1 ±1.6 (2212) | -1.7 ±3.3 (478) | -3.1 ±1.3 (7310) |
+| freelance:salesperson 20h 8w at 0 EUR | +0.5 ±0.9 (1840) | +1.0 ±2.5 (629) | +2.7 ±1.3 (7392) |
+| freelance:salesperson 10h 8w at 0 EUR | +0.4 ±0.9 (1840) | +0.6 ±2.4 (629) | +1.6 ±1.3 (7392) |
+| freelance:salesperson 10h 8w at 41 EUR | -1.2 ±0.7 (1840) | -3.7 ±2.3 (629) | -4.9 ±1.2 (7392) |
+| freelance:salesperson 10h 8w | -1.1 ±0.8 (1840) | -5.1 ±2.3 (629) | -10.0 ±1.2 (7392) |
 
 ## Week the run ended
 
@@ -638,11 +700,11 @@ Same 10000 seeds, one behaviour switched off at a time. "Won only with" counts s
 | Variant | Win rate | Change (points) | Won only with | Won only without | Bankrupt | Median losing run length |
 |---|---|---|---|---|---|---|
 | all behaviours | 29.6% | 0.0 | 0 | 0 | 52.6% | 40 |
-| without  | 17.7% | -11.9 | 1923 | 731 | 67.8% | 38 |
-| without  | 19.8% | -9.8 | 1568 | 587 | 66.6% | 38 |
-| without  | 27.0% | -2.6 | 1643 | 1380 | 53.0% | 43 |
-| without  | 26.0% | -3.7 | 1431 | 1065 | 62.7% | 36 |
-| without  | 14.1% | -15.5 | 2113 | 561 | 67.7% | 40 |
+| without inbox | 17.7% | -11.9 | 1923 | 731 | 67.8% | 38 |
+| without chase | 19.8% | -9.8 | 1568 | 587 | 66.6% | 38 |
+| without landing | 27.0% | -2.6 | 1643 | 1380 | 53.0% | 43 |
+| without books | 26.0% | -3.7 | 1431 | 1065 | 62.7% | 36 |
+| without followUps | 14.1% | -15.5 | 2113 | 561 | 67.7% | 40 |
 | without all | 2.0% | -27.6 | 2846 | 88 | 94.9% | 34 |
 
 ## The hire
@@ -1033,6 +1095,10 @@ Energy +1 against 0 gave identical results. With the reading bot taking the desk
 ### Second scenario, part A: scenario independence (engine 0.10.0, no tuning)
 
 Events split into 66 shared and 43 Kantino ones, a scenario picker, saves and bots per scenario. The parsed Kantino scenario is byte for byte the same (fingerprint `602c3da04f32f486`), and the Kantino report with `--events` on the `test` seeds is identical to the one before, line for line, apart from the run timings.
+
+### Phase 9 part B: the freelancer (engine 0.12.0, no tuning)
+
+The freelancer adds no random draws while unused: every table above is unchanged under engine 0.12.0 (10,000 seeds for main and paired, compared number for number). Target 19 and the section "The freelancer (target 19)" are new; the leave-one-out table now names its rows. A free freelance developer for the build is worth about 1 point, a free salesperson for 8 weeks about 2; at 1.4 times the hire's hourly cost (68 and 58 EUR) both lose 6 to 8 points. Target 19 fails in both scenarios; see `docs/decisions.md`.
 
 ## Zollstock
 

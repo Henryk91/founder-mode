@@ -171,6 +171,33 @@ team:
     - Viktor Hahn
     - Wiebke Stadler
 
+  # Phase 9: a freelancer, rented by the week. Output is visible and fixed: outputShare of the
+  # booked hours become work, the first week at onboardingFactor of that. Billed weekly per hour.
+  freelance:
+    hoursOptions: [10, 20]
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    # A developer who does not know the code: extra bugs on every feature they worked on.
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+
 # The inbox: each week up to maxPerWeek events are drawn by weight from the eligible ones.
 inbox:
   maxPerWeek: 3

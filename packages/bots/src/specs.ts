@@ -7,6 +7,7 @@ import {
   priceAware,
   priceRecipe,
   forcedAnswer,
+  withFreelancer,
   withInbox,
   withoutBehaviours,
   type BehaviourName,
@@ -24,6 +25,15 @@ export type StrategySpec =
   | { kind: 'inbox'; policy: InboxPolicy }
   | { kind: 'forced'; eventId: string; choiceId: string }
   | { kind: 'pricing'; pricer: 'search' | 'recipe' | 'fixed'; multiple?: number }
+  | {
+      kind: 'freelance'
+      role: 'developer' | 'salesperson'
+      hours: number
+      /** Overrides the scenario's rate for that role, in cents per hour (diagnostics only). */
+      centsPerHour: number | null
+      /** A salesperson's weeks of work. */
+      weeks: number | null
+    }
 
 export function strategyOf(spec: StrategySpec): Strategy {
   switch (spec.kind) {
@@ -49,8 +59,60 @@ export function strategyOf(spec: StrategySpec): Strategy {
             : fixedPrice(spec.multiple ?? 1)
       return { ...base, id: pricingId(spec) }
     }
+    case 'freelance': {
+      const rule =
+        spec.role === 'developer'
+          ? { role: spec.role, hours: spec.hours }
+          : { role: spec.role, hours: spec.hours, weeks: spec.weeks ?? 8 }
+      const strategy = withFreelancer(rule, freelanceId(spec))
+      const rate = spec.centsPerHour
+      if (rate === null) return strategy
+      return {
+        ...strategy,
+        adapt: (scenario) => ({
+          ...scenario,
+          team: {
+            ...scenario.team,
+            freelance: {
+              ...scenario.team.freelance,
+              roles: {
+                ...scenario.team.freelance.roles,
+                [spec.role]: { ...scenario.team.freelance.roles[spec.role], centsPerHour: rate },
+              },
+            },
+          },
+        }),
+      }
+    }
   }
 }
+
+/** Report id of a freelancer run: role, hours, weeks for a salesperson, and any rate override. */
+export function freelanceId(spec: {
+  role: 'developer' | 'salesperson'
+  hours: number
+  centsPerHour: number | null
+  weeks: number | null
+}): string {
+  const weeks = spec.role === 'salesperson' ? ` ${spec.weeks ?? 8}w` : ''
+  const rate = spec.centsPerHour === null ? '' : ` at ${spec.centsPerHour / 100} EUR`
+  return `freelance:${spec.role} ${spec.hours}h${weeks}${rate}`
+}
+
+/** Target 19's run: a freelance developer for the build, 20 h a week, at the scenario's rate. */
+export const FREELANCE_TARGET_SPEC: StrategySpec = {
+  kind: 'freelance',
+  role: 'developer',
+  hours: 20,
+  centsPerHour: null,
+  weeks: null,
+}
+export const FREELANCE_TARGET_ID = freelanceId({
+  role: 'developer',
+  hours: 20,
+  centsPerHour: null,
+  weeks: null,
+})
 
 /** Leave-one-out variants of validate_then_build, then the one without all of them. */
 export const ABLATION_SPECS: StrategySpec[] = [

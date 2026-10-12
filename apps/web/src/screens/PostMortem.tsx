@@ -226,6 +226,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
         })}
       </p>
       {money.hire && <p>{t.hire()}</p>}
+      {money.freelance && <p>{t.freelance()}</p>}
     </Fold>
   )
 
@@ -344,6 +345,8 @@ export function sourceName(key: string, stage: UiStage): string {
       return label('pm.source.outreach', stage, { channel: ch })
     case 'team':
       return label('pm.source.team', stage, { channel: ch.toLowerCase() })
+    case 'freelancer':
+      return label('pm.source.freelancer', stage, { channel: ch.toLowerCase() })
     case 'landing':
     case 'presale':
     case 'inbox':
@@ -657,6 +660,30 @@ class Text {
       this.pm.ending === 'sustainable' ? 'pm.luck.wouldChange.win' : 'pm.luck.wouldChange.loss',
       this.stage,
     )
+  }
+
+  freelance(): string {
+    const f = this.pm.money.freelance!
+    const parts = [
+      count('pm.money.freelance', this.stage, f.weeks, { cost: formatEuro(f.costCents) }),
+    ]
+    if (f.roles.includes('developer')) {
+      parts.push(
+        label('pm.money.freelanceBuild', this.stage, {
+          hours: label('unit.hours', this.stage, { n: f.buildHours }),
+          bugs: f.extraBugs,
+        }),
+      )
+    }
+    if (f.roles.includes('salesperson')) {
+      parts.push(
+        label('pm.money.freelanceSales', this.stage, {
+          leads: f.leadsFound,
+          n: f.customersGained,
+        }),
+      )
+    }
+    return parts.join(' ')
   }
 
   hire(): string {

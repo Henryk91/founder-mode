@@ -177,6 +177,30 @@ export const TeamRoleSchema = z.object({
   selling: Share.optional(),
 })
 
+/**
+ * A freelancer rented by the week (Phase 9). Output is fixed and visible: `outputShare` of the
+ * booked hours become build or outreach hours, the first working week of a booking at
+ * `onboardingFactor` of that. Billed weekly at `centsPerHour` for every booked hour. Ending a
+ * booking takes effect after `noticeWeeks` more weeks. No hidden values and no random draws.
+ */
+export const FreelanceRoleSchema = z.object({
+  name: z.string().min(1),
+  centsPerHour: Cents.nonnegative(),
+  // Selling skill of the salesperson's outreach. Without it, outreach uses the founder's skill.
+  selling: Share.optional(),
+})
+
+export const FreelanceConfigSchema = z.object({
+  hoursOptions: z.array(z.number().int().positive()).min(1),
+  outputShare: Share,
+  onboardingFactor: Share,
+  noticeWeeks: z.number().int().nonnegative(),
+  // Extra bugs when a feature a freelance developer worked on ships.
+  extraBugsPerFeature: z.number().int().nonnegative(),
+  roles: z.object({ developer: FreelanceRoleSchema, salesperson: FreelanceRoleSchema }),
+  names: z.array(z.string().min(1)).min(1),
+})
+
 export const TeamConfigSchema = z.object({
   searchHours: z.number().int().positive(),
   searchWeeks: z.number().int().positive(),
@@ -190,6 +214,7 @@ export const TeamConfigSchema = z.object({
   impressions: z.array(InterviewBucketSchema).min(2),
   roles: z.object({ developer: TeamRoleSchema, salesperson: TeamRoleSchema }),
   candidateNames: z.array(z.string().min(1)).min(1),
+  freelance: FreelanceConfigSchema,
 })
 
 export const InboxConfigSchema = z.object({
@@ -651,3 +676,4 @@ export type SalesConfig = z.infer<typeof SalesConfigSchema>
 export type ChannelId = z.infer<typeof Channel>
 export type TeamRole = z.infer<typeof TeamRoleSchema>
 export type NumberRange = z.infer<typeof Range>
+export type FreelanceConfig = z.infer<typeof FreelanceConfigSchema>

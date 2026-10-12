@@ -66,6 +66,26 @@ describe('post-mortem screen', () => {
     expect([...order].sort((a, b) => a - b)).toEqual(order)
   })
 
+  it('says what the freelancer cost and built in the money section', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'pm-fl' })
+    store.getState().startRun()
+    while (store.getState().introStep !== null) store.getState().nextIntro()
+    store.getState().setFreelance({ book: { role: 'developer', hoursPerWeek: 10 } })
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    store.getState().setFreelance({ build: 'basic_ordering' })
+    store.getState().endWeek()
+    store.getState().dismissReport()
+    store.getState().askShutDown()
+    store.getState().shutDown()
+    while (store.getState().postMortem && html(store).includes('The run is over')) {
+      store.getState().nextMoment()
+    }
+    const page = text(store, 'desk')
+    expect(page).toContain('Freelancers cost €680 over 1 week.')
+    expect(page).toContain('They put in 4 h of building and brought 0 extra bugs.')
+  })
+
   it('folds hours, money and luck into one line each on the phone, and shows them in full on the desk', () => {
     const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'pm-c' })
     store.getState().startRun()

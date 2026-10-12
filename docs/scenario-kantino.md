@@ -163,6 +163,21 @@ Reason: a bot that found the viable market ended with about 19 customers when 7 
 
 Engine 0.7.0 made the hire junior and part time (was 4,200 and 3,800 at the old scale, full time). No salary tried pays back within 60 weeks, so the hire is a choice that rarely pays (see `docs/decisions.md`).
 
+## 8b. The freelancer (Phase 9)
+
+Rented by the week, in both run lengths. Never counts as the one hire.
+
+| | Freelance developer | Freelance salesperson |
+|---|---|---|
+| Rate | 75 per hour (see `docs/decisions.md`, Phase 9 part B) | 60 per hour |
+| Hours | 10 or 20 a week, booked in the Plan tab, working from next week | 10 or 20 a week |
+| Work | 0.9 of booked hours become build hours on the feature the plan names; the first week of a booking at half that | 0.9 of booked hours become outreach hours where the plan says, at a selling skill of 0.2; holds no demos |
+| Downside | Every feature they worked on ships with 1 extra bug | No demos, lower selling skill |
+| Billing | Every booked hour, weekly, as a company cost counted in the win test | As developer |
+| Notice | Works and bills one more week after notice | As developer |
+
+No hidden values and no random draws of its own: a run that never books one plays exactly as before.
+
 ## 9. Office stages
 
 | Stage | Trigger | Effect |

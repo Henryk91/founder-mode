@@ -1,8 +1,8 @@
-import { emptyPlan, type PlayerView, type WeekPlan } from '@founder-mode/engine'
+import { emptyPlan, type FreelancePlan, type PlayerView, type WeekPlan } from '@founder-mode/engine'
 
 /**
  * Last week's plan for this week. Keeps the regular work (interviews, tests, building, outreach,
- * rest, the hire's task) and drops one-off decisions (demos, follow ups, chasing, transfers, a
+ * rest, the hire's and the freelancer's task) and drops one-off decisions (demos, follow ups, chasing, transfers, a
  * new price, hiring steps). Anything no longer possible is cut back: shipped features, batches
  * already used, more bug fixing than there are bugs.
  */
@@ -34,5 +34,23 @@ export function repeatPlan(last: WeekPlan, view: PlayerView): WeekPlan {
       plan.teamOutreach = { ...last.teamOutreach }
     }
   }
+  plan.freelance = carryFreelance(last, view)
   return plan
+}
+
+/**
+ * The freelancer's task from last week's plan, while they still work and the task is still
+ * possible. Booking, hours and notice are one-off decisions and never carry over. A new week's
+ * draft starts with it too, since a freelancer is billed whether or not they have work.
+ */
+export function carryFreelance(last: WeekPlan, view: PlayerView): FreelancePlan {
+  const out = emptyPlan().freelance
+  const current = view.team.freelance.current
+  if (!current || (current.endWeek !== null && current.endWeek < view.week)) return out
+  const target = view.product.features.find((f) => f.id === last.freelance.build)
+  if (current.role === 'developer' && target && !target.shipped) out.build = target.id
+  if (current.role === 'salesperson' && last.freelance.outreach) {
+    out.outreach = { ...last.freelance.outreach }
+  }
+  return out
 }

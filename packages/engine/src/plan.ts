@@ -3,6 +3,7 @@ import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
 import { canBookDemo, canFollowUp } from './systems/sales'
 import { plannedHours } from './systems/founder'
+import { openBooking } from './systems/team'
 import type { GameState, PlanIssue, WeekPlan } from './types'
 
 export function emptyPlan(): WeekPlan {
@@ -24,6 +25,7 @@ export function emptyPlan(): WeekPlan {
     letGo: false,
     teamBuild: null,
     teamOutreach: null,
+    freelance: { book: null, hoursPerWeek: null, end: false, build: null, outreach: null },
   }
 }
 
@@ -39,10 +41,44 @@ export function clonePlan(plan: WeekPlan): WeekPlan {
     chase: [...plan.chase],
     followUps: [...plan.followUps],
     teamOutreach: plan.teamOutreach ? { ...plan.teamOutreach } : null,
+    freelance: {
+      ...plan.freelance,
+      book: plan.freelance.book ? { ...plan.freelance.book } : null,
+      outreach: plan.freelance.outreach ? { ...plan.freelance.outreach } : null,
+    },
   }
 }
 
 const isCount = (n: number) => Number.isInteger(n) && n >= 0
+
+/**
+ * The freelancer part of a plan: a booking only while nobody is booked from next week on, a
+ * change of hours or notice only for a booking without notice, hours from the scenario's options,
+ * and work on a real feature or market and channel.
+ */
+function freelanceValid(state: GameState, plan: WeekPlan): boolean {
+  const fp = plan.freelance
+  const cfg = state.scenario.team.freelance
+  const open = openBooking(state)
+  const running = open !== null && open.endWeek === null
+  if (fp.book) {
+    if (open !== null && (open.endWeek === null || open.endWeek > state.week)) return false
+    if (!(fp.book.role in cfg.roles) || !cfg.hoursOptions.includes(fp.book.hoursPerWeek)) {
+      return false
+    }
+    if (fp.end || fp.hoursPerWeek !== null) return false
+  }
+  if (fp.hoursPerWeek !== null && (!running || !cfg.hoursOptions.includes(fp.hoursPerWeek))) {
+    return false
+  }
+  if (fp.end && !running) return false
+  if (fp.build !== null && !state.product.features.some((f) => f.id === fp.build)) return false
+  if (fp.outreach) {
+    const hidden = state.hidden.segments[fp.outreach.segmentId]
+    if (!hidden || !Object.hasOwn(hidden.channelResponse, fp.outreach.channel)) return false
+  }
+  return true
+}
 
 export type PlanCheck = { plannedHours: number; issues: PlanIssue[] }
 
@@ -184,6 +220,8 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
       issues.push({ code: 'invalid_team_work' })
     }
   }
+
+  if (!freelanceValid(state, plan)) issues.push({ code: 'invalid_freelance' })
 
   // Hours only make sense once every number is valid.
   if (!issues.some((i) => i.code === 'invalid_number')) {

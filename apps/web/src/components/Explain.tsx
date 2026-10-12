@@ -94,6 +94,7 @@ function explainVars(
         hours: hours(costs.searchHours),
         weeks: weeks(costs.searchWeeks),
         start: weeks(costs.startWeeks),
+        notice: weeks(costs.freelanceNoticeWeeks),
       }
     default:
       return {}
