@@ -11,6 +11,7 @@ import {
   type WeekReport,
 } from '@founder-mode/engine'
 import { App } from '../src/App'
+import { formatEuro } from '../src/format'
 import { headlineStats } from '../src/components/Headline'
 import { Scene } from '../src/components/Scene'
 import { upcoming, worry } from '../src/components/Statement'
@@ -148,19 +149,61 @@ describe('headline numbers', () => {
     }
   })
 
-  it('shows the change over the last 4 weeks once there are 4 weeks to compare', () => {
+  it("shows each number's change since last week, matching that week's results", () => {
     const store = run('changes')
-    for (let i = 0; i < 4; i++) week(store)
-    expect(headlineStats(store.getState().view!).every((s) => s.change === null)).toBe(true)
     week(store)
-    const stats = headlineStats(store.getState().view!)
+    expect(headlineStats(store.getState().view!).every((s) => s.change === null)).toBe(true)
+    for (let i = 0; i < 3; i++) week(store)
+    const view = store.getState().view!
+    const stats = headlineStats(view)
     expect(stats.every((s) => s.change !== null)).toBe(true)
+    // Week 4 is a month end: cash falls by exactly what the week moved, here the fixed costs.
+    const last = view.history.at(-1)!
+    const before = view.history.at(-2)!
     const cash = stats.find((s) => s.id === 'cash')!
-    // Living costs and month end costs: cash has gone down, said with an arrow and in words.
-    expect(cash.change!.text).toMatch(/^▼ €/)
+    expect(last.cashCents - before.cashCents).toBe(-view.company.monthlyFixedCostsCents)
+    expect(cash.change!.text).toBe(`▼ ${formatEuro(view.company.monthlyFixedCostsCents)}`)
     expect(cash.change!.good).toBe(false)
     expect(stats.find((s) => s.id === 'customers')!.change!.text).toBe('no change')
-    expect(text(store)).toContain('over the last 4 weeks')
+    expect(text(store)).toContain('since last week')
+  })
+})
+
+describe("the player's week 34 (Kantino, 60 weeks)", () => {
+  // After week 34: 450 EUR received, 675 EUR of living costs paid from cash (savings gone).
+  const base = getView(createGame(loadScenario('kantino'), 'week34'))
+  const row = (week: number, cashCents: number) => ({
+    week,
+    cashCents,
+    savingsCents: 0,
+    monthlyRevenueCents: 343_000,
+    customers: 7,
+    runwayWeeks: 26,
+  })
+  const view = {
+    ...base,
+    week: 35,
+    company: { ...base.company, cashCents: 212_500, runwayWeeks: 26 },
+    founder: { ...base.founder, savingsCents: 0 },
+    history: [row(30, 217_000), row(33, 235_000), row(34, 212_500)],
+  }
+
+  it("shows the week's own change and a runway that ends with the run", () => {
+    const stats = headlineStats(view)
+    expect(stats.find((s) => s.id === 'cash')!.change!.text).toBe('▼ €225')
+    const runway = stats.find((s) => s.id === 'runway')!
+    expect(runway.value).toBe('26 weeks')
+    expect(runway.note).toBe('until week 60')
+    expect(worry(view, view.company.uiStage)).toBe(
+      'At this pace the money lasts to week 60, and not a week longer.',
+    )
+  })
+
+  it('says Covered when the money is not shrinking', () => {
+    const covered = { ...view, company: { ...view.company, runwayWeeks: null } }
+    const runway = headlineStats(covered).find((s) => s.id === 'runway')!
+    expect(runway.value).toBe('Covered')
+    expect(runway.note).toBeNull()
   })
 })
 

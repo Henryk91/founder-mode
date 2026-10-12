@@ -199,6 +199,9 @@ export function WorryNote({ view }: { view: PlayerView }) {
 export function worry(view: PlayerView, stage: UiStage): string | null {
   const runway = view.company.runwayWeeks
   if (runway === null) return view.customers.length > 0 ? label('worry.safe', stage) : null
+  // Runway never counts past the last week: money that lasts that long does not run out here.
+  if (view.week + runway > view.maxWeeks)
+    return label('worry.toTheEnd', stage, { week: view.maxWeeks })
   const parts = [label('worry.outOfMoney', stage, { week: view.week + runway })]
   const owes = view.invoices.find((i) => i.status === 'overdue')
   if (owes) parts.push(label('worry.unlessPays', stage, { name: owes.customerName }))

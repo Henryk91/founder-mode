@@ -5,8 +5,11 @@ import type { ExplainKey } from '../store'
 import { useGame } from '../useGame'
 import styles from './Headline.module.css'
 
-/** Changes are measured over this many resolved weeks (plan section 6.4). */
-export const CHANGE_WEEKS = 4
+/**
+ * Changes are measured over this many resolved weeks: one, so each matches the week's results
+ * (plan section 6.4, changed in Phase 9).
+ */
+export const CHANGE_WEEKS = 1
 
 /** `text` is shown, `spoken` is read out instead of its arrows. */
 type Change = { text: string; spoken: string; good: boolean | null }
@@ -44,8 +47,11 @@ export function headlineStats(view: PlayerView): Stat[] {
       short: 'stat.runway',
       value:
         runway === null ? label('stat.runway.safe', stage) : count('unit.weeks', stage, runway),
+      // The last week the money lasts: `runway` weeks from this one, this one included.
       note:
-        runway === null ? null : label('stat.runway.until', stage, { week: view.week + runway }),
+        runway === null || runway === 0
+          ? null
+          : label('stat.runway.until', stage, { week: view.week + runway - 1 }),
       change: before && runwayChange(stage, before.runwayWeeks, runway),
       explain: 'runway',
     },
@@ -109,7 +115,7 @@ export function Headline(props: { size: 'band' | 'bar' }) {
   const openExplain = useGame((s) => s.openExplain)
   if (!view) return null
   const stage = view.company.uiStage
-  const period = label('stat.period', stage, { weeks: count('unit.weeks', stage, CHANGE_WEEKS) })
+  const period = label('stat.period', stage)
   return (
     <div className={props.size === 'bar' ? styles.bar : styles.band}>
       {headlineStats(view).map((stat) => {

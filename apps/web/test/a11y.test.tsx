@@ -47,7 +47,8 @@ describe('accessible names', () => {
 
   it('reads headline changes as words, not arrows', () => {
     const store = run('arrows')
-    for (let i = 0; i < 5; i++) {
+    // Week 4 is a month end: its fixed costs take cash down since week 3.
+    for (let i = 0; i < 4; i++) {
       store.getState().endWeek()
       while (store.getState().report && store.getState().momentsSeen < 5) {
         store.getState().nextMoment()
@@ -56,7 +57,7 @@ describe('accessible names', () => {
     }
     const page = html(store)
     expect(page).toMatch(/<span aria-hidden="true">▼ €[\d,]+<\/span>/)
-    expect(page).toMatch(/class="visually-hidden">down €[\d,]+ over the last 4 weeks/)
+    expect(page).toMatch(/class="visually-hidden">down €[\d,]+ since last week/)
   })
 
   it('names repeated pipeline buttons after their lead', () => {

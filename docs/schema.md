@@ -296,7 +296,7 @@ type PlayerView = {
     priceCentsPerMonth: number
     fixedCosts: { id: string; name: string; monthlyCents: number }[]
     monthlyFixedCostsCents: number
-    runwayWeeks: number | null    // weeks until cash plus savings reach zero; null when not shrinking
+    runwayWeeks: number | null    // weeks until cash plus savings reach zero at the last 4 weeks' received less paid; null ("Covered") when not shrinking; at most the weeks left
     uiStage: 'scrappy' | 'organised'
     nextMonthEndWeek: number      // next month end, this week included
   }

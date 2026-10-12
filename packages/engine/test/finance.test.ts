@@ -137,7 +137,8 @@ describe('finance', () => {
         },
       ],
     }
-    expect(runwayWeeks(withCustomer)).toBeNull()
+    // Invoiced revenue never counts: only money received does, and none has been yet.
+    expect(runwayWeeks(withCustomer)).toBe(29)
   })
 
   it('computes runway on cash plus savings from the net change of the last 4 weeks', () => {
