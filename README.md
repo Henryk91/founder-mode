@@ -11,7 +11,9 @@ Two scenarios, picked on the Start screen:
 - **Kantino**: lunch ordering software for offices, coworking spaces and medical practices.
 - **Zollstock**: job plans and quotes for trade businesses that run on paper and phone calls.
 
-A run lasts up to 60 weeks, roughly 45 to 70 minutes of play. It ends in a sustainable business, bankruptcy, burnout, a shut down, or still searching at week 60. Saves and best runs live in your browser (`localStorage`), so they are per device and per address. The same seed gives the same market.
+A run lasts up to 60 weeks, roughly 45 to 70 minutes of play. It ends in a sustainable business, bankruptcy, burnout, a shut down, or still searching at week 60.
+
+Kantino also has a long mode of 104 weeks: a second year with higher living costs and markets that run out of new leads, a team of up to four people, a freelancer, investors (an angel or a seed round, amount and equity only), and one more ending, Growing, for a funded company that still burns money but has a year of it left and growing revenue. Saves and best runs live in your browser (`localStorage`), so they are per device and per address. The same seed gives the same market.
 
 ## Run it locally
 
@@ -34,11 +36,12 @@ Headless bot players use the same engine and see only what a player sees. They c
 ```sh
 pnpm bots --runs 1000                        # report for every scenario into docs/balancing.md
 pnpm bots --runs 1000 --scenario zollstock   # one scenario, keeps the other's section
-pnpm bots --runs 1000 --wide-runs 10000 --seed-prefix test --events   # the full report, as committed (about 25 minutes)
+pnpm bots --runs 1000 --wide-runs 10000 --seed-prefix test --events   # the full 60 week report, as committed (about 25 minutes)
+pnpm bots --runs 1000 --wide-runs 10000 --seed-prefix test --mode long --parts main,paired,inbox,team,funding,events   # the full long mode report (about 55 minutes)
 pnpm seeds                                   # rewrite docs/seeds.md: seeds that reach each ending
 ```
 
-The targets the report checks are in `docs/IMPLEMENTATION_PLAN.md`, section 7. After any change to formulas, scenario values, engine types or bot logic, rerun the report and commit `docs/balancing.md` with the change. `packages/bots/test/seeds.test.ts` replays every seed in `docs/seeds.md` and fails when one no longer reaches its ending; `pnpm seeds` then finds new ones.
+The targets the report checks are in `docs/IMPLEMENTATION_PLAN.md`, section 7 (60 weeks), and `docs/phase9-proposal.md` (long mode, 20 to 37). After any change to formulas, scenario values, engine types or bot logic, rerun the report and commit `docs/balancing.md` with the change. `packages/bots/test/seeds.test.ts` replays every seed in `docs/seeds.md` and fails when one no longer reaches its ending; `pnpm seeds` then finds new ones.
 
 ## How it is organised
 
@@ -66,6 +69,8 @@ A few rules shape the code:
 - [`docs/balancing.md`](docs/balancing.md): latest bot report
 - [`docs/seeds.md`](docs/seeds.md): seeds that reach each ending
 - [`docs/decisions.md`](docs/decisions.md): design and tuning decisions
+- [`docs/phase9-proposal.md`](docs/phase9-proposal.md): the freelancer, long mode and funding
+- [`docs/autonomous/STATUS.md`](docs/autonomous/STATUS.md): progress of the autonomous run and the open issues
 - [`CLAUDE.md`](CLAUDE.md): working rules for Claude Code
 
 ## Deployment
@@ -76,4 +81,4 @@ The build parses the content YAML into JSON ahead of time and ships fonts cut do
 
 ## Status
 
-Early MVP complete (local tag `mvp-early`). Values are invented starting points tuned by bots and playtests, not researched benchmarks, and the game is not startup advice.
+Early MVP complete (local tag `mvp-early`); Phase 9 (freelancer, long mode, funding) complete (local tag `phase9-done`), with open balancing issues listed in `docs/autonomous/STATUS.md`. Values are invented starting points tuned by bots and playtests, not researched benchmarks, and the game is not startup advice.

@@ -361,7 +361,8 @@ Phase 7 as built: the milestones live in the scenario (`milestones`, see `docs/s
 | Burnout | Energy at 0 for 3 consecutive weeks |
 | Shut down | Player chooses to stop |
 | Still searching | Week 60 reached, not profitable |
-| Sustainable business | Week 60 reached, profitable for the last 8 weeks |
+| Sustainable business | Week 60 reached, profitable for the last 8 weeks (long mode: week 104, each of the last 3 months) |
+| Growing (long mode, Phase 9) | Week 104 reached after raising money, not Sustainable, with at least 12 months of money at the last 4 weeks' burn and monthly revenue at least 10% above 13 weeks earlier |
 
 ### 4.14 Save format
 
@@ -726,12 +727,12 @@ Parked ideas, not designed yet. Each needs its own plan and an entry in `docs/de
 - Cloud saves
 - A competitor that reacts to the player
 
-Phase 9 (`docs/phase9-proposal.md`) takes up the long mode, funding and the freelancer.
+Phase 9 (`docs/phase9-proposal.md`) took up the long mode, funding and the freelancer, finished in the autonomous run (`docs/AUTONOMOUS_PLAN.md`, reports in `docs/autonomous/reports/`): Kantino plays 60 or 104 weeks; the long mode has a team of up to four, chasing and admin as a task, investors and the Growing ending. Long mode targets 20 to 37 and their open issues are in `docs/balancing.md` and `docs/autonomous/STATUS.md`.
 
 Known leftovers:
 
 - Six bot targets sit exactly at their limit (within their own margin of error), in `docs/balancing.md`: Kantino 17, 18 and the books part of 13; Zollstock 11, the worst market of 17, and the landing part of 13. Any tuning change can tip one of them.
-- A segment's market size is drawn in `drawHiddenSegments` but used nowhere in the engine.
+- A segment's market size is used only by long mode's market saturation.
 - First load LCP is 2.38 s against a 2.5 s target, so the margin is small. The JS (200 kB gzipped) is what the first paint waits for.
 
 ---

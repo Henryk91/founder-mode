@@ -195,6 +195,10 @@ No hidden values and no random draws of its own: a run that never books one play
 | Chasing and admin (C3) | Founder only | Any hire or the freelancer can chase late invoices for the founder, before their own work |
 | Events | 109 | Plus 57 events of the second year from week 53 (`shared/events/year2.yaml`) |
 
+| Funding (Part D) | None | Angel round 100,000 to 250,000 EUR at the larger of 1.5 million EUR and 20 times yearly revenue before the money; seed round 1 to 2.5 million EUR at the larger of 5 million EUR and 25 times yearly revenue, with a growth milestone (twice the monthly revenue within 26 weeks). Bars: 3,000 EUR a month (angel), 10,000 EUR a month (seed). Ten angels and six funds, each met at most once. Hours: deck 8 h (12 h seed), 5 h per first meeting, second look 5 h (8 h seed), closing 3 weeks (4 weeks and 16 h of due diligence for a seed round). Amounts: `docs/phase9-proposal.md` 8.1; the pre-money floors are estimates (11.4) |
+| Landing tests | No limit | 3 per market |
+| Growing ending | No | After raising: a year of money left and revenue up 10% over the quarter |
+
 Everything else (starting money, markets, features, freelancer) is the 60 week game's.
 
 ## 9. Office stages
