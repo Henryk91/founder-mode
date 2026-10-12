@@ -52,8 +52,9 @@ experiments:
     skillCap: 0.8
     mentionBase: 0.3
     mentionPerPain: 0.3
-    # About one interview in four names a budget, within about a quarter either side.
-    budgetChance: 0.25
+    # About one interview in six names a budget, within about a quarter either side (Zollstock:
+    # one in four; fewer here, so reading them is worth a little less, Phase 8 step 4).
+    budgetChance: 0.17
     budgetNoiseSd: 0.25
     buckets:
       - { id: not_a_problem, name: Not a problem, below: 0.2 }
@@ -96,7 +97,7 @@ sales:
   followUpHours: 1
   followUpDemoBoost: 0.05
   demoToTrialBase: 0.05
-  demoToTrialPerFit: 0.4
+  demoToTrialPerFit: 0.35
   trialWeeks: 1
   ghostChancePerWeek: 0.1
   silentWeeksToLose: 4
@@ -238,12 +239,12 @@ segments:
     name: Medical practices
     description: Doctors and dentists with shift based teams
     size: { min: 400, max: 1200 }
-    wtpCents: { min: 39000, max: 63000 }
+    wtpCents: { min: 45000, max: 70000 }
     mustHave: [basic_ordering, allergy_filter, shift_schedule]
     channelResponse:
       cold_email: { min: 0.04, max: 0.08 }
-      phone: { min: 0.06, max: 0.125 }
-      in_person: { min: 0.06, max: 0.12 }
+      phone: { min: 0.066, max: 0.1375 }
+      in_person: { min: 0.066, max: 0.132 }
     paymentDelayDaysMean: 20
     neverPaysShare: 0.08
     waitsForChaseShare: 0.25
