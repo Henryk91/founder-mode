@@ -75,6 +75,14 @@ describe('accessible names', () => {
     expect(html(store)).toContain(`aria-label="Follow up (1 h): ${lead.name}"`)
   })
 
+  it('says why End week is off while the plan has a problem', () => {
+    const store = run('blocked')
+    expect(html(store)).toContain('>End week</button>')
+    store.getState().setRestHours(200)
+    expect(store.getState().issues.length).toBeGreaterThan(0)
+    expect(html(store)).toMatch(/disabled=""[^>]*>Fix the plan first<\/button>/)
+  })
+
   it('says build progress in words as well as figures', () => {
     const store = run('progress')
     store.getState().toggleSection('build')

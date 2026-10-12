@@ -366,9 +366,14 @@
   min-height: var(--line);
 }
 
-.hintLine > .hint {
+.hintLine > .wrapped {
   flex: 1 1 0;
   min-width: 0;
+}
+
+.wrapped.hintText {
+  --fs: var(--fs-hint);
+  color: var(--ink-muted);
 }
 
 .more {

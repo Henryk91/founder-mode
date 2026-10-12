@@ -130,13 +130,19 @@ export function Choices(props: { children: React.ReactNode }) {
   )
 }
 
-/** The end of an open section: one hint line and a "more" link that opens the full explanation. */
+/**
+ * The end of an open section: one hint line and a "more" link that opens the full explanation.
+ * Hints are written to fit one line on a phone; one that does not wraps onto the next ruled line,
+ * and is never cut off.
+ */
 export function HintLine(props: { hint: string; term: ExplainKey }) {
   const open = useGame((s) => s.openExplain)
   const stage = useGame((s) => s.view?.company.uiStage ?? 'scrappy')
   return (
     <div className={plan.hintLine}>
-      <span className={plan.hint}>{props.hint}</span>
+      <div className={`${plan.wrapped} ${plan.hintText}`}>
+        <span className={plan.onRule}>{props.hint}</span>
+      </div>
       <button type="button" className={plan.more} onClick={() => open(props.term)}>
         <span className={plan.moreText}>{text('plan.more', stage)}</span>
       </button>

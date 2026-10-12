@@ -152,7 +152,9 @@
 }
 
 .choice:disabled {
-  opacity: 0.45;
+  border-color: var(--control-line);
+  border-style: dashed;
+  color: var(--ink-muted);
   cursor: not-allowed;
 }
 

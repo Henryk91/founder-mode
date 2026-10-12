@@ -116,6 +116,12 @@ export function Money() {
           })}
         </p>
         {stat('money.receivables', view.receivablesCents)}
+        {view.invoices.some(
+          (i) =>
+            i.canChase &&
+            !chase.includes(i.id) &&
+            planned + view.costs.chaseHours > view.founder.maxHoursPerWeek,
+        ) && <p className={styles.warn}>{label('noHours', stage)}</p>}
         {view.invoices.length === 0 ? (
           <p className={styles.hint}>{label('money.invoicesNone', stage)}</p>
         ) : (
