@@ -154,27 +154,21 @@ export function evaluateLongTargets(input: ReportInput): Target[] {
   const alive = group('alive')
   const keepShare = pct(wins(profitable).length, profitable.length)
   const turnShare = pct(wins(alive).length, alive.length)
-  // 29: the hire can pay.
+  // 29: hiring from revenue pays; hiring early on savings does not.
   const solo = find(input, SOLO)
+  const savings = find(input, 'team:validate_then_build_savings_hire')
   const t29 = (() => {
-    const text = `The hire can pay: validate_then_build (with its team rule) loses at most 1 point against validate_then_build_solo (never hires), and gains at least 2 points in at least one viable market${wideNote}`
-    if (!reader || !solo) return { id: 29, text, value: '-', margin: '', pass: false }
-    const all = pairedOn(
-      solo,
-      reader,
-      reader.results.map((_, i) => i),
-    )
-    const markets = marketsOf(reader.results).map((m) => ({
-      m,
-      p: pairedOn(solo, reader, bySegment(reader.results, m)),
-    }))
-    const best = [...markets].sort((a, b) => b.p.change - a.p.change)[0]
+    const text = `Hiring from revenue pays and hiring on savings does not: validate_then_build (hires once revenue allows) beats validate_then_build_solo (never hires) by at least 2 points, and validate_then_build_savings_hire (first hire in week 3, paid from savings) loses to it${wideNote}`
+    if (!reader || !solo || !savings) return { id: 29, text, value: '-', margin: '', pass: false }
+    const all = reader.results.map((_, i) => i)
+    const careful = pairedOn(solo, reader, all)
+    const early = pairedOn(solo, savings, all)
     return {
       id: 29,
       text,
-      value: `overall ${signed(all.change)}, best market ${best ? `${best.m} ${signed(best.p.change)}` : '-'}`,
-      margin: `${fmtMargin(all.margin)}, ${best ? fmtMargin(best.p.margin) : ''}`,
-      pass: all.change >= -1 && !!best && best.p.change >= 2,
+      value: `from revenue ${signed(careful.change)}, on savings ${signed(early.change)}`,
+      margin: `${fmtMargin(careful.margin)}, ${fmtMargin(early.margin)}`,
+      pass: careful.change >= 2 && early.change < 0,
     }
   })()
   // 30: mirrors 5.
@@ -355,15 +349,23 @@ export function teamRows(input: ReportInput): string[] {
     if (solo) {
       out.push(
         '',
-        '## The hire can pay (target 29)',
+        '## Hiring from revenue against on savings (target 29)',
         '',
-        'The careful bot with its team rule against the same bot that never hires, on the same seeds, overall and by the secretly viable market.',
+        'The careful bot with its team rule against the same bot that never hires, on the same seeds, overall and by the secretly viable market; then the bot that makes its first hire on savings in week 3.',
         '',
         '| Seeds | Runs | validate_then_build_solo | validate_then_build | Difference |',
         '|---|---|---|---|---|',
         `| all | ${cmp(solo, reader, all)} |`,
         ...markets.map((m) => `| ${m} | ${cmp(solo, reader, bySegment(reader.results, m))} |`),
       )
+      const savings = find(input, 'team:validate_then_build_savings_hire')
+      if (savings)
+        out.push(
+          '',
+          '| Seeds | Runs | validate_then_build_solo | validate_then_build_savings_hire | Difference |',
+          '|---|---|---|---|---|',
+          `| all | ${cmp(solo, savings, all)} |`,
+        )
     }
     const sits = (['burst', 'steady'] as const).flatMap((kind) =>
       (['freelancer', 'hire'] as const).flatMap((by) => {

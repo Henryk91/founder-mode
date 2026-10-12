@@ -189,8 +189,11 @@ export type Customer = {
   segmentId: SegmentId
   sinceWeek: number
   churnedWeek: number | null
-  /** Set when the customer said they left over the price. */
-  churnReason?: 'price'
+  /**
+   * Why the customer left, when known: `price` (they said so), or `stopped_paying` (an invoice
+   * was written off, so their service stopped).
+   */
+  churnReason?: 'price' | 'stopped_paying'
   /** The monthly price agreed when the customer signed. Later price changes do not touch it. */
   priceCentsPerMonth: number
   /** Months already paid for, by a pre-sale deposit. These month ends send no invoice. */
@@ -936,7 +939,8 @@ export type ReportEntry =
   | MoneyMovement
   | { kind: 'revenue'; amountCents: number; customers: number }
   | { kind: 'invoices_issued'; amountCents: number; count: number }
-  | { kind: 'invoice_written_off'; amountCents: number; name: string }
+  /** `serviceStopped`: this write off ended the customer (they stopped paying). */
+  | { kind: 'invoice_written_off'; amountCents: number; name: string; serviceStopped: boolean }
   | { kind: 'ad_spend'; amountCents: number }
   | {
       kind: 'landing_result'
@@ -1042,7 +1046,10 @@ export type PostMortemCause = {
   /** The same without the hire's salary. Equal to `monthlyCostsCents` without a hire. */
   monthlyCostsWithoutHireCents: number
   customersWon: number
+  /** Customers who left (churn, events), not counting those who stopped paying. */
   customersLost: number
+  /** Customers whose service stopped because an invoice was written off. */
+  customersStoppedPaying: number
   /** Weeks with more hours than the founder's base week. */
   weeksOverBase: number
   /** Revenue at the end as a whole percentage of monthly costs. */
@@ -1058,6 +1065,7 @@ export type ChainKind =
   | 'first_customer'
   | 'customer_won'
   | 'customer_lost'
+  | 'customer_stopped_paying'
   | 'feature_shipped'
   | 'hire_started'
   | 'hire_let_go'

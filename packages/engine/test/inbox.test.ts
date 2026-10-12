@@ -426,8 +426,9 @@ describe('effects', () => {
           customerName: 'Kunde customer_1',
           segmentId: 'coworking',
           amountCents: 45_000,
-          issuedWeek: 4,
-          dueWeek: 6,
+          // Due in week 8: still short of the write off (8 weeks late) by the end of the test.
+          issuedWeek: 6,
+          dueWeek: 8,
           paidWeek: null,
           writtenOffWeek: null,
         },

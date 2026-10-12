@@ -21,9 +21,10 @@ describe('endings', () => {
     const s = play(newGame('burn', richKantino()), 20, () =>
       plan({ interviews: { coworking: 32 } }),
     )
-    // 80 energy, -28 a week at 64 h: 0 after week 3, burnout at the end of week 5.
+    // 80 energy, 3 - 14 = -11 a week at 64 h, and more in weeks 5 and 6 of this seed (other
+    // energy effects of the week): 0 after week 7, burnout at the end of week 9.
     expect(s.ending).toBe('burnout')
-    expect(s.week).toBe(5)
+    expect(s.week).toBe(9)
     expect(s.founder.weeksAtZeroEnergy).toBe(3)
     expect(checkEnding(s)).toBe('burnout')
   })

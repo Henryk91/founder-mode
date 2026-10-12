@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { endWeek, getView, validatePlan } from '../src/index'
+import { buildPostMortem, endWeek, getView, shutDown, validatePlan } from '../src/index'
 import { Rng } from '../src/rng'
 import { issueInvoices } from '../src/systems/invoices'
 import type { GameState, Invoice } from '../src/types'
@@ -66,10 +66,11 @@ describe('invoices', () => {
     expect(small.mean).toBeGreaterThan(2.5)
     expect(small.mean).toBeLessThan(4)
     expect(medical.never).toBeGreaterThan(small.never)
-    expect(small.never).toBeCloseTo(0.05, 1)
-    expect(medical.never).toBeCloseTo(0.08, 1)
+    // Per invoice since C2a: small offices 1.25%, medical 2%.
+    expect(small.never).toBeCloseTo(0.0125, 1)
+    expect(medical.never).toBeCloseTo(0.02, 1)
     // A quarter of the rest waits to be chased.
-    expect(small.waits).toBeCloseTo(0.25 * 0.95, 1)
+    expect(small.waits).toBeCloseTo(0.25 * 0.9875, 1)
   })
 
   it('wait for a chase when the customer waits to be asked, and are written off without one', () => {
@@ -165,8 +166,48 @@ describe('invoices', () => {
       kind: 'invoice_written_off',
       amountCents: 30_000,
       name: 'Kunde customer_1',
+      serviceStopped: true,
     })
     expect(getView(r.state).invoices[0]!.status).toBe('written_off')
     expect(getView(r.state).receivablesCents).toBe(0)
+  })
+
+  it('stop the service of a customer whose invoice is written off', () => {
+    let s = endWeek(withInvoice(13, null), book).state
+    s = endWeek(s, book).state
+    // Lost as "stopped paying", not churn: out of the count and the revenue.
+    expect(s.customers[0]).toMatchObject({ churnedWeek: 14, churnReason: 'stopped_paying' })
+    expect(getView(s).customers).toHaveLength(0)
+    expect(getView(s).monthlyRevenueCents).toBe(0)
+    expect(s.ledger.at(-1)!.customers).toBe(0)
+    // No invoice at the next month end (week 16).
+    for (let i = 0; i < 3; i++) s = endWeek(s, book).state
+    expect(s.week).toBe(18)
+    expect(s.invoices).toHaveLength(1)
+  })
+
+  it('count customers who stopped paying apart from churn in the post-mortem', () => {
+    let s = endWeek(withInvoice(13, null), book).state
+    s = endWeek(s, book).state
+    s = { ...s, customers: [...s.customers, { ...customer('customer_2'), churnedWeek: 12 }] }
+    const pm = buildPostMortem(shutDown(s))
+    expect(pm.cause.customersLost).toBe(1)
+    expect(pm.cause.customersStoppedPaying).toBe(1)
+    const kinds = pm.chain.map((c) => c.kind)
+    expect(kinds).not.toContain('invoice_written_off')
+  })
+
+  it('leave an already lost customer lost, without saying the service stopped again', () => {
+    const s0 = withInvoice(14, null)
+    const lost = {
+      ...s0,
+      customers: s0.customers.map((c) => ({ ...c, churnedWeek: 12 })),
+    }
+    const r = endWeek(lost, book)
+    expect(r.report.entries).toContainEqual(
+      expect.objectContaining({ kind: 'invoice_written_off', serviceStopped: false }),
+    )
+    expect(r.state.customers[0]!.churnedWeek).toBe(12)
+    expect(r.state.customers[0]!.churnReason).toBeUndefined()
   })
 })

@@ -28,9 +28,9 @@ founder:
   maxHoursPerWeek: 65
   energy:
     max: 100
-    perHourOverBase: -2
+    perHourOverBase: -1
     perRestHour: 1.5
-    weekWithinBase: 3
+    weeklyRecovery: 3
     fullAt: 70
     lowBelow: 30
     lowFactor: 0.85
@@ -234,7 +234,7 @@ segments:
       # Tuning round 3: was 0.07 to 0.14.
       in_person: { min: 0.06, max: 0.12 }
     paymentDelayDaysMean: 10
-    neverPaysShare: 0.06
+    neverPaysShare: 0.015
     waitsForChaseShare: 0.25
     # Budget quotes: some interviews name a rough monthly figure, honest on average.
     budgetQuotes:
@@ -257,7 +257,7 @@ segments:
       # Tuning round 2: was 0.04 to 0.09.
       in_person: { min: 0.05, max: 0.1 }
     paymentDelayDaysMean: 25
-    neverPaysShare: 0.03
+    neverPaysShare: 0.0075
     waitsForChaseShare: 0.25
     # Budget quotes: some interviews name a rough monthly figure, honest on average.
     budgetQuotes:
@@ -279,7 +279,7 @@ segments:
       phone: { min: 0.06, max: 0.12 }
       in_person: { min: 0.08, max: 0.15 }
     paymentDelayDaysMean: 15
-    neverPaysShare: 0.05
+    neverPaysShare: 0.0125
     waitsForChaseShare: 0.25
     # Budget quotes: some interviews name a rough monthly figure, honest on average.
     budgetQuotes:

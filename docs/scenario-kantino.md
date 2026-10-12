@@ -46,7 +46,7 @@ Cash and savings together last about 30 weeks (7.5 months) at 3,105 a month with
 | Channel response: phone | 0.04 to 0.075 | 0.0425 to 0.0935 (Phase 8; was 0.05 to 0.11) | 0.066 to 0.1375 (Phase 8; was 0.06 to 0.125) |
 | Channel response: in person | 0.025 to 0.125 | 0.051 to 0.102 (Phase 8; was 0.06 to 0.12) | 0.066 to 0.132 (Phase 8; was 0.06 to 0.12) |
 | Invoice lateness, mean days | 5 | 12 | 20 |
-| Share that never pays | 5% | 3% | 8% |
+| Share of invoices never paid | 1.25% | 0.75% | 2% (Phase 9; was 5%, 3%, 8%, when a write off cost one invoice and not the customer) |
 | Share that pays only once chased | 25% | 25% | 25% |
 
 Each value given as a range is drawn uniformly at game creation from the seed.
@@ -136,9 +136,9 @@ Reason: a bot that found the viable market ended with about 19 customers when 7 
 
 | Rule | Value |
 |---|---|
-| Each planned hour above 50 | Energy -2 |
+| Every week | Energy +3 (Phase 9; was only for weeks of 50 h or fewer) |
+| Each planned hour above 50 | Energy -1 (Phase 9; was -2). Up to 53 h a week can be kept up for good |
 | Each planned rest hour | Energy +1.5 |
-| Week with 50 h or fewer planned | Energy +3 |
 | Energy 70 or more | Sales chances x 1 |
 | Energy between 70 and 30 | Sales chances fall in a straight line from x 1 to x 0.85 |
 | Energy 30 or below | Sales chances x 0.85 |
@@ -235,4 +235,4 @@ Budget quotes (Phase 8): about one interview in six (Zollstock: one in four) als
 
 Price (Phase 8, engine 0.11.0): with r = price / willingness to pay, the price factor is (1 + e^(-13.5)) / (1 + e^(10 x (r - 1.35))): 1 at no price, 0.97 at r 1, 0.82 at 1.2, a half at 1.35. It scales trials becoming customers, landing sign ups and pre-sale deposits. A trial lost to the price says so; a customer leaving over the price says so. Calibrated so the careful bot at the default price plays as before (target 2 within 1 point, 6 within 1, 7 within half a week).
 
-Landing test 8 h, ads 300 or 750 EUR, 225 cents per visitor, 1 week, 5 sign ups per lead. Pre-sale 6 h per batch of 5 cold prospects, 1 week, commit rate 0.25 x pain x price factor, at most 3 batches per market, refund after 8 weeks. Invoices due after 14 days, written off 8 weeks after due, chase 1 h for 0.3; a quarter of invoices wait for a chase. Books: the accountant's message from week 3, weight 40 (Phase 5, to keep about 7 arrivals a run among 108 events), cooldown 5 weeks: sort (3 h), pay 225 EUR, or later (half the time a 600 EUR fine, half the time 4 h lost). Hire as in section 8, impression labels weak below 0.7, solid below 0.95, strong below 1.1. Inbox: up to 3 draws a week at 0.4 each, plus one guaranteed draw in a week without a new message while fewer than 2 are open; open 2 weeks, at most 4 open. Since Phase 5 every event arrives once per run except the books, which set their own cooldown; the inbox cooldown of 8 weeks no longer applies to any event. The coworking desk (section 9) arrived in Phase 7.
+Landing test 8 h, ads 300 or 750 EUR, 225 cents per visitor, 1 week, 5 sign ups per lead. Pre-sale 6 h per batch of 5 cold prospects, 1 week, commit rate 0.25 x pain x price factor, at most 3 batches per market, refund after 8 weeks. Invoices due after 14 days, written off 8 weeks after due, chase 1 h for 0.3; a quarter of invoices wait for a chase. Since Phase 9 a write off stops that customer's service: they are lost as "stopped paying", leave the count and the revenue, and get no more invoices. Books: the accountant's message from week 3, weight 40 (Phase 5, to keep about 7 arrivals a run among 108 events), cooldown 5 weeks: sort (3 h), pay 225 EUR, or later (half the time a 600 EUR fine, half the time 4 h lost). Hire as in section 8, impression labels weak below 0.7, solid below 0.95, strong below 1.1. Inbox: up to 3 draws a week at 0.4 each, plus one guaranteed draw in a week without a new message while fewer than 2 are open; open 2 weeks, at most 4 open. Since Phase 5 every event arrives once per run except the books, which set their own cooldown; the inbox cooldown of 8 weeks no longer applies to any event. The coworking desk (section 9) arrived in Phase 7.

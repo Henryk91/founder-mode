@@ -539,7 +539,7 @@ What the careful bot does with them (10,000 seeds): it hires in 7.4% of runs, 0.
 | 26 | Decision news in at least 85% of weeks 1 to 20 for the careful bot and playtest, and in at least 70% of weeks 53 to 104 for the careful bot | 9, plus a year 2 floor so the second year cannot go quiet | 100.0% and 96.3%; year 2 99.8% | yes |
 | 27 | Target 11 holds on 10,000 seeds; no event arrives twice unless it recurs on purpose; under 1% of careful runs have a dry inbox week | 11 and 16, plus dry weeks: in 104 weeks the pool can run out | 11: effort +3.1 (23% of reading), cheapest -0.4, reading +13.4; 0 repeats; **dry in 45.5% of runs** (first dry week 74 in the median) | no |
 | 28 | Year 2 matters: of careful runs profitable in each of the two months to week 60, at most 85% end Sustainable; of runs alive but not profitable at week 60, at least 15% end Sustainable. 10,000 seeds | New | 67.6% of 1,809; 43.6% of 3,141 | yes |
-| 29 | The hire can pay: the careful bot with its team rule loses at most 1 point against the solo bot, and gains at least 2 points in at least one viable market. Paired, 10,000 seeds | New (the long mode answer to old target 12) | -1.6 ±0.3 overall; best market coworking -0.5 | no |
+| 29 | Hiring from revenue pays and hiring on savings does not: the careful bot (hires once revenue allows) beats the solo bot by at least 2 points overall, and the bot that hires early on savings loses to solo. Paired, 10,000 seeds (owner's restatement, C2 review: hiring that never pays would make long mode's main new choice a trap) | New | Before C2a: from revenue -1.6 ±0.3 | no |
 | 30 | 1000 long runs in under 120 s (slowest strategy, timed while the other processes run) | 5, limit doubled for runs about twice as long | 36.7 s | yes |
 
 Information only, worded as in the 60 week report: 10 (51 of 95 events favour the cheap choice), 13 (chase -9.8, landing -2.7, books -2.5), 14 (`presale_max` -5.0), 15 (in person outreach 31.8% of customers) would all be met. 17 and 18 (pricing) were not run in long mode.
@@ -578,3 +578,28 @@ Recommendation: C, in long mode first (an override, the 60 week game untouched),
 ### 10.5 Runtime of the long mode report (Kantino, 9 processes)
 
 `pnpm bots --runs 1000 --wide-runs 10000 --mode long --parts main,paired,inbox,team,energy,events`: 1,167 s (19.5 minutes) in all. Main 31 s, paired 174 s, inbox 52 s, team 220 s (8 variants on 10,000 seeds), energy 88 s, events 598 s (154,379 of 233,000 games played, the rest reused). Without the energy curve, which is a one off, about 18 minutes. Price and freelance parts were not run in long mode (17, 18 and 19 are not long mode targets).
+
+### 10.6 Owner's decisions on C2, and step C2a (engine 0.14.0)
+
+Targets 20 to 30 approved as in 10.3, with target 29 restated as above. Two realism changes in both modes:
+
+- **Energy, option C:** every week recovers 3, less 1 per hour over the 50 h base, so 53 h a week holds steady.
+- **Customers who stop paying:** a written off invoice stops that customer's service. They are lost as "stopped paying", leave the count and the revenue, and get no more invoices; the week's results say so, and the post-mortem counts them apart from churn.
+
+**60 week game, one retuning round:** with the never-pays shares unchanged the careful bot fell to 19.9% (Kantino) and 19.2% (Zollstock), and Zollstock's target 13 failed (landing -1.9). The never-pays shares per invoice are now a quarter of before (Kantino 1.25%, 0.75%, 2%; Zollstock 1.5%, 0.75%, 1.25%): a customer is now lost to non-payment within a year about 10 to 20% of the time. An eighth gained only 1.5 points more. Every 60 week target passes after this round; see the decisions log for each target that moved.
+
+**Energy curve after C2a** (careful bot, 10,000 seeds, won / burnout):
+
+| Hours | Kantino 60 | Zollstock 60 | Kantino long |
+|---|---|---|---|
+| 45 | 21.1% / 0% | 23.8% / 0% | 10.4% / 0% |
+| 50 | 28.4% / 0% | 26.1% / 0% | 15.2% / 0% |
+| 52 | 29.7% / 0% | 27.0% / 0% | 17.2% / 0% |
+| 53 | 30.5% / 0% | 26.9% / 0% | 17.4% / 0% |
+| 55 | 16.7% / 2.9% | 14.8% / 2.2% | 0.0% / 34.5% |
+| 58 | 0% / 97.8% (week 25) | 0% / 96.8% (25) | 0% / 97.8% (25) |
+| 60 | 0% / 100% (18) | 0% / 100% (18) | 0% / 100% (18) |
+
+A slope: up to 53 h holds, 55 h drains slowly (energy below 30 in 56 to 68% of runs, sales suffer), 58 h burns out around week 25. **53 h against 50 h:** +2.1 (Kantino 60), +0.8 (Zollstock 60), +2.2 (long). Targets 2, 3, 21 and 22 would not change their result if the careful bot planned 53 h (2 and 3 are measured on the 50 h bot; 53 h stays inside 25 to 45% in both 60 week scenarios, and the long careful bot fails 22 at either). No change made.
+
+**Long mode after C2a (not retuned; long values are C3's):** the careful bot falls to 16.2% (from 25.9%), coworking to 4.1%. Over 104 weeks, losing a customer for every unpaid invoice compounds, and in the small, saturating markets lost customers are hard to replace. Targets 21, 23, 25, 26, 28 and 30 pass; 20 (burst -0.8, steady -2.5), 22 (16.2%), 24 (17.3 points), 27 (dry 44.0%; reading +7.8), 29 (from revenue -0.3; on savings -12.6, which passes its half) fail.

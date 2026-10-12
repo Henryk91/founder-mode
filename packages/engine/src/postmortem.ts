@@ -240,7 +240,10 @@ function buildCause(state: GameState): PostMortemCause {
   const costsWithoutHire = monthlyCosts(state, false)
   const peak = Math.max(0, ...state.ledger.map((l) => l.monthlyRevenueCents))
   const revenue = activeCustomers(state).reduce((t, c) => t + c.priceCentsPerMonth, 0)
-  const lost = state.customers.filter((c) => c.churnedWeek !== null).length
+  const lost = state.customers.filter(
+    (c) => c.churnedWeek !== null && c.churnReason !== 'stopped_paying',
+  ).length
+  const stoppedPaying = state.customers.filter((c) => c.churnReason === 'stopped_paying').length
   const won = state.customers.length
   const base = state.founder.baseHoursPerWeek
   const covered = state.ledger.find((l) => l.monthlyRevenueCents >= costs)
@@ -248,7 +251,7 @@ function buildCause(state: GameState): PostMortemCause {
   if (ending === 'bankrupt') {
     if (won === 0) id = 'bankrupt_no_customers'
     else if (state.team.members.length > 0 && peak >= costsWithoutHire) id = 'bankrupt_hire'
-    else if (won >= 2 && lost * 2 > won) id = 'bankrupt_churn'
+    else if (won >= 2 && (lost + stoppedPaying) * 2 > won) id = 'bankrupt_churn'
     else id = 'bankrupt_below_costs'
   } else {
     id = ending
@@ -262,6 +265,7 @@ function buildCause(state: GameState): PostMortemCause {
     monthlyCostsWithoutHireCents: costsWithoutHire,
     customersWon: won,
     customersLost: lost,
+    customersStoppedPaying: stoppedPaying,
     weeksOverBase: state.ledger.filter((l) => totalHours(l.hours) > base).length,
     coveredPercent: costs > 0 ? Math.round((100 * revenue) / costs) : 0,
     coveredWeek: covered?.week ?? null,
@@ -290,22 +294,51 @@ const CHAIN_RULES: Record<PostMortemCauseId, { keep: ChainKind[]; also: ChainKin
   },
   bankrupt_hire: {
     keep: ['hire_started'],
-    also: ['savings_empty', 'customer_lost', 'hire_let_go', 'customer_won'],
+    also: [
+      'savings_empty',
+      'customer_lost',
+      'customer_stopped_paying',
+      'hire_let_go',
+      'customer_won',
+    ],
   },
-  bankrupt_churn: { keep: ['savings_empty'], also: ['customer_lost'] },
+  bankrupt_churn: { keep: ['savings_empty'], also: ['customer_lost', 'customer_stopped_paying'] },
   bankrupt_below_costs: {
     keep: ['savings_empty'],
-    also: ['customer_lost', 'customer_won', 'invoice_written_off', 'price_changed'],
+    also: [
+      'customer_lost',
+      'customer_stopped_paying',
+      'customer_won',
+      'invoice_written_off',
+      'price_changed',
+    ],
   },
-  burnout: { keep: ['energy_low', 'energy_zero'], also: ['hire_let_go', 'customer_lost'] },
+  burnout: {
+    keep: ['energy_low', 'energy_zero'],
+    also: ['hire_let_go', 'customer_lost', 'customer_stopped_paying'],
+  },
   still_searching: {
     keep: [],
-    also: ['first_customer', 'savings_empty', 'customer_lost', 'customer_won', 'price_changed'],
+    also: [
+      'first_customer',
+      'savings_empty',
+      'customer_lost',
+      'customer_stopped_paying',
+      'customer_won',
+      'price_changed',
+    ],
   },
   sustainable: { keep: ['first_customer', 'covers_all_costs'], also: ['customer_won'] },
   shut_down: {
     keep: [],
-    also: ['savings_empty', 'customer_lost', 'customer_won', 'feature_shipped', 'hire_started'],
+    also: [
+      'savings_empty',
+      'customer_lost',
+      'customer_stopped_paying',
+      'customer_won',
+      'feature_shipped',
+      'hire_started',
+    ],
   },
 }
 
@@ -325,13 +358,17 @@ function chainCandidates(state: GameState, cause: PostMortemCause): ChainItem[] 
     out.push(item(w, i === 0 ? 'first_customer' : 'customer_won', extra))
     if (c.churnedWeek !== null) {
       out.push(
-        item(c.churnedWeek, 'customer_lost', {
-          name: c.name,
-          segmentId: c.segmentId,
-          customers: ledgerAt(c.churnedWeek)?.customers ?? null,
-          cents: ledgerAt(c.churnedWeek)?.monthlyRevenueCents ?? null,
-          overPrice: c.churnReason === 'price',
-        }),
+        item(
+          c.churnedWeek,
+          c.churnReason === 'stopped_paying' ? 'customer_stopped_paying' : 'customer_lost',
+          {
+            name: c.name,
+            segmentId: c.segmentId,
+            customers: ledgerAt(c.churnedWeek)?.customers ?? null,
+            cents: ledgerAt(c.churnedWeek)?.monthlyRevenueCents ?? null,
+            overPrice: c.churnReason === 'price',
+          },
+        ),
       )
     }
   })
@@ -362,8 +399,14 @@ function chainCandidates(state: GameState, cause: PostMortemCause): ChainItem[] 
     else zeroFrom = null
   }
   if (zeroFrom !== null) out.push(item(zeroFrom, 'energy_zero'))
+  // A write off that stopped a customer's service is told as that customer's loss.
+  const stopped = new Set(
+    state.customers.flatMap((c) =>
+      c.churnReason === 'stopped_paying' ? [`${c.id}@${c.churnedWeek}`] : [],
+    ),
+  )
   for (const inv of state.invoices) {
-    if (inv.writtenOffWeek !== null) {
+    if (inv.writtenOffWeek !== null && !stopped.has(`${inv.customerId}@${inv.writtenOffWeek}`)) {
       out.push(
         item(inv.writtenOffWeek, 'invoice_written_off', {
           name: inv.customerName,
@@ -790,7 +833,11 @@ function buildSuggestions(
         focusMarket.mustHave.some((f) => f.shippedWeek === null),
     ],
     ['check_price', focusMarket !== null && !won && price > focusMarket.wtpCents],
-    ['watch_churn', cause.customersWon >= 2 && cause.customersLost * 2 >= cause.customersWon],
+    [
+      'watch_churn',
+      cause.customersWon >= 2 &&
+        (cause.customersLost + cause.customersStoppedPaying) * 2 >= cause.customersWon,
+    ],
     [
       'hire_cost',
       hires.some(

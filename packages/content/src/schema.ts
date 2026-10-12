@@ -463,9 +463,10 @@ export const ScenarioFileSchema = z.object({
     maxHoursPerWeek: z.number().int().positive(),
     energy: z.object({
       max: z.number().positive(),
+      // Every week: + weeklyRecovery + perHourOverBase x hours over the base + perRestHour x rest.
       perHourOverBase: z.number(),
       perRestHour: z.number(),
-      weekWithinBase: z.number(),
+      weeklyRecovery: z.number(),
       // Sales chances are multiplied by 1 from fullAt energy up, falling in a straight line to
       // lowFactor at lowBelow, and by lowFactor below that.
       fullAt: z.number().nonnegative(),
