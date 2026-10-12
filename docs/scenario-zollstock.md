@@ -48,7 +48,7 @@ Identical to Kantino (same founder, same costs, same price, same price curve, pr
 | Channel response: phone | 0.045 to 0.09 | 0.06 to 0.12 | 0.06 to 0.12 |
 | Channel response: in person | 0.06 to 0.12 | 0.05 to 0.10 | 0.08 to 0.15 |
 | Invoice lateness, mean days | 10 | 25 | 15 |
-| Share that never pays | 6% | 3% | 5% |
+| Share of invoices never paid | 1.5% | 0.75% | 1.25% (Phase 9; was 6%, 3%, 5%) |
 | Share that pays only once chased | 25% | 25% | 25% |
 
 Willingness to pay mirrors Kantino's three ranges on purpose, so the price side starts balanced. The difference is in the channels: cold email is about a third as effective as in Kantino, in person is stronger.

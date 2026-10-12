@@ -472,9 +472,9 @@ type Scenario = {
     maxHoursPerWeek: number
     energy: {
       max: number
-      perHourOverBase: number
+      perHourOverBase: number      // -1: each hour over the base (Phase 9; was -2)
       perRestHour: number
-      weekWithinBase: number
+      weeklyRecovery: number       // every week (Phase 9; was weekWithinBase, only weeks within the base)
       lowBelow: number            // below this energy every sales chance is multiplied by lowFactor
       lowFactor: number
       burnoutWeeks: number        // weeks in a row at 0 that end the run
@@ -813,3 +813,10 @@ type PostMortem = {
 - Engine: `WeekPlan.searchPartTime?: boolean` (missing means full time, so 60 week plans keep their shape); `PlanIssue` `part_time_not_offered` when the role has no part time terms. `TeamSearch`, `Candidate` and `TeamMember` carry `partTime?: true` (left out for full time). `roleTerms(state, { role, partTime })` gives the salary and hours used for output, salary, severance, the view and the post-mortem. The engine version stays 0.13.0: 60 week replays are unchanged, and long saves made before are refused by their fingerprint.
 - View: `TeamView.roles[].partTime: { monthlyCents, weeklyHours } | null`, `TeamView.search.partTime`, `CandidateView.partTime`, `MemberView.partTime` and `MemberView.weeklyHours`. Web: a role with part time terms shows a full time and a part time search row (`team.fullTime`, `team.partTime`); `setSearchRole(role, partTime?)`.
 - Bots: `Behaviours.team?: TeamRule | null` (`{ start: 'covered' | 'savings', partTime, freelanceFirst }`); in long mode the careful bot uses `CAREFUL_TEAM` unless another hire or freelancer rule is set. `Strategy.modes` (the team variants are long mode only). `PlanBuilder` leaves the working team's management hours out of the budget. `RunResult` gained `year2Weeks`, `year2DecisionWeeks`, `at60`, `hires[]`, `lettingsGo`, `teamAtEnd`, and `freelance.role`. Report parts `team` (team variants on the wide seeds, long mode) and `energy` (the careful bot at 45 to 60 h); long mode sections are written by `longReport.ts` (targets 20 to 30, the team, targets 20, 28 and 29, the energy curve).
+
+### Phase 9 part C2a: energy slope and customers who stop paying (engine 0.14.0)
+
+- Energy: `founder.energy.weeklyRecovery` replaces `weekWithinBase` and applies every week: energy changes by `weeklyRecovery + perHourOverBase x hours over the base + perRestHour x rest hours`. Both scenarios: +3, -1 per hour over 50 (was -2), so 53 h a week holds steady.
+- Write offs: `Customer.churnReason` gained `stopped_paying`. When an invoice is written off, its customer is lost that week (`churnedWeek`), leaves the count and revenue, and gets no more invoices; their other open invoices stay open. `ReportEntry` `invoice_written_off` gained `serviceStopped`. `applyFinanceWeek` returns `stopped` (customer ids). Post-mortem: `PostMortemCause.customersStoppedPaying` beside `customersLost` (which no longer counts them), `ChainKind` `customer_stopped_paying` (the write off itself is then not a separate step). The bankrupt-from-churn cause and the churn suggestion count both.
+- Never-pays shares per invoice a quarter of before: Kantino 1.25%, 0.75%, 2%; Zollstock 1.5%, 0.75%, 1.25%.
+- Bots: `ENERGY_BUDGETS` adds 53 h. Long mode target 29 restated (hiring from revenue +2 over solo, on savings below solo).

@@ -138,8 +138,8 @@ export const TIRED_SPECS: StrategySpec[] = [50, 58, 65].flatMap((budget): Strate
 /** Report id of an energy curve run. */
 export const energyId = (budget: number) => `energy:${budget}h`
 
-/** The energy curve (Part C2): the careful bot planning these hours a week, in both modes. */
-export const ENERGY_BUDGETS = [45, 50, 52, 55, 58, 60] as const
+/** The energy curve (Part C2): the careful bot planning these hours a week, in both modes; 53 h is the most that can be kept up (C2a). */
+export const ENERGY_BUDGETS = [45, 50, 52, 53, 55, 58, 60] as const
 export const ENERGY_SPECS: StrategySpec[] = ENERGY_BUDGETS.map((budget) => ({
   kind: 'energy',
   budget,

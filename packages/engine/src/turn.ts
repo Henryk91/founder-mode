@@ -155,6 +155,7 @@ export function endWeek(
       kind: 'invoice_written_off',
       amountCents: inv.amountCents,
       name: inv.customerName,
+      serviceStopped: finance.stopped.includes(inv.customerId),
     })
   }
 

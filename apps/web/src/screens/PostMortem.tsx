@@ -554,7 +554,9 @@ class Text {
       without: formatEuro(c.monthlyCostsWithoutHireCents),
       peak: formatEuro(c.peakRevenueCents),
       revenue: formatEuro(c.revenueCents),
-      lost: c.customersLost,
+      // Every customer who left, those who stopped paying included; the cause names them apart.
+      lost: c.customersLost + c.customersStoppedPaying,
+      unpaid: c.customersStoppedPaying,
       won: c.customersWon,
       over: c.weeksOverBase,
       base: this.pm.hours.baseHoursPerWeek,
@@ -568,6 +570,8 @@ class Text {
             runway: count('unit.weeks', this.stage, c.runwayWeeks),
           })
     }
+    if (c.id === 'bankrupt_churn' && c.customersStoppedPaying > 0)
+      return label('pm.cause.bankrupt_churn_unpaid', this.stage, vars)
     return label(`pm.cause.${c.id}`, this.stage, vars)
   }
 

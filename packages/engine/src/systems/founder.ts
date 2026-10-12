@@ -57,8 +57,9 @@ export function hoursByActivity(
 }
 
 /**
- * Energy for the week (scenario spec section 7). Hours above the base cost energy,
- * rest restores it, and a week within the base gives a small bonus. Clamped to 0..max.
+ * Energy for the week (scenario spec section 7). Every week recovers `weeklyRecovery`, each hour
+ * above the base costs `perHourOverBase`, and rest restores more. So a few hours over the base
+ * can be kept up for good, and more drain energy slowly (a slope, not a cliff). Clamped to 0..max.
  * Counts the weeks in a row that end at 0, for the burnout ending.
  */
 export function applyFounderWeek(
@@ -71,8 +72,9 @@ export function applyFounderWeek(
 ): FounderState {
   const rules = scenario.founder.energy
   const overtime = Math.max(0, hours - founder.baseHoursPerWeek)
-  let delta = overtime * rules.perHourOverBase + restHours * rules.perRestHour
-  if (overtime === 0) delta += rules.weekWithinBase
+  // Every week recovers a little; each hour over the base week takes some of it back (Phase 9).
+  let delta =
+    rules.weeklyRecovery + overtime * rules.perHourOverBase + restHours * rules.perRestHour
   delta += bonus
   const energy = Math.min(rules.max, Math.max(0, founder.energy + delta))
   const weeksAtZeroEnergy = energy === 0 ? founder.weeksAtZeroEnergy + 1 : 0

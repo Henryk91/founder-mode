@@ -119,7 +119,7 @@ describe('long mode team rules', () => {
     for (const id of [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30])
       expect(report).toMatch(new RegExp(`\\n\\| ${id} \\|`))
     expect(report).toContain('## The team (long mode)')
-    expect(report).toContain('## The hire can pay (target 29)')
+    expect(report).toContain('## Hiring from revenue against on savings (target 29)')
     expect(report).toContain('## Year 2 (target 28)')
     expect(report).toContain('## Energy curve')
     expect(report).not.toContain('## Targets (plan section 7)')

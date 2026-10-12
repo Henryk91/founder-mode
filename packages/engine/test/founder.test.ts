@@ -17,13 +17,16 @@ describe('founder', () => {
     expect(energyAfter(50, 0)).toBe(83)
   })
 
-  it('costs 2 per hour above 50, with no base bonus', () => {
-    expect(energyAfter(60, 0)).toBe(60)
+  it('recovers 3 every week, less 1 per hour above 50: 53 h can be kept up', () => {
+    expect(energyAfter(60, 0)).toBe(73)
+    expect(energyAfter(53, 0)).toBe(80)
+    expect(energyAfter(52, 0)).toBe(81)
+    expect(energyAfter(55, 0)).toBe(78)
   })
 
   it('restores 1.5 per rest hour', () => {
     expect(energyAfter(10, 10)).toBe(98)
-    expect(energyAfter(55, 4)).toBe(76)
+    expect(energyAfter(55, 4)).toBe(84)
   })
 
   it('clamps to 0 and the maximum', () => {

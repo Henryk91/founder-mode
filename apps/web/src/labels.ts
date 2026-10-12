@@ -268,7 +268,7 @@ const labels = {
     'Cash is the money in the company account. Fixed costs leave it at every month end, customer payments arrive when their invoices are paid, and your savings top it up if it goes negative.',
   'explain.energy.title': 'Energy',
   'explain.energy.text':
-    'Energy is how much you have left in the tank: hours above 50 in a week drain it, and rest hours and lighter weeks refill it. Below {tired} what you try starts to work less well, below {low} clearly worse, and {weeks} in a row at 0 end the run.',
+    'Energy is how much you have left in the tank: every week refills it a little and rest hours refill more, but each hour above 50 takes some back, so a few extra hours can be kept up and many drain it week after week. Below {tired} what you try starts to work less well, below {low} clearly worse, and {weeks} in a row at 0 end the run.',
   'explain.hours.title': 'Hours',
   'explain.hours.text':
     'A normal week is 50 hours, and you can plan up to 65 if you accept the energy cost. Interviews, building, bug fixing, outreach, demos and rest all count as planned hours.',
@@ -309,7 +309,7 @@ const labels = {
   'plan.hint.hiringTeam': 'A small team. Freelancers by the week.',
   'explain.rest.title': 'Rest',
   'explain.rest.text':
-    'Rest hours count as planned hours, so they use up the week, and they restore energy this week. A lighter week also gives a small energy bonus.',
+    'Rest hours count as planned hours, so they use up the week, and they restore energy this week. Every week also refills a little on its own, less for each hour over 50.',
   'market.based.zero': 'No interviews yet. Plan some on the Plan tab and the answers collect here.',
   'market.answersTitle': 'What people answered',
   'market.answer': '{bucket} {n}',
@@ -358,6 +358,8 @@ const labels = {
   'results.entry.invoices_issued.one': '{n} invoice sent, {amount} in total.',
   'results.entry.invoices_issued.other': '{n} invoices sent, {amount} in total.',
   'results.entry.invoice_written_off': '{name} never paid their {amount}. Written off.',
+  'results.entry.invoice_written_off_stopped':
+    '{name} never paid their {amount}. Written off, and their service stopped: one customer fewer.',
   'results.entry.ad_spend': 'Ads for landing page tests cost {amount}.',
   'results.entry.landing_result.one':
     'Landing page test for {segment}: {signups} of {visitors} visitors signed up, and {n} left their details.',
@@ -634,6 +636,8 @@ const labels = {
     'The money ran out in week {week}. Revenue reached {peak} a month: enough without the salary ({without} a month), not with it ({costs}).',
   'pm.cause.bankrupt_churn':
     'The money ran out in week {week}. {lost} of {won} customers left again, and revenue ended at {revenue} a month against costs of {costs}.',
+  'pm.cause.bankrupt_churn_unpaid':
+    'The money ran out in week {week}. {lost} of {won} customers left again, {unpaid} of them because they never paid, and revenue ended at {revenue} a month against costs of {costs}.',
   'pm.cause.bankrupt_below_costs':
     'The money ran out in week {week}. Revenue peaked at {peak} a month, and you and the company cost {costs}.',
   'pm.cause.burnout': 'You burnt out in week {week}, after {over} weeks above {base} hours.',
@@ -659,6 +663,8 @@ const labels = {
   'pm.chain.energy_low': 'Energy fell to {low} or below. Everything got harder.',
   'pm.chain.energy_zero': 'Energy hit zero.',
   'pm.chain.invoice_written_off': '{name} never paid {amount}.',
+  'pm.chain.customer_stopped_paying':
+    '{name} never paid, so their service stopped. {customers} customers, {revenue} a month.',
   'pm.chain.covers_all_costs':
     'Revenue reached {revenue} a month: everything covered, you included.',
   'pm.chain.lead_declined': '{name} said no.',

@@ -65,10 +65,16 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         amount: formatEuro(entry.amountCents),
       })
     case 'invoice_written_off':
-      return label('results.entry.invoice_written_off', stage, {
-        name: entry.name,
-        amount: formatEuro(entry.amountCents),
-      })
+      return label(
+        entry.serviceStopped
+          ? 'results.entry.invoice_written_off_stopped'
+          : 'results.entry.invoice_written_off',
+        stage,
+        {
+          name: entry.name,
+          amount: formatEuro(entry.amountCents),
+        },
+      )
     case 'ad_spend':
       return label('results.entry.ad_spend', stage, { amount: formatEuro(entry.amountCents) })
     case 'landing_result':

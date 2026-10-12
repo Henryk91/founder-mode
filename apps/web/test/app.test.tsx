@@ -355,16 +355,19 @@ describe('energy', () => {
       store.getState().endWeek()
       store.getState().dismissReport()
     }
-    overwork() // 80 to 52
-    overwork() // 52 to 24
+    // 64 h a week: +3 for the week, -1 for each of the 14 hours over 50, about -11 a week.
+    const energy = () => store.getState().view!.founder.energy
+    for (let i = 0; i < 8 && energy() >= 30; i++) overwork()
+    expect(energy()).toBeGreaterThan(0)
     expect(html(store)).toContain('Running on fumes. Below 30 everything you try works less well.')
-    overwork() // 0, first week
+    for (let i = 0; i < 4 && energy() > 0; i++) overwork()
     expect(html(store)).toContain('Empty. 2 more weeks at 0 and you burn out.')
     overwork()
     expect(html(store)).toContain('Empty. One more week at 0 and you burn out.')
+    const week = store.getState().view!.week
     overwork()
     expect(store.getState().view?.ending).toBe('burnout')
-    expect(html(store)).toContain('You burnt out in week 5')
+    expect(html(store)).toContain(`You burnt out in week ${week}`)
   })
 })
 

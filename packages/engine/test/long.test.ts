@@ -26,10 +26,11 @@ const quietLong = (): Scenario => {
 }
 
 describe('long mode in the content', () => {
-  it('leaves the 60 week scenarios exactly as they were', () => {
-    // The fingerprints of engine 0.12.0, before the long block existed.
-    expect(scenarioHash(loadScenario('kantino'))).toBe('d876a5eeff2a14cc')
-    expect(scenarioHash(loadScenario('zollstock'))).toBe('0e43131861f8ed2e')
+  it('leaves the 60 week scenarios as the 60 week values make them', () => {
+    // The fingerprints of engine 0.14.0 (energy slope and never-pays shares, C2a); the long
+    // block does not touch them.
+    expect(scenarioHash(loadScenario('kantino'))).toBe('2dda4b4b1831c529')
+    expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })

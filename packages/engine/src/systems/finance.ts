@@ -73,6 +73,8 @@ export function applyFinanceWeek(
   paid: Invoice[]
   issued: Invoice[]
   writtenOff: Invoice[]
+  /** Customers whose service stopped this week because an invoice was written off. */
+  stopped: string[]
 } {
   let state = chaseInvoices(input, plan, rng)
   let cash = state.company.cashCents
@@ -96,6 +98,25 @@ export function applyFinanceWeek(
 
   const settled = settleInvoices(state)
   state = settled.state
+  // A customer whose invoice is written off stopped paying: their service stops, so they leave
+  // the count and the revenue and get no more invoices. Their other open invoices stay open.
+  const stopped = [
+    ...new Set(
+      settled.writtenOff
+        .map((i) => i.customerId)
+        .filter((id) => state.customers.some((c) => c.id === id && c.churnedWeek === null)),
+    ),
+  ]
+  if (stopped.length > 0) {
+    state = {
+      ...state,
+      customers: state.customers.map((c) =>
+        stopped.includes(c.id)
+          ? { ...c, churnedWeek: state.week, churnReason: 'stopped_paying' as const }
+          : c,
+      ),
+    }
+  }
   const revenueCents =
     settled.paid.reduce((sum, inv) => sum + inv.amountCents, 0) + extras.depositsCents
   cash += revenueCents
@@ -156,6 +177,7 @@ export function applyFinanceWeek(
     paid: settled.paid,
     issued,
     writtenOff: settled.writtenOff,
+    stopped,
   }
 }
 
