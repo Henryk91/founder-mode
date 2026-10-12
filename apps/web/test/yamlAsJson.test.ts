@@ -23,6 +23,7 @@ function asJson(sources: ScenarioSources): ScenarioSources {
     intro: yamlToJson(sources.intro),
     events: map(sources.events) as ScenarioSources['events'],
     sharedEvents: map(sources.sharedEvents) as ScenarioSources['sharedEvents'],
+    longEvents: yamlToJson(sources.longEvents),
   }
 }
 
@@ -34,6 +35,9 @@ describe('content YAML parsed at build time', () => {
       const fromYaml = parseScenario(sources)
       expect(fromJson).toEqual(fromYaml)
       expect(scenarioHash(fromJson)).toBe(scenarioHash(fromYaml))
+      if (id === 'kantino') {
+        expect(parseScenario(asJson(sources), 'long')).toEqual(parseScenario(sources, 'long'))
+      }
     })
 
     it(`reads every ${id} file with JSON.parse as the YAML parser does`, () => {
@@ -46,6 +50,7 @@ describe('content YAML parsed at build time', () => {
         sources.intro,
         ...Object.values(sources.events),
         ...Object.values(sources.sharedEvents),
+        sources.longEvents,
       ]
       for (const text of texts) expect(shimParse(text)).toEqual(parse(text))
     })

@@ -1,0 +1,1351 @@
+# Inbox events of the second year, long mode only (Phase 9, part C2b). Shared by every scenario
+# that has a long mode, any area. Nothing here may name a scenario's product, markets or
+# features. Every event waits for week 53, so the first year of a long run plays as before. Two
+# events come back on purpose, as renewals do: `renewal_review` and `loyalty_discount`.
+events:
+  # --- Founder: the living cost rise and the second year
+
+  - id: rent_rise_letter
+    area: founder
+    weight: 1
+    once: true
+    trigger: [week >= 53]
+    from: none
+    sender: Your landlord
+    look: official
+    text: >-
+      Your landlord writes that the rent goes up from this month, as allowed by a clause you did
+      not read. The letter thanks you for your understanding, which nobody asked for.
+    defaultChoice: accept
+    choices:
+      - id: haggle
+        label: Ask for the heating to be fixed instead
+        hours: 2
+        effects:
+          - { type: energy, delta: 6, chance: 0.5 }
+      - id: accept
+        label: Accept it
+        hours: 0
+
+  - id: company_birthday
+    area: founder
+    weight: 1
+    once: true
+    trigger: [week >= 53]
+    from: none
+    sender: Your mother
+    look: note
+    text: >-
+      A year ago this week you started the company. Your mother sends flowers and a card that
+      says "Still?"
+    defaultChoice: carry_on
+    choices:
+      - id: celebrate
+        label: Take an evening off and celebrate
+        hours: 3
+        effects:
+          - { type: energy, delta: 8 }
+      - id: carry_on
+        label: Put the flowers in water and carry on
+        hours: 0
+
+  - id: flatmate_offer
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: An old friend
+    look: note
+    text: >-
+      An old friend needs a room for six months and offers to pay half your rent. They also own a
+      trombone, which they describe as "mostly decorative".
+    defaultChoice: decline
+    choices:
+      - id: take
+        label: Take the flatmate and put the rent into the company
+        hours: 1
+        effects:
+          - { type: cash, amountCents: 120000 }
+          - { type: energy, delta: -8 }
+      - id: decline
+        label: Keep the flat to yourself
+        hours: 0
+
+  - id: job_offer
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 56]
+    from: none
+    sender: A former colleague
+    text: >-
+      A former colleague offers you a well paid job with a pension and a parking space. They ask
+      you to think about it, which you now cannot stop doing.
+    defaultChoice: ignore
+    choices:
+      - id: decline
+        label: Decline it properly, over coffee
+        hours: 1
+        effects:
+          - { type: energy, delta: 3 }
+      - id: ignore
+        label: Leave the email unanswered
+        hours: 0
+        effects:
+          - { type: energy, delta: -6 }
+
+  - id: second_winter
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 60]
+    from: none
+    sender: Heating engineer
+    look: note
+    text: >-
+      It is the company's second winter and your flat is cold. The heating engineer can come on a
+      weekday between eight and four.
+    defaultChoice: jumpers
+    choices:
+      - id: wait_in
+        label: Wait in for the engineer
+        hours: 4
+        effects:
+          - { type: energy, delta: 4 }
+      - id: jumpers
+        label: Wear two jumpers
+        hours: 0
+        effects:
+          - { type: energy, delta: -5, chance: 0.5 }
+
+  - id: holiday_question
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 55]
+    from: none
+    sender: Your sister
+    look: note
+    text: >-
+      Your sister asks when you last had a holiday. You start counting back and then stop
+      counting.
+    defaultChoice: not_now
+    choices:
+      - id: long_weekend
+        label: Take a long weekend
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 10 }
+          - { type: energy, delta: 16 }
+      - id: not_now
+        label: Not now
+        hours: 0
+        effects:
+          - { type: energy, delta: -3 }
+
+  - id: gym_reminder
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: Your gym
+    look: note
+    text: >-
+      The gym you joined last January reminds you that you are still a member. You have been
+      twice. Both times you sat down.
+    defaultChoice: ignore
+    choices:
+      - id: go
+        label: Go three times this week
+        hours: 3
+        effects:
+          - { type: energy, delta: 6 }
+      - id: ignore
+        label: Keep paying for the idea of it
+        hours: 0
+
+  - id: blood_pressure
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 60, energy <= 60]
+    from: none
+    sender: Your doctor
+    look: official
+    text: >-
+      Your doctor says your blood pressure is "entrepreneurial". She prescribes fewer late
+      nights and writes it down as if it were medicine.
+    defaultChoice: ignore
+    choices:
+      - id: follow
+        label: Follow the prescription
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 4 }
+          - { type: energy, delta: 12 }
+      - id: ignore
+        label: File it with the other advice
+        hours: 0
+        effects:
+          - { type: energy, delta: -6, chance: 0.5 }
+
+  - id: student_talk
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: Your old university
+    text: >-
+      Your old university asks you to tell students about founding a company. They want honest
+      lessons, but not too honest, because parents read the newsletter.
+    defaultChoice: decline
+    choices:
+      - id: talk
+        label: Give the talk
+        hours: 5
+        effects:
+          - { type: energy, delta: -2 }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  # --- Finance: customers who stop paying, and the second year's paperwork
+
+  - id: unkind_regards
+    area: finance
+    weight: 3
+    once: true
+    when: [week >= 53, customers.count >= 1, invoices.overdueDays >= 28]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} is now very late with an invoice. Their last email ended in "Regards" without the
+      "Kind". Your accountant says this is how it starts.
+    defaultChoice: wait
+    choices:
+      - id: call
+        label: Call them today
+        hours: 2
+        effects:
+          - { type: invoicePayChance, delta: 0.6 }
+      - id: lawyer
+        label: Send a lawyer's letter
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: invoicePayChance, delta: 0.8 }
+          - { type: churnChance, delta: 0.4 }
+      - id: wait
+        label: Give them another week
+        hours: 0
+
+  - id: debt_collector
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 1, invoices.overdueDays >= 35]
+    from: customer
+    sender: Debt collection agency
+    look: official
+    text: >-
+      A debt collection agency offers to chase {name} for you, for a third of what they owe. The
+      brochure shows a man in a suit pointing at a calendar.
+    defaultChoice: let_go
+    choices:
+      - id: agency
+        label: Hand it to the agency
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -15000 }
+          - { type: invoicePayChance, delta: 0.7 }
+          - { type: churnChance, delta: 0.6 }
+      - id: yourself
+        label: Chase it yourself
+        hours: 2
+        effects:
+          - { type: invoicePayChance, delta: 0.45 }
+      - id: let_go
+        label: Let it go
+        hours: 0
+
+  - id: payment_plan
+    area: finance
+    weight: 3
+    once: true
+    when: [week >= 53, customers.count >= 1, invoices.overdueDays >= 21]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} asks whether they could pay their overdue invoice in three parts. They describe this
+      as a sign of their commitment.
+    defaultChoice: ignore
+    choices:
+      - id: agree
+        label: Agree to three parts
+        hours: 1
+        effects:
+          - { type: invoicePayChance, delta: 0.7 }
+      - id: insist
+        label: Insist on the full amount now
+        hours: 0
+        effects:
+          - { type: invoicePayChance, delta: 0.4 }
+          - { type: churnChance, delta: 0.25 }
+      - id: ignore
+        label: Do not reply
+        hours: 0
+
+  - id: annual_accounts
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 56]
+    from: none
+    sender: Accountant
+    look: official
+    text: >-
+      Your accountant needs every receipt of the year for the annual accounts. "All of them," she
+      adds, as if she has met you.
+    defaultChoice: late
+    choices:
+      - id: sort
+        label: Sort them yourself
+        hours: 5
+      - id: pay
+        label: Pay her to sort the shoebox
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -60000 }
+      - id: late
+        label: Hand them in late
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -90000, chance: 0.5 }
+
+  - id: insurance_renewal
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 55]
+    from: none
+    sender: Insurance company
+    look: official
+    text: >-
+      Your business insurance renews itself at a higher rate. Cancelling needs a letter sent by
+      post to a PO box in another state.
+    defaultChoice: accept
+    choices:
+      - id: post
+        label: Write the letter and find a stamp
+        hours: 1
+      - id: accept
+        label: Accept the new rate
+        hours: 0
+        effects:
+          - { type: fixedCost, id: insurance_rise, name: Insurance rise, monthlyCents: 2500 }
+
+  - id: tool_prices
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: Your software tools
+    look: note
+    text: >-
+      Three of your tools raise their prices on the same day. Each sends a cheerful email about
+      new features you will never use.
+    defaultChoice: accept
+    choices:
+      - id: audit
+        label: Go through them and cancel two
+        hours: 3
+      - id: accept
+        label: Pay the new prices
+        hours: 0
+        effects:
+          - { type: fixedCost, id: tool_prices, name: Tool price rises, monthlyCents: 3000 }
+
+  - id: vat_check
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 60]
+    from: none
+    sender: Tax office
+    look: official
+    text: >-
+      The tax office announces a routine VAT check. The word "routine" appears four times, which
+      is three more than reassuring.
+    defaultChoice: wing_it
+    choices:
+      - id: prepare
+        label: Prepare every folder
+        hours: 6
+      - id: accountant
+        label: Let your accountant handle it
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -50000 }
+      - id: wing_it
+        label: Hope it stays routine
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -150000, chance: 0.3 }
+
+  - id: credit_check
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 53, customers.count >= 3]
+    from: none
+    sender: Credit agency
+    look: official
+    text: >-
+      A credit agency offers to score new customers before you sign them, so fewer of them turn
+      out never to pay. The subscription is billed monthly, whether they pay or not.
+    defaultChoice: decline
+    choices:
+      - id: subscribe
+        label: Subscribe
+        hours: 0
+        effects:
+          - { type: fixedCost, id: credit_check, name: Credit checks, monthlyCents: 9000 }
+      - id: decline
+        label: Trust your judgement
+        hours: 0
+
+  # --- Sales: bigger customers, renewals, growing pains
+
+  - id: renewal_review
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 8
+    when: [week >= 53, customers.count >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} has been with you for a while and would like a short review call before the next
+      invoice. They have prepared questions. Several are about the invoice.
+    defaultChoice: ignore
+    choices:
+      - id: call
+        label: Have the call
+        hours: 2
+      - id: summary
+        label: Send a one page summary
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.05 }
+      - id: ignore
+        label: Hope they forget
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.05 }
+
+  - id: loyalty_discount
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 10
+    when: [week >= 53, customers.count >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} asks whether loyalty comes with a discount. Their tone suggests that it should, and
+      that they have been reading articles.
+    defaultChoice: refuse
+    choices:
+      - id: card
+        label: Send a handwritten thank you instead
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.03 }
+      - id: gift
+        label: Send a gift basket
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -9000 }
+      - id: refuse
+        label: Say prices are prices
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.05 }
+
+  - id: supplier_questionnaire
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 3]
+    from: none
+    sender: A large company
+    look: official
+    text: >-
+      A large company asks you to fill in a supplier questionnaire of 212 questions. Question 87
+      asks for your ISO certificates, of which you have none.
+    defaultChoice: decline
+    choices:
+      - id: fill
+        label: Fill it in
+        hours: 6
+        effects:
+          - { type: newLeads, count: 1, chance: 0.1 }
+      - id: decline
+        label: Politely decline
+        hours: 0
+
+  - id: more_locations
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} would like to introduce you to their other sites, if you come and present in person.
+      They call this a partnership and offer coffee.
+    defaultChoice: later
+    choices:
+      - id: present
+        label: Go and present
+        hours: 4
+        effects:
+          - { type: newLeads, count: 2, chance: 0.6, when: [leads.open <= 8] }
+      - id: deck
+        label: Send them the slides
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1, chance: 0.35, when: [leads.open <= 8] }
+      - id: later
+        label: Maybe next quarter
+        hours: 0
+
+  - id: case_study
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 3]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} agrees to be a case study, if you write it. They would like to approve every comma.
+    defaultChoice: skip
+    choices:
+      - id: write
+        label: Write it
+        hours: 3
+        effects:
+          - { type: newLeads, count: 1, chance: 0.5, when: [leads.open <= 8] }
+      - id: skip
+        label: Not this month
+        hours: 0
+
+  - id: conference_stand
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: Trade conference
+    text: >-
+      A trade conference offers you a stand for 1,800 EUR. It is next to the toilets, which they
+      describe as excellent foot traffic.
+    defaultChoice: skip
+    choices:
+      - id: book
+        label: Book the stand
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -180000 }
+          - { type: newLeads, count: 3, chance: 0.5 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: exit_survey
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 53, customers.churned >= 1]
+    from: none
+    sender: Your exit survey
+    look: note
+    text: >-
+      A customer who left fills in your exit survey. Under "reason" they wrote "see attachment".
+      There is no attachment.
+    defaultChoice: ignore
+    choices:
+      - id: call
+        label: Call and ask what they meant
+        hours: 1
+        effects:
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: ignore
+        label: Close the survey
+        hours: 0
+
+  - id: side_project_request
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 4]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} asks whether you could also do the thing their other supplier does badly. You could,
+      in a sense, with a lot of evenings.
+    defaultChoice: refer
+    choices:
+      - id: build
+        label: Build it for them
+        hours: 6
+        effects:
+          - { type: bugs, delta: 2 }
+      - id: refer
+        label: Recommend someone else
+        hours: 0
+
+  - id: new_contact
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      Your contact at {name} is leaving. Their replacement would like "a quick overview of what
+      we actually pay you for".
+    defaultChoice: email
+    choices:
+      - id: meeting
+        label: Meet the new person
+        hours: 2
+      - id: email
+        label: Send an email
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.25 }
+
+  - id: switching_offer
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      A competitor has offered {name} three months free to switch. {name} tells you, which
+      suggests they would like a reason to stay.
+    defaultChoice: shrug
+    choices:
+      - id: visit
+        label: Visit them
+        hours: 3
+      - id: match
+        label: Give them a month free
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -45000 }
+      - id: shrug
+        label: Wish them luck
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.4 }
+
+  - id: reference_request
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 53, leads.open >= 1, customers.count >= 1]
+    from: lead
+    sender: Lead
+    text: >-
+      {name} would like to speak to one of your customers before signing. Your customers have
+      agreed to be called, in principle.
+    defaultChoice: ignore
+    choices:
+      - id: arrange
+        label: Arrange the call yourself
+        hours: 2
+        effects:
+          - { type: touchLead }
+      - id: list
+        label: Send them a list of names
+        hours: 0
+        effects:
+          - { type: touchLead, chance: 0.4 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+
+  - id: procurement_portal
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 53, customers.count >= 2]
+    from: customer
+    sender: Customer
+    look: official
+    text: >-
+      {name} has a new procurement portal and asks you to register as a supplier. Registration
+      needs eleven documents and a fax number.
+    defaultChoice: ignore
+    choices:
+      - id: register
+        label: Register
+        hours: 3
+        effects:
+          - { type: invoicePayChance, delta: 0.3 }
+      - id: ignore
+        label: Keep sending invoices by email
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.05 }
+
+  # --- Product: growing pains
+
+  - id: old_code
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 53, features.shipped >= 2]
+    from: none
+    sender: Your code
+    look: note
+    text: >-
+      Your own code from last spring now reads like the work of a confident stranger. Changing
+      anything breaks two other things.
+    defaultChoice: live_with_it
+    choices:
+      - id: refactor
+        label: Spend a few days tidying it
+        hours: 6
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: live_with_it
+        label: Live with it
+        hours: 0
+        effects:
+          - { type: bugs, delta: 1, chance: 0.5 }
+
+  - id: data_request
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 1]
+    from: none
+    sender: A customer
+    look: official
+    text: >-
+      A customer asks for all the data you hold on them, citing an article of a regulation. You
+      hold their name, their invoices and an angry email from March.
+    defaultChoice: ignore
+    choices:
+      - id: send
+        label: Send it within the month
+        hours: 2
+      - id: ignore
+        label: Ignore it
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -100000, chance: 0.25 }
+
+  - id: slow_with_growth
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 5]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} says the app has become slower. It has, in the way a queue becomes slower as more
+      people join it.
+    defaultChoice: ignore
+    choices:
+      - id: optimise
+        label: Spend the week on speed
+        hours: 5
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: apologise
+        label: Apologise and promise
+        hours: 1
+        effects:
+          - { type: churnChance, delta: 0.1 }
+      - id: ignore
+        label: Say it is their network
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.25 }
+
+  - id: password_monday
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 53, customers.count >= 3]
+    from: none
+    sender: Your support inbox
+    look: note
+    text: >-
+      Half your customers forgot their passwords on the same Monday. You suspect a coincidence.
+      They suspect you.
+    defaultChoice: by_hand
+    choices:
+      - id: fix_flow
+        label: Fix the reset flow
+        hours: 3
+      - id: by_hand
+        label: Reset them by hand as they come
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 5 }
+
+  - id: request_document
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 53, customers.count >= 4]
+    from: none
+    sender: Your customers
+    look: note
+    text: >-
+      Your customers have started a shared list of feature requests. It has a voting system, three
+      factions and one member who writes only in capitals.
+    defaultChoice: ignore
+    choices:
+      - id: read
+        label: Read it all and reply
+        hours: 3
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.01 }
+      - id: ignore
+        label: Let it vote amongst itself
+        hours: 0
+
+  - id: night_outage
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: Your monitoring
+    look: note
+    text: >-
+      Your server went down at three in the morning and came back forty minutes later by itself.
+      Nobody noticed except the monitoring, which emailed you eleven times.
+    defaultChoice: sleep
+    choices:
+      - id: investigate
+        label: Find out why
+        hours: 3
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: sleep
+        label: Go back to sleep
+        hours: 0
+        effects:
+          - { type: bugs, delta: 1, chance: 0.3 }
+
+  - id: browser_update
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 53, customers.count >= 1]
+    from: none
+    sender: A browser maker
+    look: official
+    text: >-
+      A popular browser changes how it handles something you rely on. The announcement is three
+      lines long and the consequences are not.
+    defaultChoice: wait
+    choices:
+      - id: test
+        label: Test everything now
+        hours: 4
+      - id: wait
+        label: Wait for complaints
+        hours: 0
+        effects:
+          - { type: bugs, delta: 2, chance: 0.5, when: [customers.count >= 3] }
+
+  # --- Validation: a second market
+
+  - id: other_market_asks
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: A stranger's company
+    text: >-
+      A company from a market you never tested asks whether your product works for them too. They
+      seem nice, and a long way from your evidence.
+    defaultChoice: decline
+    choices:
+      - id: interview
+        label: Interview them properly
+        hours: 2
+        effects:
+          - { type: newLeads, count: 1, chance: 0.5, when: [leads.open <= 8] }
+      - id: decline
+        label: Say not yet
+        hours: 0
+
+  - id: market_report
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: A research firm
+    look: official
+    text: >-
+      A research firm sells a report on your market for 950 EUR. The summary says the market is
+      "dynamic", which you had noticed.
+    defaultChoice: pass
+    choices:
+      - id: buy
+        label: Buy the report
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -95000 }
+      - id: pass
+        label: Pass
+        hours: 0
+
+  # --- Team: people, once there is a team
+
+  - id: midnight_emails
+    area: team
+    weight: 2
+    once: true
+    when: [week >= 53, hasHire >= 1]
+    from: none
+    sender: Your hire
+    look: note
+    text: >-
+      Your hire has started answering emails at midnight, which they present as dedication. It
+      reads more like a cry for help with a signature.
+    defaultChoice: let_be
+    choices:
+      - id: talk
+        label: Talk about hours
+        hours: 2
+      - id: let_be
+        label: Let it be
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 4, chance: 0.6 }
+
+  - id: counter_offer
+    area: team
+    weight: 2
+    once: true
+    when: [week >= 53, hasHire >= 1]
+    from: none
+    sender: Your hire
+    look: note
+    text: >-
+      A larger company has offered your hire more money. Your hire tells you about it, which is
+      either loyalty or negotiation.
+    defaultChoice: think
+    choices:
+      - id: match
+        label: Match part of it
+        hours: 0
+        effects:
+          - { type: fixedCost, id: counter_offer, name: Counter offer, monthlyCents: 30000 }
+      - id: think
+        label: Let them think it over
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 6, chance: 0.5 }
+
+  - id: training_course
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 53, hasHire >= 1]
+    from: none
+    sender: Your hire
+    look: note
+    text: >-
+      Your hire found a two day course that would make them better at their job. It costs 600
+      EUR and lunch is included, which they mention twice.
+    defaultChoice: decline
+    choices:
+      - id: send
+        label: Send them
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -60000 }
+      - id: decline
+        label: Not this year
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 2 }
+
+  - id: write_it_down
+    area: team
+    weight: 2
+    once: true
+    when: [week >= 53, hasHire >= 1]
+    from: none
+    sender: Your hire
+    look: note
+    text: >-
+      Your hire suggests writing down how things work, so the next person does not have to ask
+      you everything. At the moment you are the only one who knows how things work.
+    defaultChoice: later
+    choices:
+      - id: write
+        label: Write it down
+        hours: 4
+      - id: later
+        label: Later
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 3, chance: 0.5 }
+
+  - id: rhyming_application
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 53]
+    from: none
+    sender: An applicant
+    text: >-
+      Someone has applied to a job you never advertised, with a cover letter written entirely in
+      rhyme. The rhymes are good.
+    defaultChoice: reply
+    choices:
+      - id: meet
+        label: Meet them for coffee
+        hours: 2
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.005 }
+      - id: reply
+        label: Reply that there is no job
+        hours: 0
+
+  # --- The end of the second year (week 80 and later)
+
+  - id: second_christmas
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 80]
+    from: none
+    sender: Your family
+    look: note
+    text: >-
+      Your family asks whether you will come home for Christmas this year, "for longer than a
+      phone call". Your aunt has already set a place.
+    defaultChoice: call
+    choices:
+      - id: go_home
+        label: Go home for four days
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 12 }
+          - { type: energy, delta: 15 }
+      - id: call
+        label: Call on the day
+        hours: 0
+        effects:
+          - { type: energy, delta: -4 }
+
+  - id: price_review
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 80, customers.count >= 2]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} is reviewing all suppliers for next year and asks for a short written case for
+      keeping you. Their template has a box for "value delivered".
+    defaultChoice: ignore
+    choices:
+      - id: write
+        label: Fill in the box properly
+        hours: 2
+      - id: ignore
+        label: Trust the work to speak for itself
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.3 }
+
+  - id: loyal_referral
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 80, customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} has recommended you to two people at a trade dinner. They would like you to call
+      them before the dinner is forgotten.
+    defaultChoice: later
+    choices:
+      - id: call
+        label: Call both this week
+        hours: 2
+        effects:
+          - { type: newLeads, count: 2, chance: 0.7 }
+      - id: later
+        label: Call when there is time
+        hours: 0
+        effects:
+          - { type: newLeads, count: 1, chance: 0.3 }
+
+  - id: tax_prepayment
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 80]
+    from: none
+    sender: Tax office
+    look: official
+    text: >-
+      The tax office has noticed that you earn money now and sets a prepayment for next year. The
+      letter calls this an estimate, which is generous to both of you.
+    defaultChoice: pay
+    choices:
+      - id: object
+        label: Object with real numbers
+        hours: 3
+      - id: pay
+        label: Pay the estimate
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -60000 }
+
+  - id: accountant_retires
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 80]
+    from: none
+    sender: Accountant
+    look: official
+    text: >-
+      Your accountant is retiring to a lake. Her successor charges more and uses the word
+      "onboarding" as a verb.
+    defaultChoice: stay
+    choices:
+      - id: shop_around
+        label: Find another accountant
+        hours: 3
+      - id: stay
+        label: Stay with the successor
+        hours: 0
+        effects:
+          - { type: fixedCost, id: new_accountant, name: Dearer accountant, monthlyCents: 4500 }
+
+  - id: redesign_wish
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 80, customers.count >= 3]
+    from: none
+    sender: Your customers
+    look: note
+    text: >-
+      Three customers say, separately, that the app looks "a bit last year". It is from last year.
+    defaultChoice: ignore
+    choices:
+      - id: refresh
+        label: Give it a fresh coat of paint
+        hours: 6
+        effects:
+          - { type: bugs, delta: 1 }
+      - id: ignore
+        label: Call it timeless
+        hours: 0
+
+  - id: knee
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 80]
+    from: none
+    sender: Your knee
+    look: note
+    text: >-
+      Your knee has started making a noise on the stairs. It is the noise of two years at a
+      kitchen table.
+    defaultChoice: ignore
+    choices:
+      - id: physio
+        label: See a physiotherapist
+        hours: 2
+        effects:
+          - { type: energy, delta: 5 }
+      - id: ignore
+        label: Take the lift
+        hours: 0
+        effects:
+          - { type: energy, delta: -3 }
+
+  - id: competitor_newsletter
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 80]
+    from: none
+    sender: A competitor's newsletter
+    text: >-
+      A competitor's newsletter announces a feature you built a year ago. They call it a world
+      first and have a photo of a man pointing at a screen.
+    defaultChoice: ignore
+    choices:
+      - id: post
+        label: Write a post about doing it first
+        hours: 3
+        effects:
+          - { type: newLeads, count: 1, chance: 0.3 }
+      - id: ignore
+        label: Smile and unsubscribe
+        hours: 0
+
+  - id: year_end_review
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 85]
+    from: none
+    sender: Your notebook
+    look: note
+    text: >-
+      The last pages of your notebook are blank, which feels like a sign. You could spend an
+      afternoon writing down what the two years taught you.
+    defaultChoice: skip
+    choices:
+      - id: write
+        label: Spend the afternoon on it
+        hours: 4
+        effects:
+          - { type: skill, skill: selling, delta: 0.01 }
+          - { type: energy, delta: 3 }
+      - id: skip
+        label: Buy a new notebook
+        hours: 0
+
+  - id: bigger_office_offer
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 80, customers.count >= 5]
+    from: none
+    sender: An estate agent
+    look: official
+    text: >-
+      An estate agent offers you a proper office with a meeting room and a plant. The plant is
+      included, the rent is not.
+    defaultChoice: decline
+    choices:
+      - id: take
+        label: Sign for it
+        hours: 2
+        effects:
+          - { type: fixedCost, id: proper_office, name: Proper office, monthlyCents: 90000 }
+          - { type: energy, delta: 5 }
+      - id: decline
+        label: Keep the kitchen table
+        hours: 0
+
+  - id: domain_renewal
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 90]
+    from: none
+    sender: Your domain registrar
+    look: official
+    text: >-
+      Your domain renews next month at a new "premium" price. The registrar has discovered that
+      your name is now worth something.
+    defaultChoice: pay
+    choices:
+      - id: transfer
+        label: Move it to another registrar
+        hours: 2
+      - id: pay
+        label: Pay the premium
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -24000 }
+
+  - id: local_paper
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 90]
+    from: none
+    sender: Local newspaper
+    text: >-
+      The local paper wants to profile "a young company that is still here". The photographer
+      would like you to look busy but approachable.
+    defaultChoice: decline
+    choices:
+      - id: interview
+        label: Do the interview
+        hours: 2
+        effects:
+          - { type: newLeads, count: 1, chance: 0.4, when: [leads.open <= 8] }
+      - id: decline
+        label: Stay out of the paper
+        hours: 0
+
+  - id: two_year_contract
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 90, customers.count >= 1]
+    from: customer
+    sender: Customer
+    text: >-
+      {name} would like a contract for two more years, with a clause for everything that went
+      wrong in the first. The clauses are numbered.
+    defaultChoice: ignore
+    choices:
+      - id: negotiate
+        label: Go through the clauses with them
+        hours: 3
+      - id: sign
+        label: Sign as it is
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -30000, chance: 0.5 }
+      - id: ignore
+        label: Leave it in the drafts
+        hours: 0
+        effects:
+          - { type: churnChance, delta: 0.2 }
+
+  - id: spring_clean
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 90]
+    from: none
+    sender: Your desk
+    look: note
+    text: >-
+      Your desk now holds three mugs, two chargers for phones you no longer own and a sandwich of
+      uncertain age. Something should be done.
+    defaultChoice: ignore
+    choices:
+      - id: clean
+        label: Clear the desk
+        hours: 2
+        effects:
+          - { type: energy, delta: 4 }
+      - id: ignore
+        label: Work around it
+        hours: 0

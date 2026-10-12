@@ -1,4 +1,4 @@
-import { loadScenario, SCENARIO_IDS } from '@founder-mode/content'
+import { eventsIn, loadScenario, scenarioSources, SCENARIO_IDS } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
 import { buildReport, evaluateTargets, marketSpread, median, winRateByMarket } from '../src/report'
 import { officeMove } from '../src/desk'
@@ -252,10 +252,16 @@ describe('bots', () => {
         const s = loadScenario(id)
         const officeMove = (e: (typeof s.events)[number]) =>
           e.choices.some((c) => c.effects.some((fx) => fx.type === 'moveOffice'))
-        const ids = s.events
-          .filter((e) => e.id !== 'receipts_pile' && !officeMove(e))
-          .map((e) => e.id)
-        expect(readerEventIds(id).sort()).toEqual([...ids].sort())
+        // The second year's events are shared by every scenario with a long mode; the reader
+        // answers them in every scenario, ready for when it gets one.
+        const year2 = eventsIn(scenarioSources(id).longEvents).map((e) => (e as { id: string }).id)
+        const ids = [...s.events.map((e) => e.id), ...year2].filter(
+          (eid) => eid !== 'receipts_pile' && !s.events.some((e) => e.id === eid && officeMove(e)),
+        )
+        expect(readerEventIds(id).sort()).toEqual([...new Set(ids)].sort())
+        for (const e of loadScenario('kantino', 'long').events) {
+          expect(e.choices.length).toBeGreaterThanOrEqual(2)
+        }
         for (const e of s.events) {
           expect(e.choices.length).toBeGreaterThanOrEqual(2)
         }

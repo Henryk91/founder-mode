@@ -383,3 +383,11 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Target 19's energy check: renting when tired at 58 h now gains +2.0 to +2.2 (was +0.2 to +0.3), cutting the hours +16 to +21; at 65 h cutting 10 h saves 30 to 55% of runs from burnout (was none). Renting still does not pay, resting does.
 - Long mode is not retuned here (C3): the careful bot falls to 16.2%, coworking to 4.1%; 20, 22, 24, 27 and 29 fail (proposal 10.6).
 - Fingerprints: Kantino `2dda4b4b1831c529`, Zollstock `7f5bf30195d531db`. Open 60 week saves get the "retuned" notice.
+
+## Phase 9, part C2b: the second year's events
+
+- 57 long mode only events (`shared/events/year2.yaml`), shared by scenarios with a long mode, gated to week 53 (10 to week 80, 4 to week 90); two renewals recur on purpose. The 60 week game never loads them: its scenarios, fingerprints and games are unchanged. Dry inbox weeks in long mode: 44% of careful runs to 0.2 to 0.3% (target 27's last part met).
+- Target 11 in long mode: effort gains 34% of reading's gain, within its own margin of a third, so it counts as at the limit (owner); judged again after C3. A cause check by area (proposal 10.7) found product events are the clear drag: there reading loses 1.1 points while blind effort gains 0.8.
+- C3 goal (owner): reading the long mode inbox should be worth about as much as in the 60 week game; today year 2 events add +0.3 to reading and +0.7 to blind effort.
+- Chasing is always right (about 80 chases a run, 3% of hours, worth 20 to 23 points); proposals for an early chase risk and automatic reminders recorded in proposal 10.8 for the next 60 week batch. No change.
+- The long section of `docs/balancing.md` is marked stale until C3 (its run predates the last content tweaks).

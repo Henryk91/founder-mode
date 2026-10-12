@@ -14,8 +14,16 @@ import {
 
 /** Every text of a scenario's source files, shared events included. */
 const allSources = (id: (typeof SCENARIO_IDS)[number]) => {
-  const { scenario, features, interviewQuotes, companyNames, intro, events, sharedEvents } =
-    scenarioSources(id)
+  const {
+    scenario,
+    features,
+    interviewQuotes,
+    companyNames,
+    intro,
+    events,
+    sharedEvents,
+    longEvents,
+  } = scenarioSources(id)
   return [
     scenario,
     features,
@@ -24,6 +32,7 @@ const allSources = (id: (typeof SCENARIO_IDS)[number]) => {
     intro,
     ...Object.values(events),
     ...Object.values(sharedEvents),
+    longEvents,
   ]
 }
 

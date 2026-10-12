@@ -603,3 +603,40 @@ Targets 20 to 30 approved as in 10.3, with target 29 restated as above. Two real
 A slope: up to 53 h holds, 55 h drains slowly (energy below 30 in 56 to 68% of runs, sales suffer), 58 h burns out around week 25. **53 h against 50 h:** +2.1 (Kantino 60), +0.8 (Zollstock 60), +2.2 (long). Targets 2, 3, 21 and 22 would not change their result if the careful bot planned 53 h (2 and 3 are measured on the 50 h bot; 53 h stays inside 25 to 45% in both 60 week scenarios, and the long careful bot fails 22 at either). No change made.
 
 **Long mode after C2a (not retuned; long values are C3's):** the careful bot falls to 16.2% (from 25.9%), coworking to 4.1%. Over 104 weeks, losing a customer for every unpaid invoice compounds, and in the small, saturating markets lost customers are hard to replace. Targets 21, 23, 25, 26, 28 and 30 pass; 20 (burst -0.8, steady -2.5), 22 (16.2%), 24 (17.3 points), 27 (dry 44.0%; reading +7.8), 29 (from revenue -0.3; on savings -12.6, which passes its half) fail.
+
+### 10.7 Step C2b: the second year's events
+
+57 new events in `shared/events/year2.yaml`, long mode only and general enough for Zollstock to share: 43 from week 53, 10 from week 80, 4 from week 90; two renewals recur on purpose. Themes: the rent rise, customers who stop paying, renewals, bigger customers, growing pains, second-year life, and five team events that need a hire. The 60 week game never loads the file (fingerprints and games unchanged; the regenerated 60 week report matches C2a number for number apart from the new chasing section), and a long run's first year plays as before.
+
+Results (long mode, 10,000 seeds unless noted):
+
+- **Target 27, dry inbox:** 0.2 to 0.3% of careful runs (was 44%); first dry week 103 in the median. Met.
+- **Target 26:** decision news in 100% of weeks 53 to 104. Met.
+- **Target 10** (1000 seeds, information in long mode): 78 of 147 judged events favour the cheap or free choice (53%); 27 of the 54 new events judged.
+- **Target 11 in long mode:** blind effort gains 34% of reading's gain (+2.8 against +8.0), at the limit of a third within its own margin. **Owner's decision:** it counts as at the limit under the existing rule, unchanged in wording, and is judged again after C3.
+
+Content tweaks after the first measurement (kept): four events where the most hours won softened (`old_code`, `second_winter`, `supplier_questionnaire`, `student_talk`); leads and bug risks made to depend on what the reader sees (`browser_update`, `other_market_asks`, `local_paper`, `more_locations`); the churn risk of ignoring the two recurring renewals lowered to 0.05. The reader keeps its original rules: moving it to the answers that won single event comparisons made reading worse each time (+6.5, +7.3).
+
+**Where year 2 events weigh (cause check, measurement only).** Reading and blind effort against leaving every message alone, inbox part on 10,000 seeds with one area of year 2 events switched off; an area's share is the full result (effort +2.8, reading +8.0) minus the result without it. Without any year 2 events: effort +2.1, reading +7.8. Each run has a margin of about ±0.7, so a share under about 0.5 is noise.
+
+| Area | Events | Reading gains from it | Blind effort gains from it |
+|---|---|---|---|
+| Founder | 13 | -0.3 | -0.1 |
+| Finance | 12 | -0.1 | +0.4 |
+| Sales | 15 | +0.7 | +0.2 |
+| Product | 8 | -1.1 | +0.8 |
+| Validation | 4 | -0.6 | +0.2 |
+| Team | 5 (need a hire, rarely arrive) | +0.3 | +0.5 |
+
+Product is the one clear signal: the reader's answers to the product events do worse than blind effort (taking the hours to test, investigate or tidy). Sales is the only area where reading gains clearly. The team row is noise, as those events arrive in about 1% of runs.
+
+**C3 goal added (owner):** year 2 events must carry real weight. Today reading them gains +0.3 points and blind effort +0.7, so they are mostly filler. By the end of C3, reading the inbox in long mode should be worth roughly as much as in the 60 week game (60 weeks: reading +12.6 in Kantino, +11.6 in Zollstock). Start with product (where reading loses), then sales and finance.
+
+### 10.8 Chasing invoices: candidates for the next 60 week batch (no change now)
+
+Chasing is always right today: a chase costs 1 h and never hurts. The careful bot chases about 80 times a run (1.6 a week, about 3% of its hours); of the invoices it chases, 53 to 58% would have been paid anyway (later), 39 to 42% were waiting for a chase and 4 to 5% would never have been paid. Not chasing costs 22.7 (Kantino) and 19.9 points (Zollstock). The few seeds won only without chasing are longer runs that diverged by chance, not a hidden cost. So it is a weekly chore, not a decision. Two candidates, both of which change the 60 week balance and so wait for the next batch of 60 week changes:
+
+| Option | What | Effect |
+|---|---|---|
+| Early chase annoys | A chase in the first week after the due date carries a small churn chance (a customer who would have paid is annoyed); later chases carry none | "Chase now or give it a week" becomes a judgement. Target 13's chase value shrinks; the careful bot needs a timing rule |
+| Automatic reminders | A standing rule on the Money tab, such as "chase after 14 days", costing the same hour per chase from the week's plan | Removes the weekly tapping; chasing stays worth the same unless combined with the first option |

@@ -109,6 +109,13 @@ export type RunResult = {
   /** Hires let go over the run, and people on the team (working or starting) at the end. */
   lettingsGo: number
   teamAtEnd: number
+  /**
+   * Invoice chases over the run, the founder hours they took, and what each chased invoice would
+   * have done unchased (hidden truth, report only): paid anyway, waited for a chase, or never.
+   */
+  chases: { count: number; hours: number; wouldPay: number; waited: number; never: number }
+  /** Founder hours planned over the run. */
+  plannedHoursTotal: number
   /** Ids of the inbox events that arrived, in order. */
   eventsSeen: string[]
   /**
@@ -242,6 +249,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
   let messageWeeks = 0
   let dryWeeks = 0
   let firstDryWeek: number | null = null
+  const chases = { count: 0, hours: 0, wouldPay: 0, waited: 0, never: 0 }
   let year2Weeks = 0
   let year2DecisionWeeks = 0
   let at60: RunResult['at60'] = scenario.maxWeeks > STANDARD_WEEKS ? 'over' : null
@@ -267,6 +275,14 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
       firstWeekInterviews = Math.min(...counts) > 0 ? Math.min(...counts) : null
     }
     const inboxBefore = state.inbox.length
+    for (const id of plan.chase) {
+      chases.count++
+      chases.hours += scenario.finance.chaseHours
+      const payWeek = state.hidden.payWeeks[id]
+      if (payWeek !== null && payWeek !== undefined) chases.wouldPay++
+      else if (state.hidden.waitsForChase.includes(id)) chases.waited++
+      else chases.never++
+    }
     const result = endWeek(state, plan)
     if (freelanceAt === null && result.report.entries.some((e) => e.kind === 'freelance_booked')) {
       freelanceAt = { week: result.report.week, market: null }
@@ -364,6 +380,8 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     noteworthyWeeks,
     decisionWeeks,
     messageWeeks,
+    chases,
+    plannedHoursTotal: hours,
     year2Weeks,
     year2DecisionWeeks,
     at60,

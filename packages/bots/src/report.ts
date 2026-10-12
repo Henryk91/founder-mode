@@ -769,6 +769,50 @@ function behaviourRows(full: StrategyRuns, variants: StrategyRuns[]): string[] {
   ]
 }
 
+/**
+ * Chasing invoices (measurement only, Part C2b): how often the careful bot chases, the founder
+ * hours it takes, what the chased invoices would have done unchased (hidden truth), and the
+ * seeds it wins only without chasing, against the leave-one-out run on the same seeds.
+ */
+function chaseRows(input: ReportInput): string[] {
+  const off = find(input, 'validate_then_build -chase')
+  const reader = find(input, READER_ID)
+  const full =
+    reader && off && reader.results.length === off.results.length
+      ? reader
+      : input.strategies.find((x) => x.id === 'validate_then_build')
+  if (!full) return []
+  const rs = full.results
+  const sum = (f: (r: RunResult) => number) => rs.reduce((t, r) => t + f(r), 0)
+  const chases = sum((r) => r.chases.count)
+  const hours = sum((r) => r.chases.hours)
+  const planned = sum((r) => r.plannedHoursTotal)
+  const weeks = sum((r) => r.weeks)
+  const share = (n: number) => fmtPct(pct(n, chases))
+  const out = [
+    '',
+    '## Chasing invoices',
+    '',
+    `The careful bot chases up to three overdue invoices a week, 1 h each (${full.id}, ${rs.length} runs). "Unchased" is what each chased invoice would have done without the chase (hidden truth): paid anyway, later; waited for a chase; or never paid. A chase changes nothing else in the game.`,
+    '',
+    '| Runs that chased | Chases per run | Chases per week played | Founder hours per run | Share of all planned hours | Unchased: paid anyway / waited for a chase / never |',
+    '|---|---|---|---|---|---|',
+    `| ${fmtPct(pct(rs.filter((r) => r.chases.count > 0).length, rs.length))} | ${(chases / rs.length).toFixed(1)} | ${(chases / Math.max(1, weeks)).toFixed(2)} | ${(hours / rs.length).toFixed(1)} | ${fmtPct(pct(hours, planned))} | ${share(sum((r) => r.chases.wouldPay))} / ${share(sum((r) => r.chases.waited))} / ${share(sum((r) => r.chases.never))} |`,
+  ]
+  if (off) {
+    const p = paired(full.results, off.results)
+    const onlyWithout = off.results
+      .map((r, i) => ({ r, f: full.results[i]! }))
+      .filter(({ r, f }) => winsOf(r) && !winsOf(f))
+    const med = (xs: number[]) => fmtNum(median(xs), 1)
+    out.push(
+      '',
+      `Against the same bot that never chases (same seeds): ${p.change.toFixed(1)} points without chasing; won only with chasing ${p.onlyFull} seeds, only without ${p.onlyOther}. In the seeds won only without, the chasing run chased a median ${med(onlyWithout.map(({ f }) => f.chases.count))} times (${med(onlyWithout.map(({ f }) => f.chases.hours))} h) against ${med(full.results.map((r) => r.chases.count))} in all runs.`,
+    )
+  }
+  return out
+}
+
 export function buildReport(input: ReportInput): string {
   const long = (input.maxWeeks ?? 0) > STANDARD_WEEKS
   const lines: string[] = []
@@ -847,6 +891,7 @@ export function buildReport(input: ReportInput): string {
   push(...pricingRows(input))
   push(...freelanceRows(input))
   push(...tiredRows(input))
+  push(...chaseRows(input))
   if (long) push(...teamRows(input))
   push(...energyRows(input))
 
