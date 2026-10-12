@@ -132,9 +132,10 @@
   line-height: calc(2 * var(--small-base) - 0.75 * 13px);
 }
 
-/* A small figure inside a label, such as hours built so far. It never changes the line. */
+/* A small figure inside a label, such as a salary. It never changes the line or breaks. */
 .note {
   margin-left: 8px;
+  white-space: nowrap;
   font-family: var(--font-mono);
   font-size: var(--fs-mono);
   font-weight: 600;
@@ -297,7 +298,8 @@
   min-height: var(--line);
 }
 
-.row > .label {
+.row > .label,
+.row > .wrapped {
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -345,8 +347,15 @@
   }
 }
 
-:global([data-layout='desk']) .row > .label {
+:global([data-layout='desk']) .row > .label,
+:global([data-layout='desk']) .row > .wrapped {
   flex: 0 0 var(--label-w);
+}
+
+/* A row with nothing beside it, such as the hire and their salary, may use the whole line. */
+:global([data-layout='desk']) .rowAlone > .wrapped {
+  flex: 0 1 auto;
+  min-width: var(--label-w);
 }
 
 /* The last line of an open section: one hint and a link to the full explanation. */

@@ -36,7 +36,7 @@ export class ErrorBoundary extends Component<Props, State> {
     const stage = 'scrappy'
     return (
       <main className={startStyles.start}>
-        <section className={`${styles.card} ${styles.sticky}`} role="alert">
+        <section className={`${styles.card} ${styles.sticky} ${styles.notice}`} role="alert">
           <h1 className={styles.title} ref={this.heading} tabIndex={-1} data-autofocus>
             {label('crash.title', stage)}
           </h1>

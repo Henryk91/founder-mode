@@ -8,18 +8,22 @@ import plan from '../screens/Plan.module.css'
  * lines tall (see Plan.module.css), so writing always sits on a rule and controls on their line.
  */
 
-/** A label with its controls beside it (to the right edge on a phone). */
+/**
+ * A label with its controls beside it (to the right edge on a phone). A long label, such as two
+ * leads called "Frauenarztpraxis Dr. ...", wraps onto further whole lines instead of being cut,
+ * and the controls stay on its first line.
+ */
 export function Row(props: {
   label: string
   note?: string | undefined
   children?: React.ReactNode
 }) {
   return (
-    <div className={plan.row}>
-      <span className={plan.label}>
+    <div className={`${plan.row} ${props.children ? '' : plan.rowAlone}`}>
+      <Wrapped>
         {props.label}
         {props.note && <span className={plan.note}>{props.note}</span>}
-      </span>
+      </Wrapped>
       {props.children && <div className={plan.controls}>{props.children}</div>}
     </div>
   )

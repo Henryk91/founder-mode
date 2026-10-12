@@ -28,7 +28,7 @@ export function Start() {
   return (
     <main className={startStyles.start}>
       {(notice || storageNotice || runsNotice) && (
-        <div className={`${styles.card} ${styles.sticky}`} role="status">
+        <div className={`${styles.card} ${styles.sticky} ${styles.notice}`} role="status">
           {notice && <p>{label(`start.notice.${notice}`, stage)}</p>}
           {storageNotice && <p>{label(`storage.notice.${storageNotice}`, stage)}</p>}
           {runsNotice && <p>{label(`runs.notice.${runsNotice}`, stage)}</p>}
