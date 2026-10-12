@@ -21,7 +21,8 @@ const nodeBuiltins = [
 ]
 
 export default tseslint.config(
-  { ignores: ['**/node_modules/**', '**/dist/**', '**/coverage/**', 'docs/**'] },
+  // Local diagnostics (`*.tmp.ts`) are never committed.
+  { ignores: ['**/node_modules/**', '**/dist/**', '**/coverage/**', 'docs/**', '**/*.tmp.ts'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
