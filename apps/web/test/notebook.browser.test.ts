@@ -101,7 +101,8 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
         const off: string[] = []
         let blocks = 0
         for (const el of notebook.querySelectorAll('*')) {
-          if (el.closest(controls)) continue
+          // Text for screen readers only takes no room on the paper.
+          if (el.closest(controls) || el.closest('.visually-hidden')) continue
           const display = getComputedStyle(el).display
           if (display === 'inline' || display === 'contents') continue
           const r = el.getBoundingClientRect()
@@ -238,7 +239,7 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
           const t = text.getBoundingClientRect()
           return {
             name: name.textContent,
-            progress: text.textContent,
+            progress: text.querySelector('[aria-hidden]')?.textContent ?? text.textContent,
             nameClipped: clipped(name),
             progressClipped: clipped(text),
             progressBelowName: t.top >= n.bottom - 1,
@@ -261,12 +262,12 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
       await page
         .locator('[class*="_feature_"]')
         .first()
-        .getByRole('button', { name: 'More', exact: true })
+        .getByRole('button', { name: /^5 more hours on / })
         .click()
       await page
         .locator('[class*="_feature_"]')
         .first()
-        .getByRole('button', { name: 'More', exact: true })
+        .getByRole('button', { name: /^5 more hours on / })
         .click()
       const first = await page.evaluate(() => {
         const row = document.querySelector('[class*="_feature_"]')!
@@ -274,7 +275,7 @@ describe.skipIf(!chromePath)('the planner notebook', () => {
         const buttons = [...row.querySelectorAll('button')].map((b) => b.getBoundingClientRect())
         return {
           value: row.querySelector('[class*="stepValue"]')?.textContent,
-          progress: row.querySelector('[class*="_progressText_"]')?.textContent,
+          progress: row.querySelector('[class*="_progressText_"] [aria-hidden]')?.textContent,
           inside: buttons.every((b) => b.right <= notebook.getBoundingClientRect().right + 0.5),
           tappable: buttons.every((b) => b.width >= 43.5 && b.height >= 43.5),
         }

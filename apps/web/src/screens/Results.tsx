@@ -223,7 +223,9 @@ export function Results() {
         className={`${styles.card} ${styles.sticky} ${styles.moment}`}
         aria-label={moment.title}
       >
-        <h2 className={styles.momentTitle}>{moment.title}</h2>
+        <h2 className={styles.momentTitle} tabIndex={-1} data-autofocus>
+          {moment.title}
+        </h2>
         <p className={styles.handText}>{moment.text}</p>
         {moment.id === 'ending' && (
           <p>{label('end.stats', stage, { weeks: view.week, customers: view.customers.length })}</p>
@@ -252,7 +254,9 @@ function WeekSummary({ report, view }: { report: WeekReport; view: PlayerView })
   const groups = groupWeek(report, view, stage)
   return (
     <>
-      <h2 className={styles.hand}>{label('results.title', stage, { week: report.week })}</h2>
+      <h2 className={styles.hand} tabIndex={-1} data-autofocus>
+        {label('results.title', stage, { week: report.week })}
+      </h2>
       {report.uiStageChanged && (
         <section
           className={`${styles.card} ${styles.sticky}`}
@@ -330,7 +334,7 @@ export function groupWeek(report: WeekReport, view: PlayerView, stage: UiStage):
     priority: low ? 7 : 1,
     node: (
       <span className={low ? styles.warn : undefined}>
-        {label('results.hours', stage, {
+        {label(low ? 'results.hoursLow' : 'results.hours', stage, {
           hours: report.plannedHours,
           before: formatEnergy(report.energyBefore),
           after: formatEnergy(report.energyAfter),

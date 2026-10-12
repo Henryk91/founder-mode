@@ -33,10 +33,11 @@ export function DeskLayout(props: { main: React.ReactNode | null }) {
         </main>
       ) : (
         <div className={styles.deskColumns}>
-          <aside className={styles.left} aria-label={label('tab.inbox', stage)}>
+          {/* Each column scrolls on its own, so each can take focus and scroll by keyboard. */}
+          <aside className={styles.left} aria-label={label('tab.inbox', stage)} tabIndex={0}>
             <Inbox desk />
           </aside>
-          <main className={styles.centre}>
+          <main className={styles.centre} tabIndex={0}>
             <Explain />
             <Scene />
             <MilestoneBar />
@@ -56,7 +57,7 @@ export function DeskLayout(props: { main: React.ReactNode | null }) {
             {centre === 'plan' ? <Plan /> : <Market />}
             <Pipeline />
           </main>
-          <aside className={styles.right} aria-label={label('tab.money', stage)}>
+          <aside className={styles.right} aria-label={label('tab.money', stage)} tabIndex={0}>
             <Money />
           </aside>
         </div>

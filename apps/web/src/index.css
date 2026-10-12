@@ -42,8 +42,31 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+  /*
+   * Two rings, ink inside and highlighter yellow outside, so one of them stands out on every
+   * surface: paper, sticky notes, cork, the dark desk and the bar.
+   */
+  outline: 3px solid var(--focus-inner);
+  outline-offset: 0;
+  box-shadow: 0 0 0 6px var(--focus-outer);
+}
+
+/* Nothing moves today; this keeps it that way for anyone who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Headings take focus when their screen opens, for screen readers; they need no ring. */
+[data-autofocus]:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .visually-hidden {

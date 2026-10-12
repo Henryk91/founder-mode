@@ -124,7 +124,10 @@ export function upcoming(view: PlayerView): Upcoming[] {
     if (l.stage !== 'trial') continue
     items.push({
       week: view.week + Math.max(0, view.costs.trialWeeks - l.weeksInStage),
-      text: label('coming.trialEnds', stage, { name: l.name }),
+      // Said in words as well as in colour.
+      text: label(l.silent ? 'coming.trialEndsSilent' : 'coming.trialEnds', stage, {
+        name: l.name,
+      }),
       warn: l.silent,
     })
   }

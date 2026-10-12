@@ -65,6 +65,13 @@ export function Pipeline() {
     const booked = demos.includes(l.id)
     const following = followUps.includes(l.id)
     const hasButtons = l.canFollowUp || l.canBookDemo
+    const followText = following
+      ? label('pipeline.followUpBooked', stage)
+      : label('pipeline.followUp', stage, { hours: hours(view.costs.followUpHours) })
+    const demoText = booked
+      ? label('pipeline.unbookDemo', stage)
+      : label('pipeline.bookDemo', stage, { hours: hours(view.costs.demoHours) })
+    const forLead = (action: string) => label('aria.forName', stage, { action, name: l.name })
     return (
       <li
         key={l.id}
@@ -85,11 +92,10 @@ export function Pipeline() {
             aria-pressed={following}
             disabled={!following && free < view.costs.followUpHours}
             className={`${styles.button} ${board.button} ${following ? styles.primary : ''}`}
+            aria-label={forLead(followText)}
             onClick={() => toggleFollowUp(l.id)}
           >
-            {following
-              ? label('pipeline.followUpBooked', stage)
-              : label('pipeline.followUp', stage, { hours: hours(view.costs.followUpHours) })}
+            {followText}
           </button>
         )}
         {l.canBookDemo && (
@@ -98,11 +104,10 @@ export function Pipeline() {
             aria-pressed={booked}
             disabled={!booked && free < view.costs.demoHours}
             className={`${styles.button} ${board.button} ${booked ? styles.primary : ''}`}
+            aria-label={forLead(demoText)}
             onClick={() => toggleDemo(l.id)}
           >
-            {booked
-              ? label('pipeline.unbookDemo', stage)
-              : label('pipeline.bookDemo', stage, { hours: hours(view.costs.demoHours) })}
+            {demoText}
           </button>
         )}
       </li>

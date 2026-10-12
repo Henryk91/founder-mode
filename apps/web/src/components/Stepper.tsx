@@ -1,10 +1,17 @@
-import { label, type UiStage } from '../labels'
+import { label, type LabelKey, type UiStage } from '../labels'
 import styles from './ui.module.css'
 
 type Props = {
   stage: UiStage
   value: number
   onChange: (value: number) => void
+  /**
+   * What the stepper changes, for the buttons' names: "hours for Small offices" names the buttons
+   * "More hours for Small offices" and "Fewer hours for Small offices".
+   */
+  what: string
+  /** Button names for money, where "more" and "fewer" read oddly. They get the step as `{step}`. */
+  names?: { minus: LabelKey; plus: LabelKey }
   /** Text shown between the buttons. Defaults to the number. */
   display?: string
   step?: number
@@ -23,6 +30,8 @@ export function Stepper({
   stage,
   value,
   onChange,
+  what,
+  names,
   display,
   formatStep = String,
   step = 1,
@@ -35,53 +44,46 @@ export function Stepper({
   const set = (n: number) => () => onChange(clamp(n))
   const atMin = value <= min
   const atMax = value >= max
+  const name = (dir: 'minus' | 'plus', size: number) => {
+    if (names) return label(names[dir], stage, { step: formatStep(size) })
+    if (size === 1) return label(`stepper.${dir}`, stage, { what })
+    return label(`stepper.${dir}Step`, stage, { what, step: formatStep(size) })
+  }
+  const button = (dir: 'minus' | 'plus', size: number, big: boolean) => (
+    <button
+      type="button"
+      className={styles.stepButton}
+      {...(big ? { 'data-big': '' } : {})}
+      disabled={dir === 'minus' ? atMin : atMax}
+      aria-label={name(dir, size)}
+      onClick={set(dir === 'minus' ? value - size : value + size)}
+    >
+      <span className={styles.stepFace} aria-hidden="true">
+        {size === 1 && !big
+          ? dir === 'minus'
+            ? '−'
+            : '+'
+          : `${dir === 'minus' ? '-' : '+'}${formatStep(size)}`}
+      </span>
+    </button>
+  )
   return (
-    <div className={`${styles.stepper} ${hoursValue ? styles.stepperTight : ''}`}>
-      {bigStep !== undefined && (
-        <button
-          type="button"
-          className={styles.stepButton}
-          data-big=""
-          disabled={atMin}
-          aria-label={label('stepper.minusBig', stage)}
-          onClick={set(value - bigStep)}
-        >
-          <span className={styles.stepFace}>{`-${formatStep(bigStep)}`}</span>
-        </button>
-      )}
-      <button
-        type="button"
-        className={styles.stepButton}
-        disabled={atMin}
-        aria-label={label('stepper.minus', stage)}
-        onClick={set(value - step)}
+    <div
+      role="group"
+      aria-label={what.charAt(0).toUpperCase() + what.slice(1)}
+      className={`${styles.stepper} ${hoursValue ? styles.stepperTight : ''}`}
+    >
+      {bigStep !== undefined && button('minus', bigStep, true)}
+      {button('minus', step, false)}
+      <span
+        className={`${styles.stepValue} ${hoursValue ? styles.stepHours : ''}`}
+        aria-live="polite"
+        aria-atomic="true"
       >
-        <span className={styles.stepFace}>{step === 1 ? '−' : `-${formatStep(step)}`}</span>
-      </button>
-      <span className={`${styles.stepValue} ${hoursValue ? styles.stepHours : ''}`}>
         {display ?? value}
       </span>
-      <button
-        type="button"
-        className={styles.stepButton}
-        disabled={atMax}
-        aria-label={label('stepper.plus', stage)}
-        onClick={set(value + step)}
-      >
-        <span className={styles.stepFace}>{step === 1 ? '+' : `+${formatStep(step)}`}</span>
-      </button>
-      {bigStep !== undefined && (
-        <button
-          type="button"
-          className={styles.stepButton}
-          data-big=""
-          disabled={atMax}
-          aria-label={label('stepper.plusBig', stage)}
-          onClick={set(value + bigStep)}
-        >
-          <span className={styles.stepFace}>{`+${formatStep(bigStep)}`}</span>
-        </button>
-      )}
+      {button('plus', step, false)}
+      {bigStep !== undefined && button('plus', bigStep, true)}
     </div>
   )
 }

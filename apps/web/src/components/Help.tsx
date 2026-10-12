@@ -28,7 +28,9 @@ export function Help() {
   return (
     <>
       <section className={styles.card}>
-        <h2 className={styles.title}>{label('help.goal', stage)}</h2>
+        <h2 className={styles.title} tabIndex={-1} data-autofocus>
+          {label('help.goal', stage)}
+        </h2>
         {goal && (
           <p>
             {fillText(goal.body, {

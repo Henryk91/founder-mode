@@ -13,10 +13,27 @@ export function Explain() {
   const founder = useGame((s) => s.view?.founder)
   const costs = useGame((s) => s.view?.costs)
   const ref = useRef<HTMLElement>(null)
-  // The explanation opens at the top of the screen, so bring it into view from deep in the Plan.
+  /** The control that opened the explanation, given focus back when it closes. */
+  const opener = useRef<HTMLElement | null>(null)
+  // The explanation opens at the top of the screen, so bring it into view from deep in the Plan,
+  // and take keyboard focus with it. Escape closes it, as the button does.
   useEffect(() => {
-    if (key) ref.current?.scrollIntoView?.({ block: 'nearest' })
-  }, [key])
+    if (!key) return
+    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+      opener.current = document.activeElement
+    }
+    ref.current?.scrollIntoView?.({ block: 'nearest' })
+    ref.current?.focus?.({ preventScroll: true })
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      if (opener.current?.isConnected) opener.current.focus()
+      opener.current = null
+    }
+  }, [key, close])
   if (!key) return null
   const unit = (n: number) => label('unit.hours', stage, { n })
   const weeks = (n: number) => count('unit.weeks', stage, n)
@@ -27,8 +44,17 @@ export function Explain() {
     ...(costs && explainVars(key, costs, unit, weeks)),
   }
   return (
-    <section ref={ref} className={`${styles.card} ${styles.sticky}`} role="note">
-      <h2 className={styles.title}>{label(`explain.${key}.title`, stage)}</h2>
+    <section
+      ref={ref}
+      className={`${styles.card} ${styles.sticky}`}
+      role="note"
+      aria-labelledby="explain-title"
+      tabIndex={-1}
+      data-autofocus
+    >
+      <h2 id="explain-title" className={styles.title}>
+        {label(`explain.${key}.title`, stage)}
+      </h2>
       <p>{label(`explain.${key}.text`, stage, vars)}</p>
       <button type="button" className={styles.button} onClick={close}>
         {label('explain.close', stage)}

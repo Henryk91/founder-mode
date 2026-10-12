@@ -288,13 +288,15 @@ export function PostMortem({ desk }: { desk: boolean }) {
   return (
     <div className={styles.page} data-layout={desk ? 'desk' : 'phone'} data-stage={stage}>
       <header className={styles.bar}>
-        <span className={styles.company}>{view.scenarioName}</span>
-        <span className={styles.ending}>
-          {label('pm.header', stage, {
-            week: pm.week,
-            ending: label(`pm.ending.${pm.ending}`, stage),
-          })}
-        </span>
+        <h1 className={styles.heading} tabIndex={-1} data-autofocus>
+          <span className={styles.company}>{view.scenarioName}</span>
+          <span className={styles.ending}>
+            {label('pm.header', stage, {
+              week: pm.week,
+              ending: label(`pm.ending.${pm.ending}`, stage),
+            })}
+          </span>
+        </h1>
       </header>
       <main className={desk ? styles.columns : styles.column}>
         {desk ? (

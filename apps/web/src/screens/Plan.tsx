@@ -370,6 +370,7 @@ function TalkBody({ free }: { free: number }) {
             <Stepper
               stage={stage}
               value={value}
+              what={label('stepper.what.interviews', stage, { segment: seg.name })}
               max={capFor(value, free, costs.interviewHours, 20)}
               onChange={(n) => setInterviews(seg.id, n)}
             />
@@ -430,6 +431,7 @@ function TestBody({ free }: { free: number }) {
             <Stepper
               stage={stage}
               value={batches}
+              what={label('stepper.what.presales', stage, { segment: seg.name })}
               max={Math.min(
                 seg.presaleBatchesLeft,
                 capFor(batches, free, costs.presaleHoursPerBatch, 10),
@@ -486,10 +488,15 @@ function BuildBody({ free }: { free: number }) {
                 done: f.progressHours,
                 total: f.buildHours,
               })}
+              progressSpoken={label('plan.progressSpoken', stage, {
+                done: f.progressHours,
+                total: f.buildHours,
+              })}
             >
               <Stepper
                 stage={stage}
                 value={value}
+                what={label('stepper.what.build', stage, { feature: f.name })}
                 display={plannedText(value, stage)}
                 hoursValue
                 step={5}
@@ -512,6 +519,7 @@ function BuildBody({ free }: { free: number }) {
           <Stepper
             stage={stage}
             value={bugFixHours}
+            what={label('stepper.what.fix', stage)}
             display={plannedText(bugFixHours, stage)}
             hoursValue
             max={Math.min(product.fixableHours, bugFixHours + free)}
@@ -543,6 +551,7 @@ function SellBody({ free }: { free: number }) {
               <Stepper
                 stage={stage}
                 value={hours}
+                what={label('stepper.what.outreach', stage, { segment: seg.name })}
                 max={hours + free}
                 display={label('unit.hours', stage, { n: hours })}
                 onChange={(n) => setOutreach(seg.id, channel, n)}
@@ -582,6 +591,9 @@ function DemosBody({ free }: { free: number }) {
       {wanting.length === 0 && <Writing>{label('plan.demos.noneWanted', stage)}</Writing>}
       {wanting.map((l) => {
         const booked = p.demos.includes(l.id)
+        const text = booked
+          ? label('pipeline.unbookDemo', stage)
+          : label('pipeline.bookDemo', stage, { hours: hours(costs.demoHours) })
         return (
           <Row key={l.id} label={l.name}>
             <button
@@ -589,11 +601,10 @@ function DemosBody({ free }: { free: number }) {
               aria-pressed={booked}
               disabled={!booked && free < costs.demoHours}
               className={`${styles.chip} ${booked ? styles.chipOn : ''}`}
+              aria-label={label('aria.forName', stage, { action: text, name: l.name })}
               onClick={() => toggleDemo(l.id)}
             >
-              {booked
-                ? label('pipeline.unbookDemo', stage)
-                : label('pipeline.bookDemo', stage, { hours: hours(costs.demoHours) })}
+              {text}
             </button>
           </Row>
         )
@@ -640,6 +651,7 @@ function RestBody({ free }: { free: number }) {
         <Stepper
           stage={stage}
           value={restHours}
+          what={label('stepper.what.rest', stage)}
           max={restHours + free}
           display={label('unit.hours', stage, { n: restHours })}
           onChange={setRestHours}

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import type { StoreApi } from 'zustand/vanilla'
 import { Help } from './components/Help'
 import { Intro } from './components/Intro'
@@ -28,14 +29,44 @@ function Root(props: { layout?: LayoutChoice | undefined }) {
   const helpOpen = useGame((s) => s.helpOpen)
   const momentsSeen = useGame((s) => s.momentsSeen)
   const wide = useWide()
+  const desk = props.layout ? props.layout === 'desk' : wide
+  // A finished run shows its full screen moments, then the post-mortem, even after a reload.
+  const momentPending =
+    view !== null && report !== null && notableMoments(report, view).length > momentsSeen
+  const screen = !view
+    ? 'start'
+    : introStep !== null
+      ? `intro-${introStep}`
+      : view.status === 'ended' && !momentPending
+        ? 'postmortem'
+        : helpOpen
+          ? 'help'
+          : report !== null
+            ? `report-${momentsSeen}`
+            : 'game'
+  useFocusOnScreenChange(screen)
+
   if (!view) return <Start />
   if (introStep !== null) return <Intro />
-  const desk = props.layout ? props.layout === 'desk' : wide
-
-  // A finished run shows its full screen moments, then the post-mortem, even after a reload.
-  const momentPending = report !== null && notableMoments(report, view).length > momentsSeen
-  if (view.status === 'ended' && !momentPending) return <PostMortem desk={desk} />
+  if (screen === 'postmortem') return <PostMortem desk={desk} />
 
   const main = helpOpen ? <Help /> : report !== null ? <Results /> : null
   return desk ? <DeskLayout main={main} /> : <PhoneLayout main={main} />
+}
+
+/**
+ * When the screen changes, keyboard focus moves to its heading (the last element marked
+ * `data-autofocus`), so Tab carries on from there and a screen reader reads the new screen. The
+ * button that was pressed has often just gone. Never on the first render: a page load keeps focus.
+ */
+function useFocusOnScreenChange(screen: string) {
+  const first = useRef(true)
+  useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    const targets = document.querySelectorAll<HTMLElement>('[data-autofocus]')
+    targets[targets.length - 1]?.focus()
+  }, [screen])
 }
