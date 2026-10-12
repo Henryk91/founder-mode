@@ -1,5 +1,6 @@
 import { Explain } from '../components/Explain'
 import { SceneStrip } from '../components/Scene'
+import { StorageNote } from '../components/StorageNote'
 import { TopBar } from '../components/TopBar'
 import { label } from '../labels'
 import type { Tab } from '../store'
@@ -21,6 +22,7 @@ export function PhoneLayout(props: { main: React.ReactNode | null }) {
       <TopBar wide={false} />
       {props.main === null && tab === 'inbox' && <SceneStrip />}
       <main className={styles.phoneContent}>
+        <StorageNote />
         <Explain />
         {props.main ?? <Screen />}
       </main>

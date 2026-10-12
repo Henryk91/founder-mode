@@ -582,7 +582,9 @@ type UiState = {
   report: WeekReport | null     // the week that just resolved, until dismissed
   tab: 'inbox' | 'plan' | 'pipeline' | 'market' | 'money'   // hiring is a Plan section; the desk shows plan or market in its centre
   hasSave: boolean
-  saveNotice: 'incompatible' | 'scenario_changed' | 'broken' | null
+  saveNotice: 'incompatible' | 'newer' | 'scenario_changed' | 'broken' | null
+  storageNotice: 'unavailable' | 'full' | null   // browser keeps nothing, or would not take the last save
+  runsNotice: 'unreadable' | 'unsaved' | null    // best runs could not be read, or not stored
   introStep: number | null      // index of the intro card on screen; null when none. Set to 0 by startRun, never by continueRun
   helpOpen: boolean             // help screen replaces the tab content
   explain: 'runway' | 'cash' | 'energy' | 'hours' | null   // explanation card on screen
@@ -596,7 +598,7 @@ type UiState = {
 
 `repeatLastWeek()` takes the plan of the last `endWeek` in the action log and passes it through `repeatPlan(last, view)` (`apps/web/src/repeatPlan.ts`): regular work stays, one-off decisions (demos, follow ups, chasing, transfers, price, hiring steps) go, and shipped features, used batches and surplus bug fixing are cut back.
 
-Autosave: a `SaveFile` is written under its scenario's localStorage key when a run starts and after every resolved week. `continueRun` replays it; a save from another `engineVersion` (or one that fails to replay) is dropped with a notice. The draft plan is not saved. A finished run clears its save when the player leaves it.
+Autosave: a `SaveFile` is written under its scenario's localStorage key when a run starts and after every resolved week. `continueRun` replays it. A save from an older `engineVersion`, with another scenario hash, or one that is unreadable or fails to replay is dropped with a notice. A save from a newer `engineVersion` (`isNewerVersion`) is kept, with a notice to reload. The draft plan is not saved. A finished run clears its save when the player leaves it.
 
 ## Content: Event
 
@@ -770,3 +772,10 @@ type PostMortem = {
 - `InterviewEvidence.budget?: { quoteIndex, amountCents }`; `InterviewView.budget: { quote, amountCents } | null` (the quote with `{amount}` unfilled; the web fills it with `formatEuro`, `budgetText` in `screens/Market.tsx`). `MarketTruth.budgetHints: { count, meanCents } | null`.
 - Web: the Market screen shows a budget quote as one more quote under the interview; labels `pm.market.budgetHints`, `pm.market.budgetHintsValue.one/other` next to "Would pay".
 - Bots: `Pricer.price(view, focus)`; `budgetHints(view, segmentId)`; `SearchRule.hints`. Report part `price` (`--parts`), `RunResult.priceChanges` and `RunResult.wtpCents` (report only).
+
+### Phase 8 part 4: hardening (web only, no engine change)
+
+- `SaveStorage.load` returns `SaveFile | 'unreadable' | null` (`UNREADABLE`: stored text that is not JSON or not shaped like a save, `isSaveFile`). `save(file)` returns false when the browser would not take it. `available()` is false when storage is blocked.
+- `ProfileStorage.save` returns a boolean; `unreadable(scenarioId)` is true after a load found best runs it could not read (`readProfile`). Before anything else happens, the stored text is copied to `founder-mode.profile.v1.<scenarioId>.unreadable`, and an existing copy is never replaced.
+- UI store: `storageNotice`, `runsNotice` (above), actions `recover()`, which goes back to the Start screen without writing anything, and `dismissStorageNotice()`. `ErrorBoundary` (`components/ErrorBoundary.tsx`) wraps the screens.
+- The web build parses content YAML at build time (`apps/web/build/yamlAsJson.ts`). `yaml` in the bundle is `src/yamlShim.ts` (`JSON.parse`), and the scenarios are unchanged.

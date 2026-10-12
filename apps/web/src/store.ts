@@ -7,6 +7,7 @@ import {
   type ScenarioId,
 } from '@founder-mode/content'
 import {
+  ENGINE_VERSION,
   buildPostMortem,
   checkPlan,
   createGame,
@@ -23,6 +24,7 @@ import {
   type PlanIssue,
   type PlayerView,
   type PostMortem,
+  type SaveFile,
   type SuggestionId,
   type TeamRoleId,
   type WeekPlan,
@@ -33,7 +35,9 @@ import { repeatPlan } from './repeatPlan'
 import {
   MAX_RUNS,
   memoryProfiles,
+  UNREADABLE,
   type ProfileStorage,
+  type ProfileTrouble,
   type RunRecord,
   type SaveStorage,
 } from './storage'
@@ -56,7 +60,27 @@ export type ExplainKey =
   | 'hiring'
   | 'rest'
 
-export type SaveNotice = 'incompatible' | 'scenario_changed' | 'broken' | null
+/**
+ * Why Continue did not work: a save from an older engine, from a newer one (this page is out of
+ * date), made with other scenario values, or one that could not be read or replayed.
+ */
+export type SaveNotice = 'incompatible' | 'newer' | 'scenario_changed' | 'broken' | null
+
+/** The browser keeps nothing at all (some private windows), or would not take the last save. */
+export type StorageNotice = 'unavailable' | 'full' | null
+
+/** True when version `a` is later than `b`. Versions are dotted numbers, as `0.11.0`. */
+export function isNewerVersion(a: string, b: string): boolean {
+  const pa = a.split('.').map(Number)
+  const pb = b.split('.').map(Number)
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const x = pa[i] ?? 0
+    const y = pb[i] ?? 0
+    if (Number.isNaN(x) || Number.isNaN(y)) return false
+    if (x !== y) return x > y
+  }
+  return false
+}
 
 /**
  * Everything the screens may read. No GameState, nothing hidden, with one exception: the
@@ -72,6 +96,10 @@ export type UiState = {
   tab: Tab
   hasSave: boolean
   saveNotice: SaveNotice
+  /** Saving does not work in this browser. Shown on the Start screen and once in a run. */
+  storageNotice: StorageNotice
+  /** The best runs of the picked scenario could not be read, or could not be stored. */
+  runsNotice: ProfileTrouble | null
   /** Index of the intro card on screen, or null when no intro is showing. */
   introStep: number | null
   helpOpen: boolean
@@ -110,6 +138,10 @@ export type UiActions = {
   replaySeed(seed: string): void
   continueRun(): void
   leaveRun(): void
+  /** After the UI broke: back to the Start screen. Writes nothing, so the save stays as it was. */
+  recover(): void
+  /** Hides the storage warning for the rest of the run. */
+  dismissStorageNotice(): void
   nextIntro(): void
   prevIntro(): void
   openHelp(): void
@@ -181,7 +213,25 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
   let mortemOf: GameState | null = null
   let mortem: { postMortem: PostMortem; suggestion: SuggestionId } | null = null
 
+  const firstRuns = profiles.load(firstId).runs
+  const firstRunsNotice: ProfileTrouble | null = profiles.unreadable(firstId) ? 'unreadable' : null
+  /** The storage warning was shown in this session, so a failing save does not repeat it. */
+  let storageWarned = false
+
   const store = createStore<GameStore>((set, get) => {
+    /** Writes the autosave; when the browser will not take it, says so once. */
+    const persist = (file: SaveFile) => {
+      if (deps.storage.save(file) || storageWarned) return
+      storageWarned = true
+      set({ storageNotice: deps.storage.available() ? 'full' : 'unavailable' })
+    }
+    /** Writes the best runs; when the browser will not take them, says so. */
+    const keepRuns = (scenarioId: string, profile: Parameters<ProfileStorage['save']>[1]) => {
+      if (!profiles.save(scenarioId, profile)) set({ runsNotice: 'unsaved' })
+    }
+    const runsTrouble = (scenarioId: string) =>
+      profiles.unreadable(scenarioId) ? ('unreadable' as const) : null
+
     const refresh = (patch: Partial<UiState> = {}) => {
       if (!game) {
         set({ view: null, plan: emptyPlan(), plannedHours: 0, issues: [], report: null, ...patch })
@@ -220,6 +270,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       if (mortemOf === state && mortem) return mortem
       const postMortem = buildPostMortem(state)
       const profile = profiles.load(state.scenarioId)
+      if (profiles.unreadable(state.scenarioId)) set({ runsNotice: 'unreadable' })
       const current = profile.current?.seed === state.seed ? profile.current : null
       let suggestion = current?.suggestion ?? null
       if (suggestion === null) {
@@ -236,7 +287,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
             peakRevenueCents: postMortem.cause.peakRevenueCents,
           },
         ].slice(-MAX_RUNS)
-        profiles.save(state.scenarioId, {
+        keepRuns(state.scenarioId, {
           current: { seed: state.seed, replay: current?.replay ?? false, suggestion },
           lastSuggestion: suggestion,
           runs,
@@ -256,9 +307,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
     const start = (seed: string, replay: boolean, scenarioId: ScenarioId = get().scenarioId) => {
       const state = createGame(getScenario(scenarioId), seed)
       profiles.setLastScenario(scenarioId)
-      deps.storage.save(toSave(state))
+      persist(toSave(state))
       const profile = profiles.load(state.scenarioId)
-      profiles.save(state.scenarioId, {
+      keepRuns(state.scenarioId, {
         ...profile,
         current: { seed: state.seed, replay, suggestion: null },
       })
@@ -297,6 +348,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       tab: 'plan',
       hasSave: deps.storage.load(firstId) !== null,
       saveNotice: null,
+      storageNotice: deps.storage.available() ? null : 'unavailable',
+      runsNotice: firstRunsNotice,
       introStep: null,
       helpOpen: false,
       explain: null,
@@ -307,7 +360,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       momentsSeen: 0,
       postMortem: null,
       suggestion: null,
-      runs: profiles.load(firstId).runs,
+      runs: firstRuns,
       scenarios,
       scenarioId: firstId,
 
@@ -318,6 +371,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           scenarioId: id,
           hasSave: deps.storage.load(id) !== null,
           runs: profiles.load(id).runs,
+          runsNotice: runsTrouble(id),
           saveNotice: null,
         })
       },
@@ -341,8 +395,19 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           set({ hasSave: false })
           return
         }
+        if (file === UNREADABLE) {
+          deps.storage.clear(id)
+          set({ hasSave: false, saveNotice: 'broken' })
+          return
+        }
         const scenario = getScenario(id)
         const problem = saveProblem(scenario, file)
+        if (problem === 'engine_version' && isNewerVersion(file.engineVersion, ENGINE_VERSION)) {
+          // This page is older than the save: a reload brings the version that can continue it,
+          // so the save stays. Only a new run here would replace it, and the notice says so.
+          set({ hasSave: false, saveNotice: 'newer' })
+          return
+        }
         if (problem) {
           // Plan section 4.14: warn and start fresh instead of replaying a different game.
           deps.storage.clear(id)
@@ -366,11 +431,30 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           deps.storage.clear(game.scenarioId)
           set({ hasSave: false })
           const profile = profiles.load(game.scenarioId)
-          profiles.save(game.scenarioId, { ...profile, current: null })
+          keepRuns(game.scenarioId, { ...profile, current: null })
         }
         game = null
         refresh({ report: null, tab: 'plan', introStep: null, helpOpen: false, explain: null })
       },
+
+      recover() {
+        game = null
+        mortemOf = null
+        mortem = null
+        const id = get().scenarioId
+        refresh({
+          report: null,
+          tab: 'plan',
+          introStep: null,
+          helpOpen: false,
+          explain: null,
+          postMortem: null,
+          suggestion: null,
+          hasSave: deps.storage.load(id) !== null,
+        })
+      },
+
+      dismissStorageNotice: () => set({ storageNotice: null }),
 
       setTab: (tab) => set({ tab, shutDownAsked: false }),
 
@@ -438,7 +522,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         } catch {
           return
         }
-        deps.storage.save(toSave(game))
+        persist(toSave(game))
         refresh()
       },
       askShutDown: () => set({ shutDownAsked: true }),
@@ -446,7 +530,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       shutDown() {
         if (!game || game.status !== 'running' || !get().shutDownAsked) return
         game = shutDown(game)
-        deps.storage.save(toSave(game))
+        persist(toSave(game))
         refresh({ report: null, helpOpen: false, explain: null, shutDownAsked: false })
       },
 
@@ -456,7 +540,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         if (checkPlan(game, plan).issues.length > 0) return
         const result = endWeek(game, plan)
         game = result.state
-        deps.storage.save(toSave(game))
+        persist(toSave(game))
         refresh({
           plan: emptyPlan(),
           report: result.report,

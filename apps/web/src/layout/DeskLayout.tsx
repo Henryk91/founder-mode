@@ -1,6 +1,7 @@
 import { Explain } from '../components/Explain'
 import { MilestoneBar } from '../components/MilestoneBar'
 import { Scene } from '../components/Scene'
+import { StorageNote } from '../components/StorageNote'
 import { TopBar } from '../components/TopBar'
 import { label } from '../labels'
 import { Inbox } from '../screens/Inbox'
@@ -28,6 +29,7 @@ export function DeskLayout(props: { main: React.ReactNode | null }) {
       <TopBar wide />
       {props.main !== null ? (
         <main className={styles.deskSingle}>
+          <StorageNote />
           <Explain />
           {props.main}
         </main>
@@ -38,6 +40,7 @@ export function DeskLayout(props: { main: React.ReactNode | null }) {
             <Inbox desk />
           </aside>
           <main className={styles.centre} tabIndex={0}>
+            <StorageNote />
             <Explain />
             <Scene />
             <MilestoneBar />

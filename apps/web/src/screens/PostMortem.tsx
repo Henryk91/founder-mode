@@ -10,6 +10,7 @@ import type {
   PostMortem as PostMortemData,
   UiStage,
 } from '@founder-mode/engine'
+import { StorageNote } from '../components/StorageNote'
 import { formatEuro } from '../format'
 import { count, label } from '../labels'
 import { useGame } from '../useGame'
@@ -275,6 +276,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
 
   const actions = (
     <div className={styles.actions}>
+      <StorageNote finished />
       <button type="button" className={`${ui.button} ${ui.primary}`} onClick={newRun}>
         {label('pm.newRun', stage)}
       </button>
