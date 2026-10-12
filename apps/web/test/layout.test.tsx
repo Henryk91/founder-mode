@@ -284,6 +284,7 @@ describe('results', () => {
         week: 9,
         revenueCents: 0,
         fixedCostsCents: 0,
+        freelanceCents: 0,
         livingCostsCents: 0,
         founderDrawCents: 0,
         transferCents: 0,

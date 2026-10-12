@@ -36,6 +36,7 @@ describe('product', () => {
       featureId: 'basic_ordering',
       name: 'Daily group order',
       bugsAdded: r.state.product.bugs,
+      freelanceBugs: 0,
     })
   })
 

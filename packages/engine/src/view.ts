@@ -3,7 +3,13 @@ import { monthlyFixedCostsCents, receivablesCents, runwayWeeks } from './systems
 import { committedHours } from './systems/founder'
 import { isOverdue, overdueWeeks } from './systems/invoices'
 import { nextMilestone, reachedMilestones } from './systems/milestones'
-import { workingMember } from './systems/team'
+import {
+  bookedHours,
+  freelanceWorkHours,
+  freelancerIn,
+  openBooking,
+  workingMember,
+} from './systems/team'
 import { activeCustomers } from './systems/customers'
 import { selectFounderNote } from './systems/guidance'
 import { maxBugFixHours } from './systems/product'
@@ -16,6 +22,7 @@ import type {
   InvoiceStatus,
   PlayerView,
   TeamView,
+  FreelanceView,
 } from './types'
 
 // Compile time check that every channel of the scenario schema is listed.
@@ -60,6 +67,7 @@ export function getView(state: GameState): PlayerView {
         monthlyCents: c.monthlyCents,
       })),
       monthlyFixedCostsCents: monthlyFixedCostsCents(state),
+      freelanceCentsPerWeek: freelanceWeekCents(state),
       runwayWeeks: runwayWeeks(state),
       uiStage: company.uiStage,
       officeStage: {
@@ -92,6 +100,7 @@ export function getView(state: GameState): PlayerView {
       searchHours: scenario.team.searchHours,
       searchWeeks: scenario.team.searchWeeks,
       startWeeks: scenario.team.startWeeks,
+      freelanceNoticeWeeks: scenario.team.freelance.noticeWeeks,
     },
     committedHours: committedHours(state),
     forcedHours: founder.forcedHours,
@@ -270,6 +279,54 @@ function teamView(state: GameState): TeamView {
         }
       : null,
     hadHire: hired && current === null,
+    freelance: freelanceView(state),
+  }
+}
+
+/** The open freelance booking's bill for a week at its hours from next week, or 0. */
+function freelanceWeekCents(state: GameState): number {
+  const f = openBooking(state)
+  if (!f) return 0
+  const week = Math.max(state.week, f.startWeek)
+  return bookedHours(f, week) * state.scenario.team.freelance.roles[f.role].centsPerHour
+}
+
+function freelanceView(state: GameState): FreelanceView {
+  const cfg = state.scenario.team.freelance
+  const f = openBooking(state)
+  const week = f ? Math.max(state.week, f.startWeek) : state.week
+  return {
+    roles: (['developer', 'salesperson'] as const).map((id) => ({
+      id,
+      name: cfg.roles[id].name,
+      centsPerHour: cfg.roles[id].centsPerHour,
+    })),
+    hoursOptions: [...cfg.hoursOptions],
+    outputShare: cfg.outputShare,
+    onboardingFactor: cfg.onboardingFactor,
+    noticeWeeks: cfg.noticeWeeks,
+    extraBugsPerFeature: cfg.extraBugsPerFeature,
+    canBook: f === null || (f.endWeek !== null && f.endWeek <= state.week),
+    current:
+      f && (f.endWeek === null || f.endWeek >= state.week)
+        ? {
+            id: f.id,
+            name: f.name,
+            role: f.role,
+            roleName: cfg.roles[f.role].name,
+            hoursPerWeek: bookedHours(f, week),
+            centsPerHour: cfg.roles[f.role].centsPerHour,
+            centsPerWeek: bookedHours(f, week) * cfg.roles[f.role].centsPerHour,
+            startWeek: f.startWeek,
+            working: freelancerIn(state, state.week)?.id === f.id,
+            endWeek: f.endWeek,
+            nextHours: f.nextHours && f.nextHours.week > state.week ? { ...f.nextHours } : null,
+            workHoursThisWeek:
+              freelancerIn(state, state.week)?.id === f.id
+                ? freelanceWorkHours(state, f, state.week)
+                : 0,
+          }
+        : null,
   }
 }
 

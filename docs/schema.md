@@ -2,7 +2,7 @@
 
 Source of truth for the shapes shared between engine, content, bots, and UI. Update this file in the same change as any type change.
 
-Status: Phase 3 (engine 0.4.0). Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
+Status: Phase 9 part B (engine 0.12.0). Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
 
 ## Conventions
 
@@ -162,6 +162,7 @@ type WeekLedger = {
   week: number
   revenueCents: number          // month end only: price * customers won before this week
   fixedCostsCents: number       // sum of fixedCosts at month end, else 0
+  freelanceCents: number        // the freelancer's bill for this week (Phase 9), a company cost
   livingCostsCents: number      // founder living costs for the week
   founderDrawCents: number      // part of living costs paid by the company because savings ran out
   transferCents: number         // planned transfer from savings to company
@@ -180,7 +181,7 @@ type HoursByActivity = Record<'learning' | 'building' | 'selling' | 'admin' | 'r
 
 The last five are filled by `closeLedger(state, hours)` after churn (step 9). `hoursByActivity(state, plan)` (`systems/founder.ts`) splits a week's hours: interviews, landing tests and pre-sales are learning; building and bug fixing are building; outreach, demos and follow ups are selling; chasing, the hiring search, inbox answers and lost hours are admin. `plannedHours` is its sum.
 
-Invariants (tested): `cash' = cash + revenue - fixedCosts - founderDraw + transfer + autoTransfer` and `savings' = savings - (livingCosts - founderDraw) - transfer - autoTransfer`.
+Invariants (tested): `cash' = cash + revenue - fixedCosts - freelance - founderDraw + transfer + autoTransfer` and `savings' = savings - (livingCosts - founderDraw) - transfer - autoTransfer`.
 
 ### LoggedAction and LoggedEvent
 
@@ -779,3 +780,17 @@ type PostMortem = {
 - `ProfileStorage.save` returns a boolean; `unreadable(scenarioId)` is true after a load found best runs it could not read (`readProfile`). Before anything else happens, the stored text is copied to `founder-mode.profile.v1.<scenarioId>.unreadable`, and an existing copy is never replaced.
 - UI store: `storageNotice`, `runsNotice` (above), actions `recover()`, which goes back to the Start screen without writing anything, and `dismissStorageNotice()`. `ErrorBoundary` (`components/ErrorBoundary.tsx`) wraps the screens.
 - The web build parses content YAML at build time (`apps/web/build/yamlAsJson.ts`). `yaml` in the bundle is `src/yamlShim.ts` (`JSON.parse`), and the scenarios are unchanged.
+
+### Phase 9 part B: the freelancer (engine 0.12.0)
+
+- Content: `team.freelance` (`FreelanceConfigSchema`): `hoursOptions` (10, 20), `outputShare` (0.9), `onboardingFactor` (0.5), `noticeWeeks` (1), `extraBugsPerFeature` (1), `roles.developer|salesperson: { name, centsPerHour, selling? }`, `names`. No hidden values and no random draws: a run that never books one plays exactly as before.
+- `TeamState.freelancers: FreelanceBooking[]` (`{ id, name, role, hoursPerWeek, bookedWeek, startWeek, endWeek | null, nextHours: { week, hours } | null, workedHours }`), `TeamState.freelanceFeatures: FeatureId[]` (features a freelance developer worked on), `TeamState.freelanceBugs` (extra bugs they brought).
+- `WeekPlan.freelance: FreelancePlan` = `{ book: { role, hoursPerWeek } | null, hoursPerWeek: number | null, end: boolean, build: FeatureId | null, outreach: { segmentId, channel } | null }`. `PlanIssue` `invalid_freelance`: a booking while one runs past this week, hours outside `hoursOptions`, notice or hours without a running booking, booking together with notice or hours, an unknown feature, market or channel.
+- Week order: the freelancer's output is computed after the hire's (step 5), builds what the founder and hire leave of its feature, or does outreach after the hire's (step 6, lead source `freelancer`, its own selling skill, no demos). In step 7 the week's bill is charged (`WeekExtras.freelanceCents`, `WeekLedger.freelanceCents`), hours worked are recorded, and booking, hours (from next week) and notice (last week = this week + `noticeWeeks`) take effect. A booking starts the week after it is made; its first week works at `onboardingFactor`.
+- A feature that ships after a freelance developer worked on it gets `extraBugsPerFeature` on top of its own draw; `ReportEntry` `feature_shipped` gained `freelanceBugs`.
+- The bill counts as a company cost in `profitableForMonths` (the win test), in `netChangeCents` (runway) and, through `monthlyCompanyCostsCents` (fixed costs plus an open booking over a month), in the revenue milestones and the runway before 4 weeks.
+- `ReportEntry` gained `freelance_booked`, `freelance_hours`, `freelance_notice`, `freelance_ended`, `freelance_output { role, hours, onboarding }`, `freelance_bill { name, amountCents, hours }`. `LeadSource` gained `freelancer`; post-mortem source keys `freelancer:<channel>`.
+- View: `TeamView.freelance: FreelanceView` (`roles`, `hoursOptions`, `outputShare`, `onboardingFactor`, `noticeWeeks`, `extraBugsPerFeature`, `canBook`, `current: FreelancerView | null` with hours, rate, weekly cost, `working`, `endWeek`, `nextHours`, `workHoursThisWeek`), `company.freelanceCentsPerWeek`, `costs.freelanceNoticeWeeks`. `PostMortem.money.freelance: FreelanceEconomicsView | null` (`roles`, `costCents`, `weeks`, `buildHours`, `outreachHours`, `leadsFound`, `customersGained`, `extraBugs`).
+- Web: `setFreelance(change)` in the store; a new week's draft keeps the freelancer's task (`carryFreelance`), and "Same as last week" copies it. Labels `freelance.*`, `results.entry.freelance_*`, `pm.money.freelance*`, `pm.source.freelancer`, `pipeline.source.freelancer`, `money.freelance`, `coming.freelanceEnd`, `plan.sum.freelancer`, `plan.sum.freelanceBook`.
+- Bots: `Behaviours.freelance: FreelanceRule`, `withFreelancer(rule, id)`, `StrategySpec` kind `freelance` (role, hours, rate override, weeks), `Strategy.adapt(scenario)` (diagnostics only), `RunResult.freelance`, report part `freelance` and target 19 (`ReportInput.marketBuildHours`).
+- Saves from 0.11.0 get the restart notice.

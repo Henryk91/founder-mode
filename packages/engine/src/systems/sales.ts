@@ -16,7 +16,7 @@ import { energyFactor } from './founder'
 import { coverage, fit, priceChurn, priceFactor } from './market'
 import { channelFactor } from './office'
 import { OddsTally } from './odds'
-import type { TeamOutput } from './team'
+import type { FreelanceOutput, TeamOutput } from './team'
 
 /** A lead can take part in a demo when it asked for one and is still answering. */
 export function canBookDemo(lead: Lead): boolean {
@@ -188,7 +188,7 @@ function randomRound(x: number, rng: Rng): number {
  * 2. trials that ran their course: the lead becomes a paying customer or is lost,
  * 3. open leads agree to a demo,
  * 4. silent leads are lost after a while, untouched open leads may go silent,
- * 5. outreach finds new leads, the founder's per market and then the salesperson's.
+ * 5. outreach finds new leads, the founder's per market, the salesperson's, then the freelancer's.
  * A salesperson (`team`) holds demos too, without costing the founder hours or raising the
  * founder's selling skill.
  */
@@ -197,6 +197,7 @@ export function applySales(
   plan: WeekPlan,
   rng: Rng,
   team: TeamOutput | null = null,
+  freelance: FreelanceOutput | null = null,
 ): { state: GameState; entries: ReportEntry[]; refundsCents: number } {
   const cfg = state.scenario.sales
   const refundWeeks = state.scenario.experiments.presale.refundWeeks
@@ -371,6 +372,14 @@ export function applySales(
       channel: team.outreach.channel as ChannelId,
       source: 'team',
       selling: team.selling,
+    })
+  }
+  if (freelance?.outreach) {
+    items.push({
+      ...freelance.outreach,
+      channel: freelance.outreach.channel as ChannelId,
+      source: 'freelancer',
+      selling: freelance.selling,
     })
   }
   // Hours already spent per market and channel in the saturation window, this week's included.

@@ -107,6 +107,17 @@ export type RunResult = {
   evidenceByCheck: boolean | null
   /** For runs with a hire: what it cost per customer it found, and what a customer was worth. */
   hire: HireEconomics | null
+  /**
+   * For runs that booked a freelancer: the week of the first booking, the market the player
+   * worked on in the freelancer's first week of work, and what freelancers cost and delivered.
+   */
+  freelance: {
+    market: string | null
+    bookedWeek: number
+    costCents: number
+    weeks: number
+    workedHours: number
+  } | null
   /** Customers won over the run, by the action that found them: `outreach:<channel>`, `landing`, ... */
   customersBySource: Record<string, number>
   customersAtCheck: number
@@ -170,7 +181,8 @@ const monthlyRevenue = (s: GameState) =>
   s.customers.filter((c) => c.churnedWeek === null).reduce((t, c) => t + c.priceCentsPerMonth, 0)
 
 /** Plays one full run. Throws if a strategy produces an invalid plan, which is a bot bug. */
-export function runGame(scenario: Scenario, strategy: Strategy, seed: string): RunResult {
+export function runGame(real: Scenario, strategy: Strategy, seed: string): RunResult {
+  const scenario = strategy.adapt ? strategy.adapt(real) : real
   let state = createGame(scenario, seed)
   const player = strategy.create(scenario, seed)
   let peak = 0
@@ -185,6 +197,7 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
   let firstReport: WeekReport | null = null
   let firstWeekInterviews: number | null = null
   const focus: (string | null)[] = []
+  let freelanceAt: { week: number; market: string | null } | null = null
   let pacingWeeks = 0
   let noteworthyWeeks = 0
   let decisionWeeks = 0
@@ -214,6 +227,16 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     }
     const inboxBefore = state.inbox.length
     const result = endWeek(state, plan)
+    if (freelanceAt === null && result.report.entries.some((e) => e.kind === 'freelance_booked')) {
+      freelanceAt = { week: result.report.week, market: null }
+    }
+    // The market is the one the player works on in the freelancer's first week of work.
+    if (
+      freelanceAt?.market === null &&
+      result.report.entries.some((e) => e.kind === 'freelance_output')
+    ) {
+      freelanceAt = { ...freelanceAt, market: player.focus ? player.focus() : null }
+    }
     state = result.state
     weeks++
     if (result.report.week <= PACING_WEEKS) {
@@ -299,6 +322,13 @@ export function runGame(scenario: Scenario, strategy: Strategy, seed: string): R
     evidenceByCheck,
     customersBySource,
     hire: hireEconomics(state),
+    freelance: freelanceAt && {
+      market: freelanceAt.market,
+      bookedWeek: freelanceAt.week,
+      costCents: state.ledger.reduce((t, l) => t + l.freelanceCents, 0),
+      weeks: state.ledger.filter((l) => l.freelanceCents > 0).length,
+      workedHours: state.team.freelancers.reduce((t, f) => t + f.workedHours, 0),
+    },
     customersAtCheck,
     monthlyRevenueAtCheckCents: revenueAtCheck,
     minEnergy,

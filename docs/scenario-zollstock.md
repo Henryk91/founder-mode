@@ -124,7 +124,7 @@ Engine requirements:
 
 Why this mechanic: it makes the trust lesson real. A founder who ships a product that fits and keeps bugs low gets a growing stream of warm leads. One who sells hard into a poor fit gets none.
 
-## 7. Founder energy, 8. The one hire, 9b. Milestones
+## 7. Founder energy, 8. The one hire, 8b. The freelancer, 9b. Milestones
 
 All as Kantino.
 

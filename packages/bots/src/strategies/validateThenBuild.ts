@@ -330,11 +330,24 @@ export type Behaviours = {
    * week 2 (for the report's pre-sale check). `max`: every batch allowed, everywhere.
    */
   presales: 'careful' | 'one' | 'max'
+  /** Rent a freelancer (target 19): a developer for the build, or a salesperson for a while. */
+  freelance?: FreelanceRule
   /** For the event table: always answer this event with this choice. */
   forced?: { eventId: string; choiceId: string }
   /** For measuring an event's share of an inbox policy: leave this event to its default. */
   skipEvent?: string
 }
+
+/**
+ * When to rent a freelancer, once per run. `developer`: booked in week 2 when building starts,
+ * until the wanted features have all shipped (at most `MAX_FREELANCE_WEEKS`).
+ * `salesperson`: from the first paying customer, for `weeks` weeks of outreach in the market.
+ */
+export type FreelanceRule =
+  { role: 'developer'; hours: number } | { role: 'salesperson'; hours: number; weeks: number }
+
+/** A rented developer is let go after this many weeks even if features are still wanted. */
+const MAX_FREELANCE_WEEKS = 12
 
 export const ALL_BEHAVIOURS: Behaviours = {
   inbox: 'reader',
@@ -528,6 +541,7 @@ export function validatingPlayer(
   let sellingSince: number | null = null
   let largerLanding = false
   let lastPlan: WeekPlan | null = null
+  let freelanceUsed = false
   const impressionOrder = scenario.team.impressions.map((i) => i.name)
 
   // Inbox events whose choice moves to an office with walk-in leads: event id -> choice, market.
@@ -641,6 +655,55 @@ export function validatingPlayer(
     }
   }
 
+  /** The freelancer of `behaviours.freelance`: booked once, given work, let go when done. */
+  const freelancing = (b: PlanBuilder, view: PlayerView, unshipped: string[]) => {
+    const rule = behaviours.freelance
+    if (!rule) return
+    const fl = view.team.freelance
+    const cur = fl.current
+    if (!freelanceUsed && cur === null && fl.canBook) {
+      const wanted = rule.role === 'developer' ? unshipped.length > 0 : view.customers.length > 0
+      if (wanted) {
+        b.plan.freelance.book = { role: rule.role, hoursPerWeek: rule.hours }
+        freelanceUsed = true
+      }
+      return
+    }
+    if (!cur) return
+    if (cur.endWeek === null) {
+      // A developer gets notice once next week is the last with work left for them.
+      const leftAfter =
+        unshipped.reduce(
+          (t, id) =>
+            t +
+            (view.product.features.find((x) => x.id === id)?.remainingHours ?? 0) -
+            (b.plan.build[id] ?? 0),
+          0,
+        ) - cur.workHoursThisWeek
+      const done =
+        rule.role === 'developer'
+          ? leftAfter <= cur.hoursPerWeek * fl.outputShare ||
+            view.week - cur.startWeek + 1 >= MAX_FREELANCE_WEEKS
+          : view.week - cur.startWeek + 1 + fl.noticeWeeks >= rule.weeks
+      if (done) b.plan.freelance.end = true
+    }
+    if (!cur.working) return
+    if (cur.role === 'developer') {
+      // The wanted feature with the most left after the founder's own hours this week.
+      const left = (id: string) => {
+        const f = view.product.features.find((x) => x.id === id)
+        return f ? f.remainingHours - (b.plan.build[id] ?? 0) : 0
+      }
+      const best = [...unshipped].sort((x, y) => left(y) - left(x))[0]
+      b.plan.freelance.build = best && left(best) > 0 ? best : null
+    } else if (target) {
+      b.plan.freelance.outreach = {
+        segmentId: target,
+        channel: channels.choose(target, view.channels, 0),
+      }
+    }
+  }
+
   return {
     focus: () => target,
     respond(input) {
@@ -742,6 +805,8 @@ export function validatingPlayer(
         }
         const common = [...all.entries()].sort((x, y) => y[1] - x[1])[0]
         if (common) b.build(common[0], MAX_BUILD_HOURS)
+        // A rented developer is booked the week building starts, to work from week 3.
+        if (common && behaviours.freelance?.role === 'developer') freelancing(b, view, [common[0]])
         lastPlan = b.plan
         return b.plan
       }
@@ -785,6 +850,7 @@ export function validatingPlayer(
       // Keep listening until a few different features have come up.
       if (wanted.length < 3 && notes.interviews < 20) b.interviews(target, 3)
       for (const f of unshipped) b.build(f, MAX_BUILD_HOURS - (b.plan.build[f] ?? 0))
+      freelancing(b, view, unshipped)
 
       // Pre-sales measure what prospects do. A careful player pitches every batch its chosen market
       // allows, one a week; nobody in two batches and this market is out.
@@ -948,4 +1014,22 @@ export const overworker: Strategy = {
   id: 'overworker',
   description: 'Plays like validate_then_build, but plans 65 h every week.',
   create: (scenario) => validatingPlayer(scenario, 65),
+}
+
+/** validate_then_build that rents a freelancer by `rule`: for target 19, never the reference. */
+export function withFreelancer(rule: FreelanceRule, id?: string): Strategy {
+  const name =
+    id ??
+    (rule.role === 'developer'
+      ? `freelance_build ${rule.hours}h`
+      : `freelance_sales ${rule.hours}h ${rule.weeks}w`)
+  return {
+    id: name,
+    description:
+      rule.role === 'developer'
+        ? `Plays like validate_then_build, and books a freelance developer for ${rule.hours} h a week in week 2, when it starts building, to work on the wanted feature with the most hours left until they have all shipped (notice when next week is the last with work for them; at most ${MAX_FREELANCE_WEEKS} weeks).`
+        : `Plays like validate_then_build, and rents a freelance salesperson for ${rule.hours} h a week from its first paying customer, for ${rule.weeks} weeks of outreach in its market on its best channel.`,
+    create: (scenario) =>
+      validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, freelance: rule }),
+  }
 }

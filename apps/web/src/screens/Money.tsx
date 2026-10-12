@@ -52,6 +52,8 @@ export function Money() {
         {stat('money.savings', founder.savingsCents)}
         {stat('money.monthlyRevenue', view.monthlyRevenueCents)}
         {stat('money.fixedCosts', company.monthlyFixedCostsCents)}
+        {company.freelanceCentsPerWeek > 0 &&
+          stat('money.freelance', company.freelanceCentsPerWeek)}
         <div className={styles.rowHead}>
           <span>{label('money.living', stage)}</span>
           <span className={styles.mono}>

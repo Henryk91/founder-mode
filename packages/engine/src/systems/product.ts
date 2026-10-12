@@ -1,6 +1,6 @@
 import type { Rng } from '../rng'
 import type { GameState, ProductState, ReportEntry, WeekPlan } from '../types'
-import type { TeamOutput } from './team'
+import type { FreelanceOutput, TeamOutput } from './team'
 
 export function initialProduct(state: Pick<GameState, 'scenario'>): ProductState {
   const { scenario } = state
@@ -35,6 +35,7 @@ export function applyProduct(
   plan: WeekPlan,
   rng: Rng,
   team: TeamOutput | null = null,
+  freelance: FreelanceOutput | null = null,
 ): { state: GameState; entries: ReportEntry[] } {
   const { scenario } = state
   const entries: ReportEntry[] = []
@@ -48,16 +49,28 @@ export function applyProduct(
   fixProgress = bugs === 0 ? 0 : fixProgress - fixed * perBug
   if (fixed > 0) entries.push({ kind: 'bugs_fixed', count: fixed })
 
+  // Features a freelance developer worked on, this week included: they ship with extra bugs.
+  const touched = new Set(state.team.freelanceFeatures)
+  for (const id of Object.keys(freelance?.build ?? {})) touched.add(id)
+  let freelanceBugs = state.team.freelanceBugs
   const features = state.product.features.map((f) => {
-    const hours = (plan.build[f.id] ?? 0) + (team?.build[f.id] ?? 0)
+    const hours = (plan.build[f.id] ?? 0) + (team?.build[f.id] ?? 0) + (freelance?.build[f.id] ?? 0)
     if (hours === 0 || f.shippedWeek !== null) return f
     const def = scenario.features.find((x) => x.id === f.id)
     if (!def) throw new Error(`Unknown feature ${f.id}`)
     const progressHours = f.progressHours + hours
     if (progressHours < def.buildHours) return { ...f, progressHours }
-    const bugsAdded = rng.int(def.bugsOnShip.min, def.bugsOnShip.max)
+    const extra = touched.has(f.id) ? scenario.team.freelance.extraBugsPerFeature : 0
+    const bugsAdded = rng.int(def.bugsOnShip.min, def.bugsOnShip.max) + extra
     bugs += bugsAdded
-    entries.push({ kind: 'feature_shipped', featureId: f.id, name: def.name, bugsAdded })
+    freelanceBugs += extra
+    entries.push({
+      kind: 'feature_shipped',
+      featureId: f.id,
+      name: def.name,
+      bugsAdded,
+      freelanceBugs: extra,
+    })
     return { ...f, progressHours: def.buildHours, shippedWeek: state.week }
   })
 
@@ -65,6 +78,8 @@ export function applyProduct(
     state: {
       ...state,
       product: { features, bugs, fixProgressHours: fixProgress, quality: qualityFor(state, bugs) },
+      team:
+        freelanceBugs === state.team.freelanceBugs ? state.team : { ...state.team, freelanceBugs },
     },
     entries,
   }

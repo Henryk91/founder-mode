@@ -17,11 +17,15 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       return count('results.entry.revenue', stage, entry.customers, {
         amount: formatEuro(entry.amountCents),
       })
-    case 'feature_shipped':
-      return label('results.entry.feature_shipped', stage, {
+    case 'feature_shipped': {
+      const text = label('results.entry.feature_shipped', stage, {
         name: entry.name,
         bugs: entry.bugsAdded,
       })
+      return entry.freelanceBugs > 0
+        ? `${text} ${count('results.entry.feature_shipped.freelance', stage, entry.freelanceBugs)}`
+        : text
+    }
     case 'bugs_fixed':
       return count('results.entry.bugs_fixed', stage, entry.count)
     case 'referral_lead':
@@ -92,6 +96,38 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'team_output':
       return label(`results.entry.team_output.${entry.role}`, stage, { hours: entry.hours })
+    case 'freelance_booked':
+      return label('results.entry.freelance_booked', stage, {
+        name: entry.name,
+        role: label(`freelance.role.${entry.role}`, stage).toLowerCase(),
+        hours: label('unit.hours', stage, { n: entry.hoursPerWeek }),
+        week: entry.startWeek,
+      })
+    case 'freelance_hours':
+      return label('results.entry.freelance_hours', stage, {
+        name: entry.name,
+        hours: label('unit.hours', stage, { n: entry.hoursPerWeek }),
+        week: entry.fromWeek,
+      })
+    case 'freelance_notice':
+      return label('results.entry.freelance_notice', stage, {
+        name: entry.name,
+        week: entry.lastWeek,
+      })
+    case 'freelance_ended':
+      return label('results.entry.freelance_ended', stage, { name: entry.name })
+    case 'freelance_output':
+      return label(
+        `results.entry.freelance_output.${entry.role}${entry.onboarding ? 'First' : ''}`,
+        stage,
+        { hours: entry.hours },
+      )
+    case 'freelance_bill':
+      return label('results.entry.freelance_bill', stage, {
+        name: entry.name,
+        amount: formatEuro(entry.amountCents),
+        hours: label('unit.hours', stage, { n: entry.hours }),
+      })
     case 'message_resolved':
       return label(
         entry.expired ? 'results.entry.message_expired' : 'results.entry.message_resolved',
@@ -144,6 +180,16 @@ function place(entry: ReportEntry): [Group, number] {
       return ['product', 3]
     case 'team_output':
       return entry.role === 'developer' ? ['product', 3] : ['sales', 3]
+    case 'freelance_output':
+      return entry.role === 'developer' ? ['product', 3] : ['sales', 3]
+    case 'freelance_bill':
+      return ['money', 3]
+    case 'freelance_booked':
+    case 'freelance_notice':
+    case 'freelance_ended':
+      return ['founder', 5]
+    case 'freelance_hours':
+      return ['founder', 3]
     case 'landing_result':
     case 'presale_result':
       return ['learning', 6]
@@ -399,7 +445,8 @@ function InterviewSummary({
 function Numbers({ report, stage }: { report: WeekReport; stage: UiStage }) {
   const l = report.ledger
   const received = l.revenueCents + l.otherIncomeCents + l.transferCents + l.autoTransferCents
-  const paid = l.fixedCostsCents + l.founderDrawCents + l.adSpendCents + l.otherCostsCents
+  const paid =
+    l.fixedCostsCents + l.freelanceCents + l.founderDrawCents + l.adSpendCents + l.otherCostsCents
   const row = (key: LabelKey, cents: number, good = false) => (
     <div className={styles.rowHead}>
       <span>{label(key, stage)}</span>

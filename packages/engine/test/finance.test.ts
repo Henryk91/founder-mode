@@ -162,6 +162,7 @@ describe('finance', () => {
       week: w,
       revenueCents,
       fixedCostsCents: w % 4 === 0 ? 40_500 : 0,
+      freelanceCents: 0,
       livingCostsCents: 67_500,
       founderDrawCents: 0,
       transferCents: 0,

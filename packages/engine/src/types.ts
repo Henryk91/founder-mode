@@ -152,7 +152,7 @@ export type LeadStage = 'lead' | 'demo' | 'trial' | 'committed' | 'paying' | 'lo
  * pre-sale, walking in at the office, or a paying customer's recommendation.
  */
 export type LeadSource =
-  'outreach' | 'landing' | 'inbox' | 'team' | 'presale' | 'walk_in' | 'referral'
+  'outreach' | 'landing' | 'inbox' | 'team' | 'presale' | 'walk_in' | 'referral' | 'freelancer'
 
 /** Observable facts only. */
 export type Lead = {
@@ -326,11 +326,35 @@ export type TeamMember = {
   startWeek: number
   letGoWeek: number | null
 }
+/**
+ * A freelancer booked by the week (Phase 9). Works from `startWeek`; once notice is given,
+ * `endWeek` is the last week worked and billed.
+ */
+export type FreelanceBooking = {
+  id: string
+  name: string
+  role: TeamRoleId
+  hoursPerWeek: number
+  bookedWeek: number
+  startWeek: number
+  endWeek: number | null
+  /** A change of hours that applies from `week` on, or null. */
+  nextHours: { week: number; hours: number } | null
+  /** Hours of work delivered so far (build or outreach hours). */
+  workedHours: number
+}
+
 export type TeamState = {
   search: TeamSearch | null
   candidates: Candidate[]
   /** At most one in the early MVP. */
   members: TeamMember[]
+  /** Every freelancer booking, in order. At most one is booked at a time. */
+  freelancers: FreelanceBooking[]
+  /** Features a freelance developer has put hours into: they ship with extra bugs. */
+  freelanceFeatures: FeatureId[]
+  /** Bugs those features brought in when they shipped, for the post-mortem. */
+  freelanceBugs: number
 }
 
 /** Money movements of one resolved week. All values in cents, outflows positive. */
@@ -348,6 +372,8 @@ export type WeekLedger = {
   autoTransferCents: number
   /** Ad budgets of landing page tests started this week. */
   adSpendCents: number
+  /** The freelancer's bill for this week: a company cost, counted in the win test. */
+  freelanceCents: number
   /** Late fees, severance, and costs of inbox choices. */
   otherCostsCents: number
   /** Money from inbox choices. */
@@ -483,10 +509,25 @@ export type WeekPlan = {
   hire: string | null
   /** Let the current team member go. */
   letGo: boolean
+  /** The freelancer: booking, notice, hours, and what they work on this week. */
+  freelance: FreelancePlan
   /** The feature a developer works on. */
   teamBuild: FeatureId | null
   /** Where a salesperson does outreach, after holding every demo they can. */
   teamOutreach: { segmentId: SegmentId; channel: ChannelId } | null
+}
+
+export type FreelancePlan = {
+  /** Book a freelancer in this role for this many hours a week. They start next week. */
+  book: { role: TeamRoleId; hoursPerWeek: number } | null
+  /** New hours a week for the current booking, from next week. Null keeps them. */
+  hoursPerWeek: number | null
+  /** Give notice: the booking ends after the scenario's notice weeks. */
+  end: boolean
+  /** The feature a freelance developer works on. */
+  build: FeatureId | null
+  /** Where a freelance salesperson does outreach. */
+  outreach: { segmentId: SegmentId; channel: ChannelId } | null
 }
 
 export type PlanIssue =
@@ -510,6 +551,7 @@ export type PlanIssue =
   | { code: 'invalid_hire'; candidateId: string }
   | { code: 'let_go_not_allowed' }
   | { code: 'invalid_team_work' }
+  | { code: 'invalid_freelance' }
 
 // ---------------------------------------------------------------------------
 // What the UI receives. Contains no hidden values.
@@ -545,6 +587,8 @@ export type PlayerView = {
     priceCentsPerMonth: number
     fixedCosts: FixedCost[]
     monthlyFixedCostsCents: number
+    /** The freelancer's bill for a week at the hours booked from next week; 0 without one. */
+    freelanceCentsPerWeek: number
     /**
      * Whole weeks until company cash plus personal savings reach zero at the recent net weekly
      * change. Null when that total is not shrinking.
@@ -578,6 +622,8 @@ export type PlayerView = {
     searchHours: number
     searchWeeks: number
     startWeeks: number
+    /** Weeks a freelancer keeps working (and billing) after notice. */
+    freelanceNoticeWeeks: number
   }
   /** Hours already spent this week by answers to messages, and by earlier penalties. */
   committedHours: number
@@ -728,6 +774,38 @@ export type MemberView = {
   letGoCostCents: number
 }
 
+/** The freelancer as the Plan tab shows them. Rules of the game, no hidden values. */
+export type FreelanceView = {
+  roles: { id: TeamRoleId; name: string; centsPerHour: number }[]
+  hoursOptions: number[]
+  /** Share of booked hours that become work. */
+  outputShare: number
+  /** Share of that in the first week of a booking. */
+  onboardingFactor: number
+  noticeWeeks: number
+  extraBugsPerFeature: number
+  /** True when nobody is booked from next week on. */
+  canBook: boolean
+  current: FreelancerView | null
+}
+
+export type FreelancerView = {
+  id: string
+  name: string
+  role: TeamRoleId
+  roleName: string
+  hoursPerWeek: number
+  centsPerHour: number
+  centsPerWeek: number
+  startWeek: number
+  working: boolean
+  /** Last week worked once notice was given, else null. */
+  endWeek: number | null
+  nextHours: { week: number; hours: number } | null
+  /** Hours of work this week (fewer in the first week). */
+  workHoursThisWeek: number
+}
+
 export type TeamView = {
   /** False once someone was hired, or while a search is running. */
   canSearch: boolean
@@ -737,6 +815,7 @@ export type TeamView = {
   member: MemberView | null
   /** True once someone has been hired and let go: the early MVP allows one hire. */
   hadHire: boolean
+  freelance: FreelanceView
 }
 
 export type PendingExperimentView = {
@@ -826,9 +905,29 @@ export type ReportEntry =
   | { kind: 'hire_started'; name: string; role: TeamRoleId }
   | { kind: 'member_let_go'; name: string; costCents: number }
   | { kind: 'team_output'; role: TeamRoleId; hours: number }
+  | {
+      kind: 'freelance_booked'
+      name: string
+      role: TeamRoleId
+      hoursPerWeek: number
+      startWeek: number
+    }
+  | { kind: 'freelance_hours'; name: string; hoursPerWeek: number; fromWeek: number }
+  | { kind: 'freelance_notice'; name: string; lastWeek: number }
+  | { kind: 'freelance_ended'; name: string }
+  /** Hours of work a freelancer delivered; `onboarding` in their first, slower week. */
+  | { kind: 'freelance_output'; role: TeamRoleId; hours: number; onboarding: boolean }
+  | { kind: 'freelance_bill'; name: string; amountCents: number; hours: number }
   | { kind: 'message_resolved'; fromName: string; choiceLabel: string; expired: boolean }
   | { kind: 'cash_effect'; amountCents: number }
-  | { kind: 'feature_shipped'; featureId: FeatureId; name: string; bugsAdded: number }
+  | {
+      kind: 'feature_shipped'
+      featureId: FeatureId
+      name: string
+      bugsAdded: number
+      /** Of those, bugs a freelance developer brought in. */
+      freelanceBugs: number
+    }
   | { kind: 'bugs_fixed'; count: number }
   | {
       kind: 'new_leads'
@@ -1077,6 +1176,7 @@ export type PostMortem = {
     customersPaidCents: number
     peakRevenueCents: number
     hire: HireEconomicsView | null
+    freelance: FreelanceEconomicsView | null
   }
   /** Leads that walked in at an office, and the customers they became, per office and market. */
   walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]
@@ -1095,6 +1195,20 @@ export type PostMortem = {
     /** Whether average luck would have turned this ending around. Null when money did not decide it. */
     averageWouldChange: boolean | null
   }
+}
+
+/** What freelancers cost over the run and what they delivered. Null when none was booked. */
+export type FreelanceEconomicsView = {
+  /** Every role booked, in order of first booking. */
+  roles: TeamRoleId[]
+  costCents: number
+  weeks: number
+  buildHours: number
+  outreachHours: number
+  leadsFound: number
+  customersGained: number
+  /** Bugs freelance developers brought in on shipping. */
+  extraBugs: number
 }
 
 /** `HireEconomics` from the team system, repeated here so the type has no import cycle. */

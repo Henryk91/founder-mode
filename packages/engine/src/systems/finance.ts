@@ -9,9 +9,18 @@ import type {
 } from '../types'
 import { activeCustomers } from './customers'
 import { chaseInvoices, isUnpaid, issueInvoices, settleInvoices } from './invoices'
+import { freelanceMonthlyCents } from './team'
 
 export function monthlyFixedCostsCents(state: GameState): number {
   return state.company.fixedCosts.reduce((sum, c) => sum + c.monthlyCents, 0)
+}
+
+/**
+ * Company costs per month as the player plans with them: fixed costs plus an open freelance
+ * booking at its hours, over a 4 week month.
+ */
+export function monthlyCompanyCostsCents(state: GameState): number {
+  return monthlyFixedCostsCents(state) + freelanceMonthlyCents(state)
 }
 
 export function isMonthEnd(state: GameState, week: number): boolean {
@@ -27,6 +36,8 @@ export type WeekExtras = {
   otherCostsCents: number
   /** Money from inbox choices. */
   otherIncomeCents: number
+  /** The freelancer's bill: a company cost like a salary. */
+  freelanceCents: number
 }
 
 export const noExtras = (): WeekExtras => ({
@@ -34,6 +45,7 @@ export const noExtras = (): WeekExtras => ({
   depositsCents: 0,
   otherCostsCents: 0,
   otherIncomeCents: 0,
+  freelanceCents: 0,
 })
 
 /**
@@ -79,7 +91,7 @@ export function applyFinanceWeek(
   const monthEnd = isMonthEnd(state, state.week)
   const fixedCostsCents = monthEnd ? monthlyFixedCostsCents(state) : 0
   cash -= fixedCostsCents
-  cash -= extras.adSpendCents + extras.otherCostsCents
+  cash -= extras.adSpendCents + extras.otherCostsCents + extras.freelanceCents
   cash += extras.otherIncomeCents
 
   const settled = settleInvoices(state)
@@ -111,6 +123,7 @@ export function applyFinanceWeek(
     transferCents,
     autoTransferCents,
     adSpendCents: extras.adSpendCents,
+    freelanceCents: extras.freelanceCents,
     otherCostsCents: extras.otherCostsCents,
     otherIncomeCents: extras.otherIncomeCents,
     cashEndCents: cash,
@@ -170,6 +183,7 @@ export function netChangeCents(l: WeekLedger): number {
     l.revenueCents +
     l.otherIncomeCents -
     l.fixedCostsCents -
+    l.freelanceCents -
     l.livingCostsCents -
     l.adSpendCents -
     l.otherCostsCents
@@ -206,7 +220,7 @@ export function runwayWeeks(state: GameState): number | null {
     state.ledger.length >= weeksPerMonth
       ? state.ledger.slice(-weeksPerMonth).reduce((sum, l) => sum + netChangeCents(l), 0)
       : activeCustomers(state).reduce((sum, c) => sum + c.priceCentsPerMonth, 0) -
-        monthlyFixedCostsCents(state) -
+        monthlyCompanyCostsCents(state) -
         state.founder.livingCostCentsPerWeek * weeksPerMonth
   if (net >= 0) return null
   const total = state.company.cashCents + Math.max(0, state.founder.savingsCents)
@@ -217,7 +231,8 @@ export function runwayWeeks(state: GameState): number | null {
 
 /**
  * Profitable as defined in the scenario specs (docs/scenario-*.md): money received from
- * customers over a month covers that month's company fixed costs plus founder living costs. Checks each of the last
+ * customers over a month covers that month's company fixed costs, the freelancer's bills and the
+ * founder's living costs. Checks each of the last
  * `months` complete months, counted back from the latest week.
  */
 export function profitableForMonths(state: GameState, months: number): boolean {
@@ -227,7 +242,10 @@ export function profitableForMonths(state: GameState, months: number): boolean {
     const end = state.ledger.length - m * weeksPerMonth
     const month = state.ledger.slice(end - weeksPerMonth, end)
     const revenue = month.reduce((sum, l) => sum + l.revenueCents, 0)
-    const costs = month.reduce((sum, l) => sum + l.fixedCostsCents + l.livingCostsCents, 0)
+    const costs = month.reduce(
+      (sum, l) => sum + l.fixedCostsCents + l.freelanceCents + l.livingCostsCents,
+      0,
+    )
     if (revenue < costs) return false
   }
   return true

@@ -2,6 +2,7 @@ import type { Rng } from '../rng'
 import type {
   Candidate,
   FeatureId,
+  FreelanceBooking,
   GameState,
   ReportEntry,
   TeamMember,
@@ -175,13 +176,241 @@ export function applyTeam(
   state = {
     ...state,
     company: { ...state.company, fixedCosts },
-    team: { search, candidates, members },
+    team: { ...state.team, search, candidates, members },
     hidden: { ...state.hidden, teamSkills },
   }
   return { state, entries, severanceCents }
 }
 
 export const salaryId = (m: Pick<TeamMember, 'id'>) => `salary_${m.id}`
+
+// ---------------------------------------------------------------------------
+// The freelancer (Phase 9). Fixed, visible output and no random draws, so a run that never books
+// one plays exactly as before.
+
+/** The booking that covers `week`: started, and not past its notice. Null when nobody works. */
+export function freelancerIn(state: GameState, week: number): FreelanceBooking | null {
+  return (
+    state.team.freelancers.find(
+      (f) => week >= f.startWeek && (f.endWeek === null || week <= f.endWeek),
+    ) ?? null
+  )
+}
+
+/** The booking that is still running or about to start: not ended before `week`. */
+export function openBooking(state: GameState, week = state.week): FreelanceBooking | null {
+  return state.team.freelancers.find((f) => f.endWeek === null || f.endWeek >= week) ?? null
+}
+
+/** Hours a week booked in `week`, after any change of hours that applies by then. */
+export function bookedHours(f: FreelanceBooking, week: number): number {
+  return f.nextHours && week >= f.nextHours.week ? f.nextHours.hours : f.hoursPerWeek
+}
+
+/** Hours of work in `week`: the output share of the booked hours, less in the first week. */
+export function freelanceWorkHours(state: GameState, f: FreelanceBooking, week: number): number {
+  const cfg = state.scenario.team.freelance
+  const onboarding = week === f.startWeek ? cfg.onboardingFactor : 1
+  return Math.floor(bookedHours(f, week) * cfg.outputShare * onboarding)
+}
+
+export type FreelanceOutput = {
+  bookingId: string
+  role: TeamRoleId
+  hours: number
+  onboarding: boolean
+  build: Record<FeatureId, number>
+  outreach: OutreachItem | null
+  selling: number
+}
+
+/**
+ * What the freelancer produces this week. A developer builds the feature the plan names, never
+ * more than what the founder and the hire leave of it. A salesperson does outreach where the plan
+ * says and holds no demos. Hours with nothing to do are lost, and still billed.
+ */
+export function freelanceOutput(
+  state: GameState,
+  plan: WeekPlan,
+  team: TeamOutput | null,
+): FreelanceOutput | null {
+  const f = freelancerIn(state, state.week)
+  if (!f) return null
+  const cfg = state.scenario.team.freelance
+  const hours = freelanceWorkHours(state, f, state.week)
+  const out: FreelanceOutput = {
+    bookingId: f.id,
+    role: f.role,
+    hours,
+    onboarding: state.week === f.startWeek,
+    build: {},
+    outreach: null,
+    selling: cfg.roles[f.role].selling ?? state.founder.skills.selling,
+  }
+  if (f.role === 'developer') {
+    const target = plan.freelance.build
+    const def = target ? state.scenario.features.find((x) => x.id === target) : undefined
+    const progress = target ? state.product.features.find((x) => x.id === target) : undefined
+    if (target && def && progress && progress.shippedWeek === null) {
+      const left =
+        def.buildHours -
+        progress.progressHours -
+        (plan.build[target] ?? 0) -
+        (team?.build[target] ?? 0)
+      const built = Math.max(0, Math.min(hours, left))
+      if (built > 0) out.build[target] = built
+    }
+  } else if (plan.freelance.outreach && hours > 0) {
+    out.outreach = { ...plan.freelance.outreach, hours }
+  }
+  return out
+}
+
+/** The bill for `week`: every booked hour of the booking that covers it. */
+export function freelanceBillCents(state: GameState, week: number): number {
+  const f = freelancerIn(state, week)
+  if (!f) return 0
+  return bookedHours(f, week) * state.scenario.team.freelance.roles[f.role].centsPerHour
+}
+
+/** What the open booking costs per 4 week month at its current hours, for the costs shown. */
+export function freelanceMonthlyCents(state: GameState): number {
+  const f = openBooking(state)
+  if (!f) return 0
+  const week = Math.max(state.week, f.startWeek)
+  return (
+    bookedHours(f, week) *
+    state.scenario.team.freelance.roles[f.role].centsPerHour *
+    state.scenario.finance.weeksPerMonth
+  )
+}
+
+/**
+ * Freelance step, after this week's work: hours delivered are recorded, a booking past its last
+ * week is closed, and the plan's booking, change of hours or notice take effect from next week.
+ */
+export function applyFreelance(
+  input: GameState,
+  plan: WeekPlan,
+  output: FreelanceOutput | null,
+): { state: GameState; entries: ReportEntry[] } {
+  const cfg = input.scenario.team.freelance
+  const week = input.week
+  const entries: ReportEntry[] = []
+  let freelancers = input.team.freelancers
+  let features = input.team.freelanceFeatures
+
+  if (output) {
+    const worked =
+      Object.values(output.build).reduce((t, h) => t + h, 0) + (output.outreach?.hours ?? 0)
+    freelancers = freelancers.map((f) =>
+      f.id === output.bookingId ? { ...f, workedHours: f.workedHours + worked } : f,
+    )
+    for (const id of Object.keys(output.build)) {
+      if (!features.includes(id)) features = [...features, id]
+    }
+    entries.push({
+      kind: 'freelance_output',
+      role: output.role,
+      hours: worked,
+      onboarding: output.onboarding,
+    })
+  }
+  for (const f of freelancers) {
+    if (f.endWeek === week) entries.push({ kind: 'freelance_ended', name: f.name })
+  }
+
+  const open = freelancers.find((f) => f.endWeek === null || f.endWeek > week) ?? null
+  const fp = plan.freelance
+  if (open && fp.hoursPerWeek !== null && fp.hoursPerWeek !== bookedHours(open, week + 1)) {
+    const from = Math.max(week + 1, open.startWeek)
+    // The hours in force this week stay as they are; the change applies from next week.
+    freelancers = freelancers.map((f) =>
+      f === open
+        ? {
+            ...f,
+            hoursPerWeek: bookedHours(f, week),
+            nextHours: { week: from, hours: fp.hoursPerWeek! },
+          }
+        : f,
+    )
+    entries.push({
+      kind: 'freelance_hours',
+      name: open.name,
+      hoursPerWeek: fp.hoursPerWeek,
+      fromWeek: from,
+    })
+  }
+  if (open && fp.end) {
+    // Notice runs from next week; a booking that has not started yet ends before it does.
+    const lastWeek = Math.max(week + cfg.noticeWeeks, open.startWeek - 1)
+    freelancers = freelancers.map((f) => (f.id === open.id ? { ...f, endWeek: lastWeek } : f))
+    entries.push({ kind: 'freelance_notice', name: open.name, lastWeek })
+  }
+  if (fp.book) {
+    const name = cfg.names[freelancers.length % cfg.names.length] ?? `Freelancer`
+    const booking: FreelanceBooking = {
+      id: `freelancer_${freelancers.length + 1}`,
+      name,
+      role: fp.book.role,
+      hoursPerWeek: fp.book.hoursPerWeek,
+      bookedWeek: week,
+      startWeek: week + 1,
+      endWeek: null,
+      nextHours: null,
+      workedHours: 0,
+    }
+    freelancers = [...freelancers, booking]
+    entries.push({
+      kind: 'freelance_booked',
+      name,
+      role: booking.role,
+      hoursPerWeek: booking.hoursPerWeek,
+      startWeek: booking.startWeek,
+    })
+  }
+  if (freelancers === input.team.freelancers && features === input.team.freelanceFeatures) {
+    return { state: input, entries }
+  }
+  return {
+    state: { ...input, team: { ...input.team, freelancers, freelanceFeatures: features } },
+    entries,
+  }
+}
+
+export type FreelanceEconomics = {
+  roles: TeamRoleId[]
+  costCents: number
+  weeks: number
+  buildHours: number
+  outreachHours: number
+  leadsFound: number
+  customersGained: number
+  extraBugs: number
+}
+
+/** For the post-mortem: what freelancers cost and delivered. Null when none was booked. */
+export function freelanceEconomics(state: GameState): FreelanceEconomics | null {
+  const all = state.team.freelancers
+  if (all.length === 0) return null
+  const roles = [...new Set(all.map((f) => f.role))]
+  const costCents = state.ledger.reduce((t, l) => t + l.freelanceCents, 0)
+  const weeks = state.ledger.filter((l) => l.freelanceCents > 0).length
+  const worked = (role: TeamRoleId) =>
+    all.filter((f) => f.role === role).reduce((t, f) => t + f.workedHours, 0)
+  const found = state.leads.filter((l) => l.source === 'freelancer')
+  const ids = new Set(found.map((l) => l.id))
+  return {
+    roles,
+    costCents,
+    weeks,
+    buildHours: worked('developer'),
+    outreachHours: worked('salesperson'),
+    leadsFound: found.length,
+    customersGained: state.customers.filter((c) => ids.has(c.leadId)).length,
+    extraBugs: state.team.freelanceBugs,
+  }
+}
 
 export type HireEconomics = {
   role: TeamRoleId

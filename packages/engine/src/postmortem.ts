@@ -2,7 +2,7 @@ import { activeCustomers } from './systems/customers'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
 import { reachedMilestones } from './systems/milestones'
-import { hireEconomics, salaryId } from './systems/team'
+import { freelanceEconomics, hireEconomics, salaryId } from './systems/team'
 import type {
   Activity,
   ChainItem,
@@ -105,6 +105,7 @@ export function buildPostMortem(state: GameState): PostMortem {
       customersPaidCents: state.ledger.reduce((t, l) => t + l.revenueCents, 0),
       peakRevenueCents: cause.peakRevenueCents,
       hire,
+      freelance: freelanceEconomics(state),
     },
     walkIns: walkInCounts(state),
     sources: sourceCounts(state),
@@ -134,7 +135,8 @@ function walkInCounts(state: GameState): PostMortem['walkIns'] {
 
 /** The key a lead's source is counted under: outreach per channel, everything else by source. */
 function sourceKey(lead: Lead): string {
-  return (lead.source === 'outreach' || lead.source === 'team') && lead.channel
+  return (lead.source === 'outreach' || lead.source === 'team' || lead.source === 'freelancer') &&
+    lead.channel
     ? `${lead.source}:${lead.channel}`
     : lead.source
 }

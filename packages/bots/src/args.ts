@@ -15,13 +15,35 @@ export type BotArgs = {
   desk: boolean
   /** Processes that play the seeds. 1 plays everything in this process. */
   jobs: number
-  /** Report parts to run: main, paired, inbox, price, events. `--events` adds events. */
+  /** Report parts to run: main, paired, inbox, price, freelance, events. `--events` adds events. */
   parts: string[]
   /** Seeds for the paired, inbox and price parts (targets 6, 11, 13 and 17); defaults to `runs`. */
   wideRuns: number
+  /**
+   * Extra freelancer runs for the `freelance` part, beside target 19's own: `role:hours`, with
+   * an optional rate in EUR per hour (`:0` for a free freelancer) and, for a salesperson, weeks.
+   */
+  freelance: FreelanceArg[]
 }
 
-const PARTS = ['main', 'paired', 'inbox', 'price', 'events']
+export type FreelanceArg = {
+  role: 'developer' | 'salesperson'
+  hours: number
+  eurPerHour: number | null
+  weeks: number | null
+}
+
+const PARTS = ['main', 'paired', 'inbox', 'price', 'freelance', 'events']
+
+/** `developer:20`, `developer:20:0`, `salesperson:20:0:8`. */
+export function parseFreelance(text: string): FreelanceArg {
+  const [role, hours, eur, weeks] = text.split(':')
+  if (role !== 'developer' && role !== 'salesperson') throw new Error(`Invalid --freelance ${text}`)
+  const n = (v: string | undefined) => (v === undefined || v === '' ? null : Number(v))
+  const out = { role, hours: Number(hours), eurPerHour: n(eur), weeks: n(weeks) } as const
+  if (!Number.isInteger(out.hours) || out.hours < 1) throw new Error(`Invalid --freelance ${text}`)
+  return out
+}
 
 export function parseArgs(argv: readonly string[]): BotArgs {
   const args: BotArgs = {
@@ -33,8 +55,9 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     scenario: null,
     desk: false,
     jobs: Math.max(1, availableParallelism() - 1),
-    parts: ['main', 'paired', 'inbox', 'price'],
+    parts: ['main', 'paired', 'inbox', 'price', 'freelance'],
     wideRuns: 0,
+    freelance: [],
   }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
@@ -69,6 +92,9 @@ export function parseArgs(argv: readonly string[]): BotArgs {
       if (!Number.isInteger(runs) || runs < 1)
         throw new Error(`Invalid --wide-runs value: ${value}`)
       args.wideRuns = runs
+      i++
+    } else if (flag === '--freelance' && value !== undefined) {
+      args.freelance = value.split(',').filter(Boolean).map(parseFreelance)
       i++
     } else if (flag === '--desk') {
       args.desk = true

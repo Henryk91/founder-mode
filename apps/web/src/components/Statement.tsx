@@ -120,6 +120,14 @@ export function upcoming(view: PlayerView): Upcoming[] {
       warn: false,
     })
   }
+  const freelancer = view.team.freelance.current
+  if (freelancer?.endWeek != null) {
+    items.push({
+      week: freelancer.endWeek,
+      text: label('coming.freelanceEnd', stage, { name: freelancer.name }),
+      warn: false,
+    })
+  }
   for (const l of view.leads) {
     if (l.stage !== 'trial') continue
     items.push({
