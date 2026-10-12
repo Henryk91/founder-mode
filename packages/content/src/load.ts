@@ -9,6 +9,7 @@ import sharedProduct from './shared/events/product.yaml?raw'
 import sharedFinance from './shared/events/finance.yaml?raw'
 import sharedFounder from './shared/events/founder.yaml?raw'
 import sharedTeam from './shared/events/team.yaml?raw'
+import sharedYear2 from './shared/events/year2.yaml?raw'
 import kantinoAbout from './scenarios/kantino/about.yaml?raw'
 import kantinoScenario from './scenarios/kantino/scenario.yaml?raw'
 import kantinoFeatures from './scenarios/kantino/features.yaml?raw'
@@ -54,6 +55,11 @@ export type ScenarioSources = {
   events: Record<EventArea, string>
   /** Events shared by every scenario, one file per area. */
   sharedEvents: Record<EventArea, string>
+  /**
+   * Long mode only: events of the second year, shared by every scenario with a long mode, any
+   * area. The 60 week game never loads them, so its scenario and fingerprint are untouched.
+   */
+  longEvents: string
 }
 
 /** Events every scenario gets: the founder's life, money, the hire, generic sales moments. */
@@ -82,6 +88,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
       team: kantinoTeam,
     },
     sharedEvents: SHARED_EVENTS,
+    longEvents: sharedYear2,
   },
   zollstock: {
     scenario: zollstockScenario,
@@ -98,6 +105,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
       team: zollstockTeam,
     },
     sharedEvents: SHARED_EVENTS,
+    longEvents: sharedYear2,
   },
 }
 
@@ -190,9 +198,14 @@ export function parseScenario(sources: ScenarioSources, mode: GameMode = 'standa
   const raw: unknown = parse(sources.scenario)
   const file = fileForMode(raw, mode, String(isObject(raw) ? raw['id'] : ''))
   const intro: unknown = parse(sources.intro)
-  const events = EVENT_AREAS.flatMap((area) =>
-    areaEvents(area, sources.events[area], sources.sharedEvents[area]),
-  )
+  // Long mode adds the second year's events after every area's own, so the draw order of the
+  // others is kept.
+  const events = [
+    ...EVENT_AREAS.flatMap((area) =>
+      areaEvents(area, sources.events[area], sources.sharedEvents[area]),
+    ),
+    ...(mode === 'long' ? eventsIn(sources.longEvents) : []),
+  ]
   return ScenarioSchema.parse({
     ...(typeof file === 'object' && file !== null ? file : {}),
     ...(typeof intro === 'object' && intro !== null ? intro : {}),
