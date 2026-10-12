@@ -127,134 +127,49 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
         const first = document.querySelector('[class*="_row_"] > :first-child')!
         first.firstChild!.textContent = 'Frauenarztpraxis Dr. Bauer-Lechner und Partner'
       })
-      const result = await page.evaluate((line) => {
-        const notebook = document.querySelector('section[aria-label="My week"]')!
-        const top0 = notebook.getBoundingClientRect().top
-        const desk = !!document.querySelector('[data-layout="desk"]')
-        const whole = (n: number) => Math.abs(n / line - Math.round(n / line)) < 0.02
-        const controls =
-          'button, [class*="stepper"], [class*="_bar_"], [class*="segment"], [class*="_progress_"], svg'
+      const result = await page.evaluate(measureGrid, LINE)
 
-        // Every block is whole lines tall and starts on a line.
-        const off: string[] = []
-        let blocks = 0
-        for (const el of notebook.querySelectorAll('*')) {
-          // Text for screen readers only takes no room on the paper.
-          if (el.closest(controls) || el.closest('.visually-hidden')) continue
-          const display = getComputedStyle(el).display
-          if (display === 'inline' || display === 'contents') continue
-          const r = el.getBoundingClientRect()
-          if (r.height === 0) continue
-          blocks++
-          if (!whole(r.height) || !whole(r.top - top0)) {
-            off.push(`${el.tagName}.${el.className} top ${r.top - top0} height ${r.height}`)
-          }
-        }
+      checkGrid(result, 6)
+      await page.close()
+    }, 60_000)
+  }
 
-        // Writing rests on its line: handwriting 37 px down (6 px above the rule), numbers 31.
-        // Writing that wraps (two line rows) is checked on its first line, inside its on-rule span.
-        const baselines: { mono: boolean; at: number }[] = []
-        for (const el of notebook.querySelectorAll(
-          '[class*="_title_"], [class*="_sectionTitle_"], [class*="_label_"], [class*="_summary_"], [class*="_hint_"], [class*="_sub_"], [class*="_mono_"], [class*="_wrapped_"]',
-        )) {
-          if (!el.textContent?.trim()) continue
-          const probe = document.createElement('span')
-          probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline'
-          const host = el.querySelector('[class*="_onRule_"]') ?? el
-          host.insertBefore(probe, host.firstChild)
-          baselines.push({
-            mono: /_mono_/.test(el.className),
-            at: probe.getBoundingClientRect().bottom - el.getBoundingClientRect().top,
-          })
-          probe.remove()
-        }
-
-        // Controls: no "?" buttons, and every button has a tappable area of at least 44 x 44.
-        const questionMarks = [...notebook.querySelectorAll('button')].filter(
-          (b) => b.textContent?.trim() === '?',
-        ).length
-        const small: string[] = []
-        for (const b of notebook.querySelectorAll('button')) {
-          const r = b.getBoundingClientRect()
-          if (r.width === 0) continue
-          if (r.width < 43.5 || r.height < 43.5) {
-            small.push(`${b.textContent} ${r.width}x${r.height}`)
-          }
-        }
-
-        // In every row the control sits centred on the label's first line, close beside it.
-        const centre = (r: DOMRect) => r.top + r.height / 2
-        const misaligned: string[] = []
-        const gaps: number[] = []
-        let rows = 0
-        for (const row of notebook.querySelectorAll('[class*="_row_"]')) {
-          const label = row.querySelector('[class*="_label_"], [class*="_wrapped_"]')
-          const control = [...row.querySelectorAll('[class*="_controls_"] button')].find(
-            (b) => b.getBoundingClientRect().height > 0,
-          )
-          if (!label || !control) continue
-          rows++
-          const l = label.getBoundingClientRect()
-          const c = control.getBoundingClientRect()
-          if (Math.abs(l.top + line / 2 - centre(c)) > 1) {
-            misaligned.push(`${label.textContent}: line ${l.top + line / 2} control ${centre(c)}`)
-          }
-          const first = row.querySelector('[class*="_controls_"]')!.getBoundingClientRect()
-          gaps.push(first.left - l.right)
-        }
-
-        // Names in rows are never cut short: they wrap onto further lines instead.
-        const cut = [...notebook.querySelectorAll('[class*="_row_"] > :first-child')]
-          .filter(
-            (el) =>
-              el.scrollWidth > el.clientWidth + 1 ||
-              getComputedStyle(el).textOverflow === 'ellipsis',
-          )
-          .map((el) => el.textContent)
-
-        // Open sections let the rules run through.
-        const bodies = [...notebook.querySelectorAll('[id^="plan-"]')]
-        const opaque = bodies.filter(
-          (b) => getComputedStyle(b).backgroundColor !== 'rgba(0, 0, 0, 0)',
-        )
-        const tooWide = [...notebook.querySelectorAll('*')].filter(
-          (e) => e.scrollWidth > e.clientWidth + 1 && getComputedStyle(e).overflowX === 'visible',
-        )
-        return {
-          desk,
-          off,
-          blocks,
-          baselines,
-          questionMarks,
-          small,
-          misaligned,
-          gaps,
-          rows,
-          cut,
-          bodies: bodies.length,
-          opaque: opaque.length,
-          overflowing: tooWide.map((e) => `${e.tagName}.${e.className}`),
-        }
-      }, LINE)
-
-      expect(result.bodies).toBeGreaterThanOrEqual(6)
-      expect(result.blocks).toBeGreaterThan(20)
-      expect(result.off).toEqual([])
-      expect(result.opaque).toBe(0)
-      expect(result.rows).toBeGreaterThanOrEqual(10)
-      expect(result.misaligned).toEqual([])
-      expect(result.cut).toEqual([])
-      for (const b of result.baselines) {
-        const [lo, hi] = b.mono ? [30, 32] : [36, 38]
-        expect(b.at).toBeGreaterThanOrEqual(lo)
-        expect(b.at).toBeLessThanOrEqual(hi)
+  for (const width of widths.grid) {
+    it(`keeps the long mode sections on the grid at ${width} px: hiring and raising`, async () => {
+      const page = await getBrowser().newPage({ viewport: { width, height: 1000 } })
+      await page.goto(getUrl())
+      await page.evaluate(() => localStorage.clear())
+      await page.reload()
+      await page.getByRole('button', { name: /^104 weeks/ }).click()
+      await page.getByRole('button', { name: 'New run' }).click()
+      for (let i = 0; i < 6; i++) {
+        const next = page.getByRole('button', { name: /^(Next|Start week 1)/ }).first()
+        if (await next.count()) await next.click()
       }
-      expect(result.questionMarks).toBe(0)
-      expect(result.small).toEqual([])
-      if (result.desk) {
-        // Labels and controls sit together: no empty gulf between them.
-        for (const gap of result.gaps) expect(gap).toBeLessThan(40)
+      const plan = async () => {
+        if (width < 1200) await page.getByRole('button', { name: /^Plan/ }).click()
+        const dismiss = page.getByRole('button', { name: 'Dismiss' })
+        if (await dismiss.count()) await dismiss.click()
+        for (const title of [/^Hiring/, /^Money from investors/]) {
+          await page.getByRole('button', { name: title }).first().click()
+        }
       }
+      await plan()
+      // A freelancer booked and a round about to start: the busiest the two sections get here.
+      await page
+        .getByRole('button', { name: /^10 h:/ })
+        .first()
+        .click()
+      await page
+        .getByRole('button', { name: /^Start \(8 h of deck\)/ })
+        .first()
+        .click()
+      checkGrid(await page.evaluate(measureGrid, LINE), 2, 0)
+      await page.getByRole('button', { name: 'End week' }).click()
+      await page.getByRole('button', { name: 'Next week' }).first().click()
+      await plan()
+      // An open round: pitching, and the investors who said no.
+      checkGrid(await page.evaluate(measureGrid, LINE), 2, 0)
       await page.close()
     }, 60_000)
   }
@@ -572,4 +487,136 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
     expect(await page.locator('[data-show]').count()).toBe(0)
     await page.close()
   }, 60_000)
+}
+
+/** Measures the notebook in the page: every block on the 44 px grid, rows aligned, controls big enough. */
+const measureGrid = (line: number) => {
+  const notebook = document.querySelector('section[aria-label="My week"]')!
+  const top0 = notebook.getBoundingClientRect().top
+  const desk = !!document.querySelector('[data-layout="desk"]')
+  const whole = (n: number) => Math.abs(n / line - Math.round(n / line)) < 0.02
+  const controls =
+    'button, [class*="stepper"], [class*="_bar_"], [class*="segment"], [class*="_progress_"], svg'
+
+  // Every block is whole lines tall and starts on a line.
+  const off: string[] = []
+  let blocks = 0
+  for (const el of notebook.querySelectorAll('*')) {
+    // Text for screen readers only takes no room on the paper.
+    if (el.closest(controls) || el.closest('.visually-hidden')) continue
+    const display = getComputedStyle(el).display
+    if (display === 'inline' || display === 'contents') continue
+    const r = el.getBoundingClientRect()
+    if (r.height === 0) continue
+    blocks++
+    if (!whole(r.height) || !whole(r.top - top0)) {
+      off.push(`${el.tagName}.${el.className} top ${r.top - top0} height ${r.height}`)
+    }
+  }
+
+  // Writing rests on its line: handwriting 37 px down (6 px above the rule), numbers 31.
+  // Writing that wraps (two line rows) is checked on its first line, inside its on-rule span.
+  const baselines: { mono: boolean; at: number }[] = []
+  for (const el of notebook.querySelectorAll(
+    '[class*="_title_"], [class*="_sectionTitle_"], [class*="_label_"], [class*="_summary_"], [class*="_hint_"], [class*="_sub_"], [class*="_mono_"], [class*="_wrapped_"]',
+  )) {
+    if (!el.textContent?.trim()) continue
+    const probe = document.createElement('span')
+    probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline'
+    const host = el.querySelector('[class*="_onRule_"]') ?? el
+    host.insertBefore(probe, host.firstChild)
+    baselines.push({
+      mono: /_mono_/.test(el.className),
+      at: probe.getBoundingClientRect().bottom - el.getBoundingClientRect().top,
+    })
+    probe.remove()
+  }
+
+  // Controls: no "?" buttons, and every button has a tappable area of at least 44 x 44.
+  const questionMarks = [...notebook.querySelectorAll('button')].filter(
+    (b) => b.textContent?.trim() === '?',
+  ).length
+  const small: string[] = []
+  for (const b of notebook.querySelectorAll('button')) {
+    const r = b.getBoundingClientRect()
+    if (r.width === 0) continue
+    if (r.width < 43.5 || r.height < 43.5) {
+      small.push(`${b.textContent} ${r.width}x${r.height}`)
+    }
+  }
+
+  // In every row the control sits centred on the label's first line, close beside it.
+  const centre = (r: DOMRect) => r.top + r.height / 2
+  const misaligned: string[] = []
+  const gaps: number[] = []
+  let rows = 0
+  for (const row of notebook.querySelectorAll('[class*="_row_"]')) {
+    const label = row.querySelector('[class*="_label_"], [class*="_wrapped_"]')
+    const control = [...row.querySelectorAll('[class*="_controls_"] button')].find(
+      (b) => b.getBoundingClientRect().height > 0,
+    )
+    if (!label || !control) continue
+    rows++
+    const l = label.getBoundingClientRect()
+    const c = control.getBoundingClientRect()
+    if (Math.abs(l.top + line / 2 - centre(c)) > 1) {
+      misaligned.push(`${label.textContent}: line ${l.top + line / 2} control ${centre(c)}`)
+    }
+    const first = row.querySelector('[class*="_controls_"]')!.getBoundingClientRect()
+    gaps.push(first.left - l.right)
+  }
+
+  // Names in rows are never cut short: they wrap onto further lines instead.
+  const cut = [...notebook.querySelectorAll('[class*="_row_"] > :first-child')]
+    .filter(
+      (el) =>
+        el.scrollWidth > el.clientWidth + 1 || getComputedStyle(el).textOverflow === 'ellipsis',
+    )
+    .map((el) => el.textContent)
+
+  // Open sections let the rules run through.
+  const bodies = [...notebook.querySelectorAll('[id^="plan-"]')]
+  const opaque = bodies.filter((b) => getComputedStyle(b).backgroundColor !== 'rgba(0, 0, 0, 0)')
+  const tooWide = [...notebook.querySelectorAll('*')].filter(
+    (e) => e.scrollWidth > e.clientWidth + 1 && getComputedStyle(e).overflowX === 'visible',
+  )
+  return {
+    desk,
+    off,
+    blocks,
+    baselines,
+    questionMarks,
+    small,
+    misaligned,
+    gaps,
+    rows,
+    cut,
+    bodies: bodies.length,
+    opaque: opaque.length,
+    overflowing: tooWide.map((e) => `${e.tagName}.${e.className}`),
+  }
+}
+
+type Grid = Awaited<ReturnType<typeof measureGrid>>
+
+/** The notebook rules of docs/design/design.md, on a measurement. */
+function checkGrid(result: Grid, sections: number, minRows = 10) {
+  expect(result.bodies).toBeGreaterThanOrEqual(sections)
+  expect(result.blocks).toBeGreaterThan(20)
+  expect(result.off).toEqual([])
+  expect(result.opaque).toBe(0)
+  expect(result.rows).toBeGreaterThanOrEqual(minRows)
+  expect(result.misaligned).toEqual([])
+  expect(result.cut).toEqual([])
+  for (const b of result.baselines) {
+    const [lo, hi] = b.mono ? [30, 32] : [36, 38]
+    expect(b.at).toBeGreaterThanOrEqual(lo)
+    expect(b.at).toBeLessThanOrEqual(hi)
+  }
+  expect(result.questionMarks).toBe(0)
+  expect(result.small).toEqual([])
+  if (result.desk) {
+    // Labels and controls sit together: no empty gulf between them.
+    for (const gap of result.gaps) expect(gap).toBeLessThan(40)
+  }
 }

@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { loadScenario, SCENARIO_IDS, type ScenarioId } from '@founder-mode/content'
-import { ENDING_ROUTES, parseSeedsTable, playSeed } from '../src/endingSeeds'
+import { loadScenario, SCENARIO_IDS, scenarioModes, type ScenarioId } from '@founder-mode/content'
+import { parseSeedsTable, playSeed, routesFor } from '../src/endingSeeds'
 
 const doc = readFileSync(fileURLToPath(new URL('../../../docs/seeds.md', import.meta.url)), 'utf8')
 const rows = parseSeedsTable(doc)
@@ -10,10 +10,15 @@ const rows = parseSeedsTable(doc)
 describe('docs/seeds.md', () => {
   it('lists two or three seeds for every ending of every scenario', () => {
     for (const id of SCENARIO_IDS) {
-      for (const { ending } of ENDING_ROUTES) {
-        const n = rows.filter((r) => r.scenario === id && r.ending === ending).length
-        expect(n, `${id} ${ending}`).toBeGreaterThanOrEqual(2)
-        expect(n, `${id} ${ending}`).toBeLessThanOrEqual(3)
+      for (const mode of scenarioModes(id)) {
+        const long = mode === 'long'
+        for (const { ending } of routesFor(loadScenario(id, mode))) {
+          const n = rows.filter(
+            (r) => r.scenario === id && (r.mode === 'long') === long && r.ending === ending,
+          ).length
+          expect(n, `${id} ${mode} ${ending}`).toBeGreaterThanOrEqual(2)
+          expect(n, `${id} ${mode} ${ending}`).toBeLessThanOrEqual(3)
+        }
       }
     }
   })
@@ -22,7 +27,8 @@ describe('docs/seeds.md', () => {
   it.each(rows.map((r) => [r.scenario, r.ending, r.strategy, r.seed, r] as const))(
     '%s %s: %s on %s still ends there',
     (_s, _e, _st, _seed, row) => {
-      const r = playSeed(loadScenario(row.scenario as ScenarioId), row.strategy, row.seed)
+      const scenario = loadScenario(row.scenario as ScenarioId, row.mode ?? 'standard')
+      const r = playSeed(scenario, row.strategy, row.seed)
       expect(r).toEqual({ ending: row.ending, week: row.week })
     },
   )

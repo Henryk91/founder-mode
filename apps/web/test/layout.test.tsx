@@ -179,6 +179,7 @@ describe("the player's week 34 (Kantino, 60 weeks)", () => {
     monthlyRevenueCents: 343_000,
     customers: 7,
     runwayWeeks: 26,
+    investmentCents: 0,
   })
   const view = {
     ...base,
@@ -367,6 +368,7 @@ describe('results', () => {
       monthlyRevenueCents: 0,
       customers,
       runwayWeeks: null,
+      investmentCents: 0,
     })
     const later: PlayerView = { ...view, history: [weekEnd(7, 1), weekEnd(8, 2)] }
     expect(notableMoments(report, later)).toEqual([])

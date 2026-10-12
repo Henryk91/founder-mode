@@ -230,6 +230,10 @@ export function PostMortem({ desk }: { desk: boolean }) {
         <p key={i}>{t.hire(h)}</p>
       ))}
       {money.freelance && <p>{t.freelance()}</p>}
+      {money.funding && <p>{t.funding()}</p>}
+      {money.funding && money.funding.pitchedTooEarly > 0 && (
+        <p>{count('pm.money.tooEarly', stage, money.funding.pitchedTooEarly)}</p>
+      )}
     </Fold>
   )
 
@@ -669,6 +673,21 @@ class Text {
     )
   }
 
+  funding(): string {
+    const f = this.pm.money.funding!
+    if (f.raisedCents === 0) {
+      return count('pm.money.raiseNone', this.stage, f.investorsMet, {
+        hours: label('unit.hours', this.stage, { n: f.hours }),
+      })
+    }
+    return label('pm.money.raised', this.stage, {
+      raised: formatEuro(f.raisedCents),
+      share: (f.founderShareBp / 100).toFixed(1),
+      value: formatEuro(f.companyValueCents),
+      yours: formatEuro(f.founderValueCents),
+      hours: label('unit.hours', this.stage, { n: f.hours }),
+    })
+  }
   freelance(): string {
     const f = this.pm.money.freelance!
     const hours = (n: number) => label('unit.hours', this.stage, { n })

@@ -174,8 +174,14 @@ function BestRuns(props: { runs: RunRecord[]; stage: UiStage; scenario: string; 
 }
 
 function Group({ bests, stage }: { bests: Bests; stage: UiStage }) {
+  // Ownership is its own column in long mode: what the founder kept after raising.
   const perMonth = (r: RunRecord) =>
-    label('start.best.perMonth', stage, { amount: formatEuro(r.peakRevenueCents) })
+    r.founderShareBp !== undefined && r.founderShareBp < 10_000
+      ? label('start.best.perMonthOwned', stage, {
+          amount: formatEuro(r.peakRevenueCents),
+          share: (r.founderShareBp / 100).toFixed(0),
+        })
+      : label('start.best.perMonth', stage, { amount: formatEuro(r.peakRevenueCents) })
   return (
     <dl className={startStyles.rows}>
       <Row name={label('start.best.longest', stage)} run={bests.longest} stage={stage}>

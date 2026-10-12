@@ -122,7 +122,30 @@ function MemberCard(props: {
   }
 }) {
   const { view, stage, member, task, actions } = props
-  const setTask = (t: TeamTask | null) => actions.setTeamTask(member.id, t)
+  const admin = !!task && (task.kind === 'admin' || task.admin === true)
+  // A new piece of work keeps the chasing; no work with chasing on leaves chasing alone.
+  const setTask = (t: TeamTask | null) =>
+    actions.setTeamTask(
+      member.id,
+      t === null
+        ? admin
+          ? { kind: 'admin' }
+          : null
+        : t.kind !== 'admin' && admin
+          ? { ...t, admin: true }
+          : t,
+    )
+  const setAdmin = (on: boolean) =>
+    actions.setTeamTask(
+      member.id,
+      !task || task.kind === 'admin'
+        ? on
+          ? { kind: 'admin' }
+          : null
+        : on
+          ? { ...task, admin: true }
+          : withoutAdmin(task),
+    )
   const outreach = task?.kind === 'outreach' ? task : null
   return (
     <>
@@ -142,7 +165,9 @@ function MemberCard(props: {
         <>
           <Writing>{label('team.devWork', stage)}</Writing>
           <Choices>
-            {chip(task === null, label('team.devNone', stage), () => setTask(null))}
+            {chip(task === null || task.kind === 'admin', label('team.devNone', stage), () =>
+              setTask(null),
+            )}
             {view.product.features
               .filter((f) => !f.shipped)
               .map((f) =>
@@ -178,6 +203,9 @@ function MemberCard(props: {
             </Choices>
           )}
         </>
+      )}
+      {member.working && (
+        <Choices>{chip(admin, label('team.admin', stage), () => setAdmin(!admin))}</Choices>
       )}
       <Choices>
         {chip(
@@ -297,6 +325,13 @@ function FreelancePlanRows(props: {
               )}
             </>
           )}
+          {working && (
+            <Choices>
+              {chip(draft.admin === true, label('team.admin', stage), () =>
+                set({ admin: !draft.admin }),
+              )}
+            </Choices>
+          )}
           {current.endWeek === null && (
             <>
               <Writing>{label('freelance.hours', stage)}</Writing>
@@ -364,4 +399,11 @@ function FreelancePlanRows(props: {
       )}
     </>
   )
+}
+
+/** The same build or outreach task without chasing. */
+function withoutAdmin(task: Exclude<TeamTask, { kind: 'admin' }>): TeamTask {
+  const copy = { ...task }
+  delete copy.admin
+  return copy
 }

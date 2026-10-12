@@ -65,6 +65,35 @@ export function Money() {
         </div>
       </section>
 
+      {view.funding && view.funding.raisedCents > 0 && (
+        <section className={styles.card}>
+          <h2 className={styles.title}>{label('money.owners', stage)}</h2>
+          {view.funding.capTable.map((row) => (
+            <div key={row.name} className={styles.rowHead}>
+              <span>
+                {row.round
+                  ? label('money.ownerInvestor', stage, {
+                      name: row.name,
+                      amount: formatEuro(row.amountCents),
+                      week: row.week ?? 0,
+                    })
+                  : label('money.ownerYou', stage)}
+              </span>
+              <span className={styles.mono}>{(row.shareBp / 100).toFixed(1)}%</span>
+            </div>
+          ))}
+          <p className={styles.hint}>
+            {label('money.ownersValue', stage, {
+              value: formatEuro(view.funding.valueCents),
+              multiple: view.funding.valueRevenueMultiple,
+              yours: formatEuro(
+                Math.round((view.funding.valueCents * view.funding.founderShareBp) / 10_000),
+              ),
+            })}
+          </p>
+        </section>
+      )}
+
       <section className={styles.card}>
         <h2 className={styles.title}>{label('money.price', stage)}</h2>
         <p className={styles.hint}>{label('money.priceHint', stage)}</p>

@@ -21,7 +21,8 @@ export function repeatPlan(last: WeekPlan, view: PlayerView): WeekPlan {
   }
   for (const seg of view.segments) {
     const budget = last.landing[seg.id] ?? 0
-    if (budget > 0) plan.landing[seg.id] = budget
+    // Long mode allows a few tests per market; a market with none left drops its test.
+    if (budget > 0 && (seg.landingTestsLeft ?? 1) > 0) plan.landing[seg.id] = budget
     const batches = Math.min(last.presales[seg.id] ?? 0, seg.presaleBatchesLeft)
     if (batches > 0) plan.presales[seg.id] = batches
   }
@@ -29,14 +30,31 @@ export function repeatPlan(last: WeekPlan, view: PlayerView): WeekPlan {
   for (const member of view.team.members) {
     const task = last.teamTasks[member.id]
     if (!member.working || !task) continue
-    if (task.kind === 'build') {
+    if (task.kind === 'admin') {
+      plan.teamTasks[member.id] = { kind: 'admin' }
+    } else if (task.kind === 'build') {
       const target = view.product.features.find((f) => f.id === task.featureId)
       if (member.role === 'developer' && target && !target.shipped) plan.teamTasks[member.id] = task
+      // A finished feature leaves the chasing, if it was asked for.
+      else if (task.admin) plan.teamTasks[member.id] = { kind: 'admin' }
     } else if (member.role === 'salesperson') {
       plan.teamTasks[member.id] = { ...task }
     }
   }
   plan.freelance = carryFreelance(last, view)
+  // Pitching is regular work while the round is open; every other raising step is a one-off.
+  const f = view.funding
+  if (f?.round && f.round.investorsLeft > 0 && (last.funding?.pitchHours ?? 0) > 0) {
+    plan.funding = {
+      start: null,
+      pitchHours: last.funding!.pitchHours,
+      secondLooks: [],
+      accept: null,
+      decline: [],
+      stop: false,
+      update: null,
+    }
+  }
   return plan
 }
 
@@ -54,5 +72,6 @@ export function carryFreelance(last: WeekPlan, view: PlayerView): FreelancePlan 
   if (current.role === 'salesperson' && last.freelance.outreach) {
     out.outreach = { ...last.freelance.outreach }
   }
+  if (last.freelance.admin) out.admin = true
   return out
 }
