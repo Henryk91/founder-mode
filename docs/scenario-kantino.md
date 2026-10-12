@@ -190,8 +190,12 @@ No hidden values and no random draws of its own: a run that never books one play
 | Markets running out | No | Outreach response x max(0.3, 1 - leads found there / reachable companies), using the size column of 3.1 |
 | Hires | One, part time (section 8) | Up to 4 at once, 8 in all; 2 h of the founder's week each. Full time 40 h: developer 7,000, salesperson 6,050 a month (Munich, `docs/phase9-proposal.md` 8.1). Part time 20 h at half: developer 3,500, salesperson 3,025 |
 | Milestones | Up to 52 weeks survived | Adds 78 and 104 weeks survived |
+| Channel limit (C3) | 12 h a week over 3 weeks | 24 h a week over 3 weeks, so a salesperson beside the founder is not selling only in worn out channels |
+| Salesperson selling (C3) | 0.3 (the part time hire) | 1.0: a professional seller, better than a founder at the cap of 0.8 |
+| Chasing and admin (C3) | Founder only | Any hire or the freelancer can chase late invoices for the founder, before their own work |
+| Events | 109 | Plus 57 events of the second year from week 53 (`shared/events/year2.yaml`) |
 
-Everything else (starting money, markets, features, events, freelancer) is the 60 week game's.
+Everything else (starting money, markets, features, freelancer) is the 60 week game's.
 
 ## 9. Office stages
 
