@@ -23,6 +23,7 @@ import {
   TEAM_SPECS,
   TIRED_SPECS,
   INBOX_SPECS,
+  YEAR2_INBOX_SPECS,
   PRICING_SPECS,
   READER_SPEC,
   strategyOf,
@@ -108,7 +109,11 @@ function planFor(scenario: Scenario): Planned[] {
   if (full && args.parts.includes('paired'))
     out.push(...ABLATION_SPECS.map((spec) => plan(spec, 'paired', args.wideRuns)))
   if (full && args.parts.includes('inbox'))
-    out.push(...INBOX_SPECS.map((spec) => plan(spec, 'inbox', args.wideRuns)))
+    out.push(
+      ...[...INBOX_SPECS, ...(mode === 'long' ? YEAR2_INBOX_SPECS : [])].map((spec) =>
+        plan(spec, 'inbox', args.wideRuns),
+      ),
+    )
   if (full && args.parts.includes('price'))
     out.push(...PRICING_SPECS.map((spec) => plan(spec, 'price', args.wideRuns)))
   // Target 19's freelancer, and any extra freelancer runs asked for, on the wide seeds.
@@ -131,7 +136,11 @@ function planFor(scenario: Scenario): Planned[] {
     out.push(...TIRED_SPECS.map((spec) => plan(spec, 'tired', args.wideRuns)))
   // Long mode team variants on the wide seeds (targets 20 and 29).
   if (full && args.parts.includes('team') && mode === 'long')
-    out.push(...TEAM_SPECS.map((spec) => plan(spec, 'team', args.wideRuns)))
+    out.push(
+      ...TEAM_SPECS.filter(
+        (spec) => args.team.length === 0 || (spec.kind === 'team' && args.team.includes(spec.id)),
+      ).map((spec) => plan(spec, 'team', args.wideRuns)),
+    )
   // The energy curve, on the wide seeds, only when asked for.
   if (full && args.parts.includes('energy'))
     out.push(...ENERGY_SPECS.map((spec) => plan(spec, 'energy', args.wideRuns)))

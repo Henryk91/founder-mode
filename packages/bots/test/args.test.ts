@@ -16,9 +16,14 @@ describe('parseArgs', () => {
       wideRuns: 1000,
       freelance: [],
       mode: 'standard',
+      team: [],
     })
     expect(parseArgs(['--mode', 'long']).mode).toBe('long')
     expect(parseArgs(['--mode', 'all']).mode).toBe('all')
+    expect(parseArgs(['--team', 'validate_then_build_solo,x']).team).toEqual([
+      'validate_then_build_solo',
+      'x',
+    ])
     expect(() => parseArgs(['--mode', 'short'])).toThrow()
     expect(parseArgs(['--events']).events).toBe(true)
     expect(parseArgs(['--jobs', '4']).jobs).toBe(4)

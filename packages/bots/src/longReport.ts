@@ -29,6 +29,9 @@ import { ENERGY_BUDGETS, energyId } from './specs'
  */
 const SOLO = 'team:validate_then_build_solo'
 const FREELANCE_FIRST = 'team:validate_then_build_freelance_first'
+const EXPAND = 'team:validate_then_build_expand'
+const EXPAND_SOLO = 'team:validate_then_build_expand_solo'
+const FOUNDER_CHASES = 'team:validate_then_build_founder_chases'
 const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
 
 /** Seeds of the wide runs by the role of the freelancer's first booking, then never booked. */
@@ -69,7 +72,7 @@ export function evaluateLongTargets(input: ReportInput): Target[] {
   // 20: freelancer or hire, each in its own situation.
   const sit = (kind: string, by: string) => find(input, `team:validate_then_build_${kind}_${by}`)
   const t20 = (() => {
-    const text = `Freelancer or hire is each the right call in its own situation: for a burst (the build, from week 3 until it ships), a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady work (selling from the first paying customer to the end), a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. Both on top of the solo careful bot, on the same seeds${wideNote}`
+    const text = `Freelancer or hire is each the right call in its own situation: for a burst (the build, from week 3 until it ships), a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady work (selling from the week the business can carry a part time salesperson by the careful rule, to the end), a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. Both on top of the solo careful bot, on the same seeds${wideNote}`
     const bf = sit('burst', 'freelancer')
     const bh = sit('burst', 'hire')
     const sf = sit('steady', 'freelancer')
@@ -154,21 +157,29 @@ export function evaluateLongTargets(input: ReportInput): Target[] {
   const alive = group('alive')
   const keepShare = pct(wins(profitable).length, profitable.length)
   const turnShare = pct(wins(alive).length, alive.length)
-  // 29: hiring from revenue pays; hiring early on savings does not.
+  // 29 (restated in plan 3.1): hiring pays only when the business can carry it.
   const solo = find(input, SOLO)
   const savings = find(input, 'team:validate_then_build_savings_hire')
+  const expand = find(input, EXPAND)
+  const expandSolo = find(input, EXPAND_SOLO)
   const t29 = (() => {
-    const text = `Hiring from revenue pays and hiring on savings does not: validate_then_build (hires once revenue allows) beats validate_then_build_solo (never hires) by at least 2 points, and validate_then_build_savings_hire (first hire in week 3, paid from savings) loses to it${wideNote}`
+    const text = `Hiring pays only when the business can carry it: validate_then_build's hiring is not worse than validate_then_build_solo overall (within its margin); validate_then_build_savings_hire (first hire in week 3, paid from savings) loses to solo by more than its margin; and in at least one situation hiring beats its solo counterpart by at least 2 points: (a) pricing from the hints (validate_then_build against validate_then_build_solo) or (b) opening a second market once the first runs dry (validate_then_build_expand against validate_then_build_expand_solo)${wideNote}`
     if (!reader || !solo || !savings) return { id: 29, text, value: '-', margin: '', pass: false }
     const all = reader.results.map((_, i) => i)
     const careful = pairedOn(solo, reader, all)
     const early = pairedOn(solo, savings, all)
+    const b = expand && expandSolo ? pairedOn(expandSolo, expand, all) : null
+    // A situation within its own margin of +2 is at the limit and passes (plan 1).
+    const reaches = (p: { change: number; margin: number }) => p.change + p.margin >= 2
     return {
       id: 29,
       text,
-      value: `from revenue ${signed(careful.change)}, on savings ${signed(early.change)}`,
-      margin: `${fmtMargin(careful.margin)}, ${fmtMargin(early.margin)}`,
-      pass: careful.change >= 2 && early.change < 0,
+      value: `overall (a) ${signed(careful.change)}; on savings ${signed(early.change)}; (b) ${b ? signed(b.change) : '-'}`,
+      margin: `${fmtMargin(careful.margin)}; ${fmtMargin(early.margin)}; ${b ? fmtMargin(b.margin) : ''}`,
+      pass:
+        careful.change + careful.margin >= 0 &&
+        early.change + early.margin < 0 &&
+        (reaches(careful) || (b !== null && reaches(b))),
     }
   })()
   // 30: mirrors 5.
@@ -366,6 +377,29 @@ export function teamRows(input: ReportInput): string[] {
           '|---|---|---|---|---|',
           `| all | ${cmp(solo, savings, all)} |`,
         )
+      const ex = find(input, EXPAND)
+      const exSolo = find(input, EXPAND_SOLO)
+      if (ex && exSolo)
+        out.push(
+          '',
+          'Situation (b): opening a second market once the first runs dry in year 2, with the team rule serving it against the founder alone, on the same seeds.',
+          '',
+          '| Seeds | Runs | validate_then_build_expand_solo | validate_then_build_expand | Difference |',
+          '|---|---|---|---|---|',
+          `| all | ${cmp(exSolo, ex, all)} |`,
+          ...markets.map((m) => `| ${m} | ${cmp(exSolo, ex, bySegment(reader.results, m))} |`),
+          `| against validate_then_build_solo | ${cmp(solo, exSolo, all)} |`,
+        )
+      const fc = find(input, FOUNDER_CHASES)
+      if (fc)
+        out.push(
+          '',
+          'Who chases late invoices once someone is on the team: the team (validate_then_build) against the founder (same seeds).',
+          '',
+          '| Seeds | Runs | validate_then_build_founder_chases | validate_then_build | Difference |',
+          '|---|---|---|---|---|',
+          `| all | ${cmp(fc, reader, all)} |`,
+        )
     }
     const sits = (['burst', 'steady'] as const).flatMap((kind) =>
       (['freelancer', 'hire'] as const).flatMap((by) => {
@@ -379,7 +413,7 @@ export function teamRows(input: ReportInput): string[] {
         '',
         '## Freelancer or hire (target 20)',
         '',
-        'The solo careful bot with one extra person in a fixed role: a developer for the burst of the build (from week 3 until the features its market asks for have shipped), or a salesperson for steady selling (from the first paying customer to the end), as a 20 h freelancer or a part time hire. Same seeds; each row against the solo bot, then freelancer against hire.',
+        'The solo careful bot with one extra person in a fixed role: a developer for the burst of the build (from week 3 until the features its market asks for have shipped), or a salesperson for steady selling (from the week the business can carry a part time salesperson, to the end), as a 20 h freelancer or a part time hire. Same seeds; each row against the solo bot, then freelancer against hire.',
         '',
         '| Situation | Runs | Solo | Freelancer | Part time hire | Freelancer against solo | Hire against solo | Hire against freelancer | Used (freelancer, hire) |',
         '|---|---|---|---|---|---|---|---|---|',
@@ -418,6 +452,30 @@ export function teamRows(input: ReportInput): string[] {
         ),
       )
     }
+  }
+
+  // The second year's events: what reading and blind effort gain from them (C3 goal).
+  const none = find(input, 'validate_then_build inbox:none')
+  const effort = find(input, 'validate_then_build inbox:effort')
+  const readNo2 = find(input, 'validate_then_build inbox:reader -year2')
+  const effortNo2 = find(input, 'validate_then_build inbox:effort -year2')
+  if (reader && none && effort && readNo2 && effortNo2) {
+    const all = reader.results.map((_, i) => i)
+    const d = (a: StrategyRuns, b: StrategyRuns) => {
+      const p = pairedOn(a, b, all)
+      return `${signed(p.change)} ${fmtMargin(p.margin)}`
+    }
+    out.push(
+      '',
+      "## The second year's events",
+      '',
+      `Reading and blind effort against leaving every message alone, with the second year's events answered as usual and left to their defaults (same ${all.length} seeds). What the events add is the difference between the two.`,
+      '',
+      '| Policy | Against none, with year 2 events | Against none, year 2 events left alone | Year 2 events add |',
+      '|---|---|---|---|',
+      `| reading | ${d(none, reader)} | ${d(none, readNo2)} | ${d(readNo2, reader)} |`,
+      `| blind effort | ${d(none, effort)} | ${d(none, effortNo2)} | ${d(effortNo2, effort)} |`,
+    )
   }
 
   if (reader) {

@@ -30,6 +30,8 @@ export type BotArgs = {
   freelance: FreelanceArg[]
   /** Run length: the 60 week game (default), long mode, or every mode a scenario has. */
   mode: 'standard' | 'long' | 'all'
+  /** The `team` part plays only these team variants (ids without `team:`); empty plays all. */
+  team: string[]
 }
 
 export type FreelanceArg = {
@@ -65,6 +67,7 @@ export function parseArgs(argv: readonly string[]): BotArgs {
     wideRuns: 0,
     freelance: [],
     mode: 'standard',
+    team: [],
   }
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]
@@ -108,6 +111,9 @@ export function parseArgs(argv: readonly string[]): BotArgs {
         throw new Error(`Invalid --mode value: ${value}`)
       }
       args.mode = value
+      i++
+    } else if (flag === '--team' && value !== undefined) {
+      args.team = value.split(',').filter(Boolean)
       i++
     } else if (flag === '--desk') {
       args.desk = true
