@@ -66,3 +66,27 @@ describe('freelancer bots', () => {
     )
   })
 })
+
+describe('the tired founder (target 19 check)', () => {
+  it('rents only once energy is low, and an overworker gets there', () => {
+    const scenario = loadScenario('kantino')
+    const spec = (budget: number): StrategySpec => ({
+      kind: 'tired',
+      budget,
+      below: 40,
+      rent: true,
+    })
+    expect(strategyOf(spec(65)).id).toBe('tired:65h rent below 40')
+    let booked = 0
+    for (let i = 0; i < 4; i++) {
+      const r = runGame(scenario, strategyOf(spec(65)), `tired-${i}`)
+      if (r.freelance) booked++
+    }
+    expect(booked).toBeGreaterThan(0)
+    // The careful bot at 50 h stays fresh, so the rule leaves it alone.
+    const calm = runGame(scenario, strategyOf(spec(50)), 'tired-calm')
+    const plain = runGame(scenario, validateThenBuild, 'tired-calm')
+    expect(calm.freelance).toBeNull()
+    expect(calm.ending).toBe(plain.ending)
+  })
+})

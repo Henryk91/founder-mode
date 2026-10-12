@@ -332,6 +332,12 @@ export type Behaviours = {
   presales: 'careful' | 'one' | 'max'
   /** Rent a freelancer (target 19): a developer for the build, or a salesperson for a while. */
   freelance?: FreelanceRule
+  /**
+   * The energy check of target 19: below `below` energy the founder plans `hours` fewer and, with
+   * `rent`, books a freelancer for those hours (developer while wanted features are unbuilt, else
+   * salesperson), until energy is back at the scenario's tired mark.
+   */
+  tiredFreelance?: { below: number; hours: number; rent: boolean }
   /** For the event table: always answer this event with this choice. */
   forced?: { eventId: string; choiceId: string }
   /** For measuring an event's share of an inbox policy: leave this event to its default. */
@@ -542,6 +548,7 @@ export function validatingPlayer(
   let largerLanding = false
   let lastPlan: WeekPlan | null = null
   let freelanceUsed = false
+  let tiredMode = false
   const impressionOrder = scenario.team.impressions.map((i) => i.name)
 
   // Inbox events whose choice moves to an office with walk-in leads: event id -> choice, market.
@@ -704,6 +711,36 @@ export function validatingPlayer(
     }
   }
 
+  /** The tired founder's freelancer (`behaviours.tiredFreelance`): booked while tired, then let go. */
+  const tiredRenting = (b: PlanBuilder, view: PlayerView, unshipped: string[]) => {
+    const rule = behaviours.tiredFreelance
+    if (!rule?.rent) return
+    const fl = view.team.freelance
+    const cur = fl.current
+    const running = cur !== null && cur.endWeek === null
+    const role = unshipped.length > 0 ? 'developer' : 'salesperson'
+    if (tiredMode) {
+      if (!running && fl.canBook) b.plan.freelance.book = { role, hoursPerWeek: rule.hours }
+      else if (running && cur.role !== role) b.plan.freelance.end = true
+    } else if (running) {
+      b.plan.freelance.end = true
+    }
+    if (!cur?.working) return
+    if (cur.role === 'developer') {
+      const left = (id: string) => {
+        const f = view.product.features.find((x) => x.id === id)
+        return f ? f.remainingHours - (b.plan.build[id] ?? 0) : 0
+      }
+      const best = [...unshipped].sort((x, y) => left(y) - left(x))[0]
+      b.plan.freelance.build = best && left(best) > 0 ? best : null
+    } else if (target) {
+      b.plan.freelance.outreach = {
+        segmentId: target,
+        channel: channels.choose(target, view.channels, 0),
+      }
+    }
+  }
+
   return {
     focus: () => target,
     respond(input) {
@@ -775,7 +812,12 @@ export function validatingPlayer(
       ]
     },
     plan(view) {
-      const b = new PlanBuilder(view, budget)
+      const tiredRule = behaviours.tiredFreelance
+      if (tiredRule) {
+        if (!tiredMode && view.founder.energy < tiredRule.below) tiredMode = true
+        else if (tiredMode && view.founder.energy >= view.founder.tiredBelow) tiredMode = false
+      }
+      const b = new PlanBuilder(view, budget - (tiredMode && tiredRule ? tiredRule.hours : 0))
       const ids = view.segments.map((s) => s.id)
       lastView = view
       if (prices && view.week <= 2) b.price(prices.price(view, null))
@@ -807,6 +849,7 @@ export function validatingPlayer(
         if (common) b.build(common[0], MAX_BUILD_HOURS)
         // A rented developer is booked the week building starts, to work from week 3.
         if (common && behaviours.freelance?.role === 'developer') freelancing(b, view, [common[0]])
+        tiredRenting(b, view, common ? [common[0]] : [])
         lastPlan = b.plan
         return b.plan
       }
@@ -851,6 +894,7 @@ export function validatingPlayer(
       if (wanted.length < 3 && notes.interviews < 20) b.interviews(target, 3)
       for (const f of unshipped) b.build(f, MAX_BUILD_HOURS - (b.plan.build[f] ?? 0))
       freelancing(b, view, unshipped)
+      tiredRenting(b, view, unshipped)
 
       // Pre-sales measure what prospects do. A careful player pitches every batch its chosen market
       // allows, one a week; nobody in two batches and this market is out.
@@ -1031,5 +1075,30 @@ export function withFreelancer(rule: FreelanceRule, id?: string): Strategy {
         : `Plays like validate_then_build, and rents a freelance salesperson for ${rule.hours} h a week from its first paying customer, for ${rule.weeks} weeks of outreach in its market on its best channel.`,
     create: (scenario) =>
       validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, freelance: rule }),
+  }
+}
+
+/**
+ * The energy check of target 19: validate_then_build planning `budget` hours a week (50 is the
+ * careful bot itself, 65 the overworker), which below `below` energy plans 10 h fewer and, with
+ * `rent`, books a 10 h freelancer for them until energy recovers. Without `below`, the plain bot.
+ */
+export function tiredFounder(
+  budget: number,
+  below: number | null,
+  rent: boolean,
+  id: string,
+): Strategy {
+  const behaviours: Behaviours =
+    below === null
+      ? ALL_BEHAVIOURS
+      : { ...ALL_BEHAVIOURS, tiredFreelance: { below, hours: 10, rent } }
+  return {
+    id,
+    description:
+      below === null
+        ? `Plays like validate_then_build, planning ${budget} h a week.`
+        : `Plays like validate_then_build, planning ${budget} h a week; below ${below} energy it plans 10 h fewer${rent ? ' and books a 10 h freelancer for that work (developer while wanted features are unbuilt, else salesperson)' : ''}, until energy is back at the tired mark.`,
+    create: (scenario) => validatingPlayer(scenario, budget, null, behaviours),
   }
 }

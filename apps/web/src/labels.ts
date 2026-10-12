@@ -742,6 +742,8 @@ const labels = {
   'pm.money.hireNone': 'Your {role} cost {cost} and brought in no customers.',
   'pm.money.freelance.one': 'Freelancers cost {cost} over {n} week.',
   'pm.money.freelance.other': 'Freelancers cost {cost} over {n} weeks.',
+  'pm.money.freelanceUnpaid':
+    'Freelancers cost {cost} for {booked} booked, and {worked} of those found work. The same hours from you would have cost about {own} in rent and food, which you were paying anyway.',
   'pm.money.freelanceBuild': 'They put in {hours} of building and brought {bugs} extra bugs.',
   'pm.money.freelanceSales': 'They found {leads} leads, and {n} of them became customers.',
 

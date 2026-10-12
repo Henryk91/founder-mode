@@ -382,6 +382,15 @@ export type FreelanceEconomics = {
   roles: TeamRoleId[]
   costCents: number
   weeks: number
+  /** Hours booked and billed over the run; `buildHours + outreachHours` of them found work. */
+  bookedHours: number
+  /**
+   * What the hours that found work would have cost as the founder's own: living costs per base
+   * hour (weekly living costs over base hours a week), which the founder pays anyway.
+   */
+  ownHoursCents: number
+  /** False when the run did not end sustainable: the freelancer did not pay for themselves. */
+  paid: boolean
   buildHours: number
   outreachHours: number
   leadsFound: number
@@ -398,12 +407,23 @@ export function freelanceEconomics(state: GameState): FreelanceEconomics | null 
   const weeks = state.ledger.filter((l) => l.freelanceCents > 0).length
   const worked = (role: TeamRoleId) =>
     all.filter((f) => f.role === role).reduce((t, f) => t + f.workedHours, 0)
+  const lastWeek = state.ledger.length
+  let bookedTotal = 0
+  for (const f of all) {
+    const end = Math.min(f.endWeek ?? lastWeek, lastWeek)
+    for (let w = f.startWeek; w <= end; w++) bookedTotal += bookedHours(f, w)
+  }
+  const workedTotal = all.reduce((t, f) => t + f.workedHours, 0)
+  const perHour = state.founder.livingCostCentsPerWeek / state.founder.baseHoursPerWeek
   const found = state.leads.filter((l) => l.source === 'freelancer')
   const ids = new Set(found.map((l) => l.id))
   return {
     roles,
     costCents,
     weeks,
+    bookedHours: bookedTotal,
+    ownHoursCents: Math.round(workedTotal * perHour),
+    paid: state.ending === 'sustainable',
     buildHours: worked('developer'),
     outreachHours: worked('salesperson'),
     leadsFound: found.length,
