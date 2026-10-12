@@ -83,6 +83,22 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
       return { bottom: notebook.bottom, tabsTop: tabs.top, top: notebook.top, bar: !!bar }
     })
     expect(fit.bottom).toBeLessThanOrEqual(fit.tabsTop)
+
+    // Section arrows are big enough to see, inside the section's 44 px line.
+    const arrows = await page.evaluate(() =>
+      [...document.querySelectorAll('button[aria-expanded] svg')].map((svg) => {
+        const a = svg.getBoundingClientRect()
+        const line = svg.closest('button')!.getBoundingClientRect()
+        return {
+          w: a.width,
+          h: a.height,
+          line: line.height,
+          inside: a.top >= line.top && a.bottom <= line.bottom,
+        }
+      }),
+    )
+    expect(arrows.length).toBeGreaterThanOrEqual(6)
+    for (const a of arrows) expect(a).toEqual({ w: 14, h: 14, line: 44, inside: true })
     await page.close()
   }, 60_000)
 

@@ -187,7 +187,9 @@ export function Plan() {
                   onClick={() => toggle(id)}
                 >
                   <span className={plan.arrow} aria-hidden="true">
-                    {isOpen ? '▾' : '▸'}
+                    <svg viewBox="0 0 14 14" className={isOpen ? plan.arrowOpen : undefined}>
+                      <path d="M3.5 1.5 12 7l-8.5 5.5z" />
+                    </svg>
                   </span>
                   <span className={plan.sectionTitle}>{label(title, stage)}</span>
                   <span className={plan.summary}>{lines[id]}</span>
