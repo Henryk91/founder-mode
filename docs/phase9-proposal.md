@@ -640,3 +640,7 @@ Chasing is always right today: a chase costs 1 h and never hurts. The careful bo
 |---|---|---|
 | Early chase annoys | A chase in the first week after the due date carries a small churn chance (a customer who would have paid is annoyed); later chases carry none | "Chase now or give it a week" becomes a judgement. Target 13's chase value shrinks; the careful bot needs a timing rule |
 | Automatic reminders | A standing rule on the Money tab, such as "chase after 14 days", costing the same hour per chase from the week's plan | Removes the weekly tapping; chasing stays worth the same unless combined with the first option |
+
+### 10.9 Part C3: long mode tuning (autonomous run, step 0)
+
+Report: `docs/autonomous/reports/step0-c3.md`; details in `docs/decisions.md` ("Phase 9, part C3b"). The owner's decisions after C3a (`docs/AUTONOMOUS_PLAN.md` 3.1) were applied: channel limit 24 h, salesperson selling 1.0, chasing that keeps up with customers, the results-based let-go, chasing and admin as a team task, hint pricing for the careful bot. Target 29 restated as situational and passed (hint pricing +2.6, expansion with a team +2.4, on savings -29.9); targets 21 to 26, 28 and 30 pass; 27 is at the limit; 20 fails and is an open issue.
