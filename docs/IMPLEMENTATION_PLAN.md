@@ -609,7 +609,7 @@ Zollstock (`docs/scenario-zollstock.md`), with the engine made scenario independ
 
 ### Phase 8: Hardening (about 1 week)
 
-- Final balancing pass for both scenarios, update `docs/balancing.md`. Replace the careful bot's fixed landing bars (7% Kantino, 3.7% Zollstock) with a relative rule that compares markets with each other
+- Final balancing pass for both scenarios, update `docs/balancing.md`. Replace the careful bot's fixed landing bars (7% Kantino, 3.7% Zollstock) with a relative rule that compares markets with each other. **Done** (2026-10, engine 0.11.0): relative landing rule, larger landing tests when the first do not separate the markets, price as a decision (smooth price curve, price churn, "too expensive" reasons, budget quotes in interviews; targets 17 and 18), target 11 made relative, six events made situational, desk and market values retuned. Every target 1 to 18 passes in both scenarios on the agreed sample sizes; see `docs/balancing.md` and `docs/decisions.md` (Phase 8)
 - Save version check
 - Accessibility: contrast, touch targets of 44 px or more, real buttons, keyboard focus
 - Performance check on a mid range phone

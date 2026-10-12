@@ -297,3 +297,8 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - A segment's `size` is drawn but used nowhere in the engine, so it is no lever.
 - Kantino, owner's option 1 on top of round 3: budget quotes in one interview in six (0.17; Zollstock keeps one in four). Measured once on 10,000 seeds: hint bot +9.2 ±1.0 (41.2% overall), worst market small offices +1.6, spread 23.6 ±2.3; default bot 32.9% (target 2), 2.0 (target 6), mean first customer week 5.90 (was 5.81 at the end of step 3); target 11 effort +2.6 of reading's +13.3 (20%). Every measured Kantino target passes. Final Kantino values: coworking would pay 700 to 1,000, phone 0.0425 to 0.0935, in person 0.051 to 0.102; medical would pay 450 to 700, phone 0.066 to 0.1375, in person 0.066 to 0.132; demo to trial 0.05 + 0.35 x fit.
 - A segment's `size` is drawn in `drawHiddenSegments` but used nowhere in the engine. Both scenario docs mark the size column as "not used by the engine yet". No engine change.
+
+## Phase 8, part 3 step 5: final report
+
+- Full report (`pnpm bots --runs 1000 --wide-runs 10000 --seed-prefix test --events`, about 23 minutes on 9 processes: main 25 s, paired 212 s, inbox 63 s, price 150 s, events 904 s). Every target 1 to 18 passes in both scenarios. At the limit (within its own margin): Kantino 17 (gain +9.2 ±1.0 against a cap of 10), 18 (23.6 ±2.3 against 25) and the books in 13 (-2.8 ±1.0); Zollstock 11 (33% of reading), 17's worst market (maintenance -1.5 ±1.5) and landing in 13 (-2.6 ±1.1).
+- Target 10, now that the event table runs again: Kantino 47 of 95 events favour the cheap answer (was 54 before Part 1), Zollstock 46 of 95 (was 40).
