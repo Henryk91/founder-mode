@@ -664,8 +664,16 @@ class Text {
 
   freelance(): string {
     const f = this.pm.money.freelance!
+    const hours = (n: number) => label('unit.hours', this.stage, { n })
     const parts = [
-      count('pm.money.freelance', this.stage, f.weeks, { cost: formatEuro(f.costCents) }),
+      f.paid
+        ? count('pm.money.freelance', this.stage, f.weeks, { cost: formatEuro(f.costCents) })
+        : label('pm.money.freelanceUnpaid', this.stage, {
+            cost: formatEuro(f.costCents),
+            booked: hours(f.bookedHours),
+            worked: hours(f.buildHours + f.outreachHours),
+            own: formatEuro(f.ownHoursCents),
+          }),
     ]
     if (f.roles.includes('developer')) {
       parts.push(

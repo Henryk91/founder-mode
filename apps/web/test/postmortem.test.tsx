@@ -82,7 +82,9 @@ describe('post-mortem screen', () => {
       store.getState().nextMoment()
     }
     const page = text(store, 'desk')
-    expect(page).toContain('Freelancers cost €680 over 1 week.')
+    expect(page).toContain(
+      'Freelancers cost €680 for 10 h booked, and 4 h of those found work. The same hours from you would have cost about €54 in rent and food, which you were paying anyway.',
+    )
     expect(page).toContain('They put in 4 h of building and brought 0 extra bugs.')
   })
 

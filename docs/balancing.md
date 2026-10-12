@@ -29,7 +29,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 16 | No run of any strategy brings an event twice, except events that recur on purpose | 0 repeats |  | yes | | | | |
 | 17 | A price search that reads only the screen beats the default price by 3 to 10 points, loses at most 1 point in any viable market and wins at most 45%; twice the default loses in at least two of three. Within its own margin of a limit counts as at the limit (on 10000 seeds) | search +9.2 (41.2%), worst market small_offices +1.6; twice the default loses in 2 of 3 | ±1.0 (±1.0), ±1.7 | yes | | | | |
 | 18 | For the price search that reads the screen, win rates across the three viable markets lie within 25 points; within its own margin counts as at the limit (on 10000 seeds) | 23.6 points (small_offices 32.6%, medical 34.7%, coworking 56.1%) | ±2.3 | yes | | | | |
-| 19 | A freelance developer for the build gains at least 2 points where the chosen market needs 120 h or more of building, gains nothing where it needs 90 h or less, and is at most 5 points ahead overall. Within its own margin of a limit counts as at the limit (on 10000 seeds) | long builds -9.6 (3246 seeds), short builds -4.8 (3613), all -5.9 | ±1.9, ±1.7, ±1.1 | no | | | | |
+| 19 | Renting never beats doing the work yourself, and costs less than an early hire: a freelance developer for the build gains nothing over validate_then_build, and wins more often than validate_then_build_early_hire (on 10000 seeds) | freelancer -5.9, early hire -21.5, freelancer ahead of the early hire by +15.6 | ±1.1, ±0.9, ±1.0 | yes | | | | |
 
 ## Endings
 
@@ -101,6 +101,7 @@ Each freelancer run plays like `validate_then_build` until it books, on the same
 | Run | all | 85 h (small_offices) | 105 h (medical) | 135 h (coworking) | never booked | Booked | Median cost | Median weeks | Median hours of work |
 |---|---|---|---|---|---|---|---|---|---|
 | freelance:developer 20h | -5.9 ±1.1 (10000) | -4.8 ±1.7 (3613) | -3.4 ±1.9 (3141) | -9.6 ±1.9 (3246) | - | 100.0% | 4,080 EUR | 3 | 17 |
+| freelance:compare validate_then_build_early_hire | -21.5 ±0.9 (10000) | - | - | - | -21.5 ±0.9 (10000) | 0.0% | - | - | - |
 | freelance:developer 20h at 0 EUR | +1.3 ±1.1 (10000) | +0.2 ±1.7 (3613) | +3.2 ±1.9 (3141) | +0.7 ±1.9 (3246) | - | 100.0% | 0 EUR | 0 | 17 |
 | freelance:developer 20h at 49 EUR | -3.9 ±1.1 (10000) | -3.5 ±1.7 (3613) | -1.3 ±1.9 (3141) | -6.8 ±1.9 (3246) | - | 100.0% | 2,940 EUR | 3 | 17 |
 | freelance:developer 10h at 0 EUR | +0.8 ±1.0 (10000) | +0.6 ±1.7 (3613) | +1.4 ±1.9 (3141) | +0.6 ±1.9 (3246) | - | 100.0% | 0 EUR | 0 | 13 |
@@ -115,6 +116,7 @@ By the real role of the market the bot booked for (hidden, report only):
 | Run | mediocre | trap | viable |
 |---|---|---|---|
 | freelance:developer 20h | -2.1 ±1.7 (2212) | -4.8 ±3.8 (478) | -7.2 ±1.3 (7310) |
+| freelance:compare validate_then_build_early_hire | - | - | - |
 | freelance:developer 20h at 0 EUR | +2.0 ±1.8 (2212) | -2.3 ±3.6 (478) | +1.4 ±1.3 (7310) |
 | freelance:developer 20h at 49 EUR | -1.4 ±1.7 (2212) | -1.5 ±3.9 (478) | -4.8 ±1.3 (7310) |
 | freelance:developer 10h at 0 EUR | +1.5 ±1.7 (2212) | -2.3 ±3.4 (478) | +0.8 ±1.3 (7310) |
@@ -123,6 +125,28 @@ By the real role of the market the bot booked for (hidden, report only):
 | freelance:salesperson 10h 8w at 0 EUR | +0.0 ±1.1 (1637) | +1.0 ±3.1 (594) | +1.2 ±1.3 (7631) |
 | freelance:salesperson 10h 8w at 41 EUR | -1.3 ±0.9 (1637) | -5.1 ±2.7 (594) | -5.1 ±1.3 (7631) |
 | freelance:salesperson 10h 8w | -1.8 ±0.9 (1637) | -7.2 ±2.6 (594) | -8.7 ±1.2 (7631) |
+
+## The freelancer when tired (target 19 check)
+
+Each bot plays like `validate_then_build` planning 50 (the careful bot), 58 or 65 h a week (65 is the overworker). Below 40 or 30 energy, "rent" plans 10 h fewer and books a 10 h freelancer for that work (developer while wanted features are unbuilt, else salesperson) until energy is back at the tired mark (70); "cut" only plans 10 h fewer. Points against the same bot without the rule, on the same 10000 seeds (paired margin, seeds). "Used": seeds where the rule fired. The last three columns split by the plain run: burned out, nearly (energy below 30 at some point), or neither.
+
+| Run | All | Used | Burnout: plain / this | Used: burnout plain / this | Plain burned out | Plain nearly | Neither | Median freelance cost when used |
+|---|---|---|---|---|---|---|---|---|
+| tired:50h | 32.1% won | | 0.0% | | 0 seeds | 0 seeds | 10000 seeds | |
+| tired:50h rent below 40 | +0.0 ±0.0 (10000) | - | 0.0% / 0.0% | - / - | - | - | +0.0 ±0.0 (10000) | - |
+| tired:50h cut below 40 | +0.0 ±0.0 (10000) | - | 0.0% / 0.0% | - / - | - | - | +0.0 ±0.0 (10000) | - |
+| tired:50h rent below 30 | +0.0 ±0.0 (10000) | - | 0.0% / 0.0% | - / - | - | - | +0.0 ±0.0 (10000) | - |
+| tired:50h cut below 30 | +0.0 ±0.0 (10000) | - | 0.0% / 0.0% | - / - | - | - | +0.0 ±0.0 (10000) | - |
+| tired:58h | 0.0% won | | 100.0% | | 10000 seeds | 0 seeds | 0 seeds | |
+| tired:58h rent below 40 | +0.2 ±0.1 (10000) | +0.2 ±0.1 (10000) | 100.0% / 0.0% | 100.0% / 0.0% | +0.2 ±0.1 (10000) | - | - | 9,000 EUR |
+| tired:58h cut below 40 | +19.4 ±0.8 (10000) | +19.4 ±0.8 (10000) | 100.0% / 0.0% | 100.0% / 0.0% | +19.4 ±0.8 (10000) | - | - | - |
+| tired:58h rent below 30 | +0.2 ±0.1 (10000) | +0.2 ±0.1 (10000) | 100.0% / 0.0% | 100.0% / 0.0% | +0.2 ±0.1 (10000) | - | - | 8,700 EUR |
+| tired:58h cut below 30 | +17.1 ±0.7 (10000) | +17.1 ±0.7 (10000) | 100.0% / 0.0% | 100.0% / 0.0% | +17.1 ±0.7 (10000) | - | - | - |
+| tired:65h | 0.0% won | | 100.0% | | 10000 seeds | 0 seeds | 0 seeds | |
+| tired:65h rent below 40 | +0.0 ±0.0 (10000) | +0.0 ±0.0 (10000) | 100.0% / 100.0% | 100.0% / 100.0% | +0.0 ±0.0 (10000) | - | - | 2,720 EUR |
+| tired:65h cut below 40 | +0.0 ±0.0 (10000) | +0.0 ±0.0 (10000) | 100.0% / 100.0% | 100.0% / 100.0% | +0.0 ±0.0 (10000) | - | - | - |
+| tired:65h rent below 30 | +0.0 ±0.0 (10000) | +0.0 ±0.0 (10000) | 100.0% / 100.0% | 100.0% / 100.0% | +0.0 ±0.0 (10000) | - | - | 2,520 EUR |
+| tired:65h cut below 30 | +0.0 ±0.0 (10000) | +0.0 ±0.0 (10000) | 100.0% / 100.0% | 100.0% / 100.0% | +0.0 ±0.0 (10000) | - | - | - |
 
 ## Week the run ended
 
@@ -493,7 +517,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 16 | No run of any strategy brings an event twice, except events that recur on purpose | 0 repeats |  | yes | | | | |
 | 17 | A price search that reads only the screen beats the default price by 3 to 10 points, loses at most 1 point in any viable market and wins at most 45%; twice the default loses in at least two of three. Within its own margin of a limit counts as at the limit (on 10000 seeds) | search +7.8 (37.4%), worst market maintenance -1.5; twice the default loses in 2 of 3 | ±1.0 (±0.9), ±1.5 | yes | | | | |
 | 18 | For the price search that reads the screen, win rates across the three viable markets lie within 25 points; within its own margin counts as at the limit (on 10000 seeds) | 18.5 points (maintenance 28.2%, small_crews 37.1%, contractors 46.7%) | ±2.3 | yes | | | | |
-| 19 | A freelance developer for the build gains at least 2 points where the chosen market needs 120 h or more of building, gains nothing where it needs 90 h or less, and is at most 5 points ahead overall. Within its own margin of a limit counts as at the limit (on 10000 seeds) | long builds -7.3 (3246 seeds), short builds -7.4 (3613), all -6.6 | ±1.7, ±1.7, ±1.0 | no | | | | |
+| 19 | Renting never beats doing the work yourself, and costs less than an early hire: a freelance developer for the build gains nothing over validate_then_build, and wins more often than validate_then_build_early_hire (on 10000 seeds) | freelancer -6.6, early hire -24.8, freelancer ahead of the early hire by +18.2 | ±1.0, ±0.9, ±0.9 | yes | | | | |
 
 ## Endings
 
@@ -565,6 +589,7 @@ Each freelancer run plays like `validate_then_build` until it books, on the same
 | Run | all | 85 h (small_crews) | 105 h (maintenance) | 135 h (contractors) | never booked | Booked | Median cost | Median weeks | Median hours of work |
 |---|---|---|---|---|---|---|---|---|---|
 | freelance:developer 20h | -6.6 ±1.0 (10000) | -7.4 ±1.7 (3613) | -5.1 ±1.8 (3141) | -7.3 ±1.7 (3246) | - | 100.0% | 4,080 EUR | 3 | 17 |
+| freelance:compare validate_then_build_early_hire | -24.8 ±0.9 (10000) | - | - | - | -24.8 ±0.9 (10000) | 0.0% | - | - | - |
 | freelance:developer 20h at 0 EUR | +1.3 ±1.0 (10000) | +0.7 ±1.7 (3613) | +2.0 ±1.8 (3141) | +1.3 ±1.8 (3246) | - | 100.0% | 0 EUR | 0 | 17 |
 | freelance:developer 20h at 49 EUR | -3.8 ±1.0 (10000) | -3.8 ±1.7 (3613) | -4.0 ±1.8 (3141) | -3.6 ±1.8 (3246) | - | 100.0% | 2,940 EUR | 3 | 17 |
 | freelance:developer 10h at 0 EUR | +0.8 ±1.0 (10000) | +0.5 ±1.6 (3613) | +1.2 ±1.8 (3141) | +0.7 ±1.8 (3246) | - | 100.0% | 0 EUR | 0 | 13 |
@@ -579,6 +604,7 @@ By the real role of the market the bot booked for (hidden, report only):
 | Run | mediocre | trap | viable |
 |---|---|---|---|
 | freelance:developer 20h | -2.4 ±1.5 (2212) | -4.4 ±3.1 (478) | -8.1 ±1.3 (7310) |
+| freelance:compare validate_then_build_early_hire | - | - | - |
 | freelance:developer 20h at 0 EUR | +2.2 ±1.6 (2212) | +2.7 ±3.0 (478) | +1.0 ±1.3 (7310) |
 | freelance:developer 20h at 49 EUR | -0.0 ±1.6 (2212) | -2.9 ±2.9 (478) | -5.0 ±1.3 (7310) |
 | freelance:developer 10h at 0 EUR | +1.8 ±1.6 (2212) | +0.4 ±3.1 (478) | +0.5 ±1.3 (7310) |
@@ -587,6 +613,28 @@ By the real role of the market the bot booked for (hidden, report only):
 | freelance:salesperson 10h 8w at 0 EUR | +0.4 ±0.9 (1840) | +0.6 ±2.4 (629) | +1.6 ±1.3 (7392) |
 | freelance:salesperson 10h 8w at 41 EUR | -1.2 ±0.7 (1840) | -3.7 ±2.3 (629) | -4.9 ±1.2 (7392) |
 | freelance:salesperson 10h 8w | -1.1 ±0.8 (1840) | -5.1 ±2.3 (629) | -10.0 ±1.2 (7392) |
+
+## The freelancer when tired (target 19 check)
+
+Each bot plays like `validate_then_build` planning 50 (the careful bot), 58 or 65 h a week (65 is the overworker). Below 40 or 30 energy, "rent" plans 10 h fewer and books a 10 h freelancer for that work (developer while wanted features are unbuilt, else salesperson) until energy is back at the tired mark (70); "cut" only plans 10 h fewer. Points against the same bot without the rule, on the same 10000 seeds (paired margin, seeds). "Used": seeds where the rule fired. The last three columns split by the plain run: burned out, nearly (energy below 30 at some point), or neither.
+
+| Run | All | Used | Burnout: plain / this | Used: burnout plain / this | Plain burned out | Plain nearly | Neither | Median freelance cost when used |
+|---|---|---|---|---|---|---|---|---|
+| tired:50h | 29.6% won | | 0.0% | | 0 seeds | 0 seeds | 10000 seeds | |
+| tired:50h rent below 40 | +0.0 ±0.0 (10000) | - | 0.0% / 0.0% | - / - | - | - | +0.0 ±0.0 (10000) | - |
+| tired:50h cut below 40 | +0.0 ±0.0 (10000) | - | 0.0% / 0.0% | - / - | - | - | +0.0 ±0.0 (10000) | - |
+| tired:50h rent below 30 | +0.0 ±0.0 (10000) | - | 0.0% / 0.0% | - / - | - | - | +0.0 ±0.0 (10000) | - |
+| tired:50h cut below 30 | +0.0 ±0.0 (10000) | - | 0.0% / 0.0% | - / - | - | - | +0.0 ±0.0 (10000) | - |
+| tired:58h | 0.0% won | | 100.0% | | 10000 seeds | 0 seeds | 0 seeds | |
+| tired:58h rent below 40 | +0.3 ±0.1 (10000) | +0.3 ±0.1 (10000) | 100.0% / 0.0% | 100.0% / 0.0% | +0.3 ±0.1 (10000) | - | - | 8,700 EUR |
+| tired:58h cut below 40 | +19.2 ±0.8 (10000) | +19.2 ±0.8 (10000) | 100.0% / 0.0% | 100.0% / 0.0% | +19.2 ±0.8 (10000) | - | - | - |
+| tired:58h rent below 30 | +0.3 ±0.1 (10000) | +0.3 ±0.1 (10000) | 100.0% / 0.0% | 100.0% / 0.0% | +0.3 ±0.1 (10000) | - | - | 8,620 EUR |
+| tired:58h cut below 30 | +17.3 ±0.7 (10000) | +17.3 ±0.7 (10000) | 100.0% / 0.0% | 100.0% / 0.0% | +17.3 ±0.7 (10000) | - | - | - |
+| tired:65h | 0.0% won | | 100.0% | | 10000 seeds | 0 seeds | 0 seeds | |
+| tired:65h rent below 40 | +0.0 ±0.0 (10000) | +0.0 ±0.0 (10000) | 100.0% / 100.0% | 100.0% / 100.0% | +0.0 ±0.0 (10000) | - | - | 2,900 EUR |
+| tired:65h cut below 40 | +0.0 ±0.0 (10000) | +0.0 ±0.0 (10000) | 100.0% / 100.0% | 100.0% / 100.0% | +0.0 ±0.0 (10000) | - | - | - |
+| tired:65h rent below 30 | +0.0 ±0.0 (10000) | +0.0 ±0.0 (10000) | 100.0% / 100.0% | 100.0% / 100.0% | +0.0 ±0.0 (10000) | - | - | 2,520 EUR |
+| tired:65h cut below 30 | +0.0 ±0.0 (10000) | +0.0 ±0.0 (10000) | 100.0% / 100.0% | 100.0% / 100.0% | +0.0 ±0.0 (10000) | - | - | - |
 
 ## Week the run ended
 
@@ -1098,7 +1146,7 @@ Events split into 66 shared and 43 Kantino ones, a scenario picker, saves and bo
 
 ### Phase 9 part B: the freelancer (engine 0.12.0, no tuning)
 
-The freelancer adds no random draws while unused: every table above is unchanged under engine 0.12.0 (10,000 seeds for main and paired, compared number for number). Target 19 and the section "The freelancer (target 19)" are new; the leave-one-out table now names its rows. A free freelance developer for the build is worth about 1 point, a free salesperson for 8 weeks about 2; at 1.4 times the hire's hourly cost (68 and 58 EUR) both lose 6 to 8 points. Target 19 fails in both scenarios; see `docs/decisions.md`.
+The freelancer adds no random draws while unused: every table above is unchanged under engine 0.12.0 (10,000 seeds for main and paired, compared number for number). Target 19 and the section "The freelancer (target 19)" are new; the leave-one-out table now names its rows. A free freelance developer for the build is worth about 1 point, a free salesperson for 8 weeks about 2; at 1.4 times the hire's hourly cost (68 and 58 EUR) both lose 6 to 8 points. Target 19 was restated after an energy check (owner's option A): renting never beats doing the work yourself (-5.9 Kantino, -6.6 Zollstock) and costs less than an early hire (-21.5, -24.8). It passes in both scenarios; see `docs/decisions.md`.
 
 ## Zollstock
 

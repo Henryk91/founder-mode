@@ -486,6 +486,8 @@ Targets for the early MVP (judged on `validate_then_build`; revised after the Ph
 17. Price is a decision (Phase 8): on 10,000 seeds, in each scenario, a price bot that reads only the screen (`price_aware`, which reads the budget quotes in interviews) beats `validate_then_build` at the default price by at least 3 points overall, loses at most 1 point in any single viable market, is at most 10 points ahead and wins at most 45% overall (target 2 for a careful player who prices well); a fixed price at twice the default loses to the default in at least two of the three viable markets
 18. For that price bot, win rates across the three viable markets lie within 25 points (10,000 seeds)
 
+19. Renting never beats doing the work yourself, and costs less than an early hire (Phase 9): on 10,000 seeds, in each scenario, a freelance developer rented for the build gains nothing over `validate_then_build` (gain minus margin at most 0), and wins more often than `validate_then_build_early_hire` (difference minus margin above 0). Targets 20 onwards are in `docs/phase9-proposal.md`
+
 For targets 17 and 18, a result within its own margin of error of a limit counts as at the limit and passes.
 
 If a target fails, tune scenario values first and formulas second, and record the change in `docs/decisions.md`.

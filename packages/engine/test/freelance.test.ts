@@ -258,6 +258,10 @@ describe('freelancer money', () => {
       roles: ['developer'],
       costCents: 3 * 136_000,
       weeks: 3,
+      bookedHours: 60,
+      // 40 hours of work at 675 EUR over 50 h a week.
+      ownHoursCents: 54_000,
+      paid: false,
       buildHours: 9 + 18 + 13,
       outreachHours: 0,
       leadsFound: 0,

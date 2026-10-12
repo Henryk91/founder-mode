@@ -489,3 +489,17 @@ Options for target 19 (owner to choose):
 | **A (recommended)** | Restate 19 for 60 weeks as a lesson that holds today: "renting never beats doing the work yourself, and a short rental costs less than a hire" (the freelancer bot loses fewer points than `validate_then_build_early_hire`), and move "the right call in some situations" to target 20 in long mode, where salaries and money are larger | No change to the game. The 60 week lesson becomes "your own hours are the cheapest" |
 | B | Make the founder's hours scarcer in 60 weeks (for example a slower build, or outreach that needs more hours), so renting can pay | Moves all 18 targets; a retune of the 60 week game that Part B was meant to avoid |
 | C | Drop target 19, like target 12 | Simplest; the freelancer stays a choice that rarely pays |
+
+### 9.1 Owner's decision and the energy check
+
+The owner chose option A after one check: does renting pay when the founder is running out of energy? A careful bot that, below 40 or 30 energy, plans 10 h fewer and rents a 10 h freelancer for that work until energy recovers was compared with the same bot without the rule (10,000 seeds, both scenarios, 68 and 58 EUR):
+
+| Hours planned a week | Plain | Rent when tired | Cut the same hours, no rent |
+|---|---|---|---|
+| 50 (the careful bot) | 32.1% / 29.6% won, never below 40 energy | rule never fires | rule never fires |
+| 58 | every run burns out | +0.2 / +0.3 points (no burnout, but the bills bankrupt it) | +19.4 / +19.2 |
+| 65 (the overworker) | every run burns out | no change | no change |
+
+Renting does not pay when tired; resting does. So target 19 (60 weeks) now reads: **renting never beats doing the work yourself, and costs less than an early hire.** Result: freelance developer for the build -5.9 (Kantino) and -6.6 (Zollstock) against the careful bot; early hire -21.5 and -24.8; freelancer ahead by 15.6 and 18.2. Passes in both scenarios. "The right call in some situations" moves to target 20 in long mode (section 1.8), unchanged.
+
+Post-mortem line for a freelancer in a run that did not end sustainable: "Freelancers cost €4,080 for 60 h booked, and 17 h of those found work. The same hours from you would have cost about €230 in rent and food, which you were paying anyway."

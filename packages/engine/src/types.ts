@@ -1203,6 +1203,12 @@ export type FreelanceEconomicsView = {
   roles: TeamRoleId[]
   costCents: number
   weeks: number
+  /** Hours booked and billed; `buildHours + outreachHours` of them found work. */
+  bookedHours: number
+  /** The worked hours at the founder's living costs per base hour, paid anyway. */
+  ownHoursCents: number
+  /** False when the run did not end sustainable. */
+  paid: boolean
   buildHours: number
   outreachHours: number
   leadsFound: number

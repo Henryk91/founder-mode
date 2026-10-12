@@ -1,6 +1,6 @@
 import type { RunResult } from './simulate'
 import { CHECK_WEEK, EVIDENCE_WEEK, PACING_WEEKS } from './simulate'
-import { FREELANCE_TARGET_ID } from './specs'
+import { EARLY_HIRE_WIDE_ID, FREELANCE_TARGET_ID } from './specs'
 import { combined, fmtMargin, medianMargin, pairedMargin, rateMargin, ratioMargin } from './margin'
 
 export type StrategyRuns = {
@@ -425,10 +425,6 @@ export function evaluateTargets(
   ]
 }
 
-/** Builds of at least this many hours are long, of at most `SHORT_BUILD` short (target 19). */
-const LONG_BUILD = 120
-const SHORT_BUILD = 90
-
 type FreelanceSplit = { label: string; seeds: number[] }
 
 /**
@@ -461,55 +457,89 @@ function pairedOn(base: StrategyRuns, other: StrategyRuns, seeds: number[]) {
 }
 
 /**
- * Target 19 (60 weeks): renting a developer for the build pays when the build is long and does
- * not when it is short, and is no default. Against validate_then_build on the same wide seeds,
- * split by the build hours of the market the bot booked for: at least +2 points where the build
- * takes 120 h or more, at most 0 where it takes 90 h or less, at most +5 overall. Within its own
- * margin of a limit counts as at the limit.
+ * Target 19 (60 weeks, owner's option A after the energy check): renting never beats doing the
+ * work yourself, and costs less than an early hire. On the same wide seeds, the freelance
+ * developer for the build gains nothing over validate_then_build (its gain minus its margin is at
+ * most 0), and wins more often than validate_then_build_early_hire (the difference minus its
+ * margin is above 0). "The right call in some situations" is target 20, in long mode.
  */
 function freelanceTarget(input: ReportInput): Target {
   const text =
-    'A freelance developer for the build gains at least 2 points where the chosen market needs 120 h or more of building, gains nothing where it needs 90 h or less, and is at most 5 points ahead overall. Within its own margin of a limit counts as at the limit'
+    'Renting never beats doing the work yourself, and costs less than an early hire: a freelance developer for the build gains nothing over validate_then_build, and wins more often than validate_then_build_early_hire'
   const reader = find(input, READER_ID)
   const runs = find(input, FREELANCE_TARGET_ID)
-  if (!reader || !runs) return { id: 19, text, value: '-', margin: '', pass: false }
-  const hours = input.marketBuildHours ?? {}
+  const hire = find(input, EARLY_HIRE_WIDE_ID)
+  if (!reader || !runs || !hire) return { id: 19, text, value: '-', margin: '', pass: false }
   const all = runs.results.map((_, i) => i)
-  const sized = (keep: (h: number) => boolean) =>
-    all.filter((i) => {
-      const m = runs.results[i]!.freelance?.market
-      return m !== undefined && m !== null && keep(hours[m] ?? 0)
-    })
-  const overall = pairedOn(reader, runs, all)
-  const long = pairedOn(
-    reader,
-    runs,
-    sized((h) => h >= LONG_BUILD),
-  )
-  const short = pairedOn(
-    reader,
-    runs,
-    sized((h) => h <= SHORT_BUILD),
-  )
+  const rent = pairedOn(reader, runs, all)
+  const early = pairedOn(reader, hire, all)
+  const apart = pairedOn(hire, runs, all)
   const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
   return {
     id: 19,
     text: `${text} (on ${reader.results.length} seeds)`,
-    value: `long builds ${signed(long.change)} (${long.n} seeds), short builds ${signed(short.change)} (${short.n}), all ${signed(overall.change)}`,
-    margin: `${fmtMargin(long.margin)}, ${fmtMargin(short.margin)}, ${fmtMargin(overall.margin)}`,
-    pass:
-      long.n > 0 &&
-      short.n > 0 &&
-      long.change + long.margin >= 2 &&
-      short.change - short.margin <= 0 &&
-      overall.change - overall.margin <= 5,
+    value: `freelancer ${signed(rent.change)}, early hire ${signed(early.change)}, freelancer ahead of the early hire by ${signed(apart.change)}`,
+    margin: `${fmtMargin(rent.margin)}, ${fmtMargin(early.margin)}, ${fmtMargin(apart.margin)}`,
+    pass: rent.change - rent.margin <= 0 && apart.change - apart.margin > 0,
   }
+}
+
+/**
+ * The energy check of target 19: each bot planning 50, 58 or 65 h a week against itself with the
+ * tired rule, on the same seeds. "Used" counts the seeds where the renting variant booked, which
+ * are the seeds where the rule fired (both variants play the same until then). The split by the
+ * plain run: it burned out, it nearly did (energy below 30 at some point), or neither.
+ */
+function tiredRows(input: ReportInput): string[] {
+  const runs = (input.extras ?? []).filter((x) => x.id.startsWith('tired:'))
+  if (runs.length === 0) return []
+  const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
+  const cell = (base: StrategyRuns, r: StrategyRuns, seeds: number[]) => {
+    if (seeds.length === 0) return '-'
+    const p = pairedOn(base, r, seeds)
+    return `${signed(p.change)} ${fmtMargin(p.margin)} (${p.n})`
+  }
+  const burnout = (r: StrategyRuns, seeds: number[]) =>
+    seeds.length === 0
+      ? '-'
+      : fmtPct(pct(seeds.filter((i) => r.results[i]!.ending === 'burnout').length, seeds.length))
+  const out = [
+    '',
+    '## The freelancer when tired (target 19 check)',
+    '',
+    `Each bot plays like \`validate_then_build\` planning 50 (the careful bot), 58 or 65 h a week (65 is the overworker). Below 40 or 30 energy, "rent" plans 10 h fewer and books a 10 h freelancer for that work (developer while wanted features are unbuilt, else salesperson) until energy is back at the tired mark (${'70'}); "cut" only plans 10 h fewer. Points against the same bot without the rule, on the same ${runs[0]!.results.length} seeds (paired margin, seeds). "Used": seeds where the rule fired. The last three columns split by the plain run: burned out, nearly (energy below 30 at some point), or neither.`,
+    '',
+    '| Run | All | Used | Burnout: plain / this | Used: burnout plain / this | Plain burned out | Plain nearly | Neither | Median freelance cost when used |',
+    '|---|---|---|---|---|---|---|---|---|',
+  ]
+  for (const base of runs.filter((r) => !r.id.includes(' below '))) {
+    const all = base.results.map((_, i) => i)
+    const burned = all.filter((i) => base.results[i]!.ending === 'burnout')
+    const nearly = all.filter(
+      (i) => base.results[i]!.ending !== 'burnout' && base.results[i]!.minEnergy < 30,
+    )
+    const neither = all.filter((i) => !burned.includes(i) && !nearly.includes(i))
+    out.push(
+      `| ${base.id} | ${fmtPct(pct(wins(base.results).length, base.results.length))} won | | ${burnout(base, all)} | | ${burned.length} seeds | ${nearly.length} seeds | ${neither.length} seeds | |`,
+    )
+    for (const r of runs.filter((x) => x.id.startsWith(`${base.id} `))) {
+      const renting = runs.find((x) => x.id === r.id.replace(' cut ', ' rent '))!
+      const used = all.filter((i) => renting.results[i]!.freelance !== null)
+      const costs = used.map((i) => r.results[i]!.freelance?.costCents ?? 0)
+      out.push(
+        `| ${r.id} | ${cell(base, r, all)} | ${cell(base, r, used)} | ${burnout(base, all)} / ${burnout(r, all)} | ${burnout(base, used)} / ${burnout(r, used)} | ${cell(base, r, burned)} | ${cell(base, r, nearly)} | ${cell(base, r, neither)} | ${r.id.includes(' rent ') ? fmtEur(median(costs)) : '-'} |`,
+      )
+    }
+  }
+  return out
 }
 
 /** The freelancer runs against plain play on the same seeds, by build size and by market role. */
 function freelanceRows(input: ReportInput): string[] {
   const reader = find(input, READER_ID)
-  const runs = (input.extras ?? []).filter((x) => x.id.startsWith('freelance:'))
+  const runs = (input.extras ?? []).filter(
+    (x) => x.id.startsWith('freelance:') || x.id === EARLY_HIRE_WIDE_ID,
+  )
   if (!reader || runs.length === 0) return []
   const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
   const cell = (r: StrategyRuns, seeds: number[]) => {
@@ -806,6 +836,7 @@ export function buildReport(input: ReportInput): string {
 
   push(...pricingRows(input))
   push(...freelanceRows(input))
+  push(...tiredRows(input))
 
   const weekBins: [number, number][] = [
     [1, 10],

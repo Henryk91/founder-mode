@@ -7,6 +7,8 @@ import {
   priceAware,
   priceRecipe,
   forcedAnswer,
+  tiredFounder,
+  validateThenBuildEarlyHire,
   withFreelancer,
   withInbox,
   withoutBehaviours,
@@ -34,6 +36,8 @@ export type StrategySpec =
       /** A salesperson's weeks of work. */
       weeks: number | null
     }
+  | { kind: 'tired'; budget: number; below: number | null; rent: boolean }
+  | { kind: 'earlyHireWide' }
 
 export function strategyOf(spec: StrategySpec): Strategy {
   switch (spec.kind) {
@@ -59,6 +63,10 @@ export function strategyOf(spec: StrategySpec): Strategy {
             : fixedPrice(spec.multiple ?? 1)
       return { ...base, id: pricingId(spec) }
     }
+    case 'earlyHireWide':
+      return { ...validateThenBuildEarlyHire, id: EARLY_HIRE_WIDE_ID }
+    case 'tired':
+      return tiredFounder(spec.budget, spec.below, spec.rent, tiredId(spec))
     case 'freelance': {
       const rule =
         spec.role === 'developer'
@@ -98,6 +106,24 @@ export function freelanceId(spec: {
   const rate = spec.centsPerHour === null ? '' : ` at ${spec.centsPerHour / 100} EUR`
   return `freelance:${spec.role} ${spec.hours}h${weeks}${rate}`
 }
+
+/** validate_then_build_early_hire on the wide seeds, for target 19. */
+export const EARLY_HIRE_WIDE_ID = 'freelance:compare validate_then_build_early_hire'
+
+/** Report id of an energy check run: `tired:<budget>h`, plus `rent|cut below <energy>`. */
+export function tiredId(spec: { budget: number; below: number | null; rent: boolean }): string {
+  const base = `tired:${spec.budget}h`
+  return spec.below === null ? base : `${base} ${spec.rent ? 'rent' : 'cut'} below ${spec.below}`
+}
+
+/** The energy check: the careful bot at 50 h, and working 58 and 65 h, with the rule at 40 and 30. */
+export const TIRED_SPECS: StrategySpec[] = [50, 58, 65].flatMap((budget): StrategySpec[] => [
+  { kind: 'tired', budget, below: null, rent: false },
+  ...[40, 30].flatMap((below): StrategySpec[] => [
+    { kind: 'tired', budget, below, rent: true },
+    { kind: 'tired', budget, below, rent: false },
+  ]),
+])
 
 /** Target 19's run: a freelance developer for the build, 20 h a week, at the scenario's rate. */
 export const FREELANCE_TARGET_SPEC: StrategySpec = {
