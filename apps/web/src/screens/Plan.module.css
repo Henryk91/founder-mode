@@ -125,11 +125,27 @@
   white-space: nowrap;
 }
 
+/*
+ * A solid triangle, pointing right when closed and down when open, centred on the middle of the
+ * section title's capitals (about 9 px above its baseline). Drawn, not a text arrow, so it is the
+ * same clear size whichever fonts the phone has.
+ */
 .arrow {
   flex: 0 0 14px;
   height: var(--line);
-  font-size: 13px;
-  line-height: calc(2 * var(--small-base) - 0.75 * 13px);
+  padding-top: calc(var(--base) - 9px - 7px);
+}
+
+.arrow svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  transition: transform 150ms ease;
+}
+
+.arrow .arrowOpen {
+  transform: rotate(90deg);
 }
 
 /* A small figure inside a label, such as a salary. It never changes the line or breaks. */
