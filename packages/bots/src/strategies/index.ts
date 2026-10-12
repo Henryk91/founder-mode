@@ -10,6 +10,7 @@ import {
   validateThenBuild,
   validateThenBuildEarlyHire,
   validateThenBuildHire,
+  fundingVariant,
   TEAM_VARIANTS,
   teamVariant,
 } from './validateThenBuild'
@@ -27,4 +28,6 @@ export const STRATEGIES: Strategy[] = [
   playtest,
   // Long mode only.
   ...TEAM_VARIANTS.map((v) => teamVariant(v.id)),
+  // Long mode with funding: the four raising bots (the update policies run in the funding part).
+  ...['raise_on_traction', 'raise_early', 'raise_always', 'raise_late'].map(fundingVariant),
 ]

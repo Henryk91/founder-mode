@@ -269,6 +269,8 @@ export const FundingConfigSchema = z.object({
   // Hidden appetite of each investor: the score they need, uniform in this range.
   appetite: rangeOf(z.number().positive()),
   noiseSd: z.number().nonnegative(),
+  // Score = (monthly revenue / the round's bar) ^ scoreExponent x growth x pitch x noise.
+  scoreExponent: z.number().positive(),
   pitchBase: z.number().nonnegative(),
   pitchPerSelling: z.number().nonnegative(),
   growthWeight: z.number().nonnegative(),
@@ -281,8 +283,8 @@ export const FundingConfigSchema = z.object({
   focusShare: Share,
   // Investor updates at each month end, and the hidden confidence they move.
   updates: z.object({
-    properHours: z.number().nonnegative(),
-    shortHours: z.number().nonnegative(),
+    properHours: z.number().int().nonnegative(),
+    shortHours: z.number().int().nonnegative(),
     proper: z.number(),
     short: z.number(),
     none: z.number(),
@@ -291,6 +293,9 @@ export const FundingConfigSchema = z.object({
     milestoneMissed: z.number(),
   }),
   startConfidence: Share,
+  // Investors already on board shape the next round: their mood scales the appetite of its
+  // investors (pleased introduce you, worried warn them).
+  followOnAppetite: z.object({ pleased: z.number().positive(), worried: z.number().positive() }),
   // Mood shown to the player: worried below the first, pleased from the second.
   moodAt: z.object({ patient: Share, pleased: Share }),
   // The visible value rule for ownership: this multiple of yearly revenue plus cash.

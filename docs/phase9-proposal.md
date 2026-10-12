@@ -672,3 +672,8 @@ Bots as section 3.9: `bootstrap` (the careful bot), `raise_on_traction`, `raise_
 ### 11.4 Sources for the money (checked October 2026)
 
 The angel ticket and round sizes are in 8.1 (BAND survey, PitchBook DACH 2025, KfW VC Dashboard, Carta via WaveUp). Pre-money floors are estimates: PitchBook's DACH median of 6.3 million EUR covers pre-seed and seed rounds of companies far larger than a one-founder start-up with a few customers, so the angel floor of 1.5 million EUR is set at the low end of German pre-seed practice (estimate), and the seed floor of 5 million EUR just under the DACH median (estimate).
+
+### 11.5 After tuning (decisions log, part D)
+
+Changed from 11.2: angel bar 3,000 EUR a month; appetite 1.4 to 2.0; growth factor capped at 1.5; score uses revenue against the bar directly (`scoreExponent` 1); first meetings 5 h each (preparation and follow up included), angel second look 5 h, partner meeting 8 h, seed due diligence 16 h, angel closing 3 weeks; an investor is met at most once a run; existing investors' mood scales the next round's appetite (pleased 0.8, worried 1.25); introductions (pleased) and check-ins (worried) recur every 8 weeks. Targets 33 to 35 and 37 pass; 31, 32 and 36 are open issues (raising on traction +3.2 to +3.9 over bootstrap; updates do not pay for their hours).
+

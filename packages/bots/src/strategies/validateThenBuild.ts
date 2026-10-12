@@ -277,6 +277,18 @@ const SHARED_READER: Record<string, ReaderRule> = {
   local_paper: (v) => (thin(v) ? 'interview' : 'decline'),
   two_year_contract: 'negotiate',
   spring_clean: (v) => (tired(v) ? 'clean' : 'ignore'),
+  // Investors (long mode with funding, shared/events/funding.yaml).
+  investor_hire_push: 'explain',
+  investor_price_push: 'call',
+  investor_checkin: (v) => (tired(v) ? 'postpone' : 'attend'),
+  investor_worried_call: 'plan',
+  milestone_letter: 'explain',
+  board_deck_request: 'deck',
+  portfolio_tool: 'decline',
+  investor_conference: 'decline',
+  investor_intro: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'calls' : 'later'),
+  investor_second_intro: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'call' : 'later'),
+  investor_praise: 'smile',
 }
 
 const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
@@ -439,6 +451,29 @@ export type TeamRule = { start: 'covered' | 'savings'; partTime: boolean; freela
 /** Target 20's situations: who does a burst of building or a year of selling. */
 export type Situation = { kind: 'burst' | 'steady'; by: 'freelancer' | 'hire' }
 
+/**
+ * When to raise (Part D). `traction`: an angel round once monthly revenue covers the company's
+ * costs and grew in each of the last two months, with at least `RAISE_RUNWAY_WEEKS` of runway; a
+ * seed round once monthly revenue reaches the seed bar and grows. `early`: an angel round in week 3
+ * on interviews and sign ups, a seed round as soon as the angel money is in. `always`: an angel
+ * round at the first paying customer, needed or not, then a seed round as `traction`. `late`:
+ * bootstraps, and starts an angel round only once the runway shown falls below
+ * `LATE_RUNWAY_WEEKS`. `update`: the monthly investor update.
+ */
+export type RaiseRule = {
+  when: 'traction' | 'early' | 'always' | 'late'
+  update: 'proper' | 'short' | 'never'
+}
+
+/** Pitch hours a week while a round is open: two first meetings. */
+const PITCH_HOURS = 10
+const RAISE_RUNWAY_WEEKS = 20
+const LATE_RUNWAY_WEEKS = 12
+/** A round that ran out of investors is tried again after this many weeks. */
+const RAISE_RETRY_WEEKS = 12
+/** With investors' money, a hire is made while the money lasts this many months after it. */
+const FUNDED_HIRE_MONTHS = 9
+
 /** The reference careful bot's team rule in long mode. */
 export const CAREFUL_TEAM: TeamRule = { start: 'covered', partTime: false, freelanceFirst: false }
 
@@ -470,6 +505,8 @@ export type Behaviours = {
   team?: TeamRule | null
   /** Target 20: one extra person for a burst or for steady work (`SITUATION_VARIANTS`). */
   situation?: Situation
+  /** Long mode with funding: when to raise money, and how to answer the investors (Part D). */
+  raise?: RaiseRule
   /** For the event table: always answer this event with this choice. */
   forced?: { eventId: string; choiceId: string }
   /** For measuring an event's share of an inbox policy: leave this event to its default. */
@@ -706,6 +743,8 @@ export function validatingPlayer(
         : null
   const impressionOrder = scenario.team.impressions.map((i) => i.name)
   const year2 = behaviours.skipYear2 ? year2EventIds(scenario) : new Set<string>()
+  /** Week a round of each kind last ran out of investors, for the retry wait. */
+  const roundGaveUp: Partial<Record<'angel' | 'seed', number>> = {}
 
   // Expansion (`behaviours.expand`): the second market, the first market's founder outreach per
   // week of selling (hours and leads, only weeks without team outreach there), and when selling in
@@ -848,6 +887,123 @@ export function validatingPlayer(
     }
   }
 
+  /**
+   * Months the money would last after adding `extraCents` a month: the burn from the runway shown
+   * (money over its weeks, as a month), plus the extra. The runway shown never exceeds the weeks
+   * left, so this errs on the careful side near the end.
+   */
+  const fundedMonths = (view: PlayerView, extraCents: number): number => {
+    const money = moneyOf(view)
+    const weeks = view.company.runwayWeeks
+    const burn =
+      weeks === null || weeks === 0 ? 0 : (money / weeks) * scenario.finance.weeksPerMonth
+    const total = burn + extraCents
+    return total <= 0 ? Infinity : money / total
+  }
+
+  /** Monthly revenue three months ago and now, at month ends, from the history. */
+  const revenueGrewTwice = (view: PlayerView): boolean => {
+    const h = view.history
+    const wpm = scenario.finance.weeksPerMonth
+    const at = (back: number) => h[h.length - 1 - back * wpm]?.monthlyRevenueCents
+    const [a, b, c] = [at(2), at(1), at(0)]
+    return a !== undefined && b !== undefined && c !== undefined && c > b && b > a
+  }
+
+  /**
+   * Raising (`behaviours.raise`): starts a round when the rule says, pitches while it is open,
+   * books a second look with every interested investor, accepts the first term sheet, stops a
+   * round that ran out of investors, and sends the monthly update.
+   */
+  const raising = (b: PlanBuilder, view: PlayerView) => {
+    const rule = behaviours.raise
+    const f = view.funding
+    if (!rule || !f) return
+    const plan: NonNullable<WeekPlan['funding']> = {
+      start: null,
+      pitchHours: 0,
+      secondLooks: [],
+      accept: null,
+      decline: [],
+      stop: false,
+      update: null,
+    }
+    const take = (hours: number) => {
+      const h = Math.min(hours, b.free)
+      b.free -= h
+      return h
+    }
+    if (f.updateDue && rule.update !== 'never') {
+      const hours = rule.update === 'proper' ? f.updateHours.proper : f.updateHours.short
+      if (b.free >= hours) {
+        plan.update = rule.update
+        take(hours)
+      }
+    }
+    const has = (round: 'angel' | 'seed') => view.funding!.capTable.some((c) => c.round === round)
+    const closingNow = f.investors.some((i) => i.stage === 'accepted')
+    const offered = f.investors.filter((i) => i.stage === 'offered')
+    const interested = f.investors.filter((i) => i.stage === 'interested')
+    if (offered[0] && !closingNow) plan.accept = offered[0].id
+    const seedBar = scenario.funding?.rounds.seed.barMonthlyCents ?? Infinity
+    const covered = view.monthlyRevenueCents >= view.company.monthlyFixedCostsCents
+    const runway = view.company.runwayWeeks
+    const wants = (round: 'angel' | 'seed'): boolean => {
+      if (has(round)) return false
+      if ((f.rounds.find((r) => r.id === round)?.investorsLeft ?? 0) === 0) return false
+      const gaveUp = roundGaveUp[round]
+      // The early raiser believes in raising and tries again at once.
+      const wait = rule.when === 'early' ? 0 : RAISE_RETRY_WEEKS
+      if (gaveUp !== undefined && view.week - gaveUp < wait) return false
+      if (round === 'seed') {
+        if (rule.when === 'early') return has('angel')
+        if (rule.when === 'late') return false
+        return view.monthlyRevenueCents >= seedBar && revenueGrewTwice(view)
+      }
+      switch (rule.when) {
+        case 'early':
+          return view.week >= 3
+        case 'always':
+          return view.customers.length > 0
+        case 'late':
+          return runway !== null && runway < LATE_RUNWAY_WEEKS
+        case 'traction':
+          return (
+            covered && revenueGrewTwice(view) && (runway === null || runway >= RAISE_RUNWAY_WEEKS)
+          )
+      }
+    }
+    if (f.round) {
+      // A late raiser needs the money and keeps the round open to the end.
+      const exhausted =
+        f.round.investorsLeft === 0 && interested.length === 0 && offered.length === 0
+      if (exhausted && rule.when !== 'late') {
+        plan.stop = true
+        roundGaveUp[f.round.id] = view.week
+      } else {
+        for (const inv of interested) {
+          const hours = f.rounds.find((r) => r.id === inv.round)?.secondLookHours ?? 0
+          if (b.free < hours) break
+          plan.secondLooks.push(inv.id)
+          take(hours)
+        }
+        if (f.round.investorsLeft > 0) plan.pitchHours = take(PITCH_HOURS)
+        const per = f.rounds.find((r) => r.id === f.round!.id)?.pitchHoursPerMeeting ?? 1
+        plan.pitchHours -= plan.pitchHours % per
+      }
+    } else if (f.canStart && !closingNow) {
+      const round = wants('angel') ? 'angel' : wants('seed') ? 'seed' : null
+      const cfg = round ? f.rounds.find((r) => r.id === round) : undefined
+      if (round && cfg && b.free >= cfg.prepHours + PITCH_HOURS) {
+        plan.start = round
+        take(cfg.prepHours)
+        plan.pitchHours = take(PITCH_HOURS)
+        plan.pitchHours -= plan.pitchHours % cfg.pitchHoursPerMeeting
+      }
+    }
+    b.plan.funding = plan
+  }
+
   /** Monthly revenue from customers whose lead this member found, as the pipeline shows it. */
   const foundRevenue = (view: PlayerView, memberId: string): number => {
     const names = new Set(
@@ -921,6 +1077,9 @@ export function validatingPlayer(
         m.role === 'developer' &&
         (second !== null ? toBuild(unshipped).length === 0 : nothingToBuild),
     )
+    // With investors' money a funded company spends towards its runway target: it hires without
+    // waiting for the newest hire to settle, and keeps the results rule.
+    const funded = behaviours.raise !== undefined && (view.funding?.raisedCents ?? 0) > 0
     const unpaid = members.find(
       (m) =>
         m.working &&
@@ -937,11 +1096,12 @@ export function validatingPlayer(
     const salary = salaryOf(view, role, rule.partTime)
     const startWeek = view.week + view.costs.searchWeeks + view.costs.startWeeks
     const firstOnSavings = rule.start === 'savings' && beforeFirstHire
+    const horizon = view.maxWeeks - startWeek + 1 >= HIRE_HORIZON_WEEKS
     const hireAffordable = firstOnSavings
       ? view.week >= 3 && moneyOf(view) >= SAVINGS_SALARIES * salary
-      : (lastMonth(view) ?? -1) >= 0 &&
-        covers(view, salary, HIRE_RUNWAY_MONTHS) &&
-        view.maxWeeks - startWeek + 1 >= HIRE_HORIZON_WEEKS
+      : behaviours.raise && (view.funding?.raisedCents ?? 0) > 0
+        ? fundedMonths(view, salary) >= FUNDED_HIRE_MONTHS && horizon
+        : (lastMonth(view) ?? -1) >= 0 && covers(view, salary, HIRE_RUNWAY_MONTHS) && horizon
 
     // The freelancer before the first hire: rented by the same need, ended once a hire is near.
     if (rule.freelanceFirst) freelancingFirst(b, view, unshipped, market, beforeFirstHire)
@@ -957,7 +1117,7 @@ export function validatingPlayer(
       team.canSearch &&
       market &&
       b.free >= view.costs.searchHours &&
-      (!newest || (newest.working && view.week - newest.startWeek >= SETTLE_WEEKS)) &&
+      (!newest || funded || (newest.working && view.week - newest.startWeek >= SETTLE_WEEKS)) &&
       hireAffordable
     ) {
       b.plan.searchRole = role
@@ -1446,6 +1606,7 @@ export function validatingPlayer(
       growing(b, view, unshipped, target)
       situational(b, view, unshipped, target)
       chasing(b, view)
+      raising(b, view)
       b.demos(bookableLeads(view, target))
       b.demos(bookableLeads(view))
       if (behaviours.followUps) b.followUp(FOLLOW_UPS_PER_WEEK, target)
@@ -1648,6 +1809,61 @@ export const SITUATION_VARIANTS: { id: string; situation: Situation; description
   situation: { kind, by },
   description: `Plays like validate_then_build_solo, plus ${by === 'freelancer' ? `a ${FIRST_FREELANCE_HOURS} h freelance` : 'a part time (20 h)'} ${kind === 'burst' ? 'developer for the build, looked for in week 3 and kept until the features its market asks for have shipped' : `salesperson for selling, looked for once the business can carry a part time salesperson (a month makes money, cash and savings cover what they add to the loss for ${HIRE_RUNWAY_MONTHS} months, and ${HIRE_HORIZON_WEEKS} weeks are left once they would start) and kept to the end`}${by === 'hire' ? ', the best impression of the candidates' : ''}. Lets them go once the runway shown falls below ${LET_GO_MONTHS} months.`,
 }))
+
+/**
+ * Part D's raising bots: the careful bot with its team rule and a raise rule. `bootstrap` is the
+ * careful bot itself (`validate_then_build`), which never raises.
+ */
+export const FUNDING_VARIANTS: { id: string; raise: RaiseRule; description: string }[] = [
+  {
+    id: 'raise_on_traction',
+    raise: { when: 'traction', update: 'proper' },
+    description: `Plays like validate_then_build, and raises once it has traction: an angel round once monthly revenue covers the company's costs and grew in each of the last two months, with at least ${RAISE_RUNWAY_WEEKS} weeks of runway; a seed round once monthly revenue reaches the seed bar and grew in each of the last two months. While a round is open it pitches ${PITCH_HOURS} h a week, books a second look with every interested investor and accepts the first term sheet; a round that runs out of investors is stopped and tried again after ${RAISE_RETRY_WEEKS} weeks. With investors' money it hires while the money would last ${FUNDED_HIRE_MONTHS} months after the hire. Sends a proper update every month.`,
+  },
+  {
+    id: 'raise_early',
+    raise: { when: 'early', update: 'proper' },
+    description:
+      'Plays like raise_on_traction, but starts an angel round in week 3, on interviews and sign ups, starts again at once when a round runs out of investors, and starts a seed round as soon as the angel money is in.',
+  },
+  {
+    id: 'raise_always',
+    raise: { when: 'always', update: 'proper' },
+    description:
+      'Plays like raise_on_traction, but starts an angel round at its first paying customer, whether or not it needs the money.',
+  },
+  {
+    id: 'raise_late',
+    raise: { when: 'late', update: 'proper' },
+    description: `Plays like validate_then_build, and starts an angel round only once the runway shown falls below ${LATE_RUNWAY_WEEKS} weeks; it keeps that round open to the end, as a founder who needs the money does.`,
+  },
+  {
+    id: 'raise_on_traction_short_updates',
+    raise: { when: 'traction', update: 'short' },
+    description: 'Plays like raise_on_traction, but sends a short update every month.',
+  },
+  {
+    id: 'raise_on_traction_no_updates',
+    raise: { when: 'traction', update: 'never' },
+    description: 'Plays like raise_on_traction, but never sends an update.',
+  },
+]
+
+export const fundingVariant = (id: string): Strategy => {
+  const v = FUNDING_VARIANTS.find((x) => x.id === id)
+  if (!v) throw new Error(`Unknown funding variant ${id}`)
+  return {
+    id,
+    description: v.description,
+    modes: ['long'],
+    create: (scenario) =>
+      validatingPlayer(scenario, 50, null, {
+        ...ALL_BEHAVIOURS,
+        team: CAREFUL_TEAM,
+        raise: v.raise,
+      }),
+  }
+}
 
 /** The switchable behaviours, for leave-one-out runs. */
 export const BEHAVIOUR_NAMES = ['inbox', 'chase', 'landing', 'books', 'followUps'] as const

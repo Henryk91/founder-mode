@@ -67,15 +67,15 @@ describe('funding: what the player sees', () => {
     expect(validatePlan(s, plan(fp({ update: 'proper' })))).toContainEqual({
       code: 'invalid_funding',
     })
-    expect(validatePlan(s, plan(fp({ start: 'angel', pitchHours: 6 })))).toEqual([])
+    expect(validatePlan(s, plan(fp({ start: 'angel', pitchHours: 10 })))).toEqual([])
   })
 })
 
 describe('funding: the pipeline', () => {
   it('costs prep and pitch hours, and investors pass without paying customers', () => {
-    const r = next(game(), fp({ start: 'angel', pitchHours: 6 }))
-    // 8 h of deck and numbers, 6 h of pitching.
-    expect(r.report.plannedHours).toBe(14)
+    const r = next(game(), fp({ start: 'angel', pitchHours: 10 }))
+    // 8 h of deck and numbers, 10 h of pitching: two first meetings of 5 h.
+    expect(r.report.plannedHours).toBe(18)
     const met = r.report.entries.filter((e) => e.kind === 'investor_met')
     expect(met).toHaveLength(2)
     for (const m of met) expect(m).toMatchObject({ interested: false, reason: 'too_early' })
@@ -87,7 +87,7 @@ describe('funding: the pipeline', () => {
     let s = withCustomers(game('good'), 12, 60_000)
     let interested: string | undefined
     for (let w = 0; w < 6 && !interested; w++) {
-      const r = next(s, fp(w === 0 ? { start: 'angel', pitchHours: 9 } : { pitchHours: 9 }))
+      const r = next(s, fp(w === 0 ? { start: 'angel', pitchHours: 15 } : { pitchHours: 15 }))
       s = r.state
       interested = s.funding.investors.find((i) => i.stage === 'interested')?.id
     }
@@ -95,7 +95,7 @@ describe('funding: the pipeline', () => {
     let offered: string | undefined
     for (let w = 0; w < 8 && !offered; w++) {
       const look = s.funding.investors.filter((i) => i.stage === 'interested').map((i) => i.id)
-      s = next(s, fp({ secondLooks: look, pitchHours: look.length ? 0 : 3 })).state
+      s = next(s, fp({ secondLooks: look, pitchHours: look.length ? 0 : 5 })).state
       offered = s.funding.investors.find((i) => i.stage === 'offered')?.id
     }
     expect(offered).toBeDefined()
@@ -108,9 +108,9 @@ describe('funding: the pipeline', () => {
     const accepted = next(s, fp({ accept: offered! }))
     s = accepted.state
     expect(accepted.report.entries).toContainEqual(
-      expect.objectContaining({ kind: 'terms_accepted', closeWeek: s.week - 1 + 2 }),
+      expect.objectContaining({ kind: 'terms_accepted', closeWeek: s.week - 1 + 3 }),
     )
-    s = next(s).state
+    s = next(next(s).state).state
     const closing = next(s)
     s = closing.state
     const ledger = s.ledger.at(-1)!

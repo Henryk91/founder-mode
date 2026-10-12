@@ -265,6 +265,155 @@ export function evaluateLongTargets(input: ReportInput): Target[] {
   ]
 }
 
+const RAISE = (id: string) => `funding:${id}`
+
+/**
+ * Part D: targets 31 to 37, when the raising bots ran (the `funding` part). Wins are Sustainable
+ * plus Growing. `bootstrap` is the careful bot's reading run on the same wide seeds.
+ */
+export function evaluateFundingTargets(input: ReportInput): Target[] {
+  const boot = find(input, READER_ID)
+  const traction = find(input, RAISE('raise_on_traction'))
+  const early = find(input, RAISE('raise_early'))
+  const always = find(input, RAISE('raise_always'))
+  const late = find(input, RAISE('raise_late'))
+  const never = find(input, RAISE('raise_on_traction_no_updates'))
+  if (!boot || !traction || !early || !always || !late || !never) return []
+  const all = boot.results.map((_, i) => i)
+  const rateOf = (s: StrategyRuns) => pct(wins(s.results).length, s.results.length)
+  const m = (s: StrategyRuns) => rateMargin(wins(s.results).length, s.results.length)
+  const valueInWins = (s: StrategyRuns, seeds = all) =>
+    median(
+      seeds
+        .filter((i) => winsOf(s.results[i]!))
+        .map((i) => s.results[i]!.funding?.founderValueCents ?? 0),
+    )
+  const eur = (c: number | null) =>
+    c === null ? '-' : `${Math.round(c / 100).toLocaleString('en-GB')} EUR`
+  const bootRate = rateOf(boot)
+  const tracRate = rateOf(traction)
+  const t31: Target = {
+    id: 31,
+    text: 'Both paths are viable: the careful bot that never raises (bootstrap, validate_then_build) and raise_on_traction each win (Sustainable or Growing) 25 to 45%, within 8 points of each other',
+    value: `bootstrap ${fmtPct(bootRate)}, raise_on_traction ${fmtPct(tracRate)}`,
+    margin: `${fmtMargin(m(boot))}, ${fmtMargin(m(traction))}`,
+    pass:
+      bootRate + m(boot) >= 25 &&
+      bootRate - m(boot) <= 45 &&
+      tracRate + m(traction) >= 25 &&
+      tracRate - m(traction) <= 45 &&
+      Math.abs(pairedOn(boot, traction, all).change) - pairedOn(boot, traction, all).margin <= 8,
+  }
+  const bt = pairedOn(boot, traction, all)
+  const vBoot = valueInWins(boot)
+  const vTrac = valueInWins(traction)
+  const t32: Target = {
+    id: 32,
+    text: "Neither dominates: bootstrap wins at least as often as raise_on_traction (within its margin), and raise_on_traction's median founder share value in winning runs is at least 1.3 times bootstrap's (share x company value by the visible rule)",
+    value: `raise_on_traction ${signed(bt.change)}; value ${eur(vTrac)} against ${eur(vBoot)}`,
+    margin: fmtMargin(bt.margin),
+    pass: bt.change - bt.margin <= 0 && vTrac !== null && vBoot !== null && vTrac >= 1.3 * vBoot,
+  }
+  const et = pairedOn(traction, early, all)
+  const eb = pairedOn(boot, early, all)
+  const earlyLosses = early.results.filter(isLoss)
+  const named = earlyLosses.filter(
+    (r) =>
+      r.funding?.bankruptWhileRaising ||
+      r.funding?.bankruptAfterRaise ||
+      (r.funding?.pitchedTooEarly ?? 0) > 0,
+  ).length
+  const namedShare = pct(named, earlyLosses.length)
+  const t33: Target = {
+    id: 33,
+    text: 'Raising on weak traction is punished: raise_early wins at least 8 points less than raise_on_traction and less than bootstrap, and the post-mortem names the round as a cause (bankrupt while or after raising, or investors met before a paying customer who passed as too early) in at least half of its losing runs',
+    value: `${signed(et.change)} against raise_on_traction, ${signed(eb.change)} against bootstrap; round named in ${fmtPct(namedShare)} of losses`,
+    margin: `${fmtMargin(et.margin)}, ${fmtMargin(eb.margin)}`,
+    pass: et.change - et.margin <= -8 && eb.change - eb.margin < 0 && namedShare >= 50,
+  }
+  const bootWins = all.filter((i) => winsOf(boot.results[i]!))
+  const ab = pairedOn(boot, always, bootWins)
+  const vAlways = valueInWins(always, bootWins)
+  const vBootW = valueInWins(boot, bootWins)
+  const shareValue = (s: StrategyRuns) =>
+    median(bootWins.map((i) => s.results[i]!.funding?.founderValueCents ?? 0))
+  const svAlways = shareValue(always)
+  const svBoot = shareValue(boot)
+  const t34: Target = {
+    id: 34,
+    text: 'Raising when you do not need to costs you: on the seeds bootstrap wins, raise_always ends with a lower median founder share value than bootstrap and wins no more often',
+    value: `value ${eur(svAlways)} against ${eur(svBoot)} (in its wins ${eur(vAlways)} against ${eur(vBootW)}); wins ${signed(ab.change)}`,
+    margin: fmtMargin(ab.margin),
+    pass: svAlways !== null && svBoot !== null && svAlways < svBoot && ab.change - ab.margin <= 0,
+  }
+  const whileShare = (s: StrategyRuns) =>
+    pct(s.results.filter((r) => r.funding?.bankruptWhileRaising).length, s.results.length)
+  const t35: Target = {
+    id: 35,
+    text: 'Running out while raising is real: raise_late goes bankrupt with a round still open or closing in at least 25% of its runs; raise_on_traction in under 5%',
+    value: `raise_late ${fmtPct(whileShare(late))}, raise_on_traction ${fmtPct(whileShare(traction))}`,
+    margin: '',
+    pass: whileShare(late) >= 25 && whileShare(traction) < 5,
+  }
+  // Updates exist only once money arrived, and both bots play the same game until then, so they
+  // are compared on the seeds where raise_on_traction raised (restated in C3/D, decisions log).
+  const raisedSeeds = all.filter((i) => (traction.results[i]!.funding?.raisedCents ?? 0) > 0)
+  const up = pairedOn(never, traction, raisedSeeds)
+  const upAll = pairedOn(never, traction, all)
+  const t36: Target = {
+    id: 36,
+    text: `Updates are worth a little, not a lot: on the seeds where raise_on_traction raised money (${raisedSeeds.length}), proper monthly updates beat none by 1 to 5 points`,
+    value: `${signed(up.change)} (all seeds ${signed(upAll.change)})`,
+    margin: `${fmtMargin(up.margin)} (${fmtMargin(upAll.margin)})`,
+    pass: up.change + up.margin >= 1 && up.change - up.margin <= 5,
+  }
+  const raisers = input.strategies.filter((x) => x.id.startsWith('raise_'))
+  const top = [...raisers].sort((a, b) => rateOf(b) - rateOf(a))[0]
+  const slowest = Math.max(
+    0,
+    ...input.strategies
+      .concat(input.extras ?? [])
+      .filter((x) => x.id.includes('raise_'))
+      .map((x) => (x.seconds * 1000) / x.results.length),
+  )
+  const t37: Target = {
+    id: 37,
+    text: 'No raising strategy wins over 60%; 1000 funded runs complete in under 150 seconds',
+    value: `top ${top ? `${top.id} ${fmtPct(rateOf(top))}` : '-'}; ${slowest.toFixed(1)} s per 1000 runs`,
+    margin: top ? fmtMargin(m(top)) : '',
+    pass: (!top || rateOf(top) <= 60) && slowest < 150,
+  }
+  return [t31, t32, t33, t34, t35, t36, t37]
+}
+
+/** The raising bots on the wide seeds: wins, endings, money raised and what the founder owns. */
+export function fundingRows(input: ReportInput): string[] {
+  const boot = find(input, READER_ID)
+  const runs = (input.extras ?? []).filter((x) => x.id.startsWith('funding:'))
+  if (!boot || runs.length === 0) return []
+  const eur = (c: number | null) => (c === null ? '-' : Math.round(c / 100).toLocaleString('en-GB'))
+  const row = (id: string, s: StrategyRuns) => {
+    const rs = s.results
+    const n = rs.length
+    const e = (x: string) => fmtPct(pct(rs.filter((r) => r.ending === x).length, n))
+    const raised = rs.filter((r) => (r.funding?.raisedCents ?? 0) > 0)
+    const seed = rs.filter((r) => r.funding?.rounds.includes('seed'))
+    const won = wins(rs)
+    return `| ${id} | ${n} | ${fmtPct(pct(won.length, n))} | ${e('sustainable')} | ${e('growing')} | ${e('bankrupt')} | ${fmtPct(pct(raised.length, n))} | ${fmtPct(pct(seed.length, n))} | ${fmtNum(median(raised.map((r) => r.funding!.firstMoneyWeek ?? 0)))} | ${eur(median(raised.map((r) => r.funding!.raisedCents)))} | ${fmtNum(median(won.map((r) => (r.funding?.founderShareBp ?? 10_000) / 100)), 1)}% | ${eur(median(won.map((r) => r.funding?.founderValueCents ?? 0)))} | ${fmtPct(pct(rs.filter((r) => r.funding?.bankruptWhileRaising).length, n))} |`
+  }
+  return [
+    '',
+    '## Raising money (targets 31 to 37)',
+    '',
+    `The careful bot that never raises (bootstrap) and the raising bots on the same ${boot.results.length} seeds. Wins are Sustainable plus Growing. Founder value is the founder's share of the company's value by the visible rule (8 times yearly revenue plus cash, 0 when bankrupt).`,
+    '',
+    '| Strategy | Runs | Win rate | Sustainable | Growing | Bankrupt | Raised money | Raised a seed round | Median week of the first money | Median raised (EUR) | Median founder share, wins | Median founder value, wins (EUR) | Bankrupt while raising |',
+    '|---|---|---|---|---|---|---|---|---|---|---|---|---|',
+    row('bootstrap (validate_then_build)', boot),
+    ...runs.map((r) => row(r.id.replace('funding:', ''), r)),
+  ]
+}
+
 /** The 60 week targets reported in long mode for information: they are not judged there. */
 const INFO_TARGETS = [10, 13, 14, 15]
 
@@ -278,7 +427,7 @@ export function longTargetRows(input: ReportInput): string[] {
     '',
     '| # | Target | Value | Margin | Met |',
     '|---|---|---|---|---|',
-    ...evaluateLongTargets(input).map(
+    ...[...evaluateLongTargets(input), ...evaluateFundingTargets(input)].map(
       (t) => `| ${t.id} | ${t.text} | ${t.value} | ${t.margin} | ${met(t)} |`,
     ),
     '',

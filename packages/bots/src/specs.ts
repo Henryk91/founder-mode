@@ -7,6 +7,8 @@ import {
   priceAware,
   priceRecipe,
   forcedAnswer,
+  FUNDING_VARIANTS,
+  fundingVariant,
   SITUATION_VARIANTS,
   teamVariant,
   tiredFounder,
@@ -42,6 +44,8 @@ export type StrategySpec =
   | { kind: 'earlyHireWide' }
   /** A long mode team variant on the wide seeds (targets 20 and 29). */
   | { kind: 'team'; id: string }
+  /** A raising bot on the wide seeds (targets 31 to 37). */
+  | { kind: 'funding'; id: string }
   /** The careful bot planning `budget` hours a week, for the energy curve. */
   | { kind: 'energy'; budget: number }
 
@@ -71,6 +75,8 @@ export function strategyOf(spec: StrategySpec): Strategy {
     }
     case 'team':
       return { ...teamVariant(spec.id), id: `team:${spec.id}` }
+    case 'funding':
+      return { ...fundingVariant(spec.id), id: `funding:${spec.id}` }
     case 'energy':
       return tiredFounder(spec.budget, null, false, energyId(spec.budget))
     case 'earlyHireWide':
@@ -159,6 +165,12 @@ export const TEAM_SPECS: StrategySpec[] = [
   'validate_then_build_founder_chases',
   ...SITUATION_VARIANTS.map((v) => v.id),
 ].map((id) => ({ kind: 'team', id }))
+
+/** The raising bots on the wide seeds, against the careful bot's reading run (targets 31 to 37). */
+export const FUNDING_SPECS: StrategySpec[] = FUNDING_VARIANTS.map((v) => ({
+  kind: 'funding',
+  id: v.id,
+}))
 
 /** Target 19's run: a freelance developer for the build, 20 h a week, at the scenario's rate. */
 export const FREELANCE_TARGET_SPEC: StrategySpec = {

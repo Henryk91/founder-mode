@@ -3,6 +3,7 @@ import {
   createGame,
   endWeek,
   getView,
+  fundingEconomics,
   hireEconomics,
   respond,
   validatePlan,
@@ -131,6 +132,23 @@ export type RunResult = {
    * viable. Null for players without a focus.
    */
   evidenceByCheck: boolean | null
+  /**
+   * Long mode with funding: money raised, the founder's share and its value by the visible rule,
+   * the week of the first money, and whether the run went bankrupt while raising (a round open or
+   * closing) or after raising, as the post-mortem names it. Null without funding.
+   */
+  funding: {
+    raisedCents: number
+    rounds: ('angel' | 'seed')[]
+    founderShareBp: number
+    founderValueCents: number
+    firstMoneyWeek: number | null
+    roundsStarted: number
+    bankruptWhileRaising: boolean
+    bankruptAfterRaise: boolean
+    /** Investors who passed as too early: pitched before a paying customer. */
+    pitchedTooEarly: number
+  } | null
   /** For runs with a hire: what it cost per customer it found, and what a customer was worth. */
   hire: HireEconomics | null
   /**
@@ -399,6 +417,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     evidenceByCheck,
     customersBySource,
     hire: hireEconomics(state),
+    funding: fundingResult(state),
     freelance: freelanceAt && {
       role: state.team.freelancers[0]?.role ?? 'developer',
       market: freelanceAt.market,
@@ -439,4 +458,36 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     firstWeekSignal: signal,
     firstWeekInterviews,
   }
+}
+
+/** `RunResult.funding`: what raising brought, by the post-mortem's rules. */
+function fundingResult(state: GameState): RunResult['funding'] {
+  if (!state.scenario.funding) return null
+  const e = fundingEconomics(state)
+  const stakes = state.funding.stakes
+  const raising =
+    state.funding.round !== null || state.funding.investors.some((i) => i.stage === 'accepted')
+  const bankrupt = state.ending === 'bankrupt'
+  const value = e?.companyValueCents ?? (bankrupt ? 0 : companyValue(state))
+  return {
+    raisedCents: e?.raisedCents ?? 0,
+    rounds: stakes.map((s) => s.round),
+    founderShareBp: e?.founderShareBp ?? 10_000,
+    founderValueCents: e?.founderValueCents ?? value,
+    firstMoneyWeek: stakes[0]?.week ?? null,
+    roundsStarted: e?.roundsStarted ?? 0,
+    bankruptWhileRaising: bankrupt && raising,
+    bankruptAfterRaise: bankrupt && !raising && stakes.length > 0,
+    pitchedTooEarly: e?.pitchedTooEarly ?? 0,
+  }
+}
+
+/** The company's value by the scenario's visible rule, for a run that never raised. */
+function companyValue(state: GameState): number {
+  const cfg = state.scenario.funding
+  if (!cfg) return 0
+  const monthly = state.customers
+    .filter((c) => c.churnedWeek === null)
+    .reduce((t, c) => t + c.priceCentsPerMonth, 0)
+  return Math.max(0, Math.round(cfg.valueRevenueMultiple * 12 * monthly + state.company.cashCents))
 }

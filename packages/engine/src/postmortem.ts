@@ -887,6 +887,7 @@ export function fundingEconomics(state: GameState): FundingEconomics | null {
     founderValueCents: Math.round((value * share) / 10_000),
     // Investors and rounds stay on the record, so the final state prices every plan's hours.
     hours: weekPlans(state).reduce((t, plan) => t + fundingHours(state, plan), 0),
+    pitchedTooEarly: f.investors.filter((i) => i.reason === 'too_early').length,
   }
 }
 

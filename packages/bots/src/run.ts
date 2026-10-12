@@ -11,7 +11,7 @@ import { ENGINE_VERSION } from '@founder-mode/engine'
 import { parseArgs } from './args'
 import { buildReport, evaluateTargets, TARGET_STRATEGIES, type StrategyRuns } from './report'
 import { deskComparison } from './desk'
-import { evaluateLongTargets } from './longReport'
+import { evaluateFundingTargets, evaluateLongTargets } from './longReport'
 import { asSection, mergeReportFile, type ScenarioSection } from './reportFile'
 import { botScenario } from './scenarios'
 import { runTasks, taskSeeds, type Task, type TaskDone } from './pool'
@@ -22,6 +22,7 @@ import {
   FREELANCE_TARGET_SPEC,
   TEAM_SPECS,
   TIRED_SPECS,
+  FUNDING_SPECS,
   INBOX_SPECS,
   YEAR2_INBOX_SPECS,
   PRICING_SPECS,
@@ -63,7 +64,16 @@ const strategies = args.only.length
  * of every event.
  */
 type Part =
-  'main' | 'paired' | 'inbox' | 'price' | 'freelance' | 'tired' | 'team' | 'energy' | 'events'
+  | 'main'
+  | 'paired'
+  | 'inbox'
+  | 'price'
+  | 'freelance'
+  | 'tired'
+  | 'team'
+  | 'funding'
+  | 'energy'
+  | 'events'
 const PARTS: Part[] = [
   'main',
   'paired',
@@ -72,6 +82,7 @@ const PARTS: Part[] = [
   'freelance',
   'tired',
   'team',
+  'funding',
   'energy',
   'events',
 ]
@@ -102,8 +113,8 @@ function planFor(scenario: Scenario): Planned[] {
   // Leave-one-out runs of validate_then_build. Only for the report, so they stay out of the
   // strategy list that the targets look at.
   // The reading run that targets 6, 11 and 13 are judged against, on the wide seeds; once.
-  const wideParts = (['paired', 'inbox', 'price', 'freelance', 'team'] as const).filter((p) =>
-    args.parts.includes(p),
+  const wideParts = (['paired', 'inbox', 'price', 'freelance', 'team', 'funding'] as const).filter(
+    (p) => args.parts.includes(p),
   )
   if (full && wideParts[0]) out.push(plan(READER_SPEC, wideParts[0], args.wideRuns))
   if (full && args.parts.includes('paired'))
@@ -141,6 +152,9 @@ function planFor(scenario: Scenario): Planned[] {
         (spec) => args.team.length === 0 || (spec.kind === 'team' && args.team.includes(spec.id)),
       ).map((spec) => plan(spec, 'team', args.wideRuns)),
     )
+  // Long mode raising bots on the wide seeds (targets 31 to 37), where the scenario has funding.
+  if (full && args.parts.includes('funding') && mode === 'long')
+    out.push(...FUNDING_SPECS.map((spec) => plan(spec, 'funding', args.wideRuns)))
   // The energy curve, on the wide seeds, only when asked for.
   if (full && args.parts.includes('energy'))
     out.push(...ENERGY_SPECS.map((spec) => plan(spec, 'energy', args.wideRuns)))
@@ -206,6 +220,7 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
         p.spec.kind === 'earlyHireWide' ||
         p.spec.kind === 'tired' ||
         p.spec.kind === 'team' ||
+        p.spec.kind === 'funding' ||
         p.spec.kind === 'energy',
     ),
     ...(events ? { events } : {}),
@@ -223,7 +238,7 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
   for (const id of TARGET_STRATEGIES.slice(0, 1)) {
     console.log(`\nTargets for ${scenario.id}${scenario.mode ? ` (${scenario.mode})` : ''}, ${id}`)
     for (const t of scenario.mode === 'long'
-      ? evaluateLongTargets(input)
+      ? [...evaluateLongTargets(input), ...evaluateFundingTargets(input)]
       : evaluateTargets(input, id)) {
       const status = t.value === '-' ? '----' : t.pass ? 'ok  ' : 'FAIL'
       console.log(`${status} ${t.id}. ${t.text}: ${t.value}${t.margin ? ` (${t.margin})` : ''}`)

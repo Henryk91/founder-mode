@@ -73,6 +73,12 @@ const monthlyBack = (state: GameState, back: number) =>
 /** A round is closing: terms accepted and the money not yet here. */
 const closing = (state: GameState) => state.funding.investors.some((i) => i.stage === 'accepted')
 
+/** Investors of a round type not met yet in this run: someone who passed does not meet again. */
+export function unmetInvestors(state: GameState, id: RoundId): string[] {
+  const met = new Set(state.funding.investors.filter((i) => i.round === id).map((i) => i.name))
+  return (state.scenario.funding?.rounds[id].investors ?? []).filter((n) => !met.has(n))
+}
+
 /** Investors who put money in. */
 export const hasInvestors = (state: GameState) => state.funding.stakes.length > 0
 
@@ -148,7 +154,13 @@ export function fundingValid(state: GameState, plan: WeekPlan): boolean {
     p.update === null
   if (!cfg) return empty
   const f = state.funding
-  if (p.start !== null && (!ROUNDS.includes(p.start) || f.round !== null || closing(state))) {
+  if (
+    p.start !== null &&
+    (!ROUNDS.includes(p.start) ||
+      f.round !== null ||
+      closing(state) ||
+      unmetInvestors(state, p.start).length === 0)
+  ) {
     return false
   }
   if (!Number.isInteger(p.pitchHours) || p.pitchHours < 0) return false
@@ -202,7 +214,7 @@ function judge(
   )
   const pitch = cfg.pitchBase + cfg.pitchPerSelling * state.founder.skills.selling
   const noise = Math.exp(rng.normal(cfg.noiseSd))
-  const score = Math.sqrt(now / round.barMonthlyCents) * growthFactor * pitch * noise
+  const score = (now / round.barMonthlyCents) ** cfg.scoreExponent * growthFactor * pitch * noise
   if (score >= appetite) return null
   return growth < cfg.flatGrowth ? 'growth_flat' : 'more_revenue'
 }
@@ -320,7 +332,8 @@ export function applyFunding(input: GameState, plan: WeekPlan, rng: Rng): Fundin
     f = { ...f, round: null }
   }
   if (p.start !== null) {
-    const pool = rng.shuffle(roundCfg(input, p.start).investors)
+    roundCfg(input, p.start)
+    const pool = rng.shuffle(unmetInvestors(input, p.start))
     f = { ...f, round: { id: p.start, startWeek: week, pool, next: 0 } }
     out.entries.push({ kind: 'round_started', round: p.start })
   }
@@ -355,7 +368,11 @@ export function applyFunding(input: GameState, plan: WeekPlan, rng: Rng): Fundin
       const roundId = f.round.id
       f = { ...f, round: { ...f.round, next: f.round.next + 1 } }
       const id = `investor_${f.investors.length + 1}`
-      const appetite = rng.range(cfg.appetite.min, cfg.appetite.max)
+      // Investors already on board shape the round: pleased ones introduce you, worried ones warn.
+      const mood = moodLevel({ ...input, hidden: { ...input.hidden, funding: hidden } })
+      const follow =
+        mood === 2 ? cfg.followOnAppetite.pleased : mood === 0 ? cfg.followOnAppetite.worried : 1
+      const appetite = rng.range(cfg.appetite.min, cfg.appetite.max) * follow
       hidden = { ...hidden, appetite: { ...hidden.appetite, [id]: appetite } }
       const reason = judge(input, round, appetite, rng)
       f = {
@@ -465,6 +482,7 @@ export function fundingView(state: GameState): FundingView | null {
         closingWeeks: r.closingWeeks,
         dueDiligenceHours: r.dueDiligenceHours,
         amountCents: { ...r.amountCents },
+        investorsLeft: unmetInvestors(state, id).length,
       }
     }),
     round: f.round
