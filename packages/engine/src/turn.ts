@@ -3,6 +3,7 @@ import { Rng } from './rng'
 import { resolveExperiments, runInterviews, startExperiments } from './systems/experiments'
 import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
 import { applyFounderWeek, hoursByActivity, livingCostsFor } from './systems/founder'
+import { applyFunding } from './systems/funding'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
 import { applyChurn, applyReferrals, applySales } from './systems/sales'
@@ -135,6 +136,12 @@ export function endWeek(
   const freelancing = applyFreelance(state, plan, freelance)
   state = freelancing.state
   entries.push(...freelancing.entries)
+  // Raising money (long mode): meetings, terms, closing. The money arrives in finance.
+  const funding = applyFunding(state, plan, rng)
+  state = funding.state
+  entries.push(...funding.entries)
+  extras.investmentCents = funding.investmentCents
+  forcedNextWeek += funding.forcedHours
 
   // 8. Finance: transfers, costs, chasing, payments, invoices at month end
   const finance = applyFinanceWeek(state, plan, extras, rng, delegatedChases)

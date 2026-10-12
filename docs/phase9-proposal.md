@@ -644,3 +644,31 @@ Chasing is always right today: a chase costs 1 h and never hurts. The careful bo
 ### 10.9 Part C3: long mode tuning (autonomous run, step 0)
 
 Report: `docs/autonomous/reports/step0-c3.md`; details in `docs/decisions.md` ("Phase 9, part C3b"). The owner's decisions after C3a (`docs/AUTONOMOUS_PLAN.md` 3.1) were applied: channel limit 24 h, salesperson selling 1.0, chasing that keeps up with customers, the results-based let-go, chasing and admin as a team task, hint pricing for the careful bot. Target 29 restated as situational and passed (hint pricing +2.6, expansion with a team +2.4, on savings -29.9); targets 21 to 26, 28 and 30 pass; 27 is at the limit; 20 fails and is an open issue.
+
+## 11. Part D design as built (autonomous run, step 1)
+
+Section 3 is the proposal; the owner's answers in 8 and `docs/AUTONOMOUS_PLAN.md` step 1 override it. What follows was decided in the autonomous run (each choice a reasonable person could make differently is in `docs/decisions.md` as AUTONOMOUS).
+
+### 11.1 Early check (plan 3.1 point 8)
+
+Before building: the careful long mode bot given 150,000 EUR more company cash at the start (a stand-in for an angel, 300 seeds) wins 60% (45% without), never goes bankrupt, makes 1.15 hires a run, and beats a solo founder with the same money by 9 points. Money does make hires pay. But only 28% of surviving runs grew revenue over the last quarter. Funding is viable; the risk is that it dominates, so the traction bar, the hours and the weeks of raising are what balance it.
+
+### 11.2 Mechanics
+
+- **Long mode only**, from a `funding` block in `modes.long`. Angels and a seed round; one round open at a time, one investor per round (an angel, or a lead fund for the seed).
+- **Raising is a pipeline in the Plan tab, shaped like hiring.** Start a round (8 h of deck and numbers for an angel round, 12 h for a seed round, once per round). Pitch hours each week: every 3 h bring a first meeting (2 h, held that week) with the next investor of the scenario's pool. An interested investor waits for a second look, booked in the plan (angel 3 h, seed partner meeting 4 h). After a good second look a term sheet arrives: amount and share, open for 2 weeks, accepted or declined in the plan. Then closing: 2 weeks for an angel (the notary), 4 for a seed round with 6 h of due diligence in the first week. **The money arrives at closing.** A seed term sheet is withdrawn in due diligence if monthly revenue fell by more than a tenth since it was offered.
+- **Investors see only what the player sees:** monthly revenue, its growth over the last 12 weeks, paying customers, customers lost in the last 12 weeks, runway, and the share of revenue from the biggest market. Interviews, sign ups and deposits count for nothing. A meeting passes with a reason, checked in this order: no paying customers ("too early"), runway shorter than the closing time plus 4 weeks ("you would run out before we close"), a third or more of customers lost in 12 weeks ("too many customers leave"), under 60% of revenue from one market ("no focus"), then the score. Score = (monthly revenue / the round's bar)^0.5 x growth factor (1 + 2 x growth over 12 weeks, between 0.5 and 2) x pitch (0.85 + 0.3 x selling skill) x noise (log-normal, sd 0.25), against the investor's hidden appetite (uniform 0.8 to 1.25). A low score passes as "growth is flat" when growth is under 5%, else "come back with more revenue". One roll per meeting, logged as odds for the post-mortem. Each round's bar is public: "paying customers and revenue that grows" (angel), "monthly revenue around 10,000 EUR, growing" (seed).
+- **Terms (realistic, see 11.4):** angel 100,000 to 250,000 EUR, pre-money the larger of 1.5 million EUR and 20 times yearly revenue; seed 1 to 2.5 million EUR, pre-money the larger of 5 million EUR and 25 times yearly revenue. Share = amount / (pre-money + amount). Amount and equity only.
+- **Ledger:** `investmentCents`, out of revenue, out of the net change that runway uses, and out of the win test.
+- **Strings attached:** at each month end with investors on board the plan has an investor update: proper (2 h), short (1 h) or none. A hidden confidence (0 to 1, starting at 0.6) moves with the update (+0.08, +0.02, -0.06) and the numbers (monthly revenue up on the month +0.04, else -0.04); the player sees it as the investors' mood (worried, patient, pleased). The seed term sheet names a growth milestone in plain numbers (twice the monthly revenue at signing within 26 weeks), shown while open; missing it costs 0.2 confidence. About ten long mode inbox events (`shared/events/funding.yaml`) arrive only once money is raised: pressure when the mood is worried (hire now, raise the price, an extra check-in, a bridge offer at a lower valuation) and goodwill when it is pleased (introductions that bring leads).
+- **Ownership** is in the post-mortem and a best runs column, never in the ending: the founder's share after every round, and the company's value by a visible rule (8 times yearly revenue plus cash; 0 when bankrupt).
+- **Ending "Growing"** (a win) at week 104 for a run that raised money and is not Sustainable: at least 12 months of runway at the burn of its last 4 weeks, and monthly revenue at least 10% above 13 weeks earlier. Otherwise Still searching. Both numbers are scenario values.
+- **Landing tests capped** in long mode at 3 per market, so money cannot buy leads without limit (careful play uses 1 or 2).
+
+### 11.3 Bots and targets
+
+Bots as section 3.9: `bootstrap` (the careful bot), `raise_on_traction`, `raise_early`, `raise_always`, `raise_late`, and update policies (proper, short, never) on `raise_on_traction`. Targets 31 to 37 as section 3.10, with 31's "wins" meaning Sustainable plus Growing.
+
+### 11.4 Sources for the money (checked October 2026)
+
+The angel ticket and round sizes are in 8.1 (BAND survey, PitchBook DACH 2025, KfW VC Dashboard, Carta via WaveUp). Pre-money floors are estimates: PitchBook's DACH median of 6.3 million EUR covers pre-seed and seed rounds of companies far larger than a one-founder start-up with a few customers, so the angel floor of 1.5 million EUR is set at the low end of German pre-seed practice (estimate), and the seed floor of 5 million EUR just under the DACH median (estimate).

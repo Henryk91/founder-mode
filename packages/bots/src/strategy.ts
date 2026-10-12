@@ -91,6 +91,9 @@ export class PlanBuilder {
     const budgets = this.view.costs.landingBudgetsCents
     const budget = size === 'small' ? budgets[0] : budgets[budgets.length - 1]
     if (budget === undefined || this.free < this.view.costs.landingHours) return false
+    // Long mode caps the tests per market; the 60 week game has no cap (null).
+    const left = this.view.segments.find((x) => x.id === segmentId)?.landingTestsLeft ?? null
+    if (left !== null && left <= 0) return false
     this.plan.landing[segmentId] = budget
     this.free -= this.view.costs.landingHours
     return true

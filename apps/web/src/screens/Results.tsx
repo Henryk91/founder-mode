@@ -104,6 +104,59 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       return label(`results.entry.team_output.${entry.role}`, stage, { hours: entry.hours })
     case 'team_chased':
       return count('results.entry.team_chased', stage, entry.count)
+    case 'round_started':
+    case 'round_stopped':
+      return label(`results.entry.${entry.kind}`, stage, {
+        round: label(`funding.round.${entry.round}`, stage),
+      })
+    case 'investor_met':
+      return entry.interested
+        ? label('results.entry.investor_met.interested', stage, { name: entry.name })
+        : label('results.entry.investor_met.passed', stage, {
+            name: entry.name,
+            reason: label(`funding.reason.${entry.reason ?? 'more_revenue'}`, stage),
+          })
+    case 'second_look':
+      return entry.offered
+        ? label('results.entry.second_look.offered', stage, { name: entry.name })
+        : label('results.entry.second_look.passed', stage, {
+            name: entry.name,
+            reason: label(`funding.reason.${entry.reason ?? 'more_revenue'}`, stage),
+          })
+    case 'term_sheet':
+      return label('results.entry.term_sheet', stage, {
+        name: entry.name,
+        amount: formatEuro(entry.amountCents),
+        share: (entry.shareBp / 100).toFixed(1),
+      })
+    case 'terms_accepted':
+      return label('results.entry.terms_accepted', stage, {
+        name: entry.name,
+        week: entry.closeWeek,
+      })
+    case 'terms_lapsed':
+      return label('results.entry.terms_lapsed', stage, { name: entry.name })
+    case 'terms_withdrawn':
+      return label('results.entry.terms_withdrawn', stage, {
+        name: entry.name,
+        reason: label(`funding.reason.${entry.reason}`, stage),
+      })
+    case 'round_closed':
+      return label('results.entry.round_closed', stage, {
+        name: entry.name,
+        amount: formatEuro(entry.amountCents),
+        share: (entry.shareBp / 100).toFixed(1),
+      })
+    case 'investor_update':
+      return label(`results.entry.investor_update.${entry.update}`, stage)
+    case 'funding_milestone':
+      return label(
+        entry.met ? 'results.entry.milestone_met' : 'results.entry.milestone_missed',
+        stage,
+        {
+          amount: formatEuro(entry.monthlyCents),
+        },
+      )
     case 'living_costs_changed':
       return label('results.entry.living_costs_changed', stage, {
         amount: formatEuro(entry.toCents),
@@ -194,6 +247,20 @@ function place(entry: ReportEntry): [Group, number] {
       return entry.role === 'developer' ? ['product', 3] : ['sales', 3]
     case 'team_chased':
       return ['money', 3]
+    case 'round_closed':
+    case 'terms_withdrawn':
+      return ['money', 9]
+    case 'term_sheet':
+    case 'funding_milestone':
+      return ['money', 5]
+    case 'round_started':
+    case 'round_stopped':
+    case 'investor_met':
+    case 'second_look':
+    case 'terms_accepted':
+    case 'terms_lapsed':
+    case 'investor_update':
+      return ['money', 2]
     case 'freelance_output':
       return entry.role === 'developer' ? ['product', 3] : ['sales', 3]
     case 'freelance_bill':

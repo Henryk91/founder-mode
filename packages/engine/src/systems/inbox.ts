@@ -204,6 +204,14 @@ function applyEffect(
       return state
     case 'moveOffice':
       return moveOffice(state, effect.stage)
+    case 'investorConfidence': {
+      if (state.funding.stakes.length === 0) return state
+      const confidence = Math.min(1, Math.max(0, state.hidden.funding.confidence + effect.delta))
+      return {
+        ...state,
+        hidden: { ...state.hidden, funding: { ...state.hidden.funding, confidence } },
+      }
+    }
     case 'fixedCost': {
       if (state.company.fixedCosts.some((c) => c.id === effect.id)) return state
       const cost = { id: effect.id, name: effect.name, monthlyCents: effect.monthlyCents }

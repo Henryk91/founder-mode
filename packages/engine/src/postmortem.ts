@@ -1,6 +1,7 @@
 import { activeCustomers } from './systems/customers'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
+import { companyValueCents, founderShareBp, fundingHours } from './systems/funding'
 import { reachedMilestones } from './systems/milestones'
 import { freelanceEconomics, hiresEconomics, salaryId } from './systems/team'
 import type {
@@ -21,6 +22,7 @@ import type {
   SegmentId,
   SuggestionId,
   WeekPlan,
+  FundingEconomics,
 } from './types'
 
 /** Earlier steps shown before the final week. */
@@ -106,6 +108,7 @@ export function buildPostMortem(state: GameState): PostMortem {
       peakRevenueCents: cause.peakRevenueCents,
       hires,
       freelance: freelanceEconomics(state),
+      funding: fundingEconomics(state),
     },
     walkIns: walkInCounts(state),
     sources: sourceCounts(state),
@@ -248,7 +251,11 @@ function buildCause(state: GameState): PostMortemCause {
   const base = state.founder.baseHoursPerWeek
   const covered = state.ledger.find((l) => l.monthlyRevenueCents >= costs)
   let id: PostMortemCauseId
-  if (ending === 'bankrupt') {
+  const raising =
+    state.funding.round !== null || state.funding.investors.some((i) => i.stage === 'accepted')
+  if (ending === 'bankrupt' && raising) id = 'bankrupt_while_raising'
+  else if (ending === 'bankrupt' && state.funding.stakes.length > 0) id = 'bankrupt_after_raise'
+  else if (ending === 'bankrupt') {
     if (won === 0) id = 'bankrupt_no_customers'
     else if (state.team.members.length > 0 && peak >= costsWithoutHire) id = 'bankrupt_hire'
     else if (won >= 2 && (lost + stoppedPaying) * 2 > won) id = 'bankrupt_churn'
@@ -303,6 +310,14 @@ const CHAIN_RULES: Record<PostMortemCauseId, { keep: ChainKind[]; also: ChainKin
     ],
   },
   bankrupt_churn: { keep: ['savings_empty'], also: ['customer_lost', 'customer_stopped_paying'] },
+  bankrupt_while_raising: {
+    keep: ['savings_empty'],
+    also: ['customer_lost', 'customer_stopped_paying', 'customer_won', 'hire_started'],
+  },
+  bankrupt_after_raise: {
+    keep: ['hire_started', 'savings_empty'],
+    also: ['customer_lost', 'customer_stopped_paying', 'hire_let_go', 'customer_won'],
+  },
   bankrupt_below_costs: {
     keep: ['savings_empty'],
     also: [
@@ -329,6 +344,7 @@ const CHAIN_RULES: Record<PostMortemCauseId, { keep: ChainKind[]; also: ChainKin
     ],
   },
   sustainable: { keep: ['first_customer', 'covers_all_costs'], also: ['customer_won'] },
+  growing: { keep: ['first_customer'], also: ['customer_won', 'hire_started'] },
   shut_down: {
     keep: [],
     also: [
@@ -852,4 +868,29 @@ function buildSuggestions(
     ['sooner', won],
   ]
   return [...rules.filter(([, hit]) => hit).map(([id]) => id), 'sample_sizes']
+}
+
+/** What raising brought: rounds, money, the founder's share and its value. Null if never tried. */
+export function fundingEconomics(state: GameState): FundingEconomics | null {
+  const f = state.funding
+  const started = roundsStarted(state)
+  if (started === 0 && f.investors.length === 0) return null
+  const value = companyValueCents(state)
+  const share = founderShareBp(f.stakes)
+  return {
+    roundsStarted: started,
+    investorsMet: f.investors.length,
+    raisedCents: f.stakes.reduce((t, s) => t + s.amountCents, 0),
+    stakes: f.stakes.map((s) => ({ ...s })),
+    founderShareBp: share,
+    companyValueCents: value,
+    founderValueCents: Math.round((value * share) / 10_000),
+    // Investors and rounds stay on the record, so the final state prices every plan's hours.
+    hours: weekPlans(state).reduce((t, plan) => t + fundingHours(state, plan), 0),
+  }
+}
+
+/** Rounds started over the run, from the plans played. */
+function roundsStarted(state: GameState): number {
+  return weekPlans(state).filter((p) => p.funding?.start).length
 }

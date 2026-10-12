@@ -10,6 +10,7 @@ import sharedFinance from './shared/events/finance.yaml?raw'
 import sharedFounder from './shared/events/founder.yaml?raw'
 import sharedTeam from './shared/events/team.yaml?raw'
 import sharedYear2 from './shared/events/year2.yaml?raw'
+import sharedFunding from './shared/events/funding.yaml?raw'
 import kantinoAbout from './scenarios/kantino/about.yaml?raw'
 import kantinoScenario from './scenarios/kantino/scenario.yaml?raw'
 import kantinoFeatures from './scenarios/kantino/features.yaml?raw'
@@ -60,6 +61,8 @@ export type ScenarioSources = {
    * area. The 60 week game never loads them, so its scenario and fingerprint are untouched.
    */
   longEvents: string
+  /** Long mode events about investors (Part D), drawn only once money is raised. */
+  fundingEvents?: string
 }
 
 /** Events every scenario gets: the founder's life, money, the hire, generic sales moments. */
@@ -89,6 +92,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
     },
     sharedEvents: SHARED_EVENTS,
     longEvents: sharedYear2,
+    fundingEvents: sharedFunding,
   },
   zollstock: {
     scenario: zollstockScenario,
@@ -106,6 +110,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
     },
     sharedEvents: SHARED_EVENTS,
     longEvents: sharedYear2,
+    fundingEvents: sharedFunding,
   },
 }
 
@@ -205,6 +210,7 @@ export function parseScenario(sources: ScenarioSources, mode: GameMode = 'standa
       areaEvents(area, sources.events[area], sources.sharedEvents[area]),
     ),
     ...(mode === 'long' ? eventsIn(sources.longEvents) : []),
+    ...(mode === 'long' && sources.fundingEvents ? eventsIn(sources.fundingEvents) : []),
   ]
   return ScenarioSchema.parse({
     ...(typeof file === 'object' && file !== null ? file : {}),

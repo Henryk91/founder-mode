@@ -38,6 +38,8 @@ export type WeekExtras = {
   otherIncomeCents: number
   /** The freelancer's bill: a company cost like a salary. */
   freelanceCents: number
+  /** Investment arriving at a round's closing: cash, never revenue (Part D). */
+  investmentCents: number
 }
 
 export const noExtras = (): WeekExtras => ({
@@ -46,6 +48,7 @@ export const noExtras = (): WeekExtras => ({
   otherCostsCents: 0,
   otherIncomeCents: 0,
   freelanceCents: 0,
+  investmentCents: 0,
 })
 
 /**
@@ -96,6 +99,7 @@ export function applyFinanceWeek(
   cash -= fixedCostsCents
   cash -= extras.adSpendCents + extras.otherCostsCents + extras.freelanceCents
   cash += extras.otherIncomeCents
+  cash += extras.investmentCents
 
   const settled = settleInvoices(state)
   state = settled.state
@@ -148,6 +152,7 @@ export function applyFinanceWeek(
     freelanceCents: extras.freelanceCents,
     otherCostsCents: extras.otherCostsCents,
     otherIncomeCents: extras.otherIncomeCents,
+    investmentCents: extras.investmentCents,
     cashEndCents: cash,
     savingsEndCents: savings,
     // Filled in by `closeLedger` once churn has run.
@@ -199,8 +204,8 @@ export function privateMoneyInCents(state: GameState): number {
 /**
  * Weekly change in company cash plus personal savings: money actually received (an invoice
  * written off brought nothing) minus fixed costs, living costs, ads, and fees. Transfers, draws,
- * and top ups only move money between the two and cancel out. Investment (Part D) must get its
- * own ledger field and stay out of this sum: runway counts only what the business earns.
+ * and top ups only move money between the two and cancel out. Investment (Part D) has its own
+ * ledger field and stays out of this sum: runway counts only what the business earns.
  */
 export function netChangeCents(l: WeekLedger): number {
   return (

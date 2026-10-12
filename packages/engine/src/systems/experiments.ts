@@ -157,6 +157,15 @@ export function presaleBatchesUsed(state: GameState, segmentId: string, plan?: W
   return used
 }
 
+/** Landing page tests run in a market so far, plus one this plan starts there. */
+export function landingTestsUsed(state: GameState, segmentId: string, plan?: WeekPlan): number {
+  let used = (plan?.landing[segmentId] ?? 0) > 0 ? 1 : 0
+  for (const a of state.actionLog) {
+    if (a.type === 'endWeek' && (a.plan.landing[segmentId] ?? 0) > 0) used++
+  }
+  return used
+}
+
 /** Leads of a segment that are still in play: not lost and not yet customers. */
 export function openLeadCount(state: GameState, segmentId: string): number {
   return state.leads.filter(

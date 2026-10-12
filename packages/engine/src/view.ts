@@ -1,4 +1,10 @@
-import { interviewsOf, openLeadCount, presaleBatchesUsed } from './systems/experiments'
+import { fundingView } from './systems/funding'
+import {
+  interviewsOf,
+  openLeadCount,
+  presaleBatchesUsed,
+  landingTestsUsed,
+} from './systems/experiments'
 import { monthlyFixedCostsCents, receivablesCents, runwayWeeks } from './systems/finance'
 import { committedHours } from './systems/founder'
 import { isOverdue, overdueWeeks } from './systems/invoices'
@@ -155,6 +161,7 @@ export function getView(state: GameState): PlayerView {
         answeredChoiceId: m.status === 'answered' ? m.choiceId : null,
       })),
     team: teamView(state),
+    funding: fundingView(state),
     pendingExperiments: state.hidden.experiments.map((e) => ({
       kind: e.kind,
       segmentId: e.segmentId,
@@ -242,6 +249,13 @@ export function getView(state: GameState): PlayerView {
         scenario.experiments.presale.maxBatchesPerSegment - presaleBatchesUsed(state, seg.id),
       ),
       lastChannel: lastChannel(state, seg.id),
+      landingTestsLeft:
+        scenario.experiments.landing.maxTestsPerSegment === undefined
+          ? null
+          : Math.max(
+              0,
+              scenario.experiments.landing.maxTestsPerSegment - landingTestsUsed(state, seg.id),
+            ),
     })),
     funnel: demoFunnel(state),
     milestones: { reached: reachedMilestones(state), next: nextMilestone(state) },

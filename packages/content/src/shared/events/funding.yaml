@@ -1,0 +1,274 @@
+# Inbox events about investors (Phase 9 Part D), long mode only. Shared by every scenario with a
+# funding block. Each waits until a round has closed (`funding.raised >= 1`), so a run that never
+# raises sees none of them and plays as before. Mood: 0 worried, 1 patient, 2 pleased.
+events:
+  # --- Pressure, when the investors are worried
+
+  - id: investor_hire_push
+    area: finance
+    weight: 3
+    once: true
+    when: [funding.raised >= 1, funding.mood == 0]
+    from: none
+    sender: Your investor
+    look: official
+    text: >-
+      Your investor writes that companies like yours grow by hiring salespeople, ideally last
+      month. They attach a recruiter's brochure and a smiley that does not smile.
+    defaultChoice: ignore
+    choices:
+      - id: explain
+        label: Send them your numbers and why you are waiting
+        hours: 2
+        effects:
+          - { type: investorConfidence, delta: 0.1 }
+      - id: promise
+        label: Promise a hire soon
+        hours: 0
+        effects:
+          - { type: investorConfidence, delta: 0.05 }
+          - { type: energy, delta: -4 }
+      - id: ignore
+        label: Leave it for now
+        hours: 0
+        effects:
+          - { type: investorConfidence, delta: -0.1 }
+
+  - id: investor_price_push
+    area: finance
+    weight: 3
+    once: true
+    when: [funding.raised >= 1, funding.mood == 0]
+    from: none
+    sender: Your investor
+    look: official
+    text: >-
+      Your investor has read a blog post about pricing and now thinks you charge too little.
+      They would like to discuss it on a call, which they have already booked.
+    defaultChoice: skip
+    choices:
+      - id: call
+        label: Take the call and walk them through your trials
+        hours: 2
+        effects:
+          - { type: investorConfidence, delta: 0.08 }
+      - id: skip
+        label: Decline the call
+        hours: 0
+        effects:
+          - { type: investorConfidence, delta: -0.08 }
+
+  - id: investor_checkin
+    area: finance
+    weight: 3
+    once: true
+    when: [funding.raised >= 1, funding.mood == 0]
+    from: none
+    sender: Your investor
+    look: official
+    text: >-
+      Your investor asks for a half day check-in to "align on the plan". The agenda has eleven
+      points and the word synergy twice.
+    defaultChoice: postpone
+    choices:
+      - id: attend
+        label: Spend the afternoon with them
+        hours: 4
+        effects:
+          - { type: investorConfidence, delta: 0.12 }
+      - id: postpone
+        label: Postpone it to next month
+        hours: 0
+        effects:
+          - { type: investorConfidence, delta: -0.1 }
+
+  - id: investor_worried_call
+    area: finance
+    weight: 2
+    once: true
+    when: [funding.raised >= 1, funding.mood == 0, monthlyRevenueEur < 3000]
+    from: none
+    sender: Your investor
+    text: >-
+      Your investor calls on a Sunday to ask whether things are really as quiet as the numbers
+      say. You can hear a dog and a lot of disappointment.
+    defaultChoice: later
+    choices:
+      - id: plan
+        label: Write them a plan for the next three months
+        hours: 3
+        effects:
+          - { type: investorConfidence, delta: 0.12 }
+      - id: reassure
+        label: Reassure them on the phone
+        hours: 1
+        effects:
+          - { type: investorConfidence, delta: 0.02 }
+          - { type: energy, delta: -3 }
+      - id: later
+        label: Call back on Monday
+        hours: 0
+        effects:
+          - { type: investorConfidence, delta: -0.06 }
+
+  - id: milestone_letter
+    area: finance
+    weight: 4
+    once: true
+    when: [funding.raised >= 1, funding.milestoneMissed == 1]
+    from: none
+    sender: Your lead investor
+    look: official
+    text: >-
+      Your lead investor notes that the growth target in the terms was missed. The letter is
+      polite in a way that suggests a lawyer read it first.
+    defaultChoice: silence
+    choices:
+      - id: explain
+        label: Explain what happened and what changes now
+        hours: 2
+        effects:
+          - { type: investorConfidence, delta: 0.1 }
+      - id: silence
+        label: Let the numbers speak
+        hours: 0
+        effects:
+          - { type: investorConfidence, delta: -0.1 }
+
+  # --- Any mood, once money is raised
+
+  - id: board_deck_request
+    area: finance
+    weight: 2
+    once: true
+    when: [funding.raised >= 1]
+    from: none
+    sender: Your investor
+    text: >-
+      Your investor would like a proper deck for their own investors, "nothing fancy". They send
+      an example with forty slides and a soundtrack.
+    defaultChoice: skip
+    choices:
+      - id: deck
+        label: Make a short deck
+        hours: 3
+        effects:
+          - { type: investorConfidence, delta: 0.08 }
+      - id: skip
+        label: Send last month's update again
+        hours: 0
+        effects:
+          - { type: investorConfidence, delta: -0.04 }
+
+  - id: portfolio_tool
+    area: finance
+    weight: 2
+    once: true
+    when: [funding.raised >= 1]
+    from: none
+    sender: Your investor
+    text: >-
+      Your investor recommends a reporting tool every company in their portfolio uses. It costs
+      more per month than your accountant and mostly makes charts of the accountant's numbers.
+    defaultChoice: decline
+    choices:
+      - id: subscribe
+        label: Subscribe to keep them happy
+        hours: 1
+        effects:
+          - { type: fixedCost, id: portfolio_tool, name: Reporting tool, monthlyCents: 29000 }
+          - { type: investorConfidence, delta: 0.06 }
+      - id: decline
+        label: Thank them and keep the spreadsheet
+        hours: 0
+
+  - id: investor_conference
+    area: finance
+    weight: 2
+    once: true
+    when: [funding.raised >= 1]
+    from: none
+    sender: Your investor
+    text: >-
+      Your investor offers you a free ticket to their portfolio day in Berlin. There will be
+      panels, a ball pit and several founders who raised more than you.
+    defaultChoice: decline
+    choices:
+      - id: go
+        label: Go for two days
+        hours: 8
+        effects:
+          - { type: investorConfidence, delta: 0.06 }
+          - { type: energy, delta: -5 }
+      - id: decline
+        label: Send your regards
+        hours: 0
+
+  # --- Goodwill, when the investors are pleased
+
+  - id: investor_intro
+    area: finance
+    weight: 3
+    once: true
+    when: [funding.raised >= 1, funding.mood == 2]
+    from: none
+    sender: Your investor
+    text: >-
+      Your investor is pleased with the last update and offers to introduce you to two companies
+      they know. They mention you "at every dinner now", which explains a lot.
+    defaultChoice: later
+    choices:
+      - id: calls
+        label: Take both introductions
+        hours: 2
+        effects:
+          - { type: newLeads, count: 2 }
+      - id: later
+        label: Ask them to hold the thought
+        hours: 0
+
+  - id: investor_second_intro
+    area: finance
+    weight: 2
+    once: true
+    when: [funding.raised >= 1, funding.mood == 2, week >= 70]
+    from: none
+    sender: Your investor
+    text: >-
+      Your investor has told a friend's company about you, at length. The friend would like a
+      demo and, apparently, an apology for the length.
+    defaultChoice: later
+    choices:
+      - id: call
+        label: Call the friend this week
+        hours: 1
+        effects:
+          - { type: newLeads, count: 1 }
+      - id: later
+        label: Leave it until things are quieter
+        hours: 0
+
+  - id: investor_praise
+    area: finance
+    weight: 2
+    once: true
+    when: [funding.raised >= 1, funding.mood == 2]
+    from: none
+    sender: Your investor
+    look: note
+    text: >-
+      Your investor sends a short note: good month, keep going. It is the first message from
+      them without an attachment.
+    defaultChoice: smile
+    choices:
+      - id: smile
+        label: Read it twice and carry on
+        hours: 0
+        effects:
+          - { type: energy, delta: 4 }
+      - id: thank
+        label: Write back with the next month's plan
+        hours: 1
+        effects:
+          - { type: energy, delta: 4 }
+          - { type: investorConfidence, delta: 0.04 }

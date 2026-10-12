@@ -1,4 +1,5 @@
 import { Rng, seedRng } from './rng'
+import { emptyFunding, emptyHiddenFunding } from './systems/funding'
 import { drawHiddenSegments } from './systems/market'
 import { moveOffice } from './systems/office'
 import { initialProduct } from './systems/product'
@@ -42,6 +43,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       payWeeks: {},
       waitsForChase: [],
       teamSkills: {},
+      funding: emptyHiddenFunding({ scenario }),
     },
     knowledge: Object.fromEntries(scenario.segments.map((s) => [s.id, []])),
     product: initialProduct({ scenario }),
@@ -58,6 +60,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       freelanceFeatures: [],
       freelanceBugs: 0,
     },
+    funding: emptyFunding(),
     ledger: [],
     actionLog: [],
     eventLog: [],
