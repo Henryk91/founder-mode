@@ -739,10 +739,14 @@ export function validatingPlayer(
     if (net === null) return false
     return moneyOf(view) >= months * Math.max(0, extraCents - net)
   }
-  /** The runway shown is below `months` (null runway: money is not shrinking). */
+  /**
+   * The runway shown is below `months` (null runway: money is not shrinking), and the money
+   * does not last to the end (runway never shows more than the weeks left, this one included).
+   */
   const short = (view: PlayerView, months: number) =>
     view.company.runwayWeeks !== null &&
-    view.company.runwayWeeks < months * scenario.finance.weeksPerMonth
+    view.company.runwayWeeks < months * scenario.finance.weeksPerMonth &&
+    view.company.runwayWeeks < view.maxWeeks - view.week + 1
   /** The role that limits growth: a developer while the market's wanted features need building. */
   const limitingRole = (view: PlayerView, unshipped: string[]): 'developer' | 'salesperson' => {
     const backlog = unshipped.reduce(

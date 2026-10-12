@@ -174,9 +174,10 @@ export function privateMoneyInCents(state: GameState): number {
 }
 
 /**
- * Weekly change in company cash plus personal savings: money received minus fixed costs, living
- * costs, ads, and fees. Transfers, draws, and top ups only move money between the two and
- * cancel out.
+ * Weekly change in company cash plus personal savings: money actually received (an invoice
+ * written off brought nothing) minus fixed costs, living costs, ads, and fees. Transfers, draws,
+ * and top ups only move money between the two and cancel out. Investment (Part D) must get its
+ * own ledger field and stay out of this sum: runway counts only what the business earns.
  */
 export function netChangeCents(l: WeekLedger): number {
   return (
@@ -190,12 +191,6 @@ export function netChangeCents(l: WeekLedger): number {
   )
 }
 
-/**
- * Whole weeks until company cash plus personal savings reach zero. Once a full month has been
- * played, it uses the average net change of the last month, so one month end with its fixed
- * costs is always in the window. Before that it uses the known costs: living costs, fixed costs
- * spread over the month, and what active customers pay. Null when the total is not shrinking.
- */
 /** Records where the week ended: revenue, customers, runway and energy after churn, and its hours. */
 export function closeLedger(state: GameState, hours: HoursByActivity): GameState {
   const last = state.ledger.at(-1)
@@ -213,20 +208,26 @@ export function closeLedger(state: GameState, hours: HoursByActivity): GameState
   return { ...state, ledger }
 }
 
+/**
+ * Runway: whole weeks until company cash plus personal savings reach zero, at the net change of
+ * the last four weeks (`netChangeCents`: money actually received less everything paid), so one
+ * month end with its fixed costs is always in the window. Before four weeks have been played it
+ * counts the known costs with no income at all; invoiced revenue never counts. Null ("Covered")
+ * when that pace does not shrink the money. Never more than the weeks left in the run.
+ */
 export function runwayWeeks(state: GameState): number | null {
   const weeksPerMonth = state.scenario.finance.weeksPerMonth
-  // Net change over one month, from history or from known costs.
   const net =
     state.ledger.length >= weeksPerMonth
       ? state.ledger.slice(-weeksPerMonth).reduce((sum, l) => sum + netChangeCents(l), 0)
-      : activeCustomers(state).reduce((sum, c) => sum + c.priceCentsPerMonth, 0) -
-        monthlyCompanyCostsCents(state) -
-        state.founder.livingCostCentsPerWeek * weeksPerMonth
+      : -monthlyCompanyCostsCents(state) - state.founder.livingCostCentsPerWeek * weeksPerMonth
   if (net >= 0) return null
   const total = state.company.cashCents + Math.max(0, state.founder.savingsCents)
   if (total <= 0) return 0
+  // Weeks still to play after the last one played.
+  const left = Math.max(0, state.scenario.maxWeeks - (state.ledger.at(-1)?.week ?? 0))
   // total / (-net / weeksPerMonth), kept in integers.
-  return Math.floor((total * weeksPerMonth) / -net)
+  return Math.min(left, Math.floor((total * weeksPerMonth) / -net))
 }
 
 /**

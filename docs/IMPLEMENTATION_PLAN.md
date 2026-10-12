@@ -276,7 +276,7 @@ Leads show only observable facts (company name, size, last contact, what they sa
 - Bookkeeping needs 2 h per week. Unspent hours accumulate in `bookkeepingBacklogHours`. Above 12 h a penalty event fires (late fee, lost time).
 - The founder can move money from personal savings into the company as an action (`transferToCompanyCents` in the week plan), up to the current savings.
 - Every manual transfer, founder draw, and automatic top up appears as an entry in `WeekReport.entries` and is written to `eventLog` with its amount, so the post-mortem can total the private money put in (manual transfers plus top ups).
-- Runway shown to the player = weeks until cash reaches zero at the average net change of the last 4 weeks.
+- Runway shown to the player = weeks until cash plus savings reach zero at the net change of the last 4 weeks: money actually received (written off invoices bring nothing; investment never counts) less everything paid. Before 4 weeks, the known costs and no income. "Covered" when that pace does not shrink the money; never more than the weeks left in the run (Phase 9 fix).
 
 ### 4.8 Founder
 
@@ -441,7 +441,7 @@ Reference mockups, tokens, and component mapping are in `docs/design/` (start wi
 
 ### 6.4 Headline numbers
 
-Always visible: cash, runway, monthly revenue, paying customers. Each shows its change over the last 4 weeks. Customer acquisition cost and churn rate appear only after enough data exists (10 closed leads, 3 months of customers).
+Always visible: cash, runway, monthly revenue, paying customers. Each shows its change since last week, so it matches the week's results (was the last 4 weeks until Phase 9). Customer acquisition cost and churn rate appear only after enough data exists (10 closed leads, 3 months of customers).
 
 ---
 

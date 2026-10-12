@@ -501,24 +501,24 @@ Targets 20 to 30 (`docs/phase9-proposal.md` 2.9 and Part C2), judged on `validat
 | # | Target | Value | Margin | Met |
 |---|---|---|---|---|
 | 20 | Freelancer or hire is each the right call in its own situation: for a burst (the build, from week 3 until it ships), a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady work (selling from the first paying customer to the end), a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. Both on top of the solo careful bot, on the same seeds (on 10000 seeds) | burst: freelancer ahead by -0.1; steady: hire ahead by -2.9 | ±0.9, ±0.8 | no |
-| 21 | build_only reaches Sustainable business in under 5% of runs; no strategy exceeds 60% | build_only 0.0%; top price_aware 35.0% | ±0.0; ±3.0 | yes |
-| 22 | validate_then_build reaches it in 25 to 45% of runs | 26.1% | ±2.7 | yes |
+| 21 | build_only reaches Sustainable business in under 5% of runs; no strategy exceeds 60% | build_only 0.0%; top price_aware 34.8% | ±0.0; ±3.0 | yes |
+| 22 | validate_then_build reaches it in 25 to 45% of runs | 25.9% | ±2.7 | yes |
 | 23 | Median run length of losing runs (all strategies) is between week 30 and week 70 | week 30.0 | ±0.5 | yes |
-| 24 | validate_then_build win rates across the three viable markets lie within 15 points (on 10000 seeds) | 14.1 points | ±2.0 | yes |
+| 24 | validate_then_build win rates across the three viable markets lie within 15 points (on 10000 seeds) | 13.9 points | ±2.0 | yes |
 | 25 | validate_then_build gets its first paying customer between week 4 and 10 in the median winning run, and by week 10 at least 70% of its runs have a paying customer or have left a market that is not viable | week 5.0; 96.0% | ±0.5; ±1.2 | yes |
 | 26 | In weeks 1 to 20, at least 85% of weeks bring decision news for validate_then_build and playtest; in weeks 53 to 104, at least 70% for validate_then_build | 100.0% and 96.3%; year 2 99.8% | ±0.1 | yes |
-| 27 | Target 11 holds (blind inbox policies gain at most a third of reading's gain, reading beats each by 4 points), no event arrives twice unless it recurs on purpose, and under 1% of validate_then_build runs have a week when the inbox ran dry (on 10000 seeds) | effort +3.2 (23% of reading), cheapest -0.4, reading +13.5; 0 repeats; dry in 45.5% of runs | ±0.8, ±0.7, ±0.9 over the best blind; ±1.0 | no |
-| 28 | Year 2 matters: of validate_then_build runs profitable in each of the two months to week 60, at most 85% end Sustainable; of runs alive but not profitable at week 60, at least 15% end Sustainable (on 10000 seeds) | 68.0% of 1809; 43.7% of 3141 | ±2.1; ±1.7 | yes |
-| 29 | The hire can pay: validate_then_build (with its team rule) loses at most 1 point against validate_then_build_solo (never hires), and gains at least 2 points in at least one viable market (on 10000 seeds) | overall -1.4, best market coworking -0.5 | ±0.3, ±0.6 | no |
-| 30 | 1000 long runs complete in under 120 seconds (slowest strategy, timed while the other bot processes run) | 36.4 s per 1000 runs |  | yes |
+| 27 | Target 11 holds (blind inbox policies gain at most a third of reading's gain, reading beats each by 4 points), no event arrives twice unless it recurs on purpose, and under 1% of validate_then_build runs have a week when the inbox ran dry (on 10000 seeds) | effort +3.1 (23% of reading), cheapest -0.4, reading +13.4; 0 repeats; dry in 45.5% of runs | ±0.8, ±0.7, ±0.9 over the best blind; ±1.0 | no |
+| 28 | Year 2 matters: of validate_then_build runs profitable in each of the two months to week 60, at most 85% end Sustainable; of runs alive but not profitable at week 60, at least 15% end Sustainable (on 10000 seeds) | 67.6% of 1809; 43.6% of 3141 | ±2.2; ±1.7 | yes |
+| 29 | The hire can pay: validate_then_build (with its team rule) loses at most 1 point against validate_then_build_solo (never hires), and gains at least 2 points in at least one viable market (on 10000 seeds) | overall -1.6, best market coworking -0.5 | ±0.3, ±0.6 | no |
+| 30 | 1000 long runs complete in under 120 seconds (slowest strategy, timed while the other bot processes run) | 36.7 s per 1000 runs |  | yes |
 
 For information only, as the 60 week report words them:
 
 | # | Target | Value | Margin | Would meet |
 |---|---|---|---|---|
-| 10 | At least a third of events (seen in 150 or more seeds) favour the cheap or free choice | 51 of 95 (53.7%) |  | yes |
-| 13 | Switching off chase, landing tests or books each costs at least 2 points, with more seeds won only with it (on 10000 seeds) | chase -9.8 (1515/533), landing -2.7 (1494/1224), books -2.5 (1299/1052) | ±0.9, ±1.0, ±0.9 | yes |
-| 14 | presale_max does not beat validate_then_build by more than 3 points | -5.0 points | ±3.2 | yes |
+| 10 | At least a third of events (seen in 150 or more seeds) favour the cheap or free choice | 52 of 95 (54.7%) |  | yes |
+| 13 | Switching off chase, landing tests or books each costs at least 2 points, with more seeds won only with it (on 10000 seeds) | chase -9.8 (1515/540), landing -2.6 (1491/1229), books -2.4 (1300/1062) | ±0.9, ±1.0, ±1.0 | yes |
+| 14 | presale_max does not beat validate_then_build by more than 3 points | -4.8 points | ±3.2 | yes |
 | 15 | No single action (outreach counted per channel) finds more than 40% of the customers in winning validate_then_build runs | outreach:in_person 31.8% | ±1.3 | yes |
 
 ## Endings
@@ -528,11 +528,11 @@ For information only, as the 60 week report words them:
 | random | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 26 | 26 | 450 EUR | 1 |
 | build_only | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 28 | 28 | 0 EUR | 0 |
 | sell_first | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 29 | 29 | 0 EUR | 0 |
-| validate_then_build | 26.1% | 14.2% | 59.7% | 0.0% | 0.0% | 41 | 45 | 3,600 EUR | 7 |
+| validate_then_build | 25.9% | 14.4% | 59.7% | 0.0% | 0.0% | 41 | 45 | 3,600 EUR | 7 |
 | validate_then_build_hire | 2.4% | 12.7% | 84.9% | 0.0% | 0.0% | 48 | 53 | 3,600 EUR | 7 |
 | validate_then_build_early_hire | 0.4% | 0.7% | 98.9% | 0.0% | 0.0% | 20 | 20 | 2,250 EUR | 4 |
 | presale_max | 21.1% | 12.1% | 66.8% | 0.0% | 0.0% | 37 | 40 | 2,250 EUR | 4 |
-| price_aware | 35.0% | 19.0% | 46.0% | 0.0% | 0.0% | 40 | 48 | 6,040 EUR | 6 |
+| price_aware | 34.8% | 19.2% | 46.0% | 0.0% | 0.0% | 40 | 48 | 6,040 EUR | 6 |
 | overworker | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | - | 6 | 900 EUR | 2 |
 | playtest | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 29 | 29 | 0 EUR | 0 |
 | validate_then_build_solo | 27.5% | 12.8% | 59.7% | 0.0% | 0.0% | 41 | 45 | 3,600 EUR | 7 |
@@ -549,11 +549,11 @@ Share of runs ending Sustainable, split by which market was secretly viable in t
 | random | 0.0% | 0.0% | 0.0% | 0.0 |
 | build_only | 0.0% | 0.0% | 0.0% | 0.0 |
 | sell_first | 0.0% | 0.0% | 0.0% | 0.0 |
-| validate_then_build | 17.3% | 29.4% | 31.0% | 13.7 |
+| validate_then_build | 17.3% | 29.4% | 30.4% | 13.1 |
 | validate_then_build_hire | 1.6% | 1.2% | 4.4% | 3.3 |
 | validate_then_build_early_hire | 0.6% | 0.3% | 0.3% | 0.3 |
 | presale_max | 15.7% | 23.6% | 23.6% | 7.9 |
-| price_aware | 39.6% | 35.9% | 29.8% | 9.8 |
+| price_aware | 39.3% | 35.6% | 29.8% | 9.5 |
 | overworker | 0.0% | 0.0% | 0.0% | 0.0 |
 | playtest | 0.0% | 0.0% | 0.0% | 0.0 |
 | validate_then_build_solo | 17.3% | 30.6% | 33.9% | 16.6 |
@@ -567,9 +567,9 @@ Share of runs ending Sustainable, split by which market was secretly viable in t
 
 | Viable market | validate_then_build | price_aware | Difference | price_aware median final price | price_aware median final price in winning runs |
 |---|---|---|---|---|---|
-| coworking | 17.3% | 39.6% | 22.3 points | 790 EUR | 840 EUR |
-| medical | 29.4% | 35.9% | 6.4 points | 560 EUR | 580 EUR |
-| small_offices | 31.0% | 29.8% | -1.2 points | 580 EUR | 600 EUR |
+| coworking | 17.3% | 39.3% | 22.0 points | 790 EUR | 840 EUR |
+| medical | 29.4% | 35.6% | 6.1 points | 560 EUR | 580 EUR |
+| small_offices | 30.4% | 29.8% | -0.6 points | 580 EUR | 600 EUR |
 
 ## The team (long mode)
 
@@ -580,21 +580,21 @@ Per strategy, over all its runs. Hire weeks are the weeks of the offers (they st
 | random | 1000 | 0.0% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | build_only | 1000 | 0.0% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | sell_first | 1000 | 0.0% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
-| validate_then_build | 1000 | 26.1% | 7.5% | 0.08 | 55, 64, 70 | 0.0% | 0.0% | 0.07 | 0 | 0 | 1 |
+| validate_then_build | 1000 | 25.9% | 7.5% | 0.08 | 55, 64, 70 | 0.0% | 0.0% | 0.06 | 0 | 0 | 1 |
 | validate_then_build_hire | 1000 | 2.4% | 31.2% | 0.31 | 53, 65, 83 | 0.0% | 0.0% | 0.00 | 0 | 1 | 1 |
 | validate_then_build_early_hire | 1000 | 0.4% | 85.9% | 0.86 | 9, 10, 11 | 0.0% | 0.0% | 0.00 | 1 | 1 | 1 |
-| presale_max | 1000 | 21.1% | 5.6% | 0.06 | 57, 66, 71 | 0.0% | 0.0% | 0.05 | 0 | 0 | 1 |
-| price_aware | 1000 | 35.0% | 24.7% | 0.28 | 49, 59, 68 | 0.0% | 0.0% | 0.21 | 0 | 0 | 2 |
+| presale_max | 1000 | 21.1% | 5.6% | 0.06 | 57, 66, 71 | 0.0% | 0.0% | 0.04 | 0 | 0 | 1 |
+| price_aware | 1000 | 34.8% | 24.7% | 0.28 | 49, 59, 68 | 0.0% | 0.0% | 0.21 | 0 | 0 | 2 |
 | overworker | 1000 | 0.0% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | playtest | 1000 | 0.0% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | validate_then_build_solo | 1000 | 27.5% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | validate_then_build_savings_hire | 1000 | 5.3% | 71.1% | 0.71 | 6, 6, 6 | 96.8% | 0.0% | 0.70 | 0 | 0 | 1 |
-| validate_then_build_part_time | 1000 | 23.8% | 26.2% | 0.33 | 48, 58, 68 | 0.0% | 100.0% | 0.25 | 0 | 0 | 2 |
+| validate_then_build_part_time | 1000 | 23.8% | 26.2% | 0.33 | 48, 58, 68 | 0.0% | 100.0% | 0.24 | 0 | 0 | 2 |
 | validate_then_build_freelance_first | 1000 | 22.1% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
-| validate_then_build inbox:reader | 10000 | 26.1% | 7.4% | 0.07 | 57, 65, 71 | 0.0% | 0.0% | 0.06 | 0 | 0 | 1 |
+| validate_then_build inbox:reader | 10000 | 25.9% | 7.4% | 0.07 | 57, 65, 71 | 0.0% | 0.0% | 0.06 | 0 | 0 | 1 |
 | team:validate_then_build_solo | 10000 | 27.5% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | team:validate_then_build_freelance_first | 10000 | 21.6% | 0.0% | 0.00 | 58, 71, 71 | 0.0% | 0.0% | 0.00 | 0 | 1 | 1 |
-| team:validate_then_build_part_time | 10000 | 23.5% | 27.0% | 0.33 | 48, 59, 68 | 0.0% | 100.0% | 0.26 | 0 | 0 | 3 |
+| team:validate_then_build_part_time | 10000 | 23.3% | 27.0% | 0.33 | 48, 59, 68 | 0.0% | 100.0% | 0.25 | 0 | 0 | 3 |
 | team:validate_then_build_savings_hire | 10000 | 5.5% | 67.7% | 0.68 | 6, 6, 6 | 97.6% | 0.0% | 0.67 | 0 | 0 | 1 |
 | team:validate_then_build_burst_freelancer | 10000 | 24.3% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | team:validate_then_build_burst_hire | 10000 | 24.3% | 52.1% | 0.52 | 6, 6, 6 | 100.0% | 100.0% | 0.52 | 0 | 0 | 1 |
@@ -617,10 +617,10 @@ The careful bot with its team rule against the same bot that never hires, on the
 
 | Seeds | Runs | validate_then_build_solo | validate_then_build | Difference |
 |---|---|---|---|---|
-| all | 10000 | 27.5% | 26.1% | -1.4 ±0.3 |
+| all | 10000 | 27.5% | 25.9% | -1.6 ±0.3 |
 | coworking | 3385 | 17.3% | 16.8% | -0.5 ±0.6 |
-| medical | 3330 | 32.3% | 30.7% | -1.6 ±0.5 |
-| small_offices | 3285 | 33.2% | 30.9% | -2.3 ±0.6 |
+| medical | 3330 | 32.3% | 30.5% | -1.7 ±0.6 |
+| small_offices | 3285 | 33.2% | 30.7% | -2.6 ±0.6 |
 
 ## Freelancer or hire (target 20)
 
@@ -637,12 +637,12 @@ For information: the careful bot that rents a freelancer until its first hire ag
 
 | Seeds | Runs | validate_then_build | validate_then_build_freelance_first | Difference |
 |---|---|---|---|---|
-| freelance developer (the build was the limit) | 9974 | 26.1% | 21.6% | -4.4 ±1.0 |
+| freelance developer (the build was the limit) | 9974 | 26.0% | 21.6% | -4.3 ±1.0 |
 | freelance salesperson (the pipeline was the limit) | 3 | 100.0% | 66.7% | -33.3 ±53.3 |
 | never rented (the same game) | 23 | 0.0% | 0.0% | +0.0 ±0.0 |
 | viable market coworking | 3385 | 16.8% | 13.1% | -3.6 ±1.5 |
-| viable market medical | 3330 | 30.7% | 25.6% | -5.1 ±1.8 |
-| viable market small_offices | 3285 | 30.9% | 26.3% | -4.6 ±1.7 |
+| viable market medical | 3330 | 30.5% | 25.5% | -5.0 ±1.8 |
+| viable market small_offices | 3285 | 30.7% | 26.3% | -4.4 ±1.7 |
 
 ## Year 2 (target 28)
 
@@ -650,8 +650,8 @@ The careful bot's runs (10000) by where they stood at the end of the 60 week gam
 
 | At week 60 | Runs | Sustainable | Still searching | Bankrupt | Burnout |
 |---|---|---|---|---|---|
-| profitable in each of the two months to week 60 | 1809 | 68.0% | 30.2% | 1.7% | 0.0% |
-| alive but not profitable at week 60 | 3141 | 43.7% | 32.6% | 23.6% | 0.0% |
+| profitable in each of the two months to week 60 | 1809 | 67.6% | 30.8% | 1.6% | 0.0% |
+| alive but not profitable at week 60 | 3141 | 43.6% | 32.8% | 23.6% | 0.0% |
 | over before week 60 | 5050 | 0.0% | 0.0% | 100.0% | 0.0% |
 
 ## Energy curve
@@ -660,8 +660,8 @@ validate_then_build planning each number of hours a week, on the same 10000 seed
 
 | Planned hours | Win rate | Burnout | Bankrupt | Still searching | Energy below 30 | Median lowest energy | Median week of burnout |
 |---|---|---|---|---|---|---|---|
-| 45 h | 20.5% ±0.8 | 0.0% | 64.2% | 15.3% | 0.0% | 80.0 | - |
-| 50 h | 26.1% ±0.9 | 0.0% | 58.2% | 15.7% | 0.0% | 80.0 | - |
+| 45 h | 20.4% ±0.8 | 0.0% | 64.2% | 15.3% | 0.0% | 80.0 | - |
+| 50 h | 25.9% ±0.9 | 0.0% | 58.2% | 15.9% | 0.0% | 80.0 | - |
 | 52 h | 0.0% ±0.0 | 85.2% | 14.8% | 0.0% | 99.9% | 0.0 | 31 |
 | 55 h | 0.0% ±0.0 | 100.0% | 0.0% | 0.0% | 100.0% | 0.0 | 13 |
 | 58 h | 0.0% ±0.0 | 100.0% | 0.0% | 0.0% | 100.0% | 0.0 | 9 |
@@ -697,11 +697,11 @@ Losing runs only (bankrupt, burnout, still searching). "Never paid" means no cus
 | random | 1000 | 4.3% | 44.6% / 22.6% / 24.2% / 7.6% / 1.0% | 44.6% / 22.6% / 24.2% / 7.6% / 1.0% |
 | build_only | 1000 | 100.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
 | sell_first | 1000 | 69.5% | 55.2% / 32.0% / 12.0% / 0.8% / 0.0% | 55.2% / 32.0% / 12.0% / 0.8% / 0.0% |
-| validate_then_build | 739 | 0.0% | 0.4% / 3.5% / 15.8% / 35.6% / 44.7% | 0.4% / 3.5% / 15.8% / 35.6% / 44.7% |
+| validate_then_build | 741 | 0.0% | 0.4% / 3.5% / 15.8% / 35.5% / 44.8% | 0.4% / 3.5% / 15.8% / 35.5% / 44.8% |
 | validate_then_build_hire | 976 | 0.0% | 0.3% / 2.7% / 12.0% / 26.9% / 58.1% | 0.3% / 2.7% / 12.0% / 26.9% / 58.1% |
 | validate_then_build_early_hire | 996 | 0.0% | 0.3% / 4.6% / 25.5% / 48.6% / 21.0% | 0.3% / 4.6% / 25.5% / 48.6% / 21.0% |
 | presale_max | 789 | 0.1% | 3.2% / 10.6% / 27.6% / 29.4% / 29.2% | 3.2% / 10.6% / 27.6% / 29.4% / 29.2% |
-| price_aware | 650 | 0.5% | 0.8% / 5.2% / 14.6% / 30.3% / 49.1% | 0.8% / 4.6% / 17.2% / 34.9% / 42.5% |
+| price_aware | 652 | 0.5% | 0.8% / 5.2% / 14.6% / 30.2% / 49.2% | 0.8% / 4.6% / 17.2% / 34.8% / 42.6% |
 | overworker | 1000 | 14.4% | 19.1% / 27.5% / 41.6% / 11.2% / 0.6% | 19.1% / 27.5% / 41.6% / 11.2% / 0.6% |
 | playtest | 1000 | 81.7% | 75.7% / 19.3% / 4.9% / 0.1% / 0.0% | 75.7% / 19.3% / 4.9% / 0.1% / 0.0% |
 | validate_then_build_solo | 725 | 0.0% | 0.4% / 3.6% / 16.1% / 36.3% / 43.6% | 0.4% / 3.6% / 16.1% / 36.3% / 43.6% |
@@ -784,7 +784,7 @@ Per run, averaged over all runs of a strategy. Books left is the number of accou
 | random | 7.9 | 6.5 | 1.2 | 1.4% | 1.76 | 35.9 | 74.2% |
 | build_only | 0.0 | 0.0 | 0.0 | 0.0% | 4.06 | 37.1 | 0.0% |
 | sell_first | 0.0 | 0.0 | 1.4 | 2.3% | 3.89 | 37.9 | 0.0% |
-| validate_then_build | 3.0 | 4.1 | 126.2 | 11.7% | 0.00 | 81.9 | 99.0% |
+| validate_then_build | 3.0 | 4.1 | 126.3 | 11.7% | 0.00 | 81.9 | 99.0% |
 | validate_then_build_hire | 3.0 | 4.1 | 96.7 | 9.4% | 0.00 | 80.1 | 98.9% |
 | validate_then_build_early_hire | 3.0 | 4.0 | 12.8 | 2.8% | 0.00 | 30.5 | 97.2% |
 | presale_max | 0.0 | 9.0 | 101.8 | 11.6% | 0.00 | 75.5 | 98.9% |
@@ -802,13 +802,13 @@ Same 10000 seeds, one behaviour switched off at a time. "Won only with" counts s
 
 | Variant | Win rate | Change (points) | Won only with | Won only without | Bankrupt | Median losing run length |
 |---|---|---|---|---|---|---|
-| all behaviours | 26.1% | 0.0 | 0 | 0 | 58.2% | 45 |
-| without inbox | 12.5% | -13.5 | 1836 | 482 | 78.1% | 41 |
-| without chase | 16.2% | -9.8 | 1515 | 533 | 73.1% | 41 |
-| without landing | 23.4% | -2.7 | 1494 | 1224 | 62.4% | 45 |
-| without books | 23.6% | -2.5 | 1299 | 1052 | 65.7% | 40 |
-| without followUps | 10.2% | -15.9 | 1961 | 374 | 77.1% | 44 |
-| without all | 0.5% | -25.5 | 2570 | 19 | 98.8% | 36 |
+| all behaviours | 25.9% | 0.0 | 0 | 0 | 58.2% | 45 |
+| without inbox | 12.5% | -13.4 | 1832 | 487 | 78.1% | 41 |
+| without chase | 16.2% | -9.8 | 1515 | 540 | 73.1% | 41 |
+| without landing | 23.3% | -2.6 | 1491 | 1229 | 62.5% | 45 |
+| without books | 23.6% | -2.4 | 1300 | 1062 | 65.7% | 40 |
+| without followUps | 10.2% | -15.8 | 1956 | 378 | 77.1% | 44 |
+| without all | 0.5% | -25.4 | 2559 | 20 | 98.8% | 36 |
 
 ## The hire
 
@@ -816,8 +816,8 @@ Each hire variant plays like `validate_then_build` until its hire rule fires, so
 
 | Variant | Runs with a hire | Developer / salesperson | Median offer week | Win rate | Win rate with a hire | Win rate without | Same seeds, plain | Won only with the hire | Won only without | Median cost per customer the hire found | Median value of a customer |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| validate_then_build_hire | 312 (31.2%) | 0 / 312 | 65 | 2.4% | 1.6% | 2.8% | 77.6% | 2 | 239 | 15,125 EUR | 1,859 EUR |
-| validate_then_build_early_hire | 859 (85.9%) | 0 / 859 | 10 | 0.4% | 0.0% | 2.8% | 30.0% | 0 | 258 | 12,100 EUR | 450 EUR |
+| validate_then_build_hire | 312 (31.2%) | 0 / 312 | 65 | 2.4% | 1.6% | 2.8% | 76.9% | 2 | 237 | 15,125 EUR | 1,859 EUR |
+| validate_then_build_early_hire | 859 (85.9%) | 0 / 859 | 10 | 0.4% | 0.0% | 2.8% | 29.8% | 0 | 256 | 12,100 EUR | 450 EUR |
 
 Offer week of `validate_then_build_early_hire`, and the win rate of the runs that hired in that window:
 
@@ -832,10 +832,10 @@ Offer week of `validate_then_build_early_hire`, and the win rate of the runs tha
 
 | Policy | Win rate | Against none (points) | Won only with this policy | Won only with none |
 |---|---|---|---|---|
-| reading | 26.1% | 13.5 | 1836 | 482 |
+| reading | 25.9% | 13.4 | 1832 | 487 |
 | none | 12.5% | 0.0 | 0 | 0 |
-| effort | 15.7% | 3.2 | 992 | 676 |
-| cheapest | 12.1% | -0.4 | 654 | 698 |
+| effort | 15.6% | 3.1 | 991 | 677 |
+| cheapest | 12.0% | -0.4 | 654 | 698 |
 
 ## Inbox pool
 
@@ -864,117 +864,117 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 
 | Event | Seeds | Win rate per answer (hours, money) | Reading | Best fixed | Cheapest | Cheapest wins |
 |---|---|---|---|---|---|---|
-| survey_offer | 8804 | buy (1 h, 600 EUR) 28.9%; pass (0 h) 29.9% | 29.6% | pass | pass | yes |
-| friend_of_friend | 8782 | call (2 h) 27.8%; decline (0 h) 29.4% | 29.7% | decline | decline | yes |
-| startup_meetup | 8116 | go (4 h) 32.4%; skip (0 h) 31.9% | 32.1% | go | skip | no |
-| student_thesis | 8129 | help (4 h) 32.1%; decline (0 h) 32.7% | 32.0% | decline | decline | yes |
-| office_manager_forum | 8089 | post (2 h) 32.5%; lurk (1 h) 34.4%; skip (0 h) 34.6% | 32.2% | skip | skip | yes |
-| lunch_diary | 8765 | accept (1 h) 30.1%; decline (0 h) 29.6% | 29.7% | accept | decline | no |
-| visitor_list | 7930 | buy (1 h, 300 EUR) 33.0%; pass (0 h) 33.3% | 32.8% | pass | pass | yes |
-| university_pilot | 7885 | pilot (5 h) 33.2%; decline (0 h) 33.8% | 33.0% | decline | decline | yes |
-| rival_customer | 7884 | coffee (2 h) 31.2%; skip (0 h) 34.4% | 33.0% | skip | skip | yes |
-| focus_group | 6891 | book (3 h, 900 EUR) 36.8%; pass (0 h) 37.4% | 37.8% | pass | pass | yes |
-| online_poll | 8146 | analyse (2 h) 32.4%; ignore (0 h) 32.8% | 32.0% | ignore | ignore | yes |
-| podcast_invite | 7806 | record (3 h) 34.0%; decline (0 h) 33.7% | 33.4% | record | decline | no |
-| tenant_survey | 8002 | buy (1 h, 400 EUR) 35.1%; pass (0 h) 32.9% | 32.6% | buy | pass | no |
-| catering_inquiry | 8190 | call (2 h) 30.9%; decline (0 h) 31.6% | 31.8% | decline | decline | yes |
-| expert_interview | 5309 | meet (2 h) 26.7%; decline (0 h) 23.0% | 26.5% | meet | decline | no |
-| referral | 8218 | follow_up (1 h) 32.3%; ignore (0 h) 30.7% | 31.7% | follow_up | ignore | no |
-| discount_demand | 7514 | free_month (0 h, 450 EUR) 34.0%; call (2 h) 34.5%; hold (0 h) 34.6% | 34.7% | hold | hold | yes |
-| slow_lead | 8621 | call (1 h) 30.4%; wait (0 h) 30.2% | 30.2% | call | wait | no |
-| food_fair | 6108 | booth (8 h, 1,350 EUR) 43.4%; pass (0 h) 42.1% | 42.6% | booth | pass | no |
-| sales_coach | 6763 | buy (2 h, 375 EUR) 39.8%; decline (0 h) 39.2% | 38.5% | buy | decline | no |
-| integration_question | 7416 | promise (3 h) 33.6%; honest (1 h) 35.1%; ignore (0 h) 34.1% | 35.1% | honest | ignore | no |
-| competitor_launch | 6582 | study (3 h) 39.4%; ignore (0 h) 40.0% | 39.6% | ignore | ignore | yes |
-| supplier_form | 7495 | fill (4 h) 36.3%; short (1 h) 33.9%; leave (0 h) 34.8% | 34.8% | fill | leave | no |
-| chamber_breakfast | 7945 | go (3 h) 32.8%; skip (0 h) 31.7% | 32.8% | go | skip | no |
-| colleague_intro | 8080 | intro (1 h) 32.9%; later (0 h) 32.9% | 32.2% | intro | later | yes |
-| coworking_open_day | 7856 | go (4 h) 32.8%; skip (0 h) 33.8% | 33.2% | skip | skip | yes |
-| seven_questions | 7898 | answer (2 h) 33.2%; later (0 h) 32.9% | 33.0% | answer | later | no |
-| suspicious_price | 7864 | explain (1 h) 32.5%; ignore (0 h) 32.9% | 33.1% | ignore | ignore | yes |
-| demo_no_show | 7824 | rebook (1 h) 34.2%; drop (0 h) 33.2% | 33.3% | rebook | drop | no |
-| reseller_offer | 6560 | sign (5 h) 40.1%; decline (0 h) 40.4% | 39.7% | decline | decline | yes |
-| trial_extension | 7747 | extend (1 h) 34.7%; refuse (0 h) 33.9% | 33.6% | extend | refuse | no |
-| big_tender | 6712 | bid (6 h) 38.6%; decline (0 h) 39.4% | 38.8% | decline | decline | yes |
-| newsletter_paragraph | 7968 | write (1 h) 33.2%; skip (0 h) 32.2% | 32.7% | write | skip | no |
-| referral_reward | 7233 | voucher (0 h, 150 EUR) 35.7%; thanks (0 h) 36.5% | 36.0% | thanks | thanks | yes |
-| returning_prospect | 7492 | call (1 h) 32.9%; later (0 h) 35.4% | 34.8% | later | later | yes |
-| pilot_request | 7887 | agree (1 h) 34.1%; counter (1 h) 35.6%; decline (0 h) 33.2% | 33.0% | counter | decline | no |
-| wedding_fair | 6779 | go (5 h) 39.8%; decline (0 h) 39.5% | 38.4% | go | decline | no |
-| ballpark_call | 7467 | call (1 h) 34.9%; demo (0 h) 35.6% | 34.9% | demo | demo | yes |
-| business_park_flyers | 7886 | flyers (2 h, 30 EUR) 32.8%; skip (0 h) 34.2% | 33.0% | skip | skip | yes |
-| frequent_emails | 7859 | call (1 h) 32.7%; back_off (0 h) 33.3% | 33.1% | back_off | back_off | yes |
-| letterhead_quote | 7892 | letterhead (3 h) 34.3%; pdf (0 h) 32.7% | 33.0% | letterhead | pdf | no |
-| crash_report | 2342 | patch (4 h) 30.7%; apologise (1 h) 31.5%; nothing (0 h) 30.3% | 26.8% | apologise | nothing | no |
-| restaurant_portal | 7887 | promise (0 h) 32.5%; chat (2 h) 33.3%; decline (0 h) 33.0% | 33.0% | chat | promise | no |
-| security_notice | 7970 | patch (4 h) 33.1%; ignore (0 h) 30.3% | 32.7% | patch | ignore | no |
-| hosting_pricing | 6709 | migrate (6 h) 40.1%; accept (0 h) 38.2% | 38.8% | migrate | accept | no |
-| font_complaint | 7577 | redesign (4 h) 35.3%; thank (0 h) 35.1% | 34.4% | redesign | thank | no |
-| reception_browser | 7575 | support (5 h) 35.4%; explain (1 h) 34.3%; ignore (0 h) 34.3% | 34.4% | support | ignore | no |
-| dark_mode | 7951 | build (5 h) 32.2%; later (0 h) 33.5% | 32.8% | later | later | yes |
-| slow_order_page | 7526 | optimise (3 h) 34.5%; reply (0 h) 35.2% | 34.6% | reply | reply | yes |
-| missing_backups | 7870 | backup (2 h) 33.3%; later (0 h) 31.7% | 33.1% | backup | later | no |
-| framework_upgrade | 7730 | upgrade (6 h) 31.0%; stay (0 h) 34.2% | 33.7% | stay | stay | yes |
-| screen_reader | 7551 | fix (4 h) 34.8%; later (0 h) 33.0% | 34.5% | fix | later | no |
-| bounty_hunter | 7966 | pay (1 h, 150 EUR) 32.5%; fix (3 h) 32.0%; ignore (0 h) 32.9% | 32.7% | ignore | ignore | yes |
-| french_translation | 6683 | buy (1 h, 600 EUR) 39.0%; decline (0 h) 40.2% | 39.0% | decline | decline | yes |
+| survey_offer | 8804 | buy (1 h, 600 EUR) 28.8%; pass (0 h) 29.7% | 29.5% | pass | pass | yes |
+| friend_of_friend | 8782 | call (2 h) 27.6%; decline (0 h) 29.1% | 29.5% | decline | decline | yes |
+| startup_meetup | 8116 | go (4 h) 32.4%; skip (0 h) 31.6% | 31.9% | go | skip | no |
+| student_thesis | 8129 | help (4 h) 32.0%; decline (0 h) 32.5% | 31.9% | decline | decline | yes |
+| office_manager_forum | 8089 | post (2 h) 32.2%; lurk (1 h) 34.3%; skip (0 h) 34.3% | 32.1% | lurk | skip | yes |
+| lunch_diary | 8765 | accept (1 h) 29.9%; decline (0 h) 29.4% | 29.6% | accept | decline | no |
+| visitor_list | 7930 | buy (1 h, 300 EUR) 33.0%; pass (0 h) 33.0% | 32.7% | buy | pass | yes |
+| university_pilot | 7885 | pilot (5 h) 32.9%; decline (0 h) 33.5% | 32.9% | decline | decline | yes |
+| rival_customer | 7884 | coffee (2 h) 30.9%; skip (0 h) 34.1% | 32.9% | skip | skip | yes |
+| focus_group | 6891 | book (3 h, 900 EUR) 36.8%; pass (0 h) 37.1% | 37.6% | pass | pass | yes |
+| online_poll | 8146 | analyse (2 h) 32.2%; ignore (0 h) 32.5% | 31.8% | ignore | ignore | yes |
+| podcast_invite | 7806 | record (3 h) 33.7%; decline (0 h) 33.5% | 33.2% | record | decline | no |
+| tenant_survey | 8002 | buy (1 h, 400 EUR) 35.0%; pass (0 h) 32.6% | 32.4% | buy | pass | no |
+| catering_inquiry | 8190 | call (2 h) 30.8%; decline (0 h) 31.4% | 31.7% | decline | decline | yes |
+| expert_interview | 5309 | meet (2 h) 26.5%; decline (0 h) 23.0% | 26.4% | meet | decline | no |
+| referral | 8218 | follow_up (1 h) 32.1%; ignore (0 h) 30.7% | 31.6% | follow_up | ignore | no |
+| discount_demand | 7514 | free_month (0 h, 450 EUR) 34.0%; call (2 h) 34.1%; hold (0 h) 34.4% | 34.5% | hold | hold | yes |
+| slow_lead | 8621 | call (1 h) 30.3%; wait (0 h) 29.9% | 30.1% | call | wait | no |
+| food_fair | 6108 | booth (8 h, 1,350 EUR) 43.1%; pass (0 h) 41.8% | 42.5% | booth | pass | no |
+| sales_coach | 6763 | buy (2 h, 375 EUR) 39.7%; decline (0 h) 38.9% | 38.3% | buy | decline | no |
+| integration_question | 7416 | promise (3 h) 33.5%; honest (1 h) 34.9%; ignore (0 h) 34.1% | 35.0% | honest | ignore | no |
+| competitor_launch | 6582 | study (3 h) 39.2%; ignore (0 h) 39.7% | 39.4% | ignore | ignore | yes |
+| supplier_form | 7495 | fill (4 h) 36.2%; short (1 h) 33.9%; leave (0 h) 34.6% | 34.6% | fill | leave | no |
+| chamber_breakfast | 7945 | go (3 h) 32.6%; skip (0 h) 31.5% | 32.6% | go | skip | no |
+| colleague_intro | 8080 | intro (1 h) 32.7%; later (0 h) 32.9% | 32.1% | later | later | yes |
+| coworking_open_day | 7856 | go (4 h) 32.3%; skip (0 h) 33.6% | 33.0% | skip | skip | yes |
+| seven_questions | 7898 | answer (2 h) 33.0%; later (0 h) 32.7% | 32.8% | answer | later | no |
+| suspicious_price | 7864 | explain (1 h) 32.4%; ignore (0 h) 32.6% | 33.0% | ignore | ignore | yes |
+| demo_no_show | 7824 | rebook (1 h) 34.2%; drop (0 h) 32.9% | 33.1% | rebook | drop | no |
+| reseller_offer | 6560 | sign (5 h) 39.8%; decline (0 h) 40.2% | 39.5% | decline | decline | yes |
+| trial_extension | 7747 | extend (1 h) 34.4%; refuse (0 h) 33.6% | 33.5% | extend | refuse | no |
+| big_tender | 6712 | bid (6 h) 38.3%; decline (0 h) 39.1% | 38.6% | decline | decline | yes |
+| newsletter_paragraph | 7968 | write (1 h) 32.9%; skip (0 h) 31.9% | 32.5% | write | skip | no |
+| referral_reward | 7233 | voucher (0 h, 150 EUR) 35.4%; thanks (0 h) 36.1% | 35.8% | thanks | thanks | yes |
+| returning_prospect | 7492 | call (1 h) 32.8%; later (0 h) 35.2% | 34.6% | later | later | yes |
+| pilot_request | 7887 | agree (1 h) 33.8%; counter (1 h) 35.5%; decline (0 h) 33.0% | 32.9% | counter | decline | no |
+| wedding_fair | 6779 | go (5 h) 39.5%; decline (0 h) 39.2% | 38.3% | go | decline | no |
+| ballpark_call | 7467 | call (1 h) 34.8%; demo (0 h) 35.3% | 34.7% | demo | demo | yes |
+| business_park_flyers | 7886 | flyers (2 h, 30 EUR) 32.5%; skip (0 h) 34.1% | 32.9% | skip | skip | yes |
+| frequent_emails | 7859 | call (1 h) 32.7%; back_off (0 h) 33.0% | 33.0% | back_off | back_off | yes |
+| letterhead_quote | 7892 | letterhead (3 h) 34.2%; pdf (0 h) 32.4% | 32.9% | letterhead | pdf | no |
+| crash_report | 2342 | patch (4 h) 30.3%; apologise (1 h) 31.5%; nothing (0 h) 30.3% | 26.7% | apologise | nothing | no |
+| restaurant_portal | 7887 | promise (0 h) 32.3%; chat (2 h) 33.2%; decline (0 h) 32.8% | 32.9% | chat | promise | no |
+| security_notice | 7970 | patch (4 h) 32.8%; ignore (0 h) 30.2% | 32.5% | patch | ignore | no |
+| hosting_pricing | 6709 | migrate (6 h) 39.8%; accept (0 h) 38.2% | 38.6% | migrate | accept | no |
+| font_complaint | 7577 | redesign (4 h) 34.9%; thank (0 h) 34.9% | 34.2% | redesign | thank | yes |
+| reception_browser | 7575 | support (5 h) 35.1%; explain (1 h) 34.1%; ignore (0 h) 34.1% | 34.2% | support | ignore | no |
+| dark_mode | 7951 | build (5 h) 31.9%; later (0 h) 33.2% | 32.6% | later | later | yes |
+| slow_order_page | 7526 | optimise (3 h) 34.3%; reply (0 h) 34.9% | 34.5% | reply | reply | yes |
+| missing_backups | 7870 | backup (2 h) 33.1%; later (0 h) 31.7% | 32.9% | backup | later | no |
+| framework_upgrade | 7730 | upgrade (6 h) 30.9%; stay (0 h) 33.9% | 33.5% | stay | stay | yes |
+| screen_reader | 7551 | fix (4 h) 34.5%; later (0 h) 33.0% | 34.3% | fix | later | no |
+| bounty_hunter | 7966 | pay (1 h, 150 EUR) 32.3%; fix (3 h) 31.8%; ignore (0 h) 32.9% | 32.6% | ignore | ignore | yes |
+| french_translation | 6683 | buy (1 h, 600 EUR) 39.0%; decline (0 h) 39.9% | 38.8% | decline | decline | yes |
 | bug_weekend | 633 | sprint (6 h) 21.3%; carry_on (0 h) 24.6% | 21.0% | carry_on | carry_on | yes |
-| unused_feature | 7678 | remove (2 h) 34.1%; keep (0 h) 34.9% | 33.9% | keep | keep | yes |
-| partner_directory | 6487 | integrate (6 h) 38.1%; decline (0 h) 40.2% | 40.2% | decline | decline | yes |
-| company_phones | 7535 | fix (4 h) 35.7%; workaround (1 h) 33.3%; ignore (0 h) 33.3% | 34.6% | fix | ignore | no |
-| whiteboard_menus | 7494 | build (5 h) 32.3%; type_once (0 h) 35.2% | 34.8% | type_once | type_once | yes |
-| uptime_monitor | 7921 | subscribe (1 h) 29.8%; skip (0 h) 33.1% | 32.9% | skip | skip | yes |
-| export_request | 7144 | build (4 h) 37.1%; by_hand (0 h) 37.4% | 36.5% | by_hand | by_hand | yes |
-| late_payer_first | 7047 | reminder (1 h) 37.9%; call (2 h) 37.6%; pause (0 h) 36.5%; wait (0 h) 35.6% | 37.0% | reminder | pause | no |
-| filing_deadline | 7856 | file (2 h) 33.2%; late (0 h, 450 EUR) 31.3% | 33.2% | file | late | no |
-| regional_grant | 6134 | apply (5 h) 35.1%; skip (0 h) 34.0% | 34.7% | apply | skip | no |
-| laptop_fan | 6966 | buy (1 h, 2,100 EUR) 36.1%; live_with_it (0 h) 38.3% | 37.4% | live_with_it | live_with_it | yes |
-| receipts_pile | 10000 | sort (3 h) 26.1%; send (0 h, 225 EUR) 25.0%; later (0 h, 600 EUR) 24.1% | 26.1% | sort | send | no |
-| bank_fee | 6939 | switch (3 h) 37.9%; accept (0 h) 38.9% | 37.5% | accept | accept | yes |
-| insurance_broker | 8150 | buy (1 h) 31.3%; decline (0 h) 32.1% | 32.0% | decline | decline | yes |
-| tax_letter | 7793 | answer (2 h) 33.2%; pile (0 h, 300 EUR) 31.7% | 33.4% | answer | pile | no |
-| invoice_app | 7916 | subscribe (1 h) 32.0%; pass (0 h) 33.0% | 32.9% | pass | pass | yes |
-| overdue_again | 6308 | reminder (1 h) 42.4%; call (2 h) 41.8%; wait (0 h) 41.1% | 41.3% | reminder | wait | no |
-| old_bike | 3996 | sell (2 h) 17.7%; keep (0 h) 17.2% | 21.4% | sell | keep | no |
-| growth_package | 7790 | buy (0 h) 31.1%; decline (0 h) 33.2% | 33.4% | decline | buy | no |
-| forgotten_subscriptions | 7805 | cancel (2 h) 34.4%; ignore (0 h) 33.2% | 33.4% | cancel | ignore | no |
-| parking_fine | 7825 | pay (0 h, 35 EUR) 34.1%; contest (3 h, 35 EUR) 33.9% | 33.3% | pay | pay | yes |
-| vat_return | 7492 | self (3 h) 35.0%; accountant (0 h, 180 EUR) 34.3% | 34.8% | self | accountant | no |
-| address_change | 7193 | reissue (2 h) 36.6%; later (0 h) 36.0% | 36.2% | reissue | later | no |
-| equipment_grant | 4870 | apply (3 h) 30.2%; skip (0 h) 33.0% | 30.0% | skip | skip | yes |
-| double_charge | 7550 | refund (1 h) 34.6%; wait (0 h) 35.9% | 34.5% | wait | wait | yes |
-| coworking_desk | 10000 | move (2 h) 18.7%; stay (0 h) 24.0% | 26.1% | stay | stay | yes |
+| unused_feature | 7678 | remove (2 h) 33.8%; keep (0 h) 34.6% | 33.8% | keep | keep | yes |
+| partner_directory | 6487 | integrate (6 h) 37.6%; decline (0 h) 39.9% | 40.0% | decline | decline | yes |
+| company_phones | 7535 | fix (4 h) 35.4%; workaround (1 h) 33.2%; ignore (0 h) 33.2% | 34.4% | fix | ignore | no |
+| whiteboard_menus | 7494 | build (5 h) 32.1%; type_once (0 h) 35.0% | 34.6% | type_once | type_once | yes |
+| uptime_monitor | 7921 | subscribe (1 h) 29.7%; skip (0 h) 32.9% | 32.7% | skip | skip | yes |
+| export_request | 7144 | build (4 h) 36.8%; by_hand (0 h) 37.1% | 36.3% | by_hand | by_hand | yes |
+| late_payer_first | 7047 | reminder (1 h) 37.6%; call (2 h) 37.4%; pause (0 h) 36.5%; wait (0 h) 35.3% | 36.8% | reminder | pause | no |
+| filing_deadline | 7856 | file (2 h) 32.9%; late (0 h, 450 EUR) 31.1% | 33.0% | file | late | no |
+| regional_grant | 6134 | apply (5 h) 34.8%; skip (0 h) 33.7% | 34.5% | apply | skip | no |
+| laptop_fan | 6966 | buy (1 h, 2,100 EUR) 35.9%; live_with_it (0 h) 38.0% | 37.2% | live_with_it | live_with_it | yes |
+| receipts_pile | 10000 | sort (3 h) 25.9%; send (0 h, 225 EUR) 24.9%; later (0 h, 600 EUR) 24.1% | 25.9% | sort | send | no |
+| bank_fee | 6939 | switch (3 h) 37.6%; accept (0 h) 38.6% | 37.4% | accept | accept | yes |
+| insurance_broker | 8150 | buy (1 h) 31.2%; decline (0 h) 31.9% | 31.8% | decline | decline | yes |
+| tax_letter | 7793 | answer (2 h) 33.0%; pile (0 h, 300 EUR) 31.6% | 33.3% | answer | pile | no |
+| invoice_app | 7916 | subscribe (1 h) 32.0%; pass (0 h) 32.7% | 32.8% | pass | pass | yes |
+| overdue_again | 6308 | reminder (1 h) 42.1%; call (2 h) 41.5%; wait (0 h) 40.8% | 41.1% | reminder | wait | no |
+| old_bike | 3977 | sell (2 h) 17.8%; keep (0 h) 17.2% | 21.5% | sell | keep | no |
+| growth_package | 7790 | buy (0 h) 31.1%; decline (0 h) 32.9% | 33.3% | decline | buy | no |
+| forgotten_subscriptions | 7805 | cancel (2 h) 34.0%; ignore (0 h) 32.9% | 33.2% | cancel | ignore | no |
+| parking_fine | 7825 | pay (0 h, 35 EUR) 33.9%; contest (3 h, 35 EUR) 33.9% | 33.1% | pay | pay | yes |
+| vat_return | 7492 | self (3 h) 34.6%; accountant (0 h, 180 EUR) 34.0% | 34.6% | self | accountant | no |
+| address_change | 7193 | reissue (2 h) 36.3%; later (0 h) 36.0% | 36.0% | reissue | later | no |
+| equipment_grant | 4864 | apply (3 h) 30.0%; skip (0 h) 32.9% | 29.9% | skip | skip | yes |
+| double_charge | 7550 | refund (1 h) 34.4%; wait (0 h) 35.9% | 34.3% | wait | wait | yes |
+| coworking_desk | 10000 | move (2 h) 18.6%; stay (0 h) 23.8% | 25.9% | stay | stay | yes |
 | bad_sleep | 0 | nap (3 h) 0.0%; push_through (0 h) 0.0% | 0.0% | nap | push_through | not judged |
-| family_lunch | 8132 | go (4 h) 32.4%; stay (0 h) 31.9% | 32.0% | go | stay | no |
-| old_boss | 5322 | freelance (8 h) 25.5%; decline (0 h) 21.4% | 27.1% | freelance | decline | no |
-| flu | 6711 | rest (5 h) 37.6%; work_through (0 h) 38.3% | 38.8% | work_through | work_through | yes |
-| ten_k_run | 7869 | train (3 h) 32.7%; back_out (0 h) 32.9% | 33.1% | back_out | back_out | yes |
-| birthday_party | 8186 | go (4 h) 30.5%; card (0 h) 31.9% | 31.8% | card | card | yes |
-| dentist | 7877 | go (2 h) 33.1%; postpone (0 h) 33.2% | 33.1% | postpone | postpone | yes |
-| four_am_idea | 7956 | sleep_in (3 h) 33.3%; get_up (0 h) 34.5% | 32.7% | get_up | get_up | yes |
-| lake_weekend | 7673 | go (6 h) 34.5%; stay (0 h) 35.0% | 34.0% | stay | stay | yes |
-| sister_dinner | 7938 | go (3 h) 31.6%; reschedule (0 h) 33.2% | 32.8% | reschedule | reschedule | yes |
-| coffee_machine | 8143 | buy (1 h, 150 EUR) 31.5%; cafe (0 h) 30.7% | 32.0% | buy | cafe | no |
-| mentor_offer | 7821 | accept (3 h) 33.9%; decline (0 h) 34.3% | 33.3% | decline | decline | yes |
+| family_lunch | 8132 | go (4 h) 32.1%; stay (0 h) 31.6% | 31.9% | go | stay | no |
+| old_boss | 5316 | freelance (8 h) 25.3%; decline (0 h) 21.5% | 27.0% | freelance | decline | no |
+| flu | 6711 | rest (5 h) 37.3%; work_through (0 h) 38.0% | 38.6% | work_through | work_through | yes |
+| ten_k_run | 7869 | train (3 h) 32.3%; back_out (0 h) 32.7% | 33.0% | back_out | back_out | yes |
+| birthday_party | 8186 | go (4 h) 30.4%; card (0 h) 31.6% | 31.7% | card | card | yes |
+| dentist | 7877 | go (2 h) 32.8%; postpone (0 h) 33.2% | 32.9% | postpone | postpone | yes |
+| four_am_idea | 7956 | sleep_in (3 h) 33.2%; get_up (0 h) 34.2% | 32.6% | get_up | get_up | yes |
+| lake_weekend | 7673 | go (6 h) 34.2%; stay (0 h) 34.8% | 33.8% | stay | stay | yes |
+| sister_dinner | 7938 | go (3 h) 31.3%; reschedule (0 h) 32.9% | 32.7% | reschedule | reschedule | yes |
+| coffee_machine | 8143 | buy (1 h, 150 EUR) 31.2%; cafe (0 h) 30.5% | 31.8% | buy | cafe | no |
+| mentor_offer | 7821 | accept (3 h) 33.7%; decline (0 h) 34.3% | 33.2% | decline | decline | yes |
 | burnout_article | 0 | day_off (6 h) 0.0%; keep_going (0 h) 0.0% | 0.0% | day_off | keep_going | not judged |
-| cracked_phone | 7867 | repair (1 h, 120 EUR) 33.3%; live_with_it (0 h) 33.2% | 33.1% | repair | live_with_it | no |
-| parents_visit | 7768 | day (5 h) 33.8%; coffee (1 h) 33.2%; postpone (0 h) 33.2% | 33.5% | day | postpone | no |
-| personal_tax | 7726 | file (3 h) 33.2%; extension (0 h) 36.4% | 33.7% | extension | extension | yes |
-| back_pain | 7799 | physio (2 h) 33.0%; stretch (0 h) 33.2% | 33.4% | stretch | stretch | yes |
-| founder_dinner | 7832 | go (3 h) 32.7%; skip (0 h) 33.0% | 33.3% | skip | skip | yes |
-| team_plan | 601 | session (3 h) 70.0%; wave_off (0 h) 73.3% | 66.6% | wave_off | wave_off | yes |
-| raise_request | 596 | give (0 h) 58.8%; decline (0 h) 64.7% | 65.9% | decline | give | no |
-| second_monitor | 573 | buy (0 h, 225 EUR) 66.7%; decline (0 h) 68.6% | 65.6% | decline | decline | yes |
-| hire_holiday | 585 | approve (0 h) 61.5%; refuse (0 h) 65.4% | 66.7% | refuse | approve | no |
-| hire_idea | 581 | listen (2 h) 66.0%; later (0 h) 68.0% | 66.1% | later | later | yes |
-| hire_laptop | 616 | buy (0 h, 1,200 EUR) 64.8%; keep (0 h) 57.4% | 67.2% | buy | keep | no |
-| hire_feedback | 588 | session (2 h) 67.9%; wave_off (0 h) 75.5% | 65.5% | wave_off | wave_off | yes |
-| team_lunch | 570 | order (1 h, 40 EUR) 67.9%; skip (0 h) 71.4% | 65.1% | skip | skip | yes |
-| recruiter_call | 584 | talk (2 h) 68.3%; ignore (0 h) 63.3% | 67.1% | talk | ignore | no |
-| design_tool | 597 | subscribe (0 h) 66.0%; decline (0 h) 66.0% | 66.5% | subscribe | subscribe | yes |
-| office_question | 602 | look (3 h) 62.5%; not_yet (0 h) 67.9% | 67.8% | not_yet | not_yet | yes |
+| cracked_phone | 7867 | repair (1 h, 120 EUR) 33.2%; live_with_it (0 h) 32.9% | 33.0% | repair | live_with_it | no |
+| parents_visit | 7768 | day (5 h) 33.5%; coffee (1 h) 33.0%; postpone (0 h) 33.0% | 33.4% | day | postpone | no |
+| personal_tax | 7726 | file (3 h) 33.0%; extension (0 h) 36.0% | 33.6% | extension | extension | yes |
+| back_pain | 7799 | physio (2 h) 32.7%; stretch (0 h) 33.0% | 33.2% | stretch | stretch | yes |
+| founder_dinner | 7832 | go (3 h) 32.5%; skip (0 h) 32.7% | 33.1% | skip | skip | yes |
+| team_plan | 601 | session (3 h) 66.7%; wave_off (0 h) 71.7% | 64.6% | wave_off | wave_off | yes |
+| raise_request | 596 | give (0 h) 56.9%; decline (0 h) 60.8% | 63.9% | decline | give | no |
+| second_monitor | 573 | buy (0 h, 225 EUR) 62.7%; decline (0 h) 64.7% | 63.5% | decline | decline | yes |
+| hire_holiday | 585 | approve (0 h) 57.7%; refuse (0 h) 63.5% | 64.6% | refuse | approve | no |
+| hire_idea | 581 | listen (2 h) 62.0%; later (0 h) 64.0% | 64.0% | later | later | yes |
+| hire_laptop | 616 | buy (0 h, 1,200 EUR) 61.1%; keep (0 h) 55.6% | 65.3% | buy | keep | no |
+| hire_feedback | 588 | session (2 h) 64.2%; wave_off (0 h) 71.7% | 63.4% | wave_off | wave_off | yes |
+| team_lunch | 570 | order (1 h, 40 EUR) 64.3%; skip (0 h) 67.9% | 63.0% | skip | skip | yes |
+| recruiter_call | 584 | talk (2 h) 65.0%; ignore (0 h) 60.0% | 65.1% | talk | ignore | no |
+| design_tool | 597 | subscribe (0 h) 64.2%; decline (0 h) 62.3% | 64.5% | subscribe | subscribe | yes |
+| office_question | 602 | look (3 h) 60.7%; not_yet (0 h) 64.3% | 65.8% | not_yet | not_yet | yes |
 
-Of 107 judged events, 59 favour the cheapest answer and 48 favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.
+Of 107 judged events, 60 favour the cheapest answer and 47 favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.
 
 ## Where customers come from
 
@@ -1030,20 +1030,20 @@ Runs where answering made the run last longer: 264, shorter: 573, same length: 1
 
 ## Strategies
 
-- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (9.8 s for 1000 runs)
+- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (9.2 s for 1000 runs)
 - `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (4.0 s for 1000 runs)
-- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (5.3 s for 1000 runs)
-- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for 6 months, and at least 26 weeks would be left once the hire starts: a developer while the features its market asks for need 40 h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked 8 weeks. The newest hire is let go once the runway shown falls below 3 months, and a developer once every feature has shipped. (36.4 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (30.2 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (8.4 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (26.9 s for 1000 runs)
-- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (35.9 s for 1000 runs)
+- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (4.8 s for 1000 runs)
+- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for 6 months, and at least 26 weeks would be left once the hire starts: a developer while the features its market asks for need 40 h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked 8 weeks. The newest hire is let go once the runway shown falls below 3 months, and a developer once every feature has shipped. (36.7 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (29.8 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (8.0 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (26.0 s for 1000 runs)
+- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (34.7 s for 1000 runs)
 - `overworker`: Plays like validate_then_build, but plans 65 h every week. (1.8 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.2 s for 1000 runs)
-- `validate_then_build_solo`: Plays like validate_then_build and never hires or rents anyone: the bootstrapped solo founder. (31.1 s for 1000 runs)
-- `validate_then_build_savings_hire`: Plays like validate_then_build, and makes its first hire on savings: it looks for one as soon as building starts (week 3), while cash and savings hold 3 months of the salary, and keeps that hire until the runway shown falls below 1 month. Later hires follow the reference rule. (14.1 s for 1000 runs)
-- `validate_then_build_part_time`: Plays like validate_then_build, with the same team rule, but hires only part time (20 h at half the salary). (30.3 s for 1000 runs)
-- `validate_then_build_freelance_first`: Plays like validate_then_build, and until its first hire is on the way rents a 20 h freelancer in the role that limits it. A developer for the build, as a burst: from week 3, while the features its market asks for need 40 h or more and cash and savings cover the whole build left at the freelancer's rate plus 3 months of the current loss. A salesperson for the pipeline, steady: from the first paying customer, while cash and savings would pay the added loss for 3 months. Gives notice when the role needed changes, the runway shown falls below 3 months, or the reference rule starts a search for a hire. (25.1 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.1 s for 1000 runs)
+- `validate_then_build_solo`: Plays like validate_then_build and never hires or rents anyone: the bootstrapped solo founder. (30.0 s for 1000 runs)
+- `validate_then_build_savings_hire`: Plays like validate_then_build, and makes its first hire on savings: it looks for one as soon as building starts (week 3), while cash and savings hold 3 months of the salary, and keeps that hire until the runway shown falls below 1 month. Later hires follow the reference rule. (13.7 s for 1000 runs)
+- `validate_then_build_part_time`: Plays like validate_then_build, with the same team rule, but hires only part time (20 h at half the salary). (29.5 s for 1000 runs)
+- `validate_then_build_freelance_first`: Plays like validate_then_build, and until its first hire is on the way rents a 20 h freelancer in the role that limits it. A developer for the build, as a burst: from week 3, while the features its market asks for need 40 h or more and cash and savings cover the whole build left at the freelancer's rate plus 3 months of the current loss. A salesperson for the pipeline, steady: from the first paying customer, while cash and savings would pay the added loss for 3 months. Gives notice when the role needed changes, the runway shown falls below 3 months, or the reference rule starts a search for a hire. (24.5 s for 1000 runs)
 
 # Zollstock
 

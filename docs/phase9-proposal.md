@@ -506,7 +506,7 @@ Post-mortem line for a freelancer in a run that did not end sustainable: "Freela
 
 ## 10. Part C2: long mode baseline and target wording (Kantino, engine 0.13.0)
 
-Current values, no tuning. Main part on 1000 seeds; targets marked "10,000" on the wide seeds (the careful bot's reading run and the team variants, paired). Full tables: `docs/balancing.md`, "Kantino, long mode".
+Current values, no tuning. Numbers after the runway fix (section 10 was measured again; every target kept its result, no value moved beyond its margin). Main part on 1000 seeds; targets marked "10,000" on the wide seeds (the careful bot's reading run and the team variants, paired). Full tables: `docs/balancing.md`, "Kantino, long mode".
 
 ### 10.1 Owner's decisions before C2
 
@@ -531,22 +531,22 @@ What the careful bot does with them (10,000 seeds): it hires in 7.4% of runs, 0.
 | # | Wording and limits | Mirrors | Baseline | Met |
 |---|---|---|---|---|
 | 20 | Freelancer or hire is each the right call in its own situation: for a burst (the build, from week 3 until it ships) a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady work (selling from the first paying customer to the end) a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. On top of the solo careful bot, paired, 10,000 seeds | New (the half of old target 19 that moved, section 9.1) | Burst: freelancer ahead by -0.1 ±0.9 (both -3.2 against solo; the hire arrives in week 8 and is used in 52% of runs). Steady: hire ahead by -2.9 ±0.8 (freelancer -8.6, hire -11.5 against solo) | no |
-| 21 | `build_only` wins under 5%; no strategy above 60% | 1 and 3, unchanged | 0.0%; top `price_aware` 35.0% | yes |
-| 22 | `validate_then_build` wins 25 to 45% | 2, unchanged | 26.1% ±2.7 | yes, at the edge |
+| 21 | `build_only` wins under 5%; no strategy above 60% | 1 and 3, unchanged | 0.0%; top `price_aware` 34.8% | yes |
+| 22 | `validate_then_build` wins 25 to 45% | 2, unchanged | 25.9% ±2.7 | yes, at the edge |
 | 23 | Median losing run length, all strategies, week 30 to 70 | 4, limits scaled from 20 to 40 because runs are longer | week 30.0 ±0.5 | yes, at the edge |
-| 24 | `validate_then_build` win rates across the three viable markets within 15 points, 10,000 seeds | 6, unchanged | 14.1 ±2.0 (coworking 17%, medical 31%, small offices 31%) | yes, at the edge |
+| 24 | `validate_then_build` win rates across the three viable markets within 15 points, 10,000 seeds | 6, unchanged | 13.9 ±2.0 (coworking 17%, medical 31%, small offices 31%) | yes, at the edge |
 | 25 | First paying customer in week 4 to 10 in the median winning careful run, and by week 10 at least 70% of careful runs have a customer or have left a market that is not viable | 7 and 8, unchanged (the first 30 weeks play as in 60 weeks) | week 5; 96.0% | yes |
 | 26 | Decision news in at least 85% of weeks 1 to 20 for the careful bot and playtest, and in at least 70% of weeks 53 to 104 for the careful bot | 9, plus a year 2 floor so the second year cannot go quiet | 100.0% and 96.3%; year 2 99.8% | yes |
-| 27 | Target 11 holds on 10,000 seeds; no event arrives twice unless it recurs on purpose; under 1% of careful runs have a dry inbox week | 11 and 16, plus dry weeks: in 104 weeks the pool can run out | 11: effort +3.2 (23% of reading), cheapest -0.4, reading +13.5; 0 repeats; **dry in 45.5% of runs** (first dry week 74 in the median) | no |
-| 28 | Year 2 matters: of careful runs profitable in each of the two months to week 60, at most 85% end Sustainable; of runs alive but not profitable at week 60, at least 15% end Sustainable. 10,000 seeds | New | 68.0% of 1,809; 43.7% of 3,141 | yes |
-| 29 | The hire can pay: the careful bot with its team rule loses at most 1 point against the solo bot, and gains at least 2 points in at least one viable market. Paired, 10,000 seeds | New (the long mode answer to old target 12) | -1.4 ±0.3 overall; best market coworking -0.5 | no |
-| 30 | 1000 long runs in under 120 s (slowest strategy, timed while the other processes run) | 5, limit doubled for runs about twice as long | 36.4 s | yes |
+| 27 | Target 11 holds on 10,000 seeds; no event arrives twice unless it recurs on purpose; under 1% of careful runs have a dry inbox week | 11 and 16, plus dry weeks: in 104 weeks the pool can run out | 11: effort +3.1 (23% of reading), cheapest -0.4, reading +13.4; 0 repeats; **dry in 45.5% of runs** (first dry week 74 in the median) | no |
+| 28 | Year 2 matters: of careful runs profitable in each of the two months to week 60, at most 85% end Sustainable; of runs alive but not profitable at week 60, at least 15% end Sustainable. 10,000 seeds | New | 67.6% of 1,809; 43.6% of 3,141 | yes |
+| 29 | The hire can pay: the careful bot with its team rule loses at most 1 point against the solo bot, and gains at least 2 points in at least one viable market. Paired, 10,000 seeds | New (the long mode answer to old target 12) | -1.6 ±0.3 overall; best market coworking -0.5 | no |
+| 30 | 1000 long runs in under 120 s (slowest strategy, timed while the other processes run) | 5, limit doubled for runs about twice as long | 36.7 s | yes |
 
 Information only, worded as in the 60 week report: 10 (51 of 95 events favour the cheap choice), 13 (chase -9.8, landing -2.7, books -2.5), 14 (`presale_max` -5.0), 15 (in person outreach 31.8% of customers) would all be met. 17 and 18 (pricing) were not run in long mode.
 
 What fails and why:
 
-- **20 and 29: no hire pays in long mode at current values.** Every variant that adds a person loses against solo: careful -1.4, part time only -4.0 (23.5%), freelancer first -5.9 (21.6%), on savings -22.0 (5.5%), and the burst and steady pairs -3 to -11.5. A full time salesperson costs 6,050 EUR a month plus 4 weeks of severance and brings about one customer at 450 EUR a month. The cause is the hire's selling skill (0.3) and output, and the salaries, not the bot rules: these are C3's first values to tune.
+- **20 and 29: no hire pays in long mode at current values.** Every variant that adds a person loses against solo: careful -1.6, part time only -4.2 (23.3%), freelancer first -5.9 (21.6%), on savings -22.0 (5.5%), and the burst and steady pairs -3 to -11.5. A full time salesperson costs 6,050 EUR a month plus 4 weeks of severance and brings about one customer at 450 EUR a month. The cause is the hire's selling skill (0.3) and output, and the salaries, not the bot rules: these are C3's first values to tune.
 - **27: the event pool runs dry.** 109 events are not enough for 104 weeks: 45.5% of careful runs have a dry week, from week 74 in the median. This needs the long mode events of proposal 2.7 (about 30 new events plus yearly recurrence), which is content work outside C3's values-and-formulas rounds. Owner to decide whether it belongs to C3 or to its own step.
 - **22, 23, 24 pass at the edge.** Making hires pay (C3) will move 22 and 24.
 
@@ -554,8 +554,8 @@ What fails and why:
 
 | Hours | Kantino 60 weeks: won / burnout | Zollstock 60 weeks: won / burnout | Kantino long: won / burnout |
 |---|---|---|---|
-| 45 | 25.0% / 0% | 27.1% / 0% | 20.5% / 0% |
-| 50 | 32.1% / 0% | 29.6% / 0% | 26.1% / 0% |
+| 45 | 25.0% / 0% | 27.1% / 0% | 20.4% / 0% |
+| 50 | 32.1% / 0% | 29.6% / 0% | 25.9% / 0% |
 | 52 | 0.0% / 85.6% (median week 31) | 0.0% / 81.0% (31) | 0.0% / 85.2% (31) |
 | 55 | 0% / 100% (13) | 0% / 100% (13) | 0% / 100% (13) |
 | 58 | 0% / 100% (9) | 0% / 100% (9) | 0% / 100% (9) |
