@@ -44,11 +44,11 @@ These are defaults. Change them here before starting and Claude Code will follow
 
 ### Explicitly out of scope (do not build)
 
-Cofounders, investors, loans, term sheets, board, legal form choice, real tax rules, competitors that react, cloud saves, accounts, telemetry backend, LLM generated dialogue, animated scene, established stage UI, company branding, sound, PWA or store packaging.
+Cofounders, loans, board, legal form choice, real tax rules, competitors that react, cloud saves, accounts, telemetry backend, LLM generated dialogue, animated scene, established stage UI, company branding, sound, PWA or store packaging.
 
 Keep the architecture open for these, but write no code for them.
 
-Multiple scenarios were taken off this list before Phase 8 (`docs/decisions.md`, "Second scenario"): Kantino and Zollstock, picked on the Start screen.
+Investors and term sheets were taken off this list for Phase 9 (`docs/phase9-proposal.md`): an angel and a seed round in long mode, amount and equity only. Multiple scenarios were taken off this list before Phase 8 (`docs/decisions.md`, "Second scenario"): Kantino and Zollstock, picked on the Start screen.
 
 ---
 
@@ -722,6 +722,9 @@ Parked ideas, not designed yet. Each needs its own plan and an entry in `docs/de
 - Real illustration
 - Sound
 - Cloud saves
+- A competitor that reacts to the player
+
+Phase 9 (`docs/phase9-proposal.md`) takes up the long mode, funding and the freelancer.
 
 Known leftovers:
 

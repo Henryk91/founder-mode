@@ -426,3 +426,47 @@ Engine (round pipeline, investors, terms, cap table, updates, pressure, ending, 
 8. **More hires in Part C** rather than D: agree?
 9. **Long mode at launch for both scenarios,** or Kantino first and Zollstock after its own balancing?
 10. **Should the long mode report be part of every "full report" from now on** (about 45 to 50 minutes for both modes), or run only when long mode or shared code changes?
+
+---
+
+## 8. Owner's answers (Part A review, 2026-10-12)
+
+Part A approved with its three corrections: "freelancer or hire" is a real choice only in long mode; more hires come in Part C; Part B should need no retune of the 60 week game.
+
+| # | Question | Answer |
+|---|---|---|
+| 1 | Reference bot and the freelancer | In the 60 week game `validate_then_build` never books one; a separate freelancer bot measures target 19. In long mode the reference bot may use it |
+| 2 | Ownership | Shown in the post-mortem and as its own column in best runs. It does not decide the ending |
+| 3 | "Growing" | A win only with at least 12 months of runway at the current burn and revenue growth over the last quarter; otherwise the run ends Still searching. Both numbers are starting values |
+| 4 | Sources | Angel and seed only. Investors and term sheets leave the out of scope list. Terms are amount and equity only: no liquidation preferences, vesting or convertible notes |
+| 5 | Saves | One save per scenario and mode |
+| 6 | Year 2 pressure | Only the living cost rise at week 53 and markets running out of leads. A competitor joins the parked list |
+| 7 | Money scale | Realistic amounts for a Munich startup, with realistic full time salaries in long mode, so money raised and money spent keep their real ratio. Sources below |
+| 8 | More hires | In Part C |
+| 9 | Long mode | Kantino first, through Parts C and D. Zollstock long mode follows once funding is balanced in Kantino |
+| 10 | Reports | Not in every full report. After any engine change, run the main targets for both modes; the full report with the event table per mode only at the end of a part |
+
+### 8.1 Realistic money (question 7), checked October 2026
+
+| Value | Figure | Source |
+|---|---|---|
+| Angel ticket, Germany | No angel under 25,000 EUR; 54% of accredited angels invest 100,000 to 500,000 EUR per deal (2019 activity, BAND survey) | [BAND, Insights Angel Investing in Deutschland, 12/2020](https://www.business-angels.de/wp-content/uploads/2020/12/BAND-Thema-im-Fokus_InsightsAngelInvestinginDeutschland_12-2020.pdf) |
+| Pre-seed round, Europe | Median 1.6 million EUR (vendor blog, treat with care) | [Peony, pre-seed investors Germany](https://www.peony.ink/blog/pre-seed-investors-germany) |
+| Pre-seed and seed valuation, DACH | Median 6.3 million EUR (2025) | [PitchBook, 2025 DACH private capital breakdown](https://pitchbook.brightspotcdn.com/03/0f/6f2592774d5b9bc4cf39579e4721/2025-dach-private-capital-breakdown.pdf) |
+| Seed round, priced, US benchmark | Median 4.1 million USD at 24.3 million post money, founders give 18% (Carta, 2026) | [WaveUp, seed round benchmarks](https://waveup.com/blog/seed-round-benchmarks/) |
+| German rounds, all stages | Median 4 million EUR (Q4 2025) | [KfW VC Dashboard Q4 2025](https://www.kfw.de/PDF/Download-Center/Konzernthemen/Research/PDF-Dokumente-Dashboard/KfW-VC-Dashboard-Q4-2025_EN.pdf) |
+| Software engineer, Munich | Median total pay about 84,000 EUR, middle half 68,000 to 105,000 | [levels.fyi, Munich](https://www.levels.fyi/t/software-engineer/locations/munich-metro-region) |
+| IT developer, Munich | Base 73,500 EUR (April 2026) | [TalentUp, Munich](https://talentup.io/salary/IT%20Developer/munich) |
+| Account executive, Germany | Median base about 52,000 EUR; SaaS scale-ups in Berlin or Munich 60,000 to 80,000 fixed, plus variable | [JOIN, account executive salary](https://join.com/en/job-guides/account-executive/salary) |
+| Employer's social security | About 21% on top of gross pay (2025 rates) | [AOK, Beitragssätze 2025](https://www.aok.de/fk/hessen/tools/weitere-inhalte/beitraege-und-rechengroessen-der-sozialversicherung/beitragssaetze/beitragssaetze-2025/) |
+| Freelance software developer, Germany | Median 90 EUR net per hour, half between 80 and 100 | [freelancermap, Stundensatz Softwareentwickler](https://www.freelancermap.de/blog/?p=72121) |
+| IT freelancers, all, Germany | Average 104 to 105 EUR per hour (Freelancer-Kompass 2025) | [Computerwoche](https://www.computerwoche.de/article/3853444/freelancer-kompass-2025-it-freiberufler-verdienen-105-euro-in-der-stunde.html) |
+
+What this means for long mode (to settle in Parts C and D, not now):
+
+- A full time developer costs about 75,000 EUR gross plus 21%, about 91,000 EUR a year to the company: about 7,000 EUR per 4 week game month. A salesperson at 65,000 EUR fixed costs about 6,000 EUR. Today's part time hire (3,900 EUR for 20 h) is in line with half of that.
+- Realistic rounds: an angel of 100,000 to 250,000 EUR, a seed round of 1 to 3 million EUR at a valuation around 6 million. A seed round would then pay 12 to 35 people-years, so a funded company must reach far more than today's 7 to 10 customers to justify it.
+- **Consequence for Part C:** at 450 EUR a month per customer, a seed round's burn needs hundreds of customers. Long mode's markets (sizes, response, possibly price ranges) must allow that scale, or funding can only lose. This is the largest open design point for Parts C and D and is flagged here so it is decided before Part D starts.
+- A freelance developer at 90 EUR an hour is about 1.4 times a full time employee's cost per hour (91,000 EUR over about 1,650 working hours is 55 EUR), which matches the starting ratio of 1.4 proposed in 1.3.
+
+The competitor joins the parked ideas in the plan.
