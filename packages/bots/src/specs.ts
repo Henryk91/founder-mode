@@ -7,6 +7,8 @@ import {
   priceAware,
   priceRecipe,
   forcedAnswer,
+  SITUATION_VARIANTS,
+  teamVariant,
   tiredFounder,
   validateThenBuildEarlyHire,
   withFreelancer,
@@ -38,6 +40,10 @@ export type StrategySpec =
     }
   | { kind: 'tired'; budget: number; below: number | null; rent: boolean }
   | { kind: 'earlyHireWide' }
+  /** A long mode team variant on the wide seeds (targets 20 and 29). */
+  | { kind: 'team'; id: string }
+  /** The careful bot planning `budget` hours a week, for the energy curve. */
+  | { kind: 'energy'; budget: number }
 
 export function strategyOf(spec: StrategySpec): Strategy {
   switch (spec.kind) {
@@ -63,6 +69,10 @@ export function strategyOf(spec: StrategySpec): Strategy {
             : fixedPrice(spec.multiple ?? 1)
       return { ...base, id: pricingId(spec) }
     }
+    case 'team':
+      return { ...teamVariant(spec.id), id: `team:${spec.id}` }
+    case 'energy':
+      return tiredFounder(spec.budget, null, false, energyId(spec.budget))
     case 'earlyHireWide':
       return { ...validateThenBuildEarlyHire, id: EARLY_HIRE_WIDE_ID }
     case 'tired':
@@ -124,6 +134,28 @@ export const TIRED_SPECS: StrategySpec[] = [50, 58, 65].flatMap((budget): Strate
     { kind: 'tired', budget, below, rent: false },
   ]),
 ])
+
+/** Report id of an energy curve run. */
+export const energyId = (budget: number) => `energy:${budget}h`
+
+/** The energy curve (Part C2): the careful bot planning these hours a week, in both modes. */
+export const ENERGY_BUDGETS = [45, 50, 52, 55, 58, 60] as const
+export const ENERGY_SPECS: StrategySpec[] = ENERGY_BUDGETS.map((budget) => ({
+  kind: 'energy',
+  budget,
+}))
+
+/**
+ * Long mode team variants on the wide seeds, against the careful bot's reading run, and target
+ * 20's burst and steady situations.
+ */
+export const TEAM_SPECS: StrategySpec[] = [
+  'validate_then_build_solo',
+  'validate_then_build_freelance_first',
+  'validate_then_build_part_time',
+  'validate_then_build_savings_hire',
+  ...SITUATION_VARIANTS.map((v) => v.id),
+].map((id) => ({ kind: 'team', id }))
 
 /** Target 19's run: a freelance developer for the build, 20 h a week, at the scenario's rate. */
 export const FREELANCE_TARGET_SPEC: StrategySpec = {

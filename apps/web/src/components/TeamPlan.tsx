@@ -36,29 +36,39 @@ export function TeamPlan() {
   return (
     <>
       {team.canSearch &&
-        team.roles.map((r) => {
-          const booked = plan.searchRole === r.id
-          return (
-            <Market
-              key={r.id}
-              label={roleName(r.id, stage)}
-              note={label('team.perMonth', stage, { amount: formatEuro(r.monthlyCents) })}
-              choices={chip(
-                booked,
-                booked
-                  ? label('team.searchBooked', stage, { hours: hours(costs.searchHours) })
-                  : label('team.search', stage, { role: roleName(r.id, stage) }),
-                () => actions.setSearchRole(booked ? null : r.id),
-              )}
-            />
-          )
-        })}
+        team.roles.flatMap((r) =>
+          // A role offered both ways (long mode) gets a row for each; else one row as before.
+          (r.partTime ? [false, true] : [false]).map((part) => {
+            const booked = plan.searchRole === r.id && (plan.searchPartTime ?? false) === part
+            const monthly = part && r.partTime ? r.partTime.monthlyCents : r.monthlyCents
+            const name = r.partTime
+              ? label(part ? 'team.partTime' : 'team.fullTime', stage, {
+                  role: roleName(r.id, stage),
+                })
+              : roleName(r.id, stage)
+            return (
+              <Market
+                key={`${r.id}${part ? '-part' : ''}`}
+                label={name}
+                note={label('team.perMonth', stage, { amount: formatEuro(monthly) })}
+                choices={chip(
+                  booked,
+                  booked
+                    ? label('team.searchBooked', stage, { hours: hours(costs.searchHours) })
+                    : label('team.search', stage, { role: name }),
+                  () => actions.setSearchRole(booked ? null : r.id, part),
+                )}
+              />
+            )
+          }),
+        )}
       {team.candidates.length > 0 && team.canHire && (
         <>
           <SubHeading>{label('team.candidates', stage)}</SubHeading>
           {team.candidates.map((c) => {
             const booked = plan.hire === c.id
-            const monthly = team.roles.find((r) => r.id === c.role)?.monthlyCents ?? 0
+            const role = team.roles.find((r) => r.id === c.role)
+            const monthly = (c.partTime ? role?.partTime?.monthlyCents : role?.monthlyCents) ?? 0
             return (
               <div key={c.id}>
                 <Market
@@ -72,6 +82,7 @@ export function TeamPlan() {
                 />
                 <Writing>
                   {roleName(c.role, stage)} ·{' '}
+                  {c.partTime && <>{label('team.partTimeNote', stage)} · </>}
                   {label('team.impression', stage, { impression: c.impression })}
                 </Writing>
               </div>

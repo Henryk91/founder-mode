@@ -50,6 +50,33 @@ const PAYBACK_LAG_WEEKS = 8
 const ASSUMED_SKILL = 0.85
 const PAYBACK_CASH_MONTHS = 2
 
+/**
+ * Long mode team rules (Part C), all read from the money the player sees. "A month" is the change
+ * in cash plus savings averaged over the last `NET_MONTHS` months, so it counts money received, not
+ * invoiced, and one month of late invoices paid at once does not count as growth.
+ * A hire is looked for once a month makes money, the money in hand would pay what the hire
+ * adds to the monthly loss for `HIRE_RUNWAY_MONTHS`, and at least `HIRE_HORIZON_WEEKS` would be
+ * left once they start. The newest hire is let go once the runway shown falls below
+ * `LET_GO_MONTHS`. A new search waits until the newest hire has worked `SETTLE_WEEKS`. A developer
+ * is hired while the features the market asks for still need `BACKLOG_HOURS`, else a salesperson.
+ */
+const NET_MONTHS = 3
+const HIRE_RUNWAY_MONTHS = 6
+const HIRE_HORIZON_WEEKS = 26
+const LET_GO_MONTHS = 3
+const SETTLE_WEEKS = 8
+const BACKLOG_HOURS = 40
+/** Hiring on savings: the first search once building starts, while money holds this many salaries. */
+const SAVINGS_SALARIES = 3
+/** ...and that hire is kept until the runway shown falls below this many months. */
+const SAVINGS_LET_GO_MONTHS = 1
+/**
+ * The freelancer before the first hire: hours a week, and months of the added loss money must
+ * hold (shorter than a hire's, since a week's notice ends it).
+ */
+const FIRST_FREELANCE_HOURS = 20
+const FIRST_FREELANCE_MONTHS = 3
+
 /** The books arrive as this message; sorting them yourself is the careful answer. */
 const BOOKS_EVENT = 'receipts_pile'
 const BOOKS_CHOICE = 'sort'
@@ -317,6 +344,20 @@ export function readInbox(view: PlayerView): { messageId: string; choiceId: stri
  */
 export type HireRule = 'none' | 'covered' | 'payback'
 
+/**
+ * How the careful bot builds a team in long mode. `start`: `covered` hires once revenue covers
+ * today's costs (the reference), `savings` makes the first hire once building starts, paid from
+ * savings. `partTime` hires only part time. `freelanceFirst` rents a freelancer before the first
+ * hire.
+ */
+export type TeamRule = { start: 'covered' | 'savings'; partTime: boolean; freelanceFirst: boolean }
+
+/** Target 20's situations: who does a burst of building or a year of selling. */
+export type Situation = { kind: 'burst' | 'steady'; by: 'freelancer' | 'hire' }
+
+/** The reference careful bot's team rule in long mode. */
+export const CAREFUL_TEAM: TeamRule = { start: 'covered', partTime: false, freelanceFirst: false }
+
 /** The behaviours added in Phase 4 and after, each of which can be switched off to measure it. */
 export type Behaviours = {
   inbox: InboxPolicy
@@ -338,6 +379,13 @@ export type Behaviours = {
    * salesperson), until energy is back at the scenario's tired mark.
    */
   tiredFreelance?: { below: number; hours: number; rent: boolean }
+  /**
+   * Long mode team building. Missing: `CAREFUL_TEAM` in long mode for a bot without another hire
+   * or freelancer rule, else none. Null: never hires (bootstrapped solo).
+   */
+  team?: TeamRule | null
+  /** Target 20: one extra person for a burst or for steady work (`SITUATION_VARIANTS`). */
+  situation?: Situation
   /** For the event table: always answer this event with this choice. */
   forced?: { eventId: string; choiceId: string }
   /** For measuring an event's share of an inbox policy: leave this event to its default. */
@@ -549,6 +597,12 @@ export function validatingPlayer(
   let lastPlan: WeekPlan | null = null
   let freelanceUsed = false
   let tiredMode = false
+  const teamRule: TeamRule | null =
+    behaviours.team !== undefined
+      ? behaviours.team
+      : scenario.mode === 'long' && behaviours.hire === 'none' && !behaviours.freelance
+        ? CAREFUL_TEAM
+        : null
   const impressionOrder = scenario.team.impressions.map((i) => i.name)
 
   // Inbox events whose choice moves to an office with walk-in leads: event id -> choice, market.
@@ -663,6 +717,247 @@ export function validatingPlayer(
           segmentId: market,
           channel: channels.choose(market, view.channels, 0),
         }
+      }
+    }
+  }
+
+  const moneyOf = (view: PlayerView) =>
+    view.company.cashCents + Math.max(0, view.founder.savingsCents)
+  /**
+   * Change in cash plus savings a month, averaged over the last `NET_MONTHS` months; null before
+   * they have been played.
+   */
+  const lastMonth = (view: PlayerView): number | null => {
+    const h = view.history
+    const then = h[h.length - 1 - NET_MONTHS * scenario.finance.weeksPerMonth]
+    if (!then) return null
+    return (moneyOf(view) - (then.cashCents + Math.max(0, then.savingsCents))) / NET_MONTHS
+  }
+  /** Money in hand covers `months` of the monthly loss once `extraCents` a month is added. */
+  const covers = (view: PlayerView, extraCents: number, months: number): boolean => {
+    const net = lastMonth(view)
+    if (net === null) return false
+    return moneyOf(view) >= months * Math.max(0, extraCents - net)
+  }
+  /** The runway shown is below `months` (null runway: money is not shrinking). */
+  const short = (view: PlayerView, months: number) =>
+    view.company.runwayWeeks !== null &&
+    view.company.runwayWeeks < months * scenario.finance.weeksPerMonth
+  /** The role that limits growth: a developer while the market's wanted features need building. */
+  const limitingRole = (view: PlayerView, unshipped: string[]): 'developer' | 'salesperson' => {
+    const backlog = unshipped.reduce(
+      (t, f) => t + (view.product.features.find((x) => x.id === f)?.remainingHours ?? 0),
+      0,
+    )
+    return backlog >= BACKLOG_HOURS ? 'developer' : 'salesperson'
+  }
+  const salaryOf = (view: PlayerView, role: 'developer' | 'salesperson', partTime: boolean) => {
+    const r = view.team.roles.find((x) => x.id === role)
+    return (partTime ? r?.partTime?.monthlyCents : r?.monthlyCents) ?? Infinity
+  }
+
+  /**
+   * Long mode team building by `teamRule`: lets the newest hire go when money runs short (or a
+   * developer has nothing left to build), searches when the rule says the next hire is affordable,
+   * hires the best impression, and gives every working member a task.
+   */
+  const growing = (
+    b: PlanBuilder,
+    view: PlayerView,
+    unshipped: string[],
+    market: string | null,
+  ) => {
+    const rule = teamRule
+    if (!rule) return
+    const team = view.team
+    const members = team.members
+    const newest = members[members.length - 1]
+    const nothingToBuild = view.product.features.every((f) => f.shipped)
+    const floor = rule.start === 'savings' ? SAVINGS_LET_GO_MONTHS : LET_GO_MONTHS
+    const idleDev = members.find((m) => m.working && m.role === 'developer' && nothingToBuild)
+    if (newest && short(view, floor)) b.plan.letGo = newest.id
+    else if (idleDev) b.plan.letGo = idleDev.id
+    const beforeFirstHire = team.hiresLeft === view.costs.teamMaxHires
+
+    const role = limitingRole(view, unshipped)
+    const salary = salaryOf(view, role, rule.partTime)
+    const startWeek = view.week + view.costs.searchWeeks + view.costs.startWeeks
+    const firstOnSavings = rule.start === 'savings' && beforeFirstHire
+    const hireAffordable = firstOnSavings
+      ? view.week >= 3 && moneyOf(view) >= SAVINGS_SALARIES * salary
+      : (lastMonth(view) ?? -1) >= 0 &&
+        covers(view, salary, HIRE_RUNWAY_MONTHS) &&
+        view.maxWeeks - startWeek + 1 >= HIRE_HORIZON_WEEKS
+
+    // The freelancer before the first hire: rented by the same need, ended once a hire is near.
+    if (rule.freelanceFirst) freelancingFirst(b, view, unshipped, market, beforeFirstHire)
+
+    // The offer is made only if the rule still holds (candidates not hired lapse at the next search).
+    if (b.plan.letGo === null && team.candidates.length > 0 && team.canHire && hireAffordable) {
+      const best = [...team.candidates].sort(
+        (x, y) => impressionOrder.indexOf(y.impression) - impressionOrder.indexOf(x.impression),
+      )[0]
+      if (best) b.plan.hire = best.id
+    } else if (
+      b.plan.letGo === null &&
+      team.canSearch &&
+      market &&
+      b.free >= view.costs.searchHours &&
+      (!newest || (newest.working && view.week - newest.startWeek >= SETTLE_WEEKS)) &&
+      hireAffordable
+    ) {
+      b.plan.searchRole = role
+      if (rule.partTime) b.plan.searchPartTime = true
+      b.free -= view.costs.searchHours
+    }
+    for (const member of members) {
+      if (!member.working || member.id === b.plan.letGo) continue
+      if (member.role === 'developer') {
+        const next = unshipped[0] ?? view.product.features.find((f) => !f.shipped)?.id
+        if (next) b.plan.teamTasks[member.id] = { kind: 'build', featureId: next }
+      } else if (market) {
+        b.plan.teamTasks[member.id] = {
+          kind: 'outreach',
+          segmentId: market,
+          channel: channels.choose(market, view.channels, 0),
+        }
+      }
+    }
+  }
+
+  /** `behaviours.situation`: one extra person for a burst or steady work, then let go. */
+  let situationUsed = false
+  const situational = (
+    b: PlanBuilder,
+    view: PlayerView,
+    unshipped: string[],
+    market: string | null,
+  ) => {
+    const sit = behaviours.situation
+    if (!sit) return
+    const role = sit.kind === 'burst' ? 'developer' : 'salesperson'
+    const want =
+      sit.kind === 'burst' ? view.week >= 3 && unshipped.length > 0 : view.customers.length > 0
+    const done = (sit.kind === 'burst' && unshipped.length === 0) || short(view, LET_GO_MONTHS)
+    const outreach = () =>
+      market ? { segmentId: market, channel: channels.choose(market, view.channels, 0) } : null
+    if (sit.by === 'freelancer') {
+      const fl = view.team.freelance
+      const cur = fl.current
+      if (cur && cur.endWeek === null && done) b.plan.freelance.end = true
+      else if (!situationUsed && cur === null && fl.canBook && want && !done) {
+        b.plan.freelance.book = { role, hoursPerWeek: FIRST_FREELANCE_HOURS }
+        situationUsed = true
+      }
+      if (!cur?.working) return
+      if (cur.role === 'developer') {
+        const left = (id: string) => {
+          const f = view.product.features.find((x) => x.id === id)
+          return f ? f.remainingHours - (b.plan.build[id] ?? 0) : 0
+        }
+        const best = [...unshipped].sort((x, y) => left(y) - left(x))[0]
+        b.plan.freelance.build = best && left(best) > 0 ? best : null
+      } else b.plan.freelance.outreach = outreach()
+      return
+    }
+    const team = view.team
+    const member = team.members[0]
+    if (member && done) b.plan.letGo = member.id
+    else if (!member && !situationUsed && team.candidates.length > 0 && team.canHire && !done) {
+      const best = [...team.candidates].sort(
+        (x, y) => impressionOrder.indexOf(y.impression) - impressionOrder.indexOf(x.impression),
+      )[0]
+      if (best) {
+        b.plan.hire = best.id
+        situationUsed = true
+      }
+    } else if (
+      !member &&
+      !situationUsed &&
+      team.canSearch &&
+      team.search === null &&
+      team.candidates.length === 0 &&
+      want &&
+      !done &&
+      b.free >= view.costs.searchHours
+    ) {
+      b.plan.searchRole = role
+      b.plan.searchPartTime = true
+      b.free -= view.costs.searchHours
+    }
+    if (!member?.working || b.plan.letGo === member.id) return
+    if (member.role === 'developer') {
+      const next = unshipped[0]
+      if (next) b.plan.teamTasks[member.id] = { kind: 'build', featureId: next }
+    } else {
+      const o = outreach()
+      if (o) b.plan.teamTasks[member.id] = { kind: 'outreach', ...o }
+    }
+  }
+
+  /**
+   * `freelanceFirst`: until the first hire is on the way, a 20 h freelancer in the limiting role.
+   * A developer is a burst: from week 3, while money in hand covers the whole build left at their
+   * rate plus three months of today's loss. A salesperson is steady: from the first paying
+   * customer, while money in hand covers the added loss for three months, with a hire's horizon
+   * left. Notice when the role needed changes, the runway shown falls below three months, or a
+   * search for a hire starts.
+   */
+  const freelancingFirst = (
+    b: PlanBuilder,
+    view: PlayerView,
+    unshipped: string[],
+    market: string | null,
+    beforeFirstHire: boolean,
+  ) => {
+    const fl = view.team.freelance
+    const cur = fl.current
+    const role = limitingRole(view, unshipped)
+    const running = cur !== null && cur.endWeek === null
+    const hiring =
+      !beforeFirstHire ||
+      view.team.search !== null ||
+      view.team.candidates.length > 0 ||
+      b.plan.searchRole !== null
+    const perHour = fl.roles.find((r) => r.id === role)?.centsPerHour ?? Infinity
+    const bill = FIRST_FREELANCE_HOURS * perHour * scenario.finance.weeksPerMonth
+    const backlog = unshipped.reduce(
+      (t, f) => t + (view.product.features.find((x) => x.id === f)?.remainingHours ?? 0),
+      0,
+    )
+    // Before a month has been played, the loss is living and fixed costs.
+    const loss = Math.max(
+      0,
+      -(
+        lastMonth(view) ??
+        view.monthlyRevenueCents -
+          view.company.monthlyFixedCostsCents -
+          view.founder.livingCostCentsPerMonth
+      ),
+    )
+    const affordable =
+      role === 'developer'
+        ? view.week >= 3 &&
+          moneyOf(view) >= (backlog / fl.outputShare) * perHour + FIRST_FREELANCE_MONTHS * loss
+        : view.customers.length > 0 &&
+          covers(view, bill, FIRST_FREELANCE_MONTHS) &&
+          view.maxWeeks - view.week >= HIRE_HORIZON_WEEKS
+    if (running && (hiring || cur.role !== role || short(view, LET_GO_MONTHS)))
+      b.plan.freelance.end = true
+    else if (cur === null && fl.canBook && !hiring && affordable)
+      b.plan.freelance.book = { role, hoursPerWeek: FIRST_FREELANCE_HOURS }
+    if (!cur?.working) return
+    if (cur.role === 'developer') {
+      const left = (id: string) => {
+        const f = view.product.features.find((x) => x.id === id)
+        return f ? f.remainingHours - (b.plan.build[id] ?? 0) : 0
+      }
+      const best = [...unshipped].sort((x, y) => left(y) - left(x))[0]
+      b.plan.freelance.build = best && left(best) > 0 ? best : null
+    } else if (market) {
+      b.plan.freelance.outreach = {
+        segmentId: market,
+        channel: channels.choose(market, view.channels, 0),
       }
     }
   }
@@ -891,6 +1186,8 @@ export function validatingPlayer(
       )
 
       if (behaviours.hire !== 'none') staffing(b, view, wanted, target)
+      growing(b, view, unshipped, target)
+      situational(b, view, unshipped, target)
       b.demos(bookableLeads(view, target))
       b.demos(bookableLeads(view))
       if (behaviours.followUps) b.followUp(FOLLOW_UPS_PER_WEEK, target)
@@ -949,9 +1246,13 @@ export function validatingPlayer(
 const DESCRIPTION =
   'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
 
+/** What the careful bot adds in long mode: the reference team rule. */
+export const LONG_TEAM_TEXT = ` In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for ${HIRE_RUNWAY_MONTHS} months, and at least ${HIRE_HORIZON_WEEKS} weeks would be left once the hire starts: a developer while the features its market asks for need ${BACKLOG_HOURS} h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked ${SETTLE_WEEKS} weeks. The newest hire is let go once the runway shown falls below ${LET_GO_MONTHS} months, and a developer once every feature has shipped.`
+
 export const validateThenBuild: Strategy = {
   id: 'validate_then_build',
   description: DESCRIPTION,
+  describe: (scenario) => (scenario.mode === 'long' ? DESCRIPTION + LONG_TEAM_TEXT : DESCRIPTION),
   create: (scenario) => validatingPlayer(scenario, 50),
 }
 
@@ -970,6 +1271,70 @@ export const validateThenBuildEarlyHire: Strategy = {
   create: (scenario) =>
     validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, hire: 'payback' }),
 }
+
+/** Long mode team variants of the careful bot, each against the reference team rule. */
+export const TEAM_VARIANTS: {
+  id: string
+  team: TeamRule | null
+  description: string
+}[] = [
+  {
+    id: 'validate_then_build_solo',
+    team: null,
+    description:
+      'Plays like validate_then_build and never hires or rents anyone: the bootstrapped solo founder.',
+  },
+  {
+    id: 'validate_then_build_savings_hire',
+    team: { ...CAREFUL_TEAM, start: 'savings' },
+    description: `Plays like validate_then_build, and makes its first hire on savings: it looks for one as soon as building starts (week 3), while cash and savings hold ${SAVINGS_SALARIES} months of the salary, and keeps that hire until the runway shown falls below ${SAVINGS_LET_GO_MONTHS} month. Later hires follow the reference rule.`,
+  },
+  {
+    id: 'validate_then_build_part_time',
+    team: { ...CAREFUL_TEAM, partTime: true },
+    description:
+      'Plays like validate_then_build, with the same team rule, but hires only part time (20 h at half the salary).',
+  },
+  {
+    id: 'validate_then_build_freelance_first',
+    team: { ...CAREFUL_TEAM, freelanceFirst: true },
+    description: `Plays like validate_then_build, and until its first hire is on the way rents a ${FIRST_FREELANCE_HOURS} h freelancer in the role that limits it. A developer for the build, as a burst: from week 3, while the features its market asks for need ${BACKLOG_HOURS} h or more and cash and savings cover the whole build left at the freelancer's rate plus ${FIRST_FREELANCE_MONTHS} months of the current loss. A salesperson for the pipeline, steady: from the first paying customer, while cash and savings would pay the added loss for ${FIRST_FREELANCE_MONTHS} months. Gives notice when the role needed changes, the runway shown falls below ${LET_GO_MONTHS} months, or the reference rule starts a search for a hire.`,
+  },
+]
+
+export const teamVariant = (id: string): Strategy => {
+  const v = TEAM_VARIANTS.find((x) => x.id === id)
+  const sit = SITUATION_VARIANTS.find((x) => x.id === id)
+  if (!v && !sit) throw new Error(`Unknown team variant ${id}`)
+  const behaviours: Behaviours = v
+    ? { ...ALL_BEHAVIOURS, team: v.team }
+    : { ...ALL_BEHAVIOURS, team: null, situation: sit!.situation }
+  return {
+    id,
+    description: (v ?? sit)!.description,
+    modes: ['long'],
+    create: (scenario) => validatingPlayer(scenario, 50, null, behaviours),
+  }
+}
+
+/**
+ * Target 20's situations, each played by a solo careful bot with one extra person in a fixed role:
+ * a burst (the build, from week 3 until the features the market asks for have shipped) or steady
+ * work (selling, from the first paying customer to the end), by a 20 h freelancer or a part time
+ * hire. Both let go once the runway shown falls below three months.
+ */
+export const SITUATION_VARIANTS: { id: string; situation: Situation; description: string }[] = (
+  [
+    ['burst', 'freelancer'],
+    ['burst', 'hire'],
+    ['steady', 'freelancer'],
+    ['steady', 'hire'],
+  ] as const
+).map(([kind, by]) => ({
+  id: `validate_then_build_${kind}_${by}`,
+  situation: { kind, by },
+  description: `Plays like validate_then_build_solo, plus ${by === 'freelancer' ? `a ${FIRST_FREELANCE_HOURS} h freelance` : 'a part time (20 h)'} ${kind === 'burst' ? 'developer for the build, looked for in week 3 and kept until the features its market asks for have shipped' : 'salesperson for selling, looked for from the first paying customer and kept to the end'}${by === 'hire' ? ', the best impression of the candidates' : ''}. Lets them go once the runway shown falls below ${LET_GO_MONTHS} months.`,
+}))
 
 /** The switchable behaviours, for leave-one-out runs. */
 export const BEHAVIOUR_NAMES = ['inbox', 'chase', 'landing', 'books', 'followUps'] as const

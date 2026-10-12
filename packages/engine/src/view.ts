@@ -11,6 +11,7 @@ import {
   canHire,
   maxHires,
   maxMembers,
+  roleTerms,
   openBooking,
   workingMembers,
 } from './systems/team'
@@ -258,7 +259,6 @@ function teamView(state: GameState): TeamView {
   const cfg = state.scenario.team
   const { team } = state
   const impression = (id: string) => cfg.impressions.find((b) => b.id === id)?.name ?? id
-  const monthly = (role: 'developer' | 'salesperson') => cfg.roles[role].monthlyCents
   const working = new Set(workingMembers(state).map((m) => m.id))
   return {
     canSearch: team.search === null && canHire(state),
@@ -266,26 +266,42 @@ function teamView(state: GameState): TeamView {
     roles: (['developer', 'salesperson'] as const).map((id) => ({
       id,
       name: cfg.roles[id].name,
-      monthlyCents: monthly(id),
+      monthlyCents: cfg.roles[id].monthlyCents,
       weeklyHours: cfg.roles[id].weeklyHours,
+      partTime: cfg.roles[id].partTime
+        ? {
+            monthlyCents: cfg.roles[id].partTime.monthlyCents,
+            weeklyHours: cfg.roles[id].partTime.weeklyHours,
+          }
+        : null,
     })),
-    search: team.search ? { role: team.search.role, readyWeek: team.search.readyWeek } : null,
+    search: team.search
+      ? {
+          role: team.search.role,
+          readyWeek: team.search.readyWeek,
+          partTime: team.search.partTime === true,
+        }
+      : null,
     candidates: team.candidates.map((c) => ({
       id: c.id,
       name: c.name,
       role: c.role,
       impression: impression(c.impressionId),
+      partTime: c.partTime === true,
     })),
     members: activeMembers(state).map((m) => ({
       id: m.id,
       name: m.name,
       role: m.role,
       roleName: cfg.roles[m.role].name,
-      monthlyCents: monthly(m.role),
+      monthlyCents: roleTerms(state, m).monthlyCents,
+      weeklyHours: roleTerms(state, m).weeklyHours,
+      partTime: m.partTime === true,
       startWeek: m.startWeek,
       working: working.has(m.id),
       letGoCostCents: Math.round(
-        (monthly(m.role) * cfg.severanceWeeks) / state.scenario.finance.weeksPerMonth,
+        (roleTerms(state, m).monthlyCents * cfg.severanceWeeks) /
+          state.scenario.finance.weeksPerMonth,
       ),
       managementHours: cfg.managementHoursPerMember ?? 0,
     })),

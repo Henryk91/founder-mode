@@ -336,16 +336,19 @@ modes:
       managementHoursPerMember: 2
       # Full time and realistic for Munich (docs/phase9-proposal.md 8.1): gross salary plus about
       # 21% employer's social security, over 13 game months of 4 weeks a year. Developer 75,000
-      # EUR gross, salesperson 65,000 EUR fixed.
+      # EUR gross, salesperson 65,000 EUR fixed. Part time is half of each, so the two agree
+      # per hour (the 60 week part time hire keeps its own tuned salary).
       roles:
         developer:
           name: Developer
           monthlyCents: 700000
           weeklyHours: 40
+          partTime: { monthlyCents: 350000, weeklyHours: 20 }
         salesperson:
           name: Salesperson
           monthlyCents: 605000
           weeklyHours: 40
+          partTime: { monthlyCents: 302500, weeklyHours: 20 }
     milestones:
       - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
       - { id: first_deposit, name: First deposit, kind: count, of: deposits, target: 1 }

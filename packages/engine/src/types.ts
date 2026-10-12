@@ -312,18 +312,24 @@ export type Message = {
   choiceId: string | null
 }
 
-export type TeamSearch = { role: TeamRoleId; readyWeek: number }
+/**
+ * `partTime` (long mode, where a role offers both) marks a part time search, candidate or member;
+ * it is left out for full time, and in the 60 week game, whose one kind of hire it does not touch.
+ */
+export type TeamSearch = { role: TeamRoleId; readyWeek: number; partTime?: true }
 export type Candidate = {
   id: string
   name: string
   role: TeamRoleId
   /** Id of the impression label, true skill plus noise. */
   impressionId: string
+  partTime?: true
 }
 export type TeamMember = {
   id: string
   name: string
   role: TeamRoleId
+  partTime?: true
   offerWeek: number
   startWeek: number
   letGoWeek: number | null
@@ -507,6 +513,11 @@ export type WeekPlan = {
   chase: string[]
   /** Start looking for someone in this role. */
   searchRole: TeamRoleId | null
+  /**
+   * Look for a part time hire in that role (long mode, where the role offers both). Missing or
+   * false: full time, or the role's one kind.
+   */
+  searchPartTime?: boolean
   /** Make an offer to this candidate. */
   hire: string | null
   /** Let this team member go (a member id), or null. */
@@ -556,6 +567,7 @@ export type PlanIssue =
   | { code: 'presale_cap'; segmentId: string; left: number }
   | { code: 'invalid_chase'; invoiceId: string }
   | { code: 'search_not_allowed' }
+  | { code: 'part_time_not_offered' }
   | { code: 'invalid_hire'; candidateId: string }
   | { code: 'let_go_not_allowed' }
   | { code: 'invalid_team_work' }
@@ -776,6 +788,8 @@ export type CandidateView = {
   name: string
   role: TeamRoleId
   impression: string
+  /** A part time candidate (long mode), paid and working the role's part time terms. */
+  partTime: boolean
 }
 
 export type MemberView = {
@@ -784,6 +798,8 @@ export type MemberView = {
   role: TeamRoleId
   roleName: string
   monthlyCents: number
+  weeklyHours: number
+  partTime: boolean
   /** First working week. In the future while the new hire is still starting. */
   startWeek: number
   working: boolean
@@ -829,8 +845,15 @@ export type TeamView = {
   canSearch: boolean
   /** False when the team is full or every hire of the run is used. */
   canHire: boolean
-  roles: { id: TeamRoleId; name: string; monthlyCents: number; weeklyHours: number }[]
-  search: { role: TeamRoleId; readyWeek: number } | null
+  roles: {
+    id: TeamRoleId
+    name: string
+    monthlyCents: number
+    weeklyHours: number
+    /** The same role part time, where it is offered beside full time (long mode), else null. */
+    partTime: { monthlyCents: number; weeklyHours: number } | null
+  }[]
+  search: { role: TeamRoleId; readyWeek: number; partTime: boolean } | null
   candidates: CandidateView[]
   /** Everyone hired and not let go, in hiring order, working or still starting. */
   members: MemberView[]

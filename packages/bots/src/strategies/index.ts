@@ -10,6 +10,8 @@ import {
   validateThenBuild,
   validateThenBuildEarlyHire,
   validateThenBuildHire,
+  TEAM_VARIANTS,
+  teamVariant,
 } from './validateThenBuild'
 
 export const STRATEGIES: Strategy[] = [
@@ -23,4 +25,6 @@ export const STRATEGIES: Strategy[] = [
   priceAware,
   overworker,
   playtest,
+  // Long mode only.
+  ...TEAM_VARIANTS.map((v) => teamVariant(v.id)),
 ]

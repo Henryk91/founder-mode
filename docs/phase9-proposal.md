@@ -503,3 +503,78 @@ The owner chose option A after one check: does renting pay when the founder is r
 Renting does not pay when tired; resting does. So target 19 (60 weeks) now reads: **renting never beats doing the work yourself, and costs less than an early hire.** Result: freelance developer for the build -5.9 (Kantino) and -6.6 (Zollstock) against the careful bot; early hire -21.5 and -24.8; freelancer ahead by 15.6 and 18.2. Passes in both scenarios. "The right call in some situations" moves to target 20 in long mode (section 1.8), unchanged.
 
 Post-mortem line for a freelancer in a run that did not end sustainable: "Freelancers cost €4,080 for 60 h booked, and 17 h of those found work. The same hours from you would have cost about €230 in rent and food, which you were paying anyway."
+
+## 10. Part C2: long mode baseline and target wording (Kantino, engine 0.13.0)
+
+Current values, no tuning. Main part on 1000 seeds; targets marked "10,000" on the wide seeds (the careful bot's reading run and the team variants, paired). Full tables: `docs/balancing.md`, "Kantino, long mode".
+
+### 10.1 Owner's decisions before C2
+
+- Part time hires in long mode at half the full time salary (3,500 and 3,025 EUR for 20 h), offered beside full time; the 60 week part time hire keeps its tuned salary.
+- The bots build a team in long mode before the baseline is measured (rules in 10.2).
+
+### 10.2 The bots' team rules
+
+Every money test reads what the player sees: "a month" is the change in cash plus savings averaged over the last three months (money received, not invoiced; one month of late invoices paid at once is not growth), and the runway shown.
+
+- **Careful (the reference, `validate_then_build` in long mode):** looks for a hire once a month makes money, cash and savings would pay what the hire adds to the monthly loss for 6 months, and at least 26 weeks are left once the hire starts. A developer while the features its market asks for need 40 h or more, else a salesperson; full time; the best impression. The next search waits until the newest hire has worked 8 weeks. The newest hire is let go once the runway shown falls below 3 months, a developer once every feature has shipped.
+- **Solo (`validate_then_build_solo`):** never hires or rents.
+- **On savings (`validate_then_build_savings_hire`):** the first search as soon as building starts (week 3) while cash and savings hold three salaries; that hire is kept until the runway shown falls below 1 month. Later hires as careful.
+- **Part time only (`validate_then_build_part_time`):** the careful rule with part time hires.
+- **Freelancer first (`validate_then_build_freelance_first`):** until its first hire is on the way, a 20 h freelancer in the limiting role: a developer for the build from week 3 while money covers the whole build left at the freelancer's rate plus 3 months of the current loss, else a salesperson from the first paying customer while money covers the added loss for 3 months. Notice when the role changes, the runway falls below 3 months, or a hire search starts.
+- **Target 20's situations:** the solo bot plus one person in a fixed role. Burst: a developer for the build, looked for in week 3 and kept until the wanted features ship. Steady: a salesperson from the first paying customer to the end. Each as a 20 h freelancer or a part time hire.
+
+What the careful bot does with them (10,000 seeds): it hires in 7.4% of runs, 0.07 hires a run; offers in weeks 57, 65 and 71 (25th, median, 75th; 109 in weeks 27 to 52, 640 in weeks 53 to 78, none before 27 or after 78). 13 runs make a second hire, none a third. Median team at week 104: 0, also among runs that hired (most hires are let go when the runway falls below 3 months). One full time salesperson finds about one customer before being let go: at selling 0.3, 45 h of their outreach finds fewer leads than 10 h of the founder's.
+
+### 10.3 Targets 20 to 30: wording, limits and baseline
+
+| # | Wording and limits | Mirrors | Baseline | Met |
+|---|---|---|---|---|
+| 20 | Freelancer or hire is each the right call in its own situation: for a burst (the build, from week 3 until it ships) a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady work (selling from the first paying customer to the end) a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. On top of the solo careful bot, paired, 10,000 seeds | New (the half of old target 19 that moved, section 9.1) | Burst: freelancer ahead by -0.1 ±0.9 (both -3.2 against solo; the hire arrives in week 8 and is used in 52% of runs). Steady: hire ahead by -2.9 ±0.8 (freelancer -8.6, hire -11.5 against solo) | no |
+| 21 | `build_only` wins under 5%; no strategy above 60% | 1 and 3, unchanged | 0.0%; top `price_aware` 35.0% | yes |
+| 22 | `validate_then_build` wins 25 to 45% | 2, unchanged | 26.1% ±2.7 | yes, at the edge |
+| 23 | Median losing run length, all strategies, week 30 to 70 | 4, limits scaled from 20 to 40 because runs are longer | week 30.0 ±0.5 | yes, at the edge |
+| 24 | `validate_then_build` win rates across the three viable markets within 15 points, 10,000 seeds | 6, unchanged | 14.1 ±2.0 (coworking 17%, medical 31%, small offices 31%) | yes, at the edge |
+| 25 | First paying customer in week 4 to 10 in the median winning careful run, and by week 10 at least 70% of careful runs have a customer or have left a market that is not viable | 7 and 8, unchanged (the first 30 weeks play as in 60 weeks) | week 5; 96.0% | yes |
+| 26 | Decision news in at least 85% of weeks 1 to 20 for the careful bot and playtest, and in at least 70% of weeks 53 to 104 for the careful bot | 9, plus a year 2 floor so the second year cannot go quiet | 100.0% and 96.3%; year 2 99.8% | yes |
+| 27 | Target 11 holds on 10,000 seeds; no event arrives twice unless it recurs on purpose; under 1% of careful runs have a dry inbox week | 11 and 16, plus dry weeks: in 104 weeks the pool can run out | 11: effort +3.2 (23% of reading), cheapest -0.4, reading +13.5; 0 repeats; **dry in 45.5% of runs** (first dry week 74 in the median) | no |
+| 28 | Year 2 matters: of careful runs profitable in each of the two months to week 60, at most 85% end Sustainable; of runs alive but not profitable at week 60, at least 15% end Sustainable. 10,000 seeds | New | 68.0% of 1,809; 43.7% of 3,141 | yes |
+| 29 | The hire can pay: the careful bot with its team rule loses at most 1 point against the solo bot, and gains at least 2 points in at least one viable market. Paired, 10,000 seeds | New (the long mode answer to old target 12) | -1.4 ±0.3 overall; best market coworking -0.5 | no |
+| 30 | 1000 long runs in under 120 s (slowest strategy, timed while the other processes run) | 5, limit doubled for runs about twice as long | 36.4 s | yes |
+
+Information only, worded as in the 60 week report: 10 (51 of 95 events favour the cheap choice), 13 (chase -9.8, landing -2.7, books -2.5), 14 (`presale_max` -5.0), 15 (in person outreach 31.8% of customers) would all be met. 17 and 18 (pricing) were not run in long mode.
+
+What fails and why:
+
+- **20 and 29: no hire pays in long mode at current values.** Every variant that adds a person loses against solo: careful -1.4, part time only -4.0 (23.5%), freelancer first -5.9 (21.6%), on savings -22.0 (5.5%), and the burst and steady pairs -3 to -11.5. A full time salesperson costs 6,050 EUR a month plus 4 weeks of severance and brings about one customer at 450 EUR a month. The cause is the hire's selling skill (0.3) and output, and the salaries, not the bot rules: these are C3's first values to tune.
+- **27: the event pool runs dry.** 109 events are not enough for 104 weeks: 45.5% of careful runs have a dry week, from week 74 in the median. This needs the long mode events of proposal 2.7 (about 30 new events plus yearly recurrence), which is content work outside C3's values-and-formulas rounds. Owner to decide whether it belongs to C3 or to its own step.
+- **22, 23, 24 pass at the edge.** Making hires pay (C3) will move 22 and 24.
+
+### 10.4 Energy curve (10,000 seeds, the careful bot planning each number of hours every week)
+
+| Hours | Kantino 60 weeks: won / burnout | Zollstock 60 weeks: won / burnout | Kantino long: won / burnout |
+|---|---|---|---|
+| 45 | 25.0% / 0% | 27.1% / 0% | 20.5% / 0% |
+| 50 | 32.1% / 0% | 29.6% / 0% | 26.1% / 0% |
+| 52 | 0.0% / 85.6% (median week 31) | 0.0% / 81.0% (31) | 0.0% / 85.2% (31) |
+| 55 | 0% / 100% (13) | 0% / 100% (13) | 0% / 100% (13) |
+| 58 | 0% / 100% (9) | 0% / 100% (9) | 0% / 100% (9) |
+| 60 | 0% / 100% (8) | 0% / 100% (8) | 0% / 100% (8) |
+
+**A cliff, at 50 h, not between 50 and 58.** The cause is the formula: a week within the 50 h base gains 3 energy, and a week over it loses 2 per extra hour and gains nothing. No number of hours above 50 is sustainable, so any steady week over base burns out, only later: 52 h hits zero around week 20 and burns out from week 23 at the earliest; the median burnout week measured is 31. Below 30 energy the sales penalty adds to it, which is why 52 h loses even its runs that are not burnt out. A human can still work 58 h for a few weeks and then rest; the bots plan the same hours every week.
+
+Halving the drain alone (1 per hour over base, values only, 1000 seeds) keeps the cliff and only moves it: 52 h wins 19.8% in 60 weeks and 0% in long mode; 55 h burns out 97 to 98% of runs from week 25.
+
+Options (no change made):
+
+| Option | What | Curve | Risk to existing targets |
+|---|---|---|---|
+| A | Keep it, and say it on screen: "Weeks over 50 h never recover energy" | Cliff at 50 h | None |
+| B | Recovery every week, less 2 per hour over base (`3 - 2 x overtime`) | Sustainable up to 51.5 h; 55 h burns out around week 15, 58 h around week 9 | Small (see C) |
+| **C (recommended)** | Recovery every week, less 1 per hour over base (`3 - 1 x overtime`) | A slope: sustainable up to 53 h; 55 h burns out around week 43, 58 h around 19, 60 h around 14 (from 80 energy, before the sales penalty) | Bots planning 50 h never go over base, so targets 1 to 30 move only through bots that do: the random bot (30 to 65 h) and the overworker (65 h, burns out around week 10 instead of 6). Target 19's energy check (58 and 65 h) changes and should be rerun. Inbox answers that cost energy matter less. Applied to both modes it changes both 60 week fingerprints, so open 60 week saves get the "retuned" notice; as a long mode override (`founder.energy` plus one new formula value) the 60 week game stays exact |
+
+Recommendation: C, in long mode first (an override, the 60 week game untouched), and in both modes once the owner has played it. It is a formula change, so it belongs to C3's "formulas second" round.
+
+### 10.5 Runtime of the long mode report (Kantino, 9 processes)
+
+`pnpm bots --runs 1000 --wide-runs 10000 --mode long --parts main,paired,inbox,team,energy,events`: 1,167 s (19.5 minutes) in all. Main 31 s, paired 174 s, inbox 52 s, team 220 s (8 variants on 10,000 seeds), energy 88 s, events 598 s (154,379 of 233,000 games played, the rest reused). Without the energy curve, which is a one off, about 18 minutes. Price and freelance parts were not run in long mode (17, 18 and 19 are not long mode targets).
