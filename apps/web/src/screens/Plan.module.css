@@ -436,9 +436,10 @@
   column-gap: 0;
 }
 
+/* On the narrowest phones the bar gives way, never the hours or the stepper. */
 .progress {
-  flex: none;
-  width: 84px;
+  flex: 0 1 84px;
+  min-width: 24px;
   height: 8px;
   border: 1px solid var(--ink);
   border-radius: 4px;
@@ -473,5 +474,5 @@
 }
 
 :global([data-layout='desk']) .featureLine > .progress {
-  width: 90px;
+  flex-basis: 90px;
 }

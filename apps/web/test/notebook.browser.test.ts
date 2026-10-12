@@ -34,7 +34,7 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('the planner notebook', () => {
   })
 
   suite(CHROMIUM, { grid: [390, 1280, 1440], features: [375, 1440] })
-  suite(WEBKIT, { grid: [], features: [] })
+  suite(WEBKIT, { grid: [390, 430], features: [390, 430] })
 
   function suite(engine: Engine | null, widths: Widths) {
     describe.skipIf(!engine)(`in ${engine?.name ?? 'a browser that is not installed'}`, () => {
@@ -403,4 +403,59 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
     expect(['body', 'the tapped button']).toContain(after.focus)
     await page.close()
   }, 60_000)
+
+  it('keeps every control on the paper, centred, from 320 to 720 px', async () => {
+    const page = await planTab(390, 844)
+    // Week 2, so the energy line has "Same as last week", with hours planned on a feature.
+    await page.getByRole('button', { name: /^Build and fix/ }).click()
+    const plus = page.getByRole('button', { name: /^5 more hours on / }).first()
+    for (let i = 0; i < 2; i++) await plus.click()
+    await page.getByRole('button', { name: 'End week' }).click()
+    for (let i = 0; i < 6; i++) {
+      const on = page.getByRole('button', { name: /^(Back to|Continue|Next|On to|Start week)/ })
+      if (!(await on.count())) break
+      await on.first().click()
+    }
+    await page.getByRole('button', { name: /^Plan/ }).click()
+    expect(await page.getByRole('button', { name: 'Same as last week' }).count()).toBe(1)
+    for (const title of ['Talk', 'Test', 'Build', 'Find', 'Hiring', 'Rest']) {
+      await page
+        .getByRole('button', { name: new RegExp(`^${title}`) })
+        .first()
+        .click()
+    }
+    await plus.click()
+
+    const widths = [375, 390, 393, 430]
+    for (let w = 320; w <= 720; w += 10) widths.push(w)
+    const wrong: string[] = []
+    for (const width of widths) {
+      await page.setViewportSize({ width, height: 844 })
+      wrong.push(
+        ...(await page.evaluate((width) => {
+          const notebook = document.querySelector('section[aria-label="My week"]')!
+          const paper = notebook.getBoundingClientRect()
+          const main = document.querySelector('main')!
+          const box = main.getBoundingClientRect()
+          const out: string[] = []
+          for (const el of notebook.querySelectorAll('*')) {
+            const r = el.getBoundingClientRect()
+            if (r.width === 0 || el.closest('.visually-hidden')) continue
+            if (r.left < paper.left - 0.5 || r.right > paper.right + 0.5) {
+              const name = el.getAttribute('aria-label') ?? el.textContent?.slice(0, 30)
+              out.push(`${width} px: ${el.tagName} ${name} ${r.left}-${r.right}`)
+            }
+          }
+          // Nothing pushes the screen sideways, and the paper has as much ground left as right.
+          if (main.scrollWidth > main.clientWidth) out.push(`${width} px: scrolls sideways`)
+          const left = paper.left - box.left
+          const right = box.left + main.clientWidth - paper.right
+          if (Math.abs(left - right) > 1) out.push(`${width} px: ${left} px left, ${right} right`)
+          return out
+        }, width)),
+      )
+    }
+    expect(wrong).toEqual([])
+    await page.close()
+  }, 90_000)
 }

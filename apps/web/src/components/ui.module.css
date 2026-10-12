@@ -212,9 +212,14 @@
   gap: 0;
 }
 
-/* Planned hours ("+10 h") in small figures, at a fixed width so the row never shifts. */
+/*
+ * Planned hours ("+10 h") in small figures, at a fixed width so the row never shifts. The width
+ * as well as the basis: WebKit sizes the stepper from the content of an empty value, not its
+ * basis, and would push the + button out of the stepper's box (and off the paper).
+ */
 .stepHours {
   flex: 0 0 5ch;
+  width: 5ch;
   font-size: 13px;
   white-space: nowrap;
 }
