@@ -372,6 +372,10 @@ export const BookingProductSchema = z.object({
   // Cannot run in dangerous weather unless the alternative product has shipped.
   weatherClosed: z.boolean().default(false),
   alternative: Id.optional(),
+  // Step 6: sells only once this product has shipped too (a restaurant's fit-out).
+  requires: Id.optional(),
+  // Step 6: a cost per unit as a share of its price (food cost), on top of unitCostCents.
+  unitCostShare: Share.optional(),
 })
 
 export const StaffRoleSchema = z.object({
@@ -737,6 +741,8 @@ export const OfficeStageSchema = z.object({
   channelFactors: z.partialRecord(Channel, z.number().positive()).default({}),
   // Leads that walk in from the people around you: from one market, at this mean rate per week.
   walkIns: z.object({ segment: Id, leadsPerWeek: z.number().positive() }).optional(),
+  // Tourism (step 6): added to the quality guests rate while working here (a better room).
+  qualityBonus: z.number().optional(),
 })
 export type OfficeStage = z.infer<typeof OfficeStageSchema>
 
@@ -891,6 +897,9 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       }
       if (p.alternative && !featureIds.has(p.alternative)) {
         issue(`unknown feature ${p.alternative}`, ['bookings', 'products', id, 'alternative'])
+      }
+      if (p.requires && !featureIds.has(p.requires)) {
+        issue(`unknown feature ${p.requires}`, ['bookings', 'products', id, 'requires'])
       }
     }
     for (const [id, r] of Object.entries(s.bookings.roles)) {

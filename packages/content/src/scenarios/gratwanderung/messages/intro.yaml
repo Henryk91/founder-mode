@@ -23,9 +23,9 @@ intro:
     - id: goal
       title: The goal
       body: >-
-        Last {maxWeeks} weeks, two summers and two winters. To win, guests have to pay for the
-        company and for you in each of the last three months. Run out of money, yours included,
-        and it is over.
+        Last {maxWeeks} weeks, two summers and two winters. To win, the guests of your last
+        thirteen months together have to pay for the company and for you. Run out of money,
+        yours included, and it is over.
 
 founderNotes:
   first_week: >-

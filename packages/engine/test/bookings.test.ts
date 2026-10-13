@@ -188,6 +188,50 @@ describe('the bookings model', () => {
     expect(guestsEconomics(createGame(loadScenario('kantino'), 'x'))).toBeNull()
   })
 
+  it('sells a product only once the product it requires has shipped (step 6)', () => {
+    const base = tourismScenario()
+    const products = {
+      ...base.bookings!.products,
+      basic_ordering: { ...base.bookings!.products['basic_ordering']!, requires: 'allergy_filter' },
+    }
+    const scenario = { ...base, bookings: { ...base.bookings!, products } }
+    const without = endWeek(
+      shipped(createGame(scenario, 'req'), ['basic_ordering']),
+      plan(bp({ platform: true })),
+    ).state
+    expect(without.bookings!.bookings.filter((b) => b.productId === 'basic_ordering')).toEqual([])
+    const both = endWeek(
+      shipped(createGame(scenario, 'req'), ['basic_ordering', 'allergy_filter']),
+      plan(bp({ platform: true })),
+    ).state
+    expect(both.bookings!.bookings.some((b) => b.productId === 'basic_ordering')).toBe(true)
+  })
+
+  it('adds a share of the price to the cost of each unit served (food cost, step 6)', () => {
+    const base = tourismScenario()
+    const share = (unitCostShare?: number): GameState => {
+      const p = base.bookings!.products
+      const products = {
+        ...p,
+        basic_ordering: { ...p['basic_ordering']!, unitCostShare },
+      }
+      let s = shipped(createGame({ ...base, bookings: { ...base.bookings!, products } }, 'food'), [
+        'basic_ordering',
+        'allergy_filter',
+      ])
+      for (let i = 0; i < 4; i++) s = endWeek(s, plan(bp({ shifts: { guide: 9 } }))).state
+      return s
+    }
+    const costs = (s: GameState) => s.ledger.reduce((t, l) => t + l.bookingCostsCents, 0)
+    const plain = share()
+    const food = share(0.3)
+    const gross = food
+      .bookings!.bookings.filter((b) => b.status === 'served' && b.productId === 'basic_ordering')
+      .reduce((t, b) => t + Math.round(b.units * b.priceCents * 0.3), 0)
+    expect(gross).toBeGreaterThan(0)
+    expect(costs(food) - costs(plain)).toBe(gross)
+  })
+
   it('is deterministic', () => {
     const run = () => {
       let s = shipped(game('same'), ['basic_ordering', 'allergy_filter'])
