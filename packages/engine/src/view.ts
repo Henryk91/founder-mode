@@ -1,3 +1,4 @@
+import { bookingsRevenueOrSubscriptions, bookingsView } from './systems/bookings'
 import { fundingView } from './systems/funding'
 import {
   interviewsOf,
@@ -162,6 +163,7 @@ export function getView(state: GameState): PlayerView {
       })),
     team: teamView(state),
     funding: fundingView(state),
+    bookings: bookingsView(state),
     pendingExperiments: state.hidden.experiments.map((e) => ({
       kind: e.kind,
       segmentId: e.segmentId,
@@ -222,7 +224,7 @@ export function getView(state: GameState): PlayerView {
     })),
     customersWon: state.customers.length,
     customersLost: state.customers.filter((c) => c.churnedWeek !== null).length,
-    monthlyRevenueCents: activeCustomers(state).reduce((sum, c) => sum + c.priceCentsPerMonth, 0),
+    monthlyRevenueCents: bookingsRevenueOrSubscriptions(state),
     segments: scenario.segments.map((seg) => ({
       id: seg.id,
       name: seg.name,

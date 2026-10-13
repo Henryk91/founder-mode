@@ -19,6 +19,8 @@ const week = (w: number, money: Partial<WeekLedger> = {}): WeekLedger => ({
   otherCostsCents: 0,
   otherIncomeCents: 0,
   investmentCents: 0,
+  bookingRevenueCents: 0,
+  bookingCostsCents: 0,
   cashEndCents: 0,
   savingsEndCents: 0,
   monthlyRevenueCents: 0,

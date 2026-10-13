@@ -40,6 +40,10 @@ export type WeekExtras = {
   freelanceCents: number
   /** Investment arriving at a round's closing: cash, never revenue (Part D). */
   investmentCents: number
+  /** Tourism: guests' payments on the day, net of commission. Revenue. */
+  bookingRevenueCents: number
+  /** Tourism: shifts, unit costs and products' one-off costs. Company costs. */
+  bookingCostsCents: number
 }
 
 export const noExtras = (): WeekExtras => ({
@@ -49,6 +53,8 @@ export const noExtras = (): WeekExtras => ({
   otherIncomeCents: 0,
   freelanceCents: 0,
   investmentCents: 0,
+  bookingRevenueCents: 0,
+  bookingCostsCents: 0,
 })
 
 /**
@@ -98,6 +104,7 @@ export function applyFinanceWeek(
   const fixedCostsCents = monthEnd ? monthlyFixedCostsCents(state) : 0
   cash -= fixedCostsCents
   cash -= extras.adSpendCents + extras.otherCostsCents + extras.freelanceCents
+  cash -= extras.bookingCostsCents
   cash += extras.otherIncomeCents
   cash += extras.investmentCents
 
@@ -123,7 +130,9 @@ export function applyFinanceWeek(
     }
   }
   const revenueCents =
-    settled.paid.reduce((sum, inv) => sum + inv.amountCents, 0) + extras.depositsCents
+    settled.paid.reduce((sum, inv) => sum + inv.amountCents, 0) +
+    extras.depositsCents +
+    extras.bookingRevenueCents
   cash += revenueCents
 
   let issued: Invoice[] = []
@@ -153,6 +162,8 @@ export function applyFinanceWeek(
     otherCostsCents: extras.otherCostsCents,
     otherIncomeCents: extras.otherIncomeCents,
     investmentCents: extras.investmentCents,
+    bookingRevenueCents: extras.bookingRevenueCents,
+    bookingCostsCents: extras.bookingCostsCents,
     cashEndCents: cash,
     savingsEndCents: savings,
     // Filled in by `closeLedger` once churn has run.
@@ -213,6 +224,7 @@ export function netChangeCents(l: WeekLedger): number {
     l.otherIncomeCents -
     l.fixedCostsCents -
     l.freelanceCents -
+    l.bookingCostsCents -
     l.livingCostsCents -
     l.adSpendCents -
     l.otherCostsCents
@@ -224,9 +236,13 @@ export function closeLedger(state: GameState, hours: HoursByActivity): GameState
   const last = state.ledger.at(-1)
   if (!last) return state
   const active = activeCustomers(state)
+  // Tourism has no subscribers: its monthly revenue is what guests paid over the last four weeks.
+  const monthly = state.bookings
+    ? state.ledger.slice(-4).reduce((sum, l) => sum + l.bookingRevenueCents, 0)
+    : active.reduce((sum, c) => sum + c.priceCentsPerMonth, 0)
   const closed: WeekLedger = {
     ...last,
-    monthlyRevenueCents: active.reduce((sum, c) => sum + c.priceCentsPerMonth, 0),
+    monthlyRevenueCents: monthly,
     customers: active.length,
     energyEnd: state.founder.energy,
     hours,
@@ -272,7 +288,8 @@ export function profitableForMonths(state: GameState, months: number): boolean {
     const month = state.ledger.slice(end - weeksPerMonth, end)
     const revenue = month.reduce((sum, l) => sum + l.revenueCents, 0)
     const costs = month.reduce(
-      (sum, l) => sum + l.fixedCostsCents + l.freelanceCents + l.livingCostsCents,
+      (sum, l) =>
+        sum + l.fixedCostsCents + l.freelanceCents + l.bookingCostsCents + l.livingCostsCents,
       0,
     )
     if (revenue < costs) return false

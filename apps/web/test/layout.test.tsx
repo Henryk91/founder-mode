@@ -180,6 +180,8 @@ describe("the player's week 34 (Kantino, 60 weeks)", () => {
     customers: 7,
     runwayWeeks: 26,
     investmentCents: 0,
+    bookingRevenueCents: 0,
+    bookingCostsCents: 0,
   })
   const view = {
     ...base,

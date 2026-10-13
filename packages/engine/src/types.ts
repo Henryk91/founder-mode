@@ -55,6 +55,8 @@ export type GameState = {
     teamSkills: Record<string, number>
     /** Funding (long mode): each investor's appetite, and the investors' confidence (0 to 1). */
     funding: HiddenFunding
+    /** Tourism: each segment's demand at peak and season curve, and next week's true weather. */
+    bookings: HiddenBookings | null
   }
 
   /** What the player has observed, per segment. */
@@ -73,6 +75,8 @@ export type GameState = {
   team: TeamState
   /** Raising money (long mode, Part D). Empty in a run that never raises. */
   funding: FundingState
+  /** Tourism (step 4): bookings of capacity that expires. Null in the subscription model. */
+  bookings: BookingsState | null
   /** One entry per resolved week, oldest first. */
   ledger: WeekLedger[]
   /** Everything needed to rebuild this state from the seed. */
@@ -160,6 +164,76 @@ export type FundingState = {
   stakes: Stake[]
   /** The open growth milestone of the last terms, if any. */
   milestone: { monthlyCents: number; byWeek: number; status: 'open' | 'met' | 'missed' } | null
+}
+
+// ---------------------------------------------------------------------------
+// Tourism: bookings (step 4, docs/tourism-proposal.md)
+
+export type WeatherState = 'good' | 'mixed' | 'bad' | 'dangerous'
+export type Policy = 'flexible' | 'strict'
+export type BookingChannel = 'platform' | 'direct'
+/**
+ * `booked` until its week; then `served`, `cancelled` (the guest, refunded under a flexible
+ * policy), `cancelled_paid` (the guest, kept under a strict one), or `company_cancelled` (no room
+ * on the roster, or closed by the weather: refunded).
+ */
+export type BookingStatus =
+  'booked' | 'served' | 'cancelled' | 'cancelled_paid' | 'company_cancelled'
+
+export type Booking = {
+  id: string
+  segmentId: SegmentId
+  productId: FeatureId
+  /** The week it is for. */
+  week: number
+  units: number
+  /** Price per unit agreed when booked. */
+  priceCents: number
+  channel: BookingChannel
+  bookedWeek: number
+  status: BookingStatus
+}
+
+export type BookingsState = {
+  bookings: Booking[]
+  /** Price per unit per segment, for peak and off season months. */
+  prices: Record<SegmentId, { peak: number; off: number }>
+  policy: Policy
+  policySinceWeek: number
+  platformListed: boolean
+  /** Segments whose partners send guests. */
+  partnerships: SegmentId[]
+  /** Guests booked directly, per segment: they come back and tell others. */
+  repeatGuests: Record<SegmentId, number>
+  rating: number | null
+  reviews: number
+  /** This week's weather once it happened, and the forecast shown for next week. */
+  weather: WeatherState | null
+  forecast: WeatherState
+  /** Requests turned away for lack of room, per week (the last 12 weeks). */
+  turnedAway: { week: number; segmentId: SegmentId; units: number }[]
+}
+
+export type HiddenBookings = {
+  base: Record<SegmentId, number>
+  /** Twelve monthly multipliers per segment, the drawn season curve. */
+  season: Record<SegmentId, number[]>
+  /** Next week's true weather. */
+  nextWeather: WeatherState
+}
+
+/**
+ * The bookings part of a week's plan: shifts per staff role (the founder's own shifts apart),
+ * new prices, the cancellation policy, the platform listing, new partnerships, and outreach.
+ */
+export type BookingsPlan = {
+  shifts: Record<string, number>
+  founderShifts: Record<string, number>
+  prices: Record<SegmentId, { peak: number; off: number }>
+  policy: Policy | null
+  platform: boolean | null
+  partnerships: SegmentId[]
+  outreach: Record<SegmentId, number>
 }
 
 export type HiddenFunding = {
@@ -473,6 +547,10 @@ export type WeekLedger = {
    * that runway counts, never in the win test.
    */
   investmentCents: number
+  /** Tourism: guests' payments on the day (net of commission), part of `revenueCents`. */
+  bookingRevenueCents: number
+  /** Tourism: shifts, unit costs and products' one-off costs, company costs in the win test. */
+  bookingCostsCents: number
   cashEndCents: number
   savingsEndCents: number
   /** Monthly revenue of active customers at the end of the week, after churn. */
@@ -619,6 +697,8 @@ export type WeekPlan = {
   teamTasks: Record<string, TeamTask>
   /** Raising money (long mode with funding). Missing means nothing this week. */
   funding?: FundingPlan
+  /** Tourism: the roster, prices, policy and channels. Missing means no shifts and no changes. */
+  bookings?: BookingsPlan
 }
 
 /**
@@ -688,6 +768,7 @@ export type PlanIssue =
   | { code: 'invalid_team_work' }
   | { code: 'invalid_freelance' }
   | { code: 'invalid_funding' }
+  | { code: 'invalid_bookings' }
   /** Long mode: the market has had every landing test allowed. */
   | { code: 'landing_limit'; segmentId: string }
 
@@ -781,6 +862,8 @@ export type PlayerView = {
   team: TeamView
   /** Raising money, in long mode with funding; null otherwise. */
   funding: FundingView | null
+  /** Tourism: calendar, roster, prices, channels and reviews; null in the subscription model. */
+  bookings: BookingsView | null
   /** Landing page tests and pre-sales still running. */
   pendingExperiments: PendingExperimentView[]
   guidance: GuidanceView
@@ -933,6 +1016,63 @@ export type MemberView = {
   letGoCostCents: number
   /** Founder hours this member takes every week they work. */
   managementHours: number
+}
+
+/** One week of the calendar for one product: units booked against what it can sell. */
+export type CalendarCell = {
+  week: number
+  booked: number
+  capacity: number
+  lastYear: number | null
+}
+
+/** Tourism as the player sees it. No demand, no season curve, no true weather. */
+export type BookingsView = {
+  weekOfYear: number
+  month: number
+  peak: boolean
+  weather: WeatherState | null
+  forecast: WeatherState
+  policy: Policy
+  policyLocked: boolean
+  platform: { name: string; commission: number; listed: boolean }
+  partnerships: SegmentId[]
+  partnershipHours: number
+  outreachHoursFull: number
+  rating: number | null
+  reviews: number
+  prices: Record<SegmentId, { peak: number; off: number }>
+  segments: {
+    id: SegmentId
+    unit: 'person' | 'group' | 'cover' | 'night'
+    invoiced: boolean
+    repeatGuests: number
+    turnedAwayLast4: number
+  }[]
+  products: {
+    id: FeatureId
+    name: string
+    shipped: boolean
+    capacity: number
+    serves: SegmentId[]
+    inSeason: boolean
+    unitCostCents: number
+    oneOffCents: number
+    monthlyCents: number
+  }[]
+  roles: {
+    id: string
+    name: string
+    centsPerShift: number
+    units: Record<FeatureId, number>
+    available: number
+    founderHours: number | null
+  }[]
+  /** Next 12 weeks per product, this week first. */
+  calendar: { productId: FeatureId; cells: CalendarCell[] }[]
+  /** Bookings for this week per product, the units the roster must cover. */
+  thisWeek: { productId: FeatureId; booked: number }[]
+  revenueLast4Cents: number
 }
 
 /** A funding round type as the Raise section describes it: rules and the public bar. */
@@ -1135,6 +1275,16 @@ export type ReportEntry =
   | { kind: 'hire_started'; name: string; role: TeamRoleId }
   | { kind: 'member_let_go'; name: string; costCents: number }
   | { kind: 'team_output'; role: TeamRoleId; hours: number }
+  /** Tourism (step 4). */
+  | { kind: 'weather'; weather: WeatherState }
+  | { kind: 'bookings_new'; segmentId: SegmentId; bookings: number; units: number }
+  | { kind: 'turned_away'; segmentId: SegmentId; units: number }
+  | { kind: 'guests_served'; units: number; revenueCents: number; commissionCents: number }
+  /** Guests who cancelled: paid anyway under a strict policy (`kept`). */
+  | { kind: 'bookings_cancelled'; units: number; kept: boolean }
+  | { kind: 'company_cancelled'; units: number; reason: 'staff' | 'weather' }
+  | { kind: 'shifts_paid'; shifts: number; amountCents: number }
+  | { kind: 'review'; rating: number; reviews: number; added: number }
   /** Funding (Part D). */
   | { kind: 'round_started'; round: RoundId }
   | { kind: 'round_stopped'; round: RoundId }
