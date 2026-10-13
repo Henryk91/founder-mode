@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 8 (wrap up), sub-step W3: final gate and tag
-Last commit: Step 8 W3 (docs, final report)
-Next action: final gate (60 week, Kantino long, tourism reports), tag tourism-complete. The plan is then complete; see docs/autonomous/reports/final.md.
+Step: done. All steps complete; final report docs/autonomous/reports/final.md.
+Last commit: Step 8 done, tag tourism-complete
+Next action: none. Open issues below are for Henry.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
@@ -14,7 +14,7 @@ Next action: final gate (60 week, Kantino long, tourism reports), tag tourism-co
 - [x] Step 5: outdoor adventure company (tag scenario-outdoor)
 - [x] Step 6: bank loan and restaurant (tag scenario-restaurant)
 - [x] Step 7: hotel (tag scenario-hotel)
-- [ ] Step 8: wrap up (tag tourism-complete)
+- [x] Step 8: wrap up (tag tourism-complete)
 
 ## Open issues
 - Targets 31, 32 (Kantino long, funding): raising on traction wins about 3 to 4 points more than bootstrapping (needs within margin) and sits just above 45%. Budget used. Options: fewer angels in the pool; a founder salary once funded; restate 32 to "neither dominates on both measures". Decisions, part D.
