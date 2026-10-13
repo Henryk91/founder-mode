@@ -30,6 +30,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
   const view = useGame((s) => s.view)
   const newRun = useGame((s) => s.newRun)
   const sameMarket = useGame((s) => s.sameMarketAgain)
+  const toStart = useGame((s) => s.leaveRun)
   if (!pm || !view) return null
   const stage = voiceOf(view)
   const t = new Text(pm, stage, view)
@@ -351,6 +352,9 @@ export function PostMortem({ desk }: { desk: boolean }) {
         {label('pm.sameMarket', stage)}
       </button>
       <p className={styles.hint}>{label('pm.sameMarketHint', stage)}</p>
+      <button type="button" className={ui.button} onClick={toStart}>
+        {label('pm.toStart', stage)}
+      </button>
     </div>
   )
 

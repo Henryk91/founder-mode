@@ -171,6 +171,21 @@ describe('post-mortem screen', () => {
   })
 })
 
+describe('leaving a finished run', () => {
+  it('goes back to the company picker, where another company can be chosen', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'pm-pick' })
+    store.getState().startRun()
+    playToEnd(store)
+    expect(text(store)).toContain('Choose another company')
+    store.getState().leaveRun()
+    expect(store.getState().view).toBeNull()
+    expect(store.getState().hasSave).toBe(false)
+    const start = text(store)
+    expect(start).toContain('Which company this time?')
+    expect(start).toContain('Zollstock')
+  })
+})
+
 describe('milestones on screen', () => {
   it('shows the next milestone on the phone Inbox tab and on the desk, and a reached one on the results', () => {
     const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'ms-ui' })
