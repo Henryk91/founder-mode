@@ -220,6 +220,8 @@ export function getView(state: GameState): PlayerView {
       sinceWeek: c.sinceWeek,
       priceCentsPerMonth: c.priceCentsPerMonth,
     })),
+    customersWon: state.customers.length,
+    customersLost: state.customers.filter((c) => c.churnedWeek !== null).length,
     monthlyRevenueCents: activeCustomers(state).reduce((sum, c) => sum + c.priceCentsPerMonth, 0),
     segments: scenario.segments.map((seg) => ({
       id: seg.id,

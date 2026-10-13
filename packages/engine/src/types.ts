@@ -788,6 +788,9 @@ export type PlayerView = {
   product: ProductView
   leads: LeadView[]
   customers: CustomerView[]
+  /** Customers won over the run, and of those the ones who left (churned or stopped paying). */
+  customersWon: number
+  customersLost: number
   /** Sum of the monthly prices of active customers. */
   monthlyRevenueCents: number
   segments: SegmentView[]

@@ -346,7 +346,18 @@ export const CONDITION_PATHS = [
   'funding.raised',
   'funding.mood',
   'funding.milestoneMissed',
+  // Situational events (step 3): people on the team (working or starting), and the runway shown in
+  // weeks (the weeks left in the run when money is not shrinking).
+  'team.size',
+  'runwayWeeks',
+  // About the message's sender, only inside an effect's `when`: 1 when that customer has an
+  // overdue invoice, 1 when that lead has gone silent; 0 otherwise or without such a sender.
+  'sender.overdue',
+  'sender.silent',
 ] as const
+
+/** Paths about a message's sender: they make sense only once a message has a sender. */
+export const SENDER_PATHS: readonly ConditionPath[] = ['sender.overdue', 'sender.silent']
 export type ConditionPath = (typeof CONDITION_PATHS)[number]
 export const CONDITION_OPS = ['>=', '<=', '>', '<', '==', '!='] as const
 export type ConditionOp = (typeof CONDITION_OPS)[number]
@@ -425,28 +436,52 @@ export const EventChoiceSchema = z.object({
 export const MESSAGE_LOOKS = ['letter', 'note', 'official'] as const
 export type MessageLook = (typeof MESSAGE_LOOKS)[number]
 
-export const EventSchema = z.object({
-  id: Id,
-  area: z.enum(EVENT_AREAS),
-  weight: z.number().positive(),
-  once: z.boolean().default(false),
-  // Weeks before a repeatable event can come back, instead of the inbox cooldown.
-  cooldownWeeks: z.number().int().nonnegative().optional(),
-  when: z.array(ConditionSchema).default([]),
-  // Arrives for sure, without a draw, in the first week any of these holds (and `when` holds).
-  // Such an event never comes through the random draw.
-  trigger: z.array(ConditionSchema).default([]),
-  // Who the message is from. A customer or lead is a real one, picked when the message arrives.
-  from: z.enum(['none', 'customer', 'lead']).default('none'),
-  // The sender's role, shown with their name. For `none` it is the whole sender.
-  sender: z.string().min(1),
-  // How the message looks on the desk: a letter, a sticky note, or an official letter.
-  look: z.enum(MESSAGE_LOOKS).default('letter'),
-  text: z.string().min(1),
-  // The choice taken when the message expires unanswered. It costs no hours.
-  defaultChoice: Id,
-  choices: z.array(EventChoiceSchema).min(2),
-})
+export const EventSchema = z
+  .object({
+    id: Id,
+    area: z.enum(EVENT_AREAS),
+    weight: z.number().positive(),
+    once: z.boolean().default(false),
+    // Weeks before a repeatable event can come back, instead of the inbox cooldown.
+    cooldownWeeks: z.number().int().nonnegative().optional(),
+    when: z.array(ConditionSchema).default([]),
+    // Arrives for sure, without a draw, in the first week any of these holds (and `when` holds).
+    // Such an event never comes through the random draw.
+    trigger: z.array(ConditionSchema).default([]),
+    // Who the message is from. A customer or lead is a real one, picked when the message arrives.
+    from: z.enum(['none', 'customer', 'lead']).default('none'),
+    // The sender's role, shown with their name. For `none` it is the whole sender.
+    sender: z.string().min(1),
+    // How the message looks on the desk: a letter, a sticky note, or an official letter.
+    look: z.enum(MESSAGE_LOOKS).default('letter'),
+    text: z.string().min(1),
+    // The choice taken when the message expires unanswered. It costs no hours.
+    defaultChoice: Id,
+    choices: z.array(EventChoiceSchema).min(2),
+  })
+  .superRefine((e, ctx) => {
+    // Sender paths ask about the message's sender: never in the draw, and only with a sender.
+    for (const c of [...e.when, ...e.trigger]) {
+      if (SENDER_PATHS.includes(c.path)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `${c.path} only works in an effect's when`,
+          path: ['when'],
+        })
+      }
+    }
+    e.choices.forEach((choice, i) =>
+      choice.effects.forEach((fx, j) => {
+        if (e.from === 'none' && fx.when.some((c) => SENDER_PATHS.includes(c.path))) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'a sender condition needs a customer or lead as sender',
+            path: ['choices', i, 'effects', j, 'when'],
+          })
+        }
+      }),
+    )
+  })
 export type ScenarioEvent = z.infer<typeof EventSchema>
 export type EventChoice = z.infer<typeof EventChoiceSchema>
 export const EVENT_PLACEHOLDERS = ['name'] as const

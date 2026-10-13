@@ -1,15 +1,15 @@
 # Autonomous run status
 
 ## Current
-Step: 3 (situational events system), sub-step S1: design and file list
-Last commit: Step 2 done, tag phase9-done
-Next action: Add sender conditions (sender.overdue, sender.silent) and a few visible state paths to the condition language, declare the sender situation on invoicePayChance effects (identical games), derive the reader's answers from declared conditions for the converted events, prove the 60 week game and Kantino long identical.
+Step: 4 (tourism engine), sub-step T0: read the three tourism specs and write docs/tourism-proposal.md
+Last commit: Step 3 done, tag situational-events
+Next action: Read docs/scenario-outdoor.md, scenario-restaurant.md, scenario-hotel.md; write docs/tourism-proposal.md (bookings module, capacity, seasons, weather, channels, staff roster, reviews, targets), deciding everything under plan section 2.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
 - [x] Step 1: funding (tag phase9-d)
 - [x] Step 2: Phase 9 UI, docs, report (tag phase9-done)
-- [ ] Step 3: situational events system (tag situational-events)
+- [x] Step 3: situational events system (tag situational-events)
 - [ ] Step 4: tourism engine (tag tourism-engine)
 - [ ] Step 5: outdoor adventure company (tag scenario-outdoor)
 - [ ] Step 6: bank loan and restaurant (tag scenario-restaurant)
@@ -24,6 +24,7 @@ Next action: Add sender conditions (sender.overdue, sender.silent) and a few vis
 - Target 20 (Kantino long): burst freelancer +0.8 ±1.7 over hire (needs +2); steady hire -1.3 ±1.4 against freelancer (needs +2). Both lose about 3 points against solo: no added part time person pays at this company's size. Options: restate as "renting loses less for a burst, hiring loses less for steady work"; judge it only in tourism where staffing is central; or longer builds in long mode. Decisions, C3b.
 
 ## For Henry to review (non-blocking)
+- Step 3 kept the existing condition grammar and left the 60 week events' sender situations implicit to keep their fingerprints (decisions, step 3).
 - Funding design choices (term sheets in the plan, one investor per round, mood not confidence shown, no pitch odds in the luck section): decisions, part D.
 - An investor is met at most once a run; this was the change that balanced raising most (decisions, part D).
 - Target 36 judged on seeds that raised (restated) (decisions, part D).

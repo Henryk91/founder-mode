@@ -123,7 +123,7 @@ function applyEffect(
 ): GameState {
   // The situation is checked first, so an effect that does not apply never rolls. A chance of 1
   // needs no roll either, so certain effects do not move the random sequence.
-  if (!conditionsHold(state, effect.when)) return state
+  if (!conditionsHold(state, effect.when, message)) return state
   if (effect.chance < 1) {
     const hit = rng.chance(effect.chance)
     if (effect.type === 'cash') {

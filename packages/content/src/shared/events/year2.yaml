@@ -230,13 +230,13 @@ events:
         label: Call them today
         hours: 2
         effects:
-          - { type: invoicePayChance, delta: 0.6 }
+          - { type: invoicePayChance, delta: 0.6, when: [sender.overdue == 1] }
       - id: lawyer
         label: Send a lawyer's letter
         hours: 0
         effects:
           - { type: cash, amountCents: -30000 }
-          - { type: invoicePayChance, delta: 0.8 }
+          - { type: invoicePayChance, delta: 0.8, when: [sender.overdue == 1] }
           - { type: churnChance, delta: 0.4 }
       - id: wait
         label: Give them another week
@@ -260,13 +260,13 @@ events:
         hours: 0
         effects:
           - { type: cash, amountCents: -15000 }
-          - { type: invoicePayChance, delta: 0.7 }
+          - { type: invoicePayChance, delta: 0.7, when: [sender.overdue == 1] }
           - { type: churnChance, delta: 0.6 }
       - id: yourself
         label: Chase it yourself
         hours: 2
         effects:
-          - { type: invoicePayChance, delta: 0.45 }
+          - { type: invoicePayChance, delta: 0.45, when: [sender.overdue == 1] }
       - id: let_go
         label: Let it go
         hours: 0
@@ -287,12 +287,12 @@ events:
         label: Agree to three parts
         hours: 1
         effects:
-          - { type: invoicePayChance, delta: 0.7 }
+          - { type: invoicePayChance, delta: 0.7, when: [sender.overdue == 1] }
       - id: insist
         label: Insist on the full amount now
         hours: 0
         effects:
-          - { type: invoicePayChance, delta: 0.4 }
+          - { type: invoicePayChance, delta: 0.4, when: [sender.overdue == 1] }
           - { type: churnChance, delta: 0.25 }
       - id: ignore
         label: Do not reply
@@ -699,7 +699,7 @@ events:
         label: Register
         hours: 3
         effects:
-          - { type: invoicePayChance, delta: 0.3 }
+          - { type: invoicePayChance, delta: 0.3, when: [sender.overdue == 1] }
       - id: ignore
         label: Keep sending invoices by email
         hours: 0
