@@ -12,6 +12,7 @@ import { parseArgs } from './args'
 import { buildReport, evaluateTargets, TARGET_STRATEGIES, type StrategyRuns } from './report'
 import { deskComparison } from './desk'
 import { evaluateFundingTargets, evaluateLongTargets } from './longReport'
+import { evaluateTourismTargets } from './tourismReport'
 import { asSection, mergeReportFile, type ScenarioSection } from './reportFile'
 import { botScenario } from './scenarios'
 import { runTasks, taskSeeds, type Task, type TaskDone } from './pool'
@@ -31,7 +32,7 @@ import {
   type StrategySpec,
 } from './specs'
 import { STRATEGIES } from './strategies'
-import { describeStrategy, type Strategy } from './strategy'
+import { describeStrategy, playsIn, type Strategy } from './strategy'
 
 const args = parseArgs(process.argv.slice(2))
 const catalogue = scenarioCatalogue()
@@ -97,12 +98,13 @@ function planFor(scenario: Scenario): Planned[] {
     part,
     runs,
   })
-  const full = args.only.length === 0
+  // Tourism scenarios play their own bots and only the main part (step 4).
+  const full = args.only.length === 0 && !scenario.bookings
   const out: Planned[] = []
   if (args.parts.includes('main')) {
     out.push(
       ...strategies
-        .filter((s) => s.modes?.includes(mode) ?? true)
+        .filter((s) => playsIn(s, scenario))
         .map((s) => plan({ kind: 'listed', id: s.id }, 'main')),
     )
     if (full) out.push(plan({ kind: 'randomNoInbox' }, 'main'))
@@ -206,6 +208,7 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
   const { segment, note } = botScenario(scenario.id).playtest
   const input = {
     ...(scenario.mode ? { maxWeeks: scenario.maxWeeks } : {}),
+    ...(scenario.bookings ? { tourism: true } : {}),
     engineVersion: ENGINE_VERSION,
     runs: args.runs,
     seedPrefix: args.seedPrefix,
@@ -237,9 +240,11 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
   }
   for (const id of TARGET_STRATEGIES.slice(0, 1)) {
     console.log(`\nTargets for ${scenario.id}${scenario.mode ? ` (${scenario.mode})` : ''}, ${id}`)
-    for (const t of scenario.mode === 'long'
-      ? [...evaluateLongTargets(input), ...evaluateFundingTargets(input)]
-      : evaluateTargets(input, id)) {
+    for (const t of scenario.bookings
+      ? evaluateTourismTargets(input)
+      : scenario.mode === 'long'
+        ? [...evaluateLongTargets(input), ...evaluateFundingTargets(input)]
+        : evaluateTargets(input, id)) {
       const status = t.value === '-' ? '----' : t.pass ? 'ok  ' : 'FAIL'
       console.log(`${status} ${t.id}. ${t.text}: ${t.value}${t.margin ? ` (${t.margin})` : ''}`)
     }

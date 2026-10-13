@@ -34,7 +34,11 @@ export function isDecisive(e: WeekReport['entries'][number]): boolean {
     e.kind === 'presale_result' ||
     e.kind === 'customer_churned' ||
     e.kind === 'invoice_written_off' ||
-    e.kind === 'candidates_ready'
+    e.kind === 'candidates_ready' ||
+    // Tourism: new bookings, guests turned away or cancelled by the company.
+    e.kind === 'bookings_new' ||
+    e.kind === 'turned_away' ||
+    e.kind === 'company_cancelled'
   )
 }
 
@@ -148,6 +152,21 @@ export type RunResult = {
     bankruptAfterRaise: boolean
     /** Investors who passed as too early: pitched before a paying customer. */
     pitchedTooEarly: number
+  } | null
+  /**
+   * Tourism (bookings model): guests served, their payments, the rating at the end, the share of
+   * served guests who came through the platform, guests turned away and cancelled by the company,
+   * and the first week a guest from the secretly viable segment was served. Null otherwise.
+   */
+  tourism: {
+    guests: number
+    revenueCents: number
+    rating: number | null
+    reviews: number
+    platformShare: number
+    turnedAway: number
+    companyCancelled: number
+    firstViableWeek: number | null
   } | null
   /** For runs with a hire: what it cost per customer it found, and what a customer was worth. */
   hire: HireEconomics | null
@@ -418,6 +437,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     customersBySource,
     hire: hireEconomics(state),
     funding: fundingResult(state),
+    tourism: tourismResult(state, viableId),
     freelance: freelanceAt && {
       role: state.team.freelancers[0]?.role ?? 'developer',
       market: freelanceAt.market,
@@ -490,4 +510,28 @@ function companyValue(state: GameState): number {
     .filter((c) => c.churnedWeek === null)
     .reduce((t, c) => t + c.priceCentsPerMonth, 0)
   return Math.max(0, Math.round(cfg.valueRevenueMultiple * 12 * monthly + state.company.cashCents))
+}
+
+/** `RunResult.tourism`: what the bookings run served and earned, read from its state. */
+function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
+  const b = state.bookings
+  if (!b) return null
+  const served = b.bookings.filter((x) => x.status === 'served')
+  const guests = served.reduce((t, x) => t + x.units, 0)
+  const platform = served.filter((x) => x.channel === 'platform').reduce((t, x) => t + x.units, 0)
+  const first = served
+    .filter((x) => x.segmentId === viable)
+    .reduce((m, x) => Math.min(m, x.week), Number.POSITIVE_INFINITY)
+  return {
+    guests,
+    revenueCents: state.ledger.reduce((t, l) => t + l.bookingRevenueCents, 0),
+    rating: b.rating,
+    reviews: b.reviews,
+    platformShare: guests > 0 ? platform / guests : 0,
+    turnedAway: b.turnedAway.reduce((t, x) => t + x.units, 0),
+    companyCancelled: b.bookings
+      .filter((x) => x.status === 'company_cancelled')
+      .reduce((t, x) => t + x.units, 0),
+    firstViableWeek: Number.isFinite(first) ? first : null,
+  }
 }
