@@ -1,0 +1,247 @@
+# Getting guests: platforms, firms, planners and the village's own calendar.
+events:
+  - id: preferred_partner_badge
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.listed == 1, tour.reviews >= 10]
+    from: none
+    sender: Zimmerfrei
+    look: official
+    text: >-
+      Zimmerfrei offers you a "preferred partner" badge: higher in the search, for three points
+      more commission on every booking. The badge is gold. The commission is permanent.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the badge
+        hours: 1
+        effects:
+          - { type: guests, segment: leisure, count: 15 }
+          - {
+              type: fixedCost,
+              id: platform_badge,
+              name: Preferred partner commission,
+              monthlyCents: 40000,
+            }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: firm_block_booking
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: A machine works up the valley
+    text: >-
+      A firm wants six rooms for eight weeks at a fixed low rate for a project team. It is
+      guaranteed occupancy in a quiet season. In summer the same rooms would sell for more on a
+      weekend.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the block booking
+        hours: 2
+        effects:
+          - { type: guests, segment: project_guests, count: 30 }
+          - { type: review, rating: 3, count: 2, when: [tour.peak == 1] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: village_festival
+    area: sales
+    weight: 3
+    once: true
+    when: [tour.month == 6]
+    from: none
+    sender: The village
+    look: note
+    text: >-
+      The village holds its summer festival on your best weekend: brass bands, a regatta and a
+      beer tent the size of a hangar. Every bed within ten kilometres will be wanted. A full house
+      that weekend needs every hand you have.
+    defaultChoice: usual
+    choices:
+      - id: push
+        label: Advertise and staff up for the weekend
+        hours: 6
+        effects:
+          - { type: guests, segment: leisure, count: 20 }
+          - { type: energy, delta: -4 }
+      - id: usual
+        label: Take what comes
+        hours: 0
+
+  - id: boat_package
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 16]
+    from: none
+    sender: The tourism office
+    text: >-
+      The tourism office asks you to join a package with the boat company: a night, breakfast and
+      a cruise. The office takes a commission, the boat takes a cut, and guests take photos.
+    defaultChoice: decline
+    choices:
+      - id: join
+        label: Join the package
+        hours: 2
+        effects:
+          - { type: guests, segment: leisure, count: 10 }
+          - { type: cash, amountCents: -15000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: twelve_room_cancel
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.listed == 1, tour.reviews >= 5]
+    from: none
+    sender: Zimmerfrei
+    look: official
+    text: >-
+      Someone booked all twelve rooms for one Saturday through the platform, then cancelled free
+      on Friday. You turned away a wedding enquiry for that date. Your cancellation terms allowed
+      it; your patience did not.
+    defaultChoice: accept
+    choices:
+      - id: complain
+        label: Complain to the platform
+        hours: 2
+        effects:
+          - { type: energy, delta: -2 }
+      - id: accept
+        label: Let it go
+        hours: 0
+        effects:
+          - { type: energy, delta: -4 }
+
+  - id: november_empty
+    area: sales
+    weight: 3
+    once: false
+    cooldownWeeks: 40
+    when: [tour.month == 11, tour.bookedWeek < 20]
+    from: none
+    sender: Your calendar
+    look: note
+    text: >-
+      November: two of twelve rooms booked all week. You could close a floor and save heating,
+      or call the firms in the valley about project staff. The lake is beautiful and nobody is
+      looking at it.
+    defaultChoice: wait
+    choices:
+      - id: call_firms
+        label: Call the firms in the valley
+        hours: 6
+        effects:
+          - { type: guests, segment: project_guests, count: 12 }
+      - id: close_floor
+        label: Close the top floor until spring
+        hours: 1
+        effects:
+          - { type: cash, amountCents: 60000 }
+      - id: wait
+        label: Wait for December
+        hours: 0
+
+  - id: wedding_fair
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.month >= 1, tour.month <= 3]
+    from: none
+    sender: A wedding fair in Munich
+    look: official
+    text: >-
+      A wedding fair in Munich offers a stand for a weekend. Two days of brides, mothers of brides
+      and planners comparing table linen. Without an event room it is two days of explaining that
+      you will have one.
+    defaultChoice: skip
+    choices:
+      - id: stand
+        label: Take a stand
+        hours: 14
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: guests, segment: groups, count: 48 }
+          - { type: energy, delta: -5 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: christmas_vouchers_hotel
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.month == 12]
+    from: none
+    sender: Your accountant
+    look: note
+    text: >-
+      Your accountant suggests selling gift vouchers for spring weekends before Christmas. Cash in
+      the quietest month, guests in the spring, and a few vouchers nobody ever uses. Selling them
+      takes a few evenings online.
+    defaultChoice: skip
+    choices:
+      - id: sell
+        label: Sell gift vouchers
+        hours: 5
+        effects:
+          - { type: cash, amountCents: 60000 }
+          - { type: guests, segment: leisure, count: 6 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: rate_parity_letter
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.listed == 1]
+    from: none
+    sender: Zimmerfrei
+    look: official
+    text: >-
+      The platform writes that your own website must not be cheaper than its listing. A lawyer
+      friend says that rule no longer holds in Germany. The platform's ranking may disagree with
+      the lawyer.
+    defaultChoice: comply
+    choices:
+      - id: ignore
+        label: Keep your website cheaper
+        hours: 1
+        effects:
+          - { type: guests, segment: leisure, count: 8 }
+          - { type: review, rating: 3, count: 1 }
+      - id: comply
+        label: Keep the rates equal
+        hours: 0
+
+  - id: regatta_weekend
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.month == 8]
+    from: none
+    sender: The sailing club
+    text: >-
+      The sailing club asks for rooms for its regatta crews: twenty sailors, two nights, early
+      breakfasts and a lot of wet kit. They pay well and leave sand everywhere.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Host the crews
+        hours: 3
+        effects:
+          - { type: guests, segment: groups, count: 24 }
+          - { type: review, rating: 3, count: 2, when: [tour.bookedWeek >= 70] }
+      - id: decline
+        label: Decline
+        hours: 0

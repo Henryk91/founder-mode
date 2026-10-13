@@ -1,0 +1,147 @@
+# The host who lives upstairs: energy, the lake and the family.
+events:
+  - id: night_bell
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when: [tour.bookedWeek >= 40]
+    from: none
+    sender: The night bell
+    look: note
+    text: >-
+      The night bell rang at two, three and half past four: a lost key, a noise and a guest who
+      wanted to know where the noise was. You live upstairs, so you answered all three.
+    defaultChoice: carry_on
+    choices:
+      - id: nap
+        label: Sleep in tomorrow
+        hours: 0
+        effects:
+          - { type: energy, delta: 6 }
+          - { type: lostHours, hours: 4 }
+      - id: carry_on
+        label: Carry on
+        hours: 0
+        effects:
+          - { type: energy, delta: -5 }
+
+  - id: lake_swim
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 16
+    when: [tour.month >= 6, tour.month <= 8, energy <= 60]
+    from: none
+    sender: The lake
+    look: note
+    text: >-
+      The lake is warm, the guests are out and the jetty is free for an hour. You have not been
+      in the water once this summer. The laundry will still be there afterwards, sadly.
+    defaultChoice: work
+    choices:
+      - id: swim
+        label: Swim for an hour
+        hours: 1
+        effects:
+          - { type: energy, delta: 6 }
+      - id: work
+        label: Do the laundry
+        hours: 0
+
+  - id: former_colleague
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 15]
+    from: none
+    sender: A former colleague
+    text: >-
+      A former colleague from the city hotel visits and offers to look at your rates and your
+      listing over dinner. She has opinions and a sharp pencil. Dinner is on you.
+    defaultChoice: decline
+    choices:
+      - id: dinner
+        label: Have dinner with her
+        hours: 4
+        effects:
+          - { type: cash, amountCents: -8000 }
+          - { type: skill, skill: selling, delta: 0.04 }
+          - { type: energy, delta: 3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: family_christmas
+    area: founder
+    weight: 2
+    once: true
+    when: [tour.month == 12]
+    from: none
+    sender: Your family
+    look: note
+    text: >-
+      Your family wants you home for Christmas, three hours away. The house has four bookings over
+      the holidays. Someone has to hand out keys and smile.
+    defaultChoice: stay
+    choices:
+      - id: go
+        label: Go home and leave a key box
+        hours: 0
+        effects:
+          - { type: energy, delta: 10 }
+          - { type: review, rating: 3, count: 2 }
+      - id: stay
+        label: Stay and host
+        hours: 0
+        effects:
+          - { type: energy, delta: -4 }
+
+  - id: back_strain
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 20, energy <= 50]
+    from: none
+    sender: Your back
+    look: note
+    text: >-
+      You carried one too many mattresses up the stairs. Your back now sends a daily report. A
+      physiotherapist could read it more kindly.
+    defaultChoice: ignore
+    choices:
+      - id: physio
+        label: See a physiotherapist
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -12000 }
+          - { type: energy, delta: 6 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+        effects:
+          - { type: energy, delta: -5 }
+
+  - id: village_council
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 30]
+    from: none
+    sender: The village council
+    look: official
+    text: >-
+      The village council asks you to sit on its tourism committee. It meets monthly, decides
+      about festivals and car parks, and knows every guesthouse owner by name. It would cost
+      evenings and gain friends.
+    defaultChoice: decline
+    choices:
+      - id: join
+        label: Join the committee
+        hours: 4
+        effects:
+          - { type: guests, segment: leisure, count: 6 }
+          - { type: energy, delta: -2 }
+      - id: decline
+        label: Decline
+        hours: 0

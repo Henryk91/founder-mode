@@ -403,7 +403,7 @@ bookings:
     office_lunch:
       # Spec 80 to 250; a lunch of 14 EUR needs volume (decisions, step 6).
       base: { min: 170, max: 380 }
-      unit: person
+      unit: cover
       price: { peak: 1400, off: 1400 }
       size: { min: 1, max: 4 }
       leadWeeks: { min: 0, max: 0 }
@@ -418,7 +418,7 @@ bookings:
     evening_locals:
       # Spec 40 to 160; a little lower so dinner does not carry every run (decisions, step 6).
       base: { min: 35, max: 140 }
-      unit: person
+      unit: cover
       price: { peak: 3800, off: 3800 }
       size: { min: 2, max: 6 }
       leadWeeks: { min: 0, max: 2 }
@@ -433,7 +433,7 @@ bookings:
       reviewWeight: 0.6
     tourists:
       base: { min: 30, max: 180 }
-      unit: person
+      unit: cover
       price: { peak: 3000, off: 2800 }
       size: { min: 2, max: 4 }
       leadWeeks: { min: 0, max: 1 }

@@ -368,6 +368,7 @@ const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
   // Tourism events are read from their declared conditions (tourism bots).
   gratwanderung: {},
   hinterhof: {},
+  seeblick: {},
   kantino: {
     // validation
     survey_offer: 'pass',

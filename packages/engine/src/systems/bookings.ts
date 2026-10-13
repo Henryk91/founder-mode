@@ -337,8 +337,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const role = state.hidden.segments[seg]?.roleId as keyof BookingsConfig['roleFactor']
     return cfg.roleFactor[role] ?? 0
   }
-  // Units still booked per product and week, counted once and kept up to date as requests book.
-  const heldKey = (id: FeatureId, w: number) => `${id}|${w}`
+  // Units still booked per capacity pool and week, counted once and kept up to date as requests
+  // book. A product's pool is its own unless it uses another's capacity (step 7).
+  const heldKey = (id: FeatureId, w: number) => `${poolOf(cfg, id)}|${w}`
   const held = new Map<string, number>()
   for (const x of bookings) {
     if (x.status === 'booked' && x.week >= week) {
@@ -349,7 +350,25 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
   }
   const room = (id: FeatureId, w: number) =>
-    (cfg.products[id]?.capacity ?? 0) - (held.get(heldKey(id, w)) ?? 0)
+    (cfg.products[poolOf(cfg, id)]?.capacity ?? 0) - (held.get(heldKey(id, w)) ?? 0)
+  // Units a segment holds per pool and week, for segments that can use only a share (step 7).
+  const segKey = (seg: SegmentId, id: FeatureId, w: number) => `${seg}|${poolOf(cfg, id)}|${w}`
+  const heldBySeg = new Map<string, number>()
+  if (Object.values(cfg.segments).some((x) => x.capacityShare)) {
+    for (const x of bookings) {
+      if (x.status === 'booked' && x.week >= week) {
+        const k = segKey(x.segmentId, x.productId, x.week)
+        heldBySeg.set(k, (heldBySeg.get(k) ?? 0) + x.units)
+      }
+    }
+  }
+  const roomFor = (seg: SegmentId, id: FeatureId, w: number) => {
+    const share = cfg.segments[seg]?.capacityShare
+    if (!share) return room(id, w)
+    const peak = cfg.peakMonths.includes(monthOf(state.scenario, w))
+    const cap = (cfg.products[poolOf(cfg, id)]?.capacity ?? 0) * (peak ? share.peak : share.off)
+    return Math.min(room(id, w), Math.floor(cap) - (heldBySeg.get(segKey(seg, id, w)) ?? 0))
+  }
   let sentLost = 0
   for (const seg of state.scenario.segments) {
     const s = cfg.segments[seg.id]
@@ -386,10 +405,14 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       if (i < ownRequests && b.policy === 'strict' && !rng.chance(s.strictConversion)) continue
       const options = Object.entries(cfg.products)
         .filter(([id, prod]) => prod.serves.includes(seg.id) && sells(state, id, target))
-        .map(([id]) => ({ id, free: room(id, target) }))
+        .map(([id]) => ({ id, free: roomFor(seg.id, id, target) }))
         .filter((o) => o.free >= size)
         .sort((x, y) => y.free - x.free)
       const pick = options[0]
+      // A deposit on booking, where the segment pays one (step 7).
+      const deposit = pick
+        ? Math.round(size * priceFor(state, seg.id, target) * (s.depositShare ?? 0))
+        : 0
       if (!pick) {
         lost += size
         // Guests a partner sent and you could not take complain about it.
@@ -406,8 +429,14 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         channel: platform ? 'platform' : 'direct',
         bookedWeek: week,
         status: 'booked',
+        ...(deposit > 0 ? { depositCents: deposit } : {}),
       })
+      out.revenueCents += deposit
       held.set(heldKey(pick.id, target), (held.get(heldKey(pick.id, target)) ?? 0) + size)
+      if (s.capacityShare) {
+        const k = segKey(seg.id, pick.id, target)
+        heldBySeg.set(k, (heldBySeg.get(k) ?? 0) + size)
+      }
       if (!platform) repeatGuests[seg.id] = (repeatGuests[seg.id] ?? 0) + size
       made++
       madeUnits += size
@@ -472,7 +501,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         covered += per
       }
     }
-    staffed.set(id, Math.min(covered, cfg.products[id]?.capacity ?? 0))
+    staffed.set(id, Math.min(covered, cfg.products[poolOf(cfg, id)]?.capacity ?? 0))
   }
   let servedUnits = 0
   let staffCancelled = 0
@@ -504,13 +533,15 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const gross = x.units * x.priceCents
     const cut = x.channel === 'platform' ? Math.round(gross * cfg.platform.commission) : 0
     commission += cut
+    // What a deposit already paid comes off what is due now.
+    const owed = gross - cut - (x.depositCents ?? 0)
     if (x.status === 'served') {
       const prod = cfg.products[x.productId]
       unitCosts +=
         x.units * (prod?.unitCostCents ?? 0) + Math.round(gross * (prod?.unitCostShare ?? 0))
     }
     if (!s.invoiced) {
-      out.revenueCents += gross - cut
+      out.revenueCents += owed
       continue
     }
     const hidden = state.hidden.segments[x.segmentId]!
@@ -523,7 +554,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       customerId: x.id,
       customerName: state.scenario.segments.find((g) => g.id === x.segmentId)?.name ?? x.segmentId,
       segmentId: x.segmentId,
-      amountCents: gross - cut,
+      amountCents: owed,
       issuedWeek: week,
       dueWeek: week + Math.ceil(dueDays / 7),
       paidWeek: null,
@@ -644,6 +675,10 @@ export function bookingsRevenueOrSubscriptions(state: GameState): number {
     .reduce((t, c) => t + c.priceCentsPerMonth, 0)
 }
 
+/** The product whose capacity a product sells from: its own, or the one it shares (step 7). */
+export const poolOf = (cfg: BookingsConfig, id: FeatureId): FeatureId =>
+  cfg.products[id]?.capacityOf ?? id
+
 /** Finished bookings are kept for this many weeks (the calendar's last year), then archived. */
 const KEEP_WEEKS = WEEKS_PER_YEAR + 1
 
@@ -720,6 +755,10 @@ export function bookingsView(state: GameState): BookingsView | null {
     }
   }
   const bookedAt = (id: FeatureId, w: number) => booked.get(key(id, w)) ?? 0
+  /** Booked in a product's capacity pool: itself and every product sharing it (step 7). */
+  const sharing = (id: FeatureId) =>
+    Object.keys(cfg.products).filter((p) => poolOf(cfg, p) === poolOf(cfg, id))
+  const pooled = (id: FeatureId, w: number) => sharing(id).reduce((t, p) => t + bookedAt(p, w), 0)
   const lastYear = (id: FeatureId, w: number) =>
     w - WEEKS_PER_YEAR >= 1 ? (past.get(key(id, w)) ?? 0) : null
   return {
@@ -780,8 +819,8 @@ export function bookingsView(state: GameState): BookingsView | null {
           const w = state.week + k
           return {
             week: w,
-            booked: bookedAt(id, w),
-            capacity: sells(state, id, w) ? (cfg.products[id]?.capacity ?? 0) : 0,
+            booked: pooled(id, w),
+            capacity: sells(state, id, w) ? (cfg.products[poolOf(cfg, id)]?.capacity ?? 0) : 0,
             lastYear: lastYear(id, w),
           }
         }),

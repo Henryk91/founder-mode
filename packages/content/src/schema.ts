@@ -351,6 +351,12 @@ export const BookingSegmentSchema = z.object({
   cancel: Share,
   // Share of requests a strict policy still converts, against a flexible one.
   strictConversion: Share,
+  // Step 7: share of the price paid when the booking is made (a wedding's deposit), kept if the
+  // guests cancel; the rest is paid at the stay. Absent: everything at the stay.
+  depositShare: Share.optional(),
+  // Step 7: the share of a product's capacity this segment's guests can use, in peak months and
+  // off season (couples come at weekends outside the holidays). Absent: all of it.
+  capacityShare: z.object({ peak: Share, off: Share }).optional(),
   // Whether the weather moves its demand and cancellations.
   weatherSensitive: z.boolean().default(false),
   // Business customers get an invoice through the invoice system; others pay on the day.
@@ -376,6 +382,9 @@ export const BookingProductSchema = z.object({
   requires: Id.optional(),
   // Step 6: a cost per unit as a share of its price (food cost), on top of unitCostCents.
   unitCostShare: Share.optional(),
+  // Step 7: sells from that product's capacity instead of its own (whole-house bookings use the
+  // rooms); both count against one pool.
+  capacityOf: Id.optional(),
 })
 
 export const StaffRoleSchema = z.object({
@@ -903,6 +912,9 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       }
       if (p.requires && !featureIds.has(p.requires)) {
         issue(`unknown feature ${p.requires}`, ['bookings', 'products', id, 'requires'])
+      }
+      if (p.capacityOf && !s.bookings.products[p.capacityOf]) {
+        issue(`unknown product ${p.capacityOf}`, ['bookings', 'products', id, 'capacityOf'])
       }
     }
     for (const [id, r] of Object.entries(s.bookings.roles)) {

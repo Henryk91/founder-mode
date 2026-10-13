@@ -196,6 +196,8 @@ export type Booking = {
   channel: BookingChannel
   bookedWeek: number
   status: BookingStatus
+  /** Paid when booked (a deposit, step 7); the rest is due at the stay. Absent: none. */
+  depositCents?: number
 }
 
 /** Why the bank said no, in the words the player sees. */

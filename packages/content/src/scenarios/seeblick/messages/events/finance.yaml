@@ -1,0 +1,188 @@
+# Money: the lease, the bank, the refresh and the bills of winter.
+events:
+  - id: refresh_offer
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 26, monthlyRevenueEur >= 15000]
+    from: none
+    sender: A builder from the village
+    text: >-
+      A builder offers to renovate four more rooms and paint the facade before the season: fresh
+      shutters, flower boxes, bathrooms from this decade. It costs 60,000 EUR, paid when the work
+      is done. Guests notice a house; they do not notice a loan.
+    defaultChoice: not_now
+    choices:
+      - id: refresh
+        label: Have the house refreshed
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -6000000 }
+          - { type: moveOffice, stage: refreshed_house }
+      - id: not_now
+        label: Not now
+        hours: 0
+
+  - id: lease_increase
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 40]
+    from: none
+    sender: The owners in Mallorca
+    look: official
+    text: >-
+      The owners write from Mallorca: the lease index has risen and so will your rent. You could
+      negotiate, which takes calls and a long letter, or accept and save your evenings.
+    defaultChoice: accept
+    choices:
+      - id: negotiate
+        label: Negotiate
+        hours: 5
+        effects:
+          - { type: fixedCost, id: lease_rise, name: Lease rise, monthlyCents: 15000 }
+      - id: accept
+        label: Accept the rise
+        hours: 0
+        effects:
+          - { type: fixedCost, id: lease_rise, name: Lease rise, monthlyCents: 35000 }
+
+  - id: wedding_cancels
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 20, tour.bookedAhead >= 24]
+    from: none
+    sender: A wedding couple
+    text: >-
+      A wedding party cancels four months out and asks for its deposit back. The contract says no.
+      The bride's mother says she writes reviews.
+    defaultChoice: keep
+    choices:
+      - id: refund
+        label: Refund the deposit
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -150000 }
+          - { type: review, rating: 5, count: 1 }
+      - id: keep
+        label: Keep it, as agreed
+        hours: 0
+        effects:
+          - { type: review, rating: 1, count: 2 }
+
+  - id: bank_quarterly_hotel
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 13
+    when: [loan.running >= 1]
+    from: none
+    sender: Seenland Bank
+    look: official
+    text: >-
+      The bank asks for your occupancy and revenue for the quarter, "as agreed". Preparing them
+      takes an evening. Not sending them earns a week of polite calls.
+    defaultChoice: ignore
+    choices:
+      - id: send
+        label: Prepare and send the figures
+        hours: 3
+      - id: ignore
+        label: Leave it
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 5 }
+
+  - id: bank_missed_hotel
+    area: finance
+    weight: 3
+    once: false
+    cooldownWeeks: 4
+    when: [loan.missed >= 1]
+    from: none
+    sender: Seenland Bank
+    look: official
+    text: >-
+      Your adviser calls about the missed payment, kindly and from a script. The next payment is
+      due at the month end. So, she adds, is the bank's patience.
+    defaultChoice: let_ring
+    choices:
+      - id: talk
+        label: Go through the figures with her
+        hours: 2
+        effects:
+          - { type: energy, delta: -2 }
+      - id: let_ring
+        label: Let it ring
+        hours: 0
+        effects:
+          - { type: energy, delta: -6 }
+
+  - id: tourist_tax_audit
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 15]
+    from: none
+    sender: The municipality
+    look: official
+    text: >-
+      The municipality audits your tourist tax returns. The forms want guests' birth dates,
+      nationalities and a signature from someone who remembers. Doing it properly takes a day.
+    defaultChoice: ignore
+    choices:
+      - id: prepare
+        label: Do the returns properly
+        hours: 6
+      - id: ignore
+        label: Send what you have
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -40000, chance: 0.5 }
+
+  - id: winter_heating_bill
+    area: finance
+    weight: 2
+    once: true
+    when: [tour.month == 2]
+    from: none
+    sender: The energy supplier
+    look: official
+    text: >-
+      The winter heating bill arrives with a back payment: an old house by a cold lake burns a
+      lot of oil. You can pay it now or spread it over the year in instalments.
+    defaultChoice: pay
+    choices:
+      - id: spread
+        label: Spread it over the year
+        hours: 1
+        effects:
+          - { type: fixedCost, id: heating_plan, name: Heating instalments, monthlyCents: 15000 }
+      - id: pay
+        label: Pay it now
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -150000 }
+
+  - id: insulation_grant
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: The regional energy agency
+    look: official
+    text: >-
+      The energy agency pays part of new windows for old guesthouses, if you fill in the form,
+      get three quotes and wait. New windows would lower the heating bill for years.
+    defaultChoice: ignore
+    choices:
+      - id: apply
+        label: Apply for the grant
+        hours: 8
+        effects:
+          - { type: cash, amountCents: 100000, chance: 0.6 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
