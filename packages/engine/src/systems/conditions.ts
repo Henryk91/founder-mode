@@ -5,6 +5,7 @@ import { activeCustomers } from './customers'
 import { moodLevel } from './funding'
 import { openLeadCount } from './experiments'
 import { isOverdue, isUnpaid, maxOverdueDays } from './invoices'
+import { monthOf } from './bookings'
 import { runwayWeeks } from './finance'
 import { canBookDemo } from './sales'
 
@@ -38,6 +39,15 @@ const METRICS: Record<ConditionPath, (state: GameState, sender: ConditionSender)
   'funding.milestoneMissed': (s) => (s.funding.milestone?.status === 'missed' ? 1 : 0),
   'team.size': (s) => s.team.members.filter((m) => m.letGoWeek === null).length,
   runwayWeeks: (s) => runwayWeeks(s) ?? s.scenario.maxWeeks - s.week + 1,
+  'tour.forecast': (s) => (s.bookings ? FORECASTS.indexOf(s.bookings.forecast) : 0),
+  'tour.peak': (s) =>
+    s.scenario.bookings?.peakMonths.includes(monthOf(s.scenario, s.week)) ? 1 : 0,
+  'tour.month': (s) => (s.bookings ? monthOf(s.scenario, s.week) : 0),
+  'tour.rating': (s) => Math.round((s.bookings?.rating ?? 0) * 10),
+  'tour.reviews': (s) => s.bookings?.reviews ?? 0,
+  'tour.bookedWeek': (s) => bookedBetween(s, s.week, s.week),
+  'tour.bookedAhead': (s) => bookedBetween(s, s.week + 1, s.week + 4),
+  'tour.listed': (s) => (s.bookings?.platformListed ? 1 : 0),
   'sender.overdue': (s, m) =>
     m?.targetId && s.invoices.some((i) => i.customerId === m.targetId && isOverdue(i, s.week))
       ? 1
@@ -70,6 +80,15 @@ function holds(value: number, c: Condition): boolean {
     case '!=':
       return value !== c.value
   }
+}
+
+const FORECASTS = ['good', 'mixed', 'bad', 'dangerous']
+
+/** Units booked (still booked) for weeks `from` to `to`, a bookings run's calendar. */
+function bookedBetween(state: GameState, from: number, to: number): number {
+  return (state.bookings?.bookings ?? [])
+    .filter((b) => b.status === 'booked' && b.week >= from && b.week <= to)
+    .reduce((t, b) => t + b.units, 0)
 }
 
 /** The value a condition path reads now, for a message's sender where it asks about one. */

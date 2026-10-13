@@ -675,5 +675,8 @@ export function bookingsView(state: GameState): BookingsView | null {
       booked: bookedUnits(state, id, state.week),
     })),
     revenueLast4Cents: bookingRevenueLast4(state),
+    bookedAhead: b.bookings
+      .filter((x) => x.status === 'booked' && x.week > state.week && x.week <= state.week + 4)
+      .reduce((t, x) => t + x.units, 0),
   }
 }

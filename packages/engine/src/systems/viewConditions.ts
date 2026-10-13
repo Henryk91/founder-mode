@@ -8,6 +8,7 @@ import { conditionHolds } from './conditions'
  * outcome can only depend on what the player can see. Bots read events the same way.
  */
 const MOODS = { worried: 0, patient: 1, pleased: 2 } as const
+const FORECASTS = ['good', 'mixed', 'bad', 'dangerous']
 
 const VIEW_METRICS: Record<ConditionPath, (v: PlayerView, m: MessageView | null) => number> = {
   week: (v) => v.week,
@@ -33,6 +34,14 @@ const VIEW_METRICS: Record<ConditionPath, (v: PlayerView, m: MessageView | null)
   'funding.milestoneMissed': (v) => (v.funding?.milestone?.status === 'missed' ? 1 : 0),
   'team.size': (v) => v.team.members.length,
   runwayWeeks: (v) => v.company.runwayWeeks ?? v.maxWeeks - v.week + 1,
+  'tour.forecast': (v) => (v.bookings ? FORECASTS.indexOf(v.bookings.forecast) : 0),
+  'tour.peak': (v) => (v.bookings?.peak ? 1 : 0),
+  'tour.month': (v) => v.bookings?.month ?? 0,
+  'tour.rating': (v) => Math.round((v.bookings?.rating ?? 0) * 10),
+  'tour.reviews': (v) => v.bookings?.reviews ?? 0,
+  'tour.bookedWeek': (v) => (v.bookings?.thisWeek ?? []).reduce((t, x) => t + x.booked, 0),
+  'tour.bookedAhead': (v) => v.bookings?.bookedAhead ?? 0,
+  'tour.listed': (v) => (v.bookings?.platform.listed ? 1 : 0),
   'sender.overdue': (v, m) =>
     m && v.invoices.some((i) => i.customerName === m.fromName && i.status === 'overdue') ? 1 : 0,
   'sender.silent': (v, m) =>

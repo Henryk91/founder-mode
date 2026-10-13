@@ -11,6 +11,7 @@ import {
 import { describe, expect, it } from 'vitest'
 import { STRATEGIES } from '../src/strategies'
 import { fromConditions } from '../src/strategies/validateThenBuild'
+import { tourismScenario } from '../../engine/test/tourism'
 
 describe('the condition language (step 3)', () => {
   it('reads every path the same from the player view as from the game state', () => {
@@ -19,11 +20,12 @@ describe('the condition language (step 3)', () => {
       ['kantino', 'long', 'raise_on_traction'],
       ['kantino', 'standard', 'validate_then_build_hire'],
       ['zollstock', 'standard', 'random'],
+      ['tourism', 'long', 'tourism_careful'],
     ] as const
     let checked = 0
     let sender = 0
     for (const [id, mode, strategyId] of cases) {
-      const scenario = loadScenario(id, mode)
+      const scenario = id === 'tourism' ? tourismScenario() : loadScenario(id, mode)
       const strategy = STRATEGIES.find((s) => s.id === strategyId)!
       for (let seed = 0; seed < 3; seed++) {
         let state = createGame(scenario, `cond-${seed}`)

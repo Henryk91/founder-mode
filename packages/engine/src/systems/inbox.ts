@@ -204,6 +204,27 @@ function applyEffect(
       return state
     case 'moveOffice':
       return moveOffice(state, effect.stage)
+    case 'guests': {
+      const b = state.bookings
+      if (!b) return state
+      const ids = Object.keys(b.repeatGuests)
+      const seg = effect.segment ?? (ids.length ? rng.pick(ids) : null)
+      if (!seg) return state
+      return {
+        ...state,
+        bookings: {
+          ...b,
+          repeatGuests: { ...b.repeatGuests, [seg]: (b.repeatGuests[seg] ?? 0) + effect.count },
+        },
+      }
+    }
+    case 'review': {
+      const b = state.bookings
+      if (!b) return state
+      const reviews = b.reviews + effect.count
+      const rating = ((b.rating ?? 0) * b.reviews + effect.rating * effect.count) / reviews
+      return { ...state, bookings: { ...b, rating, reviews } }
+    }
     case 'investorConfidence': {
       if (state.funding.stakes.length === 0) return state
       const confidence = Math.min(1, Math.max(0, state.hidden.funding.confidence + effect.delta))
