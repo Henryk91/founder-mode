@@ -97,7 +97,15 @@ describe('layouts', () => {
   it('draws every office stage, and names the people in the picture', () => {
     const store = run('scene')
     const pages = (
-      ['kitchen_table', 'coworking_desk', 'trades_yard', 'van_garage', 'town_base'] as const
+      [
+        'kitchen_table',
+        'coworking_desk',
+        'trades_yard',
+        'van_garage',
+        'town_base',
+        'inherited_room',
+        'own_fitout',
+      ] as const
     ).map((stage) =>
       renderToString(
         <StoreProvider value={store}>
@@ -111,7 +119,7 @@ describe('layouts', () => {
       expect(page).toContain('<svg')
       expect(page).toMatch(/You: rested, 0 h this week/)
     }
-    expect(new Set(pages).size).toBe(5)
+    expect(new Set(pages).size).toBe(7)
   })
 
   it('names an office stage as its scenario does, and draws one without a picture at a table', () => {

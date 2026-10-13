@@ -9,7 +9,13 @@ import s from './Scene.module.css'
  * scenario does.
  */
 export type OfficeStage =
-  'kitchen_table' | 'coworking_desk' | 'trades_yard' | 'van_garage' | 'town_base'
+  | 'kitchen_table'
+  | 'coworking_desk'
+  | 'trades_yard'
+  | 'van_garage'
+  | 'town_base'
+  | 'inherited_room'
+  | 'own_fitout'
 
 const DRAWINGS: readonly OfficeStage[] = [
   'kitchen_table',
@@ -17,6 +23,8 @@ const DRAWINGS: readonly OfficeStage[] = [
   'trades_yard',
   'van_garage',
   'town_base',
+  'inherited_room',
+  'own_fitout',
 ]
 
 /** The drawing for where the company works, from the engine. */
@@ -101,6 +109,10 @@ export function Scene(props: { stage?: OfficeStage }) {
         <VanGarage data={data} />
       ) : office === 'town_base' ? (
         <TownBase data={data} />
+      ) : office === 'inherited_room' ? (
+        <DiningRoom data={data} refitted={false} />
+      ) : office === 'own_fitout' ? (
+        <DiningRoom data={data} refitted />
       ) : (
         <TradesYard data={data} ui={ui} />
       )}
@@ -459,6 +471,82 @@ function TownBase({ data }: { data: SceneData }) {
       {data.hire && <Person x={280} who="hire" />}
       <Labels x={150} figure={data.you} />
       {data.hire && <Labels x={280} figure={data.hire} />}
+      <rect className={s.pot} x="690" y="268" width="26" height="30" />
+      <circle className={s.plant} cx="703" cy="250" r="16" />
+    </svg>
+  )
+}
+
+/**
+ * The restaurant (Hinterhof): the inherited dining room with mismatched chairs and a chalkboard,
+ * or the own fit-out with lamps over the tables and the courtyard through a new window.
+ */
+function DiningRoom({ data, refitted }: { data: SceneData; refitted: boolean }) {
+  const chairs = refitted ? [70, 150, 470, 550] : [60, 160, 470, 560]
+  return (
+    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
+      <rect className={s.wall} x="0" y="0" width="732" height="250" />
+      <rect className={s.floor} x="0" y="250" width="732" height="80" />
+      <rect className={s.skirting} x="0" y="246" width="732" height="6" />
+      {refitted ? (
+        <>
+          {/* the new window onto the courtyard */}
+          <rect className={s.sky} x="250" y="36" width="240" height="130" />
+          <circle className={s.plant} cx="300" cy="140" r="22" />
+          <circle className={s.plant} cx="440" cy="136" r="26" />
+          <rect className={s.frame} x="250" y="36" width="240" height="130" />
+          <line className={s.frame} x1="370" y1="36" x2="370" y2="166" />
+          {/* lamps over the tables */}
+          {[110, 510].map((x) => (
+            <g key={x}>
+              <line className={s.line} x1={x} y1="0" x2={x} y2="120" />
+              <path className={s.sticky} d={`M${x - 20} 140l8 -20h24l8 20z`} />
+            </g>
+          ))}
+        </>
+      ) : (
+        <>
+          {/* the chalkboard with the week's dishes */}
+          <rect className={s.screen} x="260" y="40" width="200" height="110" rx="3" />
+          <rect className={s.paper} x="280" y="66" width="120" height="3" />
+          <rect className={s.paper} x="280" y="86" width="150" height="3" />
+          <rect className={s.paper} x="280" y="106" width="90" height="3" />
+          {/* a tired picture, slightly crooked */}
+          <rect
+            className={s.frame}
+            x="560"
+            y="50"
+            width="70"
+            height="50"
+            transform="rotate(-4 595 75)"
+          />
+        </>
+      )}
+      <RatingSign x={590} y={refitted ? 40 : 120} text={data.rating} />
+      {/* two tables with chairs */}
+      {[110, 510].map((x) => (
+        <g key={x}>
+          <rect className={s.desk} x={x - 70} y="214" width="140" height="10" rx="2" />
+          <rect className={s.wood} x={x - 60} y="224" width="6" height="40" />
+          <rect className={s.wood} x={x + 54} y="224" width="6" height="40" />
+        </g>
+      ))}
+      {chairs.map((x, i) => (
+        <rect
+          key={x}
+          className={refitted || i % 2 === 0 ? s.chair : s.counter}
+          x={x - 14}
+          y={refitted ? 196 : 192 + (i % 2) * 6}
+          width="28"
+          height="40"
+          rx={refitted ? 6 : 2}
+        />
+      ))}
+      <Person x={300} who="you" slump={data.slumped} />
+      <rect className={s.paper} x="280" y="206" width="40" height="8" />
+      {data.hire && <Person x={420} who="hire" />}
+      <Labels x={300} figure={data.you} />
+      {data.hire && <Labels x={420} figure={data.hire} />}
       <rect className={s.pot} x="690" y="268" width="26" height="30" />
       <circle className={s.plant} cx="703" cy="250" r="16" />
     </svg>
