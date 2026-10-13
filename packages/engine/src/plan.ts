@@ -5,6 +5,7 @@ import { canBookDemo, canFollowUp } from './systems/sales'
 import { plannedHours } from './systems/founder'
 import { bookingsValid, cloneBookingsPlan } from './systems/bookings'
 import { cloneFundingPlan, fundingValid } from './systems/funding'
+import { loanValid } from './systems/loan'
 import { activeMembers, canHire, openBooking } from './systems/team'
 import type { GameState, PlanIssue, WeekPlan } from './types'
 
@@ -49,6 +50,9 @@ export function clonePlan(plan: WeekPlan): WeekPlan {
     },
     ...(plan.funding ? { funding: cloneFundingPlan(plan.funding) } : {}),
     ...(plan.bookings ? { bookings: cloneBookingsPlan(plan.bookings) } : {}),
+    ...(plan.loan
+      ? { loan: { ...plan.loan, apply: plan.loan.apply ? { ...plan.loan.apply } : null } }
+      : {}),
   }
 }
 
@@ -242,6 +246,7 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
   if (!freelanceValid(state, plan)) issues.push({ code: 'invalid_freelance' })
   if (!fundingValid(state, plan)) issues.push({ code: 'invalid_funding' })
   if (!bookingsValid(state, plan)) issues.push({ code: 'invalid_bookings' })
+  if (!loanValid(state, plan)) issues.push({ code: 'invalid_loan' })
 
   // Hours only make sense once every number is valid.
   if (!issues.some((i) => i.code === 'invalid_number')) {

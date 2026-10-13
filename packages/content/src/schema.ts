@@ -385,6 +385,36 @@ export const StaffRoleSchema = z.object({
   founderHours: z.number().int().positive().optional(),
 })
 
+// The bank loan (step 6, docs/loan-proposal.md): a business plan in hours, an application judged
+// on visible numbers, an offer at a rate drawn per run, monthly repayments, default.
+export const LoanConfigSchema = z.object({
+  bankName: z.string().min(1),
+  // Founder hours for the business plan, then for the meeting with the bank.
+  planHours: z.number().int().positive(),
+  meetingHours: z.number().int().nonnegative(),
+  // Weeks from the application to the answer, and before a refused founder may apply again.
+  decisionWeeks: z.number().int().positive(),
+  retryWeeks: z.number().int().nonnegative(),
+  // Own money put in, against own money plus all borrowing, at least this share.
+  ownShare: Share,
+  // The ceiling: this before any guest has paid, then the larger of it and this multiple of the
+  // last four weeks' revenue times twelve; never above maxCents.
+  unprovenMaxCents: Cents.positive(),
+  revenueMultiple: z.number().nonnegative(),
+  minCents: Cents.positive(),
+  maxCents: Cents.positive(),
+  stepCents: Cents.positive(),
+  // Fixed yearly rate in basis points, drawn once per run in this range.
+  rateBp: rangeOf(z.number().int().positive()),
+  termMonths: z.array(z.number().int().positive()).min(1),
+  graceMonths: z.array(z.number().int().nonnegative()).min(1),
+  // A missed payment adds this fee to the balance; the second missed month in a row is default.
+  missedFeeCents: Cents.nonnegative(),
+  earlyFeeShare: Share,
+  maxLoans: z.number().int().positive(),
+})
+export type LoanConfig = z.infer<typeof LoanConfigSchema>
+
 export const BookingsConfigSchema = z.object({
   startWeekOfYear: z.number().int().min(1).max(52),
   seasonNoise: Share,
@@ -784,6 +814,8 @@ export const ScenarioFileSchema = z.object({
   funding: FundingConfigSchema.optional(),
   // Tourism: bookings of capacity that expires (step 4). Absent: the subscription model.
   bookings: BookingsConfigSchema.optional(),
+  // The bank loan (step 6). Absent: no loan.
+  loan: LoanConfigSchema.optional(),
 })
 
 // segment id -> bucket id -> quotes

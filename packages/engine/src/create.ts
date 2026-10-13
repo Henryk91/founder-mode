@@ -1,3 +1,4 @@
+import { initialLoan } from './systems/loan'
 import { Rng, seedRng } from './rng'
 import { initBookings } from './systems/bookings'
 import { emptyFunding, emptyHiddenFunding } from './systems/funding'
@@ -66,6 +67,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
     },
     funding: emptyFunding(),
     bookings: tourism?.state ?? null,
+    loan: initialLoan(scenario.loan),
     ledger: [],
     actionLog: [],
     eventLog: [],

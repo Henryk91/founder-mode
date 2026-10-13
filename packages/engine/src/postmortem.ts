@@ -347,6 +347,7 @@ const CHAIN_RULES: Record<PostMortemCauseId, { keep: ChainKind[]; also: ChainKin
     ],
   },
   bankrupt_churn: { keep: ['savings_empty'], also: ['customer_lost', 'customer_stopped_paying'] },
+  bank_called: { keep: ['savings_empty'], also: ['feature_shipped', 'price_changed'] },
   bankrupt_while_raising: {
     keep: ['savings_empty'],
     also: ['customer_lost', 'customer_stopped_paying', 'customer_won', 'hire_started'],

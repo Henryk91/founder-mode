@@ -1,3 +1,4 @@
+import { loanView } from './systems/loan'
 import { bookingsRevenueOrSubscriptions, bookingsView } from './systems/bookings'
 import { fundingView } from './systems/funding'
 import {
@@ -164,6 +165,7 @@ export function getView(state: GameState): PlayerView {
     team: teamView(state),
     funding: fundingView(state),
     bookings: bookingsView(state),
+    loan: loanView(state),
     pendingExperiments: state.hidden.experiments.map((e) => ({
       kind: e.kind,
       segmentId: e.segmentId,

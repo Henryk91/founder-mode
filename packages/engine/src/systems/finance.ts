@@ -6,9 +6,11 @@ import type {
   MoneyMovement,
   WeekLedger,
   WeekPlan,
+  ReportEntry,
 } from '../types'
 import { activeCustomers } from './customers'
 import { chaseInvoices, isUnpaid, issueInvoices, settleInvoices } from './invoices'
+import { settleLoans } from './loan'
 import { freelanceMonthlyCents } from './team'
 
 export function monthlyFixedCostsCents(state: GameState): number {
@@ -85,6 +87,8 @@ export function applyFinanceWeek(
   writtenOff: Invoice[]
   /** Customers whose service stopped this week because an invoice was written off. */
   stopped: string[]
+  /** The bank loan's month end: payout, payments, missed payments. */
+  loanEntries: ReportEntry[]
 } {
   let state = chaseInvoices(input, plan, rng, delegatedChases)
   let cash = state.company.cashCents
@@ -142,6 +146,15 @@ export function applyFinanceWeek(
     issued = result.issued
   }
 
+  // The bank loan at month ends: payout, then payments from cash and savings (the guarantee).
+  const loans = settleLoans(state, plan, cash + Math.max(0, savings), monthEnd)
+  state = loans.state
+  cash +=
+    loans.money.inCents -
+    loans.money.principalCents -
+    loans.money.interestCents -
+    loans.money.feeCents
+
   let autoTransferCents = 0
   if (cash < 0 && savings > 0) {
     autoTransferCents = Math.min(savings, -cash)
@@ -164,6 +177,10 @@ export function applyFinanceWeek(
     investmentCents: extras.investmentCents,
     bookingRevenueCents: extras.bookingRevenueCents,
     bookingCostsCents: extras.bookingCostsCents,
+    loanInCents: loans.money.inCents,
+    loanPrincipalCents: loans.money.principalCents,
+    loanInterestCents: loans.money.interestCents,
+    loanFeeCents: loans.money.feeCents,
     cashEndCents: cash,
     savingsEndCents: savings,
     // Filled in by `closeLedger` once churn has run.
@@ -191,6 +208,7 @@ export function applyFinanceWeek(
     },
     ledger,
     movements,
+    loanEntries: loans.entries,
     paid: settled.paid,
     issued,
     writtenOff: settled.writtenOff,
@@ -227,7 +245,10 @@ export function netChangeCents(l: WeekLedger): number {
     l.bookingCostsCents -
     l.livingCostsCents -
     l.adSpendCents -
-    l.otherCostsCents
+    l.otherCostsCents -
+    l.loanPrincipalCents -
+    l.loanInterestCents -
+    l.loanFeeCents
   )
 }
 
@@ -289,8 +310,17 @@ export function profitableOverMonths(state: GameState, months: number): boolean 
   if (state.ledger.length < weeks) return false
   const span = state.ledger.slice(-weeks)
   const revenue = span.reduce((t, l) => t + l.revenueCents, 0)
+  // Loan repayments, interest and fees count: a business that cannot serve its debt is not one.
   const costs = span.reduce(
-    (t, l) => t + l.fixedCostsCents + l.freelanceCents + l.bookingCostsCents + l.livingCostsCents,
+    (t, l) =>
+      t +
+      l.fixedCostsCents +
+      l.freelanceCents +
+      l.bookingCostsCents +
+      l.livingCostsCents +
+      l.loanPrincipalCents +
+      l.loanInterestCents +
+      l.loanFeeCents,
     0,
   )
   return revenue >= costs

@@ -1,6 +1,7 @@
 import type { FounderState, GameState, HoursByActivity, Scenario, WeekPlan } from '../types'
 import { bookingsHours } from './bookings'
 import { fundingHours } from './funding'
+import { loanHours } from './loan'
 import { managementHours } from './team'
 
 /** Hours of the answers given this week to inbox messages. They count against the week. */
@@ -55,7 +56,8 @@ export function hoursByActivity(
       committedHours(state) +
       state.founder.forcedHours +
       managementHours(state) +
-      fundingHours(state as GameState, plan),
+      fundingHours(state as GameState, plan) +
+      loanHours(state as GameState, plan),
     rest: plan.restHours,
   }
 }
