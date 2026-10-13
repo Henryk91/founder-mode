@@ -153,6 +153,7 @@ const isShipped = (state: GameState, id: FeatureId) =>
 function sells(state: GameState, id: FeatureId, week: number): boolean {
   const p = state.scenario.bookings?.products[id]
   if (!p || !isShipped(state, id)) return false
+  if (p.requires !== undefined && !isShipped(state, p.requires)) return false
   return p.months.length === 0 || p.months.includes(monthOf(state.scenario, week))
 }
 
@@ -493,8 +494,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const gross = x.units * x.priceCents
     const cut = x.channel === 'platform' ? Math.round(gross * cfg.platform.commission) : 0
     commission += cut
-    if (x.status === 'served')
-      unitCosts += x.units * (cfg.products[x.productId]?.unitCostCents ?? 0)
+    if (x.status === 'served') {
+      const prod = cfg.products[x.productId]
+      unitCosts +=
+        x.units * (prod?.unitCostCents ?? 0) + Math.round(gross * (prod?.unitCostShare ?? 0))
+    }
     if (!s.invoiced) {
       out.revenueCents += gross - cut
       continue
@@ -567,7 +571,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       5,
       Math.max(
         1,
-        r.qualityBase -
+        r.qualityBase +
+          (state.scenario.officeStages.find((o) => o.id === state.company.officeStage)
+            ?.qualityBonus ?? 0) -
           r.understaffPenalty * shortfall -
           (tired ? r.tiredPenalty : 0) -
           r.snagPenalty * state.product.bugs -
