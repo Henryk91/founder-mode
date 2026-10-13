@@ -62,6 +62,7 @@ export type {
   LeadView,
   PlanIssue,
   PostMortem,
+  GuestsEconomics,
   MilestoneView,
   NextMilestoneView,
   PostMortemCauseId,

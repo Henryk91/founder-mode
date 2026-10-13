@@ -91,6 +91,51 @@ export function PostMortem({ desk }: { desk: boolean }) {
     </section>
   )
 
+  const g = pm.guests
+  const servedAll = g ? g.bySegment.reduce((t, x) => t + x.served, 0) : 0
+  const ratingText = g
+    ? g.rating === null
+      ? label('pm.guests.noRating', stage)
+      : label('pm.guests.rating', stage, { rating: g.rating.toFixed(1), reviews: g.reviews })
+    : ''
+  const guests = g && (
+    <Fold
+      id="pm-guests"
+      desk={desk}
+      stage={stage}
+      title={label('pm.heading.guests', stage)}
+      summary={count('pm.guests.summary', stage, servedAll, { rating: ratingText })}
+    >
+      <ul className={styles.lines}>
+        {g.bySegment.length === 0 && <li>{label('pm.guests.none', stage)}</li>}
+        {g.bySegment.map((x) => (
+          <li key={x.segmentId}>
+            {count('pm.guests.segment', stage, x.served, {
+              segment: pm.names.segments[x.segmentId] ?? x.segmentId,
+              paid: formatEuro(x.paidCents),
+            })}
+          </li>
+        ))}
+        {servedAll > 0 && (
+          <li>
+            {label('pm.guests.platform', stage, {
+              share: Math.round(g.platformShare * 100),
+              amount: formatEuro(g.commissionCents),
+            })}
+          </li>
+        )}
+        <li>
+          {label('pm.guests.cancelled', stage, {
+            company: g.companyCancelled,
+            guest: g.guestCancelled,
+          })}
+        </li>
+        {g.turnedAwayRecent > 0 && <li>{count('pm.guests.away', stage, g.turnedAwayRecent)}</li>}
+        <li>{label('pm.guests.costs', stage, { amount: formatEuro(g.bookingCostsCents) })}</li>
+      </ul>
+    </Fold>
+  )
+
   const misreads = (
     <section className={`${ui.card} ${styles.paper}`} aria-labelledby="pm-misreads">
       <h2 id="pm-misreads" className={styles.head}>
@@ -315,6 +360,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
               {happened}
               {next}
               {markets}
+              {guests}
             </div>
             <div className={styles.col}>
               {misreads}
@@ -330,6 +376,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
             {happened}
             {next}
             {markets}
+            {guests}
             {misreads}
             {hours}
             {moneyFold}

@@ -5,6 +5,7 @@ import { companyValueCents, founderShareBp, fundingHours } from './systems/fundi
 import { reachedMilestones } from './systems/milestones'
 import { freelanceEconomics, hiresEconomics, salaryId } from './systems/team'
 import type {
+  GuestsEconomics,
   Activity,
   ChainItem,
   ChainKind,
@@ -112,7 +113,43 @@ export function buildPostMortem(state: GameState): PostMortem {
     },
     walkIns: walkInCounts(state),
     sources: sourceCounts(state),
+    guests: guestsEconomics(state),
     luck,
+  }
+}
+
+/** Guests over a bookings run: served, paid, channels, cancellations, costs and reviews. */
+export function guestsEconomics(state: GameState): GuestsEconomics | null {
+  const b = state.bookings
+  const cfg = state.scenario.bookings
+  if (!b || !cfg) return null
+  const served = b.bookings.filter((x) => x.status === 'served')
+  const units = (list: typeof served) => list.reduce((t, x) => t + x.units, 0)
+  const gross = (x: (typeof served)[number]) => x.priceCents * x.units
+  const commission = (x: (typeof served)[number]) =>
+    x.channel === 'platform' ? Math.round(gross(x) * cfg.platform.commission) : 0
+  const total = units(served)
+  return {
+    bySegment: state.scenario.segments
+      .map((seg) => {
+        const mine = served.filter((x) => x.segmentId === seg.id)
+        return {
+          segmentId: seg.id,
+          served: units(mine),
+          paidCents: mine.reduce((t, x) => t + gross(x) - commission(x), 0),
+        }
+      })
+      .filter((x) => x.served > 0),
+    platformShare: total > 0 ? units(served.filter((x) => x.channel === 'platform')) / total : 0,
+    commissionCents: served.reduce((t, x) => t + commission(x), 0),
+    companyCancelled: units(b.bookings.filter((x) => x.status === 'company_cancelled')),
+    guestCancelled: units(
+      b.bookings.filter((x) => x.status === 'cancelled' || x.status === 'cancelled_paid'),
+    ),
+    turnedAwayRecent: b.turnedAway.reduce((t, x) => t + x.units, 0),
+    bookingCostsCents: state.ledger.reduce((t, l) => t + l.bookingCostsCents, 0),
+    rating: b.rating,
+    reviews: b.reviews,
   }
 }
 

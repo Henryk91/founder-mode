@@ -245,9 +245,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
   /** The modes a scenario offers: the 60 week game, and long mode where it has one. */
   const modesOf = (id: ScenarioId): GameMode[] =>
     scenarios.find((x) => x.id === id)?.modes ?? ['standard']
-  /** A mode the scenario has: the one asked for, else the 60 week game. */
+  /** A mode the scenario has: the one asked for, else its first (long mode for a tourism one). */
   const modeFor = (id: ScenarioId, mode: string | null): GameMode =>
-    modesOf(id).find((m) => m === mode) ?? 'standard'
+    modesOf(id).find((m) => m === mode) ?? modesOf(id)[0] ?? 'standard'
   const firstMode = modeFor(firstId, profiles.lastMode())
   const firstSlot = slotOf(firstId, firstMode)
   /** A game's slot: its scenario and mode. */
