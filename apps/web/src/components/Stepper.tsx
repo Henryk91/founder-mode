@@ -1,8 +1,8 @@
-import { label, type LabelKey, type UiStage } from '../labels'
+import { label, type LabelKey, type Voice } from '../labels'
 import styles from './ui.module.css'
 
 type Props = {
-  stage: UiStage
+  stage: Voice
   value: number
   onChange: (value: number) => void
   /**

@@ -9,11 +9,10 @@ import type {
   Misread,
   PlayerView,
   PostMortem as PostMortemData,
-  UiStage,
 } from '@founder-mode/engine'
 import { StorageNote } from '../components/StorageNote'
 import { formatEuro } from '../format'
-import { count, label } from '../labels'
+import { count, label, voiceOf, stageOf, type Voice } from '../labels'
 import { useGame } from '../useGame'
 import styles from './PostMortem.module.css'
 import ui from '../components/ui.module.css'
@@ -32,7 +31,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
   const newRun = useGame((s) => s.newRun)
   const sameMarket = useGame((s) => s.sameMarketAgain)
   if (!pm || !view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const t = new Text(pm, stage, view)
 
   const happened = (
@@ -110,9 +109,9 @@ export function PostMortem({ desk }: { desk: boolean }) {
         {g.bySegment.length === 0 && <li>{label('pm.guests.none', stage)}</li>}
         {g.bySegment.map((x) => (
           <li key={x.segmentId}>
-            {count('pm.guests.segment', stage, x.served, {
+            {label('pm.guests.segmentValue', stage, {
               segment: pm.names.segments[x.segmentId] ?? x.segmentId,
-              paid: formatEuro(x.paidCents),
+              value: t.served(x.segmentId),
             })}
           </li>
         ))}
@@ -203,8 +202,9 @@ export function PostMortem({ desk }: { desk: boolean }) {
           })}
         </p>
       )}
-      <p>{label('pm.sources.title', stage)}</p>
-      {pm.sources.some((x) => x.customers > 0) ? (
+      {/* Tourism tells where guests came from in the guests section. */}
+      {!g && <p>{label('pm.sources.title', stage)}</p>}
+      {g ? null : pm.sources.some((x) => x.customers > 0) ? (
         <ul className={styles.lines}>
           {pm.sources.map((x) => (
             <li key={x.key}>
@@ -355,7 +355,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
   )
 
   return (
-    <div className={styles.page} data-layout={desk ? 'desk' : 'phone'} data-stage={stage}>
+    <div className={styles.page} data-layout={desk ? 'desk' : 'phone'} data-stage={stageOf(stage)}>
       <header className={styles.bar}>
         <h1 className={styles.heading} tabIndex={-1} data-autofocus>
           <span className={styles.company}>{view.scenarioName}</span>
@@ -405,7 +405,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
 }
 
 /** The name of a post-mortem source key: `outreach:<channel>`, `team:<channel>`, or a source. */
-export function sourceName(key: string, stage: UiStage): string {
+export function sourceName(key: string, stage: Voice): string {
   const [source, channel] = key.split(':')
   const ch = channel ? label(`channel.${channel as ChannelId}`, stage) : ''
   switch (source) {
@@ -430,7 +430,7 @@ export function sourceName(key: string, stage: UiStage): string {
 function Fold(props: {
   id: string
   desk: boolean
-  stage: UiStage
+  stage: Voice
   title: string
   summary: string
   children: React.ReactNode
@@ -477,11 +477,14 @@ function MarketCard({
 }: {
   m: MarketTruth
   t: Text
-  stage: UiStage
+  stage: Voice
   walkIns: PostMortemData['walkIns']
   /** The scenario's line for a landing test whose signal is weak by design, or null. */
   weakLanding: string | null
 }) {
+  const booking = t.view.bookings?.segments.find((x) => x.id === m.segmentId)
+  const unit = booking ? label(`tour.unit.${booking.unit}`, stage) : ''
+  const prices = t.view.bookings?.prices[m.segmentId]
   const rows: [string, string][] = [
     [label('pm.market.pain', stage), t.bucket(m.painBucketId)],
     [
@@ -514,6 +517,10 @@ function MarketCard({
       label('pm.market.wtpValue', stage, {
         wtp: formatEuro(m.wtpCents),
         price: formatEuro(t.view.company.priceCentsPerMonth),
+        // Tourism: the group's own unit and the prices it was asked at the end.
+        unit,
+        peak: formatEuro(prices?.peak ?? 0),
+        off: formatEuro(prices?.off ?? 0),
       }),
     ],
     ...(m.budgetHints
@@ -522,6 +529,7 @@ function MarketCard({
             label('pm.market.budgetHints', stage),
             count('pm.market.budgetHintsValue', stage, m.budgetHints.count, {
               amount: formatEuro(m.budgetHints.meanCents),
+              unit,
             }),
           ] as [string, string],
         ]
@@ -539,11 +547,13 @@ function MarketCard({
       : []),
     [
       label('pm.market.customers', stage),
-      m.customersWon > 0
-        ? count('pm.market.customersValue', stage, m.customersWon, {
-            prices: m.customerPricesCents.map(formatEuro).join(', '),
-          })
-        : label('pm.market.customersNone', stage),
+      booking
+        ? t.served(m.segmentId)
+        : m.customersWon > 0
+          ? count('pm.market.customersValue', stage, m.customersWon, {
+              prices: m.customerPricesCents.map(formatEuro).join(', '),
+            })
+          : label('pm.market.customersNone', stage),
     ],
   ]
   return (
@@ -603,11 +613,21 @@ function MarketCard({
 class Text {
   constructor(
     readonly pm: PostMortemData,
-    readonly stage: UiStage,
+    readonly stage: Voice,
     readonly view: PlayerView,
   ) {}
 
   segment = (id: string | null) => (id === null ? '' : (this.pm.names.segments[id] ?? id))
+
+  /** Tourism: what a group was served, in its own unit (guests, groups, covers, room nights). */
+  served(id: string): string {
+    const unit = this.view.bookings?.segments.find((x) => x.id === id)?.unit ?? 'person'
+    const x = this.pm.guests?.bySegment.find((y) => y.segmentId === id)
+    if (!x || x.served === 0) return label('pm.market.servedNone', this.stage)
+    return count(`pm.market.servedValue.${unit}`, this.stage, x.served, {
+      paid: formatEuro(x.paidCents),
+    })
+  }
   feature = (id: string | null) => (id === null ? '' : (this.pm.names.features[id] ?? id))
   bucket = (id: string) => this.pm.names.buckets[id] ?? id
 

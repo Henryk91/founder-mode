@@ -1,6 +1,6 @@
 import type { NextMilestoneView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { label } from '../labels'
+import { label, voiceOf, type Voice } from '../labels'
 import { useGame } from '../useGame'
 import styles from './MilestoneBar.module.css'
 
@@ -8,7 +8,7 @@ import styles from './MilestoneBar.module.css'
 export function MilestoneBar() {
   const view = useGame((s) => s.view)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const next = view.milestones.next
   if (!next) {
     return (
@@ -38,7 +38,7 @@ export function MilestoneBar() {
   )
 }
 
-function figures(next: NextMilestoneView, stage: 'scrappy' | 'organised'): string {
+function figures(next: NextMilestoneView, stage: Voice): string {
   if (next.unit === 'cents') {
     return label('milestone.cents', stage, {
       current: formatEuro(next.current),

@@ -1,4 +1,4 @@
-import { label } from '../labels'
+import { label, voiceOf } from '../labels'
 import { fillText } from '../texts'
 import { useGame } from '../useGame'
 import styles from './ui.module.css'
@@ -10,7 +10,7 @@ export function FounderNote() {
   const dismiss = useGame((s) => s.dismissNote)
   const note = view?.guidance.founderNote
   if (!view || !note || dismissed.includes(note.id)) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   return (
     <section className={`${styles.card} ${styles.sticky}`} aria-label={label('note.title', stage)}>
       <h2 className={styles.title}>{label('note.title', stage)}</h2>

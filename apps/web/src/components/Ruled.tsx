@@ -1,6 +1,6 @@
 import type { ExplainKey } from '../store'
 import { useGame } from '../useGame'
-import { label as text } from '../labels'
+import { label as text, voiceOf } from '../labels'
 import plan from '../screens/Plan.module.css'
 
 /**
@@ -146,7 +146,7 @@ export function Choices(props: { children: React.ReactNode }) {
  */
 export function HintLine(props: { hint: string; term: ExplainKey }) {
   const open = useGame((s) => s.openExplain)
-  const stage = useGame((s) => s.view?.company.uiStage ?? 'scrappy')
+  const stage = useGame((s) => (s.view ? voiceOf(s.view) : 'scrappy'))
   return (
     <div className={plan.hintLine}>
       <div className={`${plan.wrapped} ${plan.hintText}`}>

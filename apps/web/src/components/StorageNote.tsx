@@ -1,4 +1,4 @@
-import { label } from '../labels'
+import { label, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import styles from './ui.module.css'
 
@@ -10,7 +10,7 @@ export function StorageNote(props: { finished?: boolean }) {
   const storage = useGame((s) => s.storageNotice)
   const runs = useGame((s) => s.runsNotice)
   const dismiss = useGame((s) => s.dismissStorageNotice)
-  const stage = useGame((s) => s.view?.company.uiStage ?? 'scrappy')
+  const stage = useGame((s) => (s.view ? voiceOf(s.view) : 'scrappy'))
   const runsText = runs === 'unsaved' || (props.finished && runs === 'unreadable')
   if (!storage && !runsText) return null
   return (

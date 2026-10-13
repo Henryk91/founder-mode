@@ -3,7 +3,7 @@ import { MilestoneBar } from '../components/MilestoneBar'
 import { Scene } from '../components/Scene'
 import { StorageNote } from '../components/StorageNote'
 import { TopBar } from '../components/TopBar'
-import { label } from '../labels'
+import { label, voiceOf, stageOf } from '../labels'
 import { Inbox } from '../screens/Inbox'
 import { Market } from '../screens/Market'
 import { Money } from '../screens/Money'
@@ -21,11 +21,11 @@ export function DeskLayout(props: { main: React.ReactNode | null }) {
   const view = useGame((s) => s.view)!
   const tab = useGame((s) => s.tab)
   const setTab = useGame((s) => s.setTab)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const centre = tab === 'market' ? 'market' : 'plan'
 
   return (
-    <div className={styles.desk} data-stage={stage} data-layout="desk">
+    <div className={styles.desk} data-stage={stageOf(stage)} data-layout="desk">
       <TopBar wide />
       {props.main !== null ? (
         <main className={styles.deskSingle}>

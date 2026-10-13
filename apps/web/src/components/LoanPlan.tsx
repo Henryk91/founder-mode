@@ -6,7 +6,7 @@ import type {
   PlayerView,
 } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { label, type UiStage } from '../labels'
+import { label, type Voice, voiceOf } from '../labels'
 import { noLoan } from '../store'
 import { useGame } from '../useGame'
 import { Choices, HintLine, Market, SubHeading, Writing } from './Ruled'
@@ -23,7 +23,7 @@ const pct = (bp: number) => (bp / 100).toFixed(2)
 const running = (l: LoanView) => l.loans.filter((x) => x.status === 'running')
 
 /** One line for the closed loan section. */
-export function loanSummary(view: PlayerView, p: LoanPlanDraft | undefined, stage: UiStage) {
+export function loanSummary(view: PlayerView, p: LoanPlanDraft | undefined, stage: Voice) {
   const l = view.loan
   if (!l) return ''
   if (p?.apply) return label('loan.sum.apply', stage, { amount: formatEuro(p.apply.amountCents) })
@@ -51,7 +51,7 @@ export function LoanPlan() {
   const [form, setForm] = useState<LoanTerms | null>(null)
   if (!view?.loan) return null
   const l = view.loan
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const hours = (n: number) => label('unit.hours', stage, { n })
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   const left = Math.max(0, l.planNeeded - l.planHours)

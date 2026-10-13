@@ -1,6 +1,6 @@
 import type { LeadStage, LeadView, PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type LabelKey, type UiStage } from '../labels'
+import { count, label, type LabelKey, type Voice, voiceOf, stageOf } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 import board from './Pipeline.module.css'
@@ -18,7 +18,7 @@ const TILTS = [-1, 1, -1.2, 0.8, 1.5, -0.8]
 /** The corkboard: columns by stage, a pinned card per lead. Demos and follow ups book here. */
 /** How a lead was found, as its card says it. */
 /** Why a lost lead was lost, as the lost list shows it. */
-export function lostText(l: LeadView, stage: UiStage): string {
+export function lostText(l: LeadView, stage: Voice): string {
   switch (l.lostReason) {
     case 'silent':
       return label('pipeline.lostSilent', stage)
@@ -31,7 +31,7 @@ export function lostText(l: LeadView, stage: UiStage): string {
   }
 }
 
-export function leadSource(l: LeadView, stage: UiStage): string {
+export function leadSource(l: LeadView, stage: Voice): string {
   switch (l.source) {
     case 'walk_in':
       return label('pipeline.walkedIn', stage, { place: (l.walkInFrom ?? '').toLowerCase() })
@@ -54,7 +54,7 @@ export function Pipeline() {
   const toggleFollowUp = useGame((s) => s.toggleFollowUp)
   const planned = useGame((s) => s.plannedHours)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const segmentName = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
   const open = view.leads.filter((l) => l.stage !== 'paying' && l.stage !== 'lost')
   const lost = view.leads.filter((l) => l.stage === 'lost')
@@ -127,7 +127,7 @@ export function Pipeline() {
     <>
       <section className={board.board} aria-label={label('pipeline.title', stage)}>
         <h2 className={board.title}>{label('pipeline.title', stage)}</h2>
-        {stage === 'organised' && <DemoToTrial view={view} />}
+        {stageOf(stage) === 'organised' && <DemoToTrial view={view} />}
         {outOfHours && <p className={board.rate}>{label('noHours', stage)}</p>}
         {open.length === 0 && view.customers.length === 0 ? (
           <p className={board.empty}>{label('pipeline.empty', stage)}</p>
@@ -202,7 +202,7 @@ function tilt(i: number): React.CSSProperties {
 
 /** The organised stage's one new number: how many demos turned into trials. Observed, not odds. */
 function DemoToTrial({ view }: { view: PlayerView }) {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { demosHeld, trialsFromDemos } = view.funnel
   return (
     <p className={board.rate}>

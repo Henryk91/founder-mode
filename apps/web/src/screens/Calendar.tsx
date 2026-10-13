@@ -1,4 +1,4 @@
-import { label } from '../labels'
+import { label, voiceOf } from '../labels'
 import { Pipeline } from './Pipeline'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
@@ -12,7 +12,7 @@ export function Calendar() {
   const view = useGame((s) => s.view)
   if (!view?.bookings) return null
   const b = view.bookings
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   return (
     <>
       <section className={styles.card} aria-label={label('tour.calendar', stage)}>

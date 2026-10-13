@@ -1,6 +1,6 @@
 import type { BookingsPlan, BookingsView, PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type UiStage } from '../labels'
+import { count, label, type Voice, voiceOf } from '../labels'
 import { noBookings } from '../store'
 import { useGame } from '../useGame'
 import { Choices, HintLine, Market, SubHeading, Writing } from './Ruled'
@@ -59,7 +59,7 @@ export function coverage(b: BookingsView, p: BookingsPlan) {
     })
 }
 
-export function rosterSummary(view: PlayerView, p: BookingsPlan | undefined, stage: UiStage) {
+export function rosterSummary(view: PlayerView, p: BookingsPlan | undefined, stage: Voice) {
   const b = view.bookings
   if (!b) return ''
   const plan = p ?? noBookings()
@@ -71,7 +71,7 @@ export function rosterSummary(view: PlayerView, p: BookingsPlan | undefined, sta
   return count('tour.sum.shifts', stage, shifts + own, { booked })
 }
 
-export function guestsSummary(view: PlayerView, p: BookingsPlan | undefined, stage: UiStage) {
+export function guestsSummary(view: PlayerView, p: BookingsPlan | undefined, stage: Voice) {
   const b = view.bookings
   if (!b) return ''
   const parts: string[] = []
@@ -83,7 +83,7 @@ export function guestsSummary(view: PlayerView, p: BookingsPlan | undefined, sta
   return parts.length ? parts.join(', ') : label('plan.sum.none', stage)
 }
 
-export function pricesSummary(view: PlayerView, p: BookingsPlan | undefined, stage: UiStage) {
+export function pricesSummary(view: PlayerView, p: BookingsPlan | undefined, stage: Voice) {
   const b = view.bookings
   if (!b) return ''
   const policy = p?.policy ?? b.policy
@@ -98,7 +98,7 @@ export function RosterPlan() {
   const set = useGame((s) => s.setBookings)
   if (!view?.bookings) return null
   const b = view.bookings
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   return (
     <>
@@ -170,7 +170,7 @@ export function GuestsPlan() {
   const set = useGame((s) => s.setBookings)
   if (!view?.bookings) return null
   const b = view.bookings
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   const listed = draft.platform ?? b.platform.listed
   return (
@@ -270,7 +270,7 @@ export function PricesPlan() {
   const set = useGame((s) => s.setBookings)
   if (!view?.bookings) return null
   const b = view.bookings
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const policy = draft.policy ?? b.policy
   return (
     <>

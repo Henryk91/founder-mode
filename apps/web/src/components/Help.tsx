@@ -1,4 +1,4 @@
-import { count, label, type LabelKey } from '../labels'
+import { count, label, type LabelKey, voiceOf } from '../labels'
 import { fillText } from '../texts'
 import { useGame } from '../useGame'
 import styles from './ui.module.css'
@@ -16,7 +16,7 @@ export function Help() {
   const view = useGame((s) => s.view)
   const close = useGame((s) => s.closeHelp)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const goal = view.guidance.intro.find((c) => c.id === 'goal')
   const { founder } = view
   const energyVars = {
@@ -51,6 +51,7 @@ export function Help() {
               {label(key, stage, {
                 market: label('tab.market', stage),
                 pipeline: label('tab.pipeline', stage),
+                calendar: label('tab.calendar', stage),
               })}
             </li>
           ))}

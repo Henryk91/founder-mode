@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { InterviewView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label } from '../labels'
+import { count, label, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 
@@ -33,7 +33,7 @@ function Quotes({ interviews }: { interviews: InterviewView[] }) {
   const [open, setOpen] = useState(false)
   const view = useGame((s) => s.view)
   if (!view || interviews.length === 0) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const newestFirst = interviews
     .map((iv, i) => ({ iv, i }))
     .sort((a, b) => b.iv.week - a.iv.week || b.i - a.i)
@@ -83,7 +83,7 @@ function Quotes({ interviews }: { interviews: InterviewView[] }) {
 export function Market() {
   const view = useGame((s) => s.view)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
 
   return (
     <>

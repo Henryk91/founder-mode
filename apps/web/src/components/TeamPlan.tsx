@@ -7,12 +7,12 @@ import type {
   TeamTask,
 } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type UiStage } from '../labels'
+import { count, label, type Voice, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import { Choices, HintLine, Market, SubHeading, Writing } from './Ruled'
 import styles from './ui.module.css'
 
-const roleName = (role: TeamRoleId, stage: UiStage) => label(`team.role.${role}`, stage)
+const roleName = (role: TeamRoleId, stage: Voice) => label(`team.role.${role}`, stage)
 
 /**
  * The hiring section of the Plan tab: search, meet candidates, make an offer, point each hire at
@@ -30,7 +30,7 @@ export function TeamPlan() {
   }
   const setFreelance = useGame((s) => s.setFreelance)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { team, costs } = view
   const hours = (n: number) => label('unit.hours', stage, { n })
   return (
@@ -112,7 +112,7 @@ export function TeamPlan() {
 
 function MemberCard(props: {
   view: PlayerView
-  stage: UiStage
+  stage: Voice
   member: MemberView
   task: TeamTask | null
   letGo: boolean
@@ -243,7 +243,7 @@ function chip(on: boolean, text: string, onClick: () => void, aria?: string) {
  */
 function FreelancePlanRows(props: {
   view: PlayerView
-  stage: UiStage
+  stage: Voice
   draft: FreelancePlan
   set: (change: Partial<FreelancePlan>) => void
 }) {
