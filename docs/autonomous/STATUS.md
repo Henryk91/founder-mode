@@ -1,16 +1,16 @@
 # Autonomous run status
 
 ## Current
-Step: 4 (tourism engine), sub-step T2: bookings bots and the tourism target template
-Last commit: fc3abbb Step 4 T1 follow-up (T1: the bookings model in the engine)
-Next action: Write packages/bots/src/strategies/tourism.ts (careful, platform only, over and understaffing, no tests, price blind, review blind, policy variants), a model filter on strategies, report section with targets T1 to T12 for bookings scenarios; then shared UI components; prove Kantino and Zollstock identical; tag tourism-engine.
+Step: 5 (outdoor adventure company), sub-step O1: research figures, then content
+Last commit: Step 4 done, tag tourism-engine
+Next action: Verify the outdoor spec's (est.) figures (platform commissions, guide day rates, gear prices, insurance, minijob rules) and cite them; then write the scenario content (scenario.yaml with the bookings block, features as products, events, quotes, names, intro) in packages/content/src/scenarios/outdoor, register it as long only.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
 - [x] Step 1: funding (tag phase9-d)
 - [x] Step 2: Phase 9 UI, docs, report (tag phase9-done)
 - [x] Step 3: situational events system (tag situational-events)
-- [ ] Step 4: tourism engine (tag tourism-engine)
+- [x] Step 4: tourism engine (tag tourism-engine)
 - [ ] Step 5: outdoor adventure company (tag scenario-outdoor)
 - [ ] Step 6: bank loan and restaurant (tag scenario-restaurant)
 - [ ] Step 7: hotel (tag scenario-hotel)
