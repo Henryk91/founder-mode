@@ -443,6 +443,35 @@ const labels = {
   'results.entry.member_let_go': '{name} is gone. It cost {amount}.',
   'results.entry.team_output.developer': 'Your developer put in {hours} build hours.',
   'results.entry.team_output.salesperson': 'Your salesperson put in {hours} hours of selling.',
+  'results.entry.weather.good': 'Good weather this week.',
+  'results.entry.weather.mixed': 'Mixed weather this week.',
+  'results.entry.weather.bad': 'Bad weather this week.',
+  'results.entry.weather.dangerous': 'Dangerous weather this week: storms and heavy rain.',
+  'results.entry.bookings_new.one': '{n} new booking from {segment}.',
+  'results.entry.bookings_new.other': '{n} new bookings from {segment}.',
+  'results.entry.turned_away.one': '{n} guest from {segment} found no room and went elsewhere.',
+  'results.entry.turned_away.other': '{n} guests from {segment} found no room and went elsewhere.',
+  'results.entry.guests_served.one':
+    '{n} guest served: {amount} paid on the day ({commission} to the platform).',
+  'results.entry.guests_served.other':
+    '{n} guests served: {amount} paid on the day ({commission} to the platform).',
+  'results.entry.cancelled.one': '{n} guest cancelled.',
+  'results.entry.cancelled.other': '{n} guests cancelled.',
+  'results.entry.cancelled_kept.one': '{n} guest cancelled and paid anyway, as your policy says.',
+  'results.entry.cancelled_kept.other':
+    '{n} guests cancelled and paid anyway, as your policy says.',
+  'results.entry.company_cancelled.staff.one':
+    'You had to cancel {n} guest: not enough people on the roster.',
+  'results.entry.company_cancelled.staff.other':
+    'You had to cancel {n} guests: not enough people on the roster.',
+  'results.entry.company_cancelled.weather.one':
+    'You had to cancel {n} guest because of the weather.',
+  'results.entry.company_cancelled.weather.other':
+    'You had to cancel {n} guests because of the weather.',
+  'results.entry.shifts_paid.one': '{n} shift paid: {amount}.',
+  'results.entry.shifts_paid.other': '{n} shifts paid: {amount}.',
+  'results.entry.review.one': '{n} new review. Rating {rating} from {reviews}.',
+  'results.entry.review.other': '{n} new reviews. Rating {rating} from {reviews}.',
   'funding.round.angel': 'angel round',
   'funding.round.seed': 'seed round',
   'funding.reason.too_early': 'too early, come back with paying customers',

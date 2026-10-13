@@ -104,6 +104,38 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       return label(`results.entry.team_output.${entry.role}`, stage, { hours: entry.hours })
     case 'team_chased':
       return count('results.entry.team_chased', stage, entry.count)
+    case 'weather':
+      return label(`results.entry.weather.${entry.weather}`, stage)
+    case 'bookings_new':
+      return count('results.entry.bookings_new', stage, entry.units, {
+        segment: segment(entry.segmentId),
+      })
+    case 'turned_away':
+      return count('results.entry.turned_away', stage, entry.units, {
+        segment: segment(entry.segmentId),
+      })
+    case 'guests_served':
+      return count('results.entry.guests_served', stage, entry.units, {
+        amount: formatEuro(entry.revenueCents),
+        commission: formatEuro(entry.commissionCents),
+      })
+    case 'bookings_cancelled':
+      return count(
+        entry.kept ? 'results.entry.cancelled_kept' : 'results.entry.cancelled',
+        stage,
+        entry.units,
+      )
+    case 'company_cancelled':
+      return count(`results.entry.company_cancelled.${entry.reason}`, stage, entry.units)
+    case 'shifts_paid':
+      return count('results.entry.shifts_paid', stage, entry.shifts, {
+        amount: formatEuro(entry.amountCents),
+      })
+    case 'review':
+      return count('results.entry.review', stage, entry.added, {
+        rating: entry.rating.toFixed(1),
+        reviews: entry.reviews,
+      })
     case 'round_started':
     case 'round_stopped':
       return label(`results.entry.${entry.kind}`, stage, {
@@ -250,6 +282,19 @@ function place(entry: ReportEntry): [Group, number] {
     case 'round_closed':
     case 'terms_withdrawn':
       return ['money', 9]
+    case 'guests_served':
+    case 'company_cancelled':
+      return ['sales', 8]
+    case 'bookings_new':
+    case 'turned_away':
+    case 'bookings_cancelled':
+      return ['sales', 5]
+    case 'review':
+      return ['sales', 4]
+    case 'shifts_paid':
+      return ['money', 3]
+    case 'weather':
+      return ['founder', 2]
     case 'term_sheet':
     case 'funding_milestone':
       return ['money', 5]
