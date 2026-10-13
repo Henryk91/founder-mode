@@ -1,5 +1,16 @@
-import { loadScenario, type Scenario, type ScenarioId } from '@founder-mode/content'
-import type { ChannelId, MessageView, PlayerView, WeekPlan } from '@founder-mode/engine'
+import {
+  loadScenario,
+  type Scenario,
+  type ScenarioEvent,
+  type ScenarioId,
+} from '@founder-mode/content'
+import {
+  viewConditionsHold,
+  type ChannelId,
+  type MessageView,
+  type PlayerView,
+  type WeekPlan,
+} from '@founder-mode/engine'
 import { FixedPrice, PriceRecipe, PriceSearch, type Pricer, type SearchRule } from '../pricing'
 import {
   bookableLeads,
@@ -129,7 +140,6 @@ const THIN_PIPELINE = 8
 const ROOMY_PIPELINE = 12
 const thin = (v: PlayerView) => openLeads(v) <= THIN_PIPELINE
 const tired = (v: PlayerView) => v.founder.energy < v.founder.tiredBelow
-const shipped = (v: PlayerView) => v.product.features.filter((f) => f.shipped).length
 /** The lead a message is from, by its name, which no two leads share. */
 const senderLead = (v: PlayerView, m: MessageView) => v.leads.find((l) => l.name === m.fromName)
 const senderSilent = (v: PlayerView, m: MessageView) => senderLead(v, m)?.silent === true
@@ -139,7 +149,66 @@ const senderOverdue = (v: PlayerView, m: MessageView) =>
 const TIGHT_CASH_CENTS = 600_000
 const tight = (v: PlayerView) => v.company.cashCents < TIGHT_CASH_CENTS
 
-type ReaderRule = string | ((view: PlayerView, message: MessageView) => string)
+/**
+ * `READ_CONDITIONS`: the answer is read off the event's declared conditions (`fromConditions`),
+ * as a player reads the situation the text names, instead of a rule written here (step 3).
+ */
+const READ_CONDITIONS = Symbol('read the conditions')
+type ReaderRule =
+  string | typeof READ_CONDITIONS | ((view: PlayerView, message: MessageView) => string)
+
+/** Effects that help, and effects that cost, by type and sign. */
+const helps = (fx: ScenarioEvent['choices'][number]['effects'][number]): boolean | null => {
+  switch (fx.type) {
+    case 'newLeads':
+    case 'invoicePayChance':
+    case 'touchLead':
+      return true
+    case 'lostHours':
+    case 'churnChance':
+    case 'fixedCost':
+      return false
+    case 'skill':
+    case 'energy':
+    case 'investorConfidence':
+      return fx.delta > 0
+    case 'bugs':
+      return fx.delta < 0
+    case 'cash':
+      return fx.amountCents > 0
+    default:
+      return null
+  }
+}
+
+/**
+ * The answer an event's declared conditions point to: the first choice other than the default
+ * with a conditional benefit that applies now, no conditional cost that applies, and no lasting
+ * cost (a customer at risk, a monthly cost) that always applies. Otherwise the default. Conditions are read from the view only.
+ */
+export function fromConditions(
+  event: ScenarioEvent,
+  view: PlayerView,
+  message: MessageView,
+): string {
+  for (const c of event.choices) {
+    if (c.id === event.defaultChoice) continue
+    const good = c.effects.filter((fx) => helps(fx) === true && fx.when.length > 0)
+    const bad = c.effects.filter((fx) => helps(fx) === false)
+    const applies = (fx: (typeof c.effects)[number]) => viewConditionsHold(view, fx.when, message)
+    // A cost that always comes blocks the choice only if it lasts: a customer at risk or a monthly
+    // cost. Hours, energy and a price shown on the card are what answering costs.
+    const lasting = (fx: (typeof c.effects)[number]) =>
+      fx.type === 'churnChance' || fx.type === 'fixedCost'
+    if (
+      good.some(applies) &&
+      !bad.some((fx) => (fx.when.length === 0 ? lasting(fx) : applies(fx)))
+    ) {
+      return c.id
+    }
+  }
+  return event.defaultChoice
+}
 
 /**
  * What a careful reader answers, per kind of message. A function reads the situation the message
@@ -150,19 +219,19 @@ const SHARED_READER: Record<string, ReaderRule> = {
   // validation
   startup_meetup: 'skip',
   visitor_list: 'pass',
-  podcast_invite: (v) => (thin(v) ? 'record' : 'decline'),
+  podcast_invite: READ_CONDITIONS,
   // sales
   discount_demand: 'hold',
   slow_lead: 'wait',
   sales_coach: 'decline',
-  chamber_breakfast: (v) => (thin(v) ? 'go' : 'skip'),
+  chamber_breakfast: READ_CONDITIONS,
   seven_questions: (v, m) => (senderSilent(v, m) ? 'answer' : 'later'),
   suspicious_price: (v, m) => (senderSilent(v, m) ? 'explain' : 'ignore'),
   trial_extension: (v, m) => (senderSilent(v, m) ? 'extend' : 'refuse'),
   referral_reward: (v) => (thin(v) ? 'voucher' : 'thanks'),
   pilot_request: (v, m) => (senderSilent(v, m) ? 'counter' : 'decline'),
   ballpark_call: (v, m) => (senderSilent(v, m) ? 'call' : 'demo'),
-  business_park_flyers: (v) => (thin(v) ? 'flyers' : 'skip'),
+  business_park_flyers: READ_CONDITIONS,
   frequent_emails: 'back_off',
   letterhead_quote: 'pdf',
   // product
@@ -229,8 +298,8 @@ const SHARED_READER: Record<string, ReaderRule> = {
   gym_reminder: (v) => (tired(v) ? 'go' : 'ignore'),
   blood_pressure: 'follow',
   student_talk: 'decline',
-  unkind_regards: (v, m) => (senderOverdue(v, m) ? 'call' : 'wait'),
-  debt_collector: (v, m) => (senderOverdue(v, m) ? 'yourself' : 'let_go'),
+  unkind_regards: READ_CONDITIONS,
+  debt_collector: READ_CONDITIONS,
   payment_plan: 'agree',
   annual_accounts: (v) => (tight(v) ? 'sort' : 'pay'),
   insurance_renewal: 'post',
@@ -240,15 +309,15 @@ const SHARED_READER: Record<string, ReaderRule> = {
   renewal_review: 'call',
   loyalty_discount: (v) => (tight(v) ? 'card' : 'gift'),
   supplier_questionnaire: 'decline',
-  more_locations: (v) => (thin(v) ? 'present' : 'later'),
-  case_study: (v) => (thin(v) ? 'write' : 'skip'),
+  more_locations: READ_CONDITIONS,
+  case_study: READ_CONDITIONS,
   conference_stand: 'skip',
   exit_survey: 'call',
   side_project_request: 'refer',
   new_contact: 'meeting',
   switching_offer: (v) => (tight(v) ? 'visit' : 'match'),
   reference_request: 'arrange',
-  procurement_portal: (v, m) => (senderOverdue(v, m) ? 'register' : 'ignore'),
+  procurement_portal: READ_CONDITIONS,
   old_code: (v) => (v.product.bugs >= 3 ? 'refactor' : 'live_with_it'),
   data_request: 'send',
   slow_with_growth: (v) => (tired(v) ? 'apologise' : 'optimise'),
@@ -256,7 +325,7 @@ const SHARED_READER: Record<string, ReaderRule> = {
   request_document: 'ignore',
   night_outage: (v) => (v.product.bugs >= 3 ? 'investigate' : 'sleep'),
   browser_update: (v) => (v.customers.length >= 3 ? 'test' : 'wait'),
-  other_market_asks: (v) => (thin(v) ? 'interview' : 'decline'),
+  other_market_asks: READ_CONDITIONS,
   market_report: 'pass',
   midnight_emails: 'talk',
   counter_offer: (v) => (tight(v) ? 'think' : 'match'),
@@ -274,7 +343,7 @@ const SHARED_READER: Record<string, ReaderRule> = {
   year_end_review: 'skip',
   bigger_office_offer: 'decline',
   domain_renewal: 'pay',
-  local_paper: (v) => (thin(v) ? 'interview' : 'decline'),
+  local_paper: READ_CONDITIONS,
   two_year_contract: 'negotiate',
   spring_clean: (v) => (tired(v) ? 'clean' : 'ignore'),
   // Investors (long mode with funding, shared/events/funding.yaml).
@@ -298,27 +367,27 @@ const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
     survey_offer: 'pass',
     friend_of_friend: 'decline',
     student_thesis: 'decline',
-    office_manager_forum: (v) => (thin(v) ? 'post' : 'skip'),
+    office_manager_forum: READ_CONDITIONS,
     lunch_diary: 'decline',
-    university_pilot: (v) => (v.customers.length <= 1 ? 'pilot' : 'decline'),
+    university_pilot: READ_CONDITIONS,
     rival_customer: (v) => (thin(v) ? 'coffee' : 'skip'),
     focus_group: 'pass',
     online_poll: 'ignore',
     tenant_survey: 'pass',
     catering_inquiry: 'decline',
-    expert_interview: (v) => (v.customers.length === 0 ? 'meet' : 'decline'),
+    expert_interview: READ_CONDITIONS,
     // sales
     referral: 'follow_up',
     food_fair: 'pass',
     integration_question: 'honest',
     competitor_launch: 'ignore',
     supplier_form: (v, m) => (senderSilent(v, m) ? 'short' : 'leave'),
-    colleague_intro: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'intro' : 'later'),
-    coworking_open_day: (v) => (thin(v) ? 'go' : 'skip'),
+    colleague_intro: READ_CONDITIONS,
+    coworking_open_day: READ_CONDITIONS,
     demo_no_show: (v, m) => (senderSilent(v, m) ? 'rebook' : 'drop'),
-    reseller_offer: (v) => (shipped(v) >= 3 ? 'sign' : 'decline'),
+    reseller_offer: READ_CONDITIONS,
     big_tender: 'decline',
-    newsletter_paragraph: (v) => (thin(v) ? 'write' : 'skip'),
+    newsletter_paragraph: READ_CONDITIONS,
     returning_prospect: (v) => (openLeads(v) <= ROOMY_PIPELINE ? 'call' : 'later'),
     wedding_fair: 'decline',
     // product
@@ -338,7 +407,7 @@ const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
     insurance_broker: 'decline',
     // founder
     family_lunch: (v) => (tired(v) ? 'go' : 'stay'),
-    founder_dinner: (v) => (thin(v) ? 'go' : 'skip'),
+    founder_dinner: READ_CONDITIONS,
     // team
     team_lunch: 'order',
   },
@@ -415,7 +484,10 @@ export const readerEventIds = (scenarioId: string): string[] =>
   Object.keys(readerChoices(scenarioId))
 
 /** The reader's answers: the listed choice when its hours fit and its money leaves a cushion. */
-export function readInbox(view: PlayerView): { messageId: string; choiceId: string }[] {
+export function readInbox(
+  view: PlayerView,
+  scenario: Scenario,
+): { messageId: string; choiceId: string }[] {
   const answers: { messageId: string; choiceId: string }[] = []
   let used = view.committedHours
   const table = readerChoices(view.scenarioId)
@@ -423,7 +495,15 @@ export function readInbox(view: PlayerView): { messageId: string; choiceId: stri
     if (m.answeredChoiceId !== null) continue
     const rule = table[m.eventId]
     if (!rule) continue
-    const id = typeof rule === 'function' ? rule(view, m) : rule
+    const event = scenario.events.find((e) => e.id === m.eventId)
+    const id =
+      rule === READ_CONDITIONS
+        ? event
+          ? fromConditions(event, view, m)
+          : null
+        : typeof rule === 'function'
+          ? rule(view, m)
+          : rule
     const c = m.choices.find((x) => x.id === id)
     if (!c) continue
     if (used + c.hours + view.forcedHours > view.founder.maxHoursPerWeek) continue
@@ -1494,7 +1574,7 @@ export function validatingPlayer(
         ...answers,
         ...moves,
         ...(behaviours.inbox === 'reader'
-          ? readInbox(rest)
+          ? readInbox(rest, scenario)
           : behaviours.inbox === 'cheapest'
             ? cheapestInbox(rest)
             : answerInbox(rest)),
