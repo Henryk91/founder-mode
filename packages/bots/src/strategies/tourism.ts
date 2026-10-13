@@ -1,5 +1,5 @@
 import type { Scenario } from '@founder-mode/content'
-import type { BookingsPlan, PlayerView } from '@founder-mode/engine'
+import type { BookingsPlan, PlayerView, WeekPlan, WeekReport } from '@founder-mode/engine'
 import { budgetHints } from '../pricing'
 import { PlanBuilder, segmentNotes, type Player, type Strategy } from '../strategy'
 import { TOURISM_READER } from './tourismReader'
@@ -36,6 +36,15 @@ export type TourismRule = {
   loan?: 'careful' | 'max' | 'reckless' | 'none'
   /** A second loan for the own fit-out once guests cover the costs (loan target L1). */
   refitLoan?: boolean
+  /**
+   * Careful play without what the bots know about a scenario beyond the screen (tourism fixes,
+   * item 17): no per-scenario reader rules (messages are answered by their declared conditions
+   * only), no bridge months or lead times for the loan, and no channel table (every channel is
+   * tried for the groups it targets).
+   */
+  naive?: boolean
+  /** The event table (tourism fixes, item 18): always this answer to this event. */
+  forced?: { eventId: string; choiceId: string }
 }
 
 export const CAREFUL_TOURISM: TourismRule = {
@@ -94,6 +103,10 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     Object.entries(cfg.products)
       .filter(([, p]) => p.serves.includes(seg))
       .map(([id]) => id)
+
+  /** A channel reaches a segment: from the scenario's table, or always for the naive bot. */
+  const reaches = (seg: string, channel: 'platform' | 'website' | 'partnership' | 'outreach') =>
+    rule.naive ? true : (cfg.segments[seg]?.response[channel] ?? 0) >= CHANNEL_USEFUL
 
   /** The features a segment asks for in interviews, then a product that sells to it. */
   const wanted = (view: PlayerView, seg: string): string[] => {
@@ -169,11 +182,11 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     )
     const oneOff = unshipped.reduce((t, id) => t + (cfg.products[id]?.oneOffCents ?? 0), 0)
     // Guests who book months ahead (weddings) need a longer bridge: their lead time in months.
-    const lead = target ? (cfg.segments[target]?.leadWeeks.max ?? 0) : 0
+    const lead = target && !rule.naive ? (cfg.segments[target]?.leadWeeks.max ?? 0) : 0
     const bufferMonths = Math.max(
       LOAN_BUFFER_MONTHS,
       Math.ceil(lead / 4),
-      BRIDGE_MONTHS[scenario.id] ?? 0,
+      rule.naive ? 0 : (BRIDGE_MONTHS[scenario.id] ?? 0),
     )
     const need = oneOff + bufferMonths * monthly - cash
     const refit =
@@ -241,287 +254,327 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   return {
     focus: () => target,
     respond(view) {
-      if (rule.inbox === 'none') return []
-      if (rule.inbox === 'effort') return answerInbox(view)
-      // The reader: listed answers where the bots have them, else the declared conditions.
-      const listed = readInbox(view, scenario)
-      const answered = new Set(listed.map((a) => a.messageId))
+      const answers = answer(view)
+      if (!rule.forced) return answers
+      // Every arrival of the forced event gets the forced answer; the rest as the bot reads them.
+      const { eventId, choiceId } = rule.forced
+      const forced = view.inbox.filter(
+        (m) =>
+          m.answeredChoiceId === null &&
+          m.eventId === eventId &&
+          m.choices.some((c) => c.id === choiceId),
+      )
+      const ids = new Set(forced.map((m) => m.id))
+      return [
+        ...answers.filter((a) => !ids.has(a.messageId)),
+        ...forced.map((m) => ({ messageId: m.id, choiceId })),
+      ]
+    },
+    plan(view) {
+      return planWeek(view)
+    },
+    observe(report) {
+      observeWeek(report)
+    },
+  }
+
+  function answer(view: PlayerView): { messageId: string; choiceId: string }[] {
+    if (rule.inbox === 'none') return []
+    if (rule.inbox === 'effort') return answerInbox(view)
+    if (rule.naive) {
+      // Only what a message's own conditions say; everything else keeps its default.
+      const out: { messageId: string; choiceId: string }[] = []
       let used = view.committedHours + view.forcedHours
-      const extra: { messageId: string; choiceId: string }[] = []
-      const rules = TOURISM_READER[scenario.id] ?? {}
       for (const m of view.inbox) {
-        if (m.answeredChoiceId !== null || answered.has(m.id)) continue
+        if (m.answeredChoiceId !== null) continue
         const event = scenario.events.find((e) => e.id === m.eventId)
-        if (!event) continue
-        const rule = rules[event.id]
-        const conditional = event.choices.some((c) => c.effects.some((fx) => fx.when.length > 0))
-        if (!rule && !conditional) continue
-        const id = rule
-          ? (rule(view, { target }) ?? event.defaultChoice)
-          : fromConditions(event, view, m)
+        if (!event || !event.choices.some((c) => c.effects.some((fx) => fx.when.length > 0)))
+          continue
+        const id = fromConditions(event, view, m)
         const c = m.choices.find((x) => x.id === id)
         if (!c || id === event.defaultChoice) continue
         if (used + c.hours > view.founder.maxHoursPerWeek) continue
-        extra.push({ messageId: m.id, choiceId: id })
+        out.push({ messageId: m.id, choiceId: id })
         used += c.hours
       }
-      return [...listed, ...extra]
-    },
-    plan(view) {
-      const b = new PlanBuilder(view, rule.hours ?? 50)
-      const bv = view.bookings!
-      const ids = view.segments.map((s) => s.id)
-      const plan: BookingsPlan = {
-        shifts: {},
-        founderShifts: {},
-        prices: {},
-        policy: null,
-        platform: null,
-        partnerships: [],
-        outreach: {},
-      }
-      b.chase(Math.max(3, view.invoices.filter((i) => i.canChase).length))
+      return out
+    }
+    // The reader: listed answers where the bots have them, else the declared conditions.
+    const listed = readInbox(view, scenario)
+    const answered = new Set(listed.map((a) => a.messageId))
+    let used = view.committedHours + view.forcedHours
+    const extra: { messageId: string; choiceId: string }[] = []
+    const rules = TOURISM_READER[scenario.id] ?? {}
+    for (const m of view.inbox) {
+      if (m.answeredChoiceId !== null || answered.has(m.id)) continue
+      const event = scenario.events.find((e) => e.id === m.eventId)
+      if (!event) continue
+      const rule = rules[event.id]
+      const conditional = event.choices.some((c) => c.effects.some((fx) => fx.when.length > 0))
+      if (!rule && !conditional) continue
+      const id = rule
+        ? (rule(view, { target }) ?? event.defaultChoice)
+        : fromConditions(event, view, m)
+      const c = m.choices.find((x) => x.id === id)
+      if (!c || id === event.defaultChoice) continue
+      if (used + c.hours > view.founder.maxHoursPerWeek) continue
+      extra.push({ messageId: m.id, choiceId: id })
+      used += c.hours
+    }
+    return [...listed, ...extra]
+  }
 
-      // This week's guests come first: the roster.
-      const pool: Record<string, number> = {}
-      for (const r of bv.roles) pool[r.id] = r.available
-      // Walk-ins expected this week, shared over the products open now by capacity (step 6).
-      const open = bv.products.filter((p) => p.shipped && p.inSeason && p.capacity > 0)
-      const openCapacity = open.reduce((t, p) => t + p.capacity, 0)
-      const walkIns =
-        scenario.loan && arrivals.length > 0
-          ? arrivals.reduce((t, x) => t + x, 0) / arrivals.length
+  function planWeek(view: PlayerView): WeekPlan {
+    const b = new PlanBuilder(view, rule.hours ?? 50)
+    const bv = view.bookings!
+    const ids = view.segments.map((s) => s.id)
+    const plan: BookingsPlan = {
+      shifts: {},
+      founderShifts: {},
+      prices: {},
+      policy: null,
+      platform: null,
+      partnerships: [],
+      outreach: {},
+    }
+    b.chase(Math.max(3, view.invoices.filter((i) => i.canChase).length))
+
+    // This week's guests come first: the roster.
+    const pool: Record<string, number> = {}
+    for (const r of bv.roles) pool[r.id] = r.available
+    // Walk-ins expected this week, shared over the products open now by capacity (step 6).
+    const open = bv.products.filter((p) => p.shipped && p.inSeason && p.capacity > 0)
+    const openCapacity = open.reduce((t, p) => t + p.capacity, 0)
+    const walkIns =
+      scenario.loan && arrivals.length > 0
+        ? arrivals.reduce((t, x) => t + x, 0) / arrivals.length
+        : 0
+    bookedAtPlan = bv.thisWeek.reduce(
+      (t, x) => t + (bv.products.find((p) => p.id === x.productId)?.shipped ? x.booked : 0),
+      0,
+    )
+    for (const { productId, booked: bookedNow } of bv.thisWeek) {
+      const product = bv.products.find((p) => p.id === productId)
+      const expected =
+        product && openCapacity > 0 && open.includes(product)
+          ? (walkIns * product.capacity) / openCapacity
           : 0
-      bookedAtPlan = bv.thisWeek.reduce(
-        (t, x) => t + (bv.products.find((p) => p.id === x.productId)?.shipped ? x.booked : 0),
-        0,
-      )
-      for (const { productId, booked: bookedNow } of bv.thisWeek) {
-        const product = bv.products.find((p) => p.id === productId)
-        const expected =
-          product && openCapacity > 0 && open.includes(product)
-            ? (walkIns * product.capacity) / openCapacity
-            : 0
-        const booked = rule.roster === 'under' ? bookedNow : bookedNow + expected
-        if (booked === 0 && rule.roster !== 'over') continue
-        if (!product?.shipped) continue
-        const need =
-          rule.roster === 'over'
-            ? product.capacity
-            : rule.roster === 'under'
-              ? booked * UNDER_SHARE
-              : booked * (rule.reviews ? 1 + ROSTER_MARGIN : 1)
-        let covered = 0
-        // The founder's own shifts first: they cost hours, not money.
-        for (const r of bv.roles) {
-          const per = r.units[productId] ?? 0
-          const own = Object.values(plan.founderShifts).reduce((t, n) => t + n, 0)
-          if (per <= 0 || r.founderHours === null) continue
-          let taken = own
-          while (
-            covered < need &&
-            taken < FOUNDER_SHIFTS &&
-            b.free >= r.founderHours + FOUNDER_KEEP_HOURS
-          ) {
-            plan.founderShifts[r.id] = (plan.founderShifts[r.id] ?? 0) + 1
-            b.free -= r.founderHours
-            covered += per
-            taken++
-          }
-        }
-        // Then paid shifts, the cheapest per guest first.
-        const byCost = [...bv.roles]
-          .filter((r) => (r.units[productId] ?? 0) > 0)
-          .sort(
-            (x, y) => x.centsPerShift / x.units[productId]! - y.centsPerShift / y.units[productId]!,
-          )
-        for (const r of byCost) {
-          const per = r.units[productId] ?? 0
-          while (covered < need && (pool[r.id] ?? 0) > 0) {
-            pool[r.id]!--
-            plan.shifts[r.id] = (plan.shifts[r.id] ?? 0) + 1
-            covered += per
-          }
-        }
-      }
-
-      // Week 1: listen to everyone. Week 2: a test listing and a pilot where it points.
-      if (rule.tests && view.week === 1) {
-        for (const id of ids) b.interviews(id, FIRST_WEEK_INTERVIEWS)
-      }
-      if (rule.tests && view.week === 2) {
-        const top = rankMarkets(scenario, view)
-        if (top[0]) {
-          b.presale(top[0].id)
-          if ((cfg.segments[top[0].id]?.response.platform ?? 0) >= CHANNEL_USEFUL)
-            b.landing(top[0].id)
-        }
-        for (const { id } of top.slice(0, 2)) b.interviews(id, MORE_INTERVIEWS)
-      }
-      if (view.week >= (rule.tests ? 3 : 1) && target === null) {
-        target = rule.tests ? (rankMarkets(scenario, view)[0]?.id ?? ids[0]!) : ids[0]!
-      }
-
-      if (target !== null) {
-        const seg = target
-        // Build what the market asks for, or everything. Once that is done, a second kind of
-        // guest: the next segment the evidence ranks, so quiet weeks still bring someone.
-        const own = wanted(view, seg)
-        const done = own.every((f) => view.product.features.find((x) => x.id === f)?.shipped)
-        const second = rule.tests
-          ? rankMarkets(scenario, view).find((r) => r.id !== seg)?.id
-          : undefined
-        // More products for the same guests (other months, other days out), when one costs at
-        // most a fifth of the money in hand.
-        const money = view.company.cashCents + Math.max(0, view.founder.savingsCents)
-        // From step 6 (loan scenarios): not a product whose stated costs eat most of its price.
-        const thin = (id: string) =>
-          !!scenario.loan &&
-          (bv.products.find((p) => p.id === id)?.unitCostShare ?? 0) >= THIN_MARGIN_SHARE
-        const more = done
-          ? productsFor(seg).filter(
-              (id) => (cfg.products[id]?.oneOffCents ?? 0) <= money * EXTRA_SHARE && !thin(id),
-            )
-          : []
-        const toBuild = rule.buildAll
-          ? scenario.features.map((f) => f.id)
-          : done && second
-            ? [...own, ...more, ...wanted(view, second)]
-            : own
-        // With a bank loan on offer (step 6): build what is required first, and never a product
-        // the money cannot pay for yet.
-        const building = view.loan ? withRequired(toBuild) : toBuild
-        if (view.loan) {
-          // Keep the bridge a long-lead market needs (the months beyond the usual buffer) as well.
-          const lead = cfg.segments[seg]?.leadWeeks.max ?? 0
-          const bridge = Math.max(0, Math.ceil(lead / 4) - LOAN_BUFFER_MONTHS)
-          const reserve = (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
-          const shipped = (id: string) => !!view.product.features.find((x) => x.id === id)?.shipped
-          planLoan(view, b, building)
-          // What others require comes first, on its own: nothing sells without it.
-          const required = building.filter(
-            (f) => !shipped(f) && building.some((g) => cfg.products[g]?.requires === f),
-          )
-          const now = required.length > 0 ? required : building
-          for (const f of now) {
-            const cost = cfg.products[f]?.oneOffCents ?? 0
-            const keep = required.length > 0 ? 0 : reserve
-            if (cost > 0 && view.company.cashCents - keep < cost) continue
-            b.build(f, 40 - (b.plan.build[f] ?? 0))
-          }
-        } else {
-          for (const f of building) b.build(f, 40 - (b.plan.build[f] ?? 0))
-        }
-        if (done && second && rule.channels === 'mix') {
-          const r2 = cfg.segments[second]!.response
-          if (
-            r2.partnership >= CHANNEL_USEFUL &&
-            !bv.partnerships.includes(second) &&
-            b.free >= bv.partnershipHours + 10
-          ) {
-            plan.partnerships.push(second)
-            b.free -= bv.partnershipHours
-          }
-          if (r2.platform >= CHANNEL_USEFUL && !bv.platform.listed) plan.platform = true
-        }
-        if (rule.reviews && view.product.bugs >= BUG_LIMIT) b.fixBugs(8)
-        if (
-          view.segments.find((s) => s.id === seg) &&
-          segmentNotes(scenario, view, seg).interviews < 12
+      const booked = rule.roster === 'under' ? bookedNow : bookedNow + expected
+      if (booked === 0 && rule.roster !== 'over') continue
+      if (!product?.shipped) continue
+      const need =
+        rule.roster === 'over'
+          ? product.capacity
+          : rule.roster === 'under'
+            ? booked * UNDER_SHARE
+            : booked * (rule.reviews ? 1 + ROSTER_MARGIN : 1)
+      let covered = 0
+      // The founder's own shifts first: they cost hours, not money.
+      for (const r of bv.roles) {
+        const per = r.units[productId] ?? 0
+        const own = Object.values(plan.founderShifts).reduce((t, n) => t + n, 0)
+        if (per <= 0 || r.founderHours === null) continue
+        let taken = own
+        while (
+          covered < need &&
+          taken < FOUNDER_SHIFTS &&
+          b.free >= r.founderHours + FOUNDER_KEEP_HOURS
         ) {
-          if (rule.tests) b.interviews(seg, 2)
+          plan.founderShifts[r.id] = (plan.founderShifts[r.id] ?? 0) + 1
+          b.free -= r.founderHours
+          covered += per
+          taken++
         }
+      }
+      // Then paid shifts, the cheapest per guest first.
+      const byCost = [...bv.roles]
+        .filter((r) => (r.units[productId] ?? 0) > 0)
+        .sort(
+          (x, y) => x.centsPerShift / x.units[productId]! - y.centsPerShift / y.units[productId]!,
+        )
+      for (const r of byCost) {
+        const per = r.units[productId] ?? 0
+        while (covered < need && (pool[r.id] ?? 0) > 0) {
+          pool[r.id]!--
+          plan.shifts[r.id] = (plan.shifts[r.id] ?? 0) + 1
+          covered += per
+        }
+      }
+    }
 
-        // Channels.
-        const r = cfg.segments[seg]!.response
-        if (!bv.platform.listed && (rule.channels === 'platform' || r.platform >= CHANNEL_USEFUL)) {
-          plan.platform = true
-        }
-        if (rule.channels === 'mix') {
-          if (
-            r.partnership >= CHANNEL_USEFUL &&
-            !bv.partnerships.includes(seg) &&
-            b.free >= bv.partnershipHours + 10
-          ) {
-            plan.partnerships.push(seg)
-            b.free -= bv.partnershipHours
-          }
-          if (r.website >= CHANNEL_USEFUL)
-            b.build(cfg.website.product, 20 - (b.plan.build[cfg.website.product] ?? 0))
-          if (r.outreach >= CHANNEL_USEFUL) {
-            const h = Math.min(OUTREACH_HOURS, b.free)
-            if (h > 0) {
-              plan.outreach[seg] = h
-              b.free -= h
-            }
-          }
-        }
+    // Week 1: listen to everyone. Week 2: a test listing and a pilot where it points.
+    if (rule.tests && view.week === 1) {
+      for (const id of ids) b.interviews(id, FIRST_WEEK_INTERVIEWS)
+    }
+    if (rule.tests && view.week === 2) {
+      const top = rankMarkets(scenario, view)
+      if (top[0]) {
+        b.presale(top[0].id)
+        if (reaches(top[0].id, 'platform')) b.landing(top[0].id)
+      }
+      for (const { id } of top.slice(0, 2)) b.interviews(id, MORE_INTERVIEWS)
+    }
+    if (view.week >= (rule.tests ? 3 : 1) && target === null) {
+      target = rule.tests ? (rankMarkets(scenario, view)[0]?.id ?? ids[0]!) : ids[0]!
+    }
 
-        // Prices: from what interviewees said they pay, per season, for every kind of guest.
-        if (rule.pricing === 'hints') {
-          for (const id of Object.keys(cfg.segments)) {
-            const hints = budgetHints(view, id)
-            if (hints.length < MIN_HINTS) continue
-            // The median, and never more than a step away from today's price: hints are noisy.
-            const sorted = [...hints].sort((x, y) => x - y)
-            const median = sorted[Math.floor(sorted.length / 2)]!
-            const base = bv.prices[id]?.peak ?? median
-            const mean = Math.min(
-              base * (1 + MAX_PRICE_STEP),
-              Math.max(base * (1 - MAX_PRICE_STEP), median),
-            )
-            const peak = Math.max(100, Math.round((mean * HINT_PEAK) / 100) * 100)
-            const off = Math.max(100, Math.round((mean * HINT_OFF) / 100) * 100)
-            const now = bv.prices[id]
-            if (!now || now.peak !== peak || now.off !== off) plan.prices[id] = { peak, off }
+    if (target !== null) {
+      const seg = target
+      // Build what the market asks for, or everything. Once that is done, a second kind of
+      // guest: the next segment the evidence ranks, so quiet weeks still bring someone.
+      const own = wanted(view, seg)
+      const done = own.every((f) => view.product.features.find((x) => x.id === f)?.shipped)
+      const second = rule.tests
+        ? rankMarkets(scenario, view).find((r) => r.id !== seg)?.id
+        : undefined
+      // More products for the same guests (other months, other days out), when one costs at
+      // most a fifth of the money in hand.
+      const money = view.company.cashCents + Math.max(0, view.founder.savingsCents)
+      // From step 6 (loan scenarios): not a product whose stated costs eat most of its price.
+      const thin = (id: string) =>
+        !!scenario.loan &&
+        (bv.products.find((p) => p.id === id)?.unitCostShare ?? 0) >= THIN_MARGIN_SHARE
+      const more = done
+        ? productsFor(seg).filter(
+            (id) => (cfg.products[id]?.oneOffCents ?? 0) <= money * EXTRA_SHARE && !thin(id),
+          )
+        : []
+      const toBuild = rule.buildAll
+        ? scenario.features.map((f) => f.id)
+        : done && second
+          ? [...own, ...more, ...wanted(view, second)]
+          : own
+      // With a bank loan on offer (step 6): build what is required first, and never a product
+      // the money cannot pay for yet.
+      const building = view.loan ? withRequired(toBuild) : toBuild
+      if (view.loan) {
+        // Keep the bridge a long-lead market needs (the months beyond the usual buffer) as well.
+        const lead = rule.naive ? 0 : (cfg.segments[seg]?.leadWeeks.max ?? 0)
+        const bridge = Math.max(0, Math.ceil(lead / 4) - LOAN_BUFFER_MONTHS)
+        const reserve = (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
+        const shipped = (id: string) => !!view.product.features.find((x) => x.id === id)?.shipped
+        planLoan(view, b, building)
+        // What others require comes first, on its own: nothing sells without it.
+        const required = building.filter(
+          (f) => !shipped(f) && building.some((g) => cfg.products[g]?.requires === f),
+        )
+        const now = required.length > 0 ? required : building
+        for (const f of now) {
+          const cost = cfg.products[f]?.oneOffCents ?? 0
+          const keep = required.length > 0 ? 0 : reserve
+          if (cost > 0 && view.company.cashCents - keep < cost) continue
+          b.build(f, 40 - (b.plan.build[f] ?? 0))
+        }
+      } else {
+        for (const f of building) b.build(f, 40 - (b.plan.build[f] ?? 0))
+      }
+      if (done && second && rule.channels === 'mix') {
+        if (
+          reaches(second, 'partnership') &&
+          !bv.partnerships.includes(second) &&
+          b.free >= bv.partnershipHours + 10
+        ) {
+          plan.partnerships.push(second)
+          b.free -= bv.partnershipHours
+        }
+        if (reaches(second, 'platform') && !bv.platform.listed) plan.platform = true
+      }
+      if (rule.reviews && view.product.bugs >= BUG_LIMIT) b.fixBugs(8)
+      if (
+        view.segments.find((s) => s.id === seg) &&
+        segmentNotes(scenario, view, seg).interviews < 12
+      ) {
+        if (rule.tests) b.interviews(seg, 2)
+      }
+
+      // Channels.
+      if (!bv.platform.listed && (rule.channels === 'platform' || reaches(seg, 'platform'))) {
+        plan.platform = true
+      }
+      if (rule.channels === 'mix') {
+        if (
+          reaches(seg, 'partnership') &&
+          !bv.partnerships.includes(seg) &&
+          b.free >= bv.partnershipHours + 10
+        ) {
+          plan.partnerships.push(seg)
+          b.free -= bv.partnershipHours
+        }
+        if (reaches(seg, 'website'))
+          b.build(cfg.website.product, 20 - (b.plan.build[cfg.website.product] ?? 0))
+        if (reaches(seg, 'outreach')) {
+          const h = Math.min(OUTREACH_HOURS, b.free)
+          if (h > 0) {
+            plan.outreach[seg] = h
+            b.free -= h
           }
         }
+      }
 
-        // Policy.
-        if (rule.policy !== 'adaptive') {
-          if (bv.policy !== rule.policy && !bv.policyLocked) plan.policy = rule.policy
-        } else if (!bv.policyLocked) {
-          const cancelled = cancelledRecent.reduce((t, x) => t + x, 0)
-          const served = servedRecent.reduce((t, x) => t + x, 0)
-          const share = cancelled + served > 0 ? cancelled / (cancelled + served) : 0
-          const cells = bv.calendar.flatMap((c) => c.cells.slice(0, 4))
-          const cap = cells.reduce((t, c) => t + c.capacity, 0)
-          const busy = cap > 0 ? cells.reduce((t, c) => t + c.booked, 0) / cap : 0
-          const want = share >= STRICT_CANCEL_SHARE && busy >= BUSY_SHARE ? 'strict' : 'flexible'
-          if (want !== bv.policy) plan.policy = want
+      // Prices: from what interviewees said they pay, per season, for every kind of guest.
+      if (rule.pricing === 'hints') {
+        for (const id of Object.keys(cfg.segments)) {
+          const hints = budgetHints(view, id)
+          if (hints.length < MIN_HINTS) continue
+          // The median, and never more than a step away from today's price: hints are noisy.
+          const sorted = [...hints].sort((x, y) => x - y)
+          const median = sorted[Math.floor(sorted.length / 2)]!
+          const base = bv.prices[id]?.peak ?? median
+          const mean = Math.min(
+            base * (1 + MAX_PRICE_STEP),
+            Math.max(base * (1 - MAX_PRICE_STEP), median),
+          )
+          const peak = Math.max(100, Math.round((mean * HINT_PEAK) / 100) * 100)
+          const off = Math.max(100, Math.round((mean * HINT_OFF) / 100) * 100)
+          const now = bv.prices[id]
+          if (!now || now.peak !== peak || now.off !== off) plan.prices[id] = { peak, off }
         }
       }
-      // Hours left over go to more calls and visits for the target, up to what still helps.
-      if (target !== null && rule.channels === 'mix') {
-        const r = cfg.segments[target]!.response
-        const now = plan.outreach[target] ?? 0
-        const more = Math.min(cfg.outreachHoursFull - now, b.free)
-        if (r.outreach >= CHANNEL_USEFUL && more > 0) {
-          plan.outreach[target] = now + more
-          b.free -= more
-        }
+
+      // Policy.
+      if (rule.policy !== 'adaptive') {
+        if (bv.policy !== rule.policy && !bv.policyLocked) plan.policy = rule.policy
+      } else if (!bv.policyLocked) {
+        const cancelled = cancelledRecent.reduce((t, x) => t + x, 0)
+        const served = servedRecent.reduce((t, x) => t + x, 0)
+        const share = cancelled + served > 0 ? cancelled / (cancelled + served) : 0
+        const cells = bv.calendar.flatMap((c) => c.cells.slice(0, 4))
+        const cap = cells.reduce((t, c) => t + c.capacity, 0)
+        const busy = cap > 0 ? cells.reduce((t, c) => t + c.booked, 0) / cap : 0
+        const want = share >= STRICT_CANCEL_SHARE && busy >= BUSY_SHARE ? 'strict' : 'flexible'
+        if (want !== bv.policy) plan.policy = want
       }
-      // The overworker fills every spare hour with more calls and visits.
-      if ((rule.hours ?? 50) > 50 && target !== null && b.free > 0) {
-        plan.outreach[target] = (plan.outreach[target] ?? 0) + b.free
-        b.free = 0
+    }
+    // Hours left over go to more calls and visits for the target, up to what still helps.
+    if (target !== null && rule.channels === 'mix') {
+      const now = plan.outreach[target] ?? 0
+      const more = Math.min(cfg.outreachHoursFull - now, b.free)
+      if (reaches(target, 'outreach') && more > 0) {
+        plan.outreach[target] = now + more
+        b.free -= more
       }
-      b.plan.bookings = plan
-      return b.plan
-    },
-    observe(report) {
-      let cancelled = 0
-      let served = 0
-      let staffCancelled = 0
-      for (const e of report.entries) {
-        if (e.kind === 'bookings_cancelled') cancelled += e.units
-        if (e.kind === 'guests_served') served += e.units
-        if (e.kind === 'company_cancelled' && e.reason === 'staff') staffCancelled += e.units
-      }
-      arrivals = [...arrivals, Math.max(0, served + staffCancelled - bookedAtPlan)].slice(-4)
-      cancelledRecent = [...cancelledRecent, cancelled].slice(-4)
-      servedRecent = [...servedRecent, served].slice(-4)
-    },
+    }
+    // The overworker fills every spare hour with more calls and visits.
+    if ((rule.hours ?? 50) > 50 && target !== null && b.free > 0) {
+      plan.outreach[target] = (plan.outreach[target] ?? 0) + b.free
+      b.free = 0
+    }
+    b.plan.bookings = plan
+    return b.plan
+  }
+
+  function observeWeek(report: WeekReport): void {
+    let cancelled = 0
+    let served = 0
+    let staffCancelled = 0
+    for (const e of report.entries) {
+      if (e.kind === 'bookings_cancelled') cancelled += e.units
+      if (e.kind === 'guests_served') served += e.units
+      if (e.kind === 'company_cancelled' && e.reason === 'staff') staffCancelled += e.units
+    }
+    arrivals = [...arrivals, Math.max(0, served + staffCancelled - bookedAtPlan)].slice(-4)
+    cancelledRecent = [...cancelledRecent, cancelled].slice(-4)
+    servedRecent = [...servedRecent, served].slice(-4)
   }
 }
 
@@ -532,6 +585,14 @@ const tourism = (id: string, description: string, rule: TourismRule): Strategy =
   ...(rule.loan !== undefined || rule.refitLoan ? { needsLoan: true } : {}),
   create: (scenario) => tourismPlayer(scenario, rule),
 })
+
+/** The careful bot answering one event the same way every time (the event table, item 18). */
+export const tourismForced = (eventId: string, choiceId: string): Strategy =>
+  tourism(
+    `tourism_careful ${eventId}:${choiceId}`,
+    `tourism_careful, always answering ${eventId} with ${choiceId}.`,
+    { ...CAREFUL_TOURISM, forced: { eventId, choiceId } },
+  )
 
 export const TOURISM_STRATEGIES: Strategy[] = [
   tourism(
@@ -592,6 +653,11 @@ export const TOURISM_STRATEGIES: Strategy[] = [
       ...CAREFUL_TOURISM,
       inbox: 'effort',
     },
+  ),
+  tourism(
+    'tourism_naive_careful',
+    'Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17).',
+    { ...CAREFUL_TOURISM, naive: true },
   ),
   tourism('tourism_always_strict', 'Plays like tourism_careful with a strict policy all run.', {
     ...CAREFUL_TOURISM,

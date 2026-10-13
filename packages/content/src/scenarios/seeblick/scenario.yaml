@@ -249,7 +249,7 @@ roles:
 segments:
   - id: leisure
     name: Leisure couples
-    description: Couples and friends on a weekend or holiday by the lake
+    description: Couples and friends on a weekend or holiday by the lake. They book on the platforms, at most a couple of months ahead
     size: { min: 4000, max: 9000 }
     # Per room night (est., docs/scenario-hotel.md 3).
     wtpCents: { min: 11000, max: 19000 }
@@ -270,7 +270,7 @@ segments:
 
   - id: project_guests
     name: Business and project guests
-    description: Fitters, consultants and project staff working at firms in the area
+    description: Fitters, consultants and project staff working at firms in the area. Their office managers book, one to three weeks ahead
     size: { min: 1500, max: 4000 }
     wtpCents: { min: 7500, max: 11500 }
     mustHave: [invoice_billing, workspace, early_breakfast]
@@ -290,7 +290,7 @@ segments:
 
   - id: groups
     name: Groups and weddings
-    description: Weddings, family celebrations, clubs and company retreats booking the whole house
+    description: Weddings, family celebrations, clubs and company retreats booking the whole house. They plan half a year ahead with planners and venues, never on a platform
     size: { min: 300, max: 900 }
     # Per room night when the whole house is booked: 1,200 to 2,200 a night for twelve rooms
     # (est., 3).

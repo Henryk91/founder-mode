@@ -242,7 +242,7 @@ roles:
 segments:
   - id: tourists
     name: Tourists
-    description: Visitors from Germany and abroad on holiday in the region
+    description: Visitors from Germany and abroad on holiday in the region. They book on their phones, often the day before
     size: { min: 5000, max: 9000 }
     # Per person per day (est., docs/scenario-outdoor.md 3.1).
     wtpCents: { min: 6000, max: 12000 }
@@ -263,7 +263,7 @@ segments:
 
   - id: team_events
     name: Team events
-    description: Munich companies booking a day out for a team
+    description: Munich companies booking a day out for a team. HR books weeks or months ahead, through agencies and people it knows, never through an app
     size: { min: 300, max: 700 }
     # Per group day (est., 3.1).
     wtpCents: { min: 180000, max: 450000 }
@@ -284,7 +284,7 @@ segments:
 
   - id: school_groups
     name: School and youth groups
-    description: Schools, clubs and youth groups on class trips
+    description: Schools, clubs and youth groups on class trips. Teachers plan months ahead and want to talk to a person
     size: { min: 200, max: 500 }
     # Per group of about 25 pupils at 15 to 35 per pupil (est., 3.1).
     wtpCents: { min: 40000, max: 90000 }

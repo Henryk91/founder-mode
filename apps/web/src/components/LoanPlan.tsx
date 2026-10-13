@@ -157,13 +157,21 @@ export function LoanPlan() {
             <>
               <Market
                 label={label('loan.amount', stage)}
+                // What the amount buys in time: months of the company's fixed costs.
+                note={
+                  view.company.monthlyFixedCostsCents > 0
+                    ? label('loan.amountMonths', stage, {
+                        n: Math.round(apply.amountCents / view.company.monthlyFixedCostsCents),
+                      })
+                    : undefined
+                }
                 control={
                   <Stepper
                     stage={stage}
                     value={apply.amountCents}
                     onChange={(v) => change({ ...apply, amountCents: v })}
                     what={label('loan.amountWhat', stage)}
-                    names={{ minus: 'stepper.price.minus', plus: 'stepper.price.plus' }}
+                    names={{ minus: 'loan.amount.minus', plus: 'loan.amount.plus' }}
                     step={l.stepCents}
                     formatStep={(c) => formatEuro(c)}
                     display={formatEuro(apply.amountCents)}

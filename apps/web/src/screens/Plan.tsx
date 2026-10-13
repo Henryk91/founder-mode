@@ -552,6 +552,36 @@ function plannedText(hours: number, stage: Voice): string {
   return hours > 0 ? label('plan.plannedHours', stage, { n: hours }) : ''
 }
 
+/**
+ * Tourism: what a product costs and whom it sells to, as its card in the brochure would say: a
+ * price to buy it, a monthly fee, a share of each guest's price, the groups it can serve.
+ */
+function productNote(view: PlayerView, id: string, stage: Voice): string | undefined {
+  const p = view.bookings?.products.find((x) => x.id === id)
+  if (!p) return undefined
+  const parts = [
+    ...(p.oneOffCents > 0
+      ? [label('tour.product.oneOff', stage, { amount: formatEuro(p.oneOffCents) })]
+      : []),
+    ...(p.monthlyCents > 0
+      ? [label('tour.product.monthly', stage, { amount: formatEuro(p.monthlyCents) })]
+      : []),
+    ...(p.unitCostShare > 0
+      ? [label('tour.product.share', stage, { share: Math.round(p.unitCostShare * 100) })]
+      : []),
+    ...(p.serves.length > 0
+      ? [
+          label('tour.product.for', stage, {
+            segments: p.serves
+              .map((s) => view.segments.find((x) => x.id === s)?.name ?? s)
+              .join(', '),
+          }),
+        ]
+      : []),
+  ]
+  return parts.length > 0 ? parts.join(', ') : undefined
+}
+
 function BuildBody({ free }: { free: number }) {
   const view = useGame((s) => s.view)!
   const build = useGame((s) => s.plan.build)
@@ -578,6 +608,7 @@ function BuildBody({ free }: { free: number }) {
             <FeatureRow
               key={f.id}
               name={f.name}
+              note={productNote(view, f.id, stage)}
               progressHours={f.progressHours}
               buildHours={f.buildHours}
               progressText={label('plan.progress', stage, {

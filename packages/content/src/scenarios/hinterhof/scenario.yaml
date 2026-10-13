@@ -247,7 +247,7 @@ roles:
 segments:
   - id: office_lunch
     name: Office lunch
-    description: People from the offices nearby, Monday to Friday
+    description: People from the offices nearby, Monday to Friday. They walk in at noon, and office managers decide where the team eats
     size: { min: 3000, max: 6000 }
     # Per cover (est.; spec 12 to 18, raised with Munich lunch prices, decisions step 6).
     wtpCents: { min: 1300, max: 2000 }
@@ -268,7 +268,7 @@ segments:
 
   - id: evening_locals
     name: Evening locals
-    description: People from the neighbourhood, Thursday to Saturday evenings
+    description: People from the neighbourhood, Thursday to Saturday evenings. They reserve through an app, a week or two ahead
     size: { min: 2000, max: 5000 }
     wtpCents: { min: 3200, max: 5500 }
     mustHave: [dinner_menu, wine_list, online_reservations]
@@ -288,7 +288,7 @@ segments:
 
   - id: tourists
     name: Tourists and visitors
-    description: Visitors to Munich, more in summer, at the Oktoberfest and at Christmas
+    description: Visitors to Munich, more in summer, at the Oktoberfest and at Christmas. They find you on maps and websites, mostly the same week
     size: { min: 4000, max: 9000 }
     wtpCents: { min: 2200, max: 4500 }
     mustHave: [english_menu, open_sundays, courtyard]

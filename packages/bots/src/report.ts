@@ -1167,13 +1167,15 @@ export function buildReport(input: ReportInput): string {
     }),
   )
 
-  if (input.events && plainAll) {
-    const rows = eventRows(plainAll.results, input.events)
+  // Tourism compares with its own careful bot (tourism fixes, item 18).
+  const eventBase = input.tourism ? find(input, 'tourism_careful') : plainAll
+  if (input.events && eventBase) {
+    const rows = eventRows(eventBase.results, input.events)
     push(
       '',
       '## Inbox events: which answer wins',
       '',
-      `\`validate_then_build\` answering one event the same way every time it arrives, everything else by reading. Win rates on the seeds where the event arrived; differences of a few points are noise. Events seen in fewer than ${EVENT_MIN_SEEDS} seeds are not judged.`,
+      `\`${eventBase.id}\` answering one event the same way every time it arrives, everything else by reading. Win rates on the seeds where the event arrived; differences of a few points are noise. Events seen in fewer than ${EVENT_MIN_SEEDS} seeds are not judged.`,
       '',
       '| Event | Seeds | Win rate per answer (hours, money) | Reading | Best fixed | Cheapest | Cheapest wins |',
       '|---|---|---|---|---|---|---|',
