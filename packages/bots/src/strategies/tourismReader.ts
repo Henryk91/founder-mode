@@ -30,6 +30,13 @@ const anyServed = (view: PlayerView) =>
 const bookedNow = (view: PlayerView) =>
   (view.bookings?.thisWeek ?? []).reduce((t, x) => t + x.booked, 0)
 const quiet = (view: PlayerView) => bookedNow(view) < 6
+/** A restaurant week well short of its open capacity. */
+const quietRestaurant = (view: PlayerView) => {
+  const cap = (view.bookings?.products ?? [])
+    .filter((p) => p.shipped && p.inSeason)
+    .reduce((t, p) => t + p.capacity, 0)
+  return cap > 0 && bookedNow(view) < cap * 0.5
+}
 
 export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> = {
   gratwanderung: {
@@ -97,5 +104,62 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
     shared_bus: (v, c) =>
       c.target === 'team_events' && serves(v, 'team_events') && cashEur(v) >= 8000 ? 'sign' : null,
     staff_thank_you: ifCash(6000, 'dinner'),
+  },
+  hinterhof: {
+    // Validation: contacts where a service can take their guests; cheap lessons early.
+    street_association: (v) => (v.week <= 12 ? 'attend' : null),
+    office_manager_coffee: ifServes('office_lunch', 'present'),
+    popup_dinner_offer: (v) => (v.week <= 8 && cashEur(v) >= 5000 ? 'cook' : null),
+    hotel_concierge: ifServes('tourists', 'show'),
+    food_blog_interview: (v) => (anyServed(v) ? 'interview' : null),
+    lunch_box_test: (v) => (v.week <= 8 ? 'test' : null),
+    old_cook_notebook: () => 'read',
+    tourism_office_listing: ifServes('tourists', 'send'),
+    // Sales: guests where there is room; the delivery deal is growth that costs the margin.
+    reservation_feature: (v) =>
+      serves(v, 'evening_locals') && quietRestaurant(v) && cashEur(v) >= 4000 ? 'feature' : null,
+    critic_booking: (v) => (bookedNow(v) < 150 ? 'special' : null),
+    catering_tomorrow: (v) => (bookedNow(v) < 180 && energy(v) > 50 ? 'take' : null),
+    oktoberfest_rush: (v) => (serves(v, 'tourists') && energy(v) > 40 ? 'specials' : null),
+    hotel_partner_offer: ifServes('tourists', 'accept'),
+    lunch_card_scheme: (v, c) =>
+      c.target === 'office_lunch' && serves(v, 'office_lunch') ? 'join' : null,
+    stammtisch_request: (v) =>
+      serves(v, 'evening_locals') && quietRestaurant(v) ? 'reserve' : null,
+    christmas_parties: (v) => (serves(v, 'evening_locals') && energy(v) > 40 ? 'take' : null),
+    maps_photos: (v) =>
+      serves(v, 'tourists') && (v.bookings!.rating ?? 0) >= 4.2 ? 'shoot' : null,
+    // Product: the kitchen first, and fines avoided.
+    dishwasher_breaks: (v) => (cashEur(v) >= 3000 || bookedNow(v) >= 150 ? 'repair' : null),
+    hair_in_soup: () => 'refund',
+    hygiene_inspector: () => 'prepare',
+    supplier_price_rise: (v) => (v.week <= 80 ? 'new_menu' : null),
+    teething_menu: () => 'practise',
+    extractor_fan: (v) => (v.bookings!.peak && cashEur(v) >= 5000 ? 'replace' : null),
+    courtyard_noise: () => 'close_early',
+    cold_room_fails: ifCash(4000, 'repair'),
+    // Finance: the refit only with the money for it; keep the bank informed.
+    own_fitout_offer: (v) =>
+      cashEur(v) >= 25000 + (2 * v.company.monthlyFixedCostsCents) / 100 ? 'refit' : null,
+    bank_quarterly_numbers: () => 'send',
+    bank_missed_call: () => 'talk',
+    music_licence_audit: () => 'find',
+    tenant_deposit: ifCash(5000, 'lawyer'),
+    christmas_vouchers: (v) => (energy(v) > 40 ? 'stall' : null),
+    august_closure: (_v, c) => (c.target === 'office_lunch' ? 'close' : null),
+    card_fees_review: () => 'switch',
+    // Founder: rest when it shows.
+    kitchen_burn: ifTired(60, 'doctor'),
+    monday_rest: () => 'rest',
+    old_head_chef: ifTired(70, 'go'),
+    tv_cooking_show: (v) => (serves(v, 'evening_locals') && energy(v) > 50 ? 'film' : null),
+    parents_visit: () => 'welcome',
+    night_shift_sleep: () => 'sleep',
+    cooking_class_offer: (v) => (serves(v, 'evening_locals') && energy(v) > 50 ? 'teach' : null),
+    // Team.
+    cook_saturdays: (v) => (bookedNow(v) < 200 && energy(v) > 60 ? 'agree' : null),
+    server_quits: (v) => (cashEur(v) >= 3000 ? 'agency' : energy(v) > 50 ? 'yourself' : null),
+    tips_dispute: () => 'pool',
+    cook_poached: (v) => (v.bookings!.peak || bookedNow(v) >= 200 ? 'match' : null),
   },
 }

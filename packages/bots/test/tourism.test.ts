@@ -11,7 +11,9 @@ describe('tourism bots (step 4)', () => {
 
   it('play only the bookings model, and subscription bots never play it', () => {
     for (const t of TOURISM_STRATEGIES) {
-      expect(playsIn(t, scenario)).toBe(true)
+      // The loan bots play only where a scenario offers a bank loan (step 6).
+      expect(playsIn(t, scenario)).toBe(!t.needsLoan)
+      expect(playsIn(t, loadScenario('hinterhof'))).toBe(true)
       expect(playsIn(t, loadScenario('kantino', 'long'))).toBe(false)
     }
     const validate = STRATEGIES.find((s) => s.id === 'validate_then_build')!

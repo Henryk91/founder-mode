@@ -1,6 +1,7 @@
 import type { BookingsConfig, Scenario, WeatherState } from '@founder-mode/content'
 import type { Rng } from '../rng'
 import type {
+  BookingTotal,
   Booking,
   BookingsPlan,
   BookingsState,
@@ -336,11 +337,19 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const role = state.hidden.segments[seg]?.roleId as keyof BookingsConfig['roleFactor']
     return cfg.roleFactor[role] ?? 0
   }
+  // Units still booked per product and week, counted once and kept up to date as requests book.
+  const heldKey = (id: FeatureId, w: number) => `${id}|${w}`
+  const held = new Map<string, number>()
+  for (const x of bookings) {
+    if (x.status === 'booked' && x.week >= week) {
+      held.set(
+        heldKey(x.productId, x.week),
+        (held.get(heldKey(x.productId, x.week)) ?? 0) + x.units,
+      )
+    }
+  }
   const room = (id: FeatureId, w: number) =>
-    (cfg.products[id]?.capacity ?? 0) -
-    bookings
-      .filter((x) => x.productId === id && x.week === w && x.status === 'booked')
-      .reduce((t, x) => t + x.units, 0)
+    (cfg.products[id]?.capacity ?? 0) - (held.get(heldKey(id, w)) ?? 0)
   let sentLost = 0
   for (const seg of state.scenario.segments) {
     const s = cfg.segments[seg.id]
@@ -398,6 +407,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         bookedWeek: week,
         status: 'booked',
       })
+      held.set(heldKey(pick.id, target), (held.get(heldKey(pick.id, target)) ?? 0) + size)
       if (!platform) repeatGuests[seg.id] = (repeatGuests[seg.id] ?? 0) + size
       made++
       madeUnits += size
@@ -599,7 +609,15 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     ...state,
     invoices: invoices.length ? [...state.invoices, ...invoices] : state.invoices,
     hidden: { ...state.hidden, payWeeks, waitsForChase },
-    bookings: { ...b, bookings, repeatGuests, turnedAway, rating, reviews, eventGuests: {} },
+    bookings: {
+      ...b,
+      ...archiveOld(bookings, b.archived, week),
+      repeatGuests,
+      turnedAway,
+      rating,
+      reviews,
+      eventGuests: {},
+    },
   }
   out.state = state
   return out
@@ -626,6 +644,58 @@ export function bookingsRevenueOrSubscriptions(state: GameState): number {
     .reduce((t, c) => t + c.priceCentsPerMonth, 0)
 }
 
+/** Finished bookings are kept for this many weeks (the calendar's last year), then archived. */
+const KEEP_WEEKS = WEEKS_PER_YEAR + 1
+
+/** Moves finished bookings older than a year into the archive's totals. */
+function archiveOld(
+  bookings: Booking[],
+  archived: BookingTotal[] | undefined,
+  week: number,
+): { bookings: Booking[]; archived?: BookingTotal[] } {
+  const old = bookings.filter((x) => x.status !== 'booked' && x.week < week - KEEP_WEEKS)
+  if (old.length === 0) return archived ? { bookings, archived } : { bookings }
+  const totals = (archived ?? []).map((t) => ({ ...t }))
+  for (const x of old) {
+    let row = totals.find(
+      (t) => t.status === x.status && t.segmentId === x.segmentId && t.channel === x.channel,
+    )
+    if (!row) {
+      row = {
+        status: x.status,
+        segmentId: x.segmentId,
+        channel: x.channel,
+        units: 0,
+        grossCents: 0,
+        firstWeek: x.week,
+      }
+      totals.push(row)
+    }
+    row.units += x.units
+    row.grossCents += x.units * x.priceCents
+    row.firstWeek = Math.min(row.firstWeek, x.week)
+  }
+  return {
+    bookings: bookings.filter((x) => !(x.status !== 'booked' && x.week < week - KEEP_WEEKS)),
+    archived: totals,
+  }
+}
+
+/** Every booking of the run as totals: the archive and the bookings still kept, one row each. */
+export function bookingTotals(b: BookingsState): BookingTotal[] {
+  return [
+    ...(b.archived ?? []),
+    ...b.bookings.map((x) => ({
+      status: x.status,
+      segmentId: x.segmentId,
+      channel: x.channel,
+      units: x.units,
+      grossCents: x.units * x.priceCents,
+      firstWeek: x.week,
+    })),
+  ]
+}
+
 /** Tourism as the player sees it, or null in the subscription model. */
 export function bookingsView(state: GameState): BookingsView | null {
   const cfg = bookingsConfig(state)
@@ -635,14 +705,23 @@ export function bookingsView(state: GameState): BookingsView | null {
   const month = monthOfWeek(woy)
   const featureName = (id: FeatureId) =>
     state.scenario.features.find((f) => f.id === id)?.name ?? id
+  // One pass over the bookings for the 12 week calendar and last year's weeks (a restaurant has
+  // thousands of bookings; scanning them per cell was the slowest part of a run).
+  const key = (id: FeatureId, w: number) => `${id}|${w}`
+  const booked = new Map<string, number>()
+  const past = new Map<string, number>()
+  for (const x of b.bookings) {
+    if (x.status === 'booked' && x.week >= state.week && x.week < state.week + 12) {
+      booked.set(key(x.productId, x.week), (booked.get(key(x.productId, x.week)) ?? 0) + x.units)
+    }
+    const ago = x.week + WEEKS_PER_YEAR
+    if (x.status !== 'cancelled' && ago >= state.week && ago < state.week + 12) {
+      past.set(key(x.productId, ago), (past.get(key(x.productId, ago)) ?? 0) + x.units)
+    }
+  }
+  const bookedAt = (id: FeatureId, w: number) => booked.get(key(id, w)) ?? 0
   const lastYear = (id: FeatureId, w: number) =>
-    w - WEEKS_PER_YEAR >= 1
-      ? b.bookings
-          .filter(
-            (x) => x.productId === id && x.week === w - WEEKS_PER_YEAR && x.status !== 'cancelled',
-          )
-          .reduce((t, x) => t + x.units, 0)
-      : null
+    w - WEEKS_PER_YEAR >= 1 ? (past.get(key(id, w)) ?? 0) : null
   return {
     weekOfYear: woy,
     month,
@@ -681,6 +760,7 @@ export function bookingsView(state: GameState): BookingsView | null {
       serves: [...prod.serves],
       inSeason: prod.months.length === 0 || prod.months.includes(month),
       unitCostCents: prod.unitCostCents,
+      unitCostShare: prod.unitCostShare ?? 0,
       oneOffCents: prod.oneOffCents,
       monthlyCents: prod.monthlyCents,
     })),
@@ -700,7 +780,7 @@ export function bookingsView(state: GameState): BookingsView | null {
           const w = state.week + k
           return {
             week: w,
-            booked: bookedUnits(state, id, w),
+            booked: bookedAt(id, w),
             capacity: sells(state, id, w) ? (cfg.products[id]?.capacity ?? 0) : 0,
             lastYear: lastYear(id, w),
           }
@@ -708,7 +788,7 @@ export function bookingsView(state: GameState): BookingsView | null {
       })),
     thisWeek: Object.keys(cfg.products).map((id) => ({
       productId: id,
-      booked: bookedUnits(state, id, state.week),
+      booked: bookedAt(id, state.week),
     })),
     revenueLast4Cents: bookingRevenueLast4(state),
     bookedAhead: b.bookings

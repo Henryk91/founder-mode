@@ -1,0 +1,187 @@
+# Money: the bank, the fit-out, licences and the seasons' bills.
+events:
+  - id: own_fitout_offer
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 36, monthlyRevenueEur >= 20000]
+    from: none
+    sender: A shopfitter
+    text: >-
+      A shopfitter who eats lunch with you every Tuesday offers to redo the dining room: lamps
+      over the tables, proper chairs, the courtyard visible through a new window. It costs
+      25,000 EUR, paid when the work is done. Guests notice a room; they notice debt less.
+    defaultChoice: not_now
+    choices:
+      - id: refit
+        label: Have the dining room redone
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -2500000 }
+          - { type: moveOffice, stage: own_fitout }
+      - id: not_now
+        label: Not now
+        hours: 0
+
+  - id: bank_quarterly_numbers
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 13
+    when: [loan.running >= 1]
+    from: none
+    sender: Isartaler Bank
+    look: official
+    text: >-
+      The bank asks for your quarterly numbers, "as agreed". Preparing them takes an evening.
+      Not sending them earns you a week of polite phone calls.
+    defaultChoice: ignore
+    choices:
+      - id: send
+        label: Prepare and send the numbers
+        hours: 3
+      - id: ignore
+        label: Leave it
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 5 }
+
+  - id: bank_missed_call
+    area: finance
+    weight: 3
+    once: false
+    cooldownWeeks: 4
+    when: [loan.missed >= 1]
+    from: none
+    sender: Isartaler Bank
+    look: official
+    text: >-
+      Your adviser at the bank calls about the missed payment. She is kind, in the way of someone
+      reading from a policy. The next payment is due at the month end, and so is the last chance.
+    defaultChoice: let_ring
+    choices:
+      - id: talk
+        label: Go through the numbers with her
+        hours: 2
+        effects:
+          - { type: energy, delta: -2 }
+      - id: let_ring
+        label: Let it ring
+        hours: 0
+        effects:
+          - { type: energy, delta: -6 }
+
+  - id: music_licence_audit
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: The music licensing office
+    look: official
+    text: >-
+      The music licensing office asks for proof that the background music in your dining room is
+      licensed. It is, somewhere in a folder. Finding the folder is the hard part.
+    defaultChoice: ignore
+    choices:
+      - id: find
+        label: Find the folder and reply
+        hours: 2
+      - id: ignore
+        label: Ignore the letter
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -30000, chance: 0.5 }
+
+  - id: tenant_deposit
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Your landlord's lawyer
+    look: official
+    text: >-
+      The previous tenant's deposit dispute has landed on your desk: the landlord says the
+      handover fee covered the broken oven, the old tenant says it did not. A lawyer could get
+      some money back, or none.
+    defaultChoice: drop
+    choices:
+      - id: lawyer
+        label: Hire a lawyer
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: cash, amountCents: 150000, chance: 0.5 }
+      - id: drop
+        label: Let it go
+        hours: 0
+
+  - id: christmas_vouchers
+    area: finance
+    weight: 2
+    once: true
+    when: [tour.month == 12, tour.reviews >= 10]
+    from: none
+    sender: The Christmas market
+    look: note
+    text: >-
+      The Christmas market has a stall free on Thursdays for local businesses. Dinner vouchers
+      make good presents for people who already own everything. Selling them takes cold evenings.
+    defaultChoice: skip
+    choices:
+      - id: stall
+        label: Sell vouchers at the market
+        hours: 8
+        effects:
+          - { type: cash, amountCents: 90000 }
+          - { type: energy, delta: -4 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: august_closure
+    area: finance
+    weight: 3
+    once: false
+    cooldownWeeks: 40
+    when: [tour.month == 7]
+    from: none
+    sender: Your accountant
+    text: >-
+      Your accountant points out that the offices empty in August and asks whether you will
+      close for two weeks. The rent runs either way, but staff could take their holiday and you
+      could sleep. Many on the street do.
+    defaultChoice: stay_open
+    choices:
+      - id: close
+        label: Close for two weeks in August
+        hours: 0
+        effects:
+          - { type: energy, delta: 15 }
+          - { type: lostHours, hours: 10 }
+      - id: stay_open
+        label: Stay open
+        hours: 0
+
+  - id: card_fees_review
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 30]
+    from: none
+    sender: Your payment provider
+    look: official
+    text: >-
+      Your payment provider sends new terms with a slightly lower fee if you switch to their
+      newest terminal. The letter is eight pages long and the fee is on page seven.
+    defaultChoice: ignore
+    choices:
+      - id: switch
+        label: Read the terms and switch
+        hours: 2
+        effects:
+          - { type: cash, amountCents: 20000 }
+      - id: ignore
+        label: Ignore it
+        hours: 0

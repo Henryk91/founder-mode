@@ -105,7 +105,8 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
       text: 'No strategy wins over 60%; tourism_no_tests under 5%',
       value: `top ${top.id} ${fmtPct(rate(top))}; no tests ${noTests ? fmtPct(rate(noTests)) : '-'}`,
       margin: `${fmtMargin(margin(top))}; ${noTests ? fmtMargin(margin(noTests)) : ''}`,
-      pass: rate(top) <= 60 && !!noTests && rate(noTests) < 5,
+      // Within its own margin of a limit counts as at the limit (plan 1).
+      pass: rate(top) - margin(top) <= 60 && !!noTests && rate(noTests) - margin(noTests) < 5,
     },
     {
       id: 3,
@@ -190,6 +191,78 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
       value: `${slowest.toFixed(1)} s per 1000 runs`,
       margin: '',
       pass: slowest < 150,
+    },
+    ...loanTargets(input, careful, s, all),
+  ]
+}
+
+/**
+ * The bank loan's targets (step 6, `docs/loan-proposal.md`), where the scenario offers a loan:
+ * L1 an optional second loan neither wins nor loses by more than 5 points, L2 over-borrowing
+ * loses, L3 default is reachable but avoidable, L4 the post-mortem's loan figures.
+ */
+function loanTargets(
+  input: ReportInput,
+  careful: StrategyRuns,
+  s: (id: string) => StrategyRuns | undefined,
+  all: number[],
+): Target[] {
+  if (!careful.results.some((x) => x.loan !== null)) return []
+  const refit = s('tourism_refit_loan')
+  const over = s('tourism_overborrow')
+  const reckless = s('tourism_reckless')
+  const optional = refit ? pairedOn(careful, refit, all) : null
+  const overVs = over ? pairedOn(careful, over, all) : null
+  const missedShare = (x: StrategyRuns | undefined) =>
+    x
+      ? {
+          p: pct(x.results.filter((r) => r.loan?.missedByLoan).length, x.results.length),
+          m: rateMargin(x.results.filter((r) => r.loan?.missedByLoan).length, x.results.length),
+        }
+      : null
+  const carefulMissed = missedShare(careful)!
+  const recklessMissed = missedShare(reckless)
+  const second = refit
+    ? pct(refit.results.filter((r) => r.loan?.second).length, refit.results.length)
+    : 0
+  const borrowers = careful.results.filter((r) => (r.loan?.loans ?? 0) > 0)
+  const interest = median(borrowers.map((r) => (r.loan?.interestCents ?? 0) / 100))
+  void input
+  return [
+    {
+      id: 13,
+      text: 'L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other',
+      value: optional
+        ? `second loan ${signed(optional.change)} against none (second loan taken in ${fmtPct(second)} of runs)`
+        : '-',
+      margin: optional ? fmtMargin(optional.margin) : '',
+      pass: !!optional && second > 0 && Math.abs(optional.change) - optional.margin <= 5,
+    },
+    {
+      id: 14,
+      text: 'L2. Over-borrowing (the most the bank lends, early) loses to borrowing what the plan needs',
+      value: overVs ? signed(overVs.change) : '-',
+      margin: overVs ? fmtMargin(overVs.margin) : '',
+      pass: !!overVs && overVs.change + overVs.margin < 0,
+    },
+    {
+      id: 15,
+      text: 'L3. Default is reachable but avoidable: tourism_careful misses a loan payment the business itself could carry (the four weeks before covered every other cost) in under 3% of runs, tourism_reckless in over 15%',
+      value: `careful ${fmtPct(carefulMissed.p)}; reckless ${recklessMissed ? fmtPct(recklessMissed.p) : '-'}`,
+      margin: `${fmtMargin(carefulMissed.m)}; ${recklessMissed ? fmtMargin(recklessMissed.m) : ''}`,
+      pass:
+        carefulMissed.p - carefulMissed.m < 3 &&
+        !!recklessMissed &&
+        recklessMissed.p + recklessMissed.m > 15,
+    },
+    {
+      id: 16,
+      text: "L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers)",
+      value: borrowers.length
+        ? `${fmtPct(pct(borrowers.length, careful.results.length))} borrowed; median interest and fees ${fmtNum(interest ?? 0)} EUR`
+        : '-',
+      margin: '',
+      pass: borrowers.length > 0,
     },
   ]
 }

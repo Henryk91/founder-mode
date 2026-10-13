@@ -1,0 +1,171 @@
+# The cook who owns the place: energy, family and the occasional burn.
+events:
+  - id: kitchen_burn
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: Your left hand
+    look: note
+    text: >-
+      You burned your hand on a pan handle during the Friday rush. It throbs in a way that has
+      opinions. A doctor would take an afternoon; ignoring it takes a little of you every day.
+    defaultChoice: carry_on
+    choices:
+      - id: doctor
+        label: See a doctor
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -5000 }
+          - { type: energy, delta: 4 }
+      - id: carry_on
+        label: Wrap it and carry on
+        hours: 0
+        effects:
+          - { type: energy, delta: -6, when: [energy <= 60] }
+
+  - id: monday_rest
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when: [energy <= 45]
+    from: none
+    sender: Your partner
+    look: note
+    text: >-
+      Your partner suggests you take Monday off, all of it, phone in a drawer. You have not
+      had a whole day off since the keys changed hands. The restaurant is closed on Mondays
+      anyway; you are not.
+    defaultChoice: work
+    choices:
+      - id: rest
+        label: Take Monday off
+        hours: 0
+        effects:
+          - { type: energy, delta: 8 }
+          - { type: lostHours, hours: 6 }
+      - id: work
+        label: Do the paperwork instead
+        hours: 0
+
+  - id: old_head_chef
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: Your old head chef
+    text: >-
+      Your old head chef invites you to dinner at her place across town. She wants to hear
+      everything and will criticise all of it, kindly. You would come back tired and better.
+    defaultChoice: decline
+    choices:
+      - id: go
+        label: Go to dinner
+        hours: 5
+        effects:
+          - { type: energy, delta: 6 }
+          - { type: skill, skill: selling, delta: 0.03 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: tv_cooking_show
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.reviews >= 25]
+    from: none
+    sender: A regional TV station
+    look: official
+    text: >-
+      A regional TV station invites you onto a cooking show. Filming takes a day, the host cannot
+      cook, and the audience is mostly retired. Retired people eat out a lot.
+    defaultChoice: decline
+    choices:
+      - id: film
+        label: Do the show
+        hours: 8
+        effects:
+          - { type: guests, segment: evening_locals, count: 20 }
+          - { type: energy, delta: -5 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: parents_visit
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Your mother
+    look: note
+    text: >-
+      Your parents want to come and eat on Saturday, the busiest night. Your mother has already
+      told her book club. Your father has already told you how he would do it.
+    defaultChoice: busy
+    choices:
+      - id: welcome
+        label: Give them the best table
+        hours: 2
+        effects:
+          - { type: energy, delta: 5 }
+      - id: busy
+        label: Suggest a Tuesday instead
+        hours: 0
+        effects:
+          - { type: energy, delta: -2 }
+
+  - id: night_shift_sleep
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [energy <= 35]
+    from: none
+    sender: The storeroom
+    look: note
+    text: >-
+      You fell asleep on the flour sacks in the storeroom between lunch and dinner. The kitchen
+      help found you and took a photo. It is already on the staff chat.
+    defaultChoice: push
+    choices:
+      - id: sleep
+        label: Go home early tonight
+        hours: 0
+        effects:
+          - { type: energy, delta: 8 }
+          - { type: lostHours, hours: 5 }
+      - id: push
+        label: Push through
+        hours: 0
+        effects:
+          - { type: energy, delta: -4 }
+
+  - id: cooking_class_offer
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 30]
+    from: none
+    sender: The adult education centre
+    look: official
+    text: >-
+      The adult education centre asks whether you would teach an evening cooking class. It pays
+      a little, takes a few evenings, and every student would know where you cook. Half of them
+      would come to check.
+    defaultChoice: decline
+    choices:
+      - id: teach
+        label: Teach the class
+        hours: 6
+        effects:
+          - { type: cash, amountCents: 30000 }
+          - { type: guests, segment: evening_locals, count: 10 }
+          - { type: energy, delta: -3 }
+      - id: decline
+        label: Decline
+        hours: 0

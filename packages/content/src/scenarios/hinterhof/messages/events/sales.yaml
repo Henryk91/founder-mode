@@ -1,0 +1,268 @@
+# Getting guests: platforms, offices, hotels, critics and the seasons.
+events:
+  - id: delivery_rep_offer
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: A delivery platform
+    look: official
+    text: >-
+      A delivery platform's rep offers a lower commission for three months if you sign today. The
+      dashboard he shows you is very green. After three months the commission goes back to normal,
+      and so, he admits, does the colour.
+    defaultChoice: decline
+    choices:
+      - id: sign
+        label: Sign the platform deal
+        hours: 2
+        effects:
+          - { type: guests, segment: office_lunch, count: 30 }
+          - {
+              type: fixedCost,
+              id: delivery_tablet,
+              name: Delivery platform tablet,
+              monthlyCents: 4000,
+            }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: reservation_feature
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.listed == 1]
+    from: none
+    sender: Tafelrunde
+    look: official
+    text: >-
+      Tafelrunde offers you a featured spot on its Friday evening list for a month. It costs a
+      flat fee and promises "visibility". They need tables free on Fridays to send anyone.
+    defaultChoice: decline
+    choices:
+      - id: feature
+        label: Pay for the featured spot
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: guests, segment: evening_locals, count: 20 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: critic_booking
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.reviews >= 15]
+    from: none
+    sender: Your service
+    look: note
+    text: >-
+      A food critic from a local blog has booked a table for two on Thursday, under a name that
+      fools nobody. You could cook something special for one table. On a busy night, one table is
+      a lot of attention to spare.
+    defaultChoice: normal
+    choices:
+      - id: special
+        label: Cook something special for them
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -10000 }
+          - { type: review, rating: 5, count: 4, when: [tour.bookedWeek < 150] }
+          - { type: review, rating: 3, count: 3, when: [tour.bookedWeek >= 150] }
+      - id: normal
+        label: Treat them like everyone else
+        hours: 0
+        effects:
+          - { type: review, rating: 4, count: 2 }
+
+  - id: catering_tomorrow
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [week >= 10]
+    from: none
+    sender: An office manager
+    look: note
+    text: >-
+      An office manager needs catering for eighty people tomorrow, their usual caterer having
+      "gone on a journey". It is a big order and a long night. With a full week already, the
+      restaurant would pay for it on Friday.
+    defaultChoice: decline
+    choices:
+      - id: take
+        label: Take the order
+        hours: 10
+        effects:
+          - { type: cash, amountCents: 160000 }
+          - { type: energy, delta: -6 }
+          - { type: review, rating: 2, count: 3, when: [tour.bookedWeek >= 180] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: oktoberfest_rush
+    area: sales
+    weight: 3
+    once: true
+    when: [tour.month == 9]
+    from: none
+    sender: The street
+    look: note
+    text: >-
+      The Oktoberfest has begun and the street fills with visitors in borrowed lederhosen. You
+      could put Bavarian specials on the board and staff up. Or you could carry on as if nothing
+      were happening, which is also very Bavarian.
+    defaultChoice: usual
+    choices:
+      - id: specials
+        label: Bavarian specials for two weeks
+        hours: 6
+        effects:
+          - { type: guests, segment: tourists, count: 50 }
+          - { type: energy, delta: -4 }
+      - id: usual
+        label: Business as usual
+        hours: 0
+
+  - id: hotel_partner_offer
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: Hotel Lindenstube
+    text: >-
+      A small hotel nearby offers to recommend you to its guests for a modest cut of each bill.
+      The manager calls it a partnership; his spreadsheet calls it a commission. The guests would
+      need tables.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Agree to the cut
+        hours: 2
+        effects:
+          - { type: guests, segment: tourists, count: 15 }
+          - { type: cash, amountCents: -15000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: lunch_card_scheme
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: A lunch card company
+    look: official
+    text: >-
+      A company that runs lunch cards for offices asks you to join its scheme. Employees pay with
+      the card, you pay a monthly fee and a lot of paperwork. Their offices are mostly nearby.
+    defaultChoice: decline
+    choices:
+      - id: join
+        label: Join the scheme
+        hours: 2
+        effects:
+          - { type: fixedCost, id: lunch_cards, name: Lunch card scheme, monthlyCents: 6000 }
+          - { type: guests, segment: office_lunch, count: 20 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: table_of_eight_noshow
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [tour.reviews >= 5]
+    from: none
+    sender: Your service
+    look: note
+    text: >-
+      A table of eight did not turn up on Saturday. You turned away two couples to hold it. You
+      could call them and charge a no-show fee, which is legal and very unpopular.
+    defaultChoice: accept
+    choices:
+      - id: charge
+        label: Charge the no-show fee
+        hours: 1
+        effects:
+          - { type: cash, amountCents: 16000 }
+          - { type: review, rating: 2, count: 1 }
+      - id: accept
+        label: Let it go
+        hours: 0
+
+  - id: stammtisch_request
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 14]
+    from: none
+    sender: A group of neighbours
+    look: note
+    text: >-
+      Eight neighbours want a reserved table every Thursday for their Stammtisch. They drink a
+      lot and eat a little. On a quiet Thursday that is good news; on a full one, it is a big
+      table of beer.
+    defaultChoice: decline
+    choices:
+      - id: reserve
+        label: Reserve the table every week
+        hours: 1
+        effects:
+          - { type: guests, segment: evening_locals, count: 16 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: christmas_parties
+    area: sales
+    weight: 3
+    once: true
+    when: [tour.month == 11]
+    from: none
+    sender: Several offices
+    text: >-
+      Offices nearby ask about Christmas parties in December. They want set menus, long tables and
+      a room that forgives singing. A party fills an evening and empties your kitchen.
+    defaultChoice: decline
+    choices:
+      - id: take
+        label: Take Christmas parties
+        hours: 6
+        effects:
+          - { type: guests, segment: evening_locals, count: 40 }
+          - { type: energy, delta: -5 }
+      - id: decline
+        label: Keep December as it is
+        hours: 0
+
+  - id: maps_photos
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.rating >= 40]
+    from: none
+    sender: A photographer neighbour
+    look: note
+    text: >-
+      A neighbour who photographs food for a living offers to shoot your dishes for the maps
+      listing. She wants dinner for two in return. Good photos do little for a bad rating.
+    defaultChoice: decline
+    choices:
+      - id: shoot
+        label: Do the photo shoot
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -8000 }
+          - { type: guests, segment: tourists, count: 12, when: [tour.rating >= 42] }
+      - id: decline
+        label: Decline
+        hours: 0

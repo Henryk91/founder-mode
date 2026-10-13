@@ -33,6 +33,8 @@ export const ENDING_ROUTES: {
   long?: true
   /** Routes for a tourism scenario (bookings model); the others are for subscriptions. */
   tourism?: true
+  /** Only where a scenario offers a bank loan. */
+  loan?: true
 }[] = [
   { ending: 'sustainable', strategies: ['validate_then_build', 'price_aware'] },
   { ending: 'still_searching', strategies: ['validate_then_build', 'sell_first'] },
@@ -50,12 +52,21 @@ export const ENDING_ROUTES: {
   { ending: 'bankrupt', strategies: ['tourism_no_tests', 'tourism_overstaffing'], tourism: true },
   { ending: 'burnout', strategies: ['tourism_overworker'], tourism: true },
   { ending: 'shut_down', strategies: ['shut_down@10'], tourism: true },
+  {
+    ending: 'bank_called',
+    strategies: ['tourism_reckless', 'tourism_overborrow'],
+    tourism: true,
+    loan: true,
+  },
 ]
 
 /** The endings a scenario can reach in its mode. */
 export const routesFor = (scenario: Scenario) =>
   ENDING_ROUTES.filter(
-    (r) => !!r.tourism === !!scenario.bookings && (!r.long || scenario.mode === 'long'),
+    (r) =>
+      !!r.tourism === !!scenario.bookings &&
+      (!r.long || scenario.mode === 'long') &&
+      (!r.loan || !!scenario.loan),
   )
 
 /** Seeds tried per ending, as `ending-<n>`. */

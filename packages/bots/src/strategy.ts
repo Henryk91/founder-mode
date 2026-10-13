@@ -33,6 +33,8 @@ export type Strategy = {
   modes?: GameMode[]
   /** The business model it plays: subscriptions when missing, or tourism's bookings. */
   model?: 'subscription' | 'bookings'
+  /** Plays only where a scenario offers a bank loan (step 6). */
+  needsLoan?: boolean
   /** For report diagnostics only: the scenario this strategy is played on, from the real one. */
   adapt?(scenario: Scenario): Scenario
 }
@@ -320,4 +322,5 @@ export class ChannelLog {
 /** Whether a strategy plays a scenario: its business model and its modes. */
 export const playsIn = (strategy: Strategy, scenario: Scenario): boolean =>
   (strategy.model ?? 'subscription') === (scenario.bookings ? 'bookings' : 'subscription') &&
-  (strategy.modes?.includes(scenario.mode ?? 'standard') ?? true)
+  (strategy.modes?.includes(scenario.mode ?? 'standard') ?? true) &&
+  (!strategy.needsLoan || !!scenario.loan)

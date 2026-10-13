@@ -1,5 +1,6 @@
 import type { Scenario } from '@founder-mode/content'
 import {
+  bookingTotals,
   createGame,
   endWeek,
   getView,
@@ -167,6 +168,22 @@ export type RunResult = {
     turnedAway: number
     companyCancelled: number
     firstViableWeek: number | null
+  } | null
+  /**
+   * The bank loan (step 6): what was borrowed over the run, interest and fees paid, how many
+   * loans, and whether a payment was ever missed (a default). Null without a loan offer.
+   */
+  loan: {
+    borrowedCents: number
+    interestCents: number
+    loans: number
+    missed: boolean
+    /**
+     * A payment missed while the four weeks before it covered every other cost: the loan, not
+     * the business, broke the run (target L3).
+     */
+    missedByLoan: boolean
+    second: boolean
   } | null
   /** For runs with a hire: what it cost per customer it found, and what a customer was worth. */
   hire: HireEconomics | null
@@ -438,6 +455,38 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     hire: hireEconomics(state),
     funding: fundingResult(state),
     tourism: tourismResult(state, viableId),
+    loan: state.loan
+      ? {
+          borrowedCents: state.loan.loans.reduce((t, l) => t + l.principalCents, 0),
+          interestCents: state.loan.loans.reduce(
+            (t, l) => t + l.interestPaidCents + l.feesCents,
+            0,
+          ),
+          loans: state.loan.loans.length,
+          missed: state.loan.loans.some((l) => l.missedTotal > 0),
+          missedByLoan: state.loan.loans.some((l) => {
+            if (l.firstMissedWeek === undefined) return false
+            const before = state.ledger.filter(
+              (w) => w.week < l.firstMissedWeek! && w.week >= l.firstMissedWeek! - 4,
+            )
+            const operating = before.reduce(
+              (t, w) =>
+                t +
+                w.revenueCents +
+                w.otherIncomeCents -
+                w.fixedCostsCents -
+                w.freelanceCents -
+                w.bookingCostsCents -
+                w.livingCostsCents -
+                w.adSpendCents -
+                w.otherCostsCents,
+              0,
+            )
+            return before.length > 0 && operating >= 0
+          }),
+          second: state.loan.loans.length >= 2,
+        }
+      : null,
     freelance: freelanceAt && {
       role: state.team.freelancers[0]?.role ?? 'developer',
       market: freelanceAt.market,
@@ -516,12 +565,13 @@ function companyValue(state: GameState): number {
 function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
   const b = state.bookings
   if (!b) return null
-  const served = b.bookings.filter((x) => x.status === 'served')
+  const all = bookingTotals(b)
+  const served = all.filter((x) => x.status === 'served')
   const guests = served.reduce((t, x) => t + x.units, 0)
   const platform = served.filter((x) => x.channel === 'platform').reduce((t, x) => t + x.units, 0)
   const first = served
     .filter((x) => x.segmentId === viable)
-    .reduce((m, x) => Math.min(m, x.week), Number.POSITIVE_INFINITY)
+    .reduce((m, x) => Math.min(m, x.firstWeek), Number.POSITIVE_INFINITY)
   return {
     guests,
     revenueCents: state.ledger.reduce((t, l) => t + l.bookingRevenueCents, 0),
@@ -529,7 +579,7 @@ function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
     reviews: b.reviews,
     platformShare: guests > 0 ? platform / guests : 0,
     turnedAway: b.turnedAway.reduce((t, x) => t + x.units, 0),
-    companyCancelled: b.bookings
+    companyCancelled: all
       .filter((x) => x.status === 'company_cancelled')
       .reduce((t, x) => t + x.units, 0),
     firstViableWeek: Number.isFinite(first) ? first : null,

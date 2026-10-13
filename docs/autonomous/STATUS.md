@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 6 (bank loan, then the restaurant), sub-step L0: loan design
-Last commit: Step 5 done, tag scenario-outdoor
-Next action: write docs/loan-proposal.md (Part A of the restaurant spec), then the engine loan system (systems/loan.ts), content schema, bots and targets L1 to L4.
+Step: 6 (bank loan, then the restaurant Hinterhof), sub-step R2: UI, report, gate, tag
+Last commit: Step 6 R1 (restaurant content, bots, tuning; all T targets and L1, L4 pass)
+Next action: scene drawings for the dining room, post-mortem check, full report into balancing.md, step 6 report, gate, tag scenario-restaurant.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
@@ -25,6 +25,8 @@ Next action: write docs/loan-proposal.md (Part A of the restaurant spec), then t
 
 - T6 (Gratwanderung): blind effort gains 60% of what reading gains (limit a third); budget used. Options: more effortful choices with visible costs; scarcer founder hours in tourism. Decisions, step 5.
 
+- L2, L3 (Hinterhof, bank loan): over-borrowing -0.2 ±1.2 (needs a clear loss), reckless loan-caused defaults 2.5% (needs 15%). Borrowed money pays its own repayments, so extra borrowing is a buffer. Options: lend only what the business plan needs (a stated rule); an over-borrower that spends the money; drop L2. Decisions, step 6.
+
 ## For Henry to review (non-blocking)
 - Step 3 kept the existing condition grammar and left the 60 week events' sender situations implicit to keep their fingerprints (decisions, step 3).
 - Funding design choices (term sheets in the plan, one investor per round, mood not confidence shown, no pitch odds in the luck section): decisions, part D.
@@ -38,5 +40,8 @@ Next action: write docs/loan-proposal.md (Part A of the restaurant spec), then t
 - Chasing and admin is an add-on to a member's task, not only a role of its own (decisions, C3b).
 - Every careful-bot variant reads price hints in long mode, so price_aware equals validate_then_build there (decisions, C3b).
 - Outdoor: school demand raised far above the spec (6 to 12 groups a week, was 0.3 to 1.2); a tourism run is won when its last 13 months cover all costs (decisions, step 5).
+
+- Restaurant: L3 restated to defaults the loan itself caused; any failing restaurant misses a payment first (decisions, step 6).
+- Restaurant: staff as a crew per service, not cooks and servers apart (decisions, step 6).
 
 ## Stopped

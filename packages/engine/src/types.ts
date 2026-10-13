@@ -221,6 +221,8 @@ export type Loan = {
   /** Missed payments in a row, and over the loan's life. */
   missedInRow: number
   missedTotal: number
+  /** The week the first payment was missed, if one was. */
+  firstMissedWeek?: number
   status: 'running' | 'repaid' | 'called'
 }
 
@@ -246,6 +248,16 @@ export type LoanPlan = {
   repay: string | null
 }
 
+/** Bookings of one status, segment and channel added up: units, what they paid, the first week. */
+export type BookingTotal = {
+  status: BookingStatus
+  segmentId: SegmentId
+  channel: BookingChannel
+  units: number
+  grossCents: number
+  firstWeek: number
+}
+
 export type BookingsState = {
   bookings: Booking[]
   /** Price per unit per segment, for peak and off season months. */
@@ -262,6 +274,11 @@ export type BookingsState = {
    * any request, so they need a product with room. Absent in saves before step 5.
    */
   eventGuests?: Record<SegmentId, number>
+  /**
+   * Finished bookings older than a year, folded into totals per status, segment and channel
+   * (step 6): only the post-mortem and the counts read them.
+   */
+  archived?: BookingTotal[]
   rating: number | null
   reviews: number
   /** This week's weather once it happened, and the forecast shown for next week. */
@@ -1127,6 +1144,8 @@ export type BookingsView = {
     serves: SegmentId[]
     inSeason: boolean
     unitCostCents: number
+    /** Share of the price each unit costs on top (food cost, a delivery platform's cut). */
+    unitCostShare: number
     oneOffCents: number
     monthlyCents: number
   }[]

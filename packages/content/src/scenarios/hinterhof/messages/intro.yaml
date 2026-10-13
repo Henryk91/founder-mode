@@ -1,0 +1,42 @@
+# Onboarding text shown before week 1, and the founder's notes shown in weeks 1 to 4.
+# Nothing here may reveal which kind of guest is the real market.
+intro:
+  cards:
+    - id: you
+      title: You
+      body: >-
+        You are a trained cook who has spent ten years making other people's restaurants work.
+        The company account holds {cash:eur} of your own money, your savings hold {savings:eur},
+        and living costs {living:eur} a week, about {livingMonth:eur} a month.
+    - id: idea
+      title: The restaurant
+      body: >-
+        Hinterhof is a small, tired restaurant on a quiet street in a residential part of Munich:
+        forty seats, a courtyard and a kitchen that has seen things. The rent runs from today. To
+        open you need the takeover and a basic fit-out, and for that you need a bank.
+    - id: problem
+      title: The guests
+      body: >-
+        Office workers at lunch, neighbours in the evening, and visitors to the city might all
+        come. Some will come back and pay enough, some will love the food once and never return.
+        Fixed costs never sleep, so find out who is which.
+    - id: goal
+      title: The goal
+      body: >-
+        Last {maxWeeks} weeks. To win, the guests of your last thirteen months together have to
+        pay for the restaurant, its loan and you. Run out of money, yours included, or miss two
+        loan payments in a row, and it is over.
+
+founderNotes:
+  first_week: >-
+    Week 1. No guests, no menu, no loan, and a rent that does not care. The kitchen smells of the
+    last tenant's ambitions.
+  no_evidence: >-
+    Week {week}. Still no evidence about who will eat here. Your savings pay {living:eur} a week
+    either way.
+  only_interviews: >-
+    You have {n} conversations behind you. Everybody loves a new restaurant until it opens.
+  built_unseen: >-
+    Something is ready to serve and nobody knows it exists. The street does not read your mind.
+  leads_only: >-
+    You have {n} enquiries. An enquiry is not a cover.

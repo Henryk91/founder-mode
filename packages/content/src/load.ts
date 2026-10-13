@@ -47,6 +47,18 @@ import gratwanderungFinance from './scenarios/gratwanderung/messages/events/fina
 import gratwanderungFounder from './scenarios/gratwanderung/messages/events/founder.yaml?raw'
 import gratwanderungTeam from './scenarios/gratwanderung/messages/events/team.yaml?raw'
 import gratwanderungNames from './scenarios/gratwanderung/messages/company_names.yaml?raw'
+import hinterhofAbout from './scenarios/hinterhof/about.yaml?raw'
+import hinterhofScenario from './scenarios/hinterhof/scenario.yaml?raw'
+import hinterhofFeatures from './scenarios/hinterhof/features.yaml?raw'
+import hinterhofQuotes from './scenarios/hinterhof/messages/interview_quotes.yaml?raw'
+import hinterhofIntro from './scenarios/hinterhof/messages/intro.yaml?raw'
+import hinterhofValidation from './scenarios/hinterhof/messages/events/validation.yaml?raw'
+import hinterhofSales from './scenarios/hinterhof/messages/events/sales.yaml?raw'
+import hinterhofProduct from './scenarios/hinterhof/messages/events/product.yaml?raw'
+import hinterhofFinance from './scenarios/hinterhof/messages/events/finance.yaml?raw'
+import hinterhofFounder from './scenarios/hinterhof/messages/events/founder.yaml?raw'
+import hinterhofTeam from './scenarios/hinterhof/messages/events/team.yaml?raw'
+import hinterhofNames from './scenarios/hinterhof/messages/company_names.yaml?raw'
 import tourismValidation from './shared/tourism/validation.yaml?raw'
 import tourismSales from './shared/tourism/sales.yaml?raw'
 import tourismProduct from './shared/tourism/product.yaml?raw'
@@ -65,7 +77,7 @@ const TOURISM_EVENTS: Record<EventArea, string> = {
 }
 
 /** Built in scenarios, in the order the Start screen lists them. */
-export const SCENARIO_IDS = ['kantino', 'zollstock', 'gratwanderung'] as const
+export const SCENARIO_IDS = ['kantino', 'zollstock', 'gratwanderung', 'hinterhof'] as const
 export type ScenarioId = (typeof SCENARIO_IDS)[number]
 
 export const isScenarioId = (id: string): id is ScenarioId =>
@@ -161,6 +173,25 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
     longEvents: '{"events": []}',
     fundingEvents: sharedFunding,
   },
+  hinterhof: {
+    scenario: hinterhofScenario,
+    features: hinterhofFeatures,
+    interviewQuotes: hinterhofQuotes,
+    companyNames: hinterhofNames,
+    intro: hinterhofIntro,
+    events: {
+      validation: hinterhofValidation,
+      sales: hinterhofSales,
+      product: hinterhofProduct,
+      finance: hinterhofFinance,
+      founder: hinterhofFounder,
+      team: hinterhofTeam,
+    },
+    sharedEvents: TOURISM_EVENTS,
+    // No year 2 file of its own: valid YAML and valid JSON, as the web bundle reads JSON.
+    longEvents: '{"events": []}',
+    fundingEvents: sharedFunding,
+  },
 }
 
 /** What the Start screen shows about a scenario before a run exists. Not part of the game rules. */
@@ -170,6 +201,7 @@ const ABOUT: Record<ScenarioId, string> = {
   kantino: kantinoAbout,
   zollstock: zollstockAbout,
   gratwanderung: gratwanderungAbout,
+  hinterhof: hinterhofAbout,
 }
 
 /** The id of an event entry, or of the shared event it places. */

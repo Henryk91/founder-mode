@@ -1,4 +1,4 @@
-import { bookingsRevenueOrSubscriptions } from './systems/bookings'
+import { bookingTotals, bookingsRevenueOrSubscriptions } from './systems/bookings'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
 import { companyValueCents, founderShareBp, fundingHours } from './systems/funding'
@@ -147,9 +147,10 @@ export function guestsEconomics(state: GameState): GuestsEconomics | null {
   const b = state.bookings
   const cfg = state.scenario.bookings
   if (!b || !cfg) return null
-  const served = b.bookings.filter((x) => x.status === 'served')
+  const all = bookingTotals(b)
+  const served = all.filter((x) => x.status === 'served')
   const units = (list: typeof served) => list.reduce((t, x) => t + x.units, 0)
-  const gross = (x: (typeof served)[number]) => x.priceCents * x.units
+  const gross = (x: (typeof served)[number]) => x.grossCents
   const commission = (x: (typeof served)[number]) =>
     x.channel === 'platform' ? Math.round(gross(x) * cfg.platform.commission) : 0
   const total = units(served)
@@ -166,9 +167,9 @@ export function guestsEconomics(state: GameState): GuestsEconomics | null {
       .filter((x) => x.served > 0),
     platformShare: total > 0 ? units(served.filter((x) => x.channel === 'platform')) / total : 0,
     commissionCents: served.reduce((t, x) => t + commission(x), 0),
-    companyCancelled: units(b.bookings.filter((x) => x.status === 'company_cancelled')),
+    companyCancelled: units(all.filter((x) => x.status === 'company_cancelled')),
     guestCancelled: units(
-      b.bookings.filter((x) => x.status === 'cancelled' || x.status === 'cancelled_paid'),
+      all.filter((x) => x.status === 'cancelled' || x.status === 'cancelled_paid'),
     ),
     turnedAwayRecent: b.turnedAway.reduce((t, x) => t + x.units, 0),
     bookingCostsCents: state.ledger.reduce((t, l) => t + l.bookingCostsCents, 0),
