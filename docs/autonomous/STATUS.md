@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 8 (wrap up), sub-step W1: revisit open issues with a fresh budget
-Last commit: Step 7 done, tag scenario-hotel
-Next action: open issues one by one (Seeblick first: cost per room night), then the screen review, performance (LCP), docs, final report, tag tourism-complete.
+Step: 8 (wrap up), sub-step W3: final gate and tag
+Last commit: Step 8 W3 (docs, final report)
+Next action: final gate (60 week, Kantino long, tourism reports), tag tourism-complete. The plan is then complete; see docs/autonomous/reports/final.md.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)

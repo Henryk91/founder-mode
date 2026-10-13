@@ -737,6 +737,10 @@ Known leftovers:
 
 ---
 
+### After Phase 9: the autonomous plan
+
+Steps 3 to 8 of `docs/AUTONOMOUS_PLAN.md` are done: situational events as a general system, the tourism (bookings) engine, Gratwanderung, the bank loan and Hinterhof, Seeblick, and a wrap up with a lazy per-scenario content load (Start screen 2.39 s on the emulated mid range phone). Reports per step in `docs/autonomous/reports/`, the summary in `docs/autonomous/reports/final.md`, open issues in `docs/autonomous/STATUS.md`.
+
 ## 10. How to start with Claude Code
 
 1. Create an empty repo, add this file as `docs/IMPLEMENTATION_PLAN.md` and the provided `CLAUDE.md` at the root.
