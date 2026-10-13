@@ -28,7 +28,7 @@ Next action: open issues one by one (Seeblick first: cost per room night), then 
 - T6 (Hinterhof): on the report seeds blind effort gains 66% of what reading gains (+3.7 of +5.6); passed on the tuning seeds. Same root as Gratwanderung's T6; revisit together in step 8.
 - L2, L3 (Hinterhof, bank loan): over-borrowing -0.2 ±1.2 (needs a clear loss), reckless loan-caused defaults 2.5% (needs 15%). Borrowed money pays its own repayments, so extra borrowing is a buffer. Options: lend only what the business plan needs (a stated rule); an over-borrower that spends the money; drop L2. Decisions, step 6.
 
-- Seeblick (step 7): careful 51.7% (needs 45), spread 49.7 (groups 28, leisure 78), T6, T7 (pricing -1.5), T9 (overstaffing +0.1), T11, L2, L3 fail on 1,000 seeds. T1/T3 budget used. Lever for step 8: cost per occupied room night. Decisions, step 7.
+- Seeblick: after the step 8 revisit careful 31.4%, no tests 4.3% and staffing pass; spread 22.4 (needs 15), pricing narrowly, T6, T11, L2, L3 still fail. Decisions, steps 7 and 8.
 
 ## For Henry to review (non-blocking)
 - Step 3 kept the existing condition grammar and left the 60 week events' sender situations implicit to keep their fingerprints (decisions, step 3).
