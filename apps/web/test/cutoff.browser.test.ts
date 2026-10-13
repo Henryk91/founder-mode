@@ -126,6 +126,17 @@ function cut(page: Page, where: string): Promise<string[]> {
       }
       out.push(`${where}: ${el.tagName}.${el.className} "${el.textContent.trim().slice(0, 60)}"`)
     }
+    // On a phone, a label beside controls wraps only once it has the whole line to itself: no
+    // "Mountain" over "guide" next to a stepper. The desk keeps its fixed label column.
+    for (const label of phone
+      ? document.querySelectorAll<HTMLElement>('[class*="_rowStack_"] > [class*="_wrapped_"]')
+      : []) {
+      const row = label.parentElement!.getBoundingClientRect()
+      const box = label.getBoundingClientRect()
+      if (box.height > 45 && box.width < row.width - 1) {
+        out.push(`${where}: "${label.textContent?.trim()}" wraps beside its controls`)
+      }
+    }
     return out
   }, where)
 }

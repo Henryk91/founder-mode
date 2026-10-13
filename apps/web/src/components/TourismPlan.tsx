@@ -37,10 +37,16 @@ export function rosterHours(view: PlayerView, p: BookingsPlan | undefined): numb
 export const guestsHours = (view: PlayerView, p: BookingsPlan | undefined) =>
   tourismHours(view, p) - rosterHours(view, p)
 
-/** Units the roster covers per product this week, and what is booked. */
+/** Products that need someone on the roster: they have capacity and a role that serves them. */
+const staffed = (b: BookingsView, id: string) => {
+  const product = b.products.find((x) => x.id === id)
+  return !!product?.shipped && product.capacity > 0 && b.roles.some((r) => (r.units[id] ?? 0) > 0)
+}
+
+/** Units the roster covers per staffed product this week, and what is booked. */
 export function coverage(b: BookingsView, p: BookingsPlan) {
   return b.thisWeek
-    .filter((t) => b.products.find((x) => x.id === t.productId)?.shipped)
+    .filter((t) => staffed(b, t.productId))
     .map((t) => {
       const product = b.products.find((x) => x.id === t.productId)!
       const units = b.roles.reduce(
@@ -110,6 +116,7 @@ export function RosterPlan() {
         return (
           <Market
             key={r.id}
+            stack
             label={r.name}
             note={label('tour.roster.pay', stage, {
               amount: formatEuro(r.centsPerShift),
@@ -135,6 +142,7 @@ export function RosterPlan() {
           return (
             <Market
               key={`own-${r.id}`}
+              stack
               label={label('tour.roster.own', stage, { role: r.name })}
               note={label('unit.hours', stage, { n: per })}
               control={
@@ -215,6 +223,7 @@ export function GuestsPlan() {
         return (
           <Market
             key={`out-${s.id}`}
+            stack
             label={segName(view, s.id)}
             control={
               <Stepper
@@ -236,7 +245,23 @@ export function GuestsPlan() {
   )
 }
 
-const PRICE_STEP = 500
+/** Steps for money, in cents: whole euros a price list would use. */
+const NICE_STEPS = [100, 200, 500, 1000, 2500, 5000, 10_000, 25_000, 50_000, 100_000]
+const nice = (target: number) => NICE_STEPS.filter((s) => s <= target).at(-1) ?? NICE_STEPS[0]!
+
+/**
+ * A small and a large step scaled to a price: about 3% and 15% of it, as round euro amounts, the
+ * large one at least five small ones. A 2,800 EUR team day moves by 50 or 250, an 85 EUR hike
+ * by 2 or 10.
+ */
+export function priceSteps(cents: number): { step: number; big: number } {
+  const step = nice(cents * 0.03)
+  const big = Math.max(
+    nice(cents * 0.15),
+    NICE_STEPS.find((s) => s >= step * 5)!,
+  )
+  return { step, big }
+}
 
 /** Prices per segment, for peak and off season, and the cancellation policy. */
 export function PricesPlan() {
@@ -252,34 +277,42 @@ export function PricesPlan() {
       <Writing>{label(b.peak ? 'tour.prices.peakNow' : 'tour.prices.offNow', stage)}</Writing>
       {b.segments.flatMap((s) => {
         const now = draft.prices[s.id] ?? b.prices[s.id]!
-        return (['peak', 'off'] as const).map((season) => (
-          <Market
-            key={`${s.id}-${season}`}
-            label={label(`tour.prices.${season}`, stage, { segment: segName(view, s.id) })}
-            note={label(`tour.unit.${s.unit}`, stage)}
-            control={
-              <Stepper
-                stage={stage}
-                value={now[season]}
-                onChange={(v) =>
-                  set({
-                    prices: {
-                      ...draft.prices,
-                      [s.id]: { ...now, [season]: Math.max(PRICE_STEP, v) },
-                    },
-                  })
-                }
-                what={label('tour.prices.what', stage, { segment: segName(view, s.id) })}
-                names={{ minus: 'stepper.price.minus', plus: 'stepper.price.plus' }}
-                step={PRICE_STEP}
-                formatStep={(c) => formatEuro(c)}
-                display={formatEuro(now[season])}
-                min={PRICE_STEP}
-                max={now[season] * 3}
-              />
-            }
-          />
-        ))
+        return (['peak', 'off'] as const).map((season) => {
+          // Steps follow the price this week started with, so they hold still while tapping.
+          const { step, big } = priceSteps(b.prices[s.id]![season])
+          return (
+            <Market
+              key={`${s.id}-${season}`}
+              stack
+              label={label(`tour.prices.${season}`, stage, { segment: segName(view, s.id) })}
+              note={label(`tour.unit.${s.unit}`, stage)}
+              control={
+                <Stepper
+                  stage={stage}
+                  value={now[season]}
+                  onChange={(v) =>
+                    set({
+                      prices: {
+                        ...draft.prices,
+                        [s.id]: { ...now, [season]: Math.max(NICE_STEPS[0]!, v) },
+                      },
+                    })
+                  }
+                  what={label(`tour.prices.what.${season}`, stage, {
+                    segment: segName(view, s.id),
+                  })}
+                  names={{ minus: 'tour.prices.minus', plus: 'tour.prices.plus' }}
+                  step={step}
+                  bigStep={big}
+                  formatStep={(c) => formatEuro(c)}
+                  display={formatEuro(now[season])}
+                  min={NICE_STEPS[0]!}
+                  max={b.prices[s.id]![season] * 3}
+                />
+              }
+            />
+          )
+        })
       })}
       <SubHeading>{label('tour.policy', stage)}</SubHeading>
       {b.policyLocked ? (

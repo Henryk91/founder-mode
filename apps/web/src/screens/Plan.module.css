@@ -368,6 +368,33 @@
   flex: 0 0 var(--label-w);
 }
 
+/*
+ * A stacked row (the tourism sections): label and controls share a line only when the whole label
+ * fits beside them. Otherwise the label takes the line, wrapping onto further whole lines if it
+ * must, and the controls take the next line at the right. Words never break one by one.
+ */
+.row.rowStack {
+  flex-wrap: wrap;
+}
+
+.row.rowStack > .wrapped {
+  flex: 1 0 auto;
+  max-width: 100%;
+}
+
+.row.rowStack > .controls {
+  margin-left: auto;
+}
+
+/* The desk keeps its label column, with the controls right beside it. */
+:global([data-layout='desk']) .row.rowStack > .wrapped {
+  flex: 0 0 var(--label-w);
+}
+
+:global([data-layout='desk']) .row.rowStack > .controls {
+  margin-left: 0;
+}
+
 /* A row with nothing beside it, such as the hire and their salary, may use the whole line. */
 :global([data-layout='desk']) .rowAlone > .wrapped {
   flex: 0 1 auto;
