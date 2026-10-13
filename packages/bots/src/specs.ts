@@ -1,6 +1,7 @@
 import type { Strategy } from './strategy'
 import { STRATEGIES } from './strategies'
 import { randomNoInbox } from './strategies/random'
+import { tourismForced } from './strategies/tourism'
 import {
   BEHAVIOUR_NAMES,
   fixedPrice,
@@ -29,7 +30,7 @@ export type StrategySpec =
   | { kind: 'without'; off: BehaviourName[] }
   | { kind: 'randomNoInbox' }
   | { kind: 'inbox'; policy: InboxPolicy; skipYear2?: boolean }
-  | { kind: 'forced'; eventId: string; choiceId: string }
+  | { kind: 'forced'; eventId: string; choiceId: string; tourism?: boolean }
   | { kind: 'pricing'; pricer: 'search' | 'recipe' | 'fixed'; multiple?: number }
   | {
       kind: 'freelance'
@@ -63,7 +64,9 @@ export function strategyOf(spec: StrategySpec): Strategy {
     case 'inbox':
       return withInbox(spec.policy, spec.skipYear2)
     case 'forced':
-      return forcedAnswer(spec.eventId, spec.choiceId)
+      return spec.tourism
+        ? tourismForced(spec.eventId, spec.choiceId)
+        : forcedAnswer(spec.eventId, spec.choiceId)
     case 'pricing': {
       const base =
         spec.pricer === 'search'

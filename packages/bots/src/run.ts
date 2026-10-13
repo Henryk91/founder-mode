@@ -34,6 +34,10 @@ import {
 import { STRATEGIES } from './strategies'
 import { describeStrategy, playsIn, type Strategy } from './strategy'
 
+/** The careful bot whose runs the event table compares with: the tourism one in a tourism game. */
+const carefulId = (scenario: Scenario) =>
+  scenario.bookings ? 'tourism_careful' : 'validate_then_build'
+
 const args = parseArgs(process.argv.slice(2))
 const catalogue = scenarioCatalogue()
 const chosen = args.scenario === null ? catalogue : catalogue.filter((c) => c.id === args.scenario)
@@ -110,7 +114,7 @@ function planFor(scenario: Scenario): Planned[] {
     if (full) out.push(plan({ kind: 'randomNoInbox' }, 'main'))
   } else if (args.parts.includes('events')) {
     // The event table reuses the careful bot's runs on seeds where an event never arrives.
-    out.push(plan({ kind: 'listed', id: 'validate_then_build' }, 'main'))
+    out.push(plan({ kind: 'listed', id: carefulId(scenario) }, 'main'))
   }
   // Leave-one-out runs of validate_then_build. Only for the report, so they stay out of the
   // strategy list that the targets look at.
@@ -164,7 +168,17 @@ function planFor(scenario: Scenario): Planned[] {
   if (args.parts.includes('events'))
     for (const e of scenario.events)
       for (const c of e.choices)
-        out.push(plan({ kind: 'forced', eventId: e.id, choiceId: c.id }, 'events'))
+        out.push(
+          plan(
+            {
+              kind: 'forced',
+              eventId: e.id,
+              choiceId: c.id,
+              ...(scenario.bookings ? { tourism: true } : {}),
+            },
+            'events',
+          ),
+        )
   return out
 }
 
@@ -295,7 +309,8 @@ const plans = units.map((u) => planFor(u.scenario))
 const done = plans.map((p) => p.map((): TaskDone => ({ results: [], seconds: 0 })))
 const timings: string[] = []
 const readerOf = (s: number): RunResult[] | undefined => {
-  const i = plans[s]!.findIndex((p) => p.part === 'main' && p.strategy.id === 'validate_then_build')
+  const careful = carefulId(units[s]!.scenario)
+  const i = plans[s]!.findIndex((p) => p.part === 'main' && p.strategy.id === careful)
   return i >= 0 ? done[s]![i]!.results : undefined
 }
 for (const part of PARTS) {

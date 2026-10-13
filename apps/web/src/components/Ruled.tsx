@@ -91,6 +91,8 @@ function Wrapped(props: { children: React.ReactNode; warn?: boolean | undefined 
  */
 export function FeatureRow(props: {
   name: string
+  /** A small figure after the name, such as what the product costs (tourism). */
+  note?: string | undefined
   progressHours: number
   buildHours: number
   progressText: string
@@ -101,7 +103,15 @@ export function FeatureRow(props: {
   const share = props.buildHours > 0 ? props.progressHours / props.buildHours : 0
   return (
     <div className={plan.feature}>
-      <Wrapped>{props.name}</Wrapped>
+      <Wrapped>
+        {props.name}
+        {props.note && (
+          <>
+            <wbr />
+            <span className={plan.note}>{props.note}</span>
+          </>
+        )}
+      </Wrapped>
       <div className={plan.featureLine}>
         <span className={plan.progress} aria-hidden="true">
           <span
