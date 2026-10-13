@@ -238,6 +238,8 @@ const labels = {
   'end.sustainable': 'Week {max}. The company pays for itself and for you. That is rare.',
   'end.growing':
     'Week {max}. Still burning money, but there is a year of it in the bank and revenue is growing. The investors are happy, for now.',
+  'end.bank_called':
+    'The bank called the loan after a second missed payment. Your guarantee, your savings and your evenings now belong to the bank.',
   'end.stats': 'Weeks played: {weeks}. Customers now: {customers}.',
   'intro.step': 'Card {n} of {total}',
   'intro.next': 'Next',
@@ -470,6 +472,23 @@ const labels = {
     'You had to cancel {n} guests because of the weather.',
   'results.entry.shifts_paid.one': '{n} shift paid: {amount}.',
   'results.entry.shifts_paid.other': '{n} shifts paid: {amount}.',
+  'results.entry.loan_applied':
+    'You applied for a loan of {amount}. The bank will answer in a few weeks.',
+  'results.entry.loan_refused': 'The bank said no: {reason}',
+  'results.entry.loan_offer':
+    'The bank offers {amount} at {rate}% a year, {payment} a month once repayments start.',
+  'results.entry.loan_accepted': 'You signed for {amount}. The money arrives at the month end.',
+  'results.entry.loan_paid_out': '{bank} paid out {amount}.',
+  'results.entry.loan_payment':
+    'Loan payment {amount}, of which {interest} interest. Still owed: {balance}.',
+  'results.entry.loan_missed.one':
+    'You missed a loan payment of {amount}. The bank added a fee of {fee} and sent a reminder.',
+  'results.entry.loan_missed.other': 'You missed a second loan payment in a row.',
+  'results.entry.loan_repaid': 'The loan from {bank} is paid off.',
+  'loan.reason.own_money': 'you are putting in too little of your own money.',
+  'loan.reason.no_guests': 'your numbers do not show enough guests yet for that amount.',
+  'loan.reason.missed_payment': 'you have missed a payment before.',
+  'loan.reason.too_many': 'you already have as many loans as the bank will give you.',
   'results.entry.review.one': '{n} new review. Rating {rating} from {reviews}.',
   'results.entry.review.other': '{n} new reviews. Rating {rating} from {reviews}.',
   'tab.calendar': { scrappy: 'Bookings', organised: 'Calendar' },
@@ -812,6 +831,7 @@ const labels = {
   'pm.ending.still_searching': 'still searching',
   'pm.ending.sustainable': 'it pays for itself',
   'pm.ending.growing': "growing on investors' money",
+  'pm.ending.bank_called': 'the bank called the loan',
   'pm.heading.next': 'Next time',
   'pm.heading.markets': 'The truth about the markets',
   'pm.heading.misreads': 'Misread signals',
@@ -859,6 +879,8 @@ const labels = {
     'The money ran out in week {week}, while you were still raising. Investors pay at closing, not at the first meeting.',
   'pm.cause.bankrupt_after_raise':
     'The money ran out in week {week}, after you had raised. Revenue peaked at {peak} a month against costs of {costs}: the investment bought time, not customers.',
+  'pm.cause.bank_called':
+    'In week {week} the bank called the loan after two missed payments in a row. Repayments start whether the guests come or not.',
   'pm.cause.growing':
     'Week {week}. The company still costs more than it earns, but revenue is growing and the money lasts another year.',
   'pm.cause.shut_down_flat':
@@ -890,6 +912,7 @@ const labels = {
   'pm.chain.ending.still_searching': 'Time is up.',
   'pm.chain.ending.sustainable': 'It pays for itself.',
   'pm.chain.ending.growing': "Growing, on investors' money.",
+  'pm.chain.ending.bank_called': 'The bank called the loan.',
 
   'pm.role.viable': 'The real market',
   'pm.role.mediocre': 'Lukewarm',

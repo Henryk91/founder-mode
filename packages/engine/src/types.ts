@@ -19,6 +19,8 @@ export type EndingId =
   | 'sustainable'
   /** Long mode with funding: raised money, still burning it, with runway and growth (Part D). */
   | 'growing'
+  /** The bank called the loan after a second missed payment in a row (step 6). */
+  | 'bank_called'
 export type UiStage = 'scrappy' | 'organised'
 
 // ---------------------------------------------------------------------------
@@ -77,6 +79,8 @@ export type GameState = {
   funding: FundingState
   /** Tourism (step 4): bookings of capacity that expires. Null in the subscription model. */
   bookings: BookingsState | null
+  /** The bank loan (step 6). Null in a scenario without one. */
+  loan: LoanState | null
   /** One entry per resolved week, oldest first. */
   ledger: WeekLedger[]
   /** Everything needed to rebuild this state from the seed. */
@@ -192,6 +196,54 @@ export type Booking = {
   channel: BookingChannel
   bookedWeek: number
   status: BookingStatus
+}
+
+/** Why the bank said no, in the words the player sees. */
+export type LoanRefusal = 'own_money' | 'no_guests' | 'missed_payment' | 'too_many'
+
+export type LoanTerms = { amountCents: number; termMonths: number; graceMonths: number }
+
+export type Loan = {
+  id: string
+  principalCents: number
+  balanceCents: number
+  rateBp: number
+  termMonths: number
+  graceMonths: number
+  /** Week the money arrived. */
+  startWeek: number
+  /** Month ends passed since the money arrived, paid or missed. */
+  months: number
+  /** The fixed payment once the repayment-free months are over. */
+  paymentCents: number
+  interestPaidCents: number
+  feesCents: number
+  /** Missed payments in a row, and over the loan's life. */
+  missedInRow: number
+  missedTotal: number
+  status: 'running' | 'repaid' | 'called'
+}
+
+export type LoanState = {
+  /** Hours put into the business plan; full at `planHours` (half for a second try). */
+  planHours: number
+  planNeeded: number
+  application: (LoanTerms & { decideWeek: number }) | null
+  offer: (LoanTerms & { rateBp: number; paymentCents: number; week: number }) | null
+  /** Accepted, paid out at the next month end. */
+  accepted: (LoanTerms & { rateBp: number }) | null
+  refusal: { reason: LoanRefusal; week: number } | null
+  loans: Loan[]
+}
+
+/** The loan part of a week's plan. */
+export type LoanPlan = {
+  planHours: number
+  apply: LoanTerms | null
+  accept: boolean
+  decline: boolean
+  /** Repay this loan in full at the next month end. */
+  repay: string | null
 }
 
 export type BookingsState = {
@@ -556,6 +608,14 @@ export type WeekLedger = {
   bookingRevenueCents: number
   /** Tourism: shifts, unit costs and products' one-off costs, company costs in the win test. */
   bookingCostsCents: number
+  /**
+   * The bank loan (step 6): money paid out (never revenue), and repayments, interest and fees
+   * paid (outgoings in the net change and the win test). 0 without a loan.
+   */
+  loanInCents: number
+  loanPrincipalCents: number
+  loanInterestCents: number
+  loanFeeCents: number
   cashEndCents: number
   savingsEndCents: number
   /** Monthly revenue of active customers at the end of the week, after churn. */
@@ -704,6 +764,8 @@ export type WeekPlan = {
   funding?: FundingPlan
   /** Tourism: the roster, prices, policy and channels. Missing means no shifts and no changes. */
   bookings?: BookingsPlan
+  /** The bank loan (step 6). Missing means no change. */
+  loan?: LoanPlan
 }
 
 /**
@@ -774,6 +836,7 @@ export type PlanIssue =
   | { code: 'invalid_freelance' }
   | { code: 'invalid_funding' }
   | { code: 'invalid_bookings' }
+  | { code: 'invalid_loan' }
   /** Long mode: the market has had every landing test allowed. */
   | { code: 'landing_limit'; segmentId: string }
 
@@ -869,6 +932,8 @@ export type PlayerView = {
   funding: FundingView | null
   /** Tourism: calendar, roster, prices, channels and reviews; null in the subscription model. */
   bookings: BookingsView | null
+  /** The bank loan (step 6): null in a scenario without one. */
+  loan: LoanView | null
   /** Landing page tests and pre-sales still running. */
   pendingExperiments: PendingExperimentView[]
   guidance: GuidanceView
@@ -1110,6 +1175,39 @@ export type InvestorView = {
 }
 
 /** Raising money as the player sees it. The investors' confidence shows only as their mood. */
+export type LoanView = {
+  bankName: string
+  planHours: number
+  planNeeded: number
+  meetingHours: number
+  /** The bank's own money rule, as it states it. */
+  ownShare: number
+  ownMoneyCents: number
+  minCents: number
+  maxCents: number
+  stepCents: number
+  termMonths: number[]
+  graceMonths: number[]
+  /** After a refusal, the week the bank takes a new application. */
+  canApplyFrom: number | null
+  application: (LoanTerms & { decideWeek: number }) | null
+  offer: (LoanTerms & { rateBp: number; paymentCents: number; week: number }) | null
+  accepted: (LoanTerms & { rateBp: number }) | null
+  refusal: { reason: LoanRefusal; week: number } | null
+  loans: {
+    id: string
+    principalCents: number
+    balanceCents: number
+    rateBp: number
+    nextPaymentCents: number
+    monthsLeft: number
+    freeMonthsLeft: number
+    interestPaidCents: number
+    missedInRow: number
+    status: Loan['status']
+  }[]
+}
+
 export type FundingView = {
   rounds: RoundView[]
   round: { id: RoundId; name: string; startWeek: number; investorsLeft: number } | null
@@ -1292,6 +1390,15 @@ export type ReportEntry =
   | { kind: 'company_cancelled'; units: number; reason: 'staff' | 'weather' }
   | { kind: 'shifts_paid'; shifts: number; amountCents: number }
   | { kind: 'review'; rating: number; reviews: number; added: number }
+  /** The bank loan (step 6). */
+  | { kind: 'loan_applied'; amountCents: number }
+  | { kind: 'loan_refused'; reason: LoanRefusal }
+  | { kind: 'loan_offer'; amountCents: number; rateBp: number; paymentCents: number }
+  | { kind: 'loan_accepted'; amountCents: number }
+  | { kind: 'loan_paid_out'; amountCents: number; name: string }
+  | { kind: 'loan_payment'; amountCents: number; interestCents: number; balanceCents: number }
+  | { kind: 'loan_missed'; amountCents: number; feeCents: number; inRow: number }
+  | { kind: 'loan_repaid'; name: string }
   /** Funding (Part D). */
   | { kind: 'round_started'; round: RoundId }
   | { kind: 'round_stopped'; round: RoundId }
@@ -1388,6 +1495,8 @@ export type PostMortemCauseId =
   | 'bankrupt_while_raising'
   | 'bankrupt_after_raise'
   | 'growing'
+  /** Step 6: the bank called the loan after two missed payments in a row. */
+  | 'bank_called'
 
 export type PostMortemCause = {
   id: PostMortemCauseId

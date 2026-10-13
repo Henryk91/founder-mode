@@ -1,5 +1,6 @@
 import type { EndingId, GameState } from '../types'
 import { netChangeCents, profitableForMonths, profitableOverMonths } from './finance'
+import { loanCalled } from './loan'
 import { growingHolds } from './funding'
 
 /** Profitable for the last 8 weeks, as two 4 week months, unless the scenario says otherwise. */
@@ -12,6 +13,7 @@ const SUSTAINABLE_MONTHS = 2
  */
 export function checkEnding(state: GameState): EndingId | null {
   if (state.company.cashCents < 0) return 'bankrupt'
+  if (loanCalled(state)) return 'bank_called'
   if (state.founder.weeksAtZeroEnergy >= state.scenario.founder.energy.burnoutWeeks) {
     return 'burnout'
   }

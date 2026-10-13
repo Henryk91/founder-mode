@@ -168,6 +168,37 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'terms_lapsed':
       return label('results.entry.terms_lapsed', stage, { name: entry.name })
+    case 'loan_applied':
+    case 'loan_accepted':
+      return label(`results.entry.${entry.kind}`, stage, { amount: formatEuro(entry.amountCents) })
+    case 'loan_refused':
+      return label('results.entry.loan_refused', stage, {
+        reason: label(`loan.reason.${entry.reason}`, stage),
+      })
+    case 'loan_offer':
+      return label('results.entry.loan_offer', stage, {
+        amount: formatEuro(entry.amountCents),
+        rate: (entry.rateBp / 100).toFixed(2),
+        payment: formatEuro(entry.paymentCents),
+      })
+    case 'loan_paid_out':
+      return label('results.entry.loan_paid_out', stage, {
+        bank: entry.name,
+        amount: formatEuro(entry.amountCents),
+      })
+    case 'loan_payment':
+      return label('results.entry.loan_payment', stage, {
+        amount: formatEuro(entry.amountCents),
+        interest: formatEuro(entry.interestCents),
+        balance: formatEuro(entry.balanceCents),
+      })
+    case 'loan_missed':
+      return count('results.entry.loan_missed', stage, entry.inRow, {
+        amount: formatEuro(entry.amountCents),
+        fee: formatEuro(entry.feeCents),
+      })
+    case 'loan_repaid':
+      return label('results.entry.loan_repaid', stage, { bank: entry.name })
     case 'terms_withdrawn':
       return label('results.entry.terms_withdrawn', stage, {
         name: entry.name,
@@ -305,6 +336,17 @@ function place(entry: ReportEntry): [Group, number] {
     case 'terms_accepted':
     case 'terms_lapsed':
     case 'investor_update':
+      return ['money', 2]
+    case 'loan_missed':
+      return ['money', 9]
+    case 'loan_refused':
+    case 'loan_offer':
+    case 'loan_paid_out':
+    case 'loan_repaid':
+      return ['money', 5]
+    case 'loan_applied':
+    case 'loan_accepted':
+    case 'loan_payment':
       return ['money', 2]
     case 'freelance_output':
       return entry.role === 'developer' ? ['product', 3] : ['sales', 3]

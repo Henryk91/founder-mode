@@ -5,6 +5,7 @@ import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
 import { applyFounderWeek, hoursByActivity, livingCostsFor } from './systems/founder'
 import { applyBookings } from './systems/bookings'
 import { applyFunding } from './systems/funding'
+import { applyLoan } from './systems/loan'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
 import { applyChurn, applyReferrals, applySales } from './systems/sales'
@@ -153,10 +154,16 @@ export function endWeek(
   extras.investmentCents = funding.investmentCents
   forcedNextWeek += funding.forcedHours
 
+  // The bank loan (step 6): plan hours, applications, the bank's answer, offers.
+  const loanWeek = applyLoan(state, plan)
+  state = loanWeek.state
+  entries.push(...loanWeek.entries)
+
   // 8. Finance: transfers, costs, chasing, payments, invoices at month end
   const finance = applyFinanceWeek(state, plan, extras, rng, delegatedChases)
   state = finance.state
   entries.push(...finance.movements)
+  entries.push(...finance.loanEntries)
   if (finance.issued.length > 0) {
     entries.push({
       kind: 'invoices_issued',
