@@ -1,4 +1,5 @@
 import type { RoundConfig } from '@founder-mode/content'
+import { bookingsRevenueOrSubscriptions } from './bookings'
 import type { Rng } from '../rng'
 import type {
   FundingPlan,
@@ -63,8 +64,7 @@ const roundCfg = (state: GameState, id: RoundId): RoundConfig => {
 }
 
 /** Monthly revenue of active customers now. */
-const monthlyNow = (state: GameState) =>
-  activeCustomers(state).reduce((t, c) => t + c.priceCentsPerMonth, 0)
+const monthlyNow = (state: GameState) => bookingsRevenueOrSubscriptions(state)
 
 /** Monthly revenue at the end of the week `back` weeks before the last one played, else 0. */
 const monthlyBack = (state: GameState, back: number) =>

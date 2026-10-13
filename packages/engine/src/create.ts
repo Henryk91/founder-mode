@@ -1,4 +1,5 @@
 import { Rng, seedRng } from './rng'
+import { initBookings } from './systems/bookings'
 import { emptyFunding, emptyHiddenFunding } from './systems/funding'
 import { drawHiddenSegments } from './systems/market'
 import { moveOffice } from './systems/office'
@@ -9,6 +10,8 @@ import { ENGINE_VERSION } from './version'
 export function createGame(scenario: Scenario, seed: string): GameState {
   const rng = new Rng(seedRng(seed))
   const hiddenSegments = drawHiddenSegments(scenario, rng)
+  // Tourism only: demand, seasons and the first weather. Draws nothing in the subscription model.
+  const tourism = initBookings(scenario, rng)
   const start = scenario.start
 
   const state: GameState = {
@@ -44,6 +47,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       waitsForChase: [],
       teamSkills: {},
       funding: emptyHiddenFunding({ scenario }),
+      bookings: tourism?.hidden ?? null,
     },
     knowledge: Object.fromEntries(scenario.segments.map((s) => [s.id, []])),
     product: initialProduct({ scenario }),
@@ -61,6 +65,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       freelanceBugs: 0,
     },
     funding: emptyFunding(),
+    bookings: tourism?.state ?? null,
     ledger: [],
     actionLog: [],
     eventLog: [],

@@ -1,4 +1,4 @@
-import { activeCustomers } from './systems/customers'
+import { bookingsRevenueOrSubscriptions } from './systems/bookings'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
 import { companyValueCents, founderShareBp, fundingHours } from './systems/funding'
@@ -242,7 +242,7 @@ function buildCause(state: GameState): PostMortemCause {
   const costs = monthlyCosts(state, true)
   const costsWithoutHire = monthlyCosts(state, false)
   const peak = Math.max(0, ...state.ledger.map((l) => l.monthlyRevenueCents))
-  const revenue = activeCustomers(state).reduce((t, c) => t + c.priceCentsPerMonth, 0)
+  const revenue = bookingsRevenueOrSubscriptions(state)
   const lost = state.customers.filter(
     (c) => c.churnedWeek !== null && c.churnReason !== 'stopped_paying',
   ).length

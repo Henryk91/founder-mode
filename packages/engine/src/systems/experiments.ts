@@ -241,8 +241,27 @@ export function resolveExperiments(
       e.kind === 'landing'
         ? Math.floor(observed / state.scenario.experiments.landing.signupsPerLead)
         : 0
-    withLeads = addLeads(withLeads, e.segmentId, leads, rng, 'landing')
-    if (e.kind === 'presale' && observed > 0) {
+    // Tourism: a test listing is a signal only, and a pilot's guests who would book again join
+    // the repeat guests (their price is paid now, as a voucher).
+    if (withLeads.bookings) {
+      if (e.kind === 'presale' && observed > 0) {
+        const b = withLeads.bookings
+        withLeads = {
+          ...withLeads,
+          bookings: {
+            ...b,
+            repeatGuests: {
+              ...b.repeatGuests,
+              [e.segmentId]: (b.repeatGuests[e.segmentId] ?? 0) + observed,
+            },
+          },
+        }
+        depositsCents += observed * e.priceCents
+      }
+    } else {
+      withLeads = addLeads(withLeads, e.segmentId, leads, rng, 'landing')
+    }
+    if (e.kind === 'presale' && observed > 0 && !withLeads.bookings) {
       const before = withLeads.leads.length
       withLeads = addLeads(withLeads, e.segmentId, observed, rng, 'presale')
       withLeads = {

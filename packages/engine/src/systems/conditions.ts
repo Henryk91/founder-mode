@@ -1,4 +1,5 @@
 import type { Condition, ConditionPath } from '@founder-mode/content'
+import { bookingsRevenueOrSubscriptions } from './bookings'
 import type { GameState } from '../types'
 import { activeCustomers } from './customers'
 import { moodLevel } from './funding'
@@ -31,8 +32,7 @@ const METRICS: Record<ConditionPath, (state: GameState, sender: ConditionSender)
   quality: (s) => s.product.quality,
   'features.shipped': (s) => s.product.features.filter((f) => f.shippedWeek !== null).length,
   hasHire: (s) => (hasHire(s) ? 1 : 0),
-  monthlyRevenueEur: (s) =>
-    Math.floor(activeCustomers(s).reduce((sum, c) => sum + c.priceCentsPerMonth, 0) / 100),
+  monthlyRevenueEur: (s) => Math.floor(bookingsRevenueOrSubscriptions(s) / 100),
   'funding.raised': (s) => s.funding.stakes.length,
   'funding.mood': moodLevel,
   'funding.milestoneMissed': (s) => (s.funding.milestone?.status === 'missed' ? 1 : 0),

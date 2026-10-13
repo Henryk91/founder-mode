@@ -1,4 +1,5 @@
 import type { FounderState, GameState, HoursByActivity, Scenario, WeekPlan } from '../types'
+import { bookingsHours } from './bookings'
 import { fundingHours } from './funding'
 import { managementHours } from './team'
 
@@ -44,6 +45,7 @@ export function hoursByActivity(
       sum(Object.values(plan.presales)) * scenario.experiments.presale.hoursPerBatch,
     building: sum(Object.values(plan.build)) + plan.bugFixHours,
     selling:
+      bookingsHours(state, plan) +
       sum(Object.values(plan.outreach).map((o) => o.hours)) +
       plan.demos.length * scenario.sales.demoHours +
       plan.followUps.length * scenario.sales.followUpHours,

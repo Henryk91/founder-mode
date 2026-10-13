@@ -3,6 +3,7 @@ import { Rng } from './rng'
 import { resolveExperiments, runInterviews, startExperiments } from './systems/experiments'
 import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
 import { applyFounderWeek, hoursByActivity, livingCostsFor } from './systems/founder'
+import { applyBookings } from './systems/bookings'
 import { applyFunding } from './systems/funding'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
@@ -105,17 +106,26 @@ export function endWeek(
   state = product.state
   entries.push(...product.entries)
 
-  // 6. Sales: demos, trials, new leads, ghosting. A working salesperson helps.
-  const sales = applySales(state, plan, rng, team, freelance)
-  state = sales.state
-  entries.push(...sales.entries)
-  extras.otherCostsCents += sales.refundsCents
-  const walkIns = applyWalkIns(state, rng)
-  state = walkIns.state
-  entries.push(...walkIns.entries)
-  const referrals = applyReferrals(state, rng)
-  state = referrals.state
-  entries.push(...referrals.entries)
+  if (state.bookings) {
+    // 6. Tourism: requests, bookings, this week's guests, the roster and reviews (step 4).
+    const tourism = applyBookings(state, plan, rng)
+    state = tourism.state
+    entries.push(...tourism.entries)
+    extras.bookingRevenueCents += tourism.revenueCents
+    extras.bookingCostsCents += tourism.costsCents
+  } else {
+    // 6. Sales: demos, trials, new leads, ghosting. A working salesperson helps.
+    const sales = applySales(state, plan, rng, team, freelance)
+    state = sales.state
+    entries.push(...sales.entries)
+    extras.otherCostsCents += sales.refundsCents
+    const walkIns = applyWalkIns(state, rng)
+    state = walkIns.state
+    entries.push(...walkIns.entries)
+    const referrals = applyReferrals(state, rng)
+    state = referrals.state
+    entries.push(...referrals.entries)
+  }
 
   // 7. Team: letting go, offers, searches, starts
   const staff = applyTeam(state, plan, rng)
@@ -170,10 +180,12 @@ export function endWeek(
     })
   }
 
-  // 9. Churn on month ends
-  const churn = applyChurn(state, rng)
-  state = churn.state
-  entries.push(...churn.entries)
+  // 9. Churn on month ends (subscribers only)
+  if (!state.bookings) {
+    const churn = applyChurn(state, rng)
+    state = churn.state
+    entries.push(...churn.entries)
+  }
   state = closeLedger(state, activity)
 
   // 10. Scheduled effects: none, inbox effects land in step 2

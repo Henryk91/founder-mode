@@ -309,6 +309,125 @@ export type RoundConfig = z.infer<typeof RoundConfigSchema>
 export const ROUND_IDS = ['angel', 'seed'] as const
 export type RoundId = (typeof ROUND_IDS)[number]
 
+/**
+ * Tourism (step 4): bookings of capacity that expires, instead of subscriptions. Read with
+ * `docs/tourism-proposal.md`; section numbers below refer to it. Absent: the subscription model.
+ */
+export const WEATHER_STATES = ['good', 'mixed', 'bad', 'dangerous'] as const
+export type WeatherState = (typeof WEATHER_STATES)[number]
+const PerWeather = z.object({
+  good: z.number().nonnegative(),
+  mixed: z.number().nonnegative(),
+  bad: z.number().nonnegative(),
+  dangerous: z.number().nonnegative(),
+})
+/** Twelve monthly values, January first. */
+const Monthly = z.array(z.number().nonnegative()).length(12)
+
+export const BookingSegmentSchema = z.object({
+  // Requests per week at the peak of the season, drawn per run (hidden), in booking units.
+  base: rangeOf(z.number().nonnegative()),
+  // What one unit is, for the screen: a person, a group, a cover, a room night.
+  unit: z.enum(['person', 'group', 'cover', 'night']),
+  // Starting price per unit, in peak and off season months.
+  price: z.object({ peak: Cents.positive(), off: Cents.positive() }),
+  // Units per request.
+  size: IntRange,
+  // Weeks between the request and the week it books.
+  leadWeeks: IntRange,
+  // The season's shape, a multiplier per month (section 2).
+  season: Monthly,
+  // How well each channel reaches this segment (section 5).
+  response: z.object({
+    platform: Share,
+    website: Share,
+    partnership: Share,
+    outreach: Share,
+    walkIn: Share,
+  }),
+  // Chance a booking cancels, before the weather's factor.
+  cancel: Share,
+  // Share of requests a strict policy still converts, against a flexible one.
+  strictConversion: Share,
+  // Whether the weather moves its demand and cancellations.
+  weatherSensitive: z.boolean().default(false),
+  // Business customers get an invoice through the invoice system; others pay on the day.
+  invoiced: z.boolean().default(false),
+  // How much reviews move its demand (section 5).
+  reviewWeight: z.number().nonnegative(),
+})
+
+export const BookingProductSchema = z.object({
+  // Units a week it can sell when fully staffed (seats x seatings, rooms x nights).
+  capacity: z.number().int().nonnegative(),
+  // Segments it sells to.
+  serves: z.array(Id).default([]),
+  oneOffCents: Cents.nonnegative().default(0),
+  monthlyCents: Cents.nonnegative().default(0),
+  unitCostCents: Cents.nonnegative().default(0),
+  // Months it runs in (1 to 12); empty means all year.
+  months: z.array(z.number().int().min(1).max(12)).default([]),
+  // Cannot run in dangerous weather unless the alternative product has shipped.
+  weatherClosed: z.boolean().default(false),
+  alternative: Id.optional(),
+})
+
+export const StaffRoleSchema = z.object({
+  name: z.string().min(1),
+  centsPerShift: Cents.nonnegative(),
+  // Units of each product one shift can serve.
+  units: z.record(Id, z.number().nonnegative()),
+  // Most shifts a week that can be booked, per month (scarce in peak for freelance guides).
+  available: Monthly,
+  // The founder can take shifts in this role, each costing this many hours of their week.
+  founderHours: z.number().int().positive().optional(),
+})
+
+export const BookingsConfigSchema = z.object({
+  startWeekOfYear: z.number().int().min(1).max(52),
+  seasonNoise: Share,
+  // Months that use the peak price (others use the off season price).
+  peakMonths: z.array(z.number().int().min(1).max(12)),
+  // Weeks a cancellation policy must stay before it can change.
+  policyWeeks: z.number().int().positive(),
+  weather: z.object({
+    // Chance of good, mixed, bad and dangerous weather per month.
+    monthly: z.array(PerWeather).length(12),
+    forecastAccuracy: Share,
+    demand: PerWeather,
+    cancel: PerWeather,
+  }),
+  platform: z.object({ name: z.string().min(1), commission: Share }),
+  // The product that is the own website, and repeat guests at which it reaches full strength.
+  website: z.object({ product: Id, repeatsFull: z.number().positive() }),
+  // Founder hours that set up a partnership with a segment's partners, once.
+  partnershipHours: z.number().int().nonnegative(),
+  partnershipCut: Share,
+  // Outreach hours a week that reach a segment fully.
+  outreachHoursFull: z.number().positive(),
+  reachCap: z.number().positive(),
+  roleFactor: z.object({ viable: z.number(), mediocre: z.number(), trap: z.number() }),
+  fitBase: Share,
+  segments: z.record(Id, BookingSegmentSchema),
+  products: z.record(Id, BookingProductSchema),
+  roles: z.record(Id, StaffRoleSchema),
+  reviews: z.object({
+    qualityBase: z.number(),
+    noiseSd: z.number().nonnegative(),
+    understaffPenalty: z.number().nonnegative(),
+    tiredPenalty: z.number().nonnegative(),
+    cancelPenalty: z.number().nonnegative(),
+    snagPenalty: z.number().nonnegative(),
+    valueWeight: z.number().nonnegative(),
+    reviewsPerUnit: z.number().nonnegative(),
+    reviewsFull: z.number().positive(),
+  }),
+})
+export type BookingsConfig = z.infer<typeof BookingsConfigSchema>
+export type BookingSegment = z.infer<typeof BookingSegmentSchema>
+export type BookingProduct = z.infer<typeof BookingProductSchema>
+export type StaffRole = z.infer<typeof StaffRoleSchema>
+
 export const InboxConfigSchema = z.object({
   // Most new messages per week, and the chance that each slot is filled if an event is eligible.
   maxPerWeek: z.number().int().positive(),
@@ -628,6 +747,8 @@ export const ScenarioFileSchema = z.object({
   organisedAt: z.array(Id).min(1),
   // Long mode: raising money from angels and a seed fund (Part D). Absent: no funding.
   funding: FundingConfigSchema.optional(),
+  // Tourism: bookings of capacity that expires (step 4). Absent: the subscription model.
+  bookings: BookingsConfigSchema.optional(),
 })
 
 // segment id -> bucket id -> quotes
@@ -684,6 +805,32 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     )
     if (e.trigger.length > 0 && !e.once) issue('a triggered event must be once', ['events', i])
   })
+
+  // Tourism: the bookings block names real markets and features.
+  if (s.bookings) {
+    const segIds = new Set(s.segments.map((x) => x.id))
+    const featureIds = new Set(s.features.map((x) => x.id))
+    for (const id of Object.keys(s.bookings.segments)) {
+      if (!segIds.has(id)) issue(`unknown segment ${id}`, ['bookings', 'segments', id])
+    }
+    for (const [id, p] of Object.entries(s.bookings.products)) {
+      if (!featureIds.has(id)) issue(`unknown feature ${id}`, ['bookings', 'products', id])
+      for (const seg of p.serves) {
+        if (!segIds.has(seg)) issue(`unknown segment ${seg}`, ['bookings', 'products', id])
+      }
+      if (p.alternative && !featureIds.has(p.alternative)) {
+        issue(`unknown feature ${p.alternative}`, ['bookings', 'products', id, 'alternative'])
+      }
+    }
+    for (const [id, r] of Object.entries(s.bookings.roles)) {
+      for (const f of Object.keys(r.units)) {
+        if (!s.bookings.products[f]) issue(`unknown product ${f}`, ['bookings', 'roles', id])
+      }
+    }
+    if (!featureIds.has(s.bookings.website.product)) {
+      issue('unknown website product', ['bookings', 'website', 'product'])
+    }
+  }
 
   if (s.roles.length !== s.segments.length) {
     issue('there must be exactly one role per segment', ['roles'])
