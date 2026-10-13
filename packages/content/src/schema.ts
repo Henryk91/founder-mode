@@ -473,6 +473,17 @@ export const CONDITION_PATHS = [
   // overdue invoice, 1 when that lead has gone silent; 0 otherwise or without such a sender.
   'sender.overdue',
   'sender.silent',
+  // Tourism (step 5): next week's forecast (0 good, 1 mixed, 2 bad, 3 dangerous), 1 in a peak
+  // month, the month (1 to 12), the rating times ten (0 without reviews), reviews, units booked
+  // for this week and for the four weeks after it, 1 while listed on the platform. 0 elsewhere.
+  'tour.forecast',
+  'tour.peak',
+  'tour.month',
+  'tour.rating',
+  'tour.reviews',
+  'tour.bookedWeek',
+  'tour.bookedAhead',
+  'tour.listed',
 ] as const
 
 /** Paths about a message's sender: they make sense only once a message has a sender. */
@@ -530,6 +541,20 @@ export const EffectSchema = z.discriminatedUnion('type', [
   // Moves the company to one of the scenario's office stages: its monthly cost and its lasting
   // effects (energy each week, outreach response by channel) replace the previous stage's.
   z.object({ type: z.literal('moveOffice'), stage: Id, ...fx }),
+  // Tourism: guests who heard of you join a segment's repeat guests (a random one when absent).
+  z.object({
+    type: z.literal('guests'),
+    segment: Id.optional(),
+    count: z.number().int().positive(),
+    ...fx,
+  }),
+  // Tourism: reviews at this rating (1 to 5) arrive.
+  z.object({
+    type: z.literal('review'),
+    rating: z.number().min(1).max(5),
+    count: z.number().int().positive(),
+    ...fx,
+  }),
   // The investors' confidence moves by this much (0 to 1). Nothing happens without investors.
   z.object({ type: z.literal('investorConfidence'), delta: z.number(), ...fx }),
   z.object({

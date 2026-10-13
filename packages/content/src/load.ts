@@ -184,8 +184,12 @@ export function mergeOverride(base: unknown, over: unknown): unknown {
  */
 function fileForMode(file: unknown, mode: GameMode, id: string): unknown {
   if (!isObject(file)) return file
-  const { modes, ...rest } = file
-  if (mode === 'standard') return rest
+  // `longOnly`: a scenario that has no 60 week game (the tourism scenarios).
+  const { modes, longOnly, ...rest } = file
+  if (mode === 'standard') {
+    if (longOnly === true) throw new Error(`scenario ${id} has no standard mode`)
+    return rest
+  }
   const over = isObject(modes) ? modes[mode] : undefined
   if (!isObject(over)) throw new Error(`scenario ${id} has no ${mode} mode`)
   return { ...(mergeOverride(rest, over) as Record<string, unknown>), mode }
@@ -195,7 +199,9 @@ function fileForMode(file: unknown, mode: GameMode, id: string): unknown {
 export function modesIn(source: string): GameMode[] {
   const file: unknown = parse(source)
   const modes = isObject(file) && isObject(file['modes']) ? Object.keys(file['modes']) : []
-  return ['standard', ...(modes.includes('long') ? (['long'] as const) : [])]
+  const long = modes.includes('long') ? (['long'] as const) : []
+  if (isObject(file) && file['longOnly'] === true) return [...long]
+  return ['standard', ...long]
 }
 
 /** Parses and validates the YAML files of one scenario. Throws on any schema error. */
@@ -230,9 +236,12 @@ export function eventsIn(source: string): unknown[] {
   return Array.isArray(events) ? events : []
 }
 
-/** Returns a freshly parsed copy of a built in scenario, for the 60 week game or long mode. */
-export function loadScenario(id: ScenarioId, mode: GameMode = 'standard'): Scenario {
-  return parseScenario(SOURCES[id], mode)
+/**
+ * Returns a freshly parsed copy of a built in scenario, for the 60 week game or long mode. Without
+ * a mode: the 60 week game, or long mode for a scenario that has only that.
+ */
+export function loadScenario(id: ScenarioId, mode?: GameMode): Scenario {
+  return parseScenario(SOURCES[id], mode ?? scenarioModes(id)[0] ?? 'standard')
 }
 
 /** The modes a built in scenario can be played in. */

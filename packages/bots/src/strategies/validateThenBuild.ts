@@ -163,7 +163,10 @@ const helps = (fx: ScenarioEvent['choices'][number]['effects'][number]): boolean
     case 'newLeads':
     case 'invoicePayChance':
     case 'touchLead':
+    case 'guests':
       return true
+    case 'review':
+      return fx.rating >= 3.5
     case 'lostHours':
     case 'churnChance':
     case 'fixedCost':

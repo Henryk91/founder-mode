@@ -1072,6 +1072,8 @@ export type BookingsView = {
   calendar: { productId: FeatureId; cells: CalendarCell[] }[]
   /** Bookings for this week per product, the units the roster must cover. */
   thisWeek: { productId: FeatureId; booked: number }[]
+  /** Units booked for the four weeks after this one, every product. */
+  bookedAhead: number
   revenueLast4Cents: number
 }
 
