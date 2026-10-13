@@ -42,6 +42,14 @@ const VIEW_METRICS: Record<ConditionPath, (v: PlayerView, m: MessageView | null)
   'tour.bookedWeek': (v) => (v.bookings?.thisWeek ?? []).reduce((t, x) => t + x.booked, 0),
   'tour.bookedAhead': (v) => v.bookings?.bookedAhead ?? 0,
   'tour.listed': (v) => (v.bookings?.platform.listed ? 1 : 0),
+  'loan.balanceEur': (v) =>
+    Math.floor(
+      (v.loan?.loans ?? [])
+        .filter((l) => l.status === 'running')
+        .reduce((t, l) => t + l.balanceCents, 0) / 100,
+    ),
+  'loan.missed': (v) => Math.max(0, ...(v.loan?.loans ?? []).map((l) => l.missedInRow)),
+  'loan.running': (v) => (v.loan?.loans ?? []).filter((l) => l.status === 'running').length,
   'sender.overdue': (v, m) =>
     m && v.invoices.some((i) => i.customerName === m.fromName && i.status === 'overdue') ? 1 : 0,
   'sender.silent': (v, m) =>

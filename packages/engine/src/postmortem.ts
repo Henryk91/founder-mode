@@ -5,6 +5,7 @@ import { companyValueCents, founderShareBp, fundingHours } from './systems/fundi
 import { reachedMilestones } from './systems/milestones'
 import { freelanceEconomics, hiresEconomics, salaryId } from './systems/team'
 import type {
+  LoanEconomics,
   GuestsEconomics,
   Activity,
   ChainItem,
@@ -110,12 +111,35 @@ export function buildPostMortem(state: GameState): PostMortem {
       hires,
       freelance: freelanceEconomics(state),
       funding: fundingEconomics(state),
+      loans: loanEconomics(state),
     },
     walkIns: walkInCounts(state),
     sources: sourceCounts(state),
     guests: guestsEconomics(state),
     luck,
   }
+}
+
+/** Each loan of the run: its cost, the products bought after it arrived, and how it ended. */
+export function loanEconomics(state: GameState): LoanEconomics[] {
+  const products = state.scenario.bookings?.products ?? {}
+  return (state.loan?.loans ?? []).map((l) => ({
+    amountCents: l.principalCents,
+    rateBp: l.rateBp,
+    interestPaidCents: l.interestPaidCents,
+    feesCents: l.feesCents,
+    balanceCents: l.balanceCents,
+    status: l.status,
+    startWeek: l.startWeek,
+    paidFor: state.product.features
+      .filter(
+        (f) =>
+          f.shippedWeek !== null &&
+          f.shippedWeek >= l.startWeek &&
+          (products[f.id]?.oneOffCents ?? 0) > 0,
+      )
+      .map((f) => state.scenario.features.find((x) => x.id === f.id)?.name ?? f.id),
+  }))
 }
 
 /** Guests over a bookings run: served, paid, channels, cancellations, costs and reviews. */

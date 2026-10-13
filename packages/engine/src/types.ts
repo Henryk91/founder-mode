@@ -1668,6 +1668,19 @@ export type FundingEconomics = {
   pitchedTooEarly: number
 }
 
+/** A loan in the post-mortem: what it cost, what it paid for, and how it ended. */
+export type LoanEconomics = {
+  amountCents: number
+  rateBp: number
+  interestPaidCents: number
+  feesCents: number
+  balanceCents: number
+  status: Loan['status']
+  startWeek: number
+  /** Products with a one-off cost shipped after the money arrived, by name. */
+  paidFor: string[]
+}
+
 /** What the guests of a bookings run came to, from the bookings and the ledger. */
 export type GuestsEconomics = {
   /** Per segment: units served and what they paid, net of commission. */
@@ -1735,6 +1748,8 @@ export type PostMortem = {
     freelance: FreelanceEconomicsView | null
     /** Raising money (long mode): null when no round was ever started. */
     funding: FundingEconomics | null
+    /** The bank loans of the run (step 6), oldest first; empty without one. */
+    loans: LoanEconomics[]
   }
   /** Leads that walked in at an office, and the customers they became, per office and market. */
   walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]

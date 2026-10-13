@@ -29,6 +29,7 @@ import {
   type TeamRoleId,
   type FreelancePlan,
   type BookingsPlan,
+  type LoanPlan,
   type FundingPlan,
   type GameMode,
   type TeamTask,
@@ -62,6 +63,7 @@ export type PlanSection =
   | 'prices'
   | 'team'
   | 'raise'
+  | 'loan'
   | 'rest'
 
 export type ExplainKey =
@@ -76,6 +78,7 @@ export type ExplainKey =
   | 'demos'
   | 'hiring'
   | 'raise'
+  | 'loan'
   | 'roster'
   | 'guests'
   | 'prices'
@@ -200,6 +203,7 @@ export type UiActions = {
   setFunding(change: Partial<FundingPlan>): void
   /** Changes part of the bookings plan (tourism): roster, prices, policy, channels. */
   setBookings(change: Partial<BookingsPlan>): void
+  setLoan(change: Partial<LoanPlan>): void
   /** Answers a message now: its hours count at once, its effects land when the week ends. */
   answer(messageId: string, choiceId: string): void
   /** First step of shutting down: shows the question. Nothing happens to the run yet. */
@@ -610,6 +614,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         editPlan((p) => ({ ...p, funding: { ...(p.funding ?? noFunding()), ...change } })),
       setBookings: (change) =>
         editPlan((p) => ({ ...p, bookings: { ...(p.bookings ?? noBookings()), ...change } })),
+      setLoan: (change) =>
+        editPlan((p) => ({ ...p, loan: { ...(p.loan ?? noLoan()), ...change } })),
       answer(messageId, choiceId) {
         if (!game || game.status !== 'running') return
         try {
@@ -687,4 +693,13 @@ export const noBookings = (): BookingsPlan => ({
   platform: null,
   partnerships: [],
   outreach: {},
+})
+
+/** A loan plan with nothing in it. */
+export const noLoan = (): LoanPlan => ({
+  planHours: 0,
+  apply: null,
+  accept: false,
+  decline: false,
+  repay: null,
 })
