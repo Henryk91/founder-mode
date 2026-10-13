@@ -1,0 +1,160 @@
+# Learning about the guests: the village, open houses and local firms.
+events:
+  - id: tourism_statistics
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: The lake's tourism association
+    look: official
+    text: >-
+      The tourism association sends its yearly statistics: overnight stays by month, by country
+      and by "type of accommodation". Reading them takes an evening and a strong coffee. Somewhere
+      in the tables is next summer.
+    defaultChoice: skim
+    choices:
+      - id: read
+        label: Read them properly
+        hours: 3
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.03 }
+      - id: skim
+        label: Skim the summary
+        hours: 0
+
+  - id: open_house_offer
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 3, week <= 20]
+    from: none
+    sender: The village mayor
+    look: note
+    text: >-
+      The mayor suggests an open house for wedding planners and office managers from the firms
+      nearby. It costs an afternoon and a lot of cake. Honest remarks about the rooms are
+      included free.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Host the open house
+        hours: 8
+        effects:
+          - { type: cash, amountCents: -20000 }
+          - { type: skill, skill: interviewing, delta: 0.06 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: plant_office_manager
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: The office manager of a machine works
+    text: >-
+      The office manager of the machine works up the valley asks whether you take project staff.
+      She has fitters arriving in waves and no hotel she trusts. She would send the next wave,
+      if you can invoice them.
+    defaultChoice: later
+    choices:
+      - id: meet
+        label: Meet her and show the rooms
+        hours: 3
+        effects:
+          - { type: guests, segment: project_guests, count: 10 }
+      - id: later
+        label: Not yet
+        hours: 0
+
+  - id: wedding_planner_visit
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: A wedding planner from Munich
+    text: >-
+      A wedding planner visits, admires the view for twenty minutes and asks about the event room.
+      She plans fifty weddings a year and remembers every venue that disappointed her. She would
+      send a couple, if there were a room to marry in.
+    defaultChoice: later
+    choices:
+      - id: show
+        label: Show her round properly
+        hours: 3
+        effects:
+          - { type: guests, segment: groups, count: 24 }
+      - id: later
+        label: Another time
+        hours: 0
+
+  - id: previous_guestbook
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: The previous owners
+    look: note
+    text: >-
+      The previous owners left thirty years of guestbooks in the cellar. They are full of
+      compliments, complaints and one marriage proposal. Reading them takes a weekend.
+    defaultChoice: shelf
+    choices:
+      - id: read
+        label: Read the guestbooks
+        hours: 4
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.04 }
+      - id: shelf
+        label: Leave them in the cellar
+        hours: 0
+
+  - id: travel_blogger
+    area: validation
+    weight: 1
+    once: true
+    when: [tour.reviews >= 5]
+    from: none
+    sender: A travel blogger
+    text: >-
+      A travel blogger asks for two free nights in exchange for a post to her followers. Her
+      photos are lovely and her followers mostly live in Australia. Two free nights in a full
+      week are two nights nobody pays for.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Give her two nights
+        hours: 2
+        effects:
+          - { type: guests, segment: leisure, count: 8 }
+          - { type: review, rating: 3, count: 2, when: [tour.bookedWeek >= 60] }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: test_rates_advice
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 8, tour.listed == 1]
+    from: none
+    sender: A hotelier from the next village
+    look: note
+    text: >-
+      A hotelier from the next village offers to explain how she sets her rates over a beer.
+      She has run her house for twenty years and doubled her prices twice. The beer is on you.
+    defaultChoice: decline
+    choices:
+      - id: listen
+        label: Buy the beer and listen
+        hours: 3
+        effects:
+          - { type: skill, skill: selling, delta: 0.04 }
+          - { type: cash, amountCents: -2000 }
+      - id: decline
+        label: Decline
+        hours: 0

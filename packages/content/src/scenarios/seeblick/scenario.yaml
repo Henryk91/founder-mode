@@ -1,0 +1,527 @@
+# Seeblick: a twelve room guesthouse on a Bavarian lake (tourism, step 7).
+# Source: docs/scenario-hotel.md. Long mode only: 104 weeks from the first week of November.
+# Money in cents, time in hours. Figures marked (est.) are estimates; sources in the spec.
+
+id: seeblick
+name: Seeblick
+longOnly: true
+maxWeeks: 104
+# As for every tourism scenario, the last 13 months together must pay for everything.
+win: { profitableMonths: 3, overMonths: 13 }
+
+start:
+  # Own money put in (est.).
+  cashCents: 3000000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  # The engine's single price is used only by tests and pilots; guests pay the bookings prices.
+  priceCentsPerMonth: 13500
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    # A twelve room guesthouse on a lake an hour from Munich (est., no current source found;
+    # spec 5,500, lowered while tuning, decisions step 7).
+    - id: lease
+      name: Lease
+      monthlyCents: 480000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 25000
+    - id: utilities
+      name: Heating, electricity and water
+      # Spec 2,200 (est.); 1,800 here.
+      monthlyCents: 180000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 30000
+    - id: pms
+      name: Booking software and channel manager
+      monthlyCents: 18000
+    - id: licences
+      name: Licences and fees
+      monthlyCents: 10000
+
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  # Year 2 costs more: living costs rise by a tenth from week 53.
+  livingSteps:
+    - { week: 53, centsPerWeek: 74250 }
+
+finance:
+  weeksPerMonth: 4
+  # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
+  # late by a segment dependent number of days, only once chased, or never.
+  invoiceDueDays: 14
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    # Room rates are quoted to the nearest 10 EUR.
+    budgetSmallStepCents: 1000
+    buckets:
+      - { id: not_a_problem, name: Not a problem, below: 0.2 }
+      - { id: mild, name: Mild, below: 0.4 }
+      - { id: noticeable, name: Noticeable, below: 0.6 }
+      - { id: painful, name: Painful, below: 0.9 }
+      - { id: urgent, name: Urgent }
+  # Test rates: a few rooms on a platform at a test price for two weeks, a signal only.
+  landing:
+    hours: 6
+    budgetsCents: [20000, 50000]
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  # An open house or gift vouchers: guests from one segment see the house; those who would come
+  # again join the repeat guests and pay a voucher now.
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+
+product:
+  startQuality: 85
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  # Price against willingness to pay (r = price / wtp): a yes stays nearly as likely up to about
+  # r 0.9, then gets rarer smoothly (0.97 at r 1, 0.82 at 1.2, a half at the midpoint, 0.24 at
+  # 1.5). Calibrated so the default price plays as before (Phase 8 gate).
+  price: { midpoint: 1.35, steepness: 10 }
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    # Customers paying more than what they would pay leave more often: +0.15 a month per 100%
+    # above it, on top of the rest.
+    priceFrom: 1.0
+    perPrice: 0.15
+    cap: 0.6
+  # Referrals belong to the subscription model; guests spread the word through repeat visits.
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - { id: weak, name: Weak, below: 0.7 }
+    - { id: solid, name: Solid, below: 0.95 }
+    - { id: strong, name: Strong, below: 1.1 }
+    - { id: outstanding, name: Outstanding }
+  roles:
+    # A junior or part time hire: cheaper, fewer hours.
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+
+  # Phase 9: a freelancer, rented by the week. Output is visible and fixed: outputShare of the
+  # booked hours become work, the first week at onboardingFactor of that. Billed weekly per hour.
+  freelance:
+    hoursOptions: [10, 20]
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    # A developer who does not know the code: extra bugs on every feature they worked on.
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+
+# A quieter inbox than the software scenarios: events come about every other week.
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.35
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+
+roles:
+  - id: viable
+    pain: { min: 0.6, max: 0.85 }
+    politeness: { min: 0.05, max: 0.15 }
+  - id: mediocre
+    pain: { min: 0.35, max: 0.55 }
+    politeness: { min: 0.25, max: 0.4 }
+  - id: trap
+    pain: { min: 0.1, max: 0.25 }
+    politeness: { min: 0.5, max: 0.65 }
+
+segments:
+  - id: leisure
+    name: Leisure couples
+    description: Couples and friends on a weekend or holiday by the lake
+    size: { min: 4000, max: 9000 }
+    # Per room night (est., docs/scenario-hotel.md 3).
+    wtpCents: { min: 11000, max: 19000 }
+    mustHave: [breakfast_buffet, online_booking, renovated_rooms]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.02 }
+      in_person: { min: 0.01, max: 0.03 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For a room with a lake view we would pay about {amount} a night. Without a view, less, and sadder.'
+      - 'Around {amount} a night is our weekend budget, breakfast included, cake not.'
+      - 'We paid {amount} a night last summer at the other end of the lake. The shower was a rumour.'
+      - 'Something like {amount} a night, if the bed is better than ours at home.'
+      - 'About {amount} a night is fine for a treat. Twice a year we treat ourselves.'
+
+  - id: project_guests
+    name: Business and project guests
+    description: Fitters, consultants and project staff working at firms in the area
+    size: { min: 1500, max: 4000 }
+    wtpCents: { min: 7500, max: 11500 }
+    mustHave: [invoice_billing, workspace, early_breakfast]
+    channelResponse:
+      cold_email: { min: 0.02, max: 0.04 }
+      phone: { min: 0.03, max: 0.06 }
+      in_person: { min: 0.03, max: 0.05 }
+    paymentDelayDaysMean: 30
+    neverPaysShare: 0.02
+    waitsForChaseShare: 0.25
+    budgetQuotes:
+      - 'Our travel policy allows {amount} a night. Anything above that needs a form and a mood.'
+      - 'The firm pays about {amount} a night for fitters. They mostly want a quiet room and coffee at six.'
+      - 'Around {amount} a night, invoiced monthly, and I will send you every project we have.'
+      - 'We pay {amount} at the business hotel in town. It is beige and nobody likes it.'
+      - 'Our consultants get {amount} a night. They complain about it at {amount} too.'
+
+  - id: groups
+    name: Groups and weddings
+    description: Weddings, family celebrations, clubs and company retreats booking the whole house
+    size: { min: 300, max: 900 }
+    # Per room night when the whole house is booked: 1,200 to 2,200 a night for twelve rooms
+    # (est., 3).
+    wtpCents: { min: 10000, max: 18000 }
+    mustHave: [event_room, catering_partner, whole_house_booking]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.03 }
+      phone: { min: 0.03, max: 0.06 }
+      in_person: { min: 0.04, max: 0.08 }
+    paymentDelayDaysMean: 20
+    neverPaysShare: 0.01
+    waitsForChaseShare: 0.2
+    budgetQuotes:
+      - 'For the whole house we could spend about {amount} a room each night. The bride has a spreadsheet.'
+      - 'Our club budget comes to roughly {amount} a room a night. We bring our own songbook.'
+      - 'The wedding planner says {amount} a room a night is normal by the lakes. She says many things.'
+      - 'We would pay {amount} a room a night if nobody else is in the house. Family only, please.'
+      - 'Last year the retreat cost us {amount} a room a night, and the sauna was broken.'
+
+milestones:
+  - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+  - { id: first_deposit, name: First voucher sold, kind: count, of: deposits, target: 1 }
+  - { id: first_customer, name: First paying guest, kind: count, of: guests, target: 1 }
+  - id: covers_company_costs
+    name: 'A month of guests covers company costs'
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: 'A month of guests covers all costs, you included'
+    kind: revenue
+    covers: all
+  - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+  - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+  - { id: weeks_78, name: 78 weeks survived, kind: weeks, target: 78 }
+  - { id: weeks_104, name: 104 weeks survived, kind: weeks, target: 104 }
+
+# The tired guesthouse, then a refreshed house (offered by an inbox event): eight renovated rooms
+# and a painted facade lift what guests think of the place.
+officeStages:
+  - id: tired_house
+    name: Tired guesthouse
+    monthlyCents: 0
+    # Rooms from 1994: "dated" in every review.
+    qualityBonus: -0.3
+  - id: refreshed_house
+    name: Refreshed house
+    monthlyCents: 0
+    qualityBonus: 0.3
+    energyPerWeek: 1
+    walkIns: { segment: leisure, leadsPerWeek: 0.3 }
+
+organisedAt: [covers_all_costs]
+
+# The bank loan (docs/loan-proposal.md): for renovation and the first winter.
+loan:
+  bankName: Seenland Bank
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  # Banks ask for 15 to 25% own money (chamber of commerce advice); 20% here.
+  ownShare: 0.2
+  # Before any guest has paid (est.).
+  unprovenMaxCents: 10000000
+  revenueMultiple: 1
+  minCents: 1000000
+  maxCents: 15000000
+  stepCents: 500000
+  rateBp: { min: 450, max: 750 }
+  leverageSpreadBp: 100
+  termMonths: [60, 84, 120]
+  graceMonths: [0, 6, 12]
+  missedFeeCents: 5000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+
+# Bookings (docs/tourism-proposal.md). A unit is a room night. Week 1 is the first week of
+# November.
+bookings:
+  startWeekOfYear: 44
+  seasonNoise: 0.15
+  peakMonths: [6, 7, 8, 9]
+  policyWeeks: 4
+  weather:
+    # Bavarian lakes (est.): weather moves short-notice leisure stays.
+    monthly:
+      - { good: 0.2, mixed: 0.4, bad: 0.35, dangerous: 0.05 }
+      - { good: 0.2, mixed: 0.4, bad: 0.35, dangerous: 0.05 }
+      - { good: 0.3, mixed: 0.4, bad: 0.27, dangerous: 0.03 }
+      - { good: 0.4, mixed: 0.35, bad: 0.22, dangerous: 0.03 }
+      - { good: 0.45, mixed: 0.3, bad: 0.2, dangerous: 0.05 }
+      - { good: 0.5, mixed: 0.25, bad: 0.17, dangerous: 0.08 }
+      - { good: 0.55, mixed: 0.2, bad: 0.17, dangerous: 0.08 }
+      - { good: 0.55, mixed: 0.2, bad: 0.17, dangerous: 0.08 }
+      - { good: 0.5, mixed: 0.3, bad: 0.17, dangerous: 0.03 }
+      - { good: 0.35, mixed: 0.35, bad: 0.27, dangerous: 0.03 }
+      - { good: 0.2, mixed: 0.4, bad: 0.35, dangerous: 0.05 }
+      - { good: 0.2, mixed: 0.4, bad: 0.35, dangerous: 0.05 }
+    forecastAccuracy: 0.8
+    demand: { good: 1.1, mixed: 1, bad: 0.85, dangerous: 0.75 }
+    cancel: { good: 1, mixed: 1, bad: 1.3, dangerous: 1.8 }
+  # Booking platforms take about 11 to 15% in Germany (2025 reports); 15% here.
+  platform: { name: Zimmerfrei, commission: 0.15 }
+  website: { product: online_booking, repeatsFull: 200 }
+  partnershipHours: 6
+  partnershipCut: 0
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor: { viable: 1, mediocre: 0.45, trap: 0.15 }
+  fitBase: 0.4
+  segments:
+    leisure:
+      # Spec 30 to 90 (decisions, step 7).
+      base: { min: 25, max: 75 }
+      unit: night
+      price: { peak: 13500, off: 11500 }
+      size: { min: 1, max: 4 }
+      leadWeeks: { min: 0, max: 8 }
+      # High June to September, dead in November.
+      season: [0.25, 0.3, 0.35, 0.5, 0.7, 0.9, 1, 1, 0.85, 0.5, 0.1, 0.35]
+      response: { platform: 0.9, website: 0.3, partnership: 0.4, outreach: 0.1, walkIn: 0.1 }
+      cancel: 0.12
+      strictConversion: 0.85
+      weatherSensitive: true
+      # At weekends outside the holidays: about two or three nights in seven (est.).
+      capacityShare: { peak: 1, off: 0.35 }
+      invoiced: false
+      reviewWeight: 0.8
+    project_guests:
+      # Spec 15 to 60 (decisions, step 7).
+      base: { min: 12, max: 50 }
+      unit: night
+      price: { peak: 9000, off: 9000 }
+      size: { min: 3, max: 10 }
+      leadWeeks: { min: 0, max: 3 }
+      # Flat, low in August and over Christmas.
+      season: [0.9, 1, 1, 1, 1, 1, 0.8, 0.4, 1, 1, 1, 0.5]
+      response: { platform: 0.4, website: 0.2, partnership: 0.8, outreach: 0.6, walkIn: 0 }
+      cancel: 0.05
+      strictConversion: 0.85
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.4
+    groups:
+      # Whole house bookings of two to four nights: 24 to 48 room nights each. Spec 0.1 to 0.6
+      # bookings a week; about one a week at peak here, a wedding most summer weekends (decisions,
+      # step 7).
+      base: { min: 18, max: 40 }
+      unit: night
+      price: { peak: 14000, off: 12000 }
+      size: { min: 24, max: 48 }
+      leadWeeks: { min: 8, max: 30 }
+      # May to September, mostly Saturdays.
+      season: [0.1, 0.1, 0.2, 0.4, 0.9, 1, 1, 1, 0.9, 0.4, 0.1, 0.2]
+      response: { platform: 0, website: 0.4, partnership: 0.8, outreach: 0.6, walkIn: 0 }
+      # One cancellation is a month's revenue; couples expect to pay a deposit for a wedding.
+      cancel: 0.08
+      strictConversion: 0.95
+      # A deposit of 30% at booking, the balance at the stay (docs/scenario-hotel.md 3).
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.3
+  products:
+    rooms:
+      # Twelve doubles, seven nights.
+      capacity: 84
+      serves: [leisure, project_guests]
+      # Laundry, amenities and breakfast ingredients per room night (est.).
+      unitCostCents: 1500
+    breakfast_buffet:
+      capacity: 0
+    online_booking:
+      capacity: 0
+      monthlyCents: 3000
+    renovated_rooms:
+      capacity: 0
+      # Four rooms at about 10,000 each: a new bathroom (3,600 to 10,500 for 3 square metres),
+      # paint, floors and furniture (est.).
+      oneOffCents: 4000000
+    invoice_billing:
+      capacity: 0
+    workspace:
+      capacity: 0
+      oneOffCents: 250000
+    early_breakfast:
+      capacity: 0
+    event_room:
+      capacity: 0
+      oneOffCents: 1200000
+    catering_partner:
+      capacity: 0
+    whole_house_booking:
+      # The whole house, from the rooms' own nights.
+      capacity: 0
+      capacityOf: rooms
+      serves: [groups]
+      unitCostCents: 1500
+    wellness:
+      capacity: 0
+      # A small sauna and spa room (est. 60,000 to 90,000).
+      oneOffCents: 7500000
+      monthlyCents: 60000
+  roles:
+    housekeeper:
+      name: Housekeeper
+      # Five hours at a little over the minimum wage of 13.90 (2026), with employer costs.
+      centsPerShift: 9000
+      units:
+        rooms: 10
+        whole_house_booking: 10
+      available: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
+    host:
+      name: Reception and breakfast help
+      # Six hours with employer costs (est.).
+      centsPerShift: 11000
+      units:
+        rooms: 25
+        whole_house_booking: 25
+      available: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+      founderHours: 7
+  reviews:
+    qualityBase: 4.3
+    noiseSd: 0.3
+    understaffPenalty: 2.5
+    tiredPenalty: 0.5
+    cancelPenalty: 1
+    snagPenalty: 0.15
+    valueWeight: 1.5
+    reviewsPerUnit: 0.08
+    reviewsFull: 60
+
+modes:
+  long: {}

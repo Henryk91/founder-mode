@@ -879,3 +879,8 @@ type PostMortem = {
 - View: `PlayerView.loan: LoanView | null`. Report entries `loan_applied`, `loan_refused` (reason `own_money`, `no_guests`, `missed_payment`, `too_many`), `loan_offer`, `loan_accepted`, `loan_paid_out`, `loan_payment`, `loan_missed`, `loan_repaid`.
 - Step 6 additions: `BookingProduct.requires?` (sells only once that product shipped too), `BookingProduct.unitCostShare?` (share of the price added to each unit's cost when served), `OfficeStage.qualityBonus?` (added to the review quality while working there). Condition paths `loan.balanceEur`, `loan.missed`, `loan.running`.
 - Restaurant additions (step 6): `LoanConfig.leverageSpreadBp?`; `BookingsState.archived?: BookingTotal[]` (finished bookings older than a year as totals per status, segment and channel, with their units, gross and first week); `bookingTotals(bookings)` combines the archive and the kept bookings; `BookingsView.products[].unitCostShare`; `Loan.firstMissedWeek?`. An ending `bank_called` also when the money runs out with a loan payment missed. Scenario `hinterhof` (long mode only, with a loan, no funding).
+
+### Step 7: the hotel (engine 0.14.0)
+
+- Content: `BookingProduct.capacityOf?` (sells from that product's capacity; both count against one pool), `BookingSegment.depositShare?` (share of the price paid when booked), `BookingSegment.capacityShare?: { peak, off }` (share of a product's capacity the segment can use). Scenario `seeblick` (long mode only, with a loan, no funding).
+- State: `Booking.depositCents?` (paid when booked; the stay or its invoice asks for the rest). The calendar shows a sharing product's pool capacity and what the whole pool has booked.

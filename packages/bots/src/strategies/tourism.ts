@@ -75,10 +75,12 @@ const BUG_LIMIT = 2
 const THIN_MARGIN_SHARE = 0.5
 /** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
 const LOAN_BUFFER_MONTHS = 4
+/**
+ * What a careful founder of this business knows about its first months (step 7): a guesthouse
+ * that opens in November borrows to reach the summer.
+ */
+const BRIDGE_MONTHS: Record<string, number> = { seeblick: 6 }
 const RESERVE_MONTHS = 1
-/** The refit offer's price and when the refit borrower prepares for it (loan target L1). */
-const REFIT_CENTS = 2_500_000
-const REFIT_REVENUE_CENTS = 2_000_000
 /** A further product is built when its one-off cost is at most this share of the money. */
 const EXTRA_SHARE = 0.2
 
@@ -116,6 +118,24 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   let arrivals: number[] = []
   let bookedAtPlan = 0
 
+  /**
+   * The refit offered by an inbox event (loan target L1): the office stage it moves to, what it
+   * costs, and the monthly revenue at which it arrives, as the scenario states them.
+   */
+  const refitOffer = (() => {
+    for (const e of scenario.events) {
+      for (const c of e.choices) {
+        const move = c.effects.find((fx) => fx.type === 'moveOffice')
+        const pay = c.effects.find((fx) => fx.type === 'cash' && fx.amountCents < 0)
+        if (move?.type === 'moveOffice' && pay?.type === 'cash') {
+          const revenue = e.when.find((w) => w.path === 'monthlyRevenueEur')?.value ?? 0
+          return { stage: move.stage, cents: -pay.amountCents, revenueCents: revenue * 100 }
+        }
+      }
+    }
+    return null
+  })()
+
   /** Asked for last time and refused: the next request asks for a fifth less. */
   let refusedAt: number | null = null
 
@@ -148,13 +168,21 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       (id) => !view.product.features.find((f) => f.id === id)?.shipped,
     )
     const oneOff = unshipped.reduce((t, id) => t + (cfg.products[id]?.oneOffCents ?? 0), 0)
-    const need = oneOff + LOAN_BUFFER_MONTHS * monthly - cash
+    // Guests who book months ahead (weddings) need a longer bridge: their lead time in months.
+    const lead = target ? (cfg.segments[target]?.leadWeeks.max ?? 0) : 0
+    const bufferMonths = Math.max(
+      LOAN_BUFFER_MONTHS,
+      Math.ceil(lead / 4),
+      BRIDGE_MONTHS[scenario.id] ?? 0,
+    )
+    const need = oneOff + bufferMonths * monthly - cash
     const refit =
       rule.refitLoan &&
       runningLoans.length === 1 &&
-      view.company.officeStage.id !== 'own_fitout' &&
-      view.monthlyRevenueCents >= REFIT_REVENUE_CENTS &&
-      cash < REFIT_CENTS + RESERVE_MONTHS * monthly
+      refitOffer !== null &&
+      view.company.officeStage.id !== refitOffer.stage &&
+      view.monthlyRevenueCents >= refitOffer.revenueCents &&
+      cash < refitOffer.cents + RESERVE_MONTHS * monthly
     const first = runningLoans.length === 0 && (need > 0 || mode !== 'careful')
     if (!first && !refit) return
     const left = Math.max(0, l.planNeeded - l.planHours)
@@ -177,7 +205,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const allowed =
       Math.floor(((l.ownMoneyCents * (1 - l.ownShare)) / l.ownShare - borrowed) / step) * step
     let amount = refit
-      ? roundUp(REFIT_CENTS)
+      ? roundUp(refitOffer!.cents)
       : mode === 'careful'
         ? roundUp(need)
         : Math.min(l.maxCents, allowed)
@@ -364,7 +392,10 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         // the money cannot pay for yet.
         const building = view.loan ? withRequired(toBuild) : toBuild
         if (view.loan) {
-          const reserve = RESERVE_MONTHS * view.company.monthlyFixedCostsCents
+          // Keep the bridge a long-lead market needs (the months beyond the usual buffer) as well.
+          const lead = cfg.segments[seg]?.leadWeeks.max ?? 0
+          const bridge = Math.max(0, Math.ceil(lead / 4) - LOAN_BUFFER_MONTHS)
+          const reserve = (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
           const shipped = (id: string) => !!view.product.features.find((x) => x.id === id)?.shipped
           planLoan(view, b, building)
           // What others require comes first, on its own: nothing sells without it.

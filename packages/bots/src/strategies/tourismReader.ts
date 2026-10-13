@@ -162,4 +162,53 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
     tips_dispute: () => 'pool',
     cook_poached: (v) => (v.bookings!.peak || bookedNow(v) >= 200 ? 'match' : null),
   },
+  seeblick: {
+    // Validation: contacts where rooms can take their guests; lessons in the quiet winter.
+    tourism_statistics: (v) => (v.week <= 12 ? 'read' : null),
+    open_house_offer: (v) => (cashEur(v) >= 3000 ? 'host' : null),
+    plant_office_manager: ifServes('project_guests', 'meet'),
+    wedding_planner_visit: ifServes('groups', 'show'),
+    previous_guestbook: (v) => (v.week <= 10 ? 'read' : null),
+    travel_blogger: (v) => (serves(v, 'leisure') && bookedNow(v) < 60 ? 'host' : null),
+    test_rates_advice: () => 'listen',
+    // Sales: guests where there is room; a permanent commission for a badge is not worth it.
+    firm_block_booking: (v) => (serves(v, 'project_guests') && !v.bookings!.peak ? 'accept' : null),
+    village_festival: (v) => (serves(v, 'leisure') && energy(v) > 40 ? 'push' : null),
+    boat_package: ifServes('leisure', 'join'),
+    twelve_room_cancel: () => 'complain',
+    november_empty: (v) =>
+      serves(v, 'project_guests') ? 'call_firms' : bookedNow(v) < 10 ? 'close_floor' : null,
+    wedding_fair: (v) => (serves(v, 'groups') && cashEur(v) >= 5000 ? 'stand' : null),
+    christmas_vouchers_hotel: (v) => (serves(v, 'leisure') ? 'sell' : null),
+    regatta_weekend: (v) => (serves(v, 'groups') && bookedNow(v) < 70 ? 'host' : null),
+    // Product: the house first, fines avoided.
+    heating_fails: (v) => (cashEur(v) >= 3000 || bookedNow(v) >= 30 ? 'engineer' : null),
+    bathroom_review: () => 'reply',
+    dripping_shower: () => 'fix',
+    fire_inspection: () => 'prepare',
+    lake_flood: ifCash(3000, 'pump'),
+    wifi_complaints: (v) => (cashEur(v) >= 6000 ? 'upgrade' : null),
+    breakfast_supplier: (v) => (serves(v, 'leisure') && cashEur(v) >= 6000 ? 'farm' : null),
+    noisy_neighbour_build: (v) => (bookedNow(v) < 60 ? 'move' : null),
+    // Finance: the refresh only with the money for it; negotiate the lease.
+    refresh_offer: (v) =>
+      cashEur(v) >= 60000 + (2 * v.company.monthlyFixedCostsCents) / 100 ? 'refresh' : null,
+    lease_increase: () => 'negotiate',
+    wedding_cancels: () => 'refund',
+    bank_quarterly_hotel: () => 'send',
+    bank_missed_hotel: () => 'talk',
+    tourist_tax_audit: () => 'prepare',
+    winter_heating_bill: ifCash(4000, 'pay', 'spread'),
+    insulation_grant: (v) => (v.bookings!.peak ? null : 'apply'),
+    // Founder: rest when it shows.
+    night_bell: ifTired(50, 'nap'),
+    lake_swim: () => 'swim',
+    former_colleague: () => 'dinner',
+    family_christmas: (v) => (bookedNow(v) < 10 ? 'go' : null),
+    back_strain: () => 'physio',
+    village_council: (v) => (serves(v, 'leisure') && energy(v) > 50 ? 'join' : null),
+    // Team.
+    housekeeper_quits: (v) => (cashEur(v) >= 3000 ? 'agency' : null),
+    breakfast_help_late: () => 'talk',
+  },
 }

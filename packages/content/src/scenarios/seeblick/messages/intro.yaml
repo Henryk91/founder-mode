@@ -1,0 +1,43 @@
+# Onboarding text shown before week 1, and the founder's notes shown in weeks 1 to 4.
+# Nothing here may reveal which kind of guest is the real market.
+intro:
+  cards:
+    - id: you
+      title: You
+      body: >-
+        You have worked in hotels for years, at reception, in sales and once, briefly, in the
+        laundry. The company account holds {cash:eur} of your own money, your savings hold
+        {savings:eur}, and living costs {living:eur} a week, about {livingMonth:eur} a month.
+    - id: idea
+      title: The house
+      body: >-
+        You have leased Seeblick, a family guesthouse in a lake village an hour from Munich: twelve
+        doubles, wooden balconies and rooms from 1994. The owners retired to Mallorca. It is the
+        first week of November, the quietest week of the year.
+    - id: problem
+      title: The guests
+      body: >-
+        Couples on a weekend, project staff from the firms nearby, and wedding parties wanting the
+        whole house might all come. Some will fill rooms at a good rate, some will only admire the
+        view. An empty room tonight is gone for ever.
+    - id: goal
+      title: The goal
+      body: >-
+        Last {maxWeeks} weeks. To win, the guests of your last thirteen months together have to
+        pay for the house, any loan and you. Run out of money, yours included, or miss two loan
+        payments in a row, and it is over.
+
+founderNotes:
+  first_week: >-
+    Week 1. No guests, no bookings, and a lake the colour of wet concrete. The heating works,
+    which is something.
+  no_evidence: >-
+    Week {week}. Still no evidence about who will stay. Your savings pay {living:eur} a week
+    either way.
+  only_interviews: >-
+    You have {n} conversations behind you. Everybody loves the view; the view does not pay.
+  built_unseen: >-
+    Something is ready to sell and nobody knows it exists. Guests do not find a lake village by
+    accident in November.
+  leads_only: >-
+    You have {n} enquiries. An enquiry is not a room night.

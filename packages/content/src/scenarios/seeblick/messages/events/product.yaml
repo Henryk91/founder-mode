@@ -1,0 +1,205 @@
+# The house: heating, bathrooms, snags and inspections.
+events:
+  - id: heating_fails
+    area: product
+    weight: 2
+    once: true
+    when: [tour.month <= 2]
+    from: none
+    sender: Your boiler
+    look: note
+    text: >-
+      The heating fails on a January night with guests in the house. An emergency engineer costs
+      a lot at this hour. Blankets and an apology cost less, unless the house is full.
+    defaultChoice: blankets
+    choices:
+      - id: engineer
+        label: Call the emergency engineer
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -90000 }
+      - id: blankets
+        label: Blankets, hot water bottles and an apology
+        hours: 0
+        effects:
+          - { type: energy, delta: -3 }
+          - { type: review, rating: 2, count: 3, when: [tour.bookedWeek >= 30] }
+
+  - id: bathroom_review
+    area: product
+    weight: 2
+    once: true
+    when: [tour.reviews >= 8]
+    from: none
+    sender: The platform's reviews
+    look: official
+    text: >-
+      A guest reviews the bathroom: "Charming, if you like 1994." The review has a photo of the
+      tiles. The tiles are brown and so is the mood.
+    defaultChoice: ignore
+    choices:
+      - id: reply
+        label: Reply with humour and a plan
+        hours: 1
+        effects:
+          - { type: review, rating: 4, count: 1 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 1 }
+
+  - id: dripping_shower
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when: [bugs >= 2]
+    from: none
+    sender: Room 7
+    look: note
+    text: >-
+      The new shower in room 7 drips all night, and the lamp in room 9 has started to flicker in
+      a way guests call atmospheric. The caretaker could fix both in an afternoon.
+    defaultChoice: later
+    choices:
+      - id: fix
+        label: Have the caretaker fix them
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -15000 }
+          - { type: bugs, delta: -1 }
+      - id: later
+        label: Later
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }
+
+  - id: fire_inspection
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 40
+    when: [week >= 12]
+    from: none
+    sender: The district fire inspector
+    look: official
+    text: >-
+      The fire inspector announces a visit: escape signs, extinguishers and the door that sticks.
+      Snags left unfixed become a fine. Preparing takes a day.
+    defaultChoice: wing_it
+    choices:
+      - id: prepare
+        label: Prepare the house
+        hours: 6
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: wing_it
+        label: Hope for the best
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -80000, when: [bugs >= 2] }
+
+  - id: lake_flood
+    area: product
+    weight: 1
+    once: true
+    when: [tour.month >= 5, tour.month <= 7]
+    from: none
+    sender: The lake
+    look: note
+    text: >-
+      After a week of rain the lake has come up the garden and into the cellar. The laundry
+      machines are standing in water. A pump service comes today; the alternative is a bucket.
+    defaultChoice: bucket
+    choices:
+      - id: pump
+        label: Call the pump service
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -70000 }
+      - id: bucket
+        label: Bail it out yourself
+        hours: 0
+        effects:
+          - { type: energy, delta: -6 }
+          - { type: bugs, delta: 1 }
+
+  - id: wifi_complaints
+    area: product
+    weight: 1
+    once: true
+    when: [tour.reviews >= 12]
+    from: none
+    sender: Your guests
+    look: note
+    text: >-
+      Guests keep asking why the wifi works only on the stairs. It is an old house with thick
+      walls and a router from the same year as the bathrooms. A new network costs a day and some
+      money.
+    defaultChoice: stairs
+    choices:
+      - id: upgrade
+        label: Install a proper network
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -120000 }
+          - { type: review, rating: 5, count: 2 }
+      - id: stairs
+        label: Put a chair on the stairs
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 1 }
+
+  - id: breakfast_supplier
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: A farm on the hill
+    look: note
+    text: >-
+      A farm on the hill offers its eggs, cheese and honey for your breakfast, at a little more
+      than the wholesaler. Guests love a story with their eggs. Your margin likes the wholesaler.
+    defaultChoice: decline
+    choices:
+      - id: farm
+        label: Buy from the farm
+        hours: 1
+        effects:
+          - {
+              type: fixedCost,
+              id: farm_breakfast,
+              name: Farm breakfast produce,
+              monthlyCents: 15000,
+            }
+          - { type: review, rating: 5, count: 2 }
+      - id: decline
+        label: Stay with the wholesaler
+        hours: 0
+
+  - id: noisy_neighbour_build
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: The house next door
+    look: note
+    text: >-
+      The neighbours start building an extension, and their digger starts at seven. Guests on
+      that side wake with the birds and the diesel. You could move them to the lake side, if the
+      lake side has room.
+    defaultChoice: nothing
+    choices:
+      - id: move
+        label: Move guests to the lake side
+        hours: 3
+        effects:
+          - { type: review, rating: 3, count: 2, when: [tour.bookedWeek >= 60] }
+      - id: nothing
+        label: Apologise at breakfast
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }

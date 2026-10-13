@@ -16,6 +16,8 @@ export type OfficeStage =
   | 'town_base'
   | 'inherited_room'
   | 'own_fitout'
+  | 'tired_house'
+  | 'refreshed_house'
 
 const DRAWINGS: readonly OfficeStage[] = [
   'kitchen_table',
@@ -25,6 +27,8 @@ const DRAWINGS: readonly OfficeStage[] = [
   'town_base',
   'inherited_room',
   'own_fitout',
+  'tired_house',
+  'refreshed_house',
 ]
 
 /** The drawing for where the company works, from the engine. */
@@ -113,6 +117,10 @@ export function Scene(props: { stage?: OfficeStage }) {
         <DiningRoom data={data} refitted={false} />
       ) : office === 'own_fitout' ? (
         <DiningRoom data={data} refitted />
+      ) : office === 'tired_house' ? (
+        <Guesthouse data={data} refreshed={false} />
+      ) : office === 'refreshed_house' ? (
+        <Guesthouse data={data} refreshed />
       ) : (
         <TradesYard data={data} ui={ui} />
       )}
@@ -549,6 +557,60 @@ function DiningRoom({ data, refitted }: { data: SceneData; refitted: boolean }) 
       {data.hire && <Labels x={420} figure={data.hire} />}
       <rect className={s.pot} x="690" y="268" width="26" height="30" />
       <circle className={s.plant} cx="703" cy="250" r="16" />
+    </svg>
+  )
+}
+
+/**
+ * The guesthouse (Seeblick): a white house with wooden balconies by a grey lake in November, then
+ * the same house freshly painted, with flower boxes and boats on a summer lake.
+ */
+function Guesthouse({ data, refreshed }: { data: SceneData; refreshed: boolean }) {
+  const windows = [300, 360, 420, 480]
+  return (
+    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
+      <rect className={refreshed ? s.sky : s.wall} x="0" y="0" width="732" height="200" />
+      {/* the lake */}
+      <rect className={refreshed ? s.sky : s.skyline} x="0" y="200" width="732" height="130" />
+      <line className={s.line} x1="0" y1="200" x2="732" y2="200" />
+      {refreshed &&
+        [80, 600].map((x) => (
+          <g key={x}>
+            <path className={s.wood} d={`M${x} 236h44l-8 12h-28z`} />
+            <line className={s.line} x1={x + 22} y1="236" x2={x + 22} y2="206" />
+          </g>
+        ))}
+      {/* the house */}
+      <rect className={s.paper} x="270" y="70" width="260" height="130" />
+      <path className={s.wood} d="M256 72l144 -50l144 50z" />
+      {windows.map((x) => (
+        <g key={x}>
+          <rect className={s.screen} x={x} y="96" width="30" height="30" />
+          <rect
+            className={refreshed ? s.sticky : s.counter}
+            x={x - 8}
+            y="96"
+            width="7"
+            height="30"
+          />
+          <rect
+            className={refreshed ? s.sticky : s.counter}
+            x={x + 31}
+            y="96"
+            width="7"
+            height="30"
+          />
+          <rect className={s.screen} x={x} y="146" width="30" height="30" />
+          {refreshed && <rect className={s.plant} x={x - 2} y="176" width="34" height="6" />}
+        </g>
+      ))}
+      {/* the balcony */}
+      <rect className={s.wood} x="280" y="134" width="240" height="5" />
+      <RatingSign x={40} y={40} text={data.rating} />
+      <Person x={170} who="you" slump={data.slumped} />
+      {data.hire && <Person x={620} who="hire" />}
+      <Labels x={170} figure={data.you} />
+      {data.hire && <Labels x={620} figure={data.hire} />}
     </svg>
   )
 }

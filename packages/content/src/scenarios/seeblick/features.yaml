@@ -1,0 +1,69 @@
+# Products and what they need (docs/scenario-hotel.md section 4). Which segment needs which lives
+# in scenario.yaml (segments[].mustHave) and stays hidden. Snags are a renovated room's dripping
+# showers and loose lamps.
+
+- id: rooms
+  name: Twelve rooms, as they are
+  buildHours: 6
+  bugsOnShip: { min: 0, max: 0 }
+  mention: The rooms are clean, I will give you that. Clean and very 1994.
+
+- id: breakfast_buffet
+  name: Breakfast buffet
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Breakfast by the lake is half the holiday. The other half is the second breakfast.
+
+- id: online_booking
+  name: Booking engine on your website
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: I want to see the room, the price and a button. Then I want to stop thinking.
+
+- id: renovated_rooms
+  name: Renovate four rooms
+  buildHours: 10
+  bugsOnShip: { min: 1, max: 2 }
+  mention: A bathroom from this century would be nice. A shower that does not sing at night, too.
+
+- id: invoice_billing
+  name: Company rates and invoices
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Our accounts department needs an invoice with our order number on it, every month.
+
+- id: workspace
+  name: Desks, fast internet, quiet rooms
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: I work in the evenings. I need a desk, a socket and an internet that does not sigh.
+
+- id: early_breakfast
+  name: Breakfast from six
+  buildHours: 5
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Our fitters start at seven. Breakfast at eight is a cruelty.
+
+- id: event_room
+  name: Turn the old breakfast room into an event room
+  buildHours: 25
+  bugsOnShip: { min: 0, max: 1 }
+  mention: We need one room where sixty people can eat, dance and cry at speeches.
+
+- id: catering_partner
+  name: A catering partner for events
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Someone has to cook for the wedding. It should not be the bride's uncle.
+
+- id: whole_house_booking
+  name: Whole house packages and contracts
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 0 }
+  mention: For a wedding we want the whole house and nobody else in it. No strangers at breakfast.
+
+- id: wellness
+  name: A small sauna and spa room
+  buildHours: 40
+  bugsOnShip: { min: 1, max: 2 }
+  mention: A sauna would be lovely. Every hotel has one now. We never use them, but still.

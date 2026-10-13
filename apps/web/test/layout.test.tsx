@@ -105,6 +105,8 @@ describe('layouts', () => {
         'town_base',
         'inherited_room',
         'own_fitout',
+        'tired_house',
+        'refreshed_house',
       ] as const
     ).map((stage) =>
       renderToString(
@@ -119,7 +121,7 @@ describe('layouts', () => {
       expect(page).toContain('<svg')
       expect(page).toMatch(/You: rested, 0 h this week/)
     }
-    expect(new Set(pages).size).toBe(7)
+    expect(new Set(pages).size).toBe(9)
   })
 
   it('names an office stage as its scenario does, and draws one without a picture at a table', () => {

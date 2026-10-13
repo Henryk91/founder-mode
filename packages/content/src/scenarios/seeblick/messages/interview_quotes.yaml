@@ -1,0 +1,172 @@
+# segment -> interview bucket -> quotes. At least 10 per bucket. Tone: docs/scenario-hotel.md.
+
+leisure:
+  not_a_problem:
+    - We stay with my sister when we visit the lake. She charges in gossip.
+    - We camp. The tent has a lake view too, and no breakfast buffet.
+    - We do day trips from Munich. The train home is our hotel.
+    - Our weekends go to the garden. The garden does not have a lake, but it has tomatoes.
+    - We have a holiday flat by the sea booked every year. The lake is for Sundays.
+    - Honestly, we sleep anywhere with a bed and a door. We are not fussy people.
+    - We have a timeshare in Austria and a lot of guilt about it.
+    - The children want the theme park, not the lake. We go where the children shout loudest.
+    - We like big hotels with pools. A guesthouse feels like visiting someone's aunt.
+    - We never plan weekends away. Something always comes up, usually laundry.
+  mild:
+    - A weekend by the lake would be nice once the weather turns.
+    - We might come for an anniversary, if we remember the anniversary.
+    - Something small and quiet sounds lovely, if it is not too far from a restaurant.
+    - Maybe in summer. In winter we prefer the sofa and a film about summer.
+    - If the rooms were nice and the price fair, we might try it once.
+    - A friend went to a guesthouse by a lake last year and has not stopped talking about it.
+    - We would book if we could see the room online first. Photos tell no lies, mostly.
+    - Perhaps a long weekend in autumn, when the crowds are gone.
+    - We like the idea of breakfast with a view. We like the idea of sleeping in more.
+    - It would have to be easy to cancel. Our plans are written in pencil.
+  noticeable:
+    - Every guesthouse by the lake is booked out on summer weekends by March.
+    - The places we found online looked lovely and smelled of 1985 when we arrived.
+    - We want a lake view without paying for a spa we never use.
+    - Last time the bathroom was so old the shower had opinions.
+    - The big hotels are expensive and full of conferences. We want something personal.
+    - We tried to book directly and nobody answered the phone for three days.
+    - It is hard to find somewhere that serves breakfast after nine at the weekend.
+    - Half the guesthouses only take cash and bookings by fax. We are not historians.
+    - We want to walk to the lake, not drive to it. That seems to cost extra everywhere.
+    - The reviews are all either five stars or one. We never know whom to believe.
+  painful:
+    - We spend every summer hunting for a lake room with a decent bathroom. Every summer we fail.
+    - Our anniversary weekend was ruined by a room above the bar. We still talk about the jukebox.
+    - Every nice place by the lake is booked by people faster than us.
+    - We have two weeks of holiday and want them close to home this year. Nothing good is free.
+    - We pay a fortune for a weekend and get a room with a view of the car park.
+    - My partner refuses to stay anywhere without a proper shower. That rules out most of Bavaria.
+    - We booked through a platform and the guesthouse had never heard of us.
+    - We love the lake and hate the drive back on Sunday evenings. We need somewhere to stay.
+    - Our favourite guesthouse closed when the owners retired. Nobody took it over.
+    - We want quiet, a good bed and a real breakfast. It seems to be three wishes too many.
+  urgent:
+    - Our wedding anniversary is in June and every room by the lake is gone. Do you have one?
+    - We are coming to the lake for two weeks in August and our booking just got cancelled.
+    - My parents want a lake weekend for their birthday next month. I promised and I am lost.
+    - We have a long weekend free from Friday and want a room with a view. Today, please.
+    - Our friends are getting married by the lake and the hotel is full. We need four nights.
+    - We booked a holiday flat that turned out not to exist. We arrive on Saturday.
+    - Our usual guesthouse has closed for renovation all summer. We need a new favourite.
+    - We want to propose by the lake next month. The ring is bought, the room is not.
+    - My partner has a week off in September and wants it near water. I want it near water too.
+    - The festival is on the second weekend of July and every bed in the village is taken.
+
+project_guests:
+  not_a_problem:
+    - Our fitters stay at the business hotel in town. It is beige, but it is there.
+    - We drive everyone home every evening. It is only an hour each way, each day, for months.
+    - Our consultants work from home now. The only travelling they do is to the kitchen.
+    - We have a framework contract with a hotel chain. Purchasing loves it more than anyone.
+    - Projects here are short. People sleep in their vans, mostly by choice.
+    - We rent a flat for our staff. It has six beds and one bathroom, which builds character.
+    - Our people stay with the client. The client has a guest wing and a lot of opinions.
+    - We do not send people on projects in this region any more.
+    - The company pays a flat allowance and staff sort out their own rooms.
+    - We have never needed a guesthouse. We have needed a better project plan.
+  mild:
+    - A guesthouse closer to the plant might be nice, if the rate fits the policy.
+    - We could try it for the next project, if the invoices work for our accounts.
+    - Some of our people would prefer somewhere quieter than the motorway hotel.
+    - If you had desks in the rooms, maybe. Our engineers write reports at night.
+    - We will have a few projects in the area next year. I could keep you in mind.
+    - Breakfast at six would matter. Our day starts before the birds complain.
+    - It depends on what purchasing says. Purchasing says no to most things first.
+    - Perhaps for the trainees. They are cheaper to house and easier to please.
+    - A monthly invoice would make my life easier. My life is mostly receipts.
+    - If it is within the travel policy, I do not mind where they sleep.
+  noticeable:
+    - Our people drive forty minutes each way because there is nothing closer that invoices.
+    - The motorway hotel has no desks and the internet works only in the lobby.
+    - Breakfast starts at seven thirty everywhere here. Our shifts start at seven.
+    - We have a project for six months and nobody wants to live in a hotel room that long.
+    - Our engineers complain about noise. They are engineers; they complain precisely.
+    - Every month I chase receipts from twelve people. One invoice would save my sanity.
+    - The rooms near the plant are booked out by another firm's project.
+    - We need rooms for six to ten people at short notice, and nobody can promise that.
+    - Our consultants want quiet and fast internet. They get neither at the inn by the station.
+    - The client wants us on site every day for a year. The commute is eating the budget.
+  painful:
+    - We lose two hours a day per fitter to driving. That is a lot of money spent in a car.
+    - Our project staff have threatened to quit if they spend another month at the motorway hotel.
+    - Every hotel near the plant wants payment by card at check-in. Our people have no company cards.
+    - We need rooms Monday to Friday for a year and nobody will give us a fixed rate.
+    - The plant expansion runs eighteen months and I have twenty people to house.
+    - Our last hotel cancelled our block at short notice for a wedding. Twenty people, no beds.
+    - I spend more time arranging rooms than arranging the project.
+    - The internet at the place we use cannot handle a video call. Our client meets by video.
+    - Breakfast is at eight, the shift at seven, and the bakery at the plant closed.
+    - We pay far too much at the chain hotel and still get rooms by the lift.
+  urgent:
+    - We start a nine month project on Monday and have nowhere for eight people to sleep.
+    - Our usual hotel near the plant has closed. I need rooms from next week, invoiced.
+    - The client moved the start forward by a month. I need six rooms in two weeks.
+    - Our fitters arrive on Sunday evening. Do you have rooms Monday to Friday until spring?
+    - Purchasing approved a new supplier list today and you could be on it if you invoice.
+    - We need quiet rooms with desks for a team of consultants, starting next Monday.
+    - The motorway hotel lost our booking. Twelve engineers are standing in the car park.
+    - Our project was extended to the end of the year and our hotel contract was not.
+    - We have a framework rate ready to sign if your rooms have desks and early breakfast.
+    - The plant runs a night shift from next month and the night shift needs beds by day.
+
+groups:
+  not_a_problem:
+    - We had our wedding in the village hall. The guests slept at home or under tables.
+    - Our club goes to the same mountain hut every year. Nobody has dared suggest a change.
+    - The family reunion is at my aunt's farm. She has a barn and strong opinions.
+    - We celebrate in a restaurant and everyone drives home. It is cheaper and quieter.
+    - Company retreats are a thing of the past here. We have video calls and biscuits.
+    - Our choir sings, eats and goes home. Overnight stays make the tenors restless.
+    - We booked a castle for the wedding years ago. The castle is not giving up its deposit.
+    - Our celebrations are small. Twelve rooms is more family than we can afford.
+    - We are a hiking club. We sleep in tents and judge people who do not.
+    - The wedding will be in Italy. Everything is in Italy now, apparently.
+  mild:
+    - A weekend away with the whole club would be nice, if someone else organises it.
+    - We might want the whole house for my parents' anniversary, depending on the price.
+    - Our team talked about a retreat by a lake. Then we talked about the budget.
+    - If there were a room for dinner and dancing, we could think about it.
+    - The family reunion could move to a lake. My aunt would be offended, which is tempting.
+    - A small wedding by the water sounds lovely. My mother wants something bigger.
+    - We would need a caterer. None of us can cook for forty without crying.
+    - Perhaps next year, when the club has saved up after the new uniforms.
+    - A whole house for a weekend sounds romantic and expensive in equal parts.
+    - We would book if we could see the place first. Photos of event rooms always lie.
+  noticeable:
+    - Every venue by the lake is booked two years ahead for summer Saturdays.
+    - The hotels take weddings but put other guests in the same building. Grandma hates strangers.
+    - We need rooms and a room to eat in. Most places offer one or the other.
+    - The last venue had no caterer and we ended up with a buffet from a petrol station.
+    - We are forty people and want one house, one weekend and no surprises.
+    - Our company retreat needs a meeting room by day and a party room by night.
+    - The wedding planners all recommend the same three venues, and all three are full.
+    - We want a place by the water that is not a five star hotel with five star prices.
+    - Our choir needs a room with a piano and walls that forgive singing.
+    - Booking twelve rooms separately is a nightmare. We want one contract and one invoice.
+  painful:
+    - Our wedding venue went bankrupt with our deposit. We have a date and no house.
+    - Every lakeside venue wants a minimum spend we would need a second mortgage for.
+    - We tried to book a retreat for the team and spent three weeks on emails with five hotels.
+    - The family has forty members and every reunion ends in an argument about the hotel.
+    - Our club's anniversary is next summer and no venue answers our requests.
+    - The castle we wanted takes weddings only on Fridays. Our guests work on Fridays.
+    - Last year the caterer cancelled the day before the wedding. Never again without a contract.
+    - We want the whole house for three nights and nobody will promise that in summer.
+    - My daughter's wedding is next June and every venue my wife likes is taken.
+    - The planners keep sending us venues with a spa and no event room. We need an event room.
+  urgent:
+    - Our wedding venue cancelled this morning. The date is in July and the invitations are out.
+    - The company retreat is in six weeks and the hotel just double booked us.
+    - We need the whole house for a family reunion in August. Forty people, three nights.
+    - The club's centenary is in May and we have money, singers and no venue.
+    - Our wedding planner quit and took the venue booking with her. Help.
+    - We have a deposit ready today for any Saturday in September, whole house, with catering.
+    - The retreat budget expires at the end of the quarter and must be spent by June.
+    - My parents' golden wedding is in eight weeks and their hotel closed.
+    - We need a house by the lake for a film crew of twenty for two weeks in May.
+    - Our choir festival lost its accommodation. Sixty singers, thirty rooms, any offers?

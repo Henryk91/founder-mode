@@ -59,6 +59,18 @@ import hinterhofFinance from './scenarios/hinterhof/messages/events/finance.yaml
 import hinterhofFounder from './scenarios/hinterhof/messages/events/founder.yaml?raw'
 import hinterhofTeam from './scenarios/hinterhof/messages/events/team.yaml?raw'
 import hinterhofNames from './scenarios/hinterhof/messages/company_names.yaml?raw'
+import seeblickAbout from './scenarios/seeblick/about.yaml?raw'
+import seeblickScenario from './scenarios/seeblick/scenario.yaml?raw'
+import seeblickFeatures from './scenarios/seeblick/features.yaml?raw'
+import seeblickQuotes from './scenarios/seeblick/messages/interview_quotes.yaml?raw'
+import seeblickIntro from './scenarios/seeblick/messages/intro.yaml?raw'
+import seeblickValidation from './scenarios/seeblick/messages/events/validation.yaml?raw'
+import seeblickSales from './scenarios/seeblick/messages/events/sales.yaml?raw'
+import seeblickProduct from './scenarios/seeblick/messages/events/product.yaml?raw'
+import seeblickFinance from './scenarios/seeblick/messages/events/finance.yaml?raw'
+import seeblickFounder from './scenarios/seeblick/messages/events/founder.yaml?raw'
+import seeblickTeam from './scenarios/seeblick/messages/events/team.yaml?raw'
+import seeblickNames from './scenarios/seeblick/messages/company_names.yaml?raw'
 import tourismValidation from './shared/tourism/validation.yaml?raw'
 import tourismSales from './shared/tourism/sales.yaml?raw'
 import tourismProduct from './shared/tourism/product.yaml?raw'
@@ -77,7 +89,13 @@ const TOURISM_EVENTS: Record<EventArea, string> = {
 }
 
 /** Built in scenarios, in the order the Start screen lists them. */
-export const SCENARIO_IDS = ['kantino', 'zollstock', 'gratwanderung', 'hinterhof'] as const
+export const SCENARIO_IDS = [
+  'kantino',
+  'zollstock',
+  'gratwanderung',
+  'hinterhof',
+  'seeblick',
+] as const
 export type ScenarioId = (typeof SCENARIO_IDS)[number]
 
 export const isScenarioId = (id: string): id is ScenarioId =>
@@ -192,6 +210,25 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
     longEvents: '{"events": []}',
     fundingEvents: sharedFunding,
   },
+  seeblick: {
+    scenario: seeblickScenario,
+    features: seeblickFeatures,
+    interviewQuotes: seeblickQuotes,
+    companyNames: seeblickNames,
+    intro: seeblickIntro,
+    events: {
+      validation: seeblickValidation,
+      sales: seeblickSales,
+      product: seeblickProduct,
+      finance: seeblickFinance,
+      founder: seeblickFounder,
+      team: seeblickTeam,
+    },
+    sharedEvents: TOURISM_EVENTS,
+    // No year 2 file of its own: valid YAML and valid JSON, as the web bundle reads JSON.
+    longEvents: '{"events": []}',
+    fundingEvents: sharedFunding,
+  },
 }
 
 /** What the Start screen shows about a scenario before a run exists. Not part of the game rules. */
@@ -202,6 +239,7 @@ const ABOUT: Record<ScenarioId, string> = {
   zollstock: zollstockAbout,
   gratwanderung: gratwanderungAbout,
   hinterhof: hinterhofAbout,
+  seeblick: seeblickAbout,
 }
 
 /** The id of an event entry, or of the shared event it places. */

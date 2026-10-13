@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 7 (the hotel, Seeblick), sub-step H0: design and engine needs
-Last commit: Step 6 done, tag scenario-restaurant
-Next action: decide how rooms, renovation blocks, whole-house bookings and the minimum stay map onto the bookings model; research hotel figures; then content.
+Step: 7 (the hotel, Seeblick), sub-step H2: report, gate, tag
+Last commit: Step 7 H1 (Seeblick content, engine additions, bots, tuning)
+Next action: Seeblick report into balancing.md, step 7 report, gate, tag scenario-hotel; then step 8.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
@@ -28,6 +28,8 @@ Next action: decide how rooms, renovation blocks, whole-house bookings and the m
 - T6 (Hinterhof): on the report seeds blind effort gains 66% of what reading gains (+3.7 of +5.6); passed on the tuning seeds. Same root as Gratwanderung's T6; revisit together in step 8.
 - L2, L3 (Hinterhof, bank loan): over-borrowing -0.2 ±1.2 (needs a clear loss), reckless loan-caused defaults 2.5% (needs 15%). Borrowed money pays its own repayments, so extra borrowing is a buffer. Options: lend only what the business plan needs (a stated rule); an over-borrower that spends the money; drop L2. Decisions, step 6.
 
+- Seeblick (step 7): careful 51.7% (needs 45), spread 49.7 (groups 28, leisure 78), T6, T7 (pricing -1.5), T9 (overstaffing +0.1), T11, L2, L3 fail on 1,000 seeds. T1/T3 budget used. Lever for step 8: cost per occupied room night. Decisions, step 7.
+
 ## For Henry to review (non-blocking)
 - Step 3 kept the existing condition grammar and left the 60 week events' sender situations implicit to keep their fingerprints (decisions, step 3).
 - Funding design choices (term sheets in the plan, one investor per round, mood not confidence shown, no pitch odds in the luck section): decisions, part D.
@@ -44,5 +46,8 @@ Next action: decide how rooms, renovation blocks, whole-house bookings and the m
 
 - Restaurant: L3 restated to defaults the loan itself caused; any failing restaurant misses a payment first (decisions, step 6).
 - Restaurant: staff as a crew per service, not cooks and servers apart (decisions, step 6).
+
+- Hotel: per-scenario bot knowledge (a November guesthouse borrows for six months), like the reader rules (decisions, step 7).
+- Hotel: minimum stay and rooms closed during renovation not built (decisions, step 7).
 
 ## Stopped

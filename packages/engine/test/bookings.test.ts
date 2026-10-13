@@ -232,6 +232,76 @@ describe('the bookings model', () => {
     expect(costs(food) - costs(plain)).toBe(gross)
   })
 
+  it('counts products that share a capacity against one pool (step 7)', () => {
+    const base = tourismScenario()
+    const p = base.bookings!.products
+    const products = {
+      ...p,
+      basic_ordering: { ...p['basic_ordering']!, capacity: 6 },
+      allergy_filter: { ...p['allergy_filter']!, capacityOf: 'basic_ordering' },
+    }
+    let s = shipped(createGame({ ...base, bookings: { ...base.bookings!, products } }, 'pool'), [
+      'basic_ordering',
+      'allergy_filter',
+    ])
+    for (let i = 0; i < 3; i++) s = endWeek(s, plan(bp({ platform: true }))).state
+    const byWeek = new Map<number, number>()
+    for (const b of s.bookings!.bookings) {
+      if (b.status === 'booked') byWeek.set(b.week, (byWeek.get(b.week) ?? 0) + b.units)
+    }
+    expect(byWeek.size).toBeGreaterThan(0)
+    for (const units of byWeek.values()) expect(units).toBeLessThanOrEqual(6)
+    const cal = getView(s).bookings!.calendar.find((c) => c.productId === 'allergy_filter')!
+    expect(cal.cells[0]!.capacity).toBe(6)
+    // A sharing product's guests are served from the pool's capacity, not its own (0 here).
+    let only = shipped(
+      createGame({ ...base, bookings: { ...base.bookings!, products } }, 'pool-serve'),
+      ['allergy_filter'],
+    )
+    for (let i = 0; i < 4; i++) only = endWeek(only, plan(bp({ shifts: { guide: 9 } }))).state
+    expect(only.bookings!.bookings.some((b) => b.status === 'served')).toBe(true)
+  })
+
+  it('takes a deposit when a booking is made and the rest at the stay (step 7)', () => {
+    const base = tourismScenario()
+    const segments = {
+      ...base.bookings!.segments,
+      coworking: { ...base.bookings!.segments['coworking']!, depositShare: 0.3 },
+    }
+    let s = shipped(createGame({ ...base, bookings: { ...base.bookings!, segments } }, 'deposit'), [
+      'basic_ordering',
+    ])
+    s = endWeek(s, plan(bp({ platform: true }))).state
+    const booked = s.bookings!.bookings.filter((b) => b.segmentId === 'coworking')
+    expect(booked.length).toBeGreaterThan(0)
+    for (const b of booked) {
+      expect(b.depositCents).toBe(Math.round(b.units * b.priceCents * 0.3))
+    }
+  })
+
+  it('lets a segment use only its share of a product off season (step 7)', () => {
+    const base = tourismScenario()
+    const segments = {
+      ...base.bookings!.segments,
+      small_offices: {
+        ...base.bookings!.segments['small_offices']!,
+        base: { min: 400, max: 400 },
+        capacityShare: { peak: 1, off: 0.2 },
+      },
+    }
+    // The fixture's peak months are June to August; week 1 is in March.
+    let s = shipped(createGame({ ...base, bookings: { ...base.bookings!, segments } }, 'share'), [
+      'basic_ordering',
+    ])
+    for (let i = 0; i < 3; i++) s = endWeek(s, plan(bp({ platform: true }))).state
+    const byWeek = new Map<number, number>()
+    for (const b of s.bookings!.bookings) {
+      if (b.segmentId === 'small_offices') byWeek.set(b.week, (byWeek.get(b.week) ?? 0) + b.units)
+    }
+    expect(byWeek.size).toBeGreaterThan(0)
+    for (const units of byWeek.values()) expect(units).toBeLessThanOrEqual(6)
+  })
+
   it('is deterministic', () => {
     const run = () => {
       let s = shipped(game('same'), ['basic_ordering', 'allergy_filter'])

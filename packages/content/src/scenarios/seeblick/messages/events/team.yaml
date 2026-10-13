@@ -1,0 +1,143 @@
+# Housekeeping, breakfast and the caretaker.
+events:
+  - id: housekeeper_quits
+    area: team
+    weight: 2
+    once: true
+    when: [tour.month == 7]
+    from: none
+    sender: Your housekeeper
+    look: note
+    text: >-
+      Your best housekeeper quits in July to work at the big hotel across the lake. July is the
+      worst month to learn to make twelve beds a day. An agency could send someone, at a price.
+    defaultChoice: yourself
+    choices:
+      - id: agency
+        label: Book an agency housekeeper
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -80000 }
+      - id: yourself
+        label: Clean the rooms yourself
+        hours: 0
+        effects:
+          - { type: energy, delta: -8 }
+          - { type: review, rating: 2, count: 3, when: [tour.bookedWeek >= 60] }
+
+  - id: breakfast_help_late
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [tour.reviews >= 5]
+    from: none
+    sender: Your breakfast help
+    look: note
+    text: >-
+      The breakfast help has been late three mornings this week and the eggs know it. She is
+      apologetic and has a new baby. You could talk to her, or let it ride.
+    defaultChoice: ride
+    choices:
+      - id: talk
+        label: Talk to her and change her hours
+        hours: 1
+        effects:
+          - { type: energy, delta: 2 }
+      - id: ride
+        label: Let it ride
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 1, when: [tour.bookedWeek >= 40] }
+
+  - id: caretaker_offer
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: A retired caretaker
+    text: >-
+      A retired caretaker from the village offers to come twice a week and fix what breaks. He
+      knows every pipe in the house, having fitted most of them in 1994. He wants a monthly fee
+      and a coffee.
+    defaultChoice: decline
+    choices:
+      - id: hire
+        label: Take him on
+        hours: 1
+        effects:
+          - { type: fixedCost, id: caretaker, name: Caretaker, monthlyCents: 45000 }
+          - { type: bugs, delta: -1 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: minijob_student
+    area: team
+    weight: 1
+    once: true
+    when: [tour.month >= 6, tour.month <= 8]
+    from: none
+    sender: A student from the village
+    look: note
+    text: >-
+      A student asks for a summer minijob: reception in the evenings, help with breakfast. She
+      speaks three languages and is learning a fourth from your guests.
+    defaultChoice: decline
+    choices:
+      - id: hire
+        label: Give her the minijob
+        hours: 1
+        effects:
+          - { type: fixedCost, id: summer_minijob, name: Summer minijob, monthlyCents: 55000 }
+          - { type: energy, delta: 5 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: laundry_service
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: A laundry service
+    look: official
+    text: >-
+      A laundry service offers to collect and deliver your linen twice a week. The washing
+      machines in the cellar would finally rest, and so would your evenings.
+    defaultChoice: decline
+    choices:
+      - id: sign
+        label: Sign the laundry contract
+        hours: 1
+        effects:
+          - { type: fixedCost, id: laundry, name: Laundry service, monthlyCents: 40000 }
+          - { type: energy, delta: 4 }
+      - id: decline
+        label: Keep washing yourself
+        hours: 0
+
+  - id: staff_bonus_summer
+    area: team
+    weight: 1
+    once: true
+    when: [tour.month == 9]
+    from: none
+    sender: Your staff
+    text: >-
+      The season is over and the staff worked every weekend of it. A bonus might keep them for
+      next year. The house has paid for itself, mostly.
+    defaultChoice: skip
+    choices:
+      - id: bonus
+        label: Pay a summer bonus
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: energy, delta: 3 }
+          - { type: review, rating: 5, count: 1 }
+      - id: skip
+        label: Skip it
+        hours: 0
