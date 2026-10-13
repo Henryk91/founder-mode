@@ -10,7 +10,10 @@ type Props = {
    * "More hours for Small offices" and "Fewer hours for Small offices".
    */
   what: string
-  /** Button names for money, where "more" and "fewer" read oddly. They get the step as `{step}`. */
+  /**
+   * Button names for money, where "more" and "fewer" read oddly. They get the step as `{step}`
+   * and `what` as `{what}`.
+   */
   names?: { minus: LabelKey; plus: LabelKey }
   /** Text shown between the buttons. Defaults to the number. */
   display?: string
@@ -45,7 +48,7 @@ export function Stepper({
   const atMin = value <= min
   const atMax = value >= max
   const name = (dir: 'minus' | 'plus', size: number) => {
-    if (names) return label(names[dir], stage, { step: formatStep(size) })
+    if (names) return label(names[dir], stage, { step: formatStep(size), what })
     if (size === 1) return label(`stepper.${dir}`, stage, { what })
     return label(`stepper.${dir}Step`, stage, { what, step: formatStep(size) })
   }

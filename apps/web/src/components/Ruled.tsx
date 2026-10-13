@@ -16,13 +16,23 @@ import plan from '../screens/Plan.module.css'
 export function Row(props: {
   label: string
   note?: string | undefined
+  /** Label and controls share a line only when both fit whole; else the controls take the next. */
+  stack?: boolean | undefined
   children?: React.ReactNode
 }) {
   return (
-    <div className={`${plan.row} ${props.children ? '' : plan.rowAlone}`}>
+    <div
+      className={`${plan.row} ${props.children ? '' : plan.rowAlone} ${props.stack ? plan.rowStack : ''}`}
+    >
       <Wrapped>
         {props.label}
-        {props.note && <span className={plan.note}>{props.note}</span>}
+        {/* The note may take the next line whole, rather than the label's last word with it. */}
+        {props.note && (
+          <>
+            <wbr />
+            <span className={plan.note}>{props.note}</span>
+          </>
+        )}
       </Wrapped>
       {props.children && <div className={plan.controls}>{props.children}</div>}
     </div>
@@ -38,10 +48,11 @@ export function Market(props: {
   note?: string | undefined
   control?: React.ReactNode
   choices?: React.ReactNode
+  stack?: boolean
 }) {
   return (
     <div className={plan.market}>
-      <Row label={props.label} note={props.note}>
+      <Row label={props.label} note={props.note} stack={props.stack}>
         {props.control}
       </Row>
       {props.choices && <Choices>{props.choices}</Choices>}
