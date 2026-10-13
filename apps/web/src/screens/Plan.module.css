@@ -492,3 +492,8 @@
 :global([data-layout='desk']) .featureLine > .progress {
   flex-basis: 90px;
 }
+
+/* A heading over a few rows, wrapping like any other writing. */
+.wrapped.subWrapped {
+  font-weight: 700;
+}

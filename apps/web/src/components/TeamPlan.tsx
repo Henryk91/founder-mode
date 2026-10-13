@@ -272,14 +272,14 @@ function FreelancePlanRows(props: {
             })}
           />
           {working && (
-            <Writing wrap>
+            <Writing>
               {working.startWeek === view.week
                 ? label('freelance.firstWeek', stage, { hours: hours(working.workHoursThisWeek) })
                 : label('freelance.thisWeek', stage, { hours: hours(working.workHoursThisWeek) })}
             </Writing>
           )}
           {current.endWeek !== null && (
-            <Writing wrap>{label('freelance.lastWeek', stage, { week: current.endWeek })}</Writing>
+            <Writing>{label('freelance.lastWeek', stage, { week: current.endWeek })}</Writing>
           )}
           {working?.role === 'developer' && (
             <>
@@ -378,7 +378,7 @@ function FreelancePlanRows(props: {
                 )
               })}
             />
-            <Writing wrap>
+            <Writing>
               {label(
                 r.id === 'developer' ? 'freelance.ruleDeveloper' : 'freelance.ruleSalesperson',
                 stage,
@@ -388,13 +388,13 @@ function FreelancePlanRows(props: {
         ))}
       {fl.canBook && (
         <>
-          <Writing wrap>
+          <Writing>
             {label('freelance.output', stage, {
               work: hours(Math.floor(most * fl.outputShare)),
               booked: hours(most),
             })}
           </Writing>
-          <Writing wrap>{label('freelance.slowStart', stage)}</Writing>
+          <Writing>{label('freelance.slowStart', stage)}</Writing>
         </>
       )}
     </>

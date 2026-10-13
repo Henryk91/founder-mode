@@ -563,7 +563,7 @@ function BuildBody({ free }: { free: number }) {
   const shipped = product.features.filter((f) => f.shipped)
   return (
     <>
-      <Writing wrap>
+      <Writing>
         {product.bugs > 0
           ? count('plan.bugs', stage, product.bugs)
           : label('plan.bugs.none', stage)}
@@ -603,7 +603,7 @@ function BuildBody({ free }: { free: number }) {
           )
         })}
       {shipped.length > 0 && (
-        <Writing wrap>
+        <Writing>
           {label('plan.shippedList', stage, {
             n: shipped.length,
             names: shipped.map((f) => f.name).join(', '),

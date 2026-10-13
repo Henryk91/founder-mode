@@ -84,7 +84,7 @@ export function RaisePlan() {
       )}
       {f.mood && <Writing>{label(`raise.mood.${f.mood}`, stage)}</Writing>}
       {f.milestone && (
-        <Writing wrap>
+        <Writing>
           {label(`raise.milestone.${f.milestone.status}`, stage, {
             amount: formatEuro(f.milestone.monthlyCents),
             week: f.milestone.byWeek,
@@ -109,7 +109,7 @@ export function RaisePlan() {
         </>
       )}
       {closing && (
-        <Writing wrap>
+        <Writing>
           {label('raise.closing', stage, { name: closing.name, week: closing.closeWeek ?? 0 })}
         </Writing>
       )}
@@ -126,7 +126,7 @@ export function RaisePlan() {
       {f.round && round && (
         <>
           <SubHeading>{label('raise.open', stage, { round: round.name })}</SubHeading>
-          <Writing wrap>{round.barText}</Writing>
+          <Writing>{round.barText}</Writing>
           {f.round.investorsLeft > 0 && (
             <Market
               label={label('raise.pitch', stage)}
@@ -209,8 +209,8 @@ export function RaisePlan() {
                       }),
                   )}
                 />
-                <Writing wrap>{r.barText}</Writing>
-                <Writing wrap>
+                <Writing>{r.barText}</Writing>
+                <Writing>
                   {label('raise.rule', stage, {
                     meeting: hours(r.pitchHoursPerMeeting),
                     look: hours(r.secondLookHours),
@@ -228,7 +228,7 @@ export function RaisePlan() {
             .filter((i) => i.stage === 'passed' || i.stage === 'withdrawn')
             .slice(-4)
             .map((i) => (
-              <Writing key={i.id} wrap>
+              <Writing key={i.id}>
                 {label('raise.passedLine', stage, {
                   name: i.name,
                   reason: label(`funding.reason.${i.reason ?? 'more_revenue'}`, stage),
@@ -257,7 +257,7 @@ function TermSheetRows(props: {
   return (
     <>
       <SubHeading>{label('raise.terms', stage, { name: inv.name })}</SubHeading>
-      <Writing wrap>
+      <Writing>
         {label('raise.termsLine', stage, {
           amount: formatEuro(t.amountCents),
           share: pctOf(t.shareBp),
@@ -266,7 +266,7 @@ function TermSheetRows(props: {
         })}
       </Writing>
       {t.milestone && (
-        <Writing wrap>
+        <Writing>
           {label('raise.termsMilestone', stage, {
             amount: formatEuro(t.milestone.monthlyCents),
             week: t.milestone.byWeek,
