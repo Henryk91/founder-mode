@@ -187,6 +187,64 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
     )
   }
 
+  // The outdoor scenario (step 5): the roster, guests and prices sections, the calendar and the
+  // scene, at every width the plan names, in both engines, with no sideways scrolling.
+  for (const [engine, width] of [
+    [CHROMIUM, 375],
+    [CHROMIUM, 390],
+    [CHROMIUM, 430],
+    [CHROMIUM, 1440],
+    [WEBKIT, 375],
+    [WEBKIT, 390],
+    [WEBKIT, 430],
+    [WEBKIT, 1440],
+  ] as const) {
+    it.skipIf(!engine)(
+      `finds nothing to fix with axe in Gratwanderung at ${width} px in ${engine?.name}`,
+      async () => {
+        const page = await open(width, engine === WEBKIT ? webkit! : browser)
+        const found: Record<string, Violation[]> = {}
+        const wide: string[] = []
+        const check = async (name: string) => {
+          const v = await axe(page)
+          if (v.length > 0) found[name] = v
+          const over = await page.evaluate(
+            () => document.documentElement.scrollWidth > window.innerWidth + 1,
+          )
+          if (over) wide.push(name)
+        }
+        await page.getByRole('button', { name: /^Gratwanderung/ }).click()
+        await check('start, outdoor')
+        await page.getByRole('button', { name: 'New run' }).click()
+        for (let i = 0; i < 6; i++) {
+          const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
+          if (await next.count()) await next.first().click()
+        }
+        if (width < 1200) {
+          await page.locator('nav button').filter({ hasText: 'Inbox' }).first().click()
+          await check('Inbox, outdoor')
+          await page.locator('nav button').filter({ hasText: 'Plan' }).first().click()
+        }
+        for (const title of [/^Who works/, /^Getting guests/, /^Prices and rules/]) {
+          await page.getByRole('button', { name: title }).first().click()
+        }
+        // Opening the sections scrolls the band under the top bar; let its fade finish.
+        await page.waitForTimeout(300)
+        await check('Plan, outdoor sections')
+        if (width < 1200) {
+          await page.locator('nav button').filter({ hasText: 'Bookings' }).first().click()
+          await check('calendar')
+        }
+        await page.getByRole('button', { name: 'End week' }).click()
+        await check('results, outdoor')
+        expect(found).toEqual({})
+        expect(wide).toEqual([])
+        await page.close()
+      },
+      90_000,
+    )
+  }
+
   it.skipIf(!CHROMIUM)(
     'moves focus to the new screen and shows a ring on every surface',
     async () => {

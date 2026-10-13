@@ -1559,6 +1559,24 @@ export type FundingEconomics = {
   pitchedTooEarly: number
 }
 
+/** What the guests of a bookings run came to, from the bookings and the ledger. */
+export type GuestsEconomics = {
+  /** Per segment: units served and what they paid, net of commission. */
+  bySegment: { segmentId: SegmentId; served: number; paidCents: number }[]
+  /** Share of served units that came through the platform, 0 to 1. */
+  platformShare: number
+  commissionCents: number
+  /** Units the company cancelled (roster or weather) and units guests cancelled. */
+  companyCancelled: number
+  guestCancelled: number
+  /** Units turned away for lack of room in the last 12 weeks played. */
+  turnedAwayRecent: number
+  /** Staff shifts and costs per guest over the run. */
+  bookingCostsCents: number
+  rating: number | null
+  reviews: number
+}
+
 export type PostMortem = {
   scenarioId: string
   seed: string
@@ -1618,6 +1636,8 @@ export type PostMortem = {
    * that found a lead.
    */
   sources: { key: string; leads: number; customers: number }[]
+  /** Guests over the run (bookings scenarios only, step 5); null otherwise. */
+  guests: GuestsEconomics | null
   luck: {
     /** At most four, most important first. */
     items: LuckItem[]

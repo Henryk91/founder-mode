@@ -157,7 +157,8 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
       team: gratwanderungTeam,
     },
     sharedEvents: TOURISM_EVENTS,
-    longEvents: '',
+    // No year 2 file of its own: valid YAML and valid JSON, as the web bundle reads JSON.
+    longEvents: '{"events": []}',
     fundingEvents: sharedFunding,
   },
 }

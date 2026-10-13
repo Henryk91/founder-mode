@@ -1,6 +1,7 @@
 import { loadScenario } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
 import { createGame, endWeek, getView, validatePlan } from '../src/index'
+import { guestsEconomics } from '../src/postmortem'
 import { monthOfWeek, seasonAt, weekOfYear } from '../src/systems/bookings'
 import type { BookingsPlan, GameState, WeekPlan } from '../src/types'
 import { plan } from './helpers'
@@ -169,6 +170,22 @@ describe('the bookings model', () => {
     expect(validatePlan(s, plan(bp({ founderShifts: { guide: 9 } })))).toContainEqual(
       expect.objectContaining({ code: 'too_many_hours' }),
     )
+  })
+
+  it('sums the guests for the post-mortem: served and paid net of commission, per segment', () => {
+    let s = shipped(game('pm'), ['basic_ordering', 'allergy_filter'])
+    for (let i = 0; i < 6; i++)
+      s = endWeek(s, plan(bp({ platform: true, shifts: { guide: 9 } }))).state
+    const g = guestsEconomics(s)!
+    const served = s.bookings!.bookings.filter((b) => b.status === 'served')
+    expect(g.bySegment.reduce((t, x) => t + x.served, 0)).toBe(
+      served.reduce((t, b) => t + b.units, 0),
+    )
+    const gross = served.reduce((t, b) => t + b.units * b.priceCents, 0)
+    expect(g.bySegment.reduce((t, x) => t + x.paidCents, 0) + g.commissionCents).toBe(gross)
+    expect(g.platformShare).toBeGreaterThan(0)
+    expect(g.bookingCostsCents).toBe(s.ledger.reduce((t, l) => t + l.bookingCostsCents, 0))
+    expect(guestsEconomics(createGame(loadScenario('kantino'), 'x'))).toBeNull()
   })
 
   it('is deterministic', () => {

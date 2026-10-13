@@ -315,3 +315,27 @@ describe('weak landing signal', () => {
     expect(page).not.toContain('About that test')
   })
 })
+
+describe('the outdoor scenario (step 5)', () => {
+  it('starts in long mode, and its post-mortem has a guests section', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'pm-outdoor' })
+    store.getState().selectScenario('gratwanderung')
+    expect(store.getState().mode).toBe('long')
+    store.getState().startRun()
+    while (store.getState().introStep !== null) store.getState().nextIntro()
+    expect(text(store, 'desk')).toContain('Van and garage')
+    while (store.getState().view?.status === 'running') {
+      store.getState().endWeek()
+      if (store.getState().view?.status === 'running') store.getState().dismissReport()
+    }
+    while (store.getState().postMortem && html(store).includes('The run is over')) {
+      store.getState().nextMoment()
+    }
+    const pm = store.getState().postMortem!
+    expect(pm.guests).not.toBeNull()
+    const page = text(store, 'desk')
+    expect(page).toContain('Guests')
+    expect(page).toContain('No guest was served.')
+    expect(page).toContain('Shifts and costs per guest came to')
+  })
+})

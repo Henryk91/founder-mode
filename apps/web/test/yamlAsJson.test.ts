@@ -57,5 +57,11 @@ describe('content YAML parsed at build time', () => {
       ]
       for (const text of texts) expect(shimParse(text)).toEqual(parse(text))
     })
+
+    it(`gives ${id} no inline source the bundle cannot read`, () => {
+      // The build converts files only; a source written in code (one line) must already be JSON.
+      const raw = scenarioSources(id).longEvents
+      if (!raw.includes('\n')) expect(shimParse(raw)).toEqual(parse(raw))
+    })
   }
 })
