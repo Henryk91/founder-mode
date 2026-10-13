@@ -99,15 +99,18 @@ events:
     from: none
     sender: A bus company
     text: >-
-      A small bus company offers a seasonal contract for team transfers at a fixed monthly fee.
-      It would mean no more frantic calls at six in the morning, the owner promises.
+      A small bus company offers a seasonal contract for team transfers, paid up front. It would
+      mean no more frantic calls at six in the morning and a driver who is on time, the owner
+      promises.
     defaultChoice: decline
     choices:
       - id: sign
         label: Sign the seasonal contract
         hours: 1
         effects:
-          - { type: fixedCost, id: bus_contract, name: Bus contract, monthlyCents: 50000 }
+          - { type: cash, amountCents: -150000 }
+          - { type: review, rating: 5, count: 3 }
+          - { type: energy, delta: 4 }
       - id: decline
         label: Keep booking per trip
         hours: 0

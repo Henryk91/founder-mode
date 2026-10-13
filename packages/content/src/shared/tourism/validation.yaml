@@ -53,7 +53,8 @@ events:
     look: note
     text: >-
       A friend suggests you book a competitor's offer as a guest and watch what they do. Spying,
-      she calls it research; your conscience calls it a day out.
+      she calls it research; your conscience calls it a day out. In the season, it would be a day
+      out of your own calendar.
     defaultChoice: skip
     choices:
       - id: go
@@ -62,6 +63,7 @@ events:
         effects:
           - { type: cash, amountCents: -9000 }
           - { type: skill, skill: selling, delta: 0.03 }
+          - { type: lostHours, hours: 6, when: [tour.peak == 1] }
       - id: skip
         label: Skip it
         hours: 0

@@ -9,14 +9,16 @@ events:
     look: official
     text: >-
       The tax office sets an advance payment based on your best month, as if every month were
-      August. Objecting takes a form and patience; paying takes money.
+      August. Objecting works if your recent months look quiet; in a busy one, the tax office
+      agrees with itself.
     defaultChoice: pay
     choices:
       - id: object
         label: Object with your monthly figures
         hours: 3
         effects:
-          - { type: cash, amountCents: 60000, chance: 0.7 }
+          - { type: cash, amountCents: 60000, when: [monthlyRevenueEur < 4000] }
+          - { type: cash, amountCents: -60000, when: [monthlyRevenueEur >= 4000] }
       - id: pay
         label: Pay it
         hours: 0

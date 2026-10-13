@@ -68,15 +68,15 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | zollstock | shut_down | `shut_down@10` | `ending-2` | 10 |
 | zollstock | shut_down | `shut_down@10` | `ending-3` | 10 |
 | gratwanderung (long) | sustainable | `tourism_careful` | `ending-3` | 104 |
+| gratwanderung (long) | sustainable | `tourism_careful` | `ending-4` | 104 |
 | gratwanderung (long) | sustainable | `tourism_careful` | `ending-5` | 104 |
-| gratwanderung (long) | sustainable | `tourism_careful` | `ending-7` | 104 |
-| gratwanderung (long) | still_searching | `tourism_careful` | `ending-2` | 104 |
-| gratwanderung (long) | still_searching | `tourism_careful` | `ending-4` | 104 |
+| gratwanderung (long) | still_searching | `tourism_careful` | `ending-36` | 104 |
 | gratwanderung (long) | still_searching | `tourism_careful` | `ending-37` | 104 |
+| gratwanderung (long) | still_searching | `tourism_careful` | `ending-79` | 104 |
 | gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-1` | 6 |
 | gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-2` | 6 |
-| gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-3` | 5 |
-| gratwanderung (long) | burnout | `tourism_overworker` | `ending-1` | 11 |
+| gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-3` | 6 |
+| gratwanderung (long) | burnout | `tourism_overworker` | `ending-1` | 12 |
 | gratwanderung (long) | burnout | `tourism_overworker` | `ending-2` | 12 |
 | gratwanderung (long) | burnout | `tourism_overworker` | `ending-3` | 12 |
 | gratwanderung (long) | shut_down | `shut_down@10` | `ending-1` | 10 |

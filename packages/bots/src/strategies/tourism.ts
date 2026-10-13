@@ -2,7 +2,8 @@ import type { Scenario } from '@founder-mode/content'
 import type { BookingsPlan, PlayerView } from '@founder-mode/engine'
 import { budgetHints } from '../pricing'
 import { PlanBuilder, segmentNotes, type Player, type Strategy } from '../strategy'
-import { fromConditions, rankMarkets, readInbox } from './validateThenBuild'
+import { TOURISM_READER } from './tourismReader'
+import { answerInbox, fromConditions, rankMarkets, readInbox } from './validateThenBuild'
 
 /**
  * Bots for the bookings model (tourism, step 4). They see only the view and the scenario's
@@ -26,6 +27,8 @@ export type TourismRule = {
   policy: 'adaptive' | 'flexible' | 'strict'
   /** Hours planned a week (65 for the overworker). */
   hours?: number
+  /** Inbox policy: read it (default), leave every message to its default, or blind effort. */
+  inbox?: 'reader' | 'none' | 'effort'
 }
 
 export const CAREFUL_TOURISM: TourismRule = {
@@ -89,17 +92,24 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   return {
     focus: () => target,
     respond(view) {
+      if (rule.inbox === 'none') return []
+      if (rule.inbox === 'effort') return answerInbox(view)
       // The reader: listed answers where the bots have them, else the declared conditions.
       const listed = readInbox(view, scenario)
       const answered = new Set(listed.map((a) => a.messageId))
       let used = view.committedHours + view.forcedHours
       const extra: { messageId: string; choiceId: string }[] = []
+      const rules = TOURISM_READER[scenario.id] ?? {}
       for (const m of view.inbox) {
         if (m.answeredChoiceId !== null || answered.has(m.id)) continue
         const event = scenario.events.find((e) => e.id === m.eventId)
-        if (!event || !event.choices.some((c) => c.effects.some((fx) => fx.when.length > 0)))
-          continue
-        const id = fromConditions(event, view, m)
+        if (!event) continue
+        const rule = rules[event.id]
+        const conditional = event.choices.some((c) => c.effects.some((fx) => fx.when.length > 0))
+        if (!rule && !conditional) continue
+        const id = rule
+          ? (rule(view, { target }) ?? event.defaultChoice)
+          : fromConditions(event, view, m)
         const c = m.choices.find((x) => x.id === id)
         if (!c || id === event.defaultChoice) continue
         if (used + c.hours > view.founder.maxHoursPerWeek) continue
@@ -289,6 +299,16 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           if (want !== bv.policy) plan.policy = want
         }
       }
+      // Hours left over go to more calls and visits for the target, up to what still helps.
+      if (target !== null && rule.channels === 'mix') {
+        const r = cfg.segments[target]!.response
+        const now = plan.outreach[target] ?? 0
+        const more = Math.min(cfg.outreachHoursFull - now, b.free)
+        if (r.outreach >= CHANNEL_USEFUL && more > 0) {
+          plan.outreach[target] = now + more
+          b.free -= more
+        }
+      }
       // The overworker fills every spare hour with more calls and visits.
       if ((rule.hours ?? 50) > 50 && target !== null && b.free > 0) {
         plan.outreach[target] = (plan.outreach[target] ?? 0) + b.free
@@ -361,6 +381,22 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     ...CAREFUL_TOURISM,
     hours: 65,
   }),
+  tourism(
+    'tourism_inbox_none',
+    'Plays like tourism_careful but leaves every message to its default.',
+    {
+      ...CAREFUL_TOURISM,
+      inbox: 'none',
+    },
+  ),
+  tourism(
+    'tourism_inbox_effort',
+    'Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford.',
+    {
+      ...CAREFUL_TOURISM,
+      inbox: 'effort',
+    },
+  ),
   tourism('tourism_always_strict', 'Plays like tourism_careful with a strict policy all run.', {
     ...CAREFUL_TOURISM,
     policy: 'strict',

@@ -28,6 +28,9 @@ export const bookingsConfig = (s: Pick<GameState, 'scenario'>): BookingsConfig |
   s.scenario.bookings ?? null
 
 /** Week of the year (1 to 52) of a run's week. */
+
+/** The review left by each group a partner sent that found no room (step 5). */
+const SENT_LOST_RATING = 2
 export function weekOfYear(scenario: Scenario, week: number): number {
   const start = scenario.bookings?.startWeekOfYear ?? 1
   return ((start - 1 + week - 1) % WEEKS_PER_YEAR) + 1
@@ -215,20 +218,23 @@ function reachOf(
     ? r.website * (0.3 + 0.7 * Math.min(1, repeats / cfg.website.repeatsFull))
     : 0
   const partnership = b.partnerships.includes(segmentId) ? r.partnership : 0
+  // Calls and visits work better for a founder who sells better (step 5).
   const outreach =
-    (r.outreach * Math.min(plan.outreach[segmentId] ?? 0, cfg.outreachHoursFull)) /
+    ((1 + state.founder.skills.selling) *
+      r.outreach *
+      Math.min(plan.outreach[segmentId] ?? 0, cfg.outreachHoursFull)) /
     cfg.outreachHoursFull
-  // An office stage with walk-ins from this segment (a base in town) adds its rate to the reach.
+  // An office stage with walk-ins from this segment (a base in town) adds its rate to the reach,
+  // beyond the cap.
   const office = state.modifiers.reduce(
     (t, m) => t + (m.walkIns?.segmentId === segmentId ? m.walkIns.leadsPerWeek : 0),
     0,
   )
   // Word of mouth: guests who booked directly tell others, website or not.
   const mouth = 0.2 * Math.min(1, repeats / cfg.website.repeatsFull)
-  const total = Math.min(
-    cfg.reachCap,
-    platform + website + partnership + outreach + r.walkIn + office + mouth,
-  )
+  // The cap limits the channels; people walking past a shop window come on top of it.
+  const total =
+    Math.min(cfg.reachCap, platform + website + partnership + outreach + r.walkIn + mouth) + office
   return { total, platform: Math.min(platform, total) }
 }
 
@@ -334,6 +340,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     bookings
       .filter((x) => x.productId === id && x.week === w && x.status === 'booked')
       .reduce((t, x) => t + x.units, 0)
+  let sentLost = 0
   for (const seg of state.scenario.segments) {
     const s = cfg.segments[seg.id]
     if (!s) continue
@@ -351,7 +358,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       weatherF *
       roleFactor(seg.id)
     const meanSize = (s.size.min + s.size.max) / 2
-    const requests = randomRound(units / meanSize, rng)
+    // Guests sent by an inbox answer ask like anyone else, in groups of the usual size.
+    const sent = b.eventGuests?.[seg.id] ?? 0
+    const sentRequests = sent > 0 ? Math.max(1, Math.round(sent / meanSize)) : 0
+    const ownRequests = randomRound(units / meanSize, rng)
+    const requests = ownRequests + sentRequests
     let made = 0
     let madeUnits = 0
     let lost = 0
@@ -361,7 +372,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       const target = week + lead
       const platform = reach.total > 0 && rng.chance(reach.platform / reach.total)
       if (target > state.scenario.maxWeeks) continue
-      if (b.policy === 'strict' && !rng.chance(s.strictConversion)) continue
+      // Guests a partner sent have agreed to your terms already.
+      if (i < ownRequests && b.policy === 'strict' && !rng.chance(s.strictConversion)) continue
       const options = Object.entries(cfg.products)
         .filter(([id, prod]) => prod.serves.includes(seg.id) && sells(state, id, target))
         .map(([id]) => ({ id, free: room(id, target) }))
@@ -370,6 +382,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       const pick = options[0]
       if (!pick) {
         lost += size
+        // Guests a partner sent and you could not take complain about it.
+        if (i >= ownRequests) sentLost++
         continue
       }
       bookings.push({
@@ -569,11 +583,17 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
   }
 
+  if (sentLost > 0) {
+    rating = ((rating ?? 0) * reviews + SENT_LOST_RATING * sentLost) / (reviews + sentLost)
+    reviews += sentLost
+    out.entries.push({ kind: 'review', rating, reviews, added: sentLost })
+  }
+
   state = {
     ...state,
     invoices: invoices.length ? [...state.invoices, ...invoices] : state.invoices,
     hidden: { ...state.hidden, payWeeks, waitsForChase },
-    bookings: { ...b, bookings, repeatGuests, turnedAway, rating, reviews },
+    bookings: { ...b, bookings, repeatGuests, turnedAway, rating, reviews, eventGuests: {} },
   }
   out.state = state
   return out

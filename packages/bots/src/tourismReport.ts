@@ -69,6 +69,8 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     (x) => x.year2Weeks,
   )
   const price = vs('tourism_price_blind')
+  const noInbox = vs('tourism_inbox_none')
+  const effort = vs('tourism_inbox_effort')
   const platform = vs('tourism_platform_only')
   const over = vs('tourism_overstaffing')
   const under = vs('tourism_understaffing')
@@ -125,6 +127,20 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
       value: `${early === null ? '-' : fmtPct(early)}; year 2 ${late === null ? '-' : fmtPct(late)}`,
       margin: '',
       pass: early !== null && late !== null && early >= 85 && late >= 70,
+    },
+    {
+      id: 6,
+      text: 'Reading the inbox pays: tourism_careful beats leaving every message to its default by at least 3 points, and blind effort gains at most a third of that',
+      value:
+        noInbox && effort
+          ? `reading ${signed(-noInbox.change)}, blind effort ${signed(effort.change - noInbox.change)}`
+          : '-',
+      margin: noInbox ? fmtMargin(noInbox.margin) : '',
+      pass:
+        !!noInbox &&
+        !!effort &&
+        -noInbox.change + noInbox.margin >= 3 &&
+        effort.change - noInbox.change - noInbox.margin <= -noInbox.change / 3,
     },
     {
       id: 7,

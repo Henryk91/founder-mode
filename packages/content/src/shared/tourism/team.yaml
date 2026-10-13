@@ -9,7 +9,8 @@ events:
     look: note
     text: >-
       Two of your regular people want the same week off at the height of the season. Both have
-      reasons; one has a plane ticket.
+      reasons; one has a plane ticket. A quiet week you could cover alone, a busy one nobody
+      could.
     defaultChoice: first
     choices:
       - id: both
@@ -17,6 +18,8 @@ events:
         hours: 6
         effects:
           - { type: energy, delta: -4 }
+          # A busy week cannot be covered by one tired founder.
+          - { type: review, rating: 2, count: 3, when: [tour.bookedWeek >= 6] }
       - id: first
         label: The ticket wins, the other stays
         hours: 0
