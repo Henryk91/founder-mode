@@ -1,3 +1,4 @@
+import { bookingTotals } from './bookings'
 import type { Milestone } from '@founder-mode/content'
 import { bookingsRevenueOrSubscriptions } from './bookings'
 import type { GameState, MilestoneView, NextMilestoneView, ReachedMilestone } from '../types'
@@ -42,7 +43,7 @@ function countOf(
     case 'customers':
       return state.customers.length
     case 'guests':
-      return (state.bookings?.bookings ?? [])
+      return (state.bookings ? bookingTotals(state.bookings) : [])
         .filter((b) => b.status === 'served')
         .reduce((t, b) => t + b.units, 0)
     case 'hires':

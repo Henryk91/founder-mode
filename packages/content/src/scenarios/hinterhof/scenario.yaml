@@ -1,0 +1,556 @@
+# Hinterhof: a neighbourhood restaurant in a residential part of Munich (tourism, step 6).
+# Source: docs/scenario-restaurant.md. Long mode only: 104 weeks from the first week of January.
+# Money in cents, time in hours. Figures marked (est.) are estimates; sources in the spec.
+
+id: hinterhof
+name: Hinterhof
+longOnly: true
+maxWeeks: 104
+# As for every tourism scenario, the last 13 months together must pay for everything.
+win: { profitableMonths: 3, overMonths: 13 }
+
+start:
+  # Own money put in (est.): not enough to open without a loan.
+  cashCents: 2500000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  # The engine's single price is used only by tests and pilots; guests pay the bookings prices.
+  priceCentsPerMonth: 3000
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    # About 120 square metres in a residential street (est., no current source found).
+    - id: rent
+      name: Rent
+      monthlyCents: 450000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 15000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 30000
+    - id: utilities
+      name: Electricity, gas and water
+      monthlyCents: 90000
+    - id: till
+      name: Till and booking system
+      monthlyCents: 12000
+    - id: music_licence
+      name: Music licence
+      monthlyCents: 6000
+
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  # Year 2 costs more: living costs rise by a tenth from week 53.
+  livingSteps:
+    - { week: 53, centsPerWeek: 74250 }
+
+finance:
+  weeksPerMonth: 4
+  # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
+  # late by a segment dependent number of days, only once chased, or never.
+  invoiceDueDays: 14
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    # Menu prices per cover are quoted to the nearest euro.
+    budgetSmallStepCents: 100
+    buckets:
+      - { id: not_a_problem, name: Not a problem, below: 0.2 }
+      - { id: mild, name: Mild, below: 0.4 }
+      - { id: noticeable, name: Noticeable, below: 0.6 }
+      - { id: painful, name: Painful, below: 0.9 }
+      - { id: urgent, name: Urgent }
+  # A lunch test: lunch boxes for a few offices for a week, a signal only.
+  landing:
+    hours: 6
+    budgetsCents: [20000, 50000]
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  # A pop-up dinner or opening vouchers: guests from one segment try the food; those who would
+  # come again join the repeat guests and pay a voucher now.
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+
+product:
+  startQuality: 85
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  # Price against willingness to pay (r = price / wtp): a yes stays nearly as likely up to about
+  # r 0.9, then gets rarer smoothly (0.97 at r 1, 0.82 at 1.2, a half at the midpoint, 0.24 at
+  # 1.5). Calibrated so the default price plays as before (Phase 8 gate).
+  price: { midpoint: 1.35, steepness: 10 }
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    # Customers paying more than what they would pay leave more often: +0.15 a month per 100%
+    # above it, on top of the rest.
+    priceFrom: 1.0
+    perPrice: 0.15
+    cap: 0.6
+  # Referrals belong to the subscription model; guests spread the word through repeat visits.
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - { id: weak, name: Weak, below: 0.7 }
+    - { id: solid, name: Solid, below: 0.95 }
+    - { id: strong, name: Strong, below: 1.1 }
+    - { id: outstanding, name: Outstanding }
+  roles:
+    # A junior or part time hire: cheaper, fewer hours.
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+
+  # Phase 9: a freelancer, rented by the week. Output is visible and fixed: outputShare of the
+  # booked hours become work, the first week at onboardingFactor of that. Billed weekly per hour.
+  freelance:
+    hoursOptions: [10, 20]
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    # A developer who does not know the code: extra bugs on every feature they worked on.
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+
+# A quieter inbox than the software scenarios: events come about every other week.
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.35
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+
+roles:
+  - id: viable
+    pain: { min: 0.6, max: 0.85 }
+    politeness: { min: 0.05, max: 0.15 }
+  - id: mediocre
+    pain: { min: 0.35, max: 0.55 }
+    politeness: { min: 0.25, max: 0.4 }
+  - id: trap
+    pain: { min: 0.1, max: 0.25 }
+    politeness: { min: 0.5, max: 0.65 }
+
+segments:
+  - id: office_lunch
+    name: Office lunch
+    description: People from the offices nearby, Monday to Friday
+    size: { min: 3000, max: 6000 }
+    # Per cover (est.; spec 12 to 18, raised with Munich lunch prices, decisions step 6).
+    wtpCents: { min: 1300, max: 2000 }
+    mustHave: [fast_lunch, weekly_menu, card_payment]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.02 }
+      in_person: { min: 0.03, max: 0.05 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For lunch I spend about {amount}, and then I complain about it at my desk.'
+      - 'Around {amount} for a main and a water. The canteen is cheaper but the canteen is the canteen.'
+      - 'My lunch budget is roughly {amount}. On Fridays it is whatever it takes.'
+      - 'I would pay {amount} if I am back at my desk in forty minutes.'
+      - 'The place round the corner charges {amount} for soup and calls it a menu.'
+
+  - id: evening_locals
+    name: Evening locals
+    description: People from the neighbourhood, Thursday to Saturday evenings
+    size: { min: 2000, max: 5000 }
+    wtpCents: { min: 3200, max: 5500 }
+    mustHave: [dinner_menu, wine_list, online_reservations]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.02 }
+      in_person: { min: 0.02, max: 0.04 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For a proper dinner out we spend about {amount} each, wine included, regret not included.'
+      - 'Around {amount} a head is what a Friday evening is worth to us.'
+      - 'Our usual Italian costs {amount} each and the waiter knows our names.'
+      - 'If it is good, {amount} each. If it is very good, we do not look.'
+      - 'We budget about {amount} per person for a birthday dinner. There are many birthdays.'
+
+  - id: tourists
+    name: Tourists and visitors
+    description: Visitors to Munich, more in summer, at the Oktoberfest and at Christmas
+    size: { min: 4000, max: 9000 }
+    wtpCents: { min: 2200, max: 4500 }
+    mustHave: [english_menu, open_sundays, courtyard]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.02 }
+      in_person: { min: 0.01, max: 0.03 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For a real Bavarian dinner I would pay about {amount}. The guidebook said it would be cheaper.'
+      - 'We spend around {amount} each on dinner on holiday. At home, much less.'
+      - 'Something like {amount} a person, as long as the menu has pictures or English.'
+      - 'We paid {amount} each at the beer hall and had to share a table with a choir.'
+      - 'About {amount} each, if the place looks like locals eat there.'
+
+milestones:
+  - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+  - { id: first_deposit, name: First voucher sold, kind: count, of: deposits, target: 1 }
+  - { id: first_customer, name: First paying guest, kind: count, of: guests, target: 1 }
+  - id: covers_company_costs
+    name: 'A month of guests covers company costs'
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: 'A month of guests covers all costs, you included'
+    kind: revenue
+    covers: all
+  - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+  - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+  - { id: weeks_78, name: 78 weeks survived, kind: weeks, target: 78 }
+  - { id: weeks_104, name: 104 weeks survived, kind: weeks, target: 104 }
+
+# The inherited dining room, then an own fit-out (offered by an inbox event): it lifts what guests
+# think of the room and brings neighbours in off the street.
+officeStages:
+  - id: inherited_room
+    name: Inherited dining room
+    monthlyCents: 0
+    # Mismatched chairs and a tired carpet: "a bit tired" in the reviews.
+    qualityBonus: -0.3
+  - id: own_fitout
+    name: Own fit-out
+    monthlyCents: 0
+    qualityBonus: 0.2
+    energyPerWeek: 1
+    walkIns: { segment: evening_locals, leadsPerWeek: 0.3 }
+
+organisedAt: [covers_all_costs]
+
+# The bank loan (docs/loan-proposal.md): needed to open.
+loan:
+  bankName: Isartaler Bank
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  # Banks ask for 15 to 25% own money (chamber of commerce advice); 20% here.
+  ownShare: 0.2
+  # Before any guest has paid (est.); with the own-money rule this caps a first loan.
+  unprovenMaxCents: 12000000
+  revenueMultiple: 1
+  minCents: 1000000
+  maxCents: 15000000
+  stepCents: 500000
+  # A local bank's start-up loan above the subsidised rates of about 3.7% (est. 4.5 to 7.5%).
+  rateBp: { min: 450, max: 750 }
+  # Banks price risk: a point more for each multiple of own money borrowed beyond the first (est.).
+  leverageSpreadBp: 100
+  termMonths: [60, 84, 120]
+  graceMonths: [0, 6, 12]
+  missedFeeCents: 5000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+
+# Bookings (docs/tourism-proposal.md). A unit is a cover. Week 1 is the first week of January.
+bookings:
+  startWeekOfYear: 1
+  seasonNoise: 0.15
+  # Summer, the Oktoberfest and December.
+  peakMonths: [6, 7, 9, 10, 12]
+  policyWeeks: 4
+  weather:
+    # Weather only closes the courtyard (est. Munich).
+    monthly:
+      - { good: 0.2, mixed: 0.4, bad: 0.35, dangerous: 0.05 }
+      - { good: 0.2, mixed: 0.4, bad: 0.35, dangerous: 0.05 }
+      - { good: 0.3, mixed: 0.4, bad: 0.27, dangerous: 0.03 }
+      - { good: 0.4, mixed: 0.35, bad: 0.22, dangerous: 0.03 }
+      - { good: 0.45, mixed: 0.3, bad: 0.2, dangerous: 0.05 }
+      - { good: 0.5, mixed: 0.25, bad: 0.15, dangerous: 0.1 }
+      - { good: 0.55, mixed: 0.2, bad: 0.15, dangerous: 0.1 }
+      - { good: 0.55, mixed: 0.2, bad: 0.15, dangerous: 0.1 }
+      - { good: 0.5, mixed: 0.3, bad: 0.17, dangerous: 0.03 }
+      - { good: 0.35, mixed: 0.35, bad: 0.27, dangerous: 0.03 }
+      - { good: 0.2, mixed: 0.4, bad: 0.35, dangerous: 0.05 }
+      - { good: 0.2, mixed: 0.4, bad: 0.35, dangerous: 0.05 }
+    forecastAccuracy: 0.8
+    demand: { good: 1.05, mixed: 1, bad: 0.95, dangerous: 0.85 }
+    cancel: { good: 1, mixed: 1, bad: 1.2, dangerous: 1.5 }
+  # Reservation platforms charge per cover; about 7% of a dinner bill here (est.).
+  platform: { name: Tafelrunde, commission: 0.07 }
+  website: { product: online_reservations, repeatsFull: 300 }
+  partnershipHours: 6
+  partnershipCut: 0
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor: { viable: 1, mediocre: 0.45, trap: 0.15 }
+  fitBase: 0.4
+  segments:
+    office_lunch:
+      # Spec 80 to 250; a lunch of 14 EUR needs volume (decisions, step 6).
+      base: { min: 170, max: 380 }
+      unit: person
+      price: { peak: 1400, off: 1400 }
+      size: { min: 1, max: 4 }
+      leadWeeks: { min: 0, max: 0 }
+      # Flat, with a dip in August and at Christmas.
+      season: [1, 1, 1, 1, 1, 1, 0.9, 0.4, 1, 1, 1, 0.6]
+      response: { platform: 0, website: 0.2, partnership: 0.8, outreach: 0.7, walkIn: 0.8 }
+      cancel: 0
+      strictConversion: 1
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.4
+    evening_locals:
+      # Spec 40 to 160; a little lower so dinner does not carry every run (decisions, step 6).
+      base: { min: 35, max: 140 }
+      unit: person
+      price: { peak: 3800, off: 3800 }
+      size: { min: 2, max: 6 }
+      leadWeeks: { min: 0, max: 2 }
+      # Higher in autumn and winter, lower in the summer holidays.
+      season: [1, 0.95, 0.9, 0.8, 0.7, 0.6, 0.55, 0.55, 0.8, 0.9, 1, 1]
+      response: { platform: 0.8, website: 0.5, partnership: 0, outreach: 0.3, walkIn: 0.4 }
+      # No-shows without a deposit (est. 5 to 15%); neighbours accept a deposit more readily.
+      cancel: 0.15
+      strictConversion: 0.9
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.6
+    tourists:
+      base: { min: 30, max: 180 }
+      unit: person
+      price: { peak: 3000, off: 2800 }
+      size: { min: 2, max: 4 }
+      leadWeeks: { min: 0, max: 1 }
+      # High in summer, a spike at the Oktoberfest, a smaller one in December.
+      season: [0.3, 0.3, 0.4, 0.5, 0.7, 0.9, 1, 1, 1, 0.9, 0.4, 0.7]
+      response: { platform: 0.5, website: 0.8, partnership: 0.5, outreach: 0.1, walkIn: 0.5 }
+      cancel: 0.08
+      # Visitors rarely pay a deposit for a table they found an hour ago.
+      strictConversion: 0.75
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.8
+  products:
+    fit_out:
+      capacity: 0
+      # The previous tenant's handover fee, kitchen repairs and a basic refresh (est. 60,000 to
+      # 110,000 depending on choices; the basic version here).
+      oneOffCents: 6000000
+    fast_lunch:
+      # Forty seats, two sittings, five lunches.
+      capacity: 400
+      serves: [office_lunch, tourists]
+      requires: fit_out
+      # Keeping a service open: prep, a standing crew hour and the gas, however few come (est.).
+      monthlyCents: 150000
+      # Food cost 28 to 35% of food sales (est.).
+      unitCostShare: 0.32
+    weekly_menu:
+      capacity: 0
+    card_payment:
+      capacity: 0
+      monthlyCents: 3000
+    dinner_menu:
+      # Forty seats, one and a half turns, four evenings.
+      capacity: 240
+      serves: [evening_locals, tourists]
+      requires: fit_out
+      monthlyCents: 200000
+      unitCostShare: 0.3
+    wine_list:
+      capacity: 0
+      # Opening stock (est.).
+      oneOffCents: 300000
+    online_reservations:
+      capacity: 0
+      monthlyCents: 5000
+    english_menu:
+      capacity: 0
+    open_sundays:
+      capacity: 80
+      serves: [tourists, evening_locals]
+      requires: fit_out
+      monthlyCents: 100000
+      unitCostShare: 0.32
+    courtyard:
+      # Twenty more seats in summer, closed in storms.
+      capacity: 100
+      serves: [tourists, evening_locals]
+      requires: fit_out
+      oneOffCents: 400000
+      unitCostShare: 0.3
+      months: [5, 6, 7, 8, 9]
+      weatherClosed: true
+    catering:
+      capacity: 150
+      serves: [office_lunch]
+      requires: fit_out
+      monthlyCents: 60000
+      unitCostCents: 100
+      unitCostShare: 0.35
+    delivery:
+      # Orders through a delivery platform: about 30% commission with its couriers (13 to 14%
+      # with your own), plus food and packaging. The margin is about nothing.
+      capacity: 200
+      serves: [office_lunch, tourists]
+      requires: fit_out
+      # The platform's tablet and a stock of packaging (est.).
+      monthlyCents: 40000
+      unitCostCents: 150
+      unitCostShare: 0.62
+  roles:
+    crew:
+      name: Cook and server
+      # A cook at about 3,000 gross a month (union entry pay in Bavaria) and a server, five hours
+      # each with employer costs, for one service (est.).
+      centsPerShift: 30000
+      units:
+        fast_lunch: 110
+        dinner_menu: 45
+        open_sundays: 40
+        courtyard: 30
+        catering: 60
+        delivery: 50
+      available: [14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
+      founderHours: 8
+    helper:
+      name: Minijob helper
+      # Five hours at the minimum wage of 13.90 (2026).
+      centsPerShift: 7000
+      units:
+        fast_lunch: 15
+        dinner_menu: 10
+        open_sundays: 10
+        courtyard: 10
+        catering: 10
+        delivery: 15
+      available: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
+  reviews:
+    qualityBase: 4.3
+    noiseSd: 0.3
+    understaffPenalty: 2.5
+    tiredPenalty: 0.6
+    cancelPenalty: 1
+    snagPenalty: 0.15
+    valueWeight: 1.5
+    reviewsPerUnit: 0.05
+    reviewsFull: 80
+
+modes:
+  long: {}

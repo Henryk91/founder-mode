@@ -1,0 +1,74 @@
+# Products and what they need (docs/scenario-restaurant.md B.5). Which segment needs which lives in
+# scenario.yaml (segments[].mustHave) and stays hidden. Snags are a new menu's teething trouble.
+
+- id: fit_out
+  name: Takeover and basic fit-out
+  buildHours: 60
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Whatever you do, fix the extractor fan first. The whole street knows when you fry onions.
+
+- id: fast_lunch
+  name: Lunch in 30 minutes
+  buildHours: 20
+  bugsOnShip: { min: 1, max: 2 }
+  mention: I have forty minutes for lunch, and ten of them are the walk there and back.
+
+- id: weekly_menu
+  name: A changing weekly lunch menu
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: If the menu changes every week, I come every week. If it does not, I come once.
+
+- id: card_payment
+  name: Card payment
+  buildHours: 3
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Nobody in our office carries cash. We pay for coffee with our watches now.
+
+- id: dinner_menu
+  name: Dinner menu à la carte
+  buildHours: 30
+  bugsOnShip: { min: 1, max: 2 }
+  mention: In the evening I want a proper menu, not the lunch board with candles on it.
+
+- id: wine_list
+  name: A proper wine list
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 0 }
+  mention: A good glass of wine decides whether we come back. Two good glasses decide it faster.
+
+- id: online_reservations
+  name: Online reservations
+  buildHours: 8
+  bugsOnShip: { min: 0, max: 1 }
+  mention: I book tables at midnight on my phone. If I have to call, I do not.
+
+- id: english_menu
+  name: Menu in English
+  buildHours: 5
+  bugsOnShip: { min: 0, max: 0 }
+  mention: We would love to try the local food if we knew which local food we were ordering.
+
+- id: open_sundays
+  name: Open on Sundays
+  buildHours: 4
+  bugsOnShip: { min: 0, max: 0 }
+  mention: On Sundays the whole city is closed except the museums, and you cannot eat a museum.
+
+- id: courtyard
+  name: Courtyard seating in summer
+  buildHours: 20
+  bugsOnShip: { min: 0, max: 1 }
+  mention: In summer we only eat outside. Inside is for winter and for regrets.
+
+- id: catering
+  name: Office catering
+  buildHours: 25
+  bugsOnShip: { min: 1, max: 1 }
+  mention: Our meetings need food for twenty that is not three trays of sad sandwiches.
+
+- id: delivery
+  name: Delivery through a platform
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Honestly, I would order it to my desk if I could. I do not like leaving the building.

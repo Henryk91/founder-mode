@@ -410,6 +410,9 @@ export const LoanConfigSchema = z.object({
   stepCents: Cents.positive(),
   // Fixed yearly rate in basis points, drawn once per run in this range.
   rateBp: rangeOf(z.number().int().positive()),
+  // Risk pricing: basis points added for each multiple of own money borrowed beyond the first
+  // (all borrowing with this loan, against own money). 0 when absent.
+  leverageSpreadBp: z.number().int().nonnegative().optional(),
   termMonths: z.array(z.number().int().positive()).min(1),
   graceMonths: z.array(z.number().int().nonnegative()).min(1),
   // A missed payment adds this fee to the balance; the second missed month in a row is default.

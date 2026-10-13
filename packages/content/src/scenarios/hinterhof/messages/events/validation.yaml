@@ -1,0 +1,181 @@
+# Learning about the guests: contacts, tests and the street (docs/scenario-restaurant.md B.12).
+events:
+  - id: street_association
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: The street association
+    look: note
+    text: >-
+      The street association has surveyed its members about what the street lacks. They will
+      share the results if you come to their Tuesday meeting. The meeting has a cake rota and no
+      end time.
+    defaultChoice: skip
+    choices:
+      - id: attend
+        label: Go to the meeting
+        hours: 3
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.03 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: office_manager_coffee
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: An office manager from the next building
+    text: >-
+      An office manager invites you to present your lunch at their Monday meeting. Forty people,
+      one coffee machine, and a strong opinion about soup. They would send a first group the week
+      after, if there is a lunch to send them to.
+    defaultChoice: later
+    choices:
+      - id: present
+        label: Present your lunch
+        hours: 4
+        effects:
+          - { type: guests, segment: office_lunch, count: 8 }
+      - id: later
+        label: Not yet
+        hours: 0
+
+  - id: popup_dinner_offer
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2, week <= 20]
+    from: none
+    sender: A friend with a bar
+    look: note
+    text: >-
+      A friend offers her bar's kitchen for a pop-up dinner on a Sunday. Thirty tickets, real
+      guests, honest table talk. It costs a day and the ingredients, and the dishwasher is you.
+    defaultChoice: decline
+    choices:
+      - id: cook
+        label: Cook the pop-up dinner
+        hours: 10
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: skill, skill: interviewing, delta: 0.06 }
+          - { type: energy, delta: -4 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: hotel_concierge
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: The concierge of a hotel nearby
+    text: >-
+      The concierge of the hotel two streets away drops in to ask what you serve and when. Her
+      guests ask every evening for somewhere local. She would send a few, if the kitchen is open.
+    defaultChoice: later
+    choices:
+      - id: show
+        label: Show her round and feed her
+        hours: 2
+        effects:
+          - { type: guests, segment: tourists, count: 6 }
+          - { type: cash, amountCents: -3000 }
+      - id: later
+        label: Another time
+        hours: 0
+
+  - id: food_blog_interview
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: A local food blog
+    text: >-
+      A local food blog wants to interview you about the opening. They ask about your
+      inspiration, your favourite herb and whether you have a dog. You have none of the three.
+    defaultChoice: decline
+    choices:
+      - id: interview
+        label: Give the interview
+        hours: 2
+        effects:
+          - { type: guests, count: 6 }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: lunch_box_test
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2, week <= 16]
+    from: none
+    sender: An insurance office
+    look: note
+    text: >-
+      An insurance office would try your lunch boxes for a week before you open, to see who
+      orders twice. It is a real test with real people and a lot of cling film. They pay what the
+      food costs.
+    defaultChoice: decline
+    choices:
+      - id: test
+        label: Cook lunch boxes for a week
+        hours: 8
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.05 }
+          - { type: energy, delta: -3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: old_cook_notebook
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: The previous tenant
+    look: note
+    text: >-
+      The previous tenant's cook left a notebook: what sold, on which days, and who complained.
+      It is stained, honest and mostly about soup. Reading it takes an evening.
+    defaultChoice: ignore
+    choices:
+      - id: read
+        label: Read it properly
+        hours: 3
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.03 }
+      - id: ignore
+        label: Put it on the shelf
+        hours: 0
+
+  - id: tourism_office_listing
+    area: validation
+    weight: 1
+    once: true
+    when: [tour.reviews >= 10]
+    from: none
+    sender: The city tourism office
+    look: official
+    text: >-
+      The tourism office would list you in its neighbourhood guide if you send a description in
+      English and two photos. The form asks for your "culinary concept", in capitals.
+    defaultChoice: skip
+    choices:
+      - id: send
+        label: Write the description
+        hours: 3
+        effects:
+          - { type: guests, segment: tourists, count: 8 }
+      - id: skip
+        label: Skip it
+        hours: 0

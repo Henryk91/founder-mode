@@ -1,0 +1,206 @@
+# The kitchen, the room and the menu: breakdowns, inspectors and teething trouble.
+events:
+  - id: dishwasher_breaks
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [tour.reviews >= 3]
+    from: none
+    sender: Your kitchen
+    look: note
+    text: >-
+      The dishwasher breaks on Friday at seven in the evening, mid-service, with a noise like a
+      tired cow. An emergency repair costs a lot. Washing by hand costs time, and on a full night
+      it costs plates on tables.
+    defaultChoice: by_hand
+    choices:
+      - id: repair
+        label: Call the emergency repair
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -60000 }
+      - id: by_hand
+        label: Wash by hand
+        hours: 0
+        effects:
+          - { type: energy, delta: -5 }
+          - { type: review, rating: 2, count: 2, when: [tour.bookedWeek >= 150] }
+
+  - id: hair_in_soup
+    area: product
+    weight: 1
+    once: true
+    when: [tour.reviews >= 10]
+    from: none
+    sender: The maps listing
+    look: official
+    text: >-
+      A guest posts a photo of a hair in the soup. It is long and blond and nobody in your kitchen
+      is either. The photo has eleven likes and counting.
+    defaultChoice: ignore
+    choices:
+      - id: reply
+        label: Reply politely
+        hours: 1
+        effects:
+          - { type: review, rating: 4, count: 1 }
+      - id: refund
+        label: Apologise and refund the meal
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -5000 }
+          - { type: review, rating: 5, count: 1 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 2 }
+
+  - id: hygiene_inspector
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 30
+    when: [week >= 10]
+    from: none
+    sender: Food safety inspection
+    look: official
+    text: >-
+      The food safety office announces an inspection next week, which counts as a courtesy. The
+      inspector likes labels, temperatures and cleaning logs. A kitchen with snags left unfixed is
+      a kitchen with a fine waiting.
+    defaultChoice: wing_it
+    choices:
+      - id: prepare
+        label: Clean, label and log everything
+        hours: 6
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: wing_it
+        label: Hope for the best
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -80000, when: [bugs >= 2] }
+
+  - id: supplier_price_rise
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: Your vegetable supplier
+    look: official
+    text: >-
+      Your supplier raises prices by twelve percent, citing the weather, the diesel and "the
+      situation". You could rewrite the menu around cheaper produce, or swallow it every month.
+      A new menu has teething trouble of its own.
+    defaultChoice: absorb
+    choices:
+      - id: new_menu
+        label: Rewrite the menu
+        hours: 8
+        effects:
+          - { type: bugs, delta: 1 }
+      - id: absorb
+        label: Absorb the rise
+        hours: 0
+        effects:
+          - { type: fixedCost, id: supplier_rise, name: Higher produce prices, monthlyCents: 35000 }
+
+  - id: teething_menu
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when: [bugs >= 2]
+    from: none
+    sender: Your service
+    look: note
+    text: >-
+      The new dishes are slow: plates wait under the lamp while the sauce thinks about its life.
+      Guests are patient, for now. An afternoon of practice would fix the worst of it.
+    defaultChoice: carry_on
+    choices:
+      - id: practise
+        label: Practise the slow dishes
+        hours: 4
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: carry_on
+        label: Carry on
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }
+
+  - id: extractor_fan
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 15]
+    from: none
+    sender: Your kitchen
+    look: note
+    text: >-
+      The extractor fan has started to scream. The neighbours have noticed, and so has every
+      onion. A new motor costs real money; waiting means a hot kitchen and a hotter mood.
+    defaultChoice: wait
+    choices:
+      - id: replace
+        label: Replace the motor
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -120000 }
+      - id: wait
+        label: Wait until the slow season
+        hours: 0
+        effects:
+          - { type: energy, delta: -6, when: [tour.peak == 1] }
+
+  - id: courtyard_noise
+    area: product
+    weight: 2
+    once: true
+    when: [tour.month >= 6, tour.month <= 8]
+    from: none
+    sender: A neighbour on the second floor
+    text: >-
+      A neighbour complains about voices in the courtyard after ten. She is polite, precise and
+      has the council's phone number. Closing earlier costs covers; ignoring her risks the permit.
+    defaultChoice: ignore
+    choices:
+      - id: close_early
+        label: Close the courtyard at ten
+        hours: 1
+        effects:
+          - { type: review, rating: 4, count: 1 }
+      - id: ignore
+        label: Carry on until eleven
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -50000, chance: 0.4 }
+
+  - id: cold_room_fails
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 25]
+    from: none
+    sender: Your kitchen
+    look: note
+    text: >-
+      The cold room failed overnight. A weekend's produce is warm and sad. You can call the
+      repair service now or make do with the small fridges and throw away what you must.
+    defaultChoice: make_do
+    choices:
+      - id: repair
+        label: Repair it at once
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -90000 }
+      - id: make_do
+        label: Make do with the small fridges
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: bugs, delta: 1 }

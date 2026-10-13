@@ -29,6 +29,13 @@ export type TourismRule = {
   hours?: number
   /** Inbox policy: read it (default), leave every message to its default, or blind effort. */
   inbox?: 'reader' | 'none' | 'effort'
+  /**
+   * The bank loan, where a scenario offers one (step 6): borrow what the plan needs (default),
+   * the most the bank lends, the most with no repayment-free start (reckless), or nothing.
+   */
+  loan?: 'careful' | 'max' | 'reckless' | 'none'
+  /** A second loan for the own fit-out once guests cover the costs (loan target L1). */
+  refitLoan?: boolean
 }
 
 export const CAREFUL_TOURISM: TourismRule = {
@@ -64,6 +71,14 @@ const MAX_PRICE_STEP = 0.3
 const STRICT_CANCEL_SHARE = 0.12
 const BUSY_SHARE = 0.7
 const BUG_LIMIT = 2
+/** A product costing this share of its price or more is not worth adding (step 6). */
+const THIN_MARGIN_SHARE = 0.5
+/** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
+const LOAN_BUFFER_MONTHS = 4
+const RESERVE_MONTHS = 1
+/** The refit offer's price and when the refit borrower prepares for it (loan target L1). */
+const REFIT_CENTS = 2_500_000
+const REFIT_REVENUE_CENTS = 2_000_000
 /** A further product is built when its one-off cost is at most this share of the money. */
 const EXTRA_SHARE = 0.2
 
@@ -81,12 +96,118 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   /** The features a segment asks for in interviews, then a product that sells to it. */
   const wanted = (view: PlayerView, seg: string): string[] => {
     const mentions = segmentNotes(scenario, view, seg).mentions.map(([f]) => f)
-    const base = productsFor(seg).sort(
-      (a, b) =>
-        (scenario.features.find((f) => f.id === a)?.buildHours ?? 0) -
-        (scenario.features.find((f) => f.id === b)?.buildHours ?? 0),
-    )[0]
+    const quickest = (ids: string[]) =>
+      [...ids].sort(
+        (a, b) =>
+          (scenario.features.find((f) => f.id === a)?.buildHours ?? 0) -
+          (scenario.features.find((f) => f.id === b)?.buildHours ?? 0),
+      )[0]
+    // From step 6 (scenarios with a bank loan): a product the interviewees asked for first. The
+    // earlier scenarios keep the quickest product, so their protected reports stay the same.
+    const asked = productsFor(seg).filter((id) => mentions.includes(id))
+    const base = scenario.loan && asked.length > 0 ? quickest(asked) : quickest(productsFor(seg))
     return [...new Set([...(base ? [base] : []), ...mentions])]
+  }
+
+  /**
+   * From step 6 (scenarios with a bank loan): guests who arrive during the week without booking
+   * ahead, seen in the last four weeks, and this week's booked units when the roster was set.
+   */
+  let arrivals: number[] = []
+  let bookedAtPlan = 0
+
+  /** Asked for last time and refused: the next request asks for a fifth less. */
+  let refusedAt: number | null = null
+
+  /**
+   * The loan part of the week (scenarios with a bank loan only): write the plan, apply for what
+   * the rule asks, take the offer. Returns the hours it used.
+   */
+  function planLoan(view: PlayerView, b: PlanBuilder, wanted: string[]): void {
+    const l = view.loan
+    const mode = rule.loan ?? 'careful'
+    if (!l || mode === 'none') return
+    const p = {
+      planHours: 0,
+      apply: null,
+      accept: false,
+      decline: false,
+      repay: null,
+    } as NonNullable<typeof b.plan.loan>
+    if (l.offer) {
+      p.accept = true
+      b.plan.loan = p
+      return
+    }
+    if (l.application || l.accepted) return
+    const runningLoans = l.loans.filter((x) => x.status === 'running')
+    const monthly = view.company.monthlyFixedCostsCents
+    const cash = view.company.cashCents
+    // What the plan needs: products not yet shipped, and a buffer of fixed costs.
+    const unshipped = wanted.filter(
+      (id) => !view.product.features.find((f) => f.id === id)?.shipped,
+    )
+    const oneOff = unshipped.reduce((t, id) => t + (cfg.products[id]?.oneOffCents ?? 0), 0)
+    const need = oneOff + LOAN_BUFFER_MONTHS * monthly - cash
+    const refit =
+      rule.refitLoan &&
+      runningLoans.length === 1 &&
+      view.company.officeStage.id !== 'own_fitout' &&
+      view.monthlyRevenueCents >= REFIT_REVENUE_CENTS &&
+      cash < REFIT_CENTS + RESERVE_MONTHS * monthly
+    const first = runningLoans.length === 0 && (need > 0 || mode !== 'careful')
+    if (!first && !refit) return
+    const left = Math.max(0, l.planNeeded - l.planHours)
+    if (left > 0) {
+      p.planHours = Math.min(left, Math.max(0, b.free - 10))
+      b.free -= p.planHours
+      if (l.planHours + p.planHours < l.planNeeded) {
+        b.plan.loan = p
+        return
+      }
+    }
+    if (l.canApplyFrom !== null && view.week < l.canApplyFrom) {
+      b.plan.loan = p
+      return
+    }
+    const step = l.stepCents
+    const roundUp = (c: number) => Math.ceil(c / step) * step
+    // The most the bank's stated own-money rule allows on top of what is already borrowed.
+    const borrowed = runningLoans.reduce((t, x) => t + x.principalCents, 0)
+    const allowed =
+      Math.floor(((l.ownMoneyCents * (1 - l.ownShare)) / l.ownShare - borrowed) / step) * step
+    let amount = refit
+      ? roundUp(REFIT_CENTS)
+      : mode === 'careful'
+        ? roundUp(need)
+        : Math.min(l.maxCents, allowed)
+    // After a refusal, a fifth less each time.
+    if (refusedAt !== null) amount = Math.min(amount, roundUp(refusedAt * 0.8))
+    amount = Math.min(l.maxCents, Math.max(l.minCents, amount))
+    if (b.free < l.meetingHours) {
+      b.plan.loan = p
+      return
+    }
+    b.free -= l.meetingHours
+    refusedAt = amount
+    p.apply = {
+      amountCents: amount,
+      termMonths: mode === 'reckless' ? l.termMonths[0]! : (l.termMonths[1] ?? l.termMonths[0]!),
+      graceMonths:
+        mode === 'reckless' ? l.graceMonths[0]! : (l.graceMonths[1] ?? l.graceMonths[0]!),
+    }
+    b.plan.loan = p
+  }
+
+  /** Products and what they require, the required first (a restaurant's fit-out). */
+  const withRequired = (ids: string[]) => {
+    const out: string[] = []
+    for (const id of ids) {
+      const req = cfg.products[id]?.requires
+      if (req && !out.includes(req)) out.push(req)
+      if (!out.includes(id)) out.push(id)
+    }
+    return out
   }
 
   return {
@@ -136,9 +257,25 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       // This week's guests come first: the roster.
       const pool: Record<string, number> = {}
       for (const r of bv.roles) pool[r.id] = r.available
-      for (const { productId, booked } of bv.thisWeek) {
-        if (booked === 0 && rule.roster !== 'over') continue
+      // Walk-ins expected this week, shared over the products open now by capacity (step 6).
+      const open = bv.products.filter((p) => p.shipped && p.inSeason && p.capacity > 0)
+      const openCapacity = open.reduce((t, p) => t + p.capacity, 0)
+      const walkIns =
+        scenario.loan && arrivals.length > 0
+          ? arrivals.reduce((t, x) => t + x, 0) / arrivals.length
+          : 0
+      bookedAtPlan = bv.thisWeek.reduce(
+        (t, x) => t + (bv.products.find((p) => p.id === x.productId)?.shipped ? x.booked : 0),
+        0,
+      )
+      for (const { productId, booked: bookedNow } of bv.thisWeek) {
         const product = bv.products.find((p) => p.id === productId)
+        const expected =
+          product && openCapacity > 0 && open.includes(product)
+            ? (walkIns * product.capacity) / openCapacity
+            : 0
+        const booked = rule.roster === 'under' ? bookedNow : bookedNow + expected
+        if (booked === 0 && rule.roster !== 'over') continue
         if (!product?.shipped) continue
         const need =
           rule.roster === 'over'
@@ -209,9 +346,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         // More products for the same guests (other months, other days out), when one costs at
         // most a fifth of the money in hand.
         const money = view.company.cashCents + Math.max(0, view.founder.savingsCents)
+        // From step 6 (loan scenarios): not a product whose stated costs eat most of its price.
+        const thin = (id: string) =>
+          !!scenario.loan &&
+          (bv.products.find((p) => p.id === id)?.unitCostShare ?? 0) >= THIN_MARGIN_SHARE
         const more = done
           ? productsFor(seg).filter(
-              (id) => (cfg.products[id]?.oneOffCents ?? 0) <= money * EXTRA_SHARE,
+              (id) => (cfg.products[id]?.oneOffCents ?? 0) <= money * EXTRA_SHARE && !thin(id),
             )
           : []
         const toBuild = rule.buildAll
@@ -219,7 +360,27 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           : done && second
             ? [...own, ...more, ...wanted(view, second)]
             : own
-        for (const f of toBuild) b.build(f, 40 - (b.plan.build[f] ?? 0))
+        // With a bank loan on offer (step 6): build what is required first, and never a product
+        // the money cannot pay for yet.
+        const building = view.loan ? withRequired(toBuild) : toBuild
+        if (view.loan) {
+          const reserve = RESERVE_MONTHS * view.company.monthlyFixedCostsCents
+          const shipped = (id: string) => !!view.product.features.find((x) => x.id === id)?.shipped
+          planLoan(view, b, building)
+          // What others require comes first, on its own: nothing sells without it.
+          const required = building.filter(
+            (f) => !shipped(f) && building.some((g) => cfg.products[g]?.requires === f),
+          )
+          const now = required.length > 0 ? required : building
+          for (const f of now) {
+            const cost = cfg.products[f]?.oneOffCents ?? 0
+            const keep = required.length > 0 ? 0 : reserve
+            if (cost > 0 && view.company.cashCents - keep < cost) continue
+            b.build(f, 40 - (b.plan.build[f] ?? 0))
+          }
+        } else {
+          for (const f of building) b.build(f, 40 - (b.plan.build[f] ?? 0))
+        }
         if (done && second && rule.channels === 'mix') {
           const r2 = cfg.segments[second]!.response
           if (
@@ -320,10 +481,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     observe(report) {
       let cancelled = 0
       let served = 0
+      let staffCancelled = 0
       for (const e of report.entries) {
         if (e.kind === 'bookings_cancelled') cancelled += e.units
         if (e.kind === 'guests_served') served += e.units
+        if (e.kind === 'company_cancelled' && e.reason === 'staff') staffCancelled += e.units
       }
+      arrivals = [...arrivals, Math.max(0, served + staffCancelled - bookedAtPlan)].slice(-4)
       cancelledRecent = [...cancelledRecent, cancelled].slice(-4)
       servedRecent = [...servedRecent, served].slice(-4)
     },
@@ -334,6 +498,7 @@ const tourism = (id: string, description: string, rule: TourismRule): Strategy =
   id,
   description,
   model: 'bookings',
+  ...(rule.loan !== undefined || rule.refitLoan ? { needsLoan: true } : {}),
   create: (scenario) => tourismPlayer(scenario, rule),
 })
 
@@ -401,4 +566,20 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     ...CAREFUL_TOURISM,
     policy: 'strict',
   }),
+  // The bank loan (step 6): only where a scenario offers one.
+  tourism(
+    'tourism_overborrow',
+    'Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written.',
+    { ...CAREFUL_TOURISM, loan: 'max' },
+  ),
+  tourism(
+    'tourism_reckless',
+    'Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term.',
+    { ...CAREFUL_TOURISM, loan: 'reckless' },
+  ),
+  tourism(
+    'tourism_refit_loan',
+    'Plays like tourism_careful and takes a second loan for the own fit-out once guests pay about 20,000 EUR a month.',
+    { ...CAREFUL_TOURISM, refitLoan: true },
+  ),
 ]

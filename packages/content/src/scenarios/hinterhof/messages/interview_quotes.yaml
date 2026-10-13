@@ -1,0 +1,172 @@
+# segment -> interview bucket -> quotes. At least 10 per bucket. Tone: docs/scenario-restaurant.md.
+
+office_lunch:
+  not_a_problem:
+    - We have a canteen. It is grey, but it is free and it is downstairs.
+    - I bring lunch from home. My partner cooks too much on Sundays on purpose.
+    - Lunch is a sandwich at my desk. The desk does not mind the crumbs.
+    - Our office orders pizza on Fridays. That is the whole lunch culture.
+    - I go to the bakery. Two pretzels and I am fine until four.
+    - We have a kitchen with a microwave and a queue. It works.
+    - Honestly, I skip lunch most days. My manager calls it dedication.
+    - The supermarket salad bar is good enough. Nobody talks to you there.
+    - There are six places on this street already. I have tried all of them once.
+    - I eat at my desk because the meetings never end. A restaurant will not fix that.
+  mild:
+    - A proper lunch would be nice now and then, if it is quick.
+    - We sometimes go out on birthdays. There are about twelve birthdays a year.
+    - If the menu changed every week, maybe. I get bored of the same three dishes.
+    - I would try a new place if a colleague went first and survived.
+    - Lunch out is a treat for Fridays, not a habit. Habits are expensive.
+    - Something warm in winter would be welcome. In summer we eat ice cream.
+    - Perhaps, if it is close. I do not walk more than five minutes in the rain.
+    - A colleague keeps suggesting a lunch place. Nobody listens to him about anything.
+    - It would be nice to eat at a table that is not also my workplace.
+    - Maybe once a week, if I can pay by card. I never have cash.
+  noticeable:
+    - The places nearby are always full at half past twelve and empty at two.
+    - I waste half my lunch break waiting for food. Then I eat it in nine minutes.
+    - We are twenty people and there is no place that takes a group without booking days ahead.
+    - The canteen menu repeats every two weeks. I can recite it like a poem.
+    - The good place closed last year and nobody has replaced it.
+    - I would pay a bit more for something that is not fried or wrapped in paper.
+    - Our new office has no kitchen. Lunch has become a daily expedition.
+    - The bakery queue at noon is longer than our stand-up meeting, and less useful.
+    - I want a hot lunch that does not make me sleepy at three.
+    - Our team lunches always end up at the same chain. Nobody likes it, everybody goes.
+  painful:
+    - We have forty minutes and every place nearby needs an hour. I eat standing up.
+    - Since the canteen closed, the whole floor eats crisps from the vending machine.
+    - Client meetings at lunch are a disaster. There is nowhere quiet and quick near us.
+    - I have tried every lunch place within ten minutes and I am sick of all of them.
+    - Our office manager spends Monday mornings organising lunch orders. It is a job in itself.
+    - New colleagues ask where to eat and I am embarrassed to answer.
+    - I would gladly pay for a weekly menu if it meant I never thought about lunch again.
+    - We order delivery and it arrives cold, late, and in more plastic than food.
+    - There is nothing open nearby that does a decent lunch under fifteen euros.
+    - Lunch is the one hour I get away from the screen, and I spend it in queues.
+  urgent:
+    - Our canteen closes next month for a year of renovation. Two hundred people need lunch.
+    - We just moved into the building on the corner and there is literally nothing nearby.
+    - Our company pays a lunch allowance from next month and nobody knows where to spend it.
+    - I need somewhere to take clients for lunch every week, starting now.
+    - Our office grew from thirty to ninety people and the bakery has run out of pretzels.
+    - The only lunch place on the street closed on Friday. People are eating birthday cake.
+    - We have lunch meetings every Thursday and need a reliable place from next week.
+    - HR asked me to find a lunch partner for the whole office. I have until the end of the month.
+    - The food truck that came every day has gone. The office mood has gone with it.
+    - If you open a lunch with a weekly menu, I will bring my whole team on day one.
+
+evening_locals:
+  not_a_problem:
+    - We cook at home. It is cheaper and the chef is not grumpy, mostly.
+    - Our Italian round the corner has been fine for fifteen years.
+    - We go out twice a year. Both times somebody has a birthday.
+    - With two children, our evenings out are a memory and a rumour.
+    - The neighbourhood has enough restaurants. We have a favourite already.
+    - We order in on Fridays. The sofa has the best view in the house.
+    - We are not really restaurant people. We are sofa people.
+    - Going out means a babysitter, and the babysitter costs more than dinner.
+    - There is a beer garden in summer. In winter we hibernate.
+    - My husband only eats schnitzel. Any place with schnitzel will do.
+  mild:
+    - A nice place for a Friday evening would be lovely, if it is not too loud.
+    - We might try something new, but our old place knows how we like our steak.
+    - If it is walking distance and not too expensive, why not.
+    - We would come for a special occasion. We have a few of those a year.
+    - Something with a good wine would tempt my wife. Something with a good dessert would tempt me.
+    - Maybe, if we can book online. I do not phone restaurants, I am not a hundred.
+    - The street could use a place that is open late. Everything closes at ten.
+    - We go out more in winter. In summer we sit in the park with a bottle.
+    - A small local place would be nice. The big ones feel like train stations.
+    - If friends recommended it, we would come. We trust friends, mostly.
+  noticeable:
+    - Our favourite place changed owners and the food went the way of the old owner.
+    - Everything good in this part of town is fully booked on Saturdays.
+    - We want somewhere we can walk to, so we can both have wine.
+    - The places near us are either kebab shops or white tablecloths. Nothing in between.
+    - We have friends visiting every few weeks and nowhere to take them.
+    - I would like a place where the waiter remembers us. That used to be normal.
+    - Booking a table for six in this neighbourhood is like winning the lottery.
+    - The new places are all bowls and avocado. We want a proper dinner.
+    - Our book club needs somewhere to argue about books over dinner. Loudly.
+    - The last place we tried took fifty minutes for the main course. We left before dessert.
+  painful:
+    - We drive into the city every weekend because there is nothing good near us.
+    - For our anniversary we had to book three weeks ahead. Romance needs planning, apparently.
+    - Every Friday we argue about where to go, then end up at the same mediocre place.
+    - The neighbourhood lost its last real restaurant last year. The street feels dead at night.
+    - We have the money and the time and nowhere decent to spend either.
+    - Our parents visit monthly and there is no place nearby that suits them and us.
+    - I would pay more for a good table on a Saturday than I care to admit.
+    - Every place within a kilometre is a chain. I want something with a person behind it.
+    - We moved here for the neighbourhood and found out the neighbourhood goes to bed at eight.
+    - The good restaurants are booked out on the evenings we are free, every single time.
+  urgent:
+    - My parents celebrate their fortieth anniversary next month and we need a table for sixteen.
+    - Our regular place closed on Sunday. We have a reservation habit and nowhere to put it.
+    - We have guests from abroad next week and want to show them a proper Munich dinner.
+    - The street association wants a place for its monthly dinner, starting this month.
+    - Our wedding party fell through when the venue cancelled. We need forty covers in May.
+    - I promised my wife a dinner out every Friday this year. It is February and I am behind.
+    - Our book club has been thrown out of the café. We meet on Thursday. Help.
+    - We are twelve neighbours who eat out together every month. The usual place just closed.
+    - My daughter's confirmation is in four weeks and the restaurant cancelled our booking.
+    - We will be your first regulars if you open by the autumn. We are hungry and loyal.
+
+tourists:
+  not_a_problem:
+    - We eat at the beer halls. The guidebook says that is what you do here.
+    - Our hotel has a restaurant. We are tired in the evenings and it is downstairs.
+    - We are on a budget, so it is the supermarket and a park bench.
+    - We follow the reviews on the map app. Wherever it says four and a half stars.
+    - The city centre has a hundred restaurants. We never leave it.
+    - We only have two days and the food is not why we came.
+    - Honestly, sausages at the market are lunch and dinner and breakfast.
+    - We booked a food tour already. It feeds us for the whole day.
+    - Our airbnb has a kitchen. We cook pasta like at home.
+    - We do not go to residential areas. We would get lost and miss our train.
+  mild:
+    - We would try a local place if somebody told us about it.
+    - An English menu would make it easier. My German stops at bitte and danke.
+    - If it is near our hotel, why not. We are staying a few streets from here.
+    - We like places where locals eat. They usually know something.
+    - Maybe for one evening, if it has a terrace. We are here for the summer weather.
+    - We might come on Sunday. Everything else seems to be closed then.
+    - It would be nice to eat somewhere quieter than the beer halls.
+    - Perhaps, if the reviews are good. We read them all, even the angry ones.
+    - We would come if the hotel recommends it. We trust the receptionist completely.
+    - A real Bavarian dinner sounds fun, as long as nobody makes us wear lederhosen.
+  noticeable:
+    - On Sundays we could not find anything open that was not a museum café.
+    - The centre is so crowded during the Oktoberfest that we gave up eating out.
+    - The menus are all in German and the waiters are all in a hurry.
+    - We wanted to sit outside but every terrace was full.
+    - The places in the guidebook are full of other people with the same guidebook.
+    - We paid a lot for mediocre food near the main square. Lesson learned.
+    - We are a group of eight and nobody takes us without a booking.
+    - It is hard to find somewhere authentic that also explains what we are eating.
+    - Our hotel restaurant closes at nine. We are hungry at nine thirty.
+    - We wander for an hour every evening looking for a place. Our feet have opinions.
+  painful:
+    - We have five days here and I refuse to eat another dinner in a tourist trap.
+    - At Christmas every restaurant in the centre is booked for company parties.
+    - The beer halls are fun once. By the third night we wanted a quiet table and real food.
+    - We are here for the Oktoberfest and every restaurant within reach is full or awful.
+    - My parents are with us and need a quiet place with a menu they can read.
+    - The reviews lie. We have been disappointed three nights in a row.
+    - On Sundays we ended up eating crisps in the hotel room. On holiday.
+    - We want a courtyard in the sun and a menu in English. It seems that is too much to ask.
+    - We are a group of ten and every place says no without a booking.
+    - We tried to book online and every place near our hotel was full.
+  urgent:
+    - We arrive next week for the Oktoberfest and have not found one table that is free.
+    - Our tour group needs dinner for twelve on Sunday and the planned place cancelled.
+    - We are here until Friday and want one proper Bavarian dinner before we leave.
+    - The hotel restaurant is closed for renovation all month. Where do the guests eat?
+    - We have a family reunion in Munich in June and need a table for twenty.
+    - Our conference ends on Thursday and we promised the team a dinner out. We are thirty.
+    - We land tomorrow and our friend's birthday dinner place has just closed.
+    - The Christmas market is lovely, but we need a warm place for dinner tonight.
+    - We have one evening in Munich and want to spend it somewhere real. Today, please.
+    - Our guide quit, the group is hungry, and it is seven in the evening. Do you have room?

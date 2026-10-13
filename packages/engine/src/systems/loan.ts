@@ -177,7 +177,11 @@ export function applyLoan(
       }
       entries.push({ kind: 'loan_refused', reason })
     } else {
-      const rateBp = runRateBp(state)
+      // Riskier loans cost more: the spread for borrowing beyond the founder's own money.
+      const own = Math.max(1, ownMoneyCents(state))
+      const leverage = (borrowedCents(state) + terms.amountCents) / own
+      const rateBp =
+        runRateBp(state) + Math.round((cfg.leverageSpreadBp ?? 0) * Math.max(0, leverage - 1))
       const free = terms.termMonths - terms.graceMonths
       const paymentCents = annuityCents(terms.amountCents, rateBp, free)
       l = {
@@ -266,6 +270,7 @@ export function settleLoans(
         feesCents: loan.feesCents + cfg.missedFeeCents,
         missedInRow: loan.missedInRow + 1,
         missedTotal: loan.missedTotal + 1,
+        firstMissedWeek: loan.firstMissedWeek ?? state.week,
       }
       if (missed.missedInRow >= 2) missed.status = 'called'
       loans.push(missed)
@@ -306,6 +311,10 @@ export function settleLoans(
   }
   return { state: { ...state, loan: { ...l0, loans, accepted } }, money, entries }
 }
+
+/** A running loan with its last payment missed. */
+export const loanMissed = (state: GameState) =>
+  (state.loan?.loans ?? []).some((l) => l.status === 'running' && l.missedInRow > 0)
 
 /** True once the bank has called a loan: the run ends. */
 export const loanCalled = (state: GameState) =>

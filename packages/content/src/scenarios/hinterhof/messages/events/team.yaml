@@ -1,0 +1,180 @@
+# The people in the kitchen and on the floor.
+events:
+  - id: cook_saturdays
+    area: team
+    weight: 2
+    once: true
+    when: [week >= 16]
+    from: none
+    sender: Your cook
+    look: note
+    text: >-
+      Your cook asks for Saturdays off: his daughter has football, and he has a face that has
+      worked many Saturdays. If you agree, you cook on Saturdays. On a busy Saturday that is a
+      long night for one person.
+    defaultChoice: refuse
+    choices:
+      - id: agree
+        label: Agree and cook Saturdays yourself
+        hours: 6
+        effects:
+          - { type: energy, delta: -3 }
+          - { type: review, rating: 3, count: 2, when: [tour.bookedWeek >= 200] }
+      - id: refuse
+        label: Refuse kindly
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 1 }
+
+  - id: server_quits
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [tour.reviews >= 5]
+    from: none
+    sender: Your server
+    look: note
+    text: >-
+      A server quits on Thursday, effective Friday, to follow a band to Portugal. An agency
+      could send someone at a price. Or you serve yourself, or you run the floor short and hope.
+    defaultChoice: short
+    choices:
+      - id: agency
+        label: Book an agency server
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -25000 }
+      - id: yourself
+        label: Serve the tables yourself
+        hours: 8
+        effects:
+          - { type: energy, delta: -5 }
+      - id: short
+        label: Run short-handed
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3, when: [tour.bookedWeek >= 120] }
+
+  - id: apprentice_offer
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: The chamber of commerce
+    look: official
+    text: >-
+      The chamber of commerce asks whether you would take an apprentice cook from September.
+      Apprentices are cheap, keen and slow, in roughly that order. They also need teaching.
+    defaultChoice: decline
+    choices:
+      - id: take
+        label: Take an apprentice
+        hours: 2
+        effects:
+          - { type: fixedCost, id: apprentice, name: Apprentice cook, monthlyCents: 110000 }
+          - { type: energy, delta: 3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: tips_dispute
+    area: team
+    weight: 1
+    once: true
+    when: [tour.reviews >= 10]
+    from: none
+    sender: Your kitchen and your floor
+    look: note
+    text: >-
+      The kitchen thinks the floor keeps the tips; the floor thinks the kitchen should smile more.
+      A clear rule would help. Writing it means a meeting in which everyone talks at once.
+    defaultChoice: ignore
+    choices:
+      - id: pool
+        label: Hold the meeting and pool the tips
+        hours: 2
+        effects:
+          - { type: energy, delta: 2 }
+      - id: ignore
+        label: Let them sort it out
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 1 }
+
+  - id: staff_meal
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: Your staff
+    text: >-
+      The staff ask for a proper family meal before dinner service instead of eating standing up.
+      It costs food every day and makes the evening calmer. Calm evenings are cheaper than they
+      look.
+    defaultChoice: decline
+    choices:
+      - id: agree
+        label: Cook a staff meal every day
+        hours: 0
+        effects:
+          - { type: fixedCost, id: staff_meal, name: Staff meals, monthlyCents: 20000 }
+          - { type: energy, delta: 3 }
+      - id: decline
+        label: Keep it as it is
+        hours: 0
+
+  - id: dishwasher_minijob
+    area: team
+    weight: 1
+    once: true
+    when: [tour.reviews >= 8]
+    from: none
+    sender: A student
+    look: note
+    text: >-
+      A student asks for a minijob washing up in the evenings. He is reliable, quiet and owns
+      his own apron. A minijob is paid every month, busy or not.
+    defaultChoice: decline
+    choices:
+      - id: hire
+        label: Give him the minijob
+        hours: 1
+        effects:
+          - {
+              type: fixedCost,
+              id: dishwasher_minijob,
+              name: Dishwasher minijob,
+              monthlyCents: 55000,
+            }
+          - { type: energy, delta: 4 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: cook_poached
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 40]
+    from: none
+    sender: Your cook
+    look: note
+    text: >-
+      A hotel kitchen has offered your cook more money and fewer weekends. He would rather stay,
+      he says, for a reason. The reason has a number in it.
+    defaultChoice: let_go
+    choices:
+      - id: match
+        label: Pay him more
+        hours: 1
+        effects:
+          - { type: fixedCost, id: cook_raise, name: Cook's raise, monthlyCents: 30000 }
+      - id: let_go
+        label: Let him go
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 8 }
+          - { type: review, rating: 3, count: 2 }
