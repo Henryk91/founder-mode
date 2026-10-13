@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 5 (outdoor adventure company), sub-step O1: research figures, then content
-Last commit: Step 4 done, tag tourism-engine
-Next action: Verify the outdoor spec's (est.) figures (platform commissions, guide day rates, gear prices, insurance, minijob rules) and cite them; then write the scenario content (scenario.yaml with the bookings block, features as products, events, quotes, names, intro) in packages/content/src/scenarios/outdoor, register it as long only.
+Step: 5 (outdoor adventure company, id gratwanderung), sub-step O2: inbox target, post-mortem, report
+Last commit: Step 5 O1 (content, bot fixes, seasonal win test, all T targets pass on 1000 seeds)
+Next action: tourism inbox variants and target T6; guests section in the post-mortem; full report into balancing.md; step 5 report; tag scenario-outdoor.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
@@ -35,5 +35,7 @@ Next action: Verify the outdoor spec's (est.) figures (platform commissions, gui
 - Expansion trigger: leads per hour below 60% of the best eight weeks (decisions, C3b).
 - Chasing and admin is an add-on to a member's task, not only a role of its own (decisions, C3b).
 - Every careful-bot variant reads price hints in long mode, so price_aware equals validate_then_build there (decisions, C3b).
+
+- Outdoor: school demand raised far above the spec (6 to 12 groups a week, was 0.3 to 1.2); a tourism run is won when its last 13 months cover all costs (decisions, step 5).
 
 ## Stopped
