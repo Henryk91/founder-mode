@@ -12,6 +12,16 @@ import {
 } from '../components/Ruled'
 import { Stepper } from '../components/Stepper'
 import { RaisePlan, raiseHours, raiseSummary } from '../components/RaisePlan'
+import {
+  GuestsPlan,
+  guestsHours,
+  guestsSummary,
+  PricesPlan,
+  pricesSummary,
+  RosterPlan,
+  rosterHours,
+  rosterSummary,
+} from '../components/TourismPlan'
 import { TeamPlan } from '../components/TeamPlan'
 import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type UiStage } from '../labels'
@@ -64,6 +74,9 @@ function sectionHours(view: PlayerView, p: WeekPlan): Record<SectionId, number> 
       p.demos.length * costs.demoHours +
       p.followUps.length * costs.followUpHours +
       p.chase.length * costs.chaseHours,
+    roster: rosterHours(view, p.bookings),
+    guests: guestsHours(view, p.bookings),
+    prices: 0,
     team: p.searchRole === null ? 0 : costs.searchHours,
     raise: raiseHours(view, p.funding),
     rest: p.restHours,
@@ -129,6 +142,9 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
       ...(p.chase.length > 0 ? [count('plan.sum.chase', stage, p.chase.length)] : []),
     ]),
     team: freelanceLine ? (idle ? freelanceLine : `${team}, ${freelanceLine}`) : team,
+    roster: rosterSummary(view, p.bookings, stage),
+    guests: guestsSummary(view, p.bookings, stage),
+    prices: pricesSummary(view, p.bookings, stage),
     raise: raiseSummary(view, p.funding, stage),
     rest: p.restHours > 0 ? label('unit.hours', stage, { n: p.restHours }) : none,
   }
@@ -140,6 +156,9 @@ const SECTIONS: { id: SectionId; title: LabelKey }[] = [
   { id: 'build', title: 'plan.section.build' },
   { id: 'sell', title: 'plan.section.sell' },
   { id: 'demos', title: 'plan.section.demos' },
+  { id: 'roster', title: 'plan.section.roster' },
+  { id: 'guests', title: 'plan.section.guests' },
+  { id: 'prices', title: 'plan.section.prices' },
   { id: 'team', title: 'plan.section.team' },
   { id: 'raise', title: 'plan.section.raise' },
   { id: 'rest', title: 'plan.section.rest' },
@@ -168,6 +187,9 @@ export function Plan() {
     build: <BuildBody free={free} />,
     sell: <SellBody free={free} />,
     demos: <DemosBody free={free} />,
+    roster: <RosterPlan />,
+    guests: <GuestsPlan />,
+    prices: <PricesPlan />,
     team: <TeamPlan />,
     raise: <RaisePlan />,
     rest: <RestBody free={free} />,
@@ -184,6 +206,10 @@ export function Plan() {
             if (id === 'demos' && !hasDemosSection(view, draft)) return null
             // Raising exists only in long mode with funding.
             if (id === 'raise' && !view.funding) return null
+            // Tourism has its roster, guests and prices sections instead of selling and hiring.
+            const tourismOnly = id === 'roster' || id === 'guests' || id === 'prices'
+            const subscriptionOnly = id === 'sell' || id === 'demos' || id === 'team'
+            if (view.bookings ? subscriptionOnly : tourismOnly) return null
             return (
               <section key={id} aria-label={label(title, stage)}>
                 <button

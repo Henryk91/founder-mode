@@ -43,7 +43,9 @@ export function PhoneLayout(props: { main: React.ReactNode | null }) {
               <TabIcon tab={t} />
               {t === 'inbox' && openMessages > 0
                 ? label('tab.inboxCount', stage, { n: openMessages })
-                : label(`tab.${t}`, stage)}
+                : t === 'pipeline' && view?.bookings
+                  ? label('tab.calendar', stage)
+                  : label(`tab.${t}`, stage)}
             </button>
           ))}
         </nav>
