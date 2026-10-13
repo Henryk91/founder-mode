@@ -158,3 +158,14 @@ Event ideas:
 The first winter is quiet and expensive, which is the time to test, renovate a few rooms and build partnerships. A player who reads the segments, renovates only as far as their guests need, and balances platforms with direct bookings enters the second summer with a better rate and better reviews. A player who takes a big loan for wellness and renovation before knowing who comes faces the second November with loan payments and empty rooms.
 
 This is a back of the envelope expectation. The bot report is the real answer.
+
+## 14. Sources and values as built (step 7)
+
+Checked figures:
+
+- Booking platforms: about 11 to 15% commission in Germany, depending on place (2025 reports quoting the largest platform's European management; secondary FAQ sites). Content: 15%.
+- Bathroom renovation: 3,600 to 10,500 EUR for 3 square metres (aroundhome.de, immoportal.com); a room with paint, floors and furniture about 10,000 (estimate).
+- Minimum wage 13.90 EUR from January 2026; housekeeping and reception shifts priced with employer costs (estimates).
+- Not found: leases for a twelve room lakeside guesthouse, utilities (kept as estimates).
+
+Changed from this spec while tuning (reasons in `docs/decisions.md`, step 7): lease 4,800 and utilities 1,800 a month; leisure 25 to 75 and project guests 12 to 50 room nights at peak; groups about one whole-house booking a week at peak, booked 8 to 30 weeks ahead, with a 30% deposit; couples use about a third of the rooms outside the summer (weekends); renovation in one block of four rooms; no minimum stay. A run is won when its last 13 months together cover every cost, loan repayments included.

@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 7 (the hotel, Seeblick), sub-step H2: report, gate, tag
-Last commit: Step 7 H1 (Seeblick content, engine additions, bots, tuning)
-Next action: Seeblick report into balancing.md, step 7 report, gate, tag scenario-hotel; then step 8.
+Step: 8 (wrap up), sub-step W1: revisit open issues with a fresh budget
+Last commit: Step 7 done, tag scenario-hotel
+Next action: open issues one by one (Seeblick first: cost per room night), then the screen review, performance (LCP), docs, final report, tag tourism-complete.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
@@ -13,7 +13,7 @@ Next action: Seeblick report into balancing.md, step 7 report, gate, tag scenari
 - [x] Step 4: tourism engine (tag tourism-engine)
 - [x] Step 5: outdoor adventure company (tag scenario-outdoor)
 - [x] Step 6: bank loan and restaurant (tag scenario-restaurant)
-- [ ] Step 7: hotel (tag scenario-hotel)
+- [x] Step 7: hotel (tag scenario-hotel)
 - [ ] Step 8: wrap up (tag tourism-complete)
 
 ## Open issues
