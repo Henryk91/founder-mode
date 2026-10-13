@@ -49,18 +49,14 @@ export function Market(props: {
   )
 }
 
-/** A line of writing with nothing beside it. `wrap` lets it run onto further whole lines. */
-export function Writing(props: { children: React.ReactNode; warn?: boolean; wrap?: boolean }) {
-  if (props.wrap) {
-    return (
-      <div className={plan.line}>
-        <Wrapped warn={props.warn}>{props.children}</Wrapped>
-      </div>
-    )
-  }
+/**
+ * A line of writing with nothing beside it. Text too long for the line runs onto further whole
+ * lines; nothing in the notebook is cut short (only a section summary on a phone may be).
+ */
+export function Writing(props: { children: React.ReactNode; warn?: boolean }) {
   return (
     <div className={plan.line}>
-      <span className={`${plan.label} ${props.warn ? plan.warnText : ''}`}>{props.children}</span>
+      <Wrapped warn={props.warn}>{props.children}</Wrapped>
     </div>
   )
 }
@@ -116,7 +112,9 @@ export function FeatureRow(props: {
 export function SubHeading(props: { children: React.ReactNode }) {
   return (
     <div className={plan.line}>
-      <span className={plan.sub}>{props.children}</span>
+      <div className={`${plan.wrapped} ${plan.subWrapped}`}>
+        <span className={plan.onRule}>{props.children}</span>
+      </div>
     </div>
   )
 }
