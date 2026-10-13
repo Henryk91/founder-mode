@@ -28,6 +28,7 @@ import {
   type SuggestionId,
   type TeamRoleId,
   type FreelancePlan,
+  type BookingsPlan,
   type FundingPlan,
   type GameMode,
   type TeamTask,
@@ -50,7 +51,18 @@ import {
 export type Tab = 'plan' | 'inbox' | 'market' | 'pipeline' | 'money'
 
 /** The collapsible sections of the Plan tab. */
-export type PlanSection = 'talk' | 'test' | 'build' | 'sell' | 'demos' | 'team' | 'raise' | 'rest'
+export type PlanSection =
+  | 'talk'
+  | 'test'
+  | 'build'
+  | 'sell'
+  | 'demos'
+  | 'roster'
+  | 'guests'
+  | 'prices'
+  | 'team'
+  | 'raise'
+  | 'rest'
 
 export type ExplainKey =
   | 'runway'
@@ -64,6 +76,9 @@ export type ExplainKey =
   | 'demos'
   | 'hiring'
   | 'raise'
+  | 'roster'
+  | 'guests'
+  | 'prices'
   | 'rest'
 
 /**
@@ -183,6 +198,8 @@ export type UiActions = {
   setFreelance(change: Partial<FreelancePlan>): void
   /** Changes part of the raising plan (long mode): a round, pitching, second looks, terms, update. */
   setFunding(change: Partial<FundingPlan>): void
+  /** Changes part of the bookings plan (tourism): roster, prices, policy, channels. */
+  setBookings(change: Partial<BookingsPlan>): void
   /** Answers a message now: its hours count at once, its effects land when the week ends. */
   answer(messageId: string, choiceId: string): void
   /** First step of shutting down: shows the question. Nothing happens to the run yet. */
@@ -591,6 +608,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         editPlan((p) => ({ ...p, freelance: { ...p.freelance, ...change } })),
       setFunding: (change) =>
         editPlan((p) => ({ ...p, funding: { ...(p.funding ?? noFunding()), ...change } })),
+      setBookings: (change) =>
+        editPlan((p) => ({ ...p, bookings: { ...(p.bookings ?? noBookings()), ...change } })),
       answer(messageId, choiceId) {
         if (!game || game.status !== 'running') return
         try {
@@ -657,4 +676,15 @@ export const noFunding = (): FundingPlan => ({
   decline: [],
   stop: false,
   update: null,
+})
+
+/** A bookings plan with nothing in it. */
+export const noBookings = (): BookingsPlan => ({
+  shifts: {},
+  founderShifts: {},
+  prices: {},
+  policy: null,
+  platform: null,
+  partnerships: [],
+  outreach: {},
 })

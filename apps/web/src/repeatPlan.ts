@@ -42,6 +42,21 @@ export function repeatPlan(last: WeekPlan, view: PlayerView): WeekPlan {
     }
   }
   plan.freelance = carryFreelance(last, view)
+  // Tourism: the roster and outreach are regular work; prices, policy and channels are one-offs.
+  if (view.bookings && last.bookings) {
+    const avail = Object.fromEntries(view.bookings.roles.map((r) => [r.id, r.available]))
+    plan.bookings = {
+      shifts: Object.fromEntries(
+        Object.entries(last.bookings.shifts).map(([r, n]) => [r, Math.min(n, avail[r] ?? 0)]),
+      ),
+      founderShifts: { ...last.bookings.founderShifts },
+      prices: {},
+      policy: null,
+      platform: null,
+      partnerships: [],
+      outreach: { ...last.bookings.outreach },
+    }
+  }
   // Pitching is regular work while the round is open; every other raising step is a one-off.
   const f = view.funding
   if (f?.round && f.round.investorsLeft > 0 && (last.funding?.pitchHours ?? 0) > 0) {

@@ -1,4 +1,5 @@
 import { renderToString } from 'react-dom/server'
+import { loadScenario } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
 import { App } from '../src/App'
 import { memoryProfiles, memoryStorage } from '../src/storage'
@@ -133,5 +134,39 @@ describe('raising money in the web app (Part D)', () => {
     store.getState().setFreelance({ admin: true })
     expect(store.getState().plan.freelance.admin).toBe(true)
     expect(store.getState().issues).toEqual([])
+  })
+})
+
+describe('tourism screens (step 4)', () => {
+  it('shows the roster, guests and prices sections and the calendar in a bookings scenario', async () => {
+    const { tourismScenario } = await import('../../../packages/engine/test/tourism')
+    const store = createGameStore({
+      storage: memoryStorage(),
+      makeSeed: () => 'tour-ui',
+      scenario: (id, mode) => (mode === 'long' ? tourismScenario() : loadScenario(id)),
+    })
+    store.getState().selectMode('long')
+    store.getState().startRun()
+    play(store, 1)
+    let page = text(store)
+    expect(page).toContain('Who works')
+    expect(page).toContain('Getting guests')
+    expect(page).toContain('Prices and rules')
+    expect(page).not.toContain('Find customers')
+    store.getState().toggleSection('guests')
+    store.getState().setBookings({ platform: true, outreach: { coworking: 4 } })
+    expect(store.getState().issues).toEqual([])
+    page = text(store)
+    expect(page).toContain('Tripbuddy')
+    expect(page).toContain('keeps 25% of every booking')
+    store.getState().toggleSection('roster')
+    store.getState().setBookings({ shifts: { guide: 2 } })
+    expect(store.getState().issues).toEqual([])
+    store.getState().toggleSection('prices')
+    expect(text(store)).toContain('Cancellations')
+    store.getState().setTab('pipeline')
+    page = text(store)
+    expect(page).toContain('Bookings')
+    expect(page).toContain('Who is coming')
   })
 })

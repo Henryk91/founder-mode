@@ -7,7 +7,7 @@ import { label } from '../labels'
 import { Inbox } from '../screens/Inbox'
 import { Market } from '../screens/Market'
 import { Money } from '../screens/Money'
-import { Pipeline } from '../screens/Pipeline'
+import { PipelineOrCalendar } from '../screens/Calendar'
 import { Plan } from '../screens/Plan'
 import { useGame } from '../useGame'
 import styles from './Layout.module.css'
@@ -58,7 +58,7 @@ export function DeskLayout(props: { main: React.ReactNode | null }) {
               ))}
             </nav>
             {centre === 'plan' ? <Plan /> : <Market />}
-            <Pipeline />
+            <PipelineOrCalendar />
           </main>
           <aside className={styles.right} aria-label={label('tab.money', stage)} tabIndex={0}>
             <Money />
