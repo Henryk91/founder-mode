@@ -113,8 +113,8 @@ events:
     sender: Your gear shelf
     look: note
     text: >-
-      Two harnesses are fraying and a helmet has a crack nobody wants to talk about. Gear does
-      not last forever; it just looks like it on the shelf.
+      Two harnesses are fraying and a helmet has a crack nobody wants to talk about. Out of
+      season the kit can wait on the shelf; in the season it is on somebody.
     defaultChoice: later
     choices:
       - id: replace
@@ -126,7 +126,7 @@ events:
         label: Use it a little longer
         hours: 0
         effects:
-          - { type: bugs, delta: 1 }
+          - { type: bugs, delta: 1, when: [tour.peak == 1] }
 
   - id: van_inspection
     area: product
@@ -138,7 +138,8 @@ events:
     look: official
     text: >-
       The van fails its inspection: brakes, and a rust patch the inspector photographed for his
-      own collection. Transfers stop until it is fixed.
+      own collection. Transfers stop until it is fixed. A friend's van seats six, which is
+      plenty out of season.
     defaultChoice: fix
     choices:
       - id: fix
@@ -152,6 +153,8 @@ events:
         effects:
           - { type: cash, amountCents: -40000 }
           - { type: lostHours, hours: 3 }
+          # The friend's van seats six; in the season that means late transfers.
+          - { type: review, rating: 2, count: 2, when: [tour.peak == 1] }
 
   - id: route_closure
     area: product

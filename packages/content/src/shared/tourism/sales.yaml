@@ -10,14 +10,15 @@ events:
     look: official
     text: >-
       The platform's monthly report says your listing slipped down the rankings. Better reviews
-      would help, the report says, as if you had not thought of that.
+      would help, the report says, as if you had not thought of that. Asking works best with
+      guests in front of you.
     defaultChoice: ignore
     choices:
       - id: ask_reviews
         label: Ask happy guests for reviews
         hours: 2
         effects:
-          - { type: review, rating: 5, count: 3 }
+          - { type: review, rating: 5, count: 2, when: [tour.bookedWeek >= 3] }
       - id: ignore
         label: Ignore the report
         hours: 0

@@ -85,6 +85,27 @@ describe('the bookings model', () => {
     expect(l.bookingCostsCents).toBeGreaterThanOrEqual(9 * 30_000)
   })
 
+  it('turns guests an inbox answer sent into requests next turn, which need a product with room', () => {
+    const sendTo = (st: GameState): GameState => ({
+      ...st,
+      bookings: { ...st.bookings!, eventGuests: { coworking: 5 } },
+    })
+    const count = (st: GameState) =>
+      st.bookings!.bookings.filter((b) => b.segmentId === 'coworking').length
+    const base = shipped(game('sent'), ['basic_ordering'])
+    const without = endWeek(base, plan(bp({}))).state
+    const withSent = endWeek(sendTo(base), plan(bp({}))).state
+    expect(count(withSent)).toBe(count(without) + 5)
+    expect(withSent.bookings!.eventGuests).toEqual({})
+    // Nothing that serves them: they are turned away, and the reach does not grow.
+    const none = endWeek(sendTo(game('sent')), plan(bp({}))).state
+    expect(none.bookings!.turnedAway.some((t) => t.segmentId === 'coworking')).toBe(true)
+    expect(none.bookings!.repeatGuests['coworking']).toBe(0)
+    // They complain: a 2 star review per group sent and turned away.
+    expect(none.bookings!.reviews).toBe(5)
+    expect(none.bookings!.rating).toBe(2)
+  })
+
   it('cancels guests the roster cannot cover, and the reviews say so', () => {
     let staffed = shipped(game('roster'), ['basic_ordering'])
     let empty = staffed

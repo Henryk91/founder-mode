@@ -10,7 +10,7 @@ maxWeeks: 104
 win: { profitableMonths: 3, overMonths: 13 }
 
 start:
-  cashCents: 1800000
+  cashCents: 1400000
   savingsCents: 1425000
   livingCostCentsPerWeek: 67500
   # The engine's single price is used only by tests and pilots; guests pay the bookings prices.
@@ -326,9 +326,10 @@ officeStages:
   - { id: van_garage, name: Van and garage, monthlyCents: 0 }
   - id: town_base
     name: Small base in town
-    monthlyCents: 90000
+    # A small shop on a market square in an Alpine town (est. 600 to 900 a month).
+    monthlyCents: 70000
     energyPerWeek: 1
-    walkIns: { segment: tourists, leadsPerWeek: 0.3 }
+    walkIns: { segment: tourists, leadsPerWeek: 0.35 }
 
 organisedAt: [covers_all_costs]
 
@@ -367,7 +368,7 @@ bookings:
   fitBase: 0.4
   segments:
     tourists:
-      base: { min: 15, max: 45 }
+      base: { min: 12, max: 38 }
       unit: person
       price: { peak: 8500, off: 7500 }
       size: { min: 1, max: 4 }
@@ -380,7 +381,7 @@ bookings:
       invoiced: false
       reviewWeight: 0.8
     team_events:
-      base: { min: 0.5, max: 2 }
+      base: { min: 0.35, max: 1.5 }
       unit: group
       price: { peak: 280000, off: 260000 }
       size: { min: 1, max: 1 }
@@ -388,7 +389,7 @@ bookings:
       season: [0.2, 0.3, 0.5, 0.9, 1, 0.8, 0.4, 0.15, 0.9, 1, 0.5, 0.1]
       response: { platform: 0, website: 0.4, partnership: 0.6, outreach: 0.6, walkIn: 0 }
       cancel: 0.04
-      strictConversion: 0.9
+      strictConversion: 0.8
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.3
@@ -404,7 +405,7 @@ bookings:
       season: [0, 0, 0.2, 0.5, 1, 1, 0.8, 0.5, 1, 0.6, 0.1, 0]
       response: { platform: 0, website: 0.2, partnership: 0.6, outreach: 0.8, walkIn: 0 }
       cancel: 0.06
-      strictConversion: 0.85
+      strictConversion: 0.75
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.2

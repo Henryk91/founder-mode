@@ -205,6 +205,11 @@ export type BookingsState = {
   partnerships: SegmentId[]
   /** Guests booked directly, per segment: they come back and tell others. */
   repeatGuests: Record<SegmentId, number>
+  /**
+   * Guests an inbox answer sent this week, per segment (step 5): they ask to book next turn like
+   * any request, so they need a product with room. Absent in saves before step 5.
+   */
+  eventGuests?: Record<SegmentId, number>
   rating: number | null
   reviews: number
   /** This week's weather once it happened, and the forecast shown for next week. */

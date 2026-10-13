@@ -29,7 +29,7 @@ events:
     from: none
     sender: Kessler Logistik GmbH
     text: >-
-      A logistics firm wants a team day for sixty people next week. They mention the budget
+      A logistics firm wants a team day for sixty people this Friday. They mention the budget
       twice and the date only once, which is a good sign and a bad one.
     defaultChoice: decline
     choices:
@@ -37,8 +37,8 @@ events:
         label: Take it and find guides somehow
         hours: 6
         effects:
-          - { type: cash, amountCents: 300000, when: [tour.bookedWeek <= 20] }
-          - { type: review, rating: 2, count: 3, when: [tour.bookedWeek > 20] }
+          - { type: cash, amountCents: 300000, when: [tour.bookedWeek <= 8] }
+          - { type: review, rating: 2, count: 3, when: [tour.bookedWeek > 8] }
           - { type: energy, delta: -8 }
       - id: decline
         label: Decline and offer a date in autumn
@@ -52,10 +52,11 @@ events:
     once: true
     when: [week >= 6]
     from: none
-    sender: Alpenhof Garmisch
+    sender: Hotel Edelraute
     text: >-
-      A hotel offers to send you its guests for a fifteen percent cut. The manager calls it a
-      partnership; his spreadsheet calls it a commission.
+      A hotel offers to send you a busload of its guests for a fifteen percent cut. The manager
+      calls it a partnership; his spreadsheet calls it a commission. They will need a tour with
+      room for them.
     defaultChoice: decline
     choices:
       - id: accept
@@ -63,7 +64,7 @@ events:
         hours: 1
         effects:
           - { type: guests, segment: tourists, count: 15 }
-          - { type: fixedCost, id: hotel_cut, name: Hotel partner cut, monthlyCents: 20000 }
+          - { type: cash, amountCents: -20000 }
       - id: decline
         label: Keep your margin
         hours: 0
@@ -217,7 +218,8 @@ events:
     look: note
     text: >-
       A family of five calls from a campsite: can they come tomorrow? It depends, as always,
-      on whether there is anyone left on your roster.
+      on whether there is anyone left on your roster. Squeezed into a full week, they would
+      mostly be squeezed.
     defaultChoice: no
     choices:
       - id: squeeze
@@ -226,6 +228,7 @@ events:
         effects:
           - { type: cash, amountCents: 40000 }
           - { type: energy, delta: -4 }
+          - { type: review, rating: 2, count: 2, when: [tour.bookedWeek >= 6] }
       - id: no
         label: Say you are full
         hours: 0

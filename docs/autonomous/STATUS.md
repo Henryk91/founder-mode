@@ -23,6 +23,8 @@ Next action: tourism inbox variants and target T6; guests section in the post-mo
 - Target 27 / 11 (Kantino long): blind effort 37% of reading, at the limit only through its margin. Revisit in step 8.
 - Target 20 (Kantino long): burst freelancer +0.8 ±1.7 over hire (needs +2); steady hire -1.3 ±1.4 against freelancer (needs +2). Both lose about 3 points against solo: no added part time person pays at this company's size. Options: restate as "renting loses less for a burst, hiring loses less for steady work"; judge it only in tourism where staffing is central; or longer builds in long mode. Decisions, C3b.
 
+- T6 (Gratwanderung): blind effort gains 60% of what reading gains (limit a third); budget used. Options: more effortful choices with visible costs; scarcer founder hours in tourism. Decisions, step 5.
+
 ## For Henry to review (non-blocking)
 - Step 3 kept the existing condition grammar and left the 60 week events' sender situations implicit to keep their fingerprints (decisions, step 3).
 - Funding design choices (term sheets in the plan, one investor per round, mood not confidence shown, no pitch odds in the luck section): decisions, part D.
@@ -35,7 +37,6 @@ Next action: tourism inbox variants and target T6; guests section in the post-mo
 - Expansion trigger: leads per hour below 60% of the best eight weeks (decisions, C3b).
 - Chasing and admin is an add-on to a member's task, not only a role of its own (decisions, C3b).
 - Every careful-bot variant reads price hints in long mode, so price_aware equals validate_then_build there (decisions, C3b).
-
 - Outdoor: school demand raised far above the spec (6 to 12 groups a week, was 0.3 to 1.2); a tourism run is won when its last 13 months cover all costs (decisions, step 5).
 
 ## Stopped

@@ -210,12 +210,10 @@ function applyEffect(
       const ids = Object.keys(b.repeatGuests)
       const seg = effect.segment ?? (ids.length ? rng.pick(ids) : null)
       if (!seg) return state
+      const sent = b.eventGuests ?? {}
       return {
         ...state,
-        bookings: {
-          ...b,
-          repeatGuests: { ...b.repeatGuests, [seg]: (b.repeatGuests[seg] ?? 0) + effect.count },
-        },
+        bookings: { ...b, eventGuests: { ...sent, [seg]: (sent[seg] ?? 0) + effect.count } },
       }
     }
     case 'review': {
