@@ -31,6 +31,8 @@ describe('long mode in the content', () => {
     // block does not touch them.
     expect(scenarioHash(loadScenario('kantino'))).toBe('2dda4b4b1831c529')
     expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
+    // Gratwanderung is protected from step 5 on (its tag `scenario-outdoor`).
+    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('6b5f7cb1401ce1ab')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })

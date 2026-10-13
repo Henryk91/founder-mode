@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 5 (outdoor adventure company, id gratwanderung), sub-step O2: inbox target, post-mortem, report
-Last commit: Step 5 O1 (content, bot fixes, seasonal win test, all T targets pass on 1000 seeds)
-Next action: tourism inbox variants and target T6; guests section in the post-mortem; full report into balancing.md; step 5 report; tag scenario-outdoor.
+Step: 6 (bank loan, then the restaurant), sub-step L0: loan design
+Last commit: Step 5 done, tag scenario-outdoor
+Next action: write docs/loan-proposal.md (Part A of the restaurant spec), then the engine loan system (systems/loan.ts), content schema, bots and targets L1 to L4.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
@@ -11,7 +11,7 @@ Next action: tourism inbox variants and target T6; guests section in the post-mo
 - [x] Step 2: Phase 9 UI, docs, report (tag phase9-done)
 - [x] Step 3: situational events system (tag situational-events)
 - [x] Step 4: tourism engine (tag tourism-engine)
-- [ ] Step 5: outdoor adventure company (tag scenario-outdoor)
+- [x] Step 5: outdoor adventure company (tag scenario-outdoor)
 - [ ] Step 6: bank loan and restaurant (tag scenario-restaurant)
 - [ ] Step 7: hotel (tag scenario-hotel)
 - [ ] Step 8: wrap up (tag tourism-complete)
