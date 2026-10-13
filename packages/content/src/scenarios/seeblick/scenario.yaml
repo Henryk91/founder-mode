@@ -294,7 +294,7 @@ segments:
     size: { min: 300, max: 900 }
     # Per room night when the whole house is booked: 1,200 to 2,200 a night for twelve rooms
     # (est., 3).
-    wtpCents: { min: 10000, max: 18000 }
+    wtpCents: { min: 11000, max: 18500 }
     mustHave: [event_room, catering_partner, whole_house_booking]
     channelResponse:
       cold_email: { min: 0.01, max: 0.03 }
@@ -403,8 +403,8 @@ bookings:
   fitBase: 0.4
   segments:
     leisure:
-      # Spec 30 to 90 (decisions, step 7).
-      base: { min: 25, max: 75 }
+      # Spec 30 to 90 (decisions, steps 7 and 8).
+      base: { min: 20, max: 60 }
       unit: night
       price: { peak: 13500, off: 11500 }
       size: { min: 1, max: 4 }
@@ -420,8 +420,8 @@ bookings:
       invoiced: false
       reviewWeight: 0.8
     project_guests:
-      # Spec 15 to 60 (decisions, step 7).
-      base: { min: 12, max: 50 }
+      # Spec 15 to 60 (decisions, steps 7 and 8).
+      base: { min: 16, max: 60 }
       unit: night
       price: { peak: 9000, off: 9000 }
       size: { min: 3, max: 10 }
@@ -438,7 +438,7 @@ bookings:
       # Whole house bookings of two to four nights: 24 to 48 room nights each. Spec 0.1 to 0.6
       # bookings a week; about one a week at peak here, a wedding most summer weekends (decisions,
       # step 7).
-      base: { min: 18, max: 40 }
+      base: { min: 24, max: 48 }
       unit: night
       price: { peak: 14000, off: 12000 }
       size: { min: 24, max: 48 }
@@ -459,8 +459,8 @@ bookings:
       # Twelve doubles, seven nights.
       capacity: 84
       serves: [leisure, project_guests]
-      # Laundry, amenities and breakfast ingredients per room night (est.).
-      unitCostCents: 1500
+      # Laundry, amenities and breakfast for two per occupied room night (est.; step 8, was 15).
+      unitCostCents: 3000
     breakfast_buffet:
       capacity: 0
     online_booking:
@@ -488,7 +488,8 @@ bookings:
       capacity: 0
       capacityOf: rooms
       serves: [groups]
-      unitCostCents: 1500
+      # Laundry and amenities; the catering partner feeds the party (est.).
+      unitCostCents: 2500
     wellness:
       capacity: 0
       # A small sauna and spa room (est. 60,000 to 90,000).

@@ -36,7 +36,7 @@ describe('long mode in the content', () => {
     // Hinterhof is protected from step 6 on (its tag `scenario-restaurant`).
     expect(scenarioHash(loadScenario('hinterhof'))).toBe('2f163b3ac15f119c')
     // Seeblick is protected from step 7 on (its tag `scenario-hotel`).
-    expect(scenarioHash(loadScenario('seeblick'))).toBe('57807b979e4e6495')
+    expect(scenarioHash(loadScenario('seeblick'))).toBe('98de501eb253117c')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })
