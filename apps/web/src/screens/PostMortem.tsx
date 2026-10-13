@@ -276,6 +276,20 @@ export function PostMortem({ desk }: { desk: boolean }) {
       ))}
       {money.freelance && <p>{t.freelance()}</p>}
       {money.funding && <p>{t.funding()}</p>}
+      {money.loans.map((l, i) => (
+        <p key={i}>
+          {label('pm.money.loan', stage, {
+            amount: formatEuro(l.amountCents),
+            week: l.startWeek,
+            rate: (l.rateBp / 100).toFixed(2),
+            interest: formatEuro(l.interestPaidCents + l.feesCents),
+          })}{' '}
+          {l.paidFor.length > 0
+            ? label('pm.money.loanPaidFor', stage, { items: l.paidFor.join(', ') })
+            : label('pm.money.loanPaidForNothing', stage)}{' '}
+          {label(`pm.money.loan.${l.status}`, stage, { balance: formatEuro(l.balanceCents) })}
+        </p>
+      ))}
       {money.funding && money.funding.pitchedTooEarly > 0 && (
         <p>{count('pm.money.tooEarly', stage, money.funding.pitchedTooEarly)}</p>
       )}

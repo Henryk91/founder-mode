@@ -516,6 +516,10 @@ export const CONDITION_PATHS = [
   'tour.bookedWeek',
   'tour.bookedAhead',
   'tour.listed',
+  // The bank loan (step 6): what is still owed in EUR, missed payments in a row, running loans.
+  'loan.balanceEur',
+  'loan.missed',
+  'loan.running',
 ] as const
 
 /** Paths about a message's sender: they make sense only once a message has a sender. */

@@ -170,3 +170,55 @@ describe('tourism screens (step 4)', () => {
     expect(page).toContain('Who is coming')
   })
 })
+
+describe('the bank loan on screen (step 6)', () => {
+  it('writes the plan, applies, shows the offer, and pays out at the month end', async () => {
+    const { tourismScenario } = await import('../../../packages/engine/test/tourism')
+    const loan = {
+      bankName: 'Isartaler Bank',
+      planHours: 20,
+      meetingHours: 4,
+      decisionWeeks: 2,
+      retryWeeks: 4,
+      ownShare: 0.2,
+      unprovenMaxCents: 5_000_000,
+      revenueMultiple: 1.5,
+      minCents: 1_000_000,
+      maxCents: 15_000_000,
+      stepCents: 500_000,
+      rateBp: { min: 450, max: 750 },
+      termMonths: [60, 84, 120],
+      graceMonths: [0, 6, 12],
+      missedFeeCents: 5_000,
+      earlyFeeShare: 0.01,
+      maxLoans: 2,
+    }
+    const store = createGameStore({
+      storage: memoryStorage(),
+      makeSeed: () => 'loan-ui',
+      scenario: (id, mode) => (mode === 'long' ? { ...tourismScenario(), loan } : loadScenario(id)),
+    })
+    store.getState().selectMode('long')
+    store.getState().startRun()
+    play(store, 0)
+    store.getState().toggleSection('loan')
+    let page = text(store)
+    expect(page).toContain('Bank loan')
+    expect(page).toContain('0 of 20 h written')
+    expect(page).toContain('at least 20% of the money in the company to be your own')
+    store.getState().setLoan({
+      planHours: 20,
+      apply: { amountCents: 2_000_000, termMonths: 60, graceMonths: 6 },
+    })
+    expect(store.getState().issues).toEqual([])
+    play(store, 3)
+    store.getState().toggleSection('loan')
+    page = text(store)
+    expect(page).toContain('Isartaler Bank offers')
+    store.getState().setLoan({ accept: true })
+    play(store, 4)
+    store.getState().toggleSection('loan')
+    expect(text(store)).toContain('Loan from Isartaler Bank')
+    expect(store.getState().view!.loan!.loans).toHaveLength(1)
+  })
+})

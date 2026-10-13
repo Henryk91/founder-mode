@@ -48,6 +48,14 @@ const METRICS: Record<ConditionPath, (state: GameState, sender: ConditionSender)
   'tour.bookedWeek': (s) => bookedBetween(s, s.week, s.week),
   'tour.bookedAhead': (s) => bookedBetween(s, s.week + 1, s.week + 4),
   'tour.listed': (s) => (s.bookings?.platformListed ? 1 : 0),
+  'loan.balanceEur': (s) =>
+    Math.floor(
+      (s.loan?.loans ?? [])
+        .filter((l) => l.status === 'running')
+        .reduce((t, l) => t + l.balanceCents, 0) / 100,
+    ),
+  'loan.missed': (s) => Math.max(0, ...(s.loan?.loans ?? []).map((l) => l.missedInRow)),
+  'loan.running': (s) => (s.loan?.loans ?? []).filter((l) => l.status === 'running').length,
   'sender.overdue': (s, m) =>
     m?.targetId && s.invoices.some((i) => i.customerId === m.targetId && isOverdue(i, s.week))
       ? 1

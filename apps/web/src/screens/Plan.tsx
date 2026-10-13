@@ -11,6 +11,7 @@ import {
   Writing,
 } from '../components/Ruled'
 import { Stepper } from '../components/Stepper'
+import { LoanPlan, loanHours, loanSummary } from '../components/LoanPlan'
 import { RaisePlan, raiseHours, raiseSummary } from '../components/RaisePlan'
 import {
   GuestsPlan,
@@ -79,6 +80,7 @@ function sectionHours(view: PlayerView, p: WeekPlan): Record<SectionId, number> 
     prices: 0,
     team: p.searchRole === null ? 0 : costs.searchHours,
     raise: raiseHours(view, p.funding),
+    loan: loanHours(view, p.loan),
     rest: p.restHours,
   }
 }
@@ -146,6 +148,7 @@ function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<Sectio
     guests: guestsSummary(view, p.bookings, stage),
     prices: pricesSummary(view, p.bookings, stage),
     raise: raiseSummary(view, p.funding, stage),
+    loan: loanSummary(view, p.loan, stage),
     rest: p.restHours > 0 ? label('unit.hours', stage, { n: p.restHours }) : none,
   }
 }
@@ -161,6 +164,7 @@ const SECTIONS: { id: SectionId; title: LabelKey }[] = [
   { id: 'prices', title: 'plan.section.prices' },
   { id: 'team', title: 'plan.section.team' },
   { id: 'raise', title: 'plan.section.raise' },
+  { id: 'loan', title: 'plan.section.loan' },
   { id: 'rest', title: 'plan.section.rest' },
 ]
 
@@ -192,6 +196,7 @@ export function Plan() {
     prices: <PricesPlan />,
     team: <TeamPlan />,
     raise: <RaisePlan />,
+    loan: <LoanPlan />,
     rest: <RestBody free={free} />,
   }
 
@@ -206,6 +211,8 @@ export function Plan() {
             if (id === 'demos' && !hasDemosSection(view, draft)) return null
             // Raising exists only in long mode with funding.
             if (id === 'raise' && !view.funding) return null
+            // The bank loan exists only where the scenario offers one.
+            if (id === 'loan' && !view.loan) return null
             // Tourism has its roster, guests and prices sections instead of selling and hiring.
             const tourismOnly = id === 'roster' || id === 'guests' || id === 'prices'
             const subscriptionOnly = id === 'sell' || id === 'demos' || id === 'team'
