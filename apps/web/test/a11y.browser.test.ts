@@ -245,6 +245,63 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
     )
   }
 
+  // The restaurant (step 6): the bank loan section beside the roster, guests and prices, the
+  // calendar and the dining room, at every width the plan names, in both engines.
+  for (const [engine, width] of [
+    [CHROMIUM, 375],
+    [CHROMIUM, 390],
+    [CHROMIUM, 430],
+    [CHROMIUM, 1440],
+    [WEBKIT, 375],
+    [WEBKIT, 390],
+    [WEBKIT, 430],
+    [WEBKIT, 1440],
+  ] as const) {
+    it.skipIf(!engine)(
+      `finds nothing to fix with axe in Hinterhof at ${width} px in ${engine?.name}`,
+      async () => {
+        const page = await open(width, engine === WEBKIT ? webkit! : browser)
+        const found: Record<string, Violation[]> = {}
+        const wide: string[] = []
+        const check = async (name: string) => {
+          const v = await axe(page)
+          if (v.length > 0) found[name] = v
+          const over = await page.evaluate(
+            () => document.documentElement.scrollWidth > window.innerWidth + 1,
+          )
+          if (over) wide.push(name)
+        }
+        await page.getByRole('button', { name: /^Hinterhof/ }).click()
+        await check('start, restaurant')
+        await page.getByRole('button', { name: 'New run' }).click()
+        for (let i = 0; i < 6; i++) {
+          const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
+          if (await next.count()) await next.first().click()
+        }
+        if (width < 1200) {
+          await page.locator('nav button').filter({ hasText: 'Inbox' }).first().click()
+          await check('Inbox, restaurant')
+          await page.locator('nav button').filter({ hasText: 'Plan' }).first().click()
+        }
+        for (const title of [/^Who works/, /^Getting guests/, /^Prices and rules/, /^Bank loan/]) {
+          await page.getByRole('button', { name: title }).first().click()
+        }
+        await page.waitForTimeout(300)
+        await check('Plan, restaurant sections')
+        if (width < 1200) {
+          await page.locator('nav button').filter({ hasText: 'Bookings' }).first().click()
+          await check('calendar, restaurant')
+        }
+        await page.getByRole('button', { name: 'End week' }).click()
+        await check('results, restaurant')
+        expect(found).toEqual({})
+        expect(wide).toEqual([])
+        await page.close()
+      },
+      90_000,
+    )
+  }
+
   it.skipIf(!CHROMIUM)(
     'moves focus to the new screen and shows a ring on every surface',
     async () => {

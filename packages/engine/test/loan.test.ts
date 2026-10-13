@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { createGame, endWeek, getView, validatePlan } from '../src/index'
 import { netChangeCents } from '../src/systems/finance'
 import { hoursByActivity } from '../src/systems/founder'
+import { loanEconomics } from '../src/postmortem'
 import { annuityCents, dueCents, judgeLoan, runRateBp } from '../src/systems/loan'
 import type { GameState, LoanPlan, Scenario, WeekPlan } from '../src/types'
 import { plan } from './helpers'
@@ -176,6 +177,18 @@ describe('the bank loan', () => {
     expect(s.status).toBe('running')
     s = playUntil(s, {}, (x) => x.status === 'ended')
     expect(s.ending).toBe('bank_called')
+  })
+
+  it('tells the post-mortem what each loan cost and how it ended', () => {
+    let s = borrow(createGame(withLoan(), 'pm'))
+    s = playUntil(s, {}, (x) => x.loan!.loans[0]!.months >= 2)
+    const [l] = loanEconomics(s)
+    expect(l).toMatchObject({ amountCents: 2_000_000, status: 'running', balanceCents: 2_000_000 })
+    expect(l!.interestPaidCents).toBe(s.loan!.loans[0]!.interestPaidCents)
+    expect(l!.interestPaidCents).toBeGreaterThan(0)
+    expect(l!.rateBp).toBe(s.loan!.loans[0]!.rateBp)
+    expect(Array.isArray(l!.paidFor)).toBe(true)
+    expect(loanEconomics(createGame(loadScenario('kantino'), 'x'))).toEqual([])
   })
 
   it('repays early with a fee', () => {
