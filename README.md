@@ -6,12 +6,15 @@ Demand is hidden. You cannot read it off a dial; you infer it from noisy experim
 
 **Play it:** https://henryk91.github.io/founder-mode/
 
-Two scenarios, picked on the Start screen:
+Five scenarios, picked on the Start screen:
 
 - **Kantino**: lunch ordering software for offices, coworking spaces and medical practices.
 - **Zollstock**: job plans and quotes for trade businesses that run on paper and phone calls.
+- **Gratwanderung** (104 weeks only): guided days in the Bavarian Alps for tourists, Munich team days and school groups; weather, seasons, platforms and a staff roster.
+- **Hinterhof** (104 weeks only): a neighbourhood restaurant in Munich that needs a bank loan to open; covers, food cost, crews per service, deposits and the delivery temptation.
+- **Seeblick** (104 weeks only): a twelve room guesthouse on a Bavarian lake; room nights, renovation, weddings booking the whole house, and a loan for the first winter.
 
-A run lasts up to 60 weeks, roughly 45 to 70 minutes of play. It ends in a sustainable business, bankruptcy, burnout, a shut down, or still searching at week 60.
+The three tourism scenarios replace subscriptions with bookings of capacity that expires: an occupancy calendar instead of the pipeline, a roster instead of hiring, reviews, seasons and weather. Hinterhof and Seeblick offer a bank loan: a business plan in hours, a bank that judges only what you can see, repayments whether guests come or not, and "Bank called the loan" as an ending.
 
 Kantino also has a long mode of 104 weeks: a second year with higher living costs and markets that run out of new leads, a team of up to four people, a freelancer, investors (an angel or a seed round, amount and equity only), and one more ending, Growing, for a funded company that still burns money but has a year of it left and growing revenue. Saves and best runs live in your browser (`localStorage`), so they are per device and per address. The same seed gives the same market.
 
@@ -41,7 +44,7 @@ pnpm bots --runs 1000 --wide-runs 10000 --seed-prefix test --mode long --parts m
 pnpm seeds                                   # rewrite docs/seeds.md: seeds that reach each ending
 ```
 
-The targets the report checks are in `docs/IMPLEMENTATION_PLAN.md`, section 7 (60 weeks), and `docs/phase9-proposal.md` (long mode, 20 to 37). After any change to formulas, scenario values, engine types or bot logic, rerun the report and commit `docs/balancing.md` with the change. `packages/bots/test/seeds.test.ts` replays every seed in `docs/seeds.md` and fails when one no longer reaches its ending; `pnpm seeds` then finds new ones.
+The targets the report checks are in `docs/IMPLEMENTATION_PLAN.md`, section 7 (60 weeks), `docs/phase9-proposal.md` (long mode, 20 to 37), `docs/tourism-proposal.md` (tourism, T1 to T12) and `docs/loan-proposal.md` (the bank loan, L1 to L4). The tourism scenarios run with `pnpm bots --runs 1000 --scenario gratwanderung --mode long` (likewise `hinterhof`, `seeblick`). After any change to formulas, scenario values, engine types or bot logic, rerun the report and commit `docs/balancing.md` with the change. `packages/bots/test/seeds.test.ts` replays every seed in `docs/seeds.md` and fails when one no longer reaches its ending; `pnpm seeds` then finds new ones.
 
 ## How it is organised
 
@@ -70,6 +73,8 @@ A few rules shape the code:
 - [`docs/seeds.md`](docs/seeds.md): seeds that reach each ending
 - [`docs/decisions.md`](docs/decisions.md): design and tuning decisions
 - [`docs/phase9-proposal.md`](docs/phase9-proposal.md): the freelancer, long mode and funding
+- [`docs/tourism-proposal.md`](docs/tourism-proposal.md) and [`docs/loan-proposal.md`](docs/loan-proposal.md): the bookings model and the bank loan
+- [`docs/scenario-outdoor.md`](docs/scenario-outdoor.md), [`docs/scenario-restaurant.md`](docs/scenario-restaurant.md), [`docs/scenario-hotel.md`](docs/scenario-hotel.md): the tourism scenarios, with sources
 - [`docs/autonomous/STATUS.md`](docs/autonomous/STATUS.md): progress of the autonomous run and the open issues
 - [`CLAUDE.md`](CLAUDE.md): working rules for Claude Code
 
@@ -77,8 +82,8 @@ A few rules shape the code:
 
 Pushing to `main` (or starting the workflow by hand) runs `.github/workflows/deploy.yml`: install, lint, test, build, then publish `apps/web/dist` to GitHub Pages at https://henryk91.github.io/founder-mode/. A failing test stops the deploy. The Vite `base` is `/founder-mode/` for production builds and `/` in dev, so every asset path is relative. In the repository settings, Pages must use the "GitHub Actions" source.
 
-The build parses the content YAML into JSON ahead of time and ships fonts cut down to Latin-1 (regenerate them with `pnpm --filter @founder-mode/web fonts`). Saves are tied to the engine version and a fingerprint of the scenario: after a change to either, an old save gets a notice instead of replaying into a different game, and best runs are kept.
+The build parses the content YAML into JSON ahead of time, loads each scenario's content as its own chunk after the Start screen has painted, and ships fonts cut down to Latin-1 (regenerate them with `pnpm --filter @founder-mode/web fonts`). Saves are tied to the engine version and a fingerprint of the scenario: after a change to either, an old save gets a notice instead of replaying into a different game, and best runs are kept.
 
 ## Status
 
-Early MVP complete (local tag `mvp-early`); Phase 9 (freelancer, long mode, funding) complete (local tag `phase9-done`), with open balancing issues listed in `docs/autonomous/STATUS.md`. Values are invented starting points tuned by bots and playtests, not researched benchmarks, and the game is not startup advice.
+Early MVP complete (local tag `mvp-early`); Phase 9 (freelancer, long mode, funding) complete (local tag `phase9-done`); situational events, the tourism engine, three tourism scenarios and the bank loan complete (local tag `tourism-complete`). Open balancing issues are listed in `docs/autonomous/STATUS.md` and `docs/autonomous/reports/final.md`. Values are invented starting points tuned by bots and playtests, not researched benchmarks, and the game is not startup advice.
