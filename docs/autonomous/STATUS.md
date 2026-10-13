@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 6 (bank loan, then the restaurant Hinterhof), sub-step R2: UI, report, gate, tag
-Last commit: Step 6 R1 (restaurant content, bots, tuning; all T targets and L1, L4 pass)
-Next action: scene drawings for the dining room, post-mortem check, full report into balancing.md, step 6 report, gate, tag scenario-restaurant.
+Step: 7 (the hotel, Seeblick), sub-step H0: design and engine needs
+Last commit: Step 6 done, tag scenario-restaurant
+Next action: decide how rooms, renovation blocks, whole-house bookings and the minimum stay map onto the bookings model; research hotel figures; then content.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
@@ -12,7 +12,7 @@ Next action: scene drawings for the dining room, post-mortem check, full report 
 - [x] Step 3: situational events system (tag situational-events)
 - [x] Step 4: tourism engine (tag tourism-engine)
 - [x] Step 5: outdoor adventure company (tag scenario-outdoor)
-- [ ] Step 6: bank loan and restaurant (tag scenario-restaurant)
+- [x] Step 6: bank loan and restaurant (tag scenario-restaurant)
 - [ ] Step 7: hotel (tag scenario-hotel)
 - [ ] Step 8: wrap up (tag tourism-complete)
 
@@ -25,6 +25,7 @@ Next action: scene drawings for the dining room, post-mortem check, full report 
 
 - T6 (Gratwanderung): blind effort gains 60% of what reading gains (limit a third); budget used. Options: more effortful choices with visible costs; scarcer founder hours in tourism. Decisions, step 5.
 
+- T6 (Hinterhof): on the report seeds blind effort gains 66% of what reading gains (+3.7 of +5.6); passed on the tuning seeds. Same root as Gratwanderung's T6; revisit together in step 8.
 - L2, L3 (Hinterhof, bank loan): over-borrowing -0.2 ±1.2 (needs a clear loss), reckless loan-caused defaults 2.5% (needs 15%). Borrowed money pays its own repayments, so extra borrowing is a buffer. Options: lend only what the business plan needs (a stated rule); an over-borrower that spends the money; drop L2. Decisions, step 6.
 
 ## For Henry to review (non-blocking)
