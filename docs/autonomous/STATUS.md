@@ -1,9 +1,9 @@
 # Autonomous run status
 
 ## Current
-Step: 4 (tourism engine), sub-step T0: read the three tourism specs and write docs/tourism-proposal.md
-Last commit: Step 3 done, tag situational-events
-Next action: Read docs/scenario-outdoor.md, scenario-restaurant.md, scenario-hotel.md; write docs/tourism-proposal.md (bookings module, capacity, seasons, weather, channels, staff roster, reviews, targets), deciding everything under plan section 2.
+Step: 4 (tourism engine), sub-step T2: bookings bots and the tourism target template
+Last commit: fc3abbb Step 4 T1 follow-up (T1: the bookings model in the engine)
+Next action: Write packages/bots/src/strategies/tourism.ts (careful, platform only, over and understaffing, no tests, price blind, review blind, policy variants), a model filter on strategies, report section with targets T1 to T12 for bookings scenarios; then shared UI components; prove Kantino and Zollstock identical; tag tourism-engine.
 
 ## Checklist
 - [x] Step 0: C3 (tag phase9-c3)
