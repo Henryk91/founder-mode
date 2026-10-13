@@ -23,6 +23,7 @@ export function Start() {
   const runsNotice = useGame((s) => s.runsNotice)
   const startRun = useGame((s) => s.startRun)
   const continueRun = useGame((s) => s.continueRun)
+  const ready = useGame((s) => s.ready)
   const runs = useGame((s) => s.runs)
   const [seed, setSeed] = useState('')
   const stage = 'scrappy'
@@ -108,6 +109,7 @@ export function Start() {
             type="button"
             className={`${styles.button} ${styles.primary}`}
             onClick={continueRun}
+            disabled={!ready}
           >
             {label('start.continue', stage)}
           </button>
@@ -116,6 +118,7 @@ export function Start() {
           type="button"
           className={`${styles.button} ${hasSave ? '' : styles.primary}`}
           onClick={() => startRun(seed)}
+          disabled={!ready}
         >
           {label('start.newRun', stage)}
         </button>

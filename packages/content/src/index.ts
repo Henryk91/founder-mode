@@ -3,6 +3,7 @@
 export * from './schema'
 export {
   SCENARIO_IDS,
+  SCENARIO_MODES,
   areaEvents,
   eventsIn,
   isScenarioId,

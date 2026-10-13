@@ -1,11 +1,6 @@
-import {
-  loadScenario,
-  SCENARIO_IDS,
-  scenarioCatalogue,
-  type Scenario,
-  type ScenarioAbout,
-  type ScenarioId,
-} from '@founder-mode/content'
+import type { Scenario, ScenarioAbout, ScenarioId } from '@founder-mode/content'
+import { SCENARIO_IDS, scenarioCatalogue } from '@founder-mode/content/catalogue'
+import { cachedScenario, scenariosLoaded } from './scenarios'
 import {
   ENGINE_VERSION,
   buildPostMortem,
@@ -119,6 +114,10 @@ export type UiState = {
   report: WeekReport | null
   tab: Tab
   hasSave: boolean
+  /** The scenarios are loaded, so a run can start or continue (step 8). */
+  ready: boolean
+  /** Called once the scenarios have loaded in the background. */
+  markReady(): void
   saveNotice: SaveNotice
   /** Saving does not work in this browser. Shown on the Start screen and once in a run. */
   storageNotice: StorageNotice
@@ -239,7 +238,7 @@ export type StoreDeps = {
  * subscribe to `view` and the plan draft. The autosave is written after every resolved week.
  */
 export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
-  const getScenario = deps.scenario ?? loadScenario
+  const getScenario = deps.scenario ?? cachedScenario
   let game: GameState | null = null
   const profiles = deps.profiles ?? memoryProfiles()
   const scenarios = (deps.catalogue ?? scenarioCatalogue)()
@@ -408,6 +407,10 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       report: null,
       tab: 'plan',
       hasSave: deps.storage.load(firstSlot) !== null,
+      ready: deps.scenario !== undefined || scenariosLoaded(),
+      markReady() {
+        set({ ready: true })
+      },
       saveNotice: null,
       storageNotice: deps.storage.available() ? null : 'unavailable',
       runsNotice: firstRunsNotice,
