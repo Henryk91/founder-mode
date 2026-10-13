@@ -31,6 +31,8 @@ export type Strategy = {
   create(scenario: Scenario, seed: string): Player
   /** The modes it is played in, all when missing (the long mode team variants: long only). */
   modes?: GameMode[]
+  /** The business model it plays: subscriptions when missing, or tourism's bookings. */
+  model?: 'subscription' | 'bookings'
   /** For report diagnostics only: the scenario this strategy is played on, from the real one. */
   adapt?(scenario: Scenario): Scenario
 }
@@ -314,3 +316,8 @@ export class ChannelLog {
     return best
   }
 }
+
+/** Whether a strategy plays a scenario: its business model and its modes. */
+export const playsIn = (strategy: Strategy, scenario: Scenario): boolean =>
+  (strategy.model ?? 'subscription') === (scenario.bookings ? 'bookings' : 'subscription') &&
+  (strategy.modes?.includes(scenario.mode ?? 'standard') ?? true)

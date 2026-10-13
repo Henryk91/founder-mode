@@ -4,6 +4,7 @@ import { buildReport, evaluateTargets, marketSpread, median, winRateByMarket } f
 import { officeMove } from '../src/desk'
 import { runGame } from '../src/simulate'
 import { STRATEGIES } from '../src/strategies'
+import { TOURISM_STRATEGIES } from '../src/strategies/tourism'
 import { randomNoInbox } from '../src/strategies/random'
 import {
   answerInbox,
@@ -42,12 +43,13 @@ describe('bots', () => {
       'raise_early',
       'raise_always',
       'raise_late',
+      ...TOURISM_STRATEGIES.map((t) => t.id),
     ])
     // The team variants and the raising bots are long mode only.
     expect(STRATEGIES.filter((s) => s.modes?.includes('long')).length).toBe(11)
   })
 
-  it.each(STRATEGIES.map((s) => [s.id, s] as const))(
+  it.each(STRATEGIES.filter((s) => !s.model).map((s) => [s.id, s] as const))(
     '%s plays complete runs with valid plans only, in every scenario',
     (_id, strategy) => {
       for (const id of SCENARIO_IDS) {
@@ -82,7 +84,7 @@ describe('bots', () => {
   })
 
   it('builds a report with every target', () => {
-    const strategies = STRATEGIES.map((s) => ({
+    const strategies = STRATEGIES.filter((s) => !s.model).map((s) => ({
       id: s.id,
       description: s.description,
       results: [runGame(scenario, s, 'r1'), runGame(scenario, s, 'r2')],
@@ -174,7 +176,7 @@ describe('bots', () => {
   })
 
   it('reports the Phase 4 systems and the shut down ending', () => {
-    const strategies = STRATEGIES.map((s) => ({
+    const strategies = STRATEGIES.filter((s) => !s.model).map((s) => ({
       id: s.id,
       description: s.description,
       results: [runGame(scenario, s, 'q1'), runGame(scenario, s, 'q2')],

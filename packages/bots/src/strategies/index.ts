@@ -3,6 +3,7 @@ import { buildOnly } from './buildOnly'
 import { playtest } from './playtest'
 import { random } from './random'
 import { sellFirst } from './sellFirst'
+import { TOURISM_STRATEGIES } from './tourism'
 import {
   overworker,
   presaleMax,
@@ -30,4 +31,6 @@ export const STRATEGIES: Strategy[] = [
   ...TEAM_VARIANTS.map((v) => teamVariant(v.id)),
   // Long mode with funding: the four raising bots (the update policies run in the funding part).
   ...['raise_on_traction', 'raise_early', 'raise_always', 'raise_late'].map(fundingVariant),
+  // Tourism's bookings model only.
+  ...TOURISM_STRATEGIES,
 ]
