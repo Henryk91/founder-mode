@@ -30,7 +30,11 @@ Next action: none. Open issues below are for Henry.
 
 - Seeblick: after the step 8 revisit careful 31.4%, no tests 4.3% and staffing pass; spread 22.4 (needs 15), pricing narrowly, T6, T11, L2, L3 still fail. Decisions, steps 7 and 8.
 
+- Tourism fixes, item 8 (mechanics against the specs; not rebuilt): the paid test (test listing, opening list, test rates) gives every group the same signal, where the specs make it speak mostly for tourists or couples; the small trial (pilot day, pop-up dinner, open house) sells a voucher at the scenario's one test price (85, 30, 135 EUR) to every group, team days and weddings included; voucher money counts as revenue, where the specs call unredeemed vouchers a liability; Hinterhof's lunch test (lunch boxes, order counts, office lunch only) and the winter and Christmas voucher pre-sales are not built. Options: a per-group test signal and the group's own price for vouchers; vouchers as a liability until redeemed. Decisions, tourism fixes.
+- Tourism fixes, item 11: an invoiced platform booking is invoiced net of the platform's cut, so a firm that never pays costs only the net; a real house would still owe the platform. Decisions, tourism fixes.
+
 ## For Henry to review (non-blocking)
+- Tourism fixes (report docs/autonomous/reports/tourism-fixes.md): tourism wording through a label voice, signals for what only the bots knew, the naive careful bot, the tourism event table (decisions, tourism fixes).
 - Step 3 kept the existing condition grammar and left the 60 week events' sender situations implicit to keep their fingerprints (decisions, step 3).
 - Funding design choices (term sheets in the plan, one investor per round, mood not confidence shown, no pitch odds in the luck section): decisions, part D.
 - An investor is met at most once a run; this was the change that balanced raising most (decisions, part D).
