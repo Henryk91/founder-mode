@@ -25,7 +25,7 @@ import {
 } from '../components/TourismPlan'
 import { TeamPlan } from '../components/TeamPlan'
 import { formatEnergy, formatEuro } from '../format'
-import { count, label, type LabelKey, type UiStage } from '../labels'
+import { count, label, type LabelKey, type Voice, voiceOf } from '../labels'
 import type { PlanSection as SectionId } from '../store'
 import { HoursBarOutOfView } from '../layout/hoursBar'
 import { useGame } from '../useGame'
@@ -86,7 +86,7 @@ function sectionHours(view: PlayerView, p: WeekPlan): Record<SectionId, number> 
 }
 
 /** One line per section saying what is planned, so a closed section still tells the week. */
-function summaries(view: PlayerView, p: WeekPlan, stage: UiStage): Record<SectionId, string> {
+function summaries(view: PlayerView, p: WeekPlan, stage: Voice): Record<SectionId, string> {
   const none = label('plan.sum.none', stage)
   const segment = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
   const list = (parts: string[]) => (parts.length > 0 ? parts.join(', ') : none)
@@ -179,7 +179,7 @@ export function Plan() {
   const open = useGame((s) => s.openSections)
   const toggle = useGame((s) => s.toggleSection)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   const hours = sectionHours(view, draft)
   const lines = summaries(view, draft, stage)
@@ -275,7 +275,7 @@ function PlanNotes() {
   const view = useGame((s) => s.view)
   const issues = useGame((s) => s.issues)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { founder } = view
   const notes: { key: string; text: string; alert?: boolean; warn?: boolean }[] = []
   if (founder.energy === 0) {
@@ -342,7 +342,7 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
   const barRow = useRef<HTMLDivElement>(null)
   useHoursBarWatch(barRow)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { founder } = view
   const base = founder.baseHoursPerWeek
   const over = planned > base
@@ -445,7 +445,7 @@ function TalkBody({ free }: { free: number }) {
   const view = useGame((s) => s.view)!
   const interviews = useGame((s) => s.plan.interviews)
   const setInterviews = useGame((s) => s.setInterviews)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { costs } = view
   return (
     <>
@@ -479,7 +479,7 @@ function TestBody({ free }: { free: number }) {
   const presales = useGame((s) => s.plan.presales)
   const setLanding = useGame((s) => s.setLanding)
   const setPresales = useGame((s) => s.setPresales)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { costs } = view
   const choices = [0, ...costs.landingBudgetsCents]
   return (
@@ -548,7 +548,7 @@ function TestBody({ free }: { free: number }) {
 }
 
 /** Hours planned this week on a stepper: "+5 h", or nothing at zero, so it never reads as progress. */
-function plannedText(hours: number, stage: UiStage): string {
+function plannedText(hours: number, stage: Voice): string {
   return hours > 0 ? label('plan.plannedHours', stage, { n: hours }) : ''
 }
 
@@ -558,7 +558,7 @@ function BuildBody({ free }: { free: number }) {
   const bugFixHours = useGame((s) => s.plan.bugFixHours)
   const setBuild = useGame((s) => s.setBuild)
   const setBugFixHours = useGame((s) => s.setBugFixHours)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { product } = view
   const shipped = product.features.filter((f) => f.shipped)
   return (
@@ -632,7 +632,7 @@ function SellBody({ free }: { free: number }) {
   const view = useGame((s) => s.view)!
   const outreach = useGame((s) => s.plan.outreach)
   const setOutreach = useGame((s) => s.setOutreach)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   return (
     <>
       {view.segments.map((seg) => {
@@ -678,7 +678,7 @@ function DemosBody({ free }: { free: number }) {
   const p = useGame((s) => s.plan)
   const toggleDemo = useGame((s) => s.toggleDemo)
   const setTab = useGame((s) => s.setTab)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { costs } = view
   const hours = (n: number) => label('unit.hours', stage, { n })
   const wanting = view.leads.filter((l) => l.canBookDemo)
@@ -743,7 +743,7 @@ function RestBody({ free }: { free: number }) {
   const view = useGame((s) => s.view)!
   const restHours = useGame((s) => s.plan.restHours)
   const setRestHours = useGame((s) => s.setRestHours)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   return (
     <>
       <Row label={label('plan.rest', stage)}>
@@ -761,7 +761,7 @@ function RestBody({ free }: { free: number }) {
   )
 }
 
-function issueText(code: PlanIssue['code'], stage: UiStage, max: number): string {
+function issueText(code: PlanIssue['code'], stage: Voice, max: number): string {
   switch (code) {
     case 'too_many_hours':
     case 'transfer_exceeds_savings':

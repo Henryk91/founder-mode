@@ -1,6 +1,6 @@
 import type { FundingPlan, FundingView, InvestorView, PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type UiStage } from '../labels'
+import { count, label, type Voice, voiceOf } from '../labels'
 import { noFunding } from '../store'
 import { useGame } from '../useGame'
 import { Choices, HintLine, Market, SubHeading, Writing } from './Ruled'
@@ -25,7 +25,7 @@ export function raiseHours(view: PlayerView, p: FundingPlan | undefined): number
 }
 
 /** One line for the closed Raise section. */
-export function raiseSummary(view: PlayerView, p: FundingPlan | undefined, stage: UiStage) {
+export function raiseSummary(view: PlayerView, p: FundingPlan | undefined, stage: Voice) {
   const f = view.funding
   if (!f) return ''
   const parts: string[] = []
@@ -62,7 +62,7 @@ export function RaisePlan() {
   const set = useGame((s) => s.setFunding)
   if (!view?.funding) return null
   const f = view.funding
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const hours = (n: number) => label('unit.hours', stage, { n })
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   const closing = f.investors.find((i) => i.stage === 'accepted')
@@ -244,7 +244,7 @@ export function RaisePlan() {
 
 function TermSheetRows(props: {
   inv: InvestorView
-  stage: UiStage
+  stage: Voice
   draft: FundingPlan
   set: (change: Partial<FundingPlan>) => void
   closing: boolean

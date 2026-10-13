@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import type { InterviewView, PlayerView, ReportEntry, WeekReport } from '@founder-mode/engine'
 import { formatEnergy, formatEuro } from '../format'
-import { count, label, type LabelKey, type UiStage } from '../labels'
+import { count, label, type LabelKey, type Voice, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 
 export function entryText(entry: ReportEntry, view: PlayerView): string {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const segment = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
   switch (entry.kind) {
     case 'savings_transfer':
@@ -18,6 +18,12 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         amount: formatEuro(entry.amountCents),
       })
     case 'feature_shipped': {
+      // Tourism: a product is ready, and its first days may bring a few snags of their own.
+      if (view.bookings) {
+        return entry.bugsAdded > 0
+          ? count('results.entry.feature_ready.snags', stage, entry.bugsAdded, { name: entry.name })
+          : label('results.entry.feature_ready', stage, { name: entry.name })
+      }
       const text = label('results.entry.feature_shipped', stage, {
         name: entry.name,
         bugs: entry.bugsAdded,
@@ -114,11 +120,27 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       return count('results.entry.turned_away', stage, entry.units, {
         segment: segment(entry.segmentId),
       })
-    case 'guests_served':
-      return count('results.entry.guests_served', stage, entry.units, {
+    case 'guests_served': {
+      // Guests of invoiced groups pay later: their invoices are the ones issued this week. The
+      // platform's cut is already off both what was paid and what was invoiced.
+      const invoiced = view.invoices
+        .filter((i) => i.issuedWeek === view.week - 1)
+        .reduce((t, i) => t + i.amountCents, 0)
+      const vars = {
         amount: formatEuro(entry.revenueCents),
+        invoiced: formatEuro(invoiced),
         commission: formatEuro(entry.commissionCents),
-      })
+      }
+      const served = count(
+        invoiced > 0 ? 'results.entry.guests_served_invoiced' : 'results.entry.guests_served',
+        stage,
+        entry.units,
+        vars,
+      )
+      return entry.commissionCents > 0
+        ? `${served} ${label('results.entry.guests_served.platform', stage, vars)}`
+        : served
+    }
     case 'bookings_cancelled':
       return count(
         entry.kept ? 'results.entry.cancelled_kept' : 'results.entry.cancelled',
@@ -393,7 +415,7 @@ type Moment = { id: 'first_customer' | 'ending'; title: string; text: string }
  * the end of the run. Other milestones appear on the week summary itself.
  */
 export function notableMoments(report: WeekReport, view: PlayerView): Moment[] {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const moments: Moment[] = []
   const won = report.entries.find((e) => e.kind === 'lead_update' && e.change === 'won')
   const hadCustomers = view.history.slice(0, -1).some((h) => h.customers > 0)
@@ -430,7 +452,7 @@ export function Results() {
   const next = useGame((s) => s.nextMoment)
   const dismiss = useGame((s) => s.dismissReport)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const moment = report ? notableMoments(report, view)[seen] : undefined
 
   if (moment) {
@@ -466,7 +488,7 @@ export function Results() {
 }
 
 function WeekSummary({ report, view }: { report: WeekReport; view: PlayerView }) {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const groups = groupWeek(report, view, stage)
   return (
     <>
@@ -520,7 +542,7 @@ function WeekSummary({ report, view }: { report: WeekReport; view: PlayerView })
 }
 
 /** The week's lines under their headings, most important group and line first, empty groups out. */
-export function groupWeek(report: WeekReport, view: PlayerView, stage: UiStage): [Group, Line[]][] {
+export function groupWeek(report: WeekReport, view: PlayerView, stage: Voice): [Group, Line[]][] {
   const segment = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
   const lines: Record<Group, Line[]> = {
     money: [],
@@ -574,7 +596,7 @@ function InterviewSummary({
 }: {
   segmentName: string
   interviews: InterviewView[]
-  stage: UiStage
+  stage: Voice
 }) {
   const [open, setOpen] = useState(false)
   const tally = new Map<string, { name: string; n: number }>()
@@ -612,7 +634,7 @@ function InterviewSummary({
   )
 }
 
-function Numbers({ report, stage }: { report: WeekReport; stage: UiStage }) {
+function Numbers({ report, stage }: { report: WeekReport; stage: Voice }) {
   const l = report.ledger
   const received = l.revenueCents + l.otherIncomeCents + l.transferCents + l.autoTransferCents
   const paid =

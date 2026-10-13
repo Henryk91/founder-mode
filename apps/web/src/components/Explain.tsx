@@ -1,14 +1,14 @@
 import { useEffect, useRef } from 'react'
 import type { PlayerView } from '@founder-mode/engine'
 import type { ExplainKey } from '../store'
-import { count, label, type LabelKey, type LabelVars } from '../labels'
+import { count, label, type LabelKey, type LabelVars, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import styles from './ui.module.css'
 
 /** A two sentence explanation of Runway, Cash, Energy or hours, opened by tapping the term. */
 export function Explain() {
   const key = useGame((s) => s.explain)
-  const stage = useGame((s) => s.view?.company.uiStage ?? 'scrappy')
+  const stage = useGame((s) => (s.view ? voiceOf(s.view) : 'scrappy'))
   const close = useGame((s) => s.closeExplain)
   const founder = useGame((s) => s.view?.founder)
   const costs = useGame((s) => s.view?.costs)
@@ -113,7 +113,7 @@ function explainVars(
 /** A small tap target that opens an explanation. */
 export function ExplainButton(props: { term: ExplainKey }) {
   const open = useGame((s) => s.openExplain)
-  const stage = useGame((s) => s.view?.company.uiStage ?? 'scrappy')
+  const stage = useGame((s) => (s.view ? voiceOf(s.view) : 'scrappy'))
   return (
     <button
       type="button"

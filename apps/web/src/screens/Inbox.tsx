@@ -1,7 +1,7 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { Letter } from '../components/Letters'
 import { MilestoneBar } from '../components/MilestoneBar'
-import { count, label, type UiStage } from '../labels'
+import { count, label, type Voice, voiceOf } from '../labels'
 import type { Tab } from '../store'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
@@ -15,7 +15,7 @@ export function Inbox(props: { desk?: boolean }) {
   const planned = useGame((s) => s.plannedHours)
   const answer = useGame((s) => s.answer)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   const open = view.inbox.filter((m) => m.answeredChoiceId === null).length
   return (
@@ -54,7 +54,7 @@ type Need = { text: string; tab: Tab }
 /** "Things that need you": a short list that jumps to the tab where each is handled. */
 function NeedsYou({ view, free }: { view: PlayerView; free: number }) {
   const setTab = useGame((s) => s.setTab)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const needs = thingsThatNeedYou(view, free, stage)
   if (needs.length === 0) return null
   return (
@@ -70,7 +70,7 @@ function NeedsYou({ view, free }: { view: PlayerView; free: number }) {
   )
 }
 
-export function thingsThatNeedYou(view: PlayerView, free: number, stage: UiStage): Need[] {
+export function thingsThatNeedYou(view: PlayerView, free: number, stage: Voice): Need[] {
   const needs: Need[] = []
   const lastWeek = view.inbox.filter(
     (m) => m.answeredChoiceId === null && m.expiresWeek <= view.week,

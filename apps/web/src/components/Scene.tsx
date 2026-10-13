@@ -1,5 +1,5 @@
 import type { PlayerView } from '@founder-mode/engine'
-import { label, type UiStage } from '../labels'
+import { label, type Voice, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import s from './Scene.module.css'
 
@@ -50,7 +50,7 @@ type SceneData = {
 }
 
 function sceneData(view: PlayerView, plannedHours: number): SceneData {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const { founder } = view
   const mood =
     founder.energy <= 0
@@ -162,7 +162,7 @@ export function SceneStrip() {
   )
 }
 
-function sceneLabel(place: string, data: SceneData, ui: UiStage): string {
+function sceneLabel(place: string, data: SceneData, ui: Voice): string {
   const people = [data.you, data.hire].filter((f): f is Figure => f !== null)
   return [
     place,
@@ -203,7 +203,7 @@ function Labels(props: { x: number; figure: Figure }) {
 }
 
 /** Customer names on small cards, with an empty one waiting for the next. */
-function CustomerCards(props: { x: number; y: number; names: string[]; ui: UiStage }) {
+function CustomerCards(props: { x: number; y: number; names: string[]; ui: Voice }) {
   const slots = [...props.names, null].slice(0, 3)
   return (
     <>
@@ -239,7 +239,7 @@ function CustomerCards(props: { x: number; y: number; names: string[]; ui: UiSta
   )
 }
 
-function KitchenTable({ data, ui }: { data: SceneData; ui: UiStage }) {
+function KitchenTable({ data, ui }: { data: SceneData; ui: Voice }) {
   return (
     <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
       <rect className={s.wall} x="0" y="0" width="732" height="250" />
@@ -282,7 +282,7 @@ function KitchenTable({ data, ui }: { data: SceneData; ui: UiStage }) {
   )
 }
 
-function CoworkingDesk({ data, ui }: { data: SceneData; ui: UiStage }) {
+function CoworkingDesk({ data, ui }: { data: SceneData; ui: Voice }) {
   return (
     <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
       <rect className={s.wall} x="0" y="0" width="732" height="250" />
@@ -334,7 +334,7 @@ function CoworkingDesk({ data, ui }: { data: SceneData; ui: UiStage }) {
 }
 
 /** A desk in a trades yard (Zollstock): a workbench, a pegboard of tools, a van outside. */
-function TradesYard({ data, ui }: { data: SceneData; ui: UiStage }) {
+function TradesYard({ data, ui }: { data: SceneData; ui: Voice }) {
   return (
     <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
       <rect className={s.wall} x="0" y="0" width="732" height="250" />

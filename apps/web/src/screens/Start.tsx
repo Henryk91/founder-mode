@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { bestRuns, type Bests } from '../bestRuns'
 import { formatEuro } from '../format'
-import { count, label, type UiStage } from '../labels'
+import { count, label, type Voice } from '../labels'
 import type { RunRecord } from '../storage'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
@@ -151,7 +151,7 @@ export function Start() {
 }
 
 /** "Your best runs": a dark panel as on the desk mockup. Every seed can be played again. */
-function BestRuns(props: { runs: RunRecord[]; stage: UiStage; scenario: string; long: boolean }) {
+function BestRuns(props: { runs: RunRecord[]; stage: Voice; scenario: string; long: boolean }) {
   const { runs, stage } = props
   const { ordinary, replays } = bestRuns(runs)
   return (
@@ -176,7 +176,7 @@ function BestRuns(props: { runs: RunRecord[]; stage: UiStage; scenario: string; 
   )
 }
 
-function Group({ bests, stage }: { bests: Bests; stage: UiStage }) {
+function Group({ bests, stage }: { bests: Bests; stage: Voice }) {
   // Ownership is its own column in long mode: what the founder kept after raising.
   const perMonth = (r: RunRecord) =>
     r.founderShareBp !== undefined && r.founderShareBp < 10_000
@@ -214,7 +214,7 @@ function Group({ bests, stage }: { bests: Bests; stage: UiStage }) {
 function Row(props: {
   name: string
   run: RunRecord | null
-  stage: UiStage
+  stage: Voice
   indent?: boolean
   children: React.ReactNode
 }) {

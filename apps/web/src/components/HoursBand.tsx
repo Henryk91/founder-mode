@@ -1,4 +1,4 @@
-import { label } from '../labels'
+import { label, voiceOf } from '../labels'
 import { ACTIVITIES, hoursByActivity } from '../screens/Plan'
 import { useGame } from '../useGame'
 import styles from './HoursBand.module.css'
@@ -13,7 +13,7 @@ export function HoursBand() {
   const draft = useGame((s) => s.plan)
   const planned = useGame((s) => s.plannedHours)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const base = view.founder.baseHoursPerWeek
   const over = planned > base
   const byActivity = hoursByActivity(view, draft, planned)

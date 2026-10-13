@@ -1,6 +1,6 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type UiStage } from '../labels'
+import { count, label, type Voice, voiceOf } from '../labels'
 import styles from './Statement.module.css'
 
 /** Weeks of balance in the trend line and lines in the statement. */
@@ -10,7 +10,7 @@ const COMING_UP = 4
 
 /** Balance, the trend of the last weeks, and the latest weekly changes. */
 export function BankStatement({ view }: { view: PlayerView }) {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const recent = view.history.slice(-TREND_WEEKS)
   const lines = view.history
     .map((h, i) => ({
@@ -96,7 +96,7 @@ type Upcoming = { week: number; text: string; warn: boolean }
 
 /** The next scheduled things, soonest first: month end, results, starts, trials, invoices. */
 export function upcoming(view: PlayerView): Upcoming[] {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const segment = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
   const items: Upcoming[] = [
     {
@@ -175,7 +175,7 @@ const NOTE_TILTS = [-1, 0.8, 1.2, -0.7]
 
 /** "Coming up": calendar notes for the next scheduled things. */
 export function ComingUp({ view }: { view: PlayerView }) {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const items = upcoming(view)
   return (
     <section aria-label={label('coming.title', stage)} className={styles.coming}>
@@ -200,12 +200,12 @@ export function ComingUp({ view }: { view: PlayerView }) {
 
 /** The sticky note of worry: when the money runs out, and who could stop it. */
 export function WorryNote({ view }: { view: PlayerView }) {
-  const text = worry(view, view.company.uiStage)
+  const text = worry(view, voiceOf(view))
   if (!text) return null
   return <p className={styles.worry}>{text}</p>
 }
 
-export function worry(view: PlayerView, stage: UiStage): string | null {
+export function worry(view: PlayerView, stage: Voice): string | null {
   const runway = view.company.runwayWeeks
   if (runway === null) return view.customers.length > 0 ? label('worry.safe', stage) : null
   // Runway never counts past the last week: money that lasts that long does not run out here.

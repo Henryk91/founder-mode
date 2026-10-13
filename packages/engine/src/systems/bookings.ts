@@ -833,5 +833,12 @@ export function bookingsView(state: GameState): BookingsView | null {
     bookedAhead: b.bookings
       .filter((x) => x.status === 'booked' && x.week > state.week && x.week <= state.week + 4)
       .reduce((t, x) => t + x.units, 0),
+    servedByWeek: Array.from({ length: 5 }, (_, k) => state.week - 5 + k)
+      .filter((w) => w >= 1)
+      .map((w) =>
+        b.bookings
+          .filter((x) => x.week === w && x.status === 'served')
+          .reduce((t, x) => t + x.units, 0),
+      ),
   }
 }

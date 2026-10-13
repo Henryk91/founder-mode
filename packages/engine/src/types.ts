@@ -1166,6 +1166,11 @@ export type BookingsView = {
   /** Units booked for the four weeks after this one, every product. */
   bookedAhead: number
   revenueLast4Cents: number
+  /**
+   * Units served in each of the last five weeks played, oldest first, fewer at the start: guests,
+   * covers or room nights, for the headline (tourism fixes).
+   */
+  servedByWeek: number[]
 }
 
 /** A funding round type as the Raise section describes it: rules and the public bar. */

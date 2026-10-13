@@ -1,4 +1,4 @@
-import { label } from '../labels'
+import { label, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import { Headline } from './Headline'
 import { HoursBand } from './HoursBand'
@@ -19,7 +19,7 @@ export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
   const endWeek = useGame((s) => s.endWeek)
   const openHelp = useGame((s) => s.openHelp)
   if (!view) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const name = (
     <div className={styles.who}>
       <h1 className={styles.name} tabIndex={-1} data-autofocus>

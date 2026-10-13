@@ -1,6 +1,6 @@
 import type { MessageChoice, MessageView, PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { label, type UiStage } from '../labels'
+import { label, type Voice, voiceOf } from '../labels'
 import styles from './Letters.module.css'
 
 type Props = {
@@ -29,7 +29,7 @@ export function Letter(props: Props) {
 
 export function MessageCard(props: Props) {
   const { message: m, view } = props
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const named = m.fromName !== m.fromRole
   return (
     <article className={styles.letter} style={tiltStyle(props)}>
@@ -57,7 +57,7 @@ export function StickyNote(props: Props) {
       <p className={styles.hand}>{m.text}</p>
       <p className={styles.signature}>
         {named
-          ? label('inbox.fromRole', props.view.company.uiStage, {
+          ? label('inbox.fromRole', voiceOf(props.view), {
               name: m.fromName,
               role: m.fromRole,
             })
@@ -70,7 +70,7 @@ export function StickyNote(props: Props) {
 
 export function OfficialLetter(props: Props) {
   const { message: m, view } = props
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   return (
     <article className={styles.official} style={tiltStyle(props)}>
       <header className={styles.officialHead}>
@@ -85,7 +85,7 @@ export function OfficialLetter(props: Props) {
 
 /** The choices with their costs, or the answer already given. Hours are shown, never odds. */
 function Answer({ message: m, view, freeHours, onAnswer }: Props) {
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const chosen = m.choices.find((c) => c.id === m.answeredChoiceId)
   if (chosen) {
     return (
@@ -144,7 +144,7 @@ function initials(name: string): string {
 }
 
 /** What a choice costs: hours, money now, and money every month. Free when it costs nothing. */
-export function costParts(c: MessageChoice, stage: UiStage): string[] {
+export function costParts(c: MessageChoice, stage: Voice): string[] {
   const parts: string[] = []
   if (c.hours > 0) parts.push(label('unit.hours', stage, { n: c.hours }))
   if (c.costCents > 0) {

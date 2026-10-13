@@ -3,7 +3,7 @@ import { Explain } from '../components/Explain'
 import { SceneStrip } from '../components/Scene'
 import { StorageNote } from '../components/StorageNote'
 import { TopBar } from '../components/TopBar'
-import { label } from '../labels'
+import { label, voiceOf, stageOf } from '../labels'
 import type { Tab } from '../store'
 import { useGame } from '../useGame'
 import { HoursBarOutOfView } from './hoursBar'
@@ -15,14 +15,14 @@ export function PhoneLayout(props: { main: React.ReactNode | null }) {
   const view = useGame((s) => s.view)!
   const tab = useGame((s) => s.tab)
   const setTab = useGame((s) => s.setTab)
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const openMessages = view.inbox.filter((m) => m.answeredChoiceId === null).length
   const Screen = SCREENS[tab]
   const [barOut, setBarOut] = useState(false)
   const onPlan = props.main === null && tab === 'plan'
 
   return (
-    <div className={styles.phone} data-stage={stage} data-layout="phone">
+    <div className={styles.phone} data-stage={stageOf(stage)} data-layout="phone">
       <TopBar wide={false} planHours={onPlan ? barOut : null} />
       {props.main === null && tab === 'inbox' && <SceneStrip />}
       <main className={styles.phoneContent}>

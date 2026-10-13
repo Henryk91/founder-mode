@@ -1,4 +1,4 @@
-import { label } from '../labels'
+import { label, voiceOf } from '../labels'
 import { fillText } from '../texts'
 import { useGame } from '../useGame'
 import styles from './ui.module.css'
@@ -11,7 +11,7 @@ export function Intro() {
   const next = useGame((s) => s.nextIntro)
   const prev = useGame((s) => s.prevIntro)
   if (!view || step === null) return null
-  const stage = view.company.uiStage
+  const stage = voiceOf(view)
   const cards = view.guidance.intro
   const card = cards[step]
   if (!card) return null

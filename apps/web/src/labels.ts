@@ -1,6 +1,8 @@
+import { SCENARIO_LABELS } from './labels.tourism'
+
 export type UiStage = 'scrappy' | 'organised'
 
-type LabelEntry = string | Record<UiStage, string>
+export type LabelEntry = string | Record<UiStage, string>
 
 // Every string the player sees. `{name}` style placeholders are filled by `label`'s vars.
 // Counts use `.one` and `.other` keys, see `count`. Game text: short, dry, British, no em dashes.
@@ -494,10 +496,16 @@ const labels = {
   'results.entry.bookings_new.other': '{n} new bookings from {segment}.',
   'results.entry.turned_away.one': '{n} guest from {segment} found no room and went elsewhere.',
   'results.entry.turned_away.other': '{n} guests from {segment} found no room and went elsewhere.',
-  'results.entry.guests_served.one':
-    '{n} guest served: {amount} paid on the day ({commission} to the platform).',
-  'results.entry.guests_served.other':
-    '{n} guests served: {amount} paid on the day ({commission} to the platform).',
+  'results.entry.guests_served.one': '{n} guest served: {amount} paid on the day.',
+  'results.entry.guests_served.other': '{n} guests served: {amount} paid on the day.',
+  'results.entry.guests_served_invoiced.one':
+    '{n} guest served: {amount} paid on the day, {invoiced} invoiced.',
+  'results.entry.guests_served_invoiced.other':
+    '{n} guests served: {amount} paid on the day, {invoiced} invoiced.',
+  'results.entry.guests_served.platform': 'The platform has already taken its {commission} off.',
+  'results.entry.feature_ready': '{name} is ready.',
+  'results.entry.feature_ready.snags.one': '{name} is ready, with {n} snag to sort out.',
+  'results.entry.feature_ready.snags.other': '{name} is ready, with {n} snags to sort out.',
   'results.entry.cancelled.one': '{n} guest cancelled.',
   'results.entry.cancelled.other': '{n} guests cancelled.',
   'results.entry.cancelled_kept.one': '{n} guest cancelled and paid anyway, as your policy says.',
@@ -727,6 +735,9 @@ const labels = {
   'stat.revenue': 'Monthly revenue',
   'stat.revenue.short': 'Revenue',
   'stat.customers': 'Customers',
+  'stat.guests': 'Guests, last 4 weeks',
+  'stat.guests.short': 'Guests',
+  'stat.points': '{n} pts',
   'stat.runway.safe': 'Covered',
   'stat.runway.until': 'until week {week}',
   'stat.runway.nowSafe': '▲ now covered',
@@ -893,8 +904,6 @@ const labels = {
   'pm.money.loan.called': 'The bank called it with {balance} still owed.',
   'pm.guests.summary.one': '1 guest served, {rating}',
   'pm.guests.summary.other': '{n} guests served, {rating}',
-  'pm.guests.segment.one': '{segment}: 1 guest, who paid {paid}',
-  'pm.guests.segment.other': '{segment}: {n} guests, who paid {paid}',
   'pm.guests.none': 'No guest was served.',
   'pm.guests.platform': '{share}% came through the platform, which kept {amount}.',
   'pm.guests.cancelled':
@@ -992,6 +1001,16 @@ const labels = {
   'pm.market.customersValue.one': '1, at {prices}',
   'pm.market.customersValue.other': '{n}, at {prices}',
   'pm.market.customersNone': 'None',
+  'pm.market.servedNone': 'Nobody',
+  'pm.market.servedValue.person.one': '1 guest, {paid} in all',
+  'pm.market.servedValue.person.other': '{n} guests, {paid} in all',
+  'pm.market.servedValue.group.one': '1 group, {paid} in all',
+  'pm.market.servedValue.group.other': '{n} groups, {paid} in all',
+  'pm.market.servedValue.cover.one': '1 cover, {paid} in all',
+  'pm.market.servedValue.cover.other': '{n} covers, {paid} in all',
+  'pm.market.servedValue.night.one': '1 room night, {paid} in all',
+  'pm.market.servedValue.night.other': '{n} room nights, {paid} in all',
+  'pm.guests.segmentValue': '{segment}: {value}',
   'pm.market.mustHave': 'Must haves',
   'pm.market.walkIns': 'Walk-ins',
   'pm.market.walkInsValue.one': '1 lead from the {place}, {customers} became customers',
@@ -1119,8 +1138,25 @@ export type LabelKey = keyof typeof labels
 
 export type LabelVars = Record<string, string | number>
 
-export function label(key: LabelKey, stage: UiStage, vars?: LabelVars): string {
-  const entry: LabelEntry = labels[key]
+/**
+ * Whose words a label is in: the UI stage, and for a scenario with words of its own (the tourism
+ * ones, `SCENARIO_LABELS`) its id after an @, as "scrappy@seeblick". Screens get it from
+ * `voiceOf(view)` and pass it wherever a label wants a stage.
+ */
+export type Voice = UiStage | `${UiStage}@${string}`
+
+/** The voice of a run: its stage, with its scenario where that scenario has words of its own. */
+export function voiceOf(view: { scenarioId: string; company: { uiStage: UiStage } }): Voice {
+  const stage = view.company.uiStage
+  return view.scenarioId in SCENARIO_LABELS ? `${stage}@${view.scenarioId}` : stage
+}
+
+/** The UI stage of a voice, for what is styled by stage rather than worded. */
+export const stageOf = (voice: Voice): UiStage => voice.split('@')[0] as UiStage
+
+export function label(key: LabelKey, voice: Voice, vars?: LabelVars): string {
+  const [stage, scenario] = voice.split('@') as [UiStage, string | undefined]
+  const entry: LabelEntry = (scenario && SCENARIO_LABELS[scenario]?.[key]) || labels[key]
   const text = typeof entry === 'string' ? entry : entry[stage]
   if (!vars) return text
   return text.replace(/\{(\w+)\}/g, (match, name: string) =>
@@ -1133,7 +1169,7 @@ type PluralBase = {
 }[LabelKey]
 
 /** Picks `<base>.one` for 1 and `<base>.other` otherwise. `n` is available as {n}. */
-export function count(base: PluralBase, stage: UiStage, n: number, vars: LabelVars = {}): string {
+export function count(base: PluralBase, voice: Voice, n: number, vars: LabelVars = {}): string {
   const key = `${base}.${n === 1 ? 'one' : 'other'}` as LabelKey
-  return label(key, stage, { ...vars, n })
+  return label(key, voice, { ...vars, n })
 }

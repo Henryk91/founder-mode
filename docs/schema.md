@@ -884,3 +884,7 @@ type PostMortem = {
 
 - Content: `BookingProduct.capacityOf?` (sells from that product's capacity; both count against one pool), `BookingSegment.depositShare?` (share of the price paid when booked), `BookingSegment.capacityShare?: { peak, off }` (share of a product's capacity the segment can use). Scenario `seeblick` (long mode only, with a loan, no funding).
 - State: `Booking.depositCents?` (paid when booked; the stay or its invoice asks for the rest). The calendar shows a sharing product's pool capacity and what the whole pool has booked.
+
+### Tourism fixes (engine 0.14.0, view only)
+
+- View: `BookingsView.servedByWeek: number[]`, units served in each of the last five weeks played, oldest first (fewer at the start). The headline shows guests, covers or occupancy from it. No state, plan or rule changed, so saves replay as before.
