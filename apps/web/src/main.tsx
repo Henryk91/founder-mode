@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { browserProfiles, browserStorage } from './storage'
+import { preloadScenarios } from './scenarios'
 import { createGameStore } from './store'
 import './index.css'
 
@@ -18,3 +19,6 @@ createRoot(root).render(
     <App store={store} />
   </StrictMode>,
 )
+
+// The scenarios load after the first paint; the Start screen offers a run once they are in.
+void preloadScenarios().then(() => store.getState().markReady())

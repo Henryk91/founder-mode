@@ -9,6 +9,7 @@ import {
   parseScenario,
   SCENARIO_IDS,
   scenarioCatalogue,
+  SCENARIO_MODES,
   scenarioModes,
   scenarioSources,
 } from '../src/index'
@@ -40,6 +41,21 @@ const allSources = (id: (typeof SCENARIO_IDS)[number]) => {
 /** Scenarios of the subscription model, and the tourism ones (step 5), which have other rules. */
 const SUBSCRIPTION_IDS = SCENARIO_IDS.filter((id) => !loadScenario(id).bookings)
 const TOURISM_IDS = SCENARIO_IDS.filter((id) => !!loadScenario(id).bookings)
+
+describe('the scenario catalogue (step 8)', () => {
+  it('states the modes of every scenario as its file defines them', () => {
+    for (const id of SCENARIO_IDS) expect([id, SCENARIO_MODES[id]]).toEqual([id, scenarioModes(id)])
+  })
+
+  it('loads each scenario on demand as the static loader does', async () => {
+    const { loadScenarioLazy } = await import('../src/lazy')
+    for (const id of SCENARIO_IDS) {
+      for (const mode of scenarioModes(id)) {
+        expect(await loadScenarioLazy(id, mode)).toEqual(loadScenario(id, mode))
+      }
+    }
+  })
+})
 
 describe('content', () => {
   it.each(SCENARIO_IDS)('%s passes its schema', (id) => {

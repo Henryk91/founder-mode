@@ -70,58 +70,65 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
     return page
   }
 
-  for (const [engine, width] of [
-    [CHROMIUM, 375],
-    [CHROMIUM, 1440],
-    [WEBKIT, 390],
-    [WEBKIT, 430],
-  ] as const) {
-    it.skipIf(!engine)(
-      `finds nothing to fix with axe on the main screens at ${width} px in ${engine?.name}`,
-      async () => {
-        const page = await open(width, engine === WEBKIT ? webkit! : browser)
-        const found: Record<string, Violation[]> = {}
-        const check = async (name: string) => {
-          const v = await axe(page)
-          if (v.length > 0) found[name] = v
-        }
-        await check('start')
-        await page.getByRole('button', { name: 'New run' }).click()
-        await check('intro')
-        for (let i = 0; i < 6; i++) {
-          const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
-          if (await next.count()) await next.first().click()
-        }
-        const tabs = width < 1200 ? ['Inbox', 'Plan', 'Who pays', 'Market', 'Money'] : ['Market']
-        for (const tab of tabs) {
-          await page.locator('nav button').filter({ hasText: tab }).first().click()
-          await check(tab)
-          if (tab === 'Plan') {
-            // Scrolled down, the band under the top bar shows the hours instead of the numbers.
-            for (const title of ['Talk', 'Test', 'Build']) {
-              await page
-                .getByRole('button', { name: new RegExp(`^${title}`) })
-                .first()
-                .click()
-            }
-            await page.evaluate(() => document.querySelector('main')!.scrollTo(0, 10_000))
-            await page.waitForSelector('[data-show="hours"]')
-            await page.waitForTimeout(250)
-            await check('Plan, scrolled')
-            await page.evaluate(() => document.querySelector('main')!.scrollTo(0, 0))
+  // Step 8: both 60 week scenarios at every width the plan names, in both engines.
+  for (const scenario of ['Kantino', 'Zollstock'] as const)
+    for (const [engine, width] of [
+      [CHROMIUM, 375],
+      [CHROMIUM, 390],
+      [CHROMIUM, 430],
+      [CHROMIUM, 1440],
+      [WEBKIT, 375],
+      [WEBKIT, 390],
+      [WEBKIT, 430],
+      [WEBKIT, 1440],
+    ] as const) {
+      it.skipIf(!engine)(
+        `finds nothing to fix with axe on the main screens of ${scenario} at ${width} px in ${engine?.name}`,
+        async () => {
+          const page = await open(width, engine === WEBKIT ? webkit! : browser)
+          await page.getByRole('button', { name: new RegExp(`^${scenario}`) }).click()
+          const found: Record<string, Violation[]> = {}
+          const check = async (name: string) => {
+            const v = await axe(page)
+            if (v.length > 0) found[name] = v
           }
-        }
-        await page.getByRole('button', { name: 'Help' }).click()
-        await check('help')
-        await page.getByRole('button', { name: 'Back to the game' }).click()
-        await page.getByRole('button', { name: 'End week' }).click()
-        await check('results')
-        expect(found).toEqual({})
-        await page.close()
-      },
-      90_000,
-    )
-  }
+          await check('start')
+          await page.getByRole('button', { name: 'New run' }).click()
+          await check('intro')
+          for (let i = 0; i < 6; i++) {
+            const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
+            if (await next.count()) await next.first().click()
+          }
+          const tabs = width < 1200 ? ['Inbox', 'Plan', 'Who pays', 'Market', 'Money'] : ['Market']
+          for (const tab of tabs) {
+            await page.locator('nav button').filter({ hasText: tab }).first().click()
+            await check(tab)
+            if (tab === 'Plan') {
+              // Scrolled down, the band under the top bar shows the hours instead of the numbers.
+              for (const title of ['Talk', 'Test', 'Build']) {
+                await page
+                  .getByRole('button', { name: new RegExp(`^${title}`) })
+                  .first()
+                  .click()
+              }
+              await page.evaluate(() => document.querySelector('main')!.scrollTo(0, 10_000))
+              await page.waitForSelector('[data-show="hours"]')
+              await page.waitForTimeout(250)
+              await check('Plan, scrolled')
+              await page.evaluate(() => document.querySelector('main')!.scrollTo(0, 0))
+            }
+          }
+          await page.getByRole('button', { name: 'Help' }).click()
+          await check('help')
+          await page.getByRole('button', { name: 'Back to the game' }).click()
+          await page.getByRole('button', { name: 'End week' }).click()
+          await check('results')
+          expect(found).toEqual({})
+          await page.close()
+        },
+        90_000,
+      )
+    }
 
   // Long mode (Phase 9): the team, the freelancer, raising money, and the cap table, at every
   // width the plan names, in both engines.
@@ -362,6 +369,8 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
     'moves focus to the new screen and shows a ring on every surface',
     async () => {
       const page = await open(1440)
+      // The Start screen offers a run once the scenarios have loaded (step 8).
+      await page.waitForSelector('button:has-text("New run"):not([disabled])')
       // Keyboard only: Tab to New run and press Enter.
       for (let i = 0; i < 20; i++) {
         await page.keyboard.press('Tab')
