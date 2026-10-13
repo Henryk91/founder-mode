@@ -1,0 +1,222 @@
+events:
+  - id: storm_warning
+    area: product
+    weight: 4
+    once: false
+    cooldownWeeks: 6
+    when: [tour.forecast >= 2, tour.bookedWeek >= 1]
+    from: none
+    sender: Weather service
+    look: official
+    text: >-
+      The weather service warns of thunderstorms for the coming days. You have guests booked,
+      and the forecast is right most of the time, which is the annoying part.
+    defaultChoice: wait
+    choices:
+      - id: rebook
+        label: Call every guest and offer another day
+        hours: 4
+        effects:
+          - { type: review, rating: 5, count: 2 }
+          - { type: energy, delta: -2 }
+      - id: wait
+        label: Wait and see
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 2, when: [tour.forecast >= 3] }
+
+  - id: guide_sick
+    area: product
+    weight: 3
+    once: false
+    cooldownWeeks: 12
+    when: [tour.peak == 1, tour.bookedWeek >= 10]
+    from: none
+    sender: One of your guides
+    look: note
+    text: >-
+      A guide calls in sick for Saturday, the busiest day of the week. He sounds genuinely ill,
+      which is somehow worse.
+    defaultChoice: cancel
+    choices:
+      - id: yourself
+        label: Guide the extra group yourself
+        hours: 9
+        effects:
+          - { type: energy, delta: -6 }
+      - id: premium
+        label: Pay a premium guide
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -65000 }
+      - id: cancel
+        label: Cancel one group
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3 }
+
+  - id: canyon_closed
+    area: product
+    weight: 2
+    once: true
+    when: [tour.month == 7]
+    from: none
+    sender: Municipality
+    look: official
+    text: >-
+      Heavy rain upstream closes the canyon for a week. The notice is very polite and very
+      firm, and it is stapled to your garage door.
+    defaultChoice: refund
+    choices:
+      - id: hike_instead
+        label: Offer every canyoning guest a hike instead
+        hours: 3
+        effects:
+          - { type: review, rating: 4, count: 2 }
+      - id: refund
+        label: Refund and move on
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -30000 }
+
+  - id: lost_hiker
+    area: product
+    weight: 1
+    once: true
+    when: [tour.bookedWeek >= 5]
+    from: none
+    sender: Your hiking leader
+    look: note
+    text: >-
+      A guest wandered off to photograph a marmot and took forty minutes to come back. Nobody
+      was hurt; the marmot was unimpressed.
+    defaultChoice: shrug
+    choices:
+      - id: briefing
+        label: Rewrite the safety briefing
+        hours: 3
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: shrug
+        label: Count heads more often
+        hours: 0
+        effects:
+          - { type: bugs, delta: 1 }
+
+  - id: gear_wear
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [tour.reviews >= 15]
+    from: none
+    sender: Your gear shelf
+    look: note
+    text: >-
+      Two harnesses are fraying and a helmet has a crack nobody wants to talk about. Gear does
+      not last forever; it just looks like it on the shelf.
+    defaultChoice: later
+    choices:
+      - id: replace
+        label: Replace the worn kit now
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -60000 }
+      - id: later
+        label: Use it a little longer
+        hours: 0
+        effects:
+          - { type: bugs, delta: 1 }
+
+  - id: van_inspection
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: Vehicle inspection
+    look: official
+    text: >-
+      The van fails its inspection: brakes, and a rust patch the inspector photographed for his
+      own collection. Transfers stop until it is fixed.
+    defaultChoice: fix
+    choices:
+      - id: fix
+        label: Leave it with the garage and pay
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -180000 }
+      - id: borrow
+        label: Borrow a friend's van for now
+        hours: 4
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: lostHours, hours: 3 }
+
+  - id: route_closure
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: Forestry office
+    look: official
+    text: >-
+      The forestry office closes your favourite hiking route for logging until autumn. The
+      detour is longer, steeper, and has fewer places to sit and complain.
+    defaultChoice: detour
+    choices:
+      - id: scout
+        label: Scout a new route this week
+        hours: 6
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: detour
+        label: Use the detour
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2, when: [tour.bookedWeek >= 10] }
+
+  - id: first_aid_course
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: Mountain rescue training
+    text: >-
+      The mountain rescue offers a refresher course in wilderness first aid. Two days, a
+      certificate, and a dummy called Klaus who has seen things.
+    defaultChoice: skip
+    choices:
+      - id: attend
+        label: Do the course
+        hours: 12
+        effects:
+          - { type: bugs, delta: -2 }
+          - { type: cash, amountCents: -25000 }
+      - id: skip
+        label: Next year
+        hours: 0
+
+  - id: summit_book
+    area: product
+    weight: 1
+    once: true
+    when: [tour.reviews >= 20]
+    from: none
+    sender: A regular guest
+    look: note
+    text: >-
+      A regular guest suggests a little summit book where guests write something at the top.
+      She has already bought a pen with a carabiner on it.
+    defaultChoice: smile
+    choices:
+      - id: do_it
+        label: Put a summit book on the popular route
+        hours: 1
+        effects:
+          - { type: review, rating: 5, count: 1 }
+      - id: smile
+        label: Thank her
+        hours: 0

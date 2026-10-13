@@ -66,6 +66,8 @@ export const InterviewConfigSchema = z.object({
   // times (1 + N(0, budgetNoiseSd)), kept within 0.4 to 1.8 times it, then rounded.
   budgetChance: Share,
   budgetNoiseSd: z.number().nonnegative(),
+  // Rounding step for budget amounts under 200 EUR (tourism prices per person). Absent: 50 EUR.
+  budgetSmallStepCents: z.number().int().positive().optional(),
   buckets: z.array(InterviewBucketSchema).min(2),
 })
 
@@ -681,7 +683,8 @@ export const MilestoneSchema = z.discriminatedUnion('kind', [
   z.object({
     ...MilestoneBase,
     kind: z.literal('count'),
-    of: z.enum(['interviews', 'deposits', 'customers', 'hires']),
+    // `guests`: guests served in a tourism scenario.
+    of: z.enum(['interviews', 'deposits', 'customers', 'hires', 'guests']),
     target: z.number().int().positive(),
   }),
   z.object({ ...MilestoneBase, kind: z.literal('revenue'), covers: z.enum(['company', 'all']) }),
@@ -714,7 +717,14 @@ export const ScenarioFileSchema = z.object({
   mode: z.literal('long').optional(),
   maxWeeks: z.number().int().positive(),
   // Profitable in each of this many last months wins the run at maxWeeks. 2 when absent.
-  win: z.object({ profitableMonths: z.number().int().positive() }).optional(),
+  // `overMonths` (seasonal businesses): the last this many months together must pay for every
+  // cost instead, so a quiet season at the end does not decide the run.
+  win: z
+    .object({
+      profitableMonths: z.number().int().positive(),
+      overMonths: z.number().int().positive().optional(),
+    })
+    .optional(),
   start: z.object({
     cashCents: Cents,
     savingsCents: Cents,

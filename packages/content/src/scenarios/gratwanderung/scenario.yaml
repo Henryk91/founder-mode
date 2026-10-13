@@ -1,0 +1,577 @@
+# Gratwanderung: a guided outdoor company in the Alps an hour south of Munich (tourism, step 5).
+# Source: docs/scenario-outdoor.md. Long mode only: 104 weeks from the first week of March.
+# Money in cents, time in hours. Figures marked (est.) in the spec are estimates; sources there.
+
+id: gratwanderung
+name: Gratwanderung
+longOnly: true
+maxWeeks: 104
+# A seasonal business is judged on its last year, not its quietest quarter (decisions, step 5).
+win: { profitableMonths: 3, overMonths: 13 }
+
+start:
+  cashCents: 1800000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  # The engine's single price is used only by tests and pilots; guests pay the bookings prices.
+  priceCentsPerMonth: 8500
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: liability_insurance
+      name: Liability insurance
+      monthlyCents: 30000
+    - id: van_lease
+      name: Van lease
+      monthlyCents: 75000
+    - id: phone_software
+      name: Phone, software and booking system
+      monthlyCents: 12000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 22500
+    - id: garage
+      name: Storage garage
+      monthlyCents: 25000
+
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  # Year 2 costs more: living costs rise by a tenth from week 53.
+  livingSteps:
+    - { week: 53, centsPerWeek: 74250 }
+
+finance:
+  weeksPerMonth: 4
+  # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
+  # late by a segment dependent number of days, only once chased, or never.
+  invoiceDueDays: 14
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    # Tour prices per person are quoted to the nearest 10 EUR.
+    budgetSmallStepCents: 1000
+    buckets:
+      - { id: not_a_problem, name: Not a problem, below: 0.2 }
+      - { id: mild, name: Mild, below: 0.4 }
+      - { id: noticeable, name: Noticeable, below: 0.6 }
+      - { id: painful, name: Painful, below: 0.9 }
+      - { id: urgent, name: Urgent }
+  # A test listing on the booking platform: visitors and sign ups, a signal only.
+  landing:
+    hours: 6
+    budgetsCents: [20000, 50000]
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  # A pilot day: a free or cheap day out for a few people from one segment. Those who would come
+  # again join the repeat guests and pay a voucher now.
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+
+product:
+  startQuality: 85
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  # Price against willingness to pay (r = price / wtp): a yes stays nearly as likely up to about
+  # r 0.9, then gets rarer smoothly (0.97 at r 1, 0.82 at 1.2, a half at the midpoint, 0.24 at
+  # 1.5). Calibrated so the default price plays as before (Phase 8 gate).
+  price: { midpoint: 1.35, steepness: 10 }
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    # Customers paying more than what they would pay leave more often: +0.15 a month per 100%
+    # above it, on top of the rest.
+    priceFrom: 1.0
+    perPrice: 0.15
+    cap: 0.6
+  # Referrals are off in Kantino: office managers do not recommend lunch tools to each other.
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - { id: weak, name: Weak, below: 0.7 }
+    - { id: solid, name: Solid, below: 0.95 }
+    - { id: strong, name: Strong, below: 1.1 }
+    - { id: outstanding, name: Outstanding }
+  roles:
+    # A junior or part time hire: cheaper, fewer hours.
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+
+  # Phase 9: a freelancer, rented by the week. Output is visible and fixed: outputShare of the
+  # booked hours become work, the first week at onboardingFactor of that. Billed weekly per hour.
+  freelance:
+    hoursOptions: [10, 20]
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    # A developer who does not know the code: extra bugs on every feature they worked on.
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+
+# A quieter inbox than the software scenarios: events come about every other week.
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.35
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+
+roles:
+  - id: viable
+    pain: { min: 0.6, max: 0.85 }
+    politeness: { min: 0.05, max: 0.15 }
+  - id: mediocre
+    pain: { min: 0.35, max: 0.55 }
+    politeness: { min: 0.25, max: 0.4 }
+  - id: trap
+    pain: { min: 0.1, max: 0.25 }
+    politeness: { min: 0.5, max: 0.65 }
+
+segments:
+  - id: tourists
+    name: Tourists
+    description: Visitors from Germany and abroad on holiday in the region
+    size: { min: 5000, max: 9000 }
+    # Per person per day (est., docs/scenario-outdoor.md 3.1).
+    wtpCents: { min: 6000, max: 12000 }
+    mustHave: [english_tours, online_booking]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.02 }
+      in_person: { min: 0.02, max: 0.04 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For a good guided day I would pay about {amount} each. More if it involves a cable car.'
+      - 'We spent about {amount} a head on a boat trip yesterday. A mountain should cost more than a lake.'
+      - 'Somewhere around {amount} per person sounds fair, if the guide is not grumpy.'
+      - 'My budget for an activity is roughly {amount} each. The rest goes on cake.'
+      - 'In Austria we paid about {amount} each for something similar. They had better hats.'
+
+  - id: team_events
+    name: Team events
+    description: Munich companies booking a day out for a team
+    size: { min: 300, max: 700 }
+    # Per group day (est., 3.1).
+    wtpCents: { min: 180000, max: 450000 }
+    mustHave: [bad_weather_plan, transfer, invoice_billing]
+    channelResponse:
+      cold_email: { min: 0.02, max: 0.04 }
+      phone: { min: 0.03, max: 0.06 }
+      in_person: { min: 0.02, max: 0.05 }
+    paymentDelayDaysMean: 30
+    neverPaysShare: 0.03
+    waitsForChaseShare: 0.25
+    budgetQuotes:
+      - 'Our offsite budget for the day is about {amount} for the whole team. HR guards it like a dragon.'
+      - 'Last year the escape room cost us {amount} and two people cried. Not from joy.'
+      - 'I can sign off around {amount} for a team day without asking my boss.'
+      - 'The agency quoted {amount} for a day in the hills. Without lunch. Or the hills, apparently.'
+      - 'Somewhere near {amount} for the group is what we usually spend on a summer event.'
+
+  - id: school_groups
+    name: School and youth groups
+    description: Schools, clubs and youth groups on class trips
+    size: { min: 200, max: 500 }
+    # Per group of about 25 pupils at 15 to 35 per pupil (est., 3.1).
+    wtpCents: { min: 40000, max: 90000 }
+    mustHave: [safety_concept, group_pricing]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.03 }
+      phone: { min: 0.03, max: 0.06 }
+      in_person: { min: 0.04, max: 0.08 }
+    paymentDelayDaysMean: 20
+    neverPaysShare: 0.01
+    waitsForChaseShare: 0.25
+    budgetQuotes:
+      - 'For the whole class the parents can manage about {amount}, if the bus is included.'
+      - 'Our trip fund has about {amount} per day for a group of twenty-five. Then it is crisps.'
+      - 'The youth club would spend around {amount} on a day like that. We sell a lot of waffles for it.'
+      - 'Roughly {amount} for the group. The head teacher will want to see the risk sheet first.'
+      - 'Last year the climbing hall cost us {amount} for the class. Nobody fell off, which was a first.'
+
+milestones:
+  - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+  - { id: first_deposit, name: First pilot guest back, kind: count, of: deposits, target: 1 }
+  - { id: first_customer, name: First paying guest, kind: count, of: guests, target: 1 }
+  - id: covers_company_costs
+    name: 'A month of guests covers company costs'
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: 'A month of guests covers all costs, you included'
+    kind: revenue
+    covers: all
+  - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+  - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+  - { id: weeks_78, name: 78 weeks survived, kind: weeks, target: 78 }
+  - { id: weeks_104, name: 104 weeks survived, kind: weeks, target: 104 }
+
+# The van and the garage, then a small base in town (offered by an inbox event): rent, and walk-in
+# tourists who add to the tourists' reach.
+officeStages:
+  - { id: van_garage, name: Van and garage, monthlyCents: 0 }
+  - id: town_base
+    name: Small base in town
+    monthlyCents: 90000
+    energyPerWeek: 1
+    walkIns: { segment: tourists, leadsPerWeek: 0.3 }
+
+organisedAt: [covers_all_costs]
+
+# Bookings (docs/tourism-proposal.md). Week 1 is the first week of March.
+bookings:
+  startWeekOfYear: 10
+  seasonNoise: 0.2
+  peakMonths: [6, 7, 8, 9]
+  policyWeeks: 4
+  weather:
+    # Good, mixed, bad, dangerous per month (est.: Alpine summers bring thunderstorms).
+    monthly:
+      - { good: 0.4, mixed: 0.3, bad: 0.25, dangerous: 0.05 }
+      - { good: 0.4, mixed: 0.3, bad: 0.25, dangerous: 0.05 }
+      - { good: 0.35, mixed: 0.35, bad: 0.25, dangerous: 0.05 }
+      - { good: 0.35, mixed: 0.35, bad: 0.25, dangerous: 0.05 }
+      - { good: 0.4, mixed: 0.3, bad: 0.2, dangerous: 0.1 }
+      - { good: 0.4, mixed: 0.3, bad: 0.15, dangerous: 0.15 }
+      - { good: 0.45, mixed: 0.25, bad: 0.12, dangerous: 0.18 }
+      - { good: 0.45, mixed: 0.25, bad: 0.12, dangerous: 0.18 }
+      - { good: 0.5, mixed: 0.3, bad: 0.15, dangerous: 0.05 }
+      - { good: 0.45, mixed: 0.3, bad: 0.2, dangerous: 0.05 }
+      - { good: 0.3, mixed: 0.3, bad: 0.35, dangerous: 0.05 }
+      - { good: 0.35, mixed: 0.3, bad: 0.3, dangerous: 0.05 }
+    forecastAccuracy: 0.8
+    demand: { good: 1.15, mixed: 1, bad: 0.7, dangerous: 0.5 }
+    cancel: { good: 1, mixed: 1.2, bad: 2, dangerous: 3 }
+  # Activity platforms take 20 to 30% (GetYourGuide's supplier page); 25% here.
+  platform: { name: Trailbuddy, commission: 0.25 }
+  website: { product: online_booking, repeatsFull: 150 }
+  partnershipHours: 6
+  partnershipCut: 0
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor: { viable: 1, mediocre: 0.45, trap: 0.15 }
+  fitBase: 0.4
+  segments:
+    tourists:
+      base: { min: 15, max: 45 }
+      unit: person
+      price: { peak: 8500, off: 7500 }
+      size: { min: 1, max: 4 }
+      leadWeeks: { min: 0, max: 2 }
+      season: [0.25, 0.25, 0.15, 0.2, 0.4, 0.8, 1, 1, 0.75, 0.35, 0.05, 0.3]
+      response: { platform: 0.9, website: 0.4, partnership: 0.5, outreach: 0.1, walkIn: 0.15 }
+      cancel: 0.15
+      strictConversion: 0.9
+      weatherSensitive: true
+      invoiced: false
+      reviewWeight: 0.8
+    team_events:
+      base: { min: 0.5, max: 2 }
+      unit: group
+      price: { peak: 280000, off: 260000 }
+      size: { min: 1, max: 1 }
+      leadWeeks: { min: 4, max: 12 }
+      season: [0.2, 0.3, 0.5, 0.9, 1, 0.8, 0.4, 0.15, 0.9, 1, 0.5, 0.1]
+      response: { platform: 0, website: 0.4, partnership: 0.6, outreach: 0.6, walkIn: 0 }
+      cancel: 0.04
+      strictConversion: 0.9
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.3
+    school_groups:
+      # The spec's 0.3 to 1.2 groups a week left schools unable to carry the company even when
+      # viable: a low price and a short season need volume (decisions, step 5).
+      base: { min: 6, max: 12 }
+      unit: group
+      price: { peak: 62500, off: 62500 }
+      size: { min: 1, max: 1 }
+      leadWeeks: { min: 8, max: 24 }
+      # School trips in May to July and September, youth groups in the summer holidays.
+      season: [0, 0, 0.2, 0.5, 1, 1, 0.8, 0.5, 1, 0.6, 0.1, 0]
+      response: { platform: 0, website: 0.2, partnership: 0.6, outreach: 0.8, walkIn: 0 }
+      cancel: 0.06
+      strictConversion: 0.85
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.2
+  products:
+    half_day_hike:
+      capacity: 84
+      serves: [tourists]
+      unitCostCents: 300
+      months: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    via_ferrata:
+      capacity: 42
+      serves: [tourists]
+      # Six sets: harness, helmet, lanyard (about 90 to 130 for the lanyard alone), est. 180 each.
+      oneOffCents: 108000
+      unitCostCents: 300
+      months: [6, 7, 8, 9]
+      weatherClosed: true
+      alternative: bad_weather_plan
+    canyoning:
+      capacity: 32
+      serves: [tourists]
+      # Eight wetsuit, helmet and harness sets at about 450 each (est.).
+      oneOffCents: 360000
+      unitCostCents: 500
+      months: [7, 8, 9]
+      weatherClosed: true
+    snowshoe:
+      capacity: 70
+      serves: [tourists]
+      # Ten sets at about 120 (est.).
+      oneOffCents: 120000
+      unitCostCents: 300
+      months: [12, 1, 2, 3]
+    online_booking:
+      capacity: 0
+      monthlyCents: 4000
+    bad_weather_plan:
+      capacity: 0
+    team_day:
+      capacity: 5
+      serves: [team_events]
+      # The partner bus from Munich (est. 600 to 900); 600 here.
+      unitCostCents: 60000
+    school_day:
+      # Four groups a day on weekdays.
+      capacity: 20
+      serves: [school_groups]
+      unitCostCents: 5000
+      months: [3, 4, 5, 6, 7, 8, 9, 10]
+    ebike_fleet:
+      capacity: 56
+      serves: [tourists]
+      # Twelve e-mountain bikes; 3,000 to 6,000 each (bike magazine estimate), 4,000 here.
+      oneOffCents: 4800000
+      monthlyCents: 20000
+      unitCostCents: 800
+      months: [5, 6, 7, 8, 9, 10]
+  roles:
+    guide:
+      name: Mountain guide
+      # German guides' association recommends about 480 to 550 a day for private clients (2025);
+      # a freelance day for a company pays the bottom of that, 480 here.
+      centsPerShift: 48000
+      units:
+        half_day_hike: 12
+        via_ferrata: 6
+        canyoning: 4
+        snowshoe: 10
+        team_day: 0.5
+        school_day: 1
+        ebike_fleet: 8
+      # Scarce in July and August.
+      available: [10, 10, 10, 10, 10, 8, 5, 5, 8, 10, 10, 10]
+      founderHours: 9
+    hiking_leader:
+      name: Hiking leader
+      # Up to about 215 a day for hiking leaders with tour operators (2025 job advert); 215 here.
+      centsPerShift: 21500
+      units:
+        half_day_hike: 12
+        snowshoe: 10
+        team_day: 0.5
+        school_day: 1
+      available: [14, 14, 14, 14, 14, 14, 12, 12, 14, 14, 14, 14]
+  reviews:
+    qualityBase: 4.4
+    noiseSd: 0.3
+    understaffPenalty: 2.5
+    tiredPenalty: 0.5
+    cancelPenalty: 1
+    snagPenalty: 0.15
+    valueWeight: 1.5
+    reviewsPerUnit: 0.15
+    reviewsFull: 40
+
+modes:
+  long:
+    funding:
+      rounds:
+        angel:
+          name: Angel round
+          prepHours: 8
+          pitchHoursPerMeeting: 5
+          secondLookHours: 5
+          termSheetWeeks: 2
+          closingWeeks: 3
+          dueDiligenceHours: 0
+          barMonthlyCents: 400000
+          barText: We back outdoor companies with paying guests and a season that grows.
+          amountCents: { min: 10000000, max: 25000000 }
+          preMoneyFloorCents: 150000000
+          revenueMultiple: 20
+          investors:
+            - Margit Ostler
+            - Benedikt Rauch
+            - Yasemin Kurt
+            - Eckart Leuthold
+            - Hanne Wiesinger
+            - Ruben Albers
+            - Sieglinde Maurer
+            - Tarek Haddad
+            - Ottilie Brem
+            - Carsten Vogl
+        seed:
+          name: Seed round
+          prepHours: 12
+          pitchHoursPerMeeting: 5
+          secondLookHours: 8
+          termSheetWeeks: 2
+          closingWeeks: 4
+          dueDiligenceHours: 16
+          barMonthlyCents: 1000000
+          barText: We look for monthly revenue around 10,000 EUR, growing every month.
+          amountCents: { min: 100000000, max: 250000000 }
+          preMoneyFloorCents: 500000000
+          revenueMultiple: 25
+          milestone: { multiple: 2, weeks: 26 }
+          withdrawDrop: 0.1
+          investors:
+            - Isarwerk Ventures
+            - Gruenspan Capital
+            - Alpenkamm Partners
+            - Leopold Seed Fund
+            - Brennerhof Capital
+            - Nordbahn Ventures
+      appetite: { min: 1.4, max: 2.0 }
+      noiseSd: 0.25
+      scoreExponent: 1
+      pitchBase: 0.85
+      pitchPerSelling: 0.3
+      growthWeight: 2
+      growthFactor: { min: 0.5, max: 1.5 }
+      flatGrowth: 0.05
+      runwayMarginWeeks: 4
+      churnShare: 0.33
+      focusShare: 0.6
+      updates:
+        properHours: 2
+        shortHours: 1
+        proper: 0.08
+        short: 0.02
+        none: -0.06
+        revenueUp: 0.04
+        revenueDown: -0.04
+        milestoneMissed: -0.2
+      startConfidence: 0.6
+      followOnAppetite: { pleased: 0.8, worried: 1.25 }
+      moodAt: { patient: 0.4, pleased: 0.7 }
+      valueRevenueMultiple: 8
+      growing: { runwayMonths: 12, quarterGrowth: 0.1 }

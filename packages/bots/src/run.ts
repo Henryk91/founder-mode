@@ -205,7 +205,9 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
       })
     : undefined
 
-  const { segment, note } = botScenario(scenario.id).playtest
+  const { segment, note } = scenario.bookings
+    ? { segment: '', note: null }
+    : botScenario(scenario.id).playtest
   const input = {
     ...(scenario.mode ? { maxWeeks: scenario.maxWeeks } : {}),
     ...(scenario.bookings ? { tourism: true } : {}),

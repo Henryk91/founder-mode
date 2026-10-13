@@ -1,0 +1,139 @@
+events:
+  - id: summit_sunrise
+    area: founder
+    weight: 2
+    once: true
+    when: [energy <= 50]
+    from: none
+    sender: An old climbing partner
+    look: note
+    text: >-
+      An old climbing partner asks whether you want to do a sunrise summit, just the two of you,
+      no guests. You remember why you started this, faintly.
+    defaultChoice: decline
+    choices:
+      - id: go
+        label: Go, alarm at three
+        hours: 8
+        effects:
+          - { type: energy, delta: 14 }
+      - id: decline
+        label: Not this week
+        hours: 0
+
+  - id: knee_twinge
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: Your left knee
+    look: note
+    text: >-
+      Your knee has started to comment on every descent. It is not a complaint yet, more of a
+      review.
+    defaultChoice: ignore
+    choices:
+      - id: physio
+        label: See the physio twice
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -12000 }
+          - { type: energy, delta: 6, when: [energy <= 60] }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+        effects:
+          - { type: energy, delta: -6, when: [energy <= 60] }
+
+  - id: van_nights
+    area: founder
+    weight: 2
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: Your partner
+    look: note
+    text: >-
+      Your partner notes that you have slept in the van four nights this month to start tours
+      early. The van, she points out, is not a bedroom, whatever the brochure says.
+    defaultChoice: carry_on
+    choices:
+      - id: home
+        label: Sleep at home and start later
+        hours: 0
+        effects:
+          - { type: energy, delta: 6 }
+          - { type: lostHours, hours: 2 }
+      - id: carry_on
+        label: Carry on in the van
+        hours: 0
+        effects:
+          - { type: energy, delta: -5 }
+
+  - id: guide_reunion
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.month == 11]
+    from: none
+    sender: Your guiding course
+    text: >-
+      Your guiding course meets for its yearly dinner. There will be stories about storms, and
+      about who still owes whom a carabiner.
+    defaultChoice: skip
+    choices:
+      - id: go
+        label: Go to the dinner
+        hours: 4
+        effects:
+          - { type: energy, delta: 6 }
+          - { type: skill, skill: selling, delta: 0.02 }
+      - id: skip
+        label: Stay home with the spreadsheet
+        hours: 0
+
+  - id: rainy_week_off
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [tour.forecast >= 2, tour.bookedWeek <= 3]
+    from: none
+    sender: The weather
+    look: note
+    text: >-
+      Rain all week and almost nothing booked. A wet week is a free week, if you let it be one.
+    defaultChoice: work
+    choices:
+      - id: rest
+        label: Take two days off
+        hours: 0
+        effects:
+          - { type: energy, delta: 8 }
+          - { type: lostHours, hours: 6 }
+      - id: work
+        label: Use it for paperwork
+        hours: 0
+
+  - id: second_season_doubt
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 50]
+    from: none
+    sender: Your brother
+    look: note
+    text: >-
+      Your brother asks whether you will do this for another year. He asks the way people ask
+      whether you are sure about that haircut.
+    defaultChoice: shrug
+    choices:
+      - id: plan
+        label: Sit down and plan the second summer
+        hours: 3
+        effects:
+          - { type: energy, delta: 3 }
+      - id: shrug
+        label: Change the subject
+        hours: 0

@@ -1,0 +1,113 @@
+events:
+  - id: guide_poached
+    area: team
+    weight: 2
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: Your best guide
+    look: note
+    text: >-
+      Your best freelance guide has an offer from a bigger operator for August. He would rather
+      stay, he says, for a little more money and a little less van.
+    defaultChoice: let_go
+    choices:
+      - id: match
+        label: Pay him a bonus for August
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -80000 }
+      - id: let_go
+        label: Let him go for August
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 6 }
+
+  - id: guide_feedback
+    area: team
+    weight: 2
+    once: true
+    when: [tour.reviews >= 10]
+    from: none
+    sender: A hiking leader
+    text: >-
+      A hiking leader suggests that guests would like a short weather briefing before setting
+      off. She has drafted one, with drawings of clouds.
+    defaultChoice: later
+    choices:
+      - id: adopt
+        label: Use her briefing on every tour
+        hours: 1
+        effects:
+          - { type: review, rating: 5, count: 1 }
+      - id: later
+        label: Think about it
+        hours: 0
+
+  - id: office_help_offer
+    area: team
+    weight: 2
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: A neighbour's daughter
+    text: >-
+      A neighbour's daughter offers to answer booking emails a few hours a week, as a minijob.
+      She is studying tourism and wants a reference more than money.
+    defaultChoice: decline
+    choices:
+      - id: hire
+        label: Give her the minijob
+        hours: 1
+        effects:
+          - { type: fixedCost, id: office_help, name: Office help (minijob), monthlyCents: 40000 }
+          - { type: energy, delta: 4 }
+      - id: decline
+        label: Keep the emails yourself
+        hours: 0
+
+  - id: guides_wages
+    area: team
+    weight: 2
+    once: true
+    when: [week >= 55]
+    from: none
+    sender: Your freelance guides
+    look: note
+    text: >-
+      Your freelance guides mention that other operators pay more per day this season. They
+      mention it together, which is how you know they talked.
+    defaultChoice: hold
+    choices:
+      - id: raise
+        label: Pay a little more from now on
+        hours: 1
+        effects:
+          - { type: energy, delta: 2 }
+          - { type: fixedCost, id: guide_bonus, name: Guides' seasonal bonus, monthlyCents: 30000 }
+      - id: hold
+        label: Hold the rate
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }
+
+  - id: shared_bus
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 25]
+    from: none
+    sender: A bus company
+    text: >-
+      A small bus company offers a seasonal contract for team transfers at a fixed monthly fee.
+      It would mean no more frantic calls at six in the morning, the owner promises.
+    defaultChoice: decline
+    choices:
+      - id: sign
+        label: Sign the seasonal contract
+        hours: 1
+        effects:
+          - { type: fixedCost, id: bus_contract, name: Bus contract, monthlyCents: 50000 }
+      - id: decline
+        label: Keep booking per trip
+        hours: 0

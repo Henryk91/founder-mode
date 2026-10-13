@@ -1,0 +1,130 @@
+events:
+  - id: tourism_office_newsletter
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: Tourism office
+    look: official
+    text: >-
+      The tourism office's spring newsletter says bookings for guided activities rose last
+      summer, mostly in July and August. It also lists twelve new parking rules.
+    defaultChoice: skim
+    choices:
+      - id: read
+        label: Read it properly and call them about partners
+        hours: 2
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: skim
+        label: Skim it for the dates
+        hours: 0
+
+  - id: hotel_owner_chat
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2]
+    from: none
+    sender: Gasthof Zur Post Oberau
+    text: >-
+      The owner of the Gasthof asks whether you would take her guests up the mountain. Her
+      guests ask every morning, she says, mostly in English and mostly before coffee.
+    defaultChoice: later
+    choices:
+      - id: meet
+        label: Meet her and ask what her guests want
+        hours: 2
+        effects:
+          - { type: guests, segment: tourists, count: 3 }
+      - id: later
+        label: Say you will be in touch
+        hours: 0
+
+  - id: hr_forum
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: An HR network in Munich
+    text: >-
+      A Munich HR network invites you to speak for ten minutes about team days. There will be
+      thirty people, sandwiches, and a projector that works on the second attempt.
+    defaultChoice: decline
+    choices:
+      - id: speak
+        label: Prepare a short talk
+        hours: 5
+        effects:
+          - { type: guests, segment: team_events, count: 1 }
+          - { type: energy, delta: -3 }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: teacher_conference
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 5]
+    from: none
+    sender: District teacher training
+    look: official
+    text: >-
+      The district's teacher training day has a slot for outdoor education providers. The slot
+      is at four in the afternoon, which teachers consider the middle of the night.
+    defaultChoice: skip
+    choices:
+      - id: attend
+        label: Take the slot and bring forms
+        hours: 4
+        effects:
+          - { type: guests, segment: school_groups, count: 1 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: survey_offer_outdoor
+    area: validation
+    weight: 1
+    once: true
+    from: none
+    sender: A market research student
+    text: >-
+      A student offers to survey a hundred tourists at the cable car station for your company.
+      She wants a small fee and a free tour, and she has a clipboard.
+    defaultChoice: pass
+    choices:
+      - id: buy
+        label: Pay for the survey
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: skill, skill: interviewing, delta: 0.03 }
+      - id: pass
+        label: Thank her and pass
+        hours: 0
+
+  - id: last_summer_numbers
+    area: validation
+    weight: 3
+    once: true
+    trigger: [week >= 53]
+    from: none
+    sender: Your own spreadsheet
+    look: note
+    text: >-
+      A year in. Your calendar now shows what this week looked like last year, which is the
+      closest thing to a forecast anybody in this valley owns.
+    defaultChoice: carry_on
+    choices:
+      - id: study
+        label: Spend an evening with last year's numbers
+        hours: 3
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: carry_on
+        label: Glance at it and carry on
+        hours: 0

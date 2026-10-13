@@ -8,9 +8,16 @@ import s from './Scene.module.css'
  * same id, and a stage without one shows the kitchen table. The chip names the stage as the
  * scenario does.
  */
-export type OfficeStage = 'kitchen_table' | 'coworking_desk' | 'trades_yard'
+export type OfficeStage =
+  'kitchen_table' | 'coworking_desk' | 'trades_yard' | 'van_garage' | 'town_base'
 
-const DRAWINGS: readonly OfficeStage[] = ['kitchen_table', 'coworking_desk', 'trades_yard']
+const DRAWINGS: readonly OfficeStage[] = [
+  'kitchen_table',
+  'coworking_desk',
+  'trades_yard',
+  'van_garage',
+  'town_base',
+]
 
 /** The drawing for where the company works, from the engine. */
 export function officeStage(view: PlayerView): OfficeStage {
@@ -26,6 +33,8 @@ type SceneData = {
   slumped: boolean
   hire: Figure | null
   customers: string[]
+  /** Tourism: the rating line shown where customer cards would be. */
+  rating: string | null
 }
 
 function sceneData(view: PlayerView, plannedHours: number): SceneData {
@@ -59,6 +68,14 @@ function sceneData(view: PlayerView, plannedHours: number): SceneData {
         }
       : null,
     customers: view.customers.slice(0, 3).map((c) => c.name),
+    rating: view.bookings
+      ? view.bookings.rating === null
+        ? label('scene.rating.none', stage)
+        : label('scene.rating', stage, {
+            rating: view.bookings.rating.toFixed(1),
+            reviews: view.bookings.reviews,
+          })
+      : null,
   }
 }
 
@@ -80,6 +97,10 @@ export function Scene(props: { stage?: OfficeStage }) {
         <KitchenTable data={data} ui={ui} />
       ) : office === 'coworking_desk' ? (
         <CoworkingDesk data={data} ui={ui} />
+      ) : office === 'van_garage' ? (
+        <VanGarage data={data} />
+      ) : office === 'town_base' ? (
+        <TownBase data={data} />
       ) : (
         <TradesYard data={data} ui={ui} />
       )}
@@ -332,6 +353,112 @@ function TradesYard({ data, ui }: { data: SceneData; ui: UiStage }) {
       {data.hire && <Person x={270} who="hire" />}
       <Labels x={150} figure={data.you} />
       {data.hire && <Labels x={270} figure={data.hire} />}
+      <rect className={s.pot} x="690" y="268" width="26" height="30" />
+      <circle className={s.plant} cx="703" cy="250" r="16" />
+    </svg>
+  )
+}
+
+/** Mountains through a window or door (tourism scenes). */
+function Peaks(props: { x: number; y: number; w: number; h: number }) {
+  const { x, y, w, h } = props
+  return (
+    <>
+      <rect className={s.sky} x={x} y={y} width={w} height={h} />
+      <path
+        className={s.skyline}
+        d={`M${x} ${y + h}L${x + w * 0.22} ${y + h * 0.45}L${x + w * 0.38} ${y + h * 0.65}L${x + w * 0.6} ${y + h * 0.25}L${x + w * 0.82} ${y + h * 0.6}L${x + w} ${y + h * 0.4}V${y + h}z`}
+      />
+      <path
+        className={s.paper}
+        d={`M${x + w * 0.6} ${y + h * 0.25}l${w * 0.06} ${h * 0.11}h${-w * 0.12}z`}
+      />
+      <rect className={s.frame} x={x} y={y} width={w} height={h} />
+    </>
+  )
+}
+
+/** The rating on a small sign, where the other scenes pin customer cards. */
+function RatingSign(props: { x: number; y: number; text: string | null }) {
+  if (props.text === null) return null
+  return (
+    <g>
+      <rect className={s.customer} x={props.x} y={props.y} width="120" height="40" rx="4" />
+      <text className={s.cardText} x={props.x + 60} y={props.y + 24}>
+        {props.text}
+      </text>
+    </g>
+  )
+}
+
+/** A van and a garage (Gratwanderung): the open door onto the mountains, a shelf of helmets. */
+function VanGarage({ data }: { data: SceneData }) {
+  return (
+    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
+      <rect className={s.wall} x="0" y="0" width="732" height="250" />
+      <rect className={s.floor} x="0" y="250" width="732" height="80" />
+      <rect className={s.skirting} x="0" y="246" width="732" height="6" />
+      {/* the open garage door */}
+      <Peaks x={260} y={30} w={300} h={216} />
+      {/* the van, half in the doorway */}
+      <rect className={s.counter} x="400" y="150" width="150" height="80" rx="8" />
+      <rect className={s.screen} x="500" y="160" width="40" height="26" rx="3" />
+      <circle className={s.wood} cx="430" cy="232" r="14" />
+      <circle className={s.wood} cx="520" cy="232" r="14" />
+      {/* shelf with helmets and coiled ropes */}
+      <rect className={s.desk} x="24" y="90" width="200" height="6" />
+      <rect className={s.desk} x="24" y="150" width="200" height="6" />
+      {[44, 84, 124].map((x) => (
+        <path key={x} className={s.sticky} d={`M${x} 90a16 16 0 0 1 32 0z`} />
+      ))}
+      {[60, 120, 180].map((x) => (
+        <circle key={x} className={s.line} cx={x} cy="136" r="13" />
+      ))}
+      <RatingSign x={590} y={60} text={data.rating} />
+      {/* folding table */}
+      <rect className={s.desk} x="40" y="220" width="220" height="10" rx="2" />
+      <rect className={s.wood} x="56" y="230" width="6" height="42" />
+      <rect className={s.wood} x="238" y="230" width="6" height="42" />
+      <Person x={130} who="you" slump={data.slumped} />
+      <rect className={s.screen} x="110" y="198" width="40" height="22" rx="2" />
+      <rect className={s.mug} x="180" y="204" width="14" height="16" rx="2" />
+      {data.hire && <Person x={210} who="hire" />}
+      <Labels x={130} figure={data.you} />
+      {data.hire && <Labels x={210} figure={data.hire} />}
+    </svg>
+  )
+}
+
+/** A small shop on the market square (Gratwanderung): helmets in the window, a counter. */
+function TownBase({ data }: { data: SceneData }) {
+  return (
+    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
+      <rect className={s.wall} x="0" y="0" width="732" height="250" />
+      <rect className={s.floor} x="0" y="250" width="732" height="80" />
+      <rect className={s.skirting} x="0" y="246" width="732" height="6" />
+      {/* the shop window with gear on display */}
+      <Peaks x={250} y={36} w={280} h={130} />
+      <line className={s.frame} x1="390" y1="36" x2="390" y2="166" />
+      <rect className={s.desk} x="250" y="166" width="280" height="8" />
+      {[280, 330, 430, 480].map((x) => (
+        <path key={x} className={s.sticky} d={`M${x} 166a16 16 0 0 1 32 0z`} />
+      ))}
+      {/* board with the week's tours */}
+      <rect className={s.paper} x="24" y="40" width="170" height="100" rx="3" />
+      <rect className={s.line} x="24" y="40" width="170" height="100" rx="3" />
+      <rect className={s.ink} x="38" y="64" width="110" height="4" />
+      <rect className={s.ink} x="38" y="82" width="86" height="4" />
+      <rect className={s.ink} x="38" y="100" width="124" height="4" />
+      <RatingSign x={580} y={60} text={data.rating} />
+      {/* the counter */}
+      <rect className={s.counter} x="40" y="206" width="330" height="40" />
+      <rect className={s.desk} x="36" y="200" width="338" height="8" />
+      <Person x={150} who="you" slump={data.slumped} />
+      <rect className={s.screen} x="130" y="178" width="40" height="22" rx="2" />
+      <rect className={s.mug} x="200" y="184" width="14" height="16" rx="2" />
+      {data.hire && <Person x={280} who="hire" />}
+      <Labels x={150} figure={data.you} />
+      {data.hire && <Labels x={280} figure={data.hire} />}
       <rect className={s.pot} x="690" y="268" width="26" height="30" />
       <circle className={s.plant} cx="703" cy="250" r="16" />
     </svg>

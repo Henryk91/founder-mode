@@ -35,9 +35,37 @@ import zollstockFinance from './scenarios/zollstock/messages/events/finance.yaml
 import zollstockFounder from './scenarios/zollstock/messages/events/founder.yaml?raw'
 import zollstockTeam from './scenarios/zollstock/messages/events/team.yaml?raw'
 import zollstockNames from './scenarios/zollstock/messages/company_names.yaml?raw'
+import gratwanderungAbout from './scenarios/gratwanderung/about.yaml?raw'
+import gratwanderungScenario from './scenarios/gratwanderung/scenario.yaml?raw'
+import gratwanderungFeatures from './scenarios/gratwanderung/features.yaml?raw'
+import gratwanderungQuotes from './scenarios/gratwanderung/messages/interview_quotes.yaml?raw'
+import gratwanderungIntro from './scenarios/gratwanderung/messages/intro.yaml?raw'
+import gratwanderungValidation from './scenarios/gratwanderung/messages/events/validation.yaml?raw'
+import gratwanderungSales from './scenarios/gratwanderung/messages/events/sales.yaml?raw'
+import gratwanderungProduct from './scenarios/gratwanderung/messages/events/product.yaml?raw'
+import gratwanderungFinance from './scenarios/gratwanderung/messages/events/finance.yaml?raw'
+import gratwanderungFounder from './scenarios/gratwanderung/messages/events/founder.yaml?raw'
+import gratwanderungTeam from './scenarios/gratwanderung/messages/events/team.yaml?raw'
+import gratwanderungNames from './scenarios/gratwanderung/messages/company_names.yaml?raw'
+import tourismValidation from './shared/tourism/validation.yaml?raw'
+import tourismSales from './shared/tourism/sales.yaml?raw'
+import tourismProduct from './shared/tourism/product.yaml?raw'
+import tourismFinance from './shared/tourism/finance.yaml?raw'
+import tourismFounder from './shared/tourism/founder.yaml?raw'
+import tourismTeam from './shared/tourism/team.yaml?raw'
+
+/** Events every tourism scenario shares, one file per area. */
+const TOURISM_EVENTS: Record<EventArea, string> = {
+  validation: tourismValidation,
+  sales: tourismSales,
+  product: tourismProduct,
+  finance: tourismFinance,
+  founder: tourismFounder,
+  team: tourismTeam,
+}
 
 /** Built in scenarios, in the order the Start screen lists them. */
-export const SCENARIO_IDS = ['kantino', 'zollstock'] as const
+export const SCENARIO_IDS = ['kantino', 'zollstock', 'gratwanderung'] as const
 export type ScenarioId = (typeof SCENARIO_IDS)[number]
 
 export const isScenarioId = (id: string): id is ScenarioId =>
@@ -112,6 +140,26 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
     longEvents: sharedYear2,
     fundingEvents: sharedFunding,
   },
+  // Tourism (step 5): its own shared pool instead of the software scenarios' shared and second
+  // year events; the funding events still apply.
+  gratwanderung: {
+    scenario: gratwanderungScenario,
+    features: gratwanderungFeatures,
+    interviewQuotes: gratwanderungQuotes,
+    companyNames: gratwanderungNames,
+    intro: gratwanderungIntro,
+    events: {
+      validation: gratwanderungValidation,
+      sales: gratwanderungSales,
+      product: gratwanderungProduct,
+      finance: gratwanderungFinance,
+      founder: gratwanderungFounder,
+      team: gratwanderungTeam,
+    },
+    sharedEvents: TOURISM_EVENTS,
+    longEvents: '',
+    fundingEvents: sharedFunding,
+  },
 }
 
 /** What the Start screen shows about a scenario before a run exists. Not part of the game rules. */
@@ -120,6 +168,7 @@ export type ScenarioAbout = { id: ScenarioId; name: string; lines: string[]; mod
 const ABOUT: Record<ScenarioId, string> = {
   kantino: kantinoAbout,
   zollstock: zollstockAbout,
+  gratwanderung: gratwanderungAbout,
 }
 
 /** The id of an event entry, or of the shared event it places. */

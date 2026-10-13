@@ -218,7 +218,17 @@ function reachOf(
   const outreach =
     (r.outreach * Math.min(plan.outreach[segmentId] ?? 0, cfg.outreachHoursFull)) /
     cfg.outreachHoursFull
-  const total = Math.min(cfg.reachCap, platform + website + partnership + outreach + r.walkIn)
+  // An office stage with walk-ins from this segment (a base in town) adds its rate to the reach.
+  const office = state.modifiers.reduce(
+    (t, m) => t + (m.walkIns?.segmentId === segmentId ? m.walkIns.leadsPerWeek : 0),
+    0,
+  )
+  // Word of mouth: guests who booked directly tell others, website or not.
+  const mouth = 0.2 * Math.min(1, repeats / cfg.website.repeatsFull)
+  const total = Math.min(
+    cfg.reachCap,
+    platform + website + partnership + outreach + r.walkIn + office + mouth,
+  )
   return { total, platform: Math.min(platform, total) }
 }
 

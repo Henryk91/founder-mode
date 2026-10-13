@@ -176,3 +176,15 @@ Interview quote examples (tone guide only):
 Spring is hard: little income, lots of preparation, and the temptation to buy gear. A player who validates in spring (interviews, a pilot day, vouchers) and enters summer with the right products and enough guides booked has a strong first summer and must then make the money last through the dead season. A player who builds for a polite trap segment has a quiet summer and an expensive winter. Year 2 should be easier for a player who learned the seasons, and the post-mortem should show the season curves they could have inferred.
 
 This is a back of the envelope expectation. The bot report is the real answer.
+
+## 14. Sources and values as built (step 5)
+
+Checked figures (2025 and 2026 sources):
+
+- Platform commission: GetYourGuide's supplier fee is 20 to 30% of the price (getyourguide.supply). Content: 25%.
+- Mountain guide day: the German guides' association (VDBS) recommends about 480 to 550 EUR a day for private clients (secondary sources, e.g. wandernundmehr.at). Content: 480 EUR a freelance shift.
+- Hiking leader: up to about 215 EUR a day with tour operators (asi-reisen.de job advert). Content: 215 EUR.
+- Minimum wage 13.90 EUR an hour and minijob limit 603 EUR a month from January 2026 (informationsportal.de).
+- Via ferrata lanyard about 88 to 127 EUR (check24, bergsteigen.com); e-MTB 3,000 to 6,000 EUR each (bike-magazin.de; estimate for a fleet price).
+
+Changed from this file while tuning (reasons in `docs/decisions.md`, step 5): school groups demand 6 to 12 groups a week at peak (was 0.3 to 1.2) with four classes a day; tourists' willingness to pay 60 to 120 EUR (estimate, was 70 to 140); a run is won when its last 13 months together cover every cost.

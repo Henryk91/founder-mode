@@ -9,6 +9,7 @@ import {
   parseScenario,
   SCENARIO_IDS,
   scenarioCatalogue,
+  scenarioModes,
   scenarioSources,
 } from '../src/index'
 
@@ -35,6 +36,10 @@ const allSources = (id: (typeof SCENARIO_IDS)[number]) => {
     longEvents,
   ]
 }
+
+/** Scenarios of the subscription model, and the tourism ones (step 5), which have other rules. */
+const SUBSCRIPTION_IDS = SCENARIO_IDS.filter((id) => !loadScenario(id).bookings)
+const TOURISM_IDS = SCENARIO_IDS.filter((id) => !!loadScenario(id).bookings)
 
 describe('content', () => {
   it.each(SCENARIO_IDS)('%s passes its schema', (id) => {
@@ -99,7 +104,7 @@ describe('content', () => {
     for (const text of allSources(id)) expect(text).not.toContain('—')
   })
 
-  it.each(SCENARIO_IDS)(
+  it.each(SUBSCRIPTION_IDS)(
     '%s: at least 400 company names per segment, none ending in a number',
     (id) => {
       const s = loadScenario(id)
@@ -111,7 +116,7 @@ describe('content', () => {
     },
   )
 
-  it.each(SCENARIO_IDS)(
+  it.each(SUBSCRIPTION_IDS)(
     '%s: more distinctive name words per segment than a market ever has open leads',
     (id) => {
       // Bots peak at 36 open leads in one market; two open leads never share this word.
@@ -230,7 +235,7 @@ describe('content', () => {
     const { sharedEvents } = scenarioSources('kantino')
     const shared = EVENT_AREAS.flatMap((area) => eventsIn(sharedEvents[area]) as { id: string }[])
 
-    it.each(SCENARIO_IDS)('%s gets every shared event, in its area', (id) => {
+    it.each(SUBSCRIPTION_IDS)('%s gets every shared event, in its area', (id) => {
       const s = loadScenario(id)
       for (const area of EVENT_AREAS) {
         for (const e of eventsIn(sharedEvents[area]) as { id: string }[]) {
@@ -285,8 +290,9 @@ describe('content', () => {
   describe.each(SCENARIO_IDS)('%s events', (id) => {
     const s = loadScenario(id)
     const { events: files } = scenarioSources(id)
+    const tourism = !!s.bookings
 
-    it('has at least 105 events, at least 10 in every area', () => {
+    it.skipIf(tourism)('has at least 105 events, at least 10 in every area', () => {
       expect(s.events.length).toBeGreaterThanOrEqual(105)
       for (const area of EVENT_AREAS) {
         expect(s.events.filter((e) => e.area === area).length).toBeGreaterThanOrEqual(10)
@@ -300,7 +306,7 @@ describe('content', () => {
       }
     })
 
-    it('arrives once each, except the books, which recur on purpose', () => {
+    it.skipIf(tourism)('arrives once each, except the books, which recur on purpose', () => {
       expect(s.events.filter((e) => !e.once).map((e) => e.id)).toEqual(['receipts_pile'])
     })
 
@@ -333,18 +339,56 @@ describe('content', () => {
       }
     })
 
-    it('keeps the full milestone names, commas included, and organises at all costs or a hire', () => {
-      const names = Object.fromEntries(s.milestones.map((m) => [m.id, m.name]))
-      expect(names['covers_all_costs']).toBe('Monthly revenue covers all costs, you included')
-      expect(names['covers_company_costs']).toBe('Monthly revenue covers company costs')
-      expect(s.organisedAt).toEqual(['first_hire', 'covers_all_costs'])
-    })
+    it.skipIf(tourism)(
+      'keeps the full milestone names, commas included, and organises at all costs or a hire',
+      () => {
+        const names = Object.fromEntries(s.milestones.map((m) => [m.id, m.name]))
+        expect(names['covers_all_costs']).toBe('Monthly revenue covers all costs, you included')
+        expect(names['covers_company_costs']).toBe('Monthly revenue covers company costs')
+        expect(s.organisedAt).toEqual(['first_hire', 'covers_all_costs'])
+      },
+    )
 
     it('gives every event a look, and uses all three', () => {
       const looks = new Set(s.events.map((e) => e.look))
       expect([...looks].sort()).toEqual(['letter', 'note', 'official'])
+      if (tourism) return
       expect(s.events.find((e) => e.id === 'receipts_pile')!.look).toBe('official')
       expect(s.events.find((e) => e.id === 'bad_sleep')!.look).toBe('note')
+    })
+  })
+
+  describe.each(TOURISM_IDS)('%s, a tourism scenario', (id) => {
+    const s = loadScenario(id)
+    const own = EVENT_AREAS.flatMap((area) => eventsIn(scenarioSources(id).events[area]))
+
+    it('is long mode only, with at least 40 events of its own and the shared tourism ones', () => {
+      expect(scenarioModes(id)).toEqual(['long'])
+      expect(own.length).toBeGreaterThanOrEqual(40)
+      const shared = EVENT_AREAS.flatMap(
+        (area) => eventsIn(scenarioSources(id).sharedEvents[area]) as { id: string }[],
+      )
+      for (const e of shared) expect(s.events.some((x) => x.id === e.id)).toBe(true)
+    })
+
+    it('recurs only where an event says how often', () => {
+      for (const e of s.events.filter((x) => !x.once)) {
+        expect([e.id, e.cooldownWeeks !== undefined]).toEqual([e.id, true])
+      }
+    })
+
+    it('organises once guests cover all costs, and counts guests for the first milestone', () => {
+      expect(s.organisedAt).toEqual(['covers_all_costs'])
+      const first = s.milestones.find((m) => m.id === 'first_customer')!
+      expect(first).toMatchObject({ kind: 'count', of: 'guests' })
+    })
+
+    it('has at least ten interview quotes per bucket per segment', () => {
+      for (const seg of s.segments) {
+        for (const b of s.experiments.interview.buckets) {
+          expect(s.interviewQuotes[seg.id]![b.id]!.length).toBeGreaterThanOrEqual(10)
+        }
+      }
     })
   })
 

@@ -19,6 +19,9 @@ import { createGame, endWeek, getView, respond, type PlayerView } from '@founder
 
 const scenario = loadScenario('kantino')
 
+/** The subscription scenarios; tourism ones have their own bots and tests (step 5). */
+const SUBSCRIPTION_IDS = SCENARIO_IDS.filter((id) => !loadScenario(id).bookings)
+
 describe('bots', () => {
   it('has the five plan strategies plus the playtest replay', () => {
     expect(STRATEGIES.map((s) => s.id)).toEqual([
@@ -52,7 +55,7 @@ describe('bots', () => {
   it.each(STRATEGIES.filter((s) => !s.model).map((s) => [s.id, s] as const))(
     '%s plays complete runs with valid plans only, in every scenario',
     (_id, strategy) => {
-      for (const id of SCENARIO_IDS) {
+      for (const id of SUBSCRIPTION_IDS) {
         const s = loadScenario(id)
         for (let i = 0; i < 5; i++) {
           const r = runGame(s, strategy, `test-${i}`)
@@ -253,7 +256,7 @@ describe('bots', () => {
       ])
     })
 
-    it.each(SCENARIO_IDS)(
+    it.each(SUBSCRIPTION_IDS)(
       'the reader has an answer for every %s event, and only for events that exist',
       (id) => {
         // The books are their own behaviour, answered before the reader looks. So is an office
@@ -369,7 +372,7 @@ describe('bots', () => {
   })
 })
 
-describe.each(SCENARIO_IDS)('the %s office with walk-ins', (id) => {
+describe.each(SUBSCRIPTION_IDS)('the %s office with walk-ins', (id) => {
   it('is taken by the reading bot only when its own evidence ranks the walk-in market first', () => {
     const scenario = loadScenario(id)
     const office = officeMove(scenario)!

@@ -1,5 +1,5 @@
 import type { EndingId, GameState } from '../types'
-import { netChangeCents, profitableForMonths } from './finance'
+import { netChangeCents, profitableForMonths, profitableOverMonths } from './finance'
 import { growingHolds } from './funding'
 
 /** Profitable for the last 8 weeks, as two 4 week months, unless the scenario says otherwise. */
@@ -17,7 +17,12 @@ export function checkEnding(state: GameState): EndingId | null {
   }
   if (state.week >= state.scenario.maxWeeks) {
     const months = state.scenario.win?.profitableMonths ?? SUSTAINABLE_MONTHS
-    if (profitableForMonths(state, months)) return 'sustainable'
+    const over = state.scenario.win?.overMonths
+    if (
+      over !== undefined ? profitableOverMonths(state, over) : profitableForMonths(state, months)
+    ) {
+      return 'sustainable'
+    }
     // A funded company still burning money wins as Growing, with runway and growth (Part D).
     const net = state.ledger.slice(-state.scenario.finance.weeksPerMonth)
     if (

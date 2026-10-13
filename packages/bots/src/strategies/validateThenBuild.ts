@@ -365,6 +365,8 @@ const SHARED_READER: Record<string, ReaderRule> = {
 
 const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
   zollstock: {},
+  // Tourism events are read from their declared conditions (tourism bots).
+  gratwanderung: {},
   kantino: {
     // validation
     survey_offer: 'pass',
