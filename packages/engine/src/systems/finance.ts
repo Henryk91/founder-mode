@@ -280,6 +280,22 @@ export function runwayWeeks(state: GameState): number | null {
  * founder's living costs. Checks each of the last
  * `months` complete months, counted back from the latest week.
  */
+/**
+ * Seasonal businesses (tourism): money received over the last `months` months together covers
+ * those months' company costs and living costs.
+ */
+export function profitableOverMonths(state: GameState, months: number): boolean {
+  const weeks = months * state.scenario.finance.weeksPerMonth
+  if (state.ledger.length < weeks) return false
+  const span = state.ledger.slice(-weeks)
+  const revenue = span.reduce((t, l) => t + l.revenueCents, 0)
+  const costs = span.reduce(
+    (t, l) => t + l.fixedCostsCents + l.freelanceCents + l.bookingCostsCents + l.livingCostsCents,
+    0,
+  )
+  return revenue >= costs
+}
+
 export function profitableForMonths(state: GameState, months: number): boolean {
   const weeksPerMonth = state.scenario.finance.weeksPerMonth
   if (state.ledger.length < months * weeksPerMonth) return false

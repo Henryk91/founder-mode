@@ -1,0 +1,70 @@
+events:
+  - id: health_and_safety_check
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 15]
+    from: none
+    sender: District office
+    look: official
+    text: >-
+      The district office announces a routine safety check next month. Routine, in this
+      context, means a man with a clipboard and no sense of humour.
+    defaultChoice: wing_it
+    choices:
+      - id: prepare
+        label: Prepare the paperwork properly
+        hours: 5
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: wing_it
+        label: Hope for the best
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -30000, chance: 0.4 }
+
+  - id: equipment_supplier_sale
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: An equipment supplier
+    text: >-
+      An equipment supplier has an end of season sale and says you will regret not buying. He
+      says that every season, and has been right once.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Stock up at a discount
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: bugs, delta: -1 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: booking_system_outage
+    area: product
+    weight: 2
+    once: true
+    when: [tour.bookedAhead >= 10]
+    from: none
+    sender: Your booking system
+    look: official
+    text: >-
+      The booking system was down for six hours overnight. Nobody knows how many guests tried
+      and gave up, including the booking system.
+    defaultChoice: wait
+    choices:
+      - id: check
+        label: Check every booking by hand
+        hours: 4
+        effects:
+          - { type: review, rating: 4, count: 1 }
+      - id: wait
+        label: Assume it is fine
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 1, chance: 0.5 }

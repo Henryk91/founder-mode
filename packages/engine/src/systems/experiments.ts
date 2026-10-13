@@ -69,7 +69,12 @@ export function budgetHint(
   if (!r.chance(cfg.budgetChance)) return null
   const factor = Math.min(1.8, Math.max(0.4, 1 + r.normal(cfg.budgetNoiseSd)))
   const raw = hidden.wtpCents * factor
-  const step = raw < 100_000 ? 5_000 : 10_000
+  const step =
+    cfg.budgetSmallStepCents !== undefined && raw < 20_000
+      ? cfg.budgetSmallStepCents
+      : raw < 100_000
+        ? 5_000
+        : 10_000
   return {
     quoteIndex: r.int(0, quotes.length - 1),
     amountCents: Math.max(step, Math.round(raw / step) * step),

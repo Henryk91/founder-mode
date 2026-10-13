@@ -1,0 +1,86 @@
+# Products and what they need (docs/scenario-outdoor.md section 4). Which segment needs which lives
+# in scenario.yaml (segments[].mustHave) and stays hidden. Snags are teething trouble at launch.
+
+- id: half_day_hike
+  name: Half day guided hike
+  buildHours: 8
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Somebody who knows the way and the weather. That is all I want for a morning.
+
+- id: english_tours
+  name: Tours in English
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Is there anyone who explains the mountain in English? My German stops at Brezn.
+
+- id: online_booking
+  name: Online booking with instant confirmation
+  buildHours: 20
+  bugsOnShip: { min: 1, max: 2 }
+  mention: If I cannot book it on my phone tonight, I will book something else tomorrow.
+
+- id: via_ferrata
+  name: Via ferrata day
+  buildHours: 20
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Climbing on the iron cables, but with somebody who checks my karabiners.
+
+- id: canyoning
+  name: Canyoning day
+  buildHours: 30
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Jumping into gorges in a wetsuit. My colleagues would never stop talking about it.
+
+- id: snowshoe
+  name: Snowshoe tour
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: In winter we would love a walk in the snow that does not involve skis or broken legs.
+
+- id: bad_weather_plan
+  name: Bad weather alternative
+  buildHours: 25
+  bugsOnShip: { min: 0, max: 1 }
+  mention: If it rains on the day, I need a plan B that is not forty people in a car park.
+
+- id: transfer
+  name: Bus transfer from Munich
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Half my team has no car. The day starts and ends at our office, or it does not happen.
+
+- id: invoice_billing
+  name: Invoices and offers for companies
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Purchasing needs a proper offer and an invoice. Card payments make them nervous.
+
+- id: safety_concept
+  name: Written safety concept and consent forms
+  buildHours: 30
+  bugsOnShip: { min: 0, max: 1 }
+  mention: The head teacher wants the safety plan in writing before anyone leaves the playground.
+
+- id: group_pricing
+  name: Group prices with free places for teachers
+  buildHours: 5
+  bugsOnShip: { min: 0, max: 0 }
+  mention: A price per pupil, and the teachers go free. Otherwise the parents' letter gets awkward.
+
+- id: team_day
+  name: Team day package
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: A whole day out for the team, organised, so I only have to send one email.
+
+- id: school_day
+  name: School trip programme
+  buildHours: 12
+  bugsOnShip: { min: 0, max: 1 }
+  mention: A day in the mountains that fits a timetable and tires out thirty teenagers.
+
+- id: ebike_fleet
+  name: E-mountain bike tours
+  buildHours: 40
+  bugsOnShip: { min: 1, max: 3 }
+  mention: Everyone asks about e-bikes. Everyone. I have no idea whether anyone would pay for them.

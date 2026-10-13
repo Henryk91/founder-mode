@@ -1,0 +1,97 @@
+events:
+  - id: friend_wedding
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: An old friend
+    look: note
+    text: >-
+      An old friend gets married on the busiest weekend of the season. She understands if you
+      cannot come, she says, in a way that means she will remember.
+    defaultChoice: work
+    choices:
+      - id: go
+        label: Go to the wedding
+        hours: 0
+        effects:
+          - { type: energy, delta: 10 }
+          - { type: lostHours, hours: 8 }
+      - id: work
+        label: Send a gift and work
+        hours: 0
+        effects:
+          - { type: energy, delta: -3 }
+
+  - id: season_end_fatigue
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 40
+    when: [energy <= 40]
+    from: none
+    sender: Your body
+    look: note
+    text: >-
+      You fell asleep at the kitchen table at eight in the evening, again. The season is not
+      over, but you are getting close.
+    defaultChoice: push
+    choices:
+      - id: rest
+        label: Plan a lighter week
+        hours: 0
+        effects:
+          - { type: energy, delta: 10 }
+          - { type: lostHours, hours: 8 }
+      - id: push
+        label: Push through
+        hours: 0
+        effects:
+          - { type: energy, delta: -4 }
+
+  - id: family_sunday
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [tour.peak == 0]
+    from: none
+    sender: Your mother
+    look: note
+    text: >-
+      Your mother invites you for Sunday lunch, with cake and questions about the business. You
+      can have one without the other only if you leave early.
+    defaultChoice: skip
+    choices:
+      - id: go
+        label: Go for lunch
+        hours: 0
+        effects:
+          - { type: energy, delta: 5 }
+          - { type: lostHours, hours: 4 }
+      - id: skip
+        label: Call instead
+        hours: 0
+
+  - id: winter_course
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.peak == 0, week >= 30]
+    from: none
+    sender: The chamber of commerce
+    text: >-
+      The chamber of commerce runs an evening course on pricing for small tourism businesses.
+      There will be flip charts and at least one man who knows everything.
+    defaultChoice: skip
+    choices:
+      - id: attend
+        label: Sign up
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -15000 }
+          - { type: skill, skill: selling, delta: 0.04 }
+      - id: skip
+        label: Skip it
+        hours: 0

@@ -1,0 +1,172 @@
+# segment -> interview bucket -> quotes. At least 10 per bucket. Tone guide: docs/scenario-outdoor.md 12.
+
+tourists:
+  not_a_problem:
+    - We just walk up the hill ourselves. It has a sign.
+    - My husband has an app for the mountains. He has never been lost, according to him.
+    - We came for the lake and the cake. The mountain is mostly for photos.
+    - Our hotel has a map at reception. That is our guide.
+    - We did a guided walk once. The guide talked about moss for an hour.
+    - Honestly, we are happy on the cable car and the terrace at the top.
+    - The children only want the playground with the big slide. We are not hiking.
+    - We hike every year without a guide and nobody has fallen off yet.
+    - I booked this holiday to sit down. Please do not make me climb anything.
+    - We follow the red and white marks. They have never let us down.
+  mild:
+    - A guide would be nice. The kids never listen to me on the mountain.
+    - Sometimes I wonder which path is safe after rain. Then I take the easy one.
+    - It might be fun to have someone explain the peaks. I keep mixing them up.
+    - We would maybe book something if it rained less than it does in my imagination.
+    - My friends did a via ferrata last year. They talked about it for weeks. Irritating.
+    - If it were easy to book, perhaps. I do not plan holidays, I react to them.
+    - I would like to try something new, but not something with a waiver.
+    - The tourist office had leaflets. I took three and read none of them.
+    - My wife wants adventure. I want a bench with a view. We usually compromise on the bench.
+    - We might book a morning if the weather looks friendly.
+  noticeable:
+    - Last year we turned back halfway because nobody knew the way down.
+    - I want to do the iron cable routes but I am not doing them alone with my brother.
+    - Every activity here is booked out by the time we arrive. You have to be fast.
+    - We tried to find a guide who speaks English. We found a man who spoke at us.
+    - The routes look easy online and then they are not. Somebody local would help.
+    - We spend half the holiday checking weather apps and arguing.
+    - I would pay for someone who tells me when the storm is coming. My phone never does.
+    - Our group has different fitness levels. Nobody wants to be the one who slows everyone.
+    - I want the mountain without the logistics. Bus times defeat me.
+    - We looked for a canyoning trip and everything was in Austria.
+  painful:
+    - We have five days here and I want one of them to be properly in the mountains, safely.
+    - Last summer we got caught in a thunderstorm on a ridge. Never again without a guide.
+    - Every guided tour was full in August. We booked a spa day out of spite.
+    - I am terrified of heights and my partner is not. Someone has to mediate.
+    - We drove two hours to a tour that was cancelled by text message. No refund, no apology.
+    - My teenagers are bored of everything except things that are slightly dangerous.
+    - I need an activity for eight friends that is not another beer garden.
+    - We tried the gorge ourselves and needed rescuing. I would rather pay a guide than the helicopter.
+    - The platforms show twenty tours and none of them say whether they run in the rain.
+    - I booked a guide in another valley and he turned up with a cold and a hangover.
+  urgent:
+    - We fly home on Sunday and I promised the kids a real mountain. Can you take us tomorrow?
+    - Our hen party has eleven people and no plan for Saturday. Name a price.
+    - We are here for one week and my father turns seventy on the summit or not at all.
+    - The tour we booked just cancelled. I have four people and a free day starting at nine.
+    - I want a via ferrata this week. I bought the gloves already.
+    - We have a group of nine and every operator says August is full. Are you full?
+    - It is my last holiday before the baby. I want one big mountain day, properly guided.
+    - Our guide quit on the morning of the tour. We are standing in the car park.
+    - We will pay extra for English and a guide who checks the weather properly.
+    - My company gave me a voucher that expires this month. I need a day out, any day out.
+
+team_events:
+  not_a_problem:
+    - We do a barbecue in the car park every summer. Nobody complains, much.
+    - Our team events are pizza and a quiz. People like the quiz.
+    - Team building is a word HR uses. We just go to the beer garden.
+    - We are twelve developers. We do not leave the building voluntarily.
+    - Our budget for events went into the coffee machine. It was the right call.
+    - The founders tried an offsite once. They still do not speak about it.
+    - We have a summer party already. One event a year is plenty.
+    - Hiking? Half of us own no shoes that are not trainers.
+    - We book a boat on the lake. It requires no walking at all, which is its main feature.
+    - Our team is spread across four countries. A mountain will not fix that.
+  mild:
+    - A day out would be nice, if someone else organised it completely.
+    - We talked about doing something active once. Then the quarter ended.
+    - Maybe, if it fits between the trade fair and the audit.
+    - People liked the escape room. A mountain could be a very large escape room.
+    - It would be a nice change from the bowling alley, I suppose.
+    - Our CEO likes hiking. That is either a reason to book or a reason to avoid it.
+    - We might do something in autumn, depending on the numbers.
+    - I would need to see whether HR has budget left after the Christmas party.
+    - Some colleagues would love it. Others would call in sick with remarkable timing.
+    - If it included lunch and no rope, maybe.
+  noticeable:
+    - Last year we booked a team day and the bus never came.
+    - Our offsite planning takes me three weeks every year and still goes wrong.
+    - I need something that works for the fit ones and the ones who think stairs are optional.
+    - Every agency sends a glossy PDF and then cannot answer a simple question about rain.
+    - The last event got rained out and we spent the afternoon in a car park eating pretzels.
+    - Purchasing will not accept a booking without a proper offer and invoice.
+    - We grew to sixty people and the old beer garden table no longer fits us.
+    - Getting forty people out of Munich and back by six is the actual challenge.
+    - Our team needs something that is not drinking, for once.
+    - I booked a climbing hall last year. It was fine. Nobody remembers it.
+  painful:
+    - I need forty people on a mountain in June and back by six, and nobody answers my emails.
+    - Our offsite venue cancelled and the board has already announced the date.
+    - Two years running the weather ruined our summer event. I am the one who gets blamed.
+    - We tried to organise it ourselves and spent a week on bus companies and insurance.
+    - Our new owners want a team event that looks good on the intranet. With photos.
+    - I have the budget, I have the date, I do not have a single serious offer.
+    - Last time a colleague twisted an ankle and HR made it my problem for months.
+    - The agencies want a deposit in March for something they cannot describe.
+    - We need a plan B for rain that is not forty people in a car park.
+    - Our sales team hit target and was promised an adventure. I have six weeks.
+  urgent:
+    - Our offsite is in five weeks, the venue cancelled, I will pay what it costs.
+    - The management team wants a mountain day before the reorganisation. This month.
+    - We have sixty people, a date, a budget and no supplier. Can you do it?
+    - The board meeting moved to your valley and someone has to entertain them for a day.
+    - Our planned event fell through and the invitation already says "mountain adventure".
+    - I need an offer by Friday, with a bus and a rain plan, or my boss organises it himself.
+    - We celebrate twenty years next month and the CEO wants a summit photo. All of us.
+    - HR approved the budget today and it expires at the end of the quarter.
+    - Our customer event is in three weeks and the boat company went bankrupt.
+    - Three teams just merged. They need to like each other by July.
+
+school_groups:
+  not_a_problem:
+    - We go to the zoo every year. The zoo has never needed a safety concept.
+    - Our class trips are to museums. Museums do not have weather.
+    - The parents would not pay for anything that is not a youth hostel.
+    - We have a teacher who leads hikes for free. He has done it since 1987.
+    - Our school does not do outdoor trips since the incident with the goat.
+    - The kids are happy with the swimming pool. So are we.
+    - We have a budget for one bus a year and it goes to the theatre.
+    - Honestly, the paperwork for anything outdoors puts everyone off.
+    - Our club has its own hut. We do everything ourselves.
+    - The class does not want mountains. They want a shopping centre.
+  mild:
+    - A guided day might be nice for the project week, if it is cheap.
+    - The sports teacher keeps suggesting it. Nobody else volunteers to come.
+    - We could think about it for next year's planning.
+    - The parents' association might pay part of it, if the bake sale goes well.
+    - It depends on whether the head allows anything with the word climbing in it.
+    - Some pupils would love it. Others would sit on a rock and look at their phones.
+    - We usually decide trips in January. Ask me again in January.
+    - The youth club leaders talked about it. Then the minibus broke.
+    - It sounds lovely. It also sounds like a lot of permission slips.
+    - If it ended before the bus driver's break rules kicked in, perhaps.
+  noticeable:
+    - The head teacher wants the safety plan in writing before anyone leaves the playground.
+    - Last year the hut we booked had no guide and the teachers had to improvise.
+    - We need a price per pupil and free places for teachers, or the parents' letter gets awkward.
+    - Finding anyone who takes thirty teenagers into the mountains is surprisingly hard.
+    - The class trip budget is tight, but the kids remember outdoor days for years.
+    - Every provider wants payment in advance and our school pays by invoice.
+    - We need a programme that fits a timetable and a bus that leaves at eight.
+    - Two of my pupils have asthma and one has a nut allergy. Someone has to plan for that.
+    - The youth hostel recommends guides, but none of them answer the phone.
+    - Our project week has a nature theme and so far the plan is a documentary.
+  painful:
+    - I need forty pupils on a guided day in May, with insurance, and I have nobody.
+    - The last provider cancelled two days before the trip. Thirty parents called me.
+    - Our school requires a written risk assessment and nobody will write one for us.
+    - We lost a whole class trip last year because nobody could take a group our size.
+    - The parents want outdoor education and the regulations want a lawyer.
+    - I spend my summer holidays planning a trip that takes one day. That is the problem.
+    - The district wants every school to offer a nature day. We have no idea how.
+    - Our club's leaders are volunteers. They cannot be responsible for a mountain.
+    - Every year we book the same hall because it is the only thing that works.
+    - The class will leave school next year and they have never seen the mountains up close.
+  urgent:
+    - Our trip in June just lost its provider. I need a replacement before the parents' evening.
+    - The school board approved an outdoor day this term, if someone provides a safety concept.
+    - Three classes need a programme in the project week, which starts in four weeks.
+    - We have a grant for outdoor education that we must spend by July.
+    - The hut we booked burnt down. Not entirely, but enough. We still have the bus.
+    - My head teacher told the newspaper we are doing a mountain day. I have not planned it.
+    - We have a group of twenty-five and a free Friday next month. Please say yes.
+    - The youth club got a donation for an adventure day and the donor wants photos.
+    - Our partner school from France arrives in May and expects mountains.
+    - The district inspector visits the outdoor day. We need one to exist.

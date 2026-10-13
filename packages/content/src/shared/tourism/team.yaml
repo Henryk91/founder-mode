@@ -1,0 +1,48 @@
+events:
+  - id: staff_holiday_clash
+    area: team
+    weight: 2
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: Your staff
+    look: note
+    text: >-
+      Two of your regular people want the same week off at the height of the season. Both have
+      reasons; one has a plane ticket.
+    defaultChoice: first
+    choices:
+      - id: both
+        label: Let both go and work yourself
+        hours: 6
+        effects:
+          - { type: energy, delta: -4 }
+      - id: first
+        label: The ticket wins, the other stays
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 1 }
+
+  - id: staff_thank_you
+    area: team
+    weight: 1
+    once: true
+    when: [tour.reviews >= 25]
+    from: none
+    sender: Your own idea
+    look: note
+    text: >-
+      The season went well and the people who made it happen worked hard. A small thank you
+      might keep them for next year, or at least keep them friendly.
+    defaultChoice: skip
+    choices:
+      - id: dinner
+        label: Take everyone to dinner
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: energy, delta: 3 }
+          - { type: review, rating: 5, count: 1 }
+      - id: skip
+        label: Say thanks and leave it
+        hours: 0

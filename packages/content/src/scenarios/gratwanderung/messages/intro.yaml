@@ -1,0 +1,42 @@
+# Onboarding text shown before week 1, and the founder's notes shown in weeks 1 to 4.
+# Nothing here may reveal which kind of guest is the real market.
+intro:
+  cards:
+    - id: you
+      title: You
+      body: >-
+        You are a state certified mountain guide. The company account holds {cash:eur}, your
+        savings hold {savings:eur}, and living costs {living:eur} a week, about {livingMonth:eur} a
+        month. You own a van, a lot of rope and no business experience whatsoever.
+    - id: idea
+      title: The company
+      body: >-
+        Gratwanderung runs guided days out from a garage in an Alpine market town an hour south of
+        Munich. It is the first week of March. Summer is about twelve weeks away, and so is most
+        of the year's money.
+    - id: problem
+      title: The guests
+      body: >-
+        Tourists, Munich companies booking team days, and school groups might all want a guide.
+        Some of them will book, some will only be polite, and the weather will have opinions about
+        all of it. Seasons and storms rule this business.
+    - id: goal
+      title: The goal
+      body: >-
+        Last {maxWeeks} weeks, two summers and two winters. To win, guests have to pay for the
+        company and for you in each of the last three months. Run out of money, yours included,
+        and it is over.
+
+founderNotes:
+  first_week: >-
+    Week 1. No guests, no products, no evidence about who wants a guide. The mountains do not
+    care, and summer is coming whether you are ready or not.
+  no_evidence: >-
+    Week {week}. Still no evidence about who will book. Your savings pay {living:eur} a week
+    either way.
+  only_interviews: >-
+    You have {n} conversations behind you. Saying a mountain day sounds lovely is free.
+  built_unseen: >-
+    Something is ready to sell and nobody knows it exists. Guests rarely find a garage by accident.
+  leads_only: >-
+    You have {n} enquiries. An enquiry is not a booking.

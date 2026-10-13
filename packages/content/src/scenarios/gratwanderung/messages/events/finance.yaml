@@ -1,0 +1,138 @@
+events:
+  - id: rescue_donation
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Bergwacht
+    look: official
+    text: >-
+      The local mountain rescue asks for a donation for their new stretcher. Everyone in the
+      valley gives something, and everyone in the valley knows who did not.
+    defaultChoice: small
+    choices:
+      - id: generous
+        label: Give a proper donation
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -50000 }
+          - { type: guests, segment: tourists, count: 4 }
+      - id: small
+        label: Give a token amount
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -5000 }
+
+  - id: insurance_renewal_outdoor
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 40]
+    from: none
+    sender: Your insurer
+    look: official
+    text: >-
+      Your liability insurer raises the premium after a review of "the sector". The sector, it
+      turns out, includes a man in Tyrol who took tourists over a glacier in sandals.
+    defaultChoice: accept
+    choices:
+      - id: shop
+        label: Shop around for a better policy
+        hours: 4
+        effects:
+          - { type: cash, amountCents: 30000 }
+      - id: accept
+        label: Accept the new premium
+        hours: 0
+        effects:
+          - { type: fixedCost, id: insurance_rise, name: Insurance rise, monthlyCents: 6000 }
+
+  - id: winter_vouchers
+    area: finance
+    weight: 3
+    once: true
+    when: [tour.month == 11]
+    from: none
+    sender: Christmas market
+    text: >-
+      The Christmas market has a free stall on Thursdays for local businesses. Vouchers for
+      summer tours make good presents, and cash in December makes good sense.
+    defaultChoice: skip
+    choices:
+      - id: stall
+        label: Stand at the stall with vouchers
+        hours: 8
+        effects:
+          - { type: cash, amountCents: 120000 }
+          - { type: energy, delta: -4 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: invoice_reminder_team
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when: [invoices.overdueDays >= 14]
+    from: none
+    sender: Your bank statement
+    look: note
+    text: >-
+      A company that had a lovely team day still has not paid. Their accounts department has an
+      out of office message in three languages.
+    defaultChoice: wait
+    choices:
+      - id: call
+        label: Call their accounts department
+        hours: 1
+        effects:
+          - { type: cash, amountCents: 50000, chance: 0.5 }
+      - id: wait
+        label: Wait another week
+        hours: 0
+
+  - id: gear_grant
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 14]
+    from: none
+    sender: Regional tourism fund
+    look: official
+    text: >-
+      A regional fund pays half the cost of safety equipment for small tourism businesses. The
+      form is eleven pages long and asks for your blood type twice.
+    defaultChoice: ignore
+    choices:
+      - id: apply
+        label: Fill in the form
+        hours: 6
+        effects:
+          - { type: cash, amountCents: 80000, chance: 0.6 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+
+  - id: dead_season_bills
+    area: finance
+    weight: 3
+    once: true
+    when: [tour.month == 11, tour.bookedAhead <= 5]
+    from: none
+    sender: Your accountant
+    look: note
+    text: >-
+      November: four bookings in the calendar and a garage full of gear. Your accountant asks
+      whether you want to cancel the garage over winter, in a tone suggesting yes.
+    defaultChoice: keep
+    choices:
+      - id: sublet
+        label: Sublet half the garage until March
+        hours: 3
+        effects:
+          - { type: cash, amountCents: 50000 }
+      - id: keep
+        label: Keep it as it is
+        hours: 0

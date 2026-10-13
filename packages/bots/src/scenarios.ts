@@ -14,7 +14,8 @@ export type BotScenario = {
   playtest: { segment: string; features: string[]; channel: ChannelId; note: string | null }
 }
 
-export const BOT_SCENARIOS: Record<ScenarioId, BotScenario> = {
+/** Subscription scenarios only: tourism scenarios have no playtest replay. */
+export const BOT_SCENARIOS: Partial<Record<ScenarioId, BotScenario>> = {
   kantino: {
     playtest: {
       segment: 'coworking',

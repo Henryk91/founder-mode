@@ -1,0 +1,273 @@
+events:
+  - id: featured_placement
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.listed == 1]
+    from: none
+    sender: Trailbuddy partner team
+    text: >-
+      Trailbuddy offers "featured placement" in your region for five points more commission.
+      Featured partners get more bookings, the email says, and less sleep, it does not say.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Pay for placement this season
+        hours: 1
+        effects:
+          - { type: guests, segment: tourists, count: 25 }
+          - { type: cash, amountCents: -60000 }
+      - id: decline
+        label: Stay as you are
+        hours: 0
+
+  - id: big_team_request
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Kessler Logistik GmbH
+    text: >-
+      A logistics firm wants a team day for sixty people next week. They mention the budget
+      twice and the date only once, which is a good sign and a bad one.
+    defaultChoice: decline
+    choices:
+      - id: take
+        label: Take it and find guides somehow
+        hours: 6
+        effects:
+          - { type: cash, amountCents: 300000, when: [tour.bookedWeek <= 20] }
+          - { type: review, rating: 2, count: 3, when: [tour.bookedWeek > 20] }
+          - { type: energy, delta: -8 }
+      - id: decline
+        label: Decline and offer a date in autumn
+        hours: 0
+        effects:
+          - { type: guests, segment: team_events, count: 1 }
+
+  - id: hotel_cut_offer
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: Alpenhof Garmisch
+    text: >-
+      A hotel offers to send you its guests for a fifteen percent cut. The manager calls it a
+      partnership; his spreadsheet calls it a commission.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Agree to the cut
+        hours: 1
+        effects:
+          - { type: guests, segment: tourists, count: 15 }
+          - { type: fixedCost, id: hotel_cut, name: Hotel partner cut, monthlyCents: 20000 }
+      - id: decline
+        label: Keep your margin
+        hours: 0
+
+  - id: influencer_canyon
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: A travel influencer
+    text: >-
+      A travel influencer with a ring light wants a free day in July for herself and two
+      friends. She promises reach. Reach, it turns out, does not pay guides.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Give them a free day
+        hours: 9
+        effects:
+          - { type: guests, segment: tourists, count: 12, when: [tour.rating >= 40] }
+          - { type: review, rating: 3, count: 2, when: [tour.rating < 40] }
+      - id: decline
+        label: Offer a discount instead
+        hours: 0
+
+  - id: competitor_undercut
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 15]
+    from: none
+    sender: A neighbour
+    look: note
+    text: >-
+      A new operator in the next valley advertises hikes a third cheaper than yours. Their
+      photos show the same mountain from the less interesting side.
+    defaultChoice: hold
+    choices:
+      - id: differentiate
+        label: Write up what makes your days different
+        hours: 3
+        effects:
+          - { type: guests, segment: tourists, count: 5, when: [tour.rating >= 42] }
+      - id: hold
+        label: Hold your price and ignore them
+        hours: 0
+
+  - id: travel_agency_bundle
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: Bergreisen Süd
+    text: >-
+      A small travel agency wants to bundle your hikes into its Bavaria weeks. It pays thirty
+      days after the trip, it says, as if that were a feature.
+    defaultChoice: decline
+    choices:
+      - id: sign
+        label: Sign the bundle deal
+        hours: 2
+        effects:
+          - { type: guests, segment: tourists, count: 10 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: youth_hostel_partners
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: Jugendherberge am See
+    text: >-
+      The youth hostel by the lake gets asked for guided days by every school that stays. The
+      warden would recommend you, if you send her something she can photocopy.
+    defaultChoice: later
+    choices:
+      - id: send
+        label: Write a one page programme for schools
+        hours: 3
+        effects:
+          - { type: guests, segment: school_groups, count: 2 }
+      - id: later
+        label: Put it on the list
+        hours: 0
+
+  - id: one_star_cloud
+    area: sales
+    weight: 3
+    once: false
+    cooldownWeeks: 20
+    when: [tour.reviews >= 10]
+    from: none
+    sender: Trailbuddy reviews
+    look: note
+    text: >-
+      A guest left one star because the summit was in cloud. "The view was not as advertised,"
+      she writes, about a mountain.
+    defaultChoice: ignore
+    choices:
+      - id: reply
+        label: Reply kindly and publicly
+        hours: 1
+        effects:
+          - { type: review, rating: 4, count: 2 }
+      - id: refund
+        label: Offer a partial refund
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -4000 }
+          - { type: review, rating: 5, count: 1 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 1 }
+
+  - id: autumn_offsites
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.month == 8]
+    from: none
+    sender: An events agency
+    text: >-
+      An events agency is planning autumn offsites for three Munich clients and asks for your
+      rates. They need a rain plan and a bus, they say, before they need a mountain.
+    defaultChoice: later
+    choices:
+      - id: offer
+        label: Send a proper offer
+        hours: 3
+        effects:
+          - { type: guests, segment: team_events, count: 2 }
+      - id: later
+        label: Reply after the summer
+        hours: 0
+
+  - id: last_minute_group
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 10
+    when: [tour.peak == 1]
+    from: none
+    sender: A tourist on the phone
+    look: note
+    text: >-
+      A family of five calls from a campsite: can they come tomorrow? It depends, as always,
+      on whether there is anyone left on your roster.
+    defaultChoice: no
+    choices:
+      - id: squeeze
+        label: Squeeze them in on your own time
+        hours: 4
+        effects:
+          - { type: cash, amountCents: 40000 }
+          - { type: energy, delta: -4 }
+      - id: no
+        label: Say you are full
+        hours: 0
+
+  - id: second_valley_school
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 30]
+    from: none
+    sender: Gymnasium Weilheim
+    text: >-
+      A head teacher asks whether you could do outdoor days for all their year seven classes
+      next spring. Six classes, six days, one safety concept she would like to read first.
+    defaultChoice: later
+    choices:
+      - id: pitch
+        label: Visit the school and pitch
+        hours: 4
+        effects:
+          - { type: guests, segment: school_groups, count: 3 }
+      - id: later
+        label: Send a brochure
+        hours: 0
+
+  - id: town_base_offer
+    area: sales
+    weight: 1
+    once: true
+    trigger: [week >= 30, monthlyRevenueEur >= 3000]
+    from: none
+    sender: The baker on the market square
+    text: >-
+      The baker's old shop on the market square is free, with a window for helmets and a back
+      room for gear. Tourists walk past it all day, the baker says, mostly towards his cakes.
+    defaultChoice: decline
+    choices:
+      - id: take
+        label: Rent the shop as a base in town
+        hours: 4
+        effects:
+          - { type: moveOffice, stage: town_base }
+      - id: decline
+        label: Stay in the garage
+        hours: 0

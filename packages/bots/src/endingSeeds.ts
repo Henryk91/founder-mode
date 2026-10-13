@@ -27,7 +27,13 @@ export type EndingSeed = {
  * Every ending, and the bots that tend to reach it, most likely first. `long`: only in long mode,
  * where a funded company can end Growing.
  */
-export const ENDING_ROUTES: { ending: EndingId; strategies: string[]; long?: true }[] = [
+export const ENDING_ROUTES: {
+  ending: EndingId
+  strategies: string[]
+  long?: true
+  /** Routes for a tourism scenario (bookings model); the others are for subscriptions. */
+  tourism?: true
+}[] = [
   { ending: 'sustainable', strategies: ['validate_then_build', 'price_aware'] },
   { ending: 'still_searching', strategies: ['validate_then_build', 'sell_first'] },
   { ending: 'bankrupt', strategies: ['build_only', 'random'] },
@@ -35,11 +41,22 @@ export const ENDING_ROUTES: { ending: EndingId; strategies: string[]; long?: tru
   // No bot quits on its own: shutting down is the player's choice.
   { ending: 'shut_down', strategies: ['shut_down@10'] },
   { ending: 'growing', strategies: ['raise_late', 'raise_on_traction'], long: true },
+  { ending: 'sustainable', strategies: ['tourism_careful'], tourism: true },
+  {
+    ending: 'still_searching',
+    strategies: ['tourism_careful', 'tourism_price_blind'],
+    tourism: true,
+  },
+  { ending: 'bankrupt', strategies: ['tourism_no_tests', 'tourism_overstaffing'], tourism: true },
+  { ending: 'burnout', strategies: ['tourism_overworker'], tourism: true },
+  { ending: 'shut_down', strategies: ['shut_down@10'], tourism: true },
 ]
 
 /** The endings a scenario can reach in its mode. */
 export const routesFor = (scenario: Scenario) =>
-  ENDING_ROUTES.filter((r) => !r.long || scenario.mode === 'long')
+  ENDING_ROUTES.filter(
+    (r) => !!r.tourism === !!scenario.bookings && (!r.long || scenario.mode === 'long'),
+  )
 
 /** Seeds tried per ending, as `ending-<n>`. */
 const MAX_TRIES = 400
@@ -57,7 +74,9 @@ export function playSeed(
     const r = runGame(scenario, strategy, seed)
     return { ending: r.ending, week: r.weeks }
   }
-  const strategy = STRATEGIES.find((s) => s.id === 'validate_then_build')!
+  const strategy = STRATEGIES.find(
+    (s) => s.id === (scenario.bookings ? 'tourism_careful' : 'validate_then_build'),
+  )!
   const player = strategy.create(scenario, seed)
   let state = createGame(scenario, seed)
   while (state.status === 'running' && state.week < Number(quit[1])) {

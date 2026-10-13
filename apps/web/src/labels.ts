@@ -688,6 +688,8 @@ const labels = {
   'scene.figure': '{name}: {status}',
   'scene.customers': 'Customers',
   'scene.nextCustomer': 'next?',
+  'scene.rating': 'Rated {rating} ({reviews})',
+  'scene.rating.none': 'No reviews yet',
 
   'desk.centreNav': 'Plan or market',
 

@@ -26,7 +26,10 @@ function progress(state: GameState, m: Milestone): { current: number; target: nu
   }
 }
 
-function countOf(state: GameState, of: 'interviews' | 'deposits' | 'customers' | 'hires'): number {
+function countOf(
+  state: GameState,
+  of: 'interviews' | 'deposits' | 'customers' | 'hires' | 'guests',
+): number {
   switch (of) {
     case 'interviews':
       return Object.values(state.knowledge)
@@ -38,6 +41,10 @@ function countOf(state: GameState, of: 'interviews' | 'deposits' | 'customers' |
         .reduce((t, e) => t + (e.kind === 'presale' ? e.commits : 0), 0)
     case 'customers':
       return state.customers.length
+    case 'guests':
+      return (state.bookings?.bookings ?? [])
+        .filter((b) => b.status === 'served')
+        .reduce((t, b) => t + b.units, 0)
     case 'hires':
       return state.team.members.filter((m) => m.startWeek <= state.week).length
   }

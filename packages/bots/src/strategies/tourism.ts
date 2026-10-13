@@ -24,6 +24,8 @@ export type TourismRule = {
   reviews: boolean
   /** Cancellation policy: chosen by what the bot sees, or always one. */
   policy: 'adaptive' | 'flexible' | 'strict'
+  /** Hours planned a week (65 for the overworker). */
+  hours?: number
 }
 
 export const CAREFUL_TOURISM: TourismRule = {
@@ -42,19 +44,25 @@ const MORE_INTERVIEWS = 4
 const ROSTER_MARGIN = 0.1
 /** The understaffing bot covers this share of what is booked. */
 const UNDER_SHARE = 0.6
-/** Founder shifts a week at most, so selling and building still get hours. */
-const FOUNDER_SHIFTS = 2
+/** Founder shifts a week at most, so selling and building still get some hours. */
+const FOUNDER_SHIFTS = 4
+/** Hours the founder keeps free beside their own shifts. */
+const FOUNDER_KEEP_HOURS = 10
 const OUTREACH_HOURS = 6
 /** A channel counts as reaching a segment from this stated strength. */
 const CHANNEL_USEFUL = 0.3
 /** Price from the budget hints: peak and off season, as shares of their mean. */
 const HINT_PEAK = 1.0
 const HINT_OFF = 0.85
-const MIN_HINTS = 2
+const MIN_HINTS = 3
+/** The most a price moves at once from the hints. */
+const MAX_PRICE_STEP = 0.3
 /** Strict policy once this share of last month's guests cancelled and the calendar is busy. */
 const STRICT_CANCEL_SHARE = 0.12
 const BUSY_SHARE = 0.7
 const BUG_LIMIT = 2
+/** A further product is built when its one-off cost is at most this share of the money. */
+const EXTRA_SHARE = 0.2
 
 export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   const cfg = scenario.bookings!
@@ -101,7 +109,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       return [...listed, ...extra]
     },
     plan(view) {
-      const b = new PlanBuilder(view, 50)
+      const b = new PlanBuilder(view, rule.hours ?? 50)
       const bv = view.bookings!
       const ids = view.segments.map((s) => s.id)
       const plan: BookingsPlan = {
@@ -129,20 +137,31 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
               ? booked * UNDER_SHARE
               : booked * (rule.reviews ? 1 + ROSTER_MARGIN : 1)
         let covered = 0
+        // The founder's own shifts first: they cost hours, not money.
         for (const r of bv.roles) {
           const per = r.units[productId] ?? 0
-          if (per <= 0) continue
-          // The founder takes a shift or two first: it costs hours, not money.
+          const own = Object.values(plan.founderShifts).reduce((t, n) => t + n, 0)
+          if (per <= 0 || r.founderHours === null) continue
+          let taken = own
           while (
             covered < need &&
-            r.founderHours !== null &&
-            (plan.founderShifts[r.id] ?? 0) < FOUNDER_SHIFTS &&
-            b.free >= r.founderHours + 20
+            taken < FOUNDER_SHIFTS &&
+            b.free >= r.founderHours + FOUNDER_KEEP_HOURS
           ) {
             plan.founderShifts[r.id] = (plan.founderShifts[r.id] ?? 0) + 1
             b.free -= r.founderHours
             covered += per
+            taken++
           }
+        }
+        // Then paid shifts, the cheapest per guest first.
+        const byCost = [...bv.roles]
+          .filter((r) => (r.units[productId] ?? 0) > 0)
+          .sort(
+            (x, y) => x.centsPerShift / x.units[productId]! - y.centsPerShift / y.units[productId]!,
+          )
+        for (const r of byCost) {
+          const per = r.units[productId] ?? 0
           while (covered < need && (pool[r.id] ?? 0) > 0) {
             pool[r.id]!--
             plan.shifts[r.id] = (plan.shifts[r.id] ?? 0) + 1
@@ -170,9 +189,39 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
 
       if (target !== null) {
         const seg = target
-        // Build what the market asks for, or everything.
-        const toBuild = rule.buildAll ? scenario.features.map((f) => f.id) : wanted(view, seg)
+        // Build what the market asks for, or everything. Once that is done, a second kind of
+        // guest: the next segment the evidence ranks, so quiet weeks still bring someone.
+        const own = wanted(view, seg)
+        const done = own.every((f) => view.product.features.find((x) => x.id === f)?.shipped)
+        const second = rule.tests
+          ? rankMarkets(scenario, view).find((r) => r.id !== seg)?.id
+          : undefined
+        // More products for the same guests (other months, other days out), when one costs at
+        // most a fifth of the money in hand.
+        const money = view.company.cashCents + Math.max(0, view.founder.savingsCents)
+        const more = done
+          ? productsFor(seg).filter(
+              (id) => (cfg.products[id]?.oneOffCents ?? 0) <= money * EXTRA_SHARE,
+            )
+          : []
+        const toBuild = rule.buildAll
+          ? scenario.features.map((f) => f.id)
+          : done && second
+            ? [...own, ...more, ...wanted(view, second)]
+            : own
         for (const f of toBuild) b.build(f, 40 - (b.plan.build[f] ?? 0))
+        if (done && second && rule.channels === 'mix') {
+          const r2 = cfg.segments[second]!.response
+          if (
+            r2.partnership >= CHANNEL_USEFUL &&
+            !bv.partnerships.includes(second) &&
+            b.free >= bv.partnershipHours + 10
+          ) {
+            plan.partnerships.push(second)
+            b.free -= bv.partnershipHours
+          }
+          if (r2.platform >= CHANNEL_USEFUL && !bv.platform.listed) plan.platform = true
+        }
         if (rule.reviews && view.product.bugs >= BUG_LIMIT) b.fixBugs(8)
         if (
           view.segments.find((s) => s.id === seg) &&
@@ -206,15 +255,23 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           }
         }
 
-        // Prices: from what interviewees said they pay, per season.
+        // Prices: from what interviewees said they pay, per season, for every kind of guest.
         if (rule.pricing === 'hints') {
-          const hints = budgetHints(view, seg)
-          if (hints.length >= MIN_HINTS) {
-            const mean = hints.reduce((t, x) => t + x, 0) / hints.length
+          for (const id of Object.keys(cfg.segments)) {
+            const hints = budgetHints(view, id)
+            if (hints.length < MIN_HINTS) continue
+            // The median, and never more than a step away from today's price: hints are noisy.
+            const sorted = [...hints].sort((x, y) => x - y)
+            const median = sorted[Math.floor(sorted.length / 2)]!
+            const base = bv.prices[id]?.peak ?? median
+            const mean = Math.min(
+              base * (1 + MAX_PRICE_STEP),
+              Math.max(base * (1 - MAX_PRICE_STEP), median),
+            )
             const peak = Math.max(100, Math.round((mean * HINT_PEAK) / 100) * 100)
             const off = Math.max(100, Math.round((mean * HINT_OFF) / 100) * 100)
-            const now = bv.prices[seg]
-            if (!now || now.peak !== peak || now.off !== off) plan.prices[seg] = { peak, off }
+            const now = bv.prices[id]
+            if (!now || now.peak !== peak || now.off !== off) plan.prices[id] = { peak, off }
           }
         }
 
@@ -231,6 +288,11 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           const want = share >= STRICT_CANCEL_SHARE && busy >= BUSY_SHARE ? 'strict' : 'flexible'
           if (want !== bv.policy) plan.policy = want
         }
+      }
+      // The overworker fills every spare hour with more calls and visits.
+      if ((rule.hours ?? 50) > 50 && target !== null && b.free > 0) {
+        plan.outreach[target] = (plan.outreach[target] ?? 0) + b.free
+        b.free = 0
       }
       b.plan.bookings = plan
       return b.plan
@@ -294,6 +356,10 @@ export const TOURISM_STRATEGIES: Strategy[] = [
   tourism('tourism_always_flexible', 'Plays like tourism_careful with a flexible policy all run.', {
     ...CAREFUL_TOURISM,
     policy: 'flexible',
+  }),
+  tourism('tourism_overworker', 'Plays like tourism_careful but plans 65 h every week.', {
+    ...CAREFUL_TOURISM,
+    hours: 65,
   }),
   tourism('tourism_always_strict', 'Plays like tourism_careful with a strict policy all run.', {
     ...CAREFUL_TOURISM,

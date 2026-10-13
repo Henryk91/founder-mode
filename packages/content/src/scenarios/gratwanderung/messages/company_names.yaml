@@ -1,0 +1,113 @@
+# Fictional names for guests and groups, by segment. No real firms or schools.
+tourists:
+  distinct: second
+  first:
+    - Familie
+    - Reisegruppe
+    - Gäste
+    - Wanderfreunde
+    - Urlauber
+    - Pärchen
+    - Freundeskreis
+    - Studenten
+  second:
+    - Andersen
+    - Brückner
+    - Castellano
+    - Dvořák
+    - Eriksen
+    - Fontaine
+    - Gallagher
+    - Hofstetter
+    - Ivanova
+    - Jansen
+    - Kowalski
+    - Lindqvist
+    - Moreau
+    - Nakamura
+    - Okafor
+    - Petersen
+    - Quinn
+    - Rossi
+    - Sandoval
+    - Thorsen
+    - Uribe
+    - Vasquez
+    - Whitfield
+    - Yilmaz
+    - Zeller
+team_events:
+  first:
+    - Kessler
+    - Brandner
+    - Hofmann
+    - Leitner
+    - Vogl
+    - Steiner
+    - Huber
+    - Maurer
+    - Pichler
+    - Rainer
+    - Schuster
+    - Wagner
+    - Zettl
+    - Obermaier
+    - Grabner
+    - Lechner
+    - Ostler
+    - Rieder
+    - Sattler
+    - Thaler
+    - Unterberger
+    - Weiß
+    - Aigner
+    - Fellner
+    - Gruber
+  second:
+    - Logistik GmbH
+    - Software AG
+    - Versicherungsmakler
+    - Steuerberatung
+    - Architekten
+    - Medien GmbH
+    - Consulting
+    - Engineering
+    - Druckerei
+    - Möbelbau
+school_groups:
+  distinct: second
+  first:
+    - Realschule
+    - Gymnasium
+    - Mittelschule
+    - Jugendtreff
+    - Pfadfinder
+    - Sportverein
+    - Grundschule
+    - Ministranten
+  second:
+    - Penzberg
+    - Weilheim
+    - Murnau
+    - Starnberg
+    - Bad Tölz
+    - Geretsried
+    - Wolfratshausen
+    - Holzkirchen
+    - Miesbach
+    - Kochel
+    - Peißenberg
+    - Seefeld
+    - Gauting
+    - Germering
+    - Dachau
+    - Freising
+    - Erding
+    - Ebersberg
+    - Grafing
+    - Rosenheim
+    - Kolbermoor
+    - Bad Aibling
+    - Prien
+    - Traunstein
+    - Landsberg

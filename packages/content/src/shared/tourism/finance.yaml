@@ -1,0 +1,70 @@
+events:
+  - id: tax_advance_tourism
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 30]
+    from: none
+    sender: Tax office
+    look: official
+    text: >-
+      The tax office sets an advance payment based on your best month, as if every month were
+      August. Objecting takes a form and patience; paying takes money.
+    defaultChoice: pay
+    choices:
+      - id: object
+        label: Object with your monthly figures
+        hours: 3
+        effects:
+          - { type: cash, amountCents: 60000, chance: 0.7 }
+      - id: pay
+        label: Pay it
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -60000 }
+
+  - id: bank_card_terminal
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 5]
+    from: none
+    sender: Your bank
+    text: >-
+      Your bank offers a card terminal with a lower fee if you sign for two years. Guests like
+      paying by card; you like it less when you read the small print.
+    defaultChoice: decline
+    choices:
+      - id: sign
+        label: Sign for the terminal
+        hours: 1
+        effects:
+          - { type: fixedCost, id: card_terminal, name: Card terminal, monthlyCents: 2500 }
+          - { type: guests, count: 3 }
+      - id: decline
+        label: Keep the old one
+        hours: 0
+
+  - id: energy_bill
+    area: finance
+    weight: 2
+    once: true
+    when: [tour.month == 1]
+    from: none
+    sender: The utility company
+    look: official
+    text: >-
+      The winter energy bill arrives with a backdated adjustment. The letter calls it a
+      correction; your bank calls it a shock.
+    defaultChoice: pay
+    choices:
+      - id: plan
+        label: Agree a payment plan
+        hours: 1
+        effects:
+          - { type: fixedCost, id: energy_plan, name: Energy payment plan, monthlyCents: 8000 }
+      - id: pay
+        label: Pay it now
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -45000 }

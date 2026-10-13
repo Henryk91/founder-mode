@@ -1,0 +1,120 @@
+events:
+  - id: platform_ranking_drop
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [tour.listed == 1, tour.rating < 42, tour.reviews >= 5]
+    from: none
+    sender: Platform analytics
+    look: official
+    text: >-
+      The platform's monthly report says your listing slipped down the rankings. Better reviews
+      would help, the report says, as if you had not thought of that.
+    defaultChoice: ignore
+    choices:
+      - id: ask_reviews
+        label: Ask happy guests for reviews
+        hours: 2
+        effects:
+          - { type: review, rating: 5, count: 3 }
+      - id: ignore
+        label: Ignore the report
+        hours: 0
+
+  - id: platform_fee_change
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.listed == 1, week >= 30]
+    from: none
+    sender: Platform partner team
+    look: official
+    text: >-
+      The platform introduces a "service fee" for partners, effective next month. The letter
+      thanks you for growing together, though only one of you is growing.
+    defaultChoice: accept
+    choices:
+      - id: complain
+        label: Write a firm complaint
+        hours: 1
+        effects:
+          - { type: energy, delta: 2 }
+          - { type: fixedCost, id: platform_fee, name: Platform service fee, monthlyCents: 4000 }
+      - id: accept
+        label: Accept it
+        hours: 0
+        effects:
+          - { type: fixedCost, id: platform_fee, name: Platform service fee, monthlyCents: 4000 }
+
+  - id: repeat_guest_thanks
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 14
+    when: [tour.reviews >= 15, tour.rating >= 42]
+    from: none
+    sender: A returning guest
+    look: note
+    text: >-
+      A guest who came last month is back with friends and asks whether there is a discount for
+      bringing people. There is, if you say so now.
+    defaultChoice: no
+    choices:
+      - id: discount
+        label: Give the group a small discount
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -5000 }
+          - { type: guests, count: 6 }
+      - id: no
+        label: Thank them and keep prices
+        hours: 0
+
+  - id: tourism_fair
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 40]
+    from: none
+    sender: A regional tourism fair
+    text: >-
+      A regional tourism fair offers a small stand for two days. Lots of brochures, lots of
+      coffee, and a few people who actually book things.
+    defaultChoice: skip
+    choices:
+      - id: stand
+        label: Book a stand
+        hours: 12
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: guests, count: 10 }
+          - { type: energy, delta: -5 }
+      - id: skip
+        label: Skip it
+        hours: 0
+
+  - id: review_reply_bad
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when: [tour.reviews >= 8, tour.rating < 38]
+    from: none
+    sender: A guest review
+    look: note
+    text: >-
+      A guest writes that the service felt rushed and the staff overworked. Both are true, which
+      is the worst kind of review to answer.
+    defaultChoice: ignore
+    choices:
+      - id: apologise
+        label: Apologise and invite them back
+        hours: 1
+        effects:
+          - { type: review, rating: 4, count: 1 }
+      - id: ignore
+        label: Ignore it
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 1 }

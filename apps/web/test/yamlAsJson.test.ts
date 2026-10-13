@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   parseScenario,
   SCENARIO_IDS,
+  scenarioModes,
   scenarioSources,
   type ScenarioSources,
 } from '@founder-mode/content'
@@ -31,8 +32,10 @@ describe('content YAML parsed at build time', () => {
   for (const id of SCENARIO_IDS) {
     it(`gives the same ${id} scenario, with the same hash, so saves stay valid`, () => {
       const sources = scenarioSources(id)
-      const fromJson = parseScenario(asJson(sources))
-      const fromYaml = parseScenario(sources)
+      // Each scenario in its first mode: the 60 week game, or long mode for a tourism one.
+      const mode = scenarioModes(id)[0]
+      const fromJson = parseScenario(asJson(sources), mode)
+      const fromYaml = parseScenario(sources, mode)
       expect(fromJson).toEqual(fromYaml)
       expect(scenarioHash(fromJson)).toBe(scenarioHash(fromYaml))
       if (id === 'kantino') {
