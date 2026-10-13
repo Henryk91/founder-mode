@@ -918,6 +918,7 @@ const labels = {
   'pm.newRun': 'New run',
   'pm.sameMarket': 'Same market again',
   'pm.sameMarketHint': 'Same seed, so the same markets. Whether luck repeats depends on you.',
+  'pm.toStart': 'Choose another company',
   'pm.open': 'Show',
   'pm.close': 'Hide',
 
