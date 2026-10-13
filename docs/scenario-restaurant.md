@@ -191,3 +191,15 @@ Event ideas:
 The first months are all cost: rent from day one, a fit-out, a loan, no guests. A player who tests demand before opening (interviews, a pop-up dinner, talking to office managers) opens with the right services and a staff roster that fits. A player who opens every service with full staff runs out of money by summer. Year 2 is about tuning: prices, staffing to the real peaks, and deciding whether the fit-out is worth a second loan.
 
 This is a back of the envelope expectation. The bot report is the real answer.
+
+## C. Sources and values as built (step 6)
+
+Checked figures:
+
+- Public start-up loan the terms follow (not named in the game): up to 200,000 EUR, terms of 5 to 20 years, repayment-free years possible (fuer-gruender.de; business-on.de, December 2025); rates from about 3.7% (IHK Hanau, accountable.de). The game's bank draws 4.5 to 7.5% (estimate) plus a point for each multiple of own money borrowed beyond the first (estimate).
+- Own money: 15 to 25% of the need (IHK Braunschweig); the game asks for 20%.
+- Delivery platforms: about 30% commission with their couriers, 13 to 14% with your own (sumup.com, 2025).
+- Cook pay about 2,830 to 2,980 EUR gross a month; union entry pay 3,000 in Bavaria (brutto-netto-gehaltsrechner.de, NGG). Minimum wage 13.90 EUR from January 2026.
+- Not found: current Munich restaurant rents (kept as an estimate, 4,500 a month).
+
+Changed from this spec while tuning (reasons in `docs/decisions.md`, step 6): staff are a cook and server crew per service plus a minijob helper; office lunch 170 to 380 covers a week at peak at 13 to 20 EUR; evening locals 35 to 140 covers; open services carry a standing monthly cost; the bank lends up to 120,000 EUR before any guest has paid. No investors in this scenario. A run is won when its last 13 months together cover every cost, loan repayments included.

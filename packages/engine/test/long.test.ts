@@ -33,6 +33,8 @@ describe('long mode in the content', () => {
     expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
     // Gratwanderung is protected from step 5 on (its tag `scenario-outdoor`).
     expect(scenarioHash(loadScenario('gratwanderung'))).toBe('43076ff9417dad8f')
+    // Hinterhof is protected from step 6 on (its tag `scenario-restaurant`).
+    expect(scenarioHash(loadScenario('hinterhof'))).toBe('9fc88596d87943e4')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })
