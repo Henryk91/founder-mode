@@ -1,0 +1,233 @@
+import { readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { fileURLToPath } from 'node:url'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import type { Browser, Page } from 'playwright-core'
+import { createServer, type ViteDevServer } from 'vite'
+import { TOURISM_STRATEGIES } from '@founder-mode/bots/src/strategies/tourism'
+import { loadScenario, type ScenarioId } from '@founder-mode/content'
+import {
+  createGame,
+  endWeek,
+  getView,
+  respond,
+  toSave,
+  validatePlan,
+  type BookingsPlan,
+  type GameState,
+  type PlayerView,
+  type SaveFile,
+  type WeekPlan,
+} from '@founder-mode/engine'
+import { CHROMIUM, WEBKIT, type Engine } from './browsers'
+
+/**
+ * Plan 2 step 1 on screen: trials and vouchers, contracts (one in notice), food prepared, kitchen
+ * and floor, rooms under works and the minimum stay. Each tourism scenario is played by the
+ * careful bot into its season, with a contract, vouchers and room works added on the way; the
+ * save is opened with every tab and notebook section at 375, 390, 430 and 1440 px in Chrome and
+ * WebKit. Nothing may be cut short, and axe finds nothing on the plan.
+ */
+const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8')
+
+const RUNS: { id: ScenarioId; seed: string; week: number }[] = [
+  { id: 'gratwanderung', seed: 'shot-1', week: 20 },
+  { id: 'hinterhof', seed: 'shot-5', week: 24 },
+  { id: 'seeblick', seed: 'shot-1', week: 30 },
+]
+const WIDTHS = [375, 390, 430, 1440]
+
+/** Adds to the bot's plan what it may not do on its own, where the plan stays valid. */
+function extra(state: GameState, view: PlayerView, plan: WeekPlan): WeekPlan {
+  const b = view.bookings!
+  const add = (over: Partial<BookingsPlan>): WeekPlan => {
+    const next = { ...plan, bookings: { ...plan.bookings!, ...over } }
+    return validatePlan(state, next).length === 0 ? next : plan
+  }
+  if (state.week === 3 && b.vouchers) {
+    const seg = b.vouchers.segments[0]!.id
+    plan = add({ vouchers: { ...plan.bookings!.vouchers, [seg]: 1 } })
+  }
+  const role = b.roles.find((r) => r.contracts.some((c) => c.kind === 'permanent'))
+  if (state.week === 5 && role) plan = add({ hire: [{ roleId: role.id, kind: 'permanent' }] })
+  const own = b.contracts.find((c) => c.canEnd)
+  if (state.week === 12 && own) plan = add({ endContracts: [own.id] })
+  if (b.renovation && b.renovation.canStart === 0 && b.renovation.renovated === 0) {
+    const f = view.product.features.find((x) => x.id === 'renovated_rooms' && !x.shipped)
+    if (f && state.week >= 4) plan = { ...plan, build: { ...plan.build, [f.id]: f.remainingHours } }
+    if (validatePlan(state, plan).length > 0)
+      plan = { ...plan, build: { ...plan.build, [f!.id]: 0 } }
+  }
+  const works = b.renovation
+  if (works && works.canStart > 0 && works.renovated + works.inProgress.length === 0) {
+    plan = add({ renovate: 1 })
+  }
+  return plan
+}
+
+/** The first seed from `seed` on (shot-1, shot-2, ...) whose run is still going at `week`. */
+function save(id: ScenarioId, seed: string, week: number): SaveFile {
+  const n = Number(seed.split('-')[1])
+  for (let i = n; i < n + 30; i++) {
+    const file = play(id, `shot-${i}`, week)
+    if (file) return file
+  }
+  throw new Error(`${id}: no seed lasts to week ${week}`)
+}
+
+function play(id: ScenarioId, seed: string, week: number): SaveFile | null {
+  const careful = TOURISM_STRATEGIES.find((s) => s.id === 'tourism_careful')!
+  const scenario = loadScenario(id, 'long')
+  let state = createGame(scenario, seed)
+  const player = careful.create(scenario, seed)
+  while (state.status === 'running' && state.week < week) {
+    for (const a of player.respond?.(getView(state)) ?? []) {
+      state = respond(state, a.messageId, a.choiceId)
+    }
+    const view = getView(state)
+    const r = endWeek(state, extra(state, view, player.plan(view)))
+    state = r.state
+    player.observe?.(r.report, getView(state))
+  }
+  return state.status === 'running' ? toSave(state) : null
+}
+
+describe.skipIf(!CHROMIUM && !WEBKIT)('plan 2 step 1 screens', () => {
+  let server: ViteDevServer
+  let url = ''
+  const files = new Map<ScenarioId, SaveFile>()
+
+  beforeAll(async () => {
+    server = await createServer({
+      root: fileURLToPath(new URL('..', import.meta.url)),
+      logLevel: 'silent',
+      server: { port: 5194 },
+    })
+    await server.listen()
+    url = server.resolvedUrls?.local[0] ?? ''
+    for (const run of RUNS) files.set(run.id, save(run.id, run.seed, run.week))
+  }, 120_000)
+
+  afterAll(async () => {
+    await server?.close()
+  })
+
+  for (const engine of [CHROMIUM, WEBKIT]) suite(engine)
+
+  function suite(engine: Engine | null) {
+    describe.skipIf(!engine)(`in ${engine?.name ?? 'a browser that is not installed'}`, () => {
+      let browser: Browser
+      beforeAll(async () => {
+        browser = await engine!.type.launch(engine!.options)
+      }, 60_000)
+      afterAll(async () => {
+        await browser?.close()
+      })
+
+      for (const run of RUNS)
+        for (const width of WIDTHS) {
+          it(`shows ${run.id} in its season at ${width} px`, async () => {
+            const page = await browser.newPage({ viewport: { width, height: 900 } })
+            await page.goto(url)
+            await page.evaluate(
+              ([id, file]) => {
+                localStorage.clear()
+                localStorage.setItem(`founder-mode.save.v1.${id}.long`, JSON.stringify(file))
+                localStorage.setItem('founder-mode.scenario.v1', id as string)
+                localStorage.setItem('founder-mode.mode.v1', 'long')
+              },
+              [run.id, files.get(run.id)!] as const,
+            )
+            await page.reload()
+            await page.getByRole('button', { name: 'Continue' }).click()
+            const dismiss = page.getByRole('button', { name: 'Dismiss' })
+            if (await dismiss.count()) await dismiss.first().click()
+            const found: string[] = []
+            let text = ''
+            const tabs =
+              width < 1200 ? await page.locator('nav button').allTextContents() : ['the desk']
+            for (const tab of tabs) {
+              if (width < 1200) {
+                await page.locator('nav button').filter({ hasText: tab }).first().click()
+              }
+              for (let i = 0; i < 30; i++) {
+                const closed = page.locator(
+                  'section[aria-label="My week"] button[aria-expanded="false"]',
+                )
+                if (!(await closed.count())) break
+                await closed.first().click()
+              }
+              found.push(...(await cut(page, tab)))
+              text += await page.evaluate(() => document.body.innerText)
+              if (tab === 'Plan' || tab === 'the desk') {
+                for (const v of await axe(page)) found.push(`axe ${tab}: ${v.id} ${v.nodes[0]}`)
+              }
+            }
+            // The new parts are on the page.
+            expect(text).toMatch(/Staff on contracts/)
+            if (run.id === 'hinterhof') expect(text).toMatch(/Food prepared/)
+            if (run.id === 'seeblick') expect(text).toMatch(/Minimum stay/)
+            if (run.id === 'seeblick') expect(text).toMatch(/Rooms, one at a time/)
+            expect(found).toEqual([])
+            await page.close()
+          }, 120_000)
+        }
+    })
+  }
+})
+
+type Violation = { id: string; nodes: string[] }
+
+async function axe(page: Page): Promise<Violation[]> {
+  await page.evaluate(AXE)
+  return page.evaluate(async () => {
+    const w = window as unknown as {
+      axe: {
+        run(
+          ctx: Document,
+          opts: object,
+        ): Promise<{ violations: { id: string; nodes: { target: string[] }[] }[] }>
+      }
+    }
+    const r = await w.axe.run(document, {
+      runOnly: {
+        type: 'tag',
+        values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'],
+      },
+      resultTypes: ['violations'],
+    })
+    return r.violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target.join(' ')) }))
+  })
+}
+
+/** Elements whose own text is cut (as in cutoff.browser.test.ts). */
+function cut(page: Page, where: string): Promise<string[]> {
+  return page.evaluate((where) => {
+    const phone = !document.querySelector('[data-layout="desk"]')
+    const out: string[] = []
+    for (const el of document.querySelectorAll<HTMLElement>('body *')) {
+      if (!el.textContent?.trim() || el.closest('.visually-hidden')) continue
+      const css = getComputedStyle(el)
+      const clips = css.textOverflow === 'ellipsis' || css.overflowX === 'hidden'
+      if (!clips || el.scrollWidth <= el.clientWidth + 1) continue
+      if (/_segment_/.test(el.className)) continue
+      if (phone && /_summary_/.test(el.className) && el.closest('[class*="_sectionLine_"]')) {
+        continue
+      }
+      out.push(`${where}: ${el.tagName}.${el.className} "${el.textContent.trim().slice(0, 60)}"`)
+    }
+    for (const label of phone
+      ? document.querySelectorAll<HTMLElement>('[class*="_rowStack_"] > [class*="_wrapped_"]')
+      : []) {
+      const row = label.parentElement!.getBoundingClientRect()
+      const box = label.getBoundingClientRect()
+      if (box.height > 45 && box.width < row.width - 1) {
+        out.push(`${where}: "${label.textContent?.trim()}" wraps beside its controls`)
+      }
+    }
+    if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+      out.push(`${where}: the page scrolls sideways`)
+    }
+    return out
+  }, where)
+}
