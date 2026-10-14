@@ -49,6 +49,8 @@ export type StrategySpec =
   | { kind: 'funding'; id: string }
   /** The careful bot planning `budget` hours a week, for the energy curve. */
   | { kind: 'energy'; budget: number }
+  /** Plan 2 step 3: a listed strategy that leaves one event to its default (the skips part). */
+  | { kind: 'skip'; base: string; eventId: string }
 
 export function strategyOf(spec: StrategySpec): Strategy {
   switch (spec.kind) {
@@ -82,6 +84,24 @@ export function strategyOf(spec: StrategySpec): Strategy {
       return { ...fundingVariant(spec.id), id: `funding:${spec.id}` }
     case 'energy':
       return tiredFounder(spec.budget, null, false, energyId(spec.budget))
+    case 'skip': {
+      const base = STRATEGIES.find((s) => s.id === spec.base)
+      if (!base) throw new Error(`Unknown strategy ${spec.base}`)
+      return {
+        ...base,
+        id: `${spec.base} -${spec.eventId}`,
+        create: (scenario, seed) => {
+          const player = base.create(scenario, seed)
+          return {
+            ...player,
+            respond: (view) =>
+              (player.respond?.(view) ?? []).filter(
+                (a) => view.inbox.find((m) => m.id === a.messageId)?.eventId !== spec.eventId,
+              ),
+          }
+        },
+      }
+    }
     case 'earlyHireWide':
       return { ...validateThenBuildEarlyHire, id: EARLY_HIRE_WIDE_ID }
     case 'tired':
