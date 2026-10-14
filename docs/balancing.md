@@ -1689,36 +1689,36 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 
 | # | Target | Value | Margin | Met |
 |---|---|---|---|---|
-| T1 | tourism_careful wins (Sustainable or Growing) 25 to 45% of runs | 44.2% | ±3.1 | yes |
-| T2 | No strategy wins over 60%; tourism_no_tests under 5% | top tourism_always_strict 44.7%; no tests 0.0% | ±3.1; ±0.0 | yes |
-| T3 | tourism_careful win rates across the viable segments lie within 15 points | 3.6 points (school_groups 42.0%, team_events 45.6%, tourists 45.1%) |  | yes |
-| T4 | The first guest from the viable segment is served by week 12 in the median winning run | week 11.0 |  | yes |
-| T5 | Decision news in at least 85% of weeks 1 to 20 and 70% of weeks 53 to 104 | 97.2%; year 2 94.4% |  | yes |
-| T6 | Reading the inbox pays: tourism_careful beats leaving every message to its default by at least 3 points, and blind effort gains at most a third of that | reading +14.6, blind effort +9.3 | ±2.4 | no |
-| T7 | Seasonal pricing pays: tourism_careful (prices from hints per season) beats tourism_price_blind by 2 to 10 points | +1.8 | ±2.1 | yes |
-| T8 | Platform dependence is a trap: tourism_platform_only loses at least 3 points to the careful mix | -34.6 | ±3.1 | yes |
-| T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -44.2, under -19.0 | ±3.1, ±2.6 | yes |
-| T10 | Reviews matter: tourism_review_blind loses at least 2 points | -13.5 | ±2.6 | yes |
-| T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +0.5 overall; school_groups -7.0, team_events -4.7, tourists +13.0 | ±2.4 | yes |
-| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 38.6 s per 1000 runs |  | yes |
+| T1 | tourism_careful wins (Sustainable or Growing) 25 to 45% of runs | 42.6% | ±3.1 | yes |
+| T2 | No strategy wins over 60%; tourism_no_tests under 5% | top tourism_careful 42.6%; no tests 0.0% | ±3.1; ±0.0 | yes |
+| T3 | tourism_careful win rates across the viable segments lie within 15 points | 14.3 points (school_groups 33.5%, team_events 46.9%, tourists 47.8%) |  | yes |
+| T4 | The first guest from the viable segment is served by week 12 in the median winning run | week 10.0 |  | yes |
+| T5 | Decision news in at least 85% of weeks 1 to 20 and 70% of weeks 53 to 104 | 96.3%; year 2 94.9% |  | yes |
+| T6 | Reading the inbox pays: tourism_careful beats leaving every message to its default by at least 3 points, and blind effort gains at most a third of that | reading +13.9, blind effort +6.2 | ±2.3 | yes |
+| T7 | Seasonal pricing pays: tourism_careful (prices from hints per season) beats tourism_price_blind by 2 to 10 points | +1.6 | ±2.1 | yes |
+| T8 | Platform dependence is a trap: tourism_platform_only loses at least 3 points to the careful mix | -33.5 | ±3.0 | yes |
+| T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -42.6, under -18.1 | ±3.1, ±2.6 | yes |
+| T10 | Reviews matter: tourism_review_blind loses at least 2 points | -15.0 | ±2.8 | yes |
+| T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by -0.6 overall; school_groups -5.8, team_events -6.6, tourists +10.3 | ±2.3 | yes |
+| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 79.3 s per 1000 runs |  | yes |
 
 ## Endings
 
 | Strategy | Sustainable | Still searching | Bankrupt | Burnout | Shut down | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |
 |---|---|---|---|---|---|---|---|---|---|
-| tourism_careful | 44.2% | 11.6% | 44.2% | 0.0% | 0.0% | 53 | 58 | 0 EUR | 0 |
-| tourism_platform_only | 9.6% | 5.0% | 85.4% | 0.0% | 0.0% | 35 | 36 | 0 EUR | 0 |
+| tourism_careful | 42.6% | 9.7% | 47.7% | 0.0% | 0.0% | 54 | 57 | 0 EUR | 0 |
+| tourism_platform_only | 9.1% | 5.7% | 85.2% | 0.0% | 0.0% | 36 | 36 | 0 EUR | 0 |
 | tourism_overstaffing | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 9 | 9 | 0 EUR | 0 |
-| tourism_understaffing | 25.2% | 15.4% | 59.4% | 0.0% | 0.0% | 54 | 57 | 0 EUR | 0 |
+| tourism_understaffing | 24.5% | 18.3% | 57.2% | 0.0% | 0.0% | 53 | 57 | 0 EUR | 0 |
 | tourism_no_tests | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 6 | 6 | 0 EUR | 0 |
-| tourism_price_blind | 42.4% | 12.3% | 45.3% | 0.0% | 0.0% | 53 | 57 | 0 EUR | 0 |
-| tourism_review_blind | 30.7% | 8.3% | 61.0% | 0.0% | 0.0% | 52 | 53 | 0 EUR | 0 |
-| tourism_always_flexible | 44.2% | 11.6% | 44.2% | 0.0% | 0.0% | 53 | 58 | 0 EUR | 0 |
+| tourism_price_blind | 41.0% | 10.0% | 49.0% | 0.0% | 0.0% | 56 | 58 | 0 EUR | 0 |
+| tourism_review_blind | 27.6% | 13.1% | 59.3% | 0.0% | 0.0% | 52 | 56 | 0 EUR | 0 |
+| tourism_always_flexible | 42.6% | 9.7% | 47.7% | 0.0% | 0.0% | 54 | 57 | 0 EUR | 0 |
 | tourism_overworker | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | - | 13 | 0 EUR | 0 |
-| tourism_inbox_none | 29.6% | 8.0% | 62.4% | 0.0% | 0.0% | 48 | 52 | 0 EUR | 0 |
-| tourism_inbox_effort | 38.9% | 9.1% | 52.0% | 0.0% | 0.0% | 54 | 56 | 0 EUR | 0 |
-| tourism_naive_careful | 32.8% | 10.2% | 57.0% | 0.0% | 0.0% | 52 | 55 | 0 EUR | 0 |
-| tourism_always_strict | 44.7% | 12.6% | 42.7% | 0.0% | 0.0% | 53 | 58 | 0 EUR | 0 |
+| tourism_inbox_none | 28.7% | 9.1% | 62.2% | 0.0% | 0.0% | 46 | 52 | 0 EUR | 0 |
+| tourism_inbox_effort | 34.9% | 11.5% | 53.6% | 0.0% | 0.0% | 55 | 57 | 0 EUR | 0 |
+| tourism_naive_careful | 30.7% | 11.4% | 57.9% | 0.0% | 0.0% | 52 | 56 | 0 EUR | 0 |
+| tourism_always_strict | 42.0% | 14.2% | 43.8% | 0.0% | 0.0% | 56 | 60 | 0 EUR | 0 |
 
 ## Wins by viable market
 
@@ -1726,19 +1726,19 @@ Share of runs ending Sustainable, split by which market was secretly viable in t
 
 | Strategy | school_groups | team_events | tourists | Spread |
 |---|---|---|---|---|
-| tourism_careful | 42.0% | 45.6% | 45.1% | 3.6 |
-| tourism_platform_only | 0.0% | 0.9% | 27.4% | 27.4 |
+| tourism_careful | 33.5% | 46.9% | 47.8% | 14.3 |
+| tourism_platform_only | 0.0% | 0.3% | 26.5% | 26.5 |
 | tourism_overstaffing | 0.0% | 0.0% | 0.0% | 0.0 |
-| tourism_understaffing | 30.3% | 31.4% | 14.2% | 17.3 |
+| tourism_understaffing | 25.4% | 32.7% | 15.9% | 16.8 |
 | tourism_no_tests | 0.0% | 0.0% | 0.0% | 0.0 |
-| tourism_price_blind | 40.8% | 44.7% | 41.9% | 3.8 |
-| tourism_review_blind | 42.9% | 35.5% | 13.9% | 29.0 |
-| tourism_always_flexible | 42.0% | 45.6% | 45.1% | 3.6 |
+| tourism_price_blind | 30.6% | 45.6% | 47.2% | 16.6 |
+| tourism_review_blind | 35.3% | 33.6% | 14.2% | 21.1 |
+| tourism_always_flexible | 33.5% | 46.9% | 47.8% | 14.3 |
 | tourism_overworker | 0.0% | 0.0% | 0.0% | 0.0 |
-| tourism_inbox_none | 25.1% | 33.3% | 30.7% | 8.3 |
-| tourism_inbox_effort | 37.6% | 43.1% | 36.3% | 6.8 |
-| tourism_naive_careful | 30.3% | 36.8% | 31.6% | 6.5 |
-| tourism_always_strict | 35.0% | 40.9% | 58.1% | 23.1 |
+| tourism_inbox_none | 21.3% | 35.5% | 29.8% | 14.3 |
+| tourism_inbox_effort | 28.3% | 40.3% | 36.6% | 12.0 |
+| tourism_naive_careful | 24.5% | 35.5% | 32.4% | 11.0 |
+| tourism_always_strict | 27.7% | 40.3% | 58.1% | 30.4 |
 
 ## Guests (tourism)
 
@@ -1746,19 +1746,19 @@ Per strategy, medians over its runs: guests served, what they paid (net of commi
 
 | Strategy | Win rate | Guests | Paid (EUR) | Rating | Platform share | Turned away | Company cancelled |
 |---|---|---|---|---|---|---|---|
-| tourism_careful | 44.2% | 369 | 18,732 | 4.09 | 46.1% | 0 | 15 |
-| tourism_platform_only | 9.6% | 138 | 9,636 | 4.04 | 54.8% | 1 | 15 |
-| tourism_overstaffing | 0.0% | 10 | 581 | 3.91 | 66.7% | 0 | 0 |
-| tourism_understaffing | 25.2% | 278 | 15,300 | 3.92 | 47.5% | 0 | 63 |
+| tourism_careful | 42.6% | 372 | 19,414 | 4.10 | 46.4% | 0 | 14 |
+| tourism_platform_only | 9.1% | 146 | 9,875 | 4.06 | 56.7% | 1 | 15 |
+| tourism_overstaffing | 0.0% | 10 | 619 | 3.99 | 66.7% | 0 | 0 |
+| tourism_understaffing | 24.5% | 295 | 16,132 | 3.91 | 47.5% | 0 | 60 |
 | tourism_no_tests | 0.0% | 16 | 994 | 3.22 | 78.6% | 0 | 5 |
-| tourism_price_blind | 42.4% | 366 | 18,733 | 4.09 | 46.3% | 0 | 16 |
-| tourism_review_blind | 30.7% | 269 | 13,385 | 3.76 | 46.4% | 0 | 16 |
-| tourism_always_flexible | 44.2% | 369 | 18,732 | 4.09 | 46.1% | 0 | 15 |
-| tourism_overworker | 0.0% | 30 | 1,856 | 3.71 | 51.5% | 0 | 4 |
-| tourism_inbox_none | 29.6% | 246 | 12,368 | 4.04 | 48.9% | 1 | 8 |
-| tourism_inbox_effort | 38.9% | 328 | 16,578 | 3.89 | 49.6% | 1 | 15 |
-| tourism_naive_careful | 32.8% | 275 | 13,708 | 4.07 | 48.4% | 0 | 10 |
-| tourism_always_strict | 44.7% | 330 | 21,697 | 4.09 | 46.7% | 0 | 18 |
+| tourism_price_blind | 41.0% | 365 | 18,567 | 4.09 | 46.6% | 0 | 14 |
+| tourism_review_blind | 27.6% | 271 | 13,347 | 3.75 | 47.0% | 0 | 17 |
+| tourism_always_flexible | 42.6% | 372 | 19,414 | 4.10 | 46.4% | 0 | 14 |
+| tourism_overworker | 0.0% | 29 | 1,847 | 3.74 | 51.6% | 0 | 4 |
+| tourism_inbox_none | 28.7% | 257 | 12,874 | 4.05 | 49.1% | 2 | 7 |
+| tourism_inbox_effort | 34.9% | 335 | 16,955 | 3.92 | 50.5% | 1 | 14 |
+| tourism_naive_careful | 30.7% | 283 | 14,516 | 4.08 | 49.1% | 0 | 9 |
+| tourism_always_strict | 42.0% | 333 | 23,533 | 4.08 | 46.4% | 0 | 16 |
 
 ## Week the run ended
 
@@ -1766,19 +1766,19 @@ Share of all runs per strategy, by the week the run ended. Runs that reach the l
 
 | Strategy | 1 to 10 | 11 to 20 | 21 to 30 | 31 to 40 | 41 to 50 | 51 to 60 | 61 to 70 | 71 to 80 | 81 to 90 | 91 to 100 | 101 to 104 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| tourism_careful | 0.0% | 0.2% | 5.3% | 6.2% | 6.7% | 13.5% | 8.0% | 3.4% | 0.1% | 0.7% | 55.9% |
-| tourism_platform_only | 0.0% | 0.3% | 21.5% | 35.7% | 14.3% | 10.4% | 2.5% | 0.0% | 0.2% | 0.3% | 14.8% |
-| tourism_overstaffing | 84.4% | 15.6% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| tourism_understaffing | 0.0% | 0.0% | 2.9% | 8.8% | 10.5% | 21.8% | 10.1% | 2.6% | 0.3% | 1.2% | 41.8% |
+| tourism_careful | 0.0% | 0.3% | 5.5% | 6.0% | 7.4% | 14.6% | 8.2% | 4.7% | 0.3% | 0.2% | 52.8% |
+| tourism_platform_only | 0.0% | 0.2% | 20.9% | 35.1% | 13.4% | 12.3% | 1.9% | 0.2% | 0.2% | 0.6% | 15.2% |
+| tourism_overstaffing | 84.2% | 15.8% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| tourism_understaffing | 0.0% | 0.0% | 3.0% | 8.6% | 11.4% | 19.8% | 10.3% | 2.1% | 0.1% | 0.7% | 44.0% |
 | tourism_no_tests | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| tourism_price_blind | 0.0% | 0.2% | 4.9% | 6.3% | 6.5% | 14.5% | 8.0% | 3.7% | 0.1% | 0.8% | 55.0% |
-| tourism_review_blind | 0.0% | 0.3% | 6.1% | 10.3% | 12.2% | 19.5% | 9.1% | 2.6% | 0.0% | 0.5% | 39.4% |
-| tourism_always_flexible | 0.0% | 0.2% | 5.3% | 6.2% | 6.7% | 13.5% | 8.0% | 3.4% | 0.1% | 0.7% | 55.9% |
+| tourism_price_blind | 0.0% | 0.3% | 4.6% | 5.9% | 7.9% | 15.3% | 8.0% | 5.4% | 0.6% | 0.5% | 51.5% |
+| tourism_review_blind | 0.0% | 0.3% | 5.9% | 9.4% | 12.2% | 19.6% | 8.4% | 2.8% | 0.2% | 0.3% | 40.9% |
+| tourism_always_flexible | 0.0% | 0.3% | 5.5% | 6.0% | 7.4% | 14.6% | 8.2% | 4.7% | 0.3% | 0.2% | 52.8% |
 | tourism_overworker | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| tourism_inbox_none | 0.0% | 1.2% | 14.1% | 9.4% | 9.8% | 14.7% | 8.9% | 3.5% | 0.3% | 0.2% | 37.9% |
-| tourism_inbox_effort | 0.0% | 0.1% | 4.5% | 8.3% | 7.1% | 17.4% | 10.0% | 3.4% | 0.1% | 0.6% | 48.5% |
-| tourism_naive_careful | 0.0% | 0.3% | 9.2% | 8.3% | 9.4% | 16.6% | 8.1% | 3.6% | 0.1% | 0.9% | 43.5% |
-| tourism_always_strict | 0.0% | 0.1% | 3.2% | 5.8% | 8.0% | 13.8% | 7.7% | 2.9% | 0.3% | 0.5% | 57.7% |
+| tourism_inbox_none | 0.0% | 2.0% | 18.5% | 6.3% | 8.1% | 15.8% | 8.7% | 2.0% | 0.1% | 0.3% | 38.2% |
+| tourism_inbox_effort | 0.0% | 0.4% | 5.3% | 6.1% | 7.4% | 18.4% | 10.9% | 3.7% | 0.2% | 0.8% | 46.8% |
+| tourism_naive_careful | 0.0% | 0.8% | 9.5% | 7.6% | 8.6% | 16.6% | 10.0% | 4.1% | 0.3% | 0.2% | 42.3% |
+| tourism_always_strict | 0.0% | 0.3% | 3.3% | 5.5% | 6.2% | 14.3% | 10.3% | 2.5% | 0.1% | 0.8% | 56.7% |
 
 ## Losing runs: what they earned
 
@@ -1786,19 +1786,19 @@ Losing runs only (bankrupt, burnout, still searching). "Never paid" means no cus
 
 | Strategy | Losing runs | Never paid | Peak monthly revenue (EUR): 0 / 1 to 899 / 900 to 1,799 / 1,800 to 3,104 / 3,105 or more | Peak customers: 0 / 1 / 2 to 3 / 4 to 6 / 7 or more |
 |---|---|---|---|---|
-| tourism_careful | 558 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_platform_only | 904 | 1.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_overstaffing | 1000 | 9.4% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_understaffing | 748 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_careful | 574 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_platform_only | 909 | 2.4% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_overstaffing | 1000 | 33.1% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_understaffing | 755 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
 | tourism_no_tests | 1000 | 5.8% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_price_blind | 576 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_review_blind | 693 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_always_flexible | 558 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_overworker | 1000 | 7.1% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_inbox_none | 704 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_inbox_effort | 611 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_naive_careful | 672 | 0.3% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_always_strict | 553 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_price_blind | 590 | 0.2% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_review_blind | 724 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_always_flexible | 574 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_overworker | 1000 | 25.1% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_inbox_none | 713 | 0.8% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_inbox_effort | 651 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_naive_careful | 693 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_always_strict | 580 | 0.3% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
 
 ## First paying customer
 
@@ -1824,19 +1824,19 @@ Week in which the first customer signed. Medians count only runs that had one.
 
 | Strategy | Median customers at week 15 | Median monthly revenue at week 15 | Leads per outreach hour | Mean planned hours | Median lowest energy | Runs with energy below 30 |
 |---|---|---|---|---|---|---|
-| tourism_careful | 0 | 0 EUR | - | 27.9 | 80.0 | 0.0% |
-| tourism_platform_only | 0 | 0 EUR | - | 15.7 | 80.0 | 0.0% |
-| tourism_overstaffing | 0 | 0 EUR | - | 45.1 | 80.0 | 0.0% |
-| tourism_understaffing | 0 | 0 EUR | - | 24.5 | 80.0 | 0.0% |
+| tourism_careful | 0 | 0 EUR | - | 28.0 | 80.0 | 0.0% |
+| tourism_platform_only | 0 | 0 EUR | - | 15.9 | 80.0 | 0.0% |
+| tourism_overstaffing | 0 | 0 EUR | - | 45.2 | 80.0 | 0.0% |
+| tourism_understaffing | 0 | 0 EUR | - | 24.6 | 80.0 | 0.0% |
 | tourism_no_tests | 0 | 0 EUR | - | 48.3 | 80.0 | 0.0% |
-| tourism_price_blind | 0 | 0 EUR | - | 27.8 | 80.0 | 0.0% |
-| tourism_review_blind | 0 | 0 EUR | - | 24.5 | 80.0 | 0.0% |
-| tourism_always_flexible | 0 | 0 EUR | - | 27.9 | 80.0 | 0.0% |
-| tourism_overworker | 0 | 0 EUR | - | 59.8 | 0.0 | 100.0% |
+| tourism_price_blind | 0 | 0 EUR | - | 27.9 | 80.0 | 0.0% |
+| tourism_review_blind | 0 | 0 EUR | - | 24.6 | 80.0 | 0.0% |
+| tourism_always_flexible | 0 | 0 EUR | - | 28.0 | 80.0 | 0.0% |
+| tourism_overworker | 0 | 0 EUR | - | 59.9 | 0.0 | 100.0% |
 | tourism_inbox_none | 0 | 0 EUR | - | 25.5 | 80.0 | 0.0% |
-| tourism_inbox_effort | 0 | 0 EUR | - | 27.4 | 80.0 | 0.0% |
+| tourism_inbox_effort | 0 | 0 EUR | - | 27.6 | 80.0 | 0.0% |
 | tourism_naive_careful | 0 | 0 EUR | - | 29.0 | 80.0 | 0.0% |
-| tourism_always_strict | 0 | 0 EUR | - | 26.4 | 80.0 | 0.0% |
+| tourism_always_strict | 0 | 0 EUR | - | 26.5 | 80.0 | 0.0% |
 
 ## Interview signal in week 1
 
@@ -1863,19 +1863,19 @@ Per run, averaged over all runs of a strategy. Books left is the number of accou
 
 | Strategy | Landing tests | Pre-sale batches | Invoices issued | Written off | Books left | Messages | Messages answered |
 |---|---|---|---|---|---|---|---|
-| tourism_careful | 0.4 | 1.0 | 87.4 | 3.3% | 0.00 | 65.1 | 56.3% |
-| tourism_platform_only | 0.4 | 1.0 | 5.4 | 2.9% | 0.00 | 42.1 | 53.5% |
-| tourism_overstaffing | 0.4 | 1.0 | 0.1 | 0.0% | 0.00 | 7.0 | 39.4% |
-| tourism_understaffing | 0.4 | 1.0 | 60.9 | 3.2% | 0.00 | 61.0 | 55.1% |
+| tourism_careful | 0.0 | 0.0 | 84.2 | 3.2% | 0.00 | 64.2 | 56.4% |
+| tourism_platform_only | 0.0 | 0.0 | 5.7 | 3.1% | 0.00 | 42.6 | 53.7% |
+| tourism_overstaffing | 0.0 | 0.0 | 0.1 | 0.0% | 0.00 | 7.0 | 39.3% |
+| tourism_understaffing | 0.0 | 0.0 | 61.7 | 3.4% | 0.00 | 61.5 | 55.3% |
 | tourism_no_tests | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 4.9 | 57.7% |
-| tourism_price_blind | 0.4 | 1.0 | 87.9 | 3.3% | 0.00 | 64.9 | 56.4% |
-| tourism_review_blind | 0.4 | 1.0 | 75.2 | 3.3% | 0.00 | 58.8 | 55.3% |
-| tourism_always_flexible | 0.4 | 1.0 | 87.4 | 3.3% | 0.00 | 65.1 | 56.3% |
-| tourism_overworker | 0.4 | 1.0 | 0.8 | 0.0% | 0.00 | 11.4 | 59.0% |
-| tourism_inbox_none | 0.4 | 1.0 | 63.6 | 3.0% | 0.00 | 51.5 | 0.0% |
-| tourism_inbox_effort | 0.4 | 1.0 | 81.2 | 3.3% | 0.00 | 65.0 | 73.5% |
-| tourism_naive_careful | 1.0 | 1.0 | 69.3 | 3.1% | 0.00 | 56.2 | 6.6% |
-| tourism_always_strict | 0.4 | 1.0 | 70.9 | 3.4% | 0.00 | 65.9 | 56.2% |
+| tourism_price_blind | 0.0 | 0.0 | 85.6 | 3.3% | 0.00 | 64.4 | 56.4% |
+| tourism_review_blind | 0.0 | 0.0 | 74.9 | 3.2% | 0.00 | 59.6 | 55.3% |
+| tourism_always_flexible | 0.0 | 0.0 | 84.2 | 3.2% | 0.00 | 64.2 | 56.4% |
+| tourism_overworker | 0.0 | 0.0 | 0.8 | 0.0% | 0.00 | 11.4 | 59.2% |
+| tourism_inbox_none | 0.0 | 0.0 | 61.0 | 3.2% | 0.00 | 50.8 | 0.0% |
+| tourism_inbox_effort | 0.0 | 0.0 | 78.5 | 3.3% | 0.00 | 64.8 | 73.5% |
+| tourism_naive_careful | 0.0 | 0.0 | 68.0 | 3.2% | 0.00 | 55.9 | 6.6% |
+| tourism_always_strict | 0.0 | 0.0 | 69.9 | 3.4% | 0.00 | 65.9 | 56.1% |
 
 ## Inbox pool
 
@@ -1883,19 +1883,19 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 
 | Strategy | Mean weeks | Mean messages | Runs with a dry week | Mean dry weeks | Median first dry week | Repeats |
 |---|---|---|---|---|---|---|
-| tourism_careful | 80.9 | 65.1 | 70.8% | 10.19 | 60 | 0 |
-| tourism_platform_only | 48.1 | 42.1 | 18.8% | 2.74 | 60 | 0 |
+| tourism_careful | 79.4 | 64.2 | 69.0% | 9.56 | 60 | 0 |
+| tourism_platform_only | 48.7 | 42.6 | 19.4% | 2.91 | 59 | 0 |
 | tourism_overstaffing | 8.6 | 7.0 | 0.0% | 0.00 | - | 0 |
-| tourism_understaffing | 74.3 | 61.0 | 60.4% | 7.94 | 60 | 0 |
+| tourism_understaffing | 74.9 | 61.5 | 58.9% | 8.06 | 60 | 0 |
 | tourism_no_tests | 6.1 | 4.9 | 0.0% | 0.00 | - | 0 |
-| tourism_price_blind | 80.6 | 64.9 | 70.5% | 10.04 | 60 | 0 |
-| tourism_review_blind | 71.1 | 58.8 | 54.0% | 7.28 | 60 | 0 |
-| tourism_always_flexible | 80.9 | 65.1 | 70.8% | 10.19 | 60 | 0 |
-| tourism_overworker | 12.9 | 11.4 | 0.0% | 0.00 | - | 0 |
-| tourism_inbox_none | 68.1 | 51.5 | 43.8% | 3.05 | 73 | 0 |
-| tourism_inbox_effort | 77.3 | 65.0 | 69.2% | 11.04 | 57 | 0 |
-| tourism_naive_careful | 73.1 | 56.2 | 48.6% | 3.43 | 74 | 0 |
-| tourism_always_strict | 82.2 | 65.9 | 73.2% | 10.56 | 60 | 0 |
+| tourism_price_blind | 79.4 | 64.4 | 68.7% | 9.45 | 60 | 0 |
+| tourism_review_blind | 72.1 | 59.6 | 54.9% | 7.57 | 60 | 0 |
+| tourism_always_flexible | 79.4 | 64.2 | 69.0% | 9.56 | 60 | 0 |
+| tourism_overworker | 12.8 | 11.4 | 0.0% | 0.00 | - | 0 |
+| tourism_inbox_none | 67.0 | 50.8 | 43.3% | 2.99 | 76 | 0 |
+| tourism_inbox_effort | 76.7 | 64.8 | 68.2% | 10.68 | 57 | 0 |
+| tourism_naive_careful | 72.5 | 55.9 | 47.2% | 3.28 | 77 | 0 |
+| tourism_always_strict | 82.1 | 65.9 | 72.8% | 10.23 | 60 | 0 |
 
 ## Inbox events: which answer wins
 
@@ -1903,70 +1903,70 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 
 | Event | Seeds | Win rate per answer (hours, money) | Reading | Best fixed | Cheapest | Cheapest wins |
 |---|---|---|---|---|---|---|
-| tourism_office_newsletter | 997 | read (2 h) 44.3%; skim (0 h) 44.6% | 44.3% | skim | skim | yes |
-| hotel_owner_chat | 998 | meet (2 h) 43.7%; later (0 h) 44.7% | 44.3% | later | later | yes |
-| hr_forum | 998 | speak (5 h) 44.6%; decline (0 h) 42.9% | 44.3% | speak | decline | no |
-| teacher_conference | 994 | attend (4 h) 43.7%; skip (0 h) 43.5% | 44.5% | attend | skip | no |
-| survey_offer_outdoor | 984 | buy (1 h, 400 EUR) 45.1%; pass (0 h) 44.6% | 44.9% | buy | pass | no |
-| last_summer_numbers | 776 | study (3 h) 56.8%; carry_on (0 h) 57.0% | 57.0% | carry_on | carry_on | yes |
-| local_newspaper_feature | 941 | interview (2 h) 47.0%; decline (0 h) 45.9% | 47.0% | interview | decline | no |
-| guest_survey_cards | 947 | cards (2 h) 46.7%; skip (0 h) 46.7% | 46.7% | cards | skip | yes |
-| competitor_visit | 956 | go (6 h, 90 EUR) 46.0%; skip (0 h) 45.7% | 46.2% | go | skip | no |
-| featured_placement | 711 | accept (1 h, 600 EUR) 44.7%; decline (0 h) 44.0% | 44.7% | accept | decline | no |
-| big_team_request | 983 | take (6 h) 44.7%; decline (0 h) 42.1% | 45.0% | take | decline | no |
-| hotel_cut_offer | 993 | accept (1 h, 200 EUR) 43.9%; decline (0 h) 44.0% | 44.5% | decline | decline | yes |
-| influencer_canyon | 799 | host (9 h) 54.8%; decline (0 h) 56.2% | 55.3% | decline | decline | yes |
-| competitor_undercut | 959 | differentiate (3 h) 45.9%; hold (0 h) 46.8% | 46.1% | hold | hold | yes |
-| travel_agency_bundle | 897 | sign (2 h) 47.8%; decline (0 h) 50.2% | 49.3% | decline | decline | yes |
-| youth_hostel_partners | 989 | send (3 h) 43.4%; later (0 h) 43.5% | 44.7% | later | later | yes |
-| one_star_cloud | 922 | reply (1 h) 47.9%; refund (1 h, 40 EUR) 47.2%; ignore (0 h) 46.6% | 47.9% | reply | ignore | no |
-| autumn_offsites | 683 | offer (3 h) 64.1%; later (0 h) 60.5% | 64.1% | offer | later | no |
-| last_minute_group | 906 | squeeze (4 h) 46.9%; no (0 h) 47.6% | 48.8% | no | no | yes |
-| second_valley_school | 867 | pitch (4 h) 49.8%; later (0 h) 50.6% | 51.0% | later | later | yes |
-| town_base_offer | 949 | take (4 h) 39.2%; decline (0 h) 48.2% | 46.6% | decline | decline | yes |
-| platform_ranking_drop | 602 | ask_reviews (2 h) 47.8%; ignore (0 h) 47.2% | 46.7% | ask_reviews | ignore | no |
-| platform_fee_change | 649 | complain (1 h) 49.6%; accept (0 h) 49.6% | 49.0% | complain | accept | yes |
-| repeat_guest_thanks | 539 | discount (0 h, 50 EUR) 55.8%; no (0 h) 53.4% | 55.8% | discount | no | no |
-| tourism_fair | 830 | stand (12 h, 400 EUR) 58.8%; skip (0 h) 52.9% | 53.3% | stand | skip | no |
-| review_reply_bad | 195 | apologise (1 h) 40.0%; ignore (0 h) 38.5% | 40.0% | apologise | ignore | no |
+| tourism_office_newsletter | 993 | read (2 h) 42.9%; skim (0 h) 42.5% | 42.9% | read | skim | no |
+| hotel_owner_chat | 997 | meet (2 h) 41.6%; later (0 h) 41.8% | 42.7% | later | later | yes |
+| hr_forum | 996 | speak (5 h) 42.1%; decline (0 h) 40.9% | 42.8% | speak | decline | no |
+| teacher_conference | 994 | attend (4 h) 43.0%; skip (0 h) 42.4% | 42.9% | attend | skip | no |
+| survey_offer_outdoor | 987 | buy (1 h, 400 EUR) 43.5%; pass (0 h) 43.6% | 43.2% | pass | pass | yes |
+| last_summer_numbers | 767 | study (3 h) 55.3%; carry_on (0 h) 55.5% | 55.5% | carry_on | carry_on | yes |
+| local_newspaper_feature | 938 | interview (2 h) 45.4%; decline (0 h) 44.6% | 45.4% | interview | decline | no |
+| guest_survey_cards | 947 | cards (2 h) 45.0%; skip (0 h) 45.0% | 45.0% | cards | skip | yes |
+| competitor_visit | 945 | go (6 h, 90 EUR) 45.5%; skip (0 h) 45.1% | 45.1% | go | skip | no |
+| featured_placement | 724 | accept (1 h, 600 EUR) 45.0%; decline (0 h) 43.2% | 45.0% | accept | decline | no |
+| big_team_request | 981 | take (6 h) 42.6%; decline (0 h) 40.6% | 43.4% | take | decline | no |
+| hotel_cut_offer | 989 | accept (1 h, 200 EUR) 41.8%; decline (0 h) 43.6% | 43.1% | decline | decline | yes |
+| influencer_canyon | 782 | host (9 h) 53.7%; decline (0 h) 54.7% | 54.5% | decline | decline | yes |
+| competitor_undercut | 968 | differentiate (3 h) 43.8%; hold (0 h) 44.4% | 44.0% | hold | hold | yes |
+| travel_agency_bundle | 889 | sign (2 h) 47.8%; decline (0 h) 46.3% | 47.9% | sign | decline | no |
+| youth_hostel_partners | 990 | send (3 h) 41.8%; later (0 h) 42.5% | 43.0% | later | later | yes |
+| one_star_cloud | 932 | reply (1 h) 45.7%; refund (1 h, 40 EUR) 46.5%; ignore (0 h) 44.0% | 45.7% | refund | ignore | no |
+| autumn_offsites | 643 | offer (3 h) 64.1%; later (0 h) 61.1% | 65.8% | offer | later | no |
+| last_minute_group | 880 | squeeze (4 h) 45.5%; no (0 h) 48.3% | 48.4% | no | no | yes |
+| second_valley_school | 869 | pitch (4 h) 47.8%; later (0 h) 47.8% | 49.0% | pitch | later | yes |
+| town_base_offer | 944 | take (4 h) 39.4%; decline (0 h) 44.5% | 45.1% | decline | decline | yes |
+| platform_ranking_drop | 607 | ask_reviews (2 h) 46.8%; ignore (0 h) 47.0% | 47.6% | ignore | ignore | yes |
+| platform_fee_change | 650 | complain (1 h) 51.5%; accept (0 h) 51.5% | 50.2% | complain | accept | yes |
+| repeat_guest_thanks | 552 | discount (0 h, 50 EUR) 53.3%; no (0 h) 48.6% | 53.3% | discount | no | no |
+| tourism_fair | 825 | stand (12 h, 400 EUR) 56.0%; skip (0 h) 51.5% | 51.6% | stand | skip | no |
+| review_reply_bad | 197 | apologise (1 h) 35.5%; ignore (0 h) 35.0% | 35.5% | apologise | ignore | no |
 | storm_warning | 0 | rebook (4 h) 0.0%; wait (0 h) 0.0% | 0.0% | rebook | wait | not judged |
 | guide_sick | 0 | yourself (9 h) 0.0%; premium (1 h, 650 EUR) 0.0%; cancel (0 h) 0.0% | 0.0% | yourself | cancel | not judged |
-| canyon_closed | 737 | hike_instead (3 h) 59.7%; refund (0 h, 300 EUR) 59.3% | 59.7% | hike_instead | refund | no |
+| canyon_closed | 699 | hike_instead (3 h) 60.7%; refund (0 h, 300 EUR) 59.1% | 60.7% | hike_instead | refund | no |
 | lost_hiker | 0 | briefing (3 h) 0.0%; shrug (0 h) 0.0% | 0.0% | briefing | shrug | not judged |
-| gear_wear | 893 | replace (1 h, 600 EUR) 49.5%; later (0 h) 47.9% | 49.5% | replace | later | no |
-| van_inspection | 985 | fix (0 h, 1,800 EUR) 44.5%; borrow (4 h, 400 EUR) 44.6% | 44.9% | borrow | fix | no |
-| route_closure | 975 | scout (6 h) 45.3%; detour (0 h) 43.7% | 45.3% | scout | detour | no |
-| first_aid_course | 902 | attend (12 h, 250 EUR) 48.7%; skip (0 h) 48.7% | 49.0% | attend | skip | yes |
-| summit_book | 838 | do_it (1 h) 52.7%; smile (0 h) 52.6% | 52.7% | do_it | smile | no |
-| health_and_safety_check | 967 | prepare (5 h) 45.7%; wing_it (0 h, 300 EUR) 45.5% | 45.7% | prepare | wing_it | no |
-| equipment_supplier_sale | 906 | buy (1 h, 400 EUR) 48.3%; decline (0 h) 48.6% | 48.8% | decline | decline | yes |
-| booking_system_outage | 868 | check (4 h) 50.0%; wait (0 h) 51.0% | 50.0% | wait | wait | yes |
-| rescue_donation | 989 | generous (0 h, 500 EUR) 42.8%; small (0 h, 50 EUR) 46.3% | 44.7% | small | small | yes |
-| insurance_renewal_outdoor | 854 | shop (4 h) 51.8%; accept (0 h) 50.2% | 51.8% | shop | accept | no |
-| winter_vouchers | 712 | stall (8 h) 61.7%; skip (0 h) 61.5% | 61.7% | stall | skip | no |
-| invoice_reminder_team | 872 | call (1 h) 50.5%; wait (0 h) 48.9% | 50.5% | call | wait | no |
-| gear_grant | 919 | apply (6 h) 48.4%; ignore (0 h) 48.4% | 48.1% | apply | ignore | yes |
-| dead_season_bills | 629 | sublet (3 h) 59.9%; keep (0 h) 59.9% | 59.9% | sublet | keep | yes |
-| tax_advance_tourism | 894 | object (3 h, 600 EUR) 49.4%; pay (0 h, 600 EUR) 49.1% | 49.4% | object | pay | no |
-| bank_card_terminal | 966 | sign (1 h) 44.9%; decline (0 h) 45.0% | 45.8% | decline | decline | yes |
-| energy_bill | 787 | plan (1 h) 54.4%; pay (0 h, 450 EUR) 55.8% | 56.2% | pay | pay | yes |
+| gear_wear | 909 | replace (1 h, 600 EUR) 46.6%; later (0 h) 44.9% | 46.9% | replace | later | no |
+| van_inspection | 980 | fix (0 h, 1,800 EUR) 42.8%; borrow (4 h, 400 EUR) 44.9% | 43.5% | borrow | fix | no |
+| route_closure | 987 | scout (6 h) 43.2%; detour (0 h) 42.8% | 43.2% | scout | detour | no |
+| first_aid_course | 888 | attend (12 h, 250 EUR) 47.9%; skip (0 h) 47.7% | 48.0% | attend | skip | no |
+| summit_book | 833 | do_it (1 h) 51.1%; smile (0 h) 50.7% | 51.1% | do_it | smile | no |
+| health_and_safety_check | 965 | prepare (5 h) 44.1%; wing_it (0 h, 300 EUR) 44.0% | 44.1% | prepare | wing_it | no |
+| equipment_supplier_sale | 889 | buy (1 h, 400 EUR) 47.9%; decline (0 h) 47.6% | 47.9% | buy | decline | no |
+| booking_system_outage | 830 | check (4 h) 49.5%; wait (0 h) 48.8% | 49.5% | check | wait | no |
+| rescue_donation | 989 | generous (0 h, 500 EUR) 41.9%; small (0 h, 50 EUR) 42.7% | 43.1% | small | small | yes |
+| insurance_renewal_outdoor | 854 | shop (4 h) 49.9%; accept (0 h) 49.1% | 49.9% | shop | accept | no |
+| winter_vouchers | 695 | stall (8 h) 60.7%; skip (0 h) 61.0% | 60.7% | skip | skip | yes |
+| invoice_reminder_team | 853 | call (1 h) 49.7%; wait (0 h) 48.1% | 49.7% | call | wait | no |
+| gear_grant | 920 | apply (6 h) 47.4%; ignore (0 h) 44.8% | 46.3% | apply | ignore | no |
+| dead_season_bills | 627 | sublet (3 h) 56.0%; keep (0 h) 56.0% | 56.0% | sublet | keep | yes |
+| tax_advance_tourism | 889 | object (3 h, 600 EUR) 47.7%; pay (0 h, 600 EUR) 47.9% | 47.9% | pay | pay | yes |
+| bank_card_terminal | 954 | sign (1 h) 42.2%; decline (0 h) 44.8% | 44.7% | decline | decline | yes |
+| energy_bill | 766 | plan (1 h) 54.4%; pay (0 h, 450 EUR) 55.6% | 55.6% | pay | pay | yes |
 | summit_sunrise | 0 | go (8 h) 0.0%; decline (0 h) 0.0% | 0.0% | go | decline | not judged |
-| knee_twinge | 948 | physio (3 h, 120 EUR) 46.9%; ignore (0 h) 47.0% | 46.6% | ignore | ignore | yes |
-| van_nights | 904 | home (0 h) 48.9%; carry_on (0 h) 49.0% | 48.9% | carry_on | home | no |
-| guide_reunion | 632 | go (4 h) 67.6%; skip (0 h) 67.6% | 67.6% | go | skip | yes |
-| rainy_week_off | 956 | rest (0 h) 46.5%; work (0 h) 47.5% | 46.2% | work | rest | no |
-| second_season_doubt | 793 | plan (3 h) 55.7%; shrug (0 h) 55.7% | 55.7% | plan | shrug | yes |
-| friend_wedding | 789 | go (0 h) 56.0%; work (0 h) 56.3% | 56.0% | work | go | no |
+| knee_twinge | 950 | physio (3 h, 120 EUR) 45.2%; ignore (0 h) 44.6% | 44.8% | physio | ignore | no |
+| van_nights | 889 | home (0 h) 47.9%; carry_on (0 h) 47.9% | 47.9% | home | home | yes |
+| guide_reunion | 579 | go (4 h) 68.9%; skip (0 h) 68.9% | 68.9% | go | skip | yes |
+| rainy_week_off | 943 | rest (0 h) 44.8%; work (0 h) 44.5% | 45.2% | rest | rest | yes |
+| second_season_doubt | 779 | plan (3 h) 54.7%; shrug (0 h) 54.7% | 54.7% | plan | shrug | yes |
+| friend_wedding | 794 | go (0 h) 53.7%; work (0 h) 53.8% | 53.7% | work | go | no |
 | season_end_fatigue | 0 | rest (0 h) 0.0%; push (0 h) 0.0% | 0.0% | rest | rest | not judged |
-| family_sunday | 998 | go (0 h) 43.6%; skip (0 h) 44.3% | 44.3% | skip | go | no |
-| winter_course | 866 | attend (6 h, 150 EUR) 51.0%; skip (0 h) 50.9% | 51.0% | attend | skip | no |
-| guide_poached | 905 | match (1 h, 800 EUR) 49.1%; let_go (0 h) 49.4% | 48.8% | let_go | let_go | yes |
-| guide_feedback | 914 | adopt (1 h) 48.4%; later (0 h) 48.7% | 48.4% | later | later | yes |
-| office_help_offer | 979 | hire (1 h) 37.0%; decline (0 h) 45.8% | 45.1% | decline | decline | yes |
-| guides_wages | 737 | raise (1 h) 52.1%; hold (0 h) 59.3% | 60.0% | hold | hold | yes |
-| shared_bus | 888 | sign (1 h, 1,500 EUR) 50.7%; decline (0 h) 50.0% | 49.8% | sign | decline | no |
-| staff_holiday_clash | 899 | both (6 h) 49.5%; first (0 h) 49.1% | 49.2% | both | first | no |
-| staff_thank_you | 795 | dinner (3 h, 300 EUR) 55.7%; skip (0 h) 56.0% | 55.6% | skip | skip | yes |
+| family_sunday | 997 | go (0 h) 41.6%; skip (0 h) 39.7% | 42.7% | go | go | yes |
+| winter_course | 854 | attend (6 h, 150 EUR) 49.9%; skip (0 h) 50.0% | 49.9% | skip | skip | yes |
+| guide_poached | 892 | match (1 h, 800 EUR) 47.1%; let_go (0 h) 47.2% | 47.8% | let_go | let_go | yes |
+| guide_feedback | 910 | adopt (1 h) 46.8%; later (0 h) 46.8% | 46.8% | adopt | later | yes |
+| office_help_offer | 979 | hire (1 h) 33.4%; decline (0 h) 41.9% | 43.5% | decline | decline | yes |
+| guides_wages | 724 | raise (1 h) 51.1%; hold (0 h) 58.3% | 58.8% | hold | hold | yes |
+| shared_bus | 883 | sign (1 h, 1,500 EUR) 48.0%; decline (0 h) 47.5% | 48.2% | sign | decline | no |
+| staff_holiday_clash | 901 | both (6 h) 45.2%; first (0 h) 48.2% | 47.3% | first | first | yes |
+| staff_thank_you | 810 | dinner (3 h, 300 EUR) 52.5%; skip (0 h) 50.6% | 52.6% | dinner | skip | no |
 | investor_hire_push | 0 | explain (2 h) 0.0%; promise (0 h) 0.0%; ignore (0 h) 0.0% | 0.0% | explain | promise | not judged |
 | investor_price_push | 0 | call (2 h) 0.0%; skip (0 h) 0.0% | 0.0% | call | skip | not judged |
 | investor_checkin | 0 | attend (4 h) 0.0%; postpone (0 h) 0.0% | 0.0% | attend | postpone | not judged |
@@ -1979,7 +1979,7 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 | investor_second_intro | 0 | call (1 h) 0.0%; later (0 h) 0.0% | 0.0% | call | later | not judged |
 | investor_praise | 0 | smile (0 h) 0.0%; thank (1 h) 0.0% | 0.0% | smile | smile | not judged |
 
-Of 59 judged events, 29 favour the cheapest answer and 30 favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.
+Of 59 judged events, 30 favour the cheapest answer and 29 favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.
 
 ## Pacing in weeks 1 to 20
 
@@ -1987,35 +1987,35 @@ Share of weeks with at least one noteworthy thing: a new message, new leads, a l
 
 | Strategy | Weeks with something noteworthy | Weeks with decision news (stricter) | Weeks with a new message | Median noteworthy weeks per run | Runs with 5 or more weeks without decision news |
 |---|---|---|---|---|---|
-| tourism_careful | 87.6% | 97.2% | 83.3% | 18 of 20 | 0.0% |
-| tourism_platform_only | 86.6% | 92.5% | 82.9% | 17 of 20 | 5.9% |
-| tourism_overstaffing | 85.2% | 88.8% | 70.7% | 7 of 9 | 0.0% |
-| tourism_understaffing | 87.2% | 97.2% | 83.2% | 17 of 20 | 0.0% |
+| tourism_careful | 87.7% | 96.3% | 83.5% | 18 of 20 | 0.0% |
+| tourism_platform_only | 86.5% | 91.8% | 82.9% | 17 of 20 | 7.1% |
+| tourism_overstaffing | 84.6% | 86.6% | 70.5% | 7 of 9 | 0.1% |
+| tourism_understaffing | 87.4% | 96.3% | 83.5% | 18 of 20 | 0.0% |
 | tourism_no_tests | 100.0% | 91.7% | 70.4% | 6 of 6 | 0.0% |
-| tourism_price_blind | 87.6% | 97.1% | 83.3% | 18 of 20 | 0.0% |
-| tourism_review_blind | 87.4% | 97.1% | 83.2% | 18 of 20 | 0.0% |
-| tourism_always_flexible | 87.6% | 97.2% | 83.3% | 18 of 20 | 0.0% |
-| tourism_overworker | 82.1% | 96.1% | 77.7% | 11 of 13 | 0.1% |
-| tourism_inbox_none | 77.6% | 96.6% | 71.8% | 16 of 20 | 0.4% |
-| tourism_inbox_effort | 92.6% | 98.1% | 90.7% | 19 of 20 | 0.0% |
-| tourism_naive_careful | 78.9% | 97.1% | 72.7% | 16 of 20 | 0.1% |
-| tourism_always_strict | 87.8% | 96.9% | 83.9% | 18 of 20 | 0.0% |
+| tourism_price_blind | 87.6% | 96.3% | 83.6% | 18 of 20 | 0.0% |
+| tourism_review_blind | 87.2% | 96.2% | 83.1% | 17 of 20 | 0.0% |
+| tourism_always_flexible | 87.7% | 96.3% | 83.5% | 18 of 20 | 0.0% |
+| tourism_overworker | 81.9% | 95.2% | 77.5% | 10 of 13 | 0.0% |
+| tourism_inbox_none | 77.5% | 95.6% | 71.6% | 16 of 20 | 0.3% |
+| tourism_inbox_effort | 92.7% | 97.9% | 90.9% | 19 of 20 | 0.0% |
+| tourism_naive_careful | 78.7% | 95.5% | 72.7% | 16 of 20 | 0.4% |
+| tourism_always_strict | 87.7% | 95.9% | 83.7% | 18 of 20 | 0.0% |
 
 ## Strategies
 
-- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. (38.6 s for 1000 runs)
-- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (23.7 s for 1000 runs)
-- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (3.8 s for 1000 runs)
-- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (23.6 s for 1000 runs)
-- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (1.2 s for 1000 runs)
-- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (26.4 s for 1000 runs)
-- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (21.5 s for 1000 runs)
-- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (27.8 s for 1000 runs)
-- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (3.0 s for 1000 runs)
-- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (21.5 s for 1000 runs)
-- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (25.3 s for 1000 runs)
-- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (23.0 s for 1000 runs)
-- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (21.0 s for 1000 runs)
+- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. (79.3 s for 1000 runs)
+- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (47.0 s for 1000 runs)
+- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (6.4 s for 1000 runs)
+- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (57.9 s for 1000 runs)
+- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (2.4 s for 1000 runs)
+- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (60.9 s for 1000 runs)
+- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (50.0 s for 1000 runs)
+- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (56.7 s for 1000 runs)
+- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (5.5 s for 1000 runs)
+- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (41.7 s for 1000 runs)
+- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (53.3 s for 1000 runs)
+- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (47.8 s for 1000 runs)
+- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (44.5 s for 1000 runs)
 
 # Hinterhof, long mode
 
@@ -2027,43 +2027,43 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 
 | # | Target | Value | Margin | Met |
 |---|---|---|---|---|
-| T1 | tourism_careful wins (Sustainable or Growing) 25 to 45% of runs | 24.4% | ±2.7 | yes |
-| T2 | No strategy wins over 60%; tourism_no_tests under 5% | top tourism_always_strict 27.4%; no tests 4.5% | ±2.8; ±1.3 | yes |
-| T3 | tourism_careful win rates across the viable segments lie within 15 points | 5.1 points (evening_locals 21.7%, office_lunch 26.8%, tourists 24.5%) |  | yes |
+| T1 | tourism_careful wins (Sustainable or Growing) 25 to 45% of runs | 19.5% | ±2.5 | no |
+| T2 | No strategy wins over 60%; tourism_no_tests under 5% | top tourism_overborrow 22.6%; no tests 4.6% | ±2.6; ±1.3 | yes |
+| T3 | tourism_careful win rates across the viable segments lie within 15 points | 26.7 points (evening_locals 7.5%, office_lunch 34.2%, tourists 16.0%) |  | no |
 | T4 | The first guest from the viable segment is served by week 12 in the median winning run | week 12.0 |  | yes |
-| T5 | Decision news in at least 85% of weeks 1 to 20 and 70% of weeks 53 to 104 | 91.1%; year 2 100.0% |  | yes |
-| T6 | Reading the inbox pays: tourism_careful beats leaving every message to its default by at least 3 points, and blind effort gains at most a third of that | reading +5.6, blind effort +3.7 | ±1.5 | no |
-| T7 | Seasonal pricing pays: tourism_careful (prices from hints per season) beats tourism_price_blind by 2 to 10 points | +0.7 | ±1.8 | yes |
-| T8 | Platform dependence is a trap: tourism_platform_only loses at least 3 points to the careful mix | -13.6 | ±2.2 | yes |
-| T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -22.6, under -23.8 | ±2.6, ±2.6 | yes |
-| T10 | Reviews matter: tourism_review_blind loses at least 2 points | -9.1 | ±1.8 | yes |
-| T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +3.0 overall; evening_locals +11.9, office_lunch +3.8, tourists -6.1 | ±1.7 | yes |
-| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 79.8 s per 1000 runs |  | yes |
-| T13 | L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other | second loan -1.0 against none (second loan taken in 51.9% of runs) | ±1.1 | yes |
-| T14 | L2. Over-borrowing (the most the bank lends, early) loses to borrowing what the plan needs | -0.2 | ±1.4 | no |
-| T15 | L3. Default is reachable but avoidable: tourism_careful misses a loan payment the business itself could carry (the four weeks before covered every other cost) in under 3% of runs, tourism_reckless in over 15% | careful 1.1%; reckless 2.6% | ±0.6; ±1.0 | no |
-| T16 | L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers) | 100.0% borrowed; median interest and fees 1825 EUR |  | yes |
+| T5 | Decision news in at least 85% of weeks 1 to 20 and 70% of weeks 53 to 104 | 89.9%; year 2 100.0% |  | yes |
+| T6 | Reading the inbox pays: tourism_careful beats leaving every message to its default by at least 3 points, and blind effort gains at most a third of that | reading +3.5, blind effort +2.0 | ±1.2 | yes |
+| T7 | Seasonal pricing pays: tourism_careful (prices from hints per season) beats tourism_price_blind by 2 to 10 points | +1.0 | ±1.6 | yes |
+| T8 | Platform dependence is a trap: tourism_platform_only loses at least 3 points to the careful mix | -14.5 | ±2.2 | yes |
+| T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -17.7, under -19.5 | ±2.4, ±2.5 | yes |
+| T10 | Reviews matter: tourism_review_blind loses at least 2 points | -8.2 | ±1.7 | yes |
+| T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +2.7 overall; evening_locals +12.9, office_lunch +1.2, tourists -5.2 | ±1.7 | yes |
+| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 149.0 s per 1000 runs |  | yes |
+| T13 | L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other | second loan +1.5 against none (second loan taken in 42.7% of runs) | ±1.1 | yes |
+| T14 | L2. Over-borrowing (the most the bank lends, early) loses to borrowing what the plan needs | +3.1 | ±1.3 | no |
+| T15 | L3. Default is reachable but avoidable: tourism_careful misses a loan payment the business itself could carry (the four weeks before covered every other cost) in under 3% of runs, tourism_reckless in over 15% | careful 0.8%; reckless 4.0% | ±0.6; ±1.2 | no |
+| T16 | L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers) | 100.0% borrowed; median interest and fees 1456 EUR |  | yes |
 
 ## Endings
 
 | Strategy | Sustainable | Still searching | Bankrupt | Burnout | Shut down | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |
 |---|---|---|---|---|---|---|---|---|---|
-| tourism_careful | 24.4% | 5.4% | 7.1% | 0.0% | 0.0% | 32 | 24 | 0 EUR | 0 |
-| tourism_platform_only | 10.8% | 2.3% | 9.2% | 0.0% | 0.0% | 28 | 24 | 0 EUR | 0 |
-| tourism_overstaffing | 1.8% | 1.4% | 12.6% | 0.0% | 0.0% | 18 | 20 | 0 EUR | 0 |
-| tourism_understaffing | 0.6% | 0.0% | 8.1% | 0.0% | 0.0% | 24 | 20 | 0 EUR | 0 |
-| tourism_no_tests | 4.5% | 3.5% | 10.9% | 0.0% | 0.0% | 32 | 28 | 0 EUR | 0 |
-| tourism_price_blind | 23.7% | 5.6% | 6.7% | 0.0% | 0.0% | 32 | 28 | 0 EUR | 0 |
-| tourism_review_blind | 15.3% | 1.2% | 9.8% | 0.0% | 0.0% | 32 | 24 | 0 EUR | 0 |
-| tourism_always_flexible | 24.4% | 5.4% | 7.1% | 0.0% | 0.0% | 32 | 24 | 0 EUR | 0 |
+| tourism_careful | 19.5% | 3.2% | 8.7% | 0.0% | 0.0% | 28 | 24 | 0 EUR | 0 |
+| tourism_platform_only | 5.0% | 1.2% | 9.0% | 0.0% | 0.0% | 24 | 20 | 0 EUR | 0 |
+| tourism_overstaffing | 1.8% | 1.0% | 8.1% | 0.0% | 0.0% | 18 | 17 | 0 EUR | 0 |
+| tourism_understaffing | 0.0% | 0.0% | 8.3% | 0.0% | 0.0% | 18 | 16 | 0 EUR | 0 |
+| tourism_no_tests | 4.6% | 3.3% | 11.2% | 0.0% | 0.0% | 36 | 28 | 0 EUR | 0 |
+| tourism_price_blind | 18.5% | 4.0% | 8.1% | 0.0% | 0.0% | 32 | 24 | 0 EUR | 0 |
+| tourism_review_blind | 11.3% | 0.9% | 8.2% | 0.0% | 0.0% | 28 | 20 | 0 EUR | 0 |
+| tourism_always_flexible | 19.5% | 3.2% | 8.7% | 0.0% | 0.0% | 28 | 24 | 0 EUR | 0 |
 | tourism_overworker | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | - | 12 | 0 EUR | 0 |
-| tourism_inbox_none | 18.8% | 5.3% | 9.9% | 0.0% | 0.0% | 32 | 24 | 0 EUR | 0 |
-| tourism_inbox_effort | 22.5% | 2.3% | 9.3% | 0.0% | 0.0% | 28 | 24 | 0 EUR | 0 |
-| tourism_naive_careful | 20.9% | 4.9% | 9.8% | 0.0% | 0.0% | 28 | 24 | 0 EUR | 0 |
-| tourism_always_strict | 27.4% | 4.0% | 6.7% | 0.0% | 0.0% | 36 | 24 | 0 EUR | 0 |
-| tourism_overborrow | 24.2% | 20.6% | 16.8% | 0.0% | 0.0% | 60 | 68 | 0 EUR | 0 |
-| tourism_reckless | 19.5% | 17.3% | 20.1% | 0.0% | 0.0% | 52 | 60 | 0 EUR | 0 |
-| tourism_refit_loan | 23.4% | 15.1% | 4.6% | 0.0% | 0.0% | 28 | 24 | 0 EUR | 0 |
+| tourism_inbox_none | 16.0% | 3.0% | 7.3% | 0.0% | 0.0% | 32 | 20 | 0 EUR | 0 |
+| tourism_inbox_effort | 18.0% | 1.0% | 9.0% | 0.0% | 0.0% | 24 | 20 | 0 EUR | 0 |
+| tourism_naive_careful | 17.4% | 3.0% | 7.9% | 0.0% | 0.0% | 28 | 20 | 0 EUR | 0 |
+| tourism_always_strict | 22.2% | 3.4% | 7.2% | 0.0% | 0.0% | 24 | 20 | 0 EUR | 0 |
+| tourism_overborrow | 22.6% | 12.5% | 18.6% | 0.0% | 0.0% | 56 | 60 | 0 EUR | 0 |
+| tourism_reckless | 18.2% | 12.4% | 20.2% | 0.0% | 0.0% | 52 | 52 | 0 EUR | 0 |
+| tourism_refit_loan | 21.0% | 10.6% | 6.0% | 0.0% | 0.0% | 24 | 20 | 0 EUR | 0 |
 
 ## Wins by viable market
 
@@ -2071,22 +2071,22 @@ Share of runs ending Sustainable, split by which market was secretly viable in t
 
 | Strategy | evening_locals | office_lunch | tourists | Spread |
 |---|---|---|---|---|
-| tourism_careful | 21.7% | 26.8% | 24.5% | 5.1 |
-| tourism_platform_only | 16.0% | 3.8% | 12.8% | 12.2 |
+| tourism_careful | 7.5% | 34.2% | 16.0% | 26.7 |
+| tourism_platform_only | 4.4% | 5.0% | 5.5% | 1.1 |
 | tourism_overstaffing | 0.3% | 5.0% | 0.0% | 5.0 |
-| tourism_understaffing | 0.3% | 0.0% | 1.5% | 1.5 |
-| tourism_no_tests | 1.9% | 0.0% | 11.4% | 11.4 |
-| tourism_price_blind | 23.9% | 21.8% | 25.4% | 3.5 |
-| tourism_review_blind | 12.3% | 20.4% | 13.1% | 8.1 |
-| tourism_always_flexible | 21.7% | 26.8% | 24.5% | 5.1 |
+| tourism_understaffing | 0.0% | 0.0% | 0.0% | 0.0 |
+| tourism_no_tests | 1.9% | 1.8% | 9.9% | 8.1 |
+| tourism_price_blind | 7.2% | 31.9% | 15.7% | 24.6 |
+| tourism_review_blind | 3.5% | 22.7% | 7.3% | 19.3 |
+| tourism_always_flexible | 7.5% | 34.2% | 16.0% | 26.7 |
 | tourism_overworker | 0.0% | 0.0% | 0.0% | 0.0 |
-| tourism_inbox_none | 16.0% | 20.4% | 19.8% | 4.3 |
-| tourism_inbox_effort | 18.6% | 26.3% | 22.4% | 7.7 |
-| tourism_naive_careful | 17.0% | 24.2% | 21.3% | 7.2 |
-| tourism_always_strict | 33.6% | 30.7% | 18.4% | 15.3 |
-| tourism_overborrow | 21.1% | 24.8% | 26.5% | 5.5 |
-| tourism_reckless | 16.0% | 18.9% | 23.3% | 7.3 |
-| tourism_refit_loan | 20.1% | 24.2% | 25.7% | 5.5 |
+| tourism_inbox_none | 4.7% | 30.1% | 12.5% | 25.4 |
+| tourism_inbox_effort | 5.7% | 33.9% | 13.7% | 28.3 |
+| tourism_naive_careful | 6.0% | 31.9% | 13.7% | 25.9 |
+| tourism_always_strict | 20.4% | 35.4% | 10.8% | 24.6 |
+| tourism_overborrow | 11.3% | 36.3% | 19.5% | 25.0 |
+| tourism_reckless | 7.9% | 30.4% | 15.7% | 22.5 |
+| tourism_refit_loan | 9.7% | 35.1% | 17.5% | 25.4 |
 
 ## Guests (tourism)
 
@@ -2094,22 +2094,22 @@ Per strategy, medians over its runs: guests served, what they paid (net of commi
 
 | Strategy | Win rate | Guests | Paid (EUR) | Rating | Platform share | Turned away | Company cancelled |
 |---|---|---|---|---|---|---|---|
-| tourism_careful | 24.4% | 5146 | 92,531 | 3.92 | 16.8% | 0 | 76 |
-| tourism_platform_only | 10.8% | 2202 | 41,328 | 3.90 | 20.5% | 0 | 56 |
-| tourism_overstaffing | 1.8% | 925 | 23,450 | 3.84 | 17.1% | 0 | 32 |
-| tourism_understaffing | 0.6% | 1052 | 19,181 | 3.27 | 9.6% | 0 | 555 |
-| tourism_no_tests | 4.5% | 5467 | 95,835 | 3.82 | 0.0% | 0 | 190 |
-| tourism_price_blind | 23.7% | 5475 | 95,807 | 3.92 | 16.9% | 0 | 80 |
-| tourism_review_blind | 15.3% | 2655 | 49,243 | 3.54 | 16.3% | 0 | 77 |
-| tourism_always_flexible | 24.4% | 5146 | 92,531 | 3.92 | 16.8% | 0 | 76 |
-| tourism_overworker | 0.0% | 33 | 714 | 2.17 | 0.0% | 0 | 49 |
-| tourism_inbox_none | 18.8% | 4336 | 78,866 | 3.86 | 16.7% | 0 | 72 |
-| tourism_inbox_effort | 22.5% | 4193 | 75,156 | 3.84 | 16.6% | 0 | 74 |
-| tourism_naive_careful | 20.9% | 4433 | 84,441 | 3.87 | 16.7% | 0 | 74 |
-| tourism_always_strict | 27.4% | 5006 | 89,366 | 3.92 | 14.9% | 0 | 71 |
-| tourism_overborrow | 24.2% | 16408 | 371,910 | 3.96 | 18.7% | 0 | 89 |
-| tourism_reckless | 19.5% | 13934 | 287,575 | 3.95 | 18.5% | 0 | 87 |
-| tourism_refit_loan | 23.4% | 12474 | 228,244 | 3.95 | 17.0% | 0 | 80 |
+| tourism_careful | 19.5% | 2689 | 62,918 | 3.90 | 15.4% | 0 | 219 |
+| tourism_platform_only | 5.0% | 1278 | 25,170 | 3.89 | 18.2% | 0 | 144 |
+| tourism_overstaffing | 1.8% | 784 | 17,276 | 3.84 | 16.4% | 0 | 33 |
+| tourism_understaffing | 0.0% | 57 | 1,657 | 3.26 | 37.9% | 0 | 782 |
+| tourism_no_tests | 4.6% | 5488 | 95,055 | 3.79 | 0.0% | 0 | 274 |
+| tourism_price_blind | 18.5% | 2778 | 65,755 | 3.91 | 16.1% | 0 | 231 |
+| tourism_review_blind | 11.3% | 1591 | 37,918 | 3.56 | 14.6% | 0 | 199 |
+| tourism_always_flexible | 19.5% | 2689 | 62,918 | 3.90 | 15.4% | 0 | 219 |
+| tourism_overworker | 0.0% | 0 | 0 | 3.22 | 0.0% | 0 | 61 |
+| tourism_inbox_none | 16.0% | 2174 | 48,926 | 3.84 | 15.1% | 0 | 206 |
+| tourism_inbox_effort | 18.0% | 1748 | 41,508 | 3.78 | 15.3% | 0 | 202 |
+| tourism_naive_careful | 17.4% | 2219 | 50,184 | 3.85 | 15.5% | 0 | 212 |
+| tourism_always_strict | 22.2% | 2641 | 52,649 | 3.90 | 13.1% | 0 | 221 |
+| tourism_overborrow | 22.6% | 12493 | 280,291 | 3.95 | 18.0% | 0 | 442 |
+| tourism_reckless | 18.2% | 10387 | 236,463 | 3.94 | 17.8% | 0 | 406 |
+| tourism_refit_loan | 21.0% | 2724 | 62,940 | 3.93 | 15.9% | 0 | 239 |
 
 ## Week the run ended
 
@@ -2117,22 +2117,22 @@ Share of all runs per strategy, by the week the run ended. Runs that reach the l
 
 | Strategy | 1 to 10 | 11 to 20 | 21 to 30 | 31 to 40 | 41 to 50 | 51 to 60 | 61 to 70 | 71 to 80 | 81 to 90 | 91 to 100 | 101 to 104 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| tourism_careful | 0.0% | 29.3% | 18.1% | 12.6% | 1.9% | 4.6% | 1.3% | 1.3% | 1.1% | 0.0% | 29.8% |
-| tourism_platform_only | 0.0% | 40.3% | 23.9% | 14.2% | 1.3% | 3.4% | 1.7% | 1.2% | 0.9% | 0.0% | 13.1% |
-| tourism_overstaffing | 0.0% | 78.5% | 9.9% | 5.7% | 0.8% | 1.0% | 0.6% | 0.0% | 0.3% | 0.0% | 3.2% |
-| tourism_understaffing | 0.0% | 76.2% | 18.9% | 1.5% | 1.1% | 1.2% | 0.5% | 0.0% | 0.0% | 0.0% | 0.6% |
-| tourism_no_tests | 0.0% | 28.5% | 32.4% | 19.2% | 3.0% | 4.2% | 2.4% | 1.2% | 1.1% | 0.0% | 8.0% |
-| tourism_price_blind | 0.0% | 26.0% | 19.9% | 14.3% | 1.7% | 4.6% | 1.4% | 1.0% | 1.7% | 0.0% | 29.4% |
-| tourism_review_blind | 0.0% | 36.7% | 24.3% | 12.7% | 0.8% | 5.1% | 1.8% | 0.8% | 1.3% | 0.0% | 16.5% |
-| tourism_always_flexible | 0.0% | 29.3% | 18.1% | 12.6% | 1.9% | 4.6% | 1.3% | 1.3% | 1.1% | 0.0% | 29.8% |
+| tourism_careful | 0.0% | 40.1% | 15.5% | 13.3% | 0.9% | 3.6% | 1.8% | 0.4% | 1.7% | 0.0% | 22.7% |
+| tourism_platform_only | 0.0% | 54.6% | 19.5% | 13.8% | 1.1% | 2.1% | 1.0% | 0.5% | 1.2% | 0.0% | 6.2% |
+| tourism_overstaffing | 0.0% | 78.4% | 9.7% | 6.9% | 0.6% | 0.9% | 0.3% | 0.1% | 0.2% | 0.0% | 2.9% |
+| tourism_understaffing | 0.0% | 98.9% | 1.1% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| tourism_no_tests | 0.0% | 30.9% | 21.4% | 21.0% | 3.8% | 9.6% | 2.7% | 1.0% | 1.5% | 0.0% | 8.1% |
+| tourism_price_blind | 0.0% | 37.6% | 17.2% | 13.9% | 0.7% | 3.3% | 1.7% | 0.6% | 2.5% | 0.0% | 22.5% |
+| tourism_review_blind | 0.0% | 47.6% | 20.3% | 11.3% | 1.7% | 4.5% | 0.8% | 0.5% | 1.1% | 0.0% | 12.2% |
+| tourism_always_flexible | 0.0% | 40.1% | 15.5% | 13.3% | 0.9% | 3.6% | 1.8% | 0.4% | 1.7% | 0.0% | 22.7% |
 | tourism_overworker | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| tourism_inbox_none | 0.0% | 33.5% | 17.3% | 13.4% | 1.1% | 3.8% | 2.8% | 1.1% | 2.7% | 0.0% | 24.3% |
-| tourism_inbox_effort | 0.0% | 34.0% | 17.2% | 13.2% | 1.1% | 4.2% | 2.1% | 1.0% | 2.3% | 0.0% | 24.9% |
-| tourism_naive_careful | 0.0% | 32.1% | 17.2% | 13.4% | 1.5% | 4.1% | 2.2% | 1.6% | 1.9% | 0.0% | 26.0% |
-| tourism_always_strict | 0.0% | 29.1% | 17.1% | 13.9% | 1.3% | 3.4% | 1.5% | 0.8% | 1.5% | 0.0% | 31.4% |
-| tourism_overborrow | 0.0% | 0.0% | 0.3% | 9.1% | 8.9% | 13.6% | 8.3% | 8.4% | 4.5% | 0.8% | 46.1% |
-| tourism_reckless | 0.0% | 0.0% | 0.9% | 16.1% | 9.3% | 15.0% | 8.9% | 6.8% | 4.8% | 0.4% | 37.8% |
-| tourism_refit_loan | 0.0% | 29.3% | 15.2% | 3.1% | 1.0% | 2.6% | 3.9% | 2.7% | 3.0% | 0.3% | 38.9% |
+| tourism_inbox_none | 0.0% | 44.8% | 13.4% | 13.2% | 1.0% | 4.0% | 1.8% | 1.1% | 1.6% | 0.0% | 19.1% |
+| tourism_inbox_effort | 0.0% | 47.5% | 13.0% | 12.9% | 0.4% | 3.4% | 1.7% | 0.5% | 1.6% | 0.0% | 19.0% |
+| tourism_naive_careful | 0.0% | 44.3% | 12.3% | 14.3% | 1.3% | 2.9% | 1.7% | 1.2% | 1.4% | 0.0% | 20.6% |
+| tourism_always_strict | 0.0% | 40.2% | 14.9% | 12.1% | 0.7% | 3.0% | 1.1% | 1.3% | 1.1% | 0.0% | 25.6% |
+| tourism_overborrow | 0.0% | 0.0% | 0.2% | 14.8% | 10.0% | 16.7% | 8.5% | 7.1% | 5.9% | 0.7% | 36.1% |
+| tourism_reckless | 0.0% | 0.0% | 1.7% | 22.7% | 12.0% | 14.0% | 8.3% | 6.3% | 3.6% | 0.3% | 31.1% |
+| tourism_refit_loan | 0.0% | 40.1% | 13.5% | 3.1% | 0.3% | 2.5% | 2.4% | 3.7% | 2.1% | 0.3% | 32.0% |
 
 ## Losing runs: what they earned
 
@@ -2140,22 +2140,22 @@ Losing runs only (bankrupt, burnout, still searching). "Never paid" means no cus
 
 | Strategy | Losing runs | Never paid | Peak monthly revenue (EUR): 0 / 1 to 899 / 900 to 1,799 / 1,800 to 3,104 / 3,105 or more | Peak customers: 0 / 1 / 2 to 3 / 4 to 6 / 7 or more |
 |---|---|---|---|---|
-| tourism_careful | 756 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_platform_only | 892 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_careful | 805 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_platform_only | 950 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
 | tourism_overstaffing | 982 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_understaffing | 994 | 0.1% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_no_tests | 955 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_price_blind | 763 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_review_blind | 847 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_always_flexible | 756 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_overworker | 1000 | 22.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_inbox_none | 812 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_inbox_effort | 775 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_naive_careful | 791 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_always_strict | 726 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_overborrow | 758 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_reckless | 805 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_refit_loan | 766 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_understaffing | 1000 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_no_tests | 954 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_price_blind | 815 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_review_blind | 887 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_always_flexible | 805 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_overworker | 1000 | 18.2% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_inbox_none | 840 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_inbox_effort | 820 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_naive_careful | 826 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_always_strict | 778 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_overborrow | 774 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_reckless | 818 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_refit_loan | 790 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
 
 ## First paying customer
 
@@ -2184,22 +2184,22 @@ Week in which the first customer signed. Medians count only runs that had one.
 
 | Strategy | Median customers at week 15 | Median monthly revenue at week 15 | Leads per outreach hour | Mean planned hours | Median lowest energy | Runs with energy below 30 |
 |---|---|---|---|---|---|---|
-| tourism_careful | 0 | 0 EUR | - | 35.4 | 80.0 | 0.0% |
-| tourism_platform_only | 0 | 0 EUR | - | 27.7 | 80.0 | 0.0% |
-| tourism_overstaffing | 0 | 0 EUR | - | 34.3 | 80.0 | 0.0% |
-| tourism_understaffing | 0 | 0 EUR | - | 26.3 | 80.0 | 0.0% |
-| tourism_no_tests | 0 | 0 EUR | - | 41.9 | 80.0 | 0.0% |
-| tourism_price_blind | 0 | 0 EUR | - | 35.6 | 80.0 | 0.0% |
-| tourism_review_blind | 0 | 0 EUR | - | 34.2 | 80.0 | 0.0% |
-| tourism_always_flexible | 0 | 0 EUR | - | 35.4 | 80.0 | 0.0% |
-| tourism_overworker | 0 | 0 EUR | - | 59.4 | 0.0 | 100.0% |
-| tourism_inbox_none | 0 | 0 EUR | - | 33.9 | 80.0 | 0.0% |
-| tourism_inbox_effort | 0 | 0 EUR | - | 35.1 | 80.0 | 0.0% |
-| tourism_naive_careful | 0 | 0 EUR | - | 36.9 | 80.0 | 0.0% |
-| tourism_always_strict | 0 | 0 EUR | - | 35.4 | 80.0 | 0.0% |
-| tourism_overborrow | 0 | 0 EUR | - | 38.0 | 80.0 | 0.0% |
-| tourism_reckless | 0 | 0 EUR | - | 37.8 | 80.0 | 0.0% |
-| tourism_refit_loan | 0 | 0 EUR | - | 35.9 | 80.0 | 0.0% |
+| tourism_careful | 0 | 0 EUR | - | 35.7 | 80.0 | 0.0% |
+| tourism_platform_only | 0 | 0 EUR | - | 28.3 | 80.0 | 0.0% |
+| tourism_overstaffing | 0 | 0 EUR | - | 33.9 | 80.0 | 0.0% |
+| tourism_understaffing | 0 | 0 EUR | - | 30.4 | 80.0 | 0.0% |
+| tourism_no_tests | 0 | 0 EUR | - | 42.4 | 80.0 | 0.0% |
+| tourism_price_blind | 0 | 0 EUR | - | 35.8 | 80.0 | 0.0% |
+| tourism_review_blind | 0 | 0 EUR | - | 34.8 | 80.0 | 0.0% |
+| tourism_always_flexible | 0 | 0 EUR | - | 35.7 | 80.0 | 0.0% |
+| tourism_overworker | 0 | 0 EUR | - | 59.1 | 0.0 | 100.0% |
+| tourism_inbox_none | 0 | 0 EUR | - | 34.2 | 80.0 | 0.0% |
+| tourism_inbox_effort | 0 | 0 EUR | - | 35.3 | 80.0 | 0.0% |
+| tourism_naive_careful | 0 | 0 EUR | - | 36.8 | 80.0 | 0.0% |
+| tourism_always_strict | 0 | 0 EUR | - | 35.7 | 80.0 | 0.0% |
+| tourism_overborrow | 0 | 0 EUR | - | 38.2 | 80.0 | 0.0% |
+| tourism_reckless | 0 | 0 EUR | - | 38.0 | 80.0 | 0.0% |
+| tourism_refit_loan | 0 | 0 EUR | - | 36.1 | 80.0 | 0.0% |
 
 ## Interview signal in week 1
 
@@ -2229,22 +2229,22 @@ Per run, averaged over all runs of a strategy. Books left is the number of accou
 
 | Strategy | Landing tests | Pre-sale batches | Invoices issued | Written off | Books left | Messages | Messages answered |
 |---|---|---|---|---|---|---|---|
-| tourism_careful | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 44.6 | 55.1% |
-| tourism_platform_only | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 32.9 | 52.4% |
-| tourism_overstaffing | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 20.6 | 50.2% |
-| tourism_understaffing | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 19.6 | 48.5% |
-| tourism_no_tests | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 31.8 | 56.3% |
-| tourism_price_blind | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 44.9 | 55.1% |
-| tourism_review_blind | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 36.2 | 53.9% |
-| tourism_always_flexible | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 44.6 | 55.1% |
-| tourism_overworker | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 9.9 | 45.2% |
-| tourism_inbox_none | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 38.1 | 0.0% |
-| tourism_inbox_effort | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 43.2 | 69.1% |
-| tourism_naive_careful | 1.0 | 1.0 | 0.0 | 0.0% | 0.00 | 39.2 | 4.7% |
-| tourism_always_strict | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 45.2 | 55.2% |
-| tourism_overborrow | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 69.1 | 56.2% |
-| tourism_reckless | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 64.3 | 55.9% |
-| tourism_refit_loan | 0.6 | 1.0 | 0.0 | 0.0% | 0.00 | 51.9 | 55.7% |
+| tourism_careful | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 38.9 | 54.3% |
+| tourism_platform_only | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 26.4 | 50.7% |
+| tourism_overstaffing | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 19.9 | 49.9% |
+| tourism_understaffing | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 14.7 | 45.5% |
+| tourism_no_tests | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 33.6 | 56.7% |
+| tourism_price_blind | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 39.3 | 54.6% |
+| tourism_review_blind | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 31.7 | 53.2% |
+| tourism_always_flexible | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 38.9 | 54.3% |
+| tourism_overworker | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 9.9 | 44.6% |
+| tourism_inbox_none | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 33.0 | 0.0% |
+| tourism_inbox_effort | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 37.0 | 68.9% |
+| tourism_naive_careful | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 33.9 | 4.4% |
+| tourism_always_strict | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 40.3 | 54.7% |
+| tourism_overborrow | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 64.5 | 55.6% |
+| tourism_reckless | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 59.7 | 55.4% |
+| tourism_refit_loan | 0.0 | 0.0 | 0.0 | 0.0% | 0.00 | 45.9 | 55.1% |
 
 ## Inbox pool
 
@@ -2252,22 +2252,22 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 
 | Strategy | Mean weeks | Mean messages | Runs with a dry week | Mean dry weeks | Median first dry week | Repeats |
 |---|---|---|---|---|---|---|
-| tourism_careful | 51.8 | 44.6 | 30.9% | 3.06 | 78 | 0 |
-| tourism_platform_only | 37.6 | 32.9 | 14.3% | 1.36 | 78 | 0 |
-| tourism_overstaffing | 23.3 | 20.6 | 3.5% | 0.39 | 77 | 0 |
-| tourism_understaffing | 22.0 | 19.6 | 0.6% | 0.06 | 76 | 0 |
-| tourism_no_tests | 35.8 | 31.8 | 9.9% | 1.24 | 71 | 0 |
-| tourism_price_blind | 52.0 | 44.9 | 30.9% | 3.14 | 78 | 0 |
-| tourism_review_blind | 40.9 | 36.2 | 17.6% | 1.32 | 84 | 0 |
-| tourism_always_flexible | 51.8 | 44.6 | 30.9% | 3.06 | 78 | 0 |
+| tourism_careful | 45.0 | 38.9 | 24.4% | 2.29 | 80 | 0 |
+| tourism_platform_only | 30.1 | 26.4 | 7.2% | 0.64 | 79 | 0 |
+| tourism_overstaffing | 22.7 | 19.9 | 3.1% | 0.31 | 78 | 0 |
+| tourism_understaffing | 16.9 | 14.7 | 0.0% | 0.00 | - | 0 |
+| tourism_no_tests | 37.8 | 33.6 | 10.4% | 1.32 | 72 | 0 |
+| tourism_price_blind | 45.5 | 39.3 | 24.7% | 2.40 | 78 | 0 |
+| tourism_review_blind | 35.9 | 31.7 | 12.8% | 1.02 | 82 | 0 |
+| tourism_always_flexible | 45.0 | 38.9 | 24.4% | 2.29 | 80 | 0 |
 | tourism_overworker | 11.6 | 9.9 | 0.0% | 0.00 | - | 0 |
-| tourism_inbox_none | 48.3 | 38.1 | 17.0% | 0.46 | 94 | 0 |
-| tourism_inbox_effort | 48.3 | 43.2 | 27.4% | 2.94 | 73 | 0 |
-| tourism_naive_careful | 49.4 | 39.2 | 20.4% | 0.61 | 93 | 0 |
-| tourism_always_strict | 52.8 | 45.2 | 32.7% | 3.33 | 78 | 0 |
-| tourism_overborrow | 79.6 | 69.1 | 53.4% | 4.70 | 78 | 0 |
-| tourism_reckless | 73.6 | 64.3 | 44.4% | 3.92 | 78 | 0 |
-| tourism_refit_loan | 60.5 | 51.9 | 42.4% | 3.89 | 80 | 0 |
+| tourism_inbox_none | 42.2 | 33.0 | 11.6% | 0.31 | 94 | 0 |
+| tourism_inbox_effort | 41.2 | 37.0 | 20.4% | 2.26 | 73 | 0 |
+| tourism_naive_careful | 43.1 | 33.9 | 15.9% | 0.49 | 93 | 0 |
+| tourism_always_strict | 46.8 | 40.3 | 26.8% | 2.72 | 78 | 0 |
+| tourism_overborrow | 73.5 | 64.5 | 43.4% | 3.70 | 78 | 0 |
+| tourism_reckless | 67.8 | 59.7 | 35.7% | 3.16 | 78 | 0 |
+| tourism_refit_loan | 53.4 | 45.9 | 34.9% | 3.19 | 80 | 0 |
 
 ## Inbox events: which answer wins
 
@@ -2275,75 +2275,75 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 
 | Event | Seeds | Win rate per answer (hours, money) | Reading | Best fixed | Cheapest | Cheapest wins |
 |---|---|---|---|---|---|---|
-| street_association | 835 | attend (3 h) 29.5%; skip (0 h) 29.6% | 29.2% | skip | skip | yes |
-| office_manager_coffee | 950 | present (4 h) 24.8%; later (0 h) 25.8% | 25.7% | later | later | yes |
-| popup_dinner_offer | 923 | cook (10 h, 300 EUR) 23.9%; decline (0 h) 23.8% | 24.1% | cook | decline | no |
-| hotel_concierge | 759 | show (2 h, 30 EUR) 31.8%; later (0 h) 31.5% | 32.1% | show | later | no |
-| food_blog_interview | 818 | interview (2 h) 29.2%; decline (0 h) 29.6% | 29.8% | decline | decline | yes |
-| lunch_box_test | 890 | test (8 h) 23.5%; decline (0 h) 23.4% | 23.6% | test | decline | no |
-| old_cook_notebook | 812 | read (3 h) 30.0%; ignore (0 h) 30.0% | 30.0% | read | ignore | yes |
-| tourism_office_listing | 540 | send (3 h) 45.2%; skip (0 h) 44.8% | 45.2% | send | skip | no |
-| local_newspaper_feature | 608 | interview (2 h) 39.5%; decline (0 h) 41.0% | 40.1% | decline | decline | yes |
-| guest_survey_cards | 660 | cards (2 h) 37.0%; skip (0 h) 37.0% | 37.0% | cards | skip | yes |
-| competitor_visit | 731 | go (6 h, 90 EUR) 33.1%; skip (0 h) 33.4% | 33.4% | skip | skip | yes |
-| delivery_rep_offer | 830 | sign (2 h) 28.0%; decline (0 h) 28.9% | 29.4% | decline | decline | yes |
-| reservation_feature | 749 | feature (1 h, 400 EUR) 32.0%; decline (0 h) 31.6% | 32.6% | feature | decline | no |
-| critic_booking | 506 | special (6 h, 100 EUR) 48.2%; normal (0 h) 48.4% | 48.2% | normal | normal | yes |
-| catering_tomorrow | 742 | take (10 h) 32.9%; decline (0 h) 32.6% | 32.9% | take | decline | no |
-| oktoberfest_rush | 321 | specials (6 h) 75.7%; usual (0 h) 74.8% | 75.7% | specials | usual | no |
-| hotel_partner_offer | 569 | accept (2 h, 150 EUR) 42.9%; decline (0 h) 41.5% | 42.9% | accept | decline | no |
-| lunch_card_scheme | 607 | join (2 h) 39.5%; decline (0 h) 41.0% | 40.2% | decline | decline | yes |
-| table_of_eight_noshow | 643 | charge (1 h) 37.3%; accept (0 h) 37.3% | 37.9% | charge | accept | yes |
-| stammtisch_request | 509 | reserve (1 h) 47.9%; decline (0 h) 47.0% | 47.9% | reserve | decline | no |
-| christmas_parties | 325 | take (6 h) 74.8%; decline (0 h) 74.8% | 74.8% | take | decline | yes |
-| maps_photos | 242 | shoot (3 h, 80 EUR) 61.2%; decline (0 h) 61.2% | 61.2% | shoot | decline | yes |
-| platform_ranking_drop | 655 | ask_reviews (2 h) 37.1%; ignore (0 h) 36.0% | 37.3% | ask_reviews | ignore | no |
-| platform_fee_change | 412 | complain (1 h) 59.0%; accept (0 h) 59.0% | 59.2% | complain | accept | yes |
-| repeat_guest_thanks | 58 | discount (0 h, 50 EUR) 94.8%; no (0 h) 94.8% | 96.6% | discount | no | not judged |
-| tourism_fair | 354 | stand (12 h, 400 EUR) 68.9%; skip (0 h) 68.4% | 68.9% | stand | skip | no |
-| review_reply_bad | 201 | apologise (1 h) 33.8%; ignore (0 h) 33.8% | 33.3% | apologise | ignore | yes |
-| dishwasher_breaks | 678 | repair (1 h, 600 EUR) 35.7%; by_hand (0 h) 35.8% | 36.0% | by_hand | by_hand | yes |
-| hair_in_soup | 525 | reply (1 h) 46.3%; refund (1 h, 50 EUR) 46.5%; ignore (0 h) 45.5% | 46.5% | refund | ignore | no |
-| hygiene_inspector | 750 | prepare (6 h) 32.5%; wing_it (0 h, 800 EUR) 28.9% | 32.5% | prepare | wing_it | no |
-| supplier_price_rise | 492 | new_menu (8 h) 49.6%; absorb (0 h) 45.3% | 49.6% | new_menu | absorb | no |
-| teething_menu | 174 | practise (4 h) 28.2%; carry_on (0 h) 28.7% | 28.2% | carry_on | carry_on | yes |
-| extractor_fan | 501 | replace (2 h, 1,200 EUR) 48.5%; wait (0 h) 48.7% | 48.7% | wait | wait | yes |
-| courtyard_noise | 433 | close_early (1 h) 56.1%; ignore (0 h, 500 EUR) 55.2% | 56.1% | close_early | ignore | no |
-| cold_room_fails | 409 | repair (1 h, 900 EUR) 59.4%; make_do (0 h, 300 EUR) 57.9% | 59.7% | repair | make_do | no |
-| health_and_safety_check | 628 | prepare (5 h) 39.5%; wing_it (0 h, 300 EUR) 38.4% | 38.9% | prepare | wing_it | no |
-| equipment_supplier_sale | 437 | buy (1 h, 400 EUR) 56.3%; decline (0 h) 55.6% | 55.8% | buy | decline | no |
-| booking_system_outage | 717 | check (4 h) 34.3%; wait (0 h) 33.8% | 34.0% | check | wait | no |
-| own_fitout_offer | 366 | refit (6 h, 25,000 EUR) 36.3%; not_now (0 h) 66.4% | 66.7% | not_now | not_now | yes |
-| bank_quarterly_numbers | 833 | send (3 h) 29.3%; ignore (0 h) 29.7% | 29.3% | ignore | ignore | yes |
-| bank_missed_call | 49 | talk (2 h) 0.0%; let_ring (0 h) 0.0% | 0.0% | talk | let_ring | not judged |
-| music_licence_audit | 566 | find (2 h) 43.1%; ignore (0 h, 300 EUR) 43.1% | 43.1% | find | ignore | yes |
-| tenant_deposit | 657 | lawyer (3 h, 400 EUR) 37.0%; drop (0 h) 36.5% | 37.1% | lawyer | drop | no |
-| christmas_vouchers | 306 | stall (8 h) 76.1%; skip (0 h) 76.1% | 76.1% | stall | skip | yes |
-| august_closure | 376 | close (0 h) 64.6%; stay_open (0 h) 64.9% | 64.6% | stay_open | close | no |
-| card_fees_review | 376 | switch (2 h) 64.9%; ignore (0 h) 64.9% | 64.9% | switch | ignore | yes |
-| tax_advance_tourism | 407 | object (3 h, 600 EUR) 60.2%; pay (0 h, 600 EUR) 60.2% | 60.0% | object | pay | yes |
-| bank_card_terminal | 766 | sign (1 h) 31.1%; decline (0 h) 31.6% | 31.9% | decline | decline | yes |
-| energy_bill | 855 | plan (1 h) 26.4%; pay (0 h, 450 EUR) 27.0% | 26.5% | pay | pay | yes |
-| kitchen_burn | 598 | doctor (3 h, 50 EUR) 40.5%; carry_on (0 h) 40.6% | 40.8% | carry_on | carry_on | yes |
+| street_association | 794 | attend (3 h) 24.6%; skip (0 h) 24.6% | 24.6% | attend | skip | yes |
+| office_manager_coffee | 942 | present (4 h) 20.8%; later (0 h) 20.7% | 20.7% | present | later | no |
+| popup_dinner_offer | 917 | cook (10 h, 300 EUR) 19.4%; decline (0 h) 19.5% | 19.4% | decline | decline | yes |
+| hotel_concierge | 681 | show (2 h, 30 EUR) 28.0%; later (0 h) 29.1% | 28.6% | later | later | yes |
+| food_blog_interview | 752 | interview (2 h) 26.1%; decline (0 h) 26.5% | 25.9% | decline | decline | yes |
+| lunch_box_test | 904 | test (8 h) 18.9%; decline (0 h) 18.6% | 18.9% | test | decline | no |
+| old_cook_notebook | 778 | read (3 h) 25.1%; ignore (0 h) 25.1% | 25.1% | read | ignore | yes |
+| tourism_office_listing | 443 | send (3 h) 44.0%; skip (0 h) 44.2% | 44.0% | skip | skip | yes |
+| local_newspaper_feature | 536 | interview (2 h) 36.8%; decline (0 h) 36.0% | 36.4% | interview | decline | no |
+| guest_survey_cards | 588 | cards (2 h) 33.5%; skip (0 h) 33.3% | 33.2% | cards | skip | no |
+| competitor_visit | 713 | go (6 h, 90 EUR) 26.9%; skip (0 h) 27.2% | 27.3% | skip | skip | yes |
+| delivery_rep_offer | 787 | sign (2 h) 23.1%; decline (0 h) 24.9% | 24.8% | decline | decline | yes |
+| reservation_feature | 705 | feature (1 h, 400 EUR) 27.2%; decline (0 h) 28.4% | 27.7% | decline | decline | yes |
+| critic_booking | 438 | special (6 h, 100 EUR) 44.5%; normal (0 h) 44.1% | 44.5% | special | normal | no |
+| catering_tomorrow | 682 | take (10 h) 28.6%; decline (0 h) 28.6% | 28.6% | take | decline | yes |
+| oktoberfest_rush | 256 | specials (6 h) 76.2%; usual (0 h) 75.4% | 76.2% | specials | usual | no |
+| hotel_partner_offer | 489 | accept (2 h, 150 EUR) 39.9%; decline (0 h) 39.9% | 39.9% | accept | decline | yes |
+| lunch_card_scheme | 560 | join (2 h) 35.0%; decline (0 h) 35.2% | 34.8% | decline | decline | yes |
+| table_of_eight_noshow | 569 | charge (1 h) 34.6%; accept (0 h) 34.4% | 34.3% | charge | accept | no |
+| stammtisch_request | 442 | reserve (1 h) 44.1%; decline (0 h) 44.6% | 44.1% | decline | decline | yes |
+| christmas_parties | 246 | take (6 h) 78.9%; decline (0 h) 80.5% | 78.9% | decline | decline | yes |
+| maps_photos | 313 | shoot (3 h, 80 EUR) 48.9%; decline (0 h) 49.2% | 48.9% | decline | decline | yes |
+| platform_ranking_drop | 573 | ask_reviews (2 h) 34.0%; ignore (0 h) 34.7% | 33.9% | ignore | ignore | yes |
+| platform_fee_change | 321 | complain (1 h) 61.1%; accept (0 h) 61.1% | 60.7% | complain | accept | yes |
+| repeat_guest_thanks | 58 | discount (0 h, 50 EUR) 81.0%; no (0 h) 81.0% | 81.0% | discount | no | not judged |
+| tourism_fair | 278 | stand (12 h, 400 EUR) 70.1%; skip (0 h) 70.5% | 70.1% | skip | skip | yes |
+| review_reply_bad | 184 | apologise (1 h) 32.1%; ignore (0 h) 32.6% | 31.0% | ignore | ignore | yes |
+| dishwasher_breaks | 612 | repair (1 h, 600 EUR) 31.7%; by_hand (0 h) 32.0% | 31.9% | by_hand | by_hand | yes |
+| hair_in_soup | 438 | reply (1 h) 45.0%; refund (1 h, 50 EUR) 44.5%; ignore (0 h) 45.7% | 44.5% | ignore | ignore | yes |
+| hygiene_inspector | 700 | prepare (6 h) 27.9%; wing_it (0 h, 800 EUR) 26.0% | 27.9% | prepare | wing_it | no |
+| supplier_price_rise | 414 | new_menu (8 h) 47.1%; absorb (0 h) 46.1% | 47.1% | new_menu | absorb | no |
+| teething_menu | 180 | practise (4 h) 22.8%; carry_on (0 h) 24.4% | 22.8% | carry_on | carry_on | yes |
+| extractor_fan | 449 | replace (2 h, 1,200 EUR) 44.1%; wait (0 h) 43.7% | 43.4% | replace | wait | no |
+| courtyard_noise | 340 | close_early (1 h) 57.4%; ignore (0 h, 500 EUR) 57.6% | 57.4% | ignore | ignore | yes |
+| cold_room_fails | 321 | repair (1 h, 900 EUR) 60.7%; make_do (0 h, 300 EUR) 62.6% | 60.7% | make_do | make_do | yes |
+| health_and_safety_check | 541 | prepare (5 h) 37.3%; wing_it (0 h, 300 EUR) 37.7% | 36.0% | wing_it | wing_it | yes |
+| equipment_supplier_sale | 363 | buy (1 h, 400 EUR) 55.4%; decline (0 h) 54.0% | 53.7% | buy | decline | no |
+| booking_system_outage | 607 | check (4 h) 33.6%; wait (0 h) 32.8% | 32.1% | check | wait | no |
+| own_fitout_offer | 284 | refit (6 h, 25,000 EUR) 38.4%; not_now (0 h) 69.7% | 68.7% | not_now | not_now | yes |
+| bank_quarterly_numbers | 806 | send (3 h) 24.2%; ignore (0 h) 23.9% | 24.2% | send | ignore | no |
+| bank_missed_call | 47 | talk (2 h) 0.0%; let_ring (0 h) 0.0% | 0.0% | talk | let_ring | not judged |
+| music_licence_audit | 475 | find (2 h) 41.1%; ignore (0 h, 300 EUR) 42.3% | 41.1% | ignore | ignore | yes |
+| tenant_deposit | 600 | lawyer (3 h, 400 EUR) 32.7%; drop (0 h) 32.5% | 32.5% | lawyer | drop | no |
+| christmas_vouchers | 241 | stall (8 h) 79.3%; skip (0 h) 79.3% | 79.3% | stall | skip | yes |
+| august_closure | 319 | close (0 h) 61.1%; stay_open (0 h) 61.1% | 60.8% | close | close | yes |
+| card_fees_review | 295 | switch (2 h) 66.1%; ignore (0 h) 66.1% | 66.1% | switch | ignore | yes |
+| tax_advance_tourism | 326 | object (3 h, 600 EUR) 61.3%; pay (0 h, 600 EUR) 61.3% | 59.8% | object | pay | yes |
+| bank_card_terminal | 746 | sign (1 h) 26.3%; decline (0 h) 26.3% | 26.1% | sign | decline | yes |
+| energy_bill | 843 | plan (1 h) 21.2%; pay (0 h, 450 EUR) 21.5% | 21.2% | pay | pay | yes |
+| kitchen_burn | 538 | doctor (3 h, 50 EUR) 36.8%; carry_on (0 h) 37.0% | 36.2% | carry_on | carry_on | yes |
 | monday_rest | 0 | rest (0 h) 0.0%; work (0 h) 0.0% | 0.0% | rest | rest | not judged |
-| old_head_chef | 434 | go (5 h) 56.2%; decline (0 h) 56.2% | 56.2% | go | decline | yes |
-| tv_cooking_show | 483 | film (8 h) 50.5%; decline (0 h) 49.9% | 50.5% | film | decline | no |
-| parents_visit | 654 | welcome (2 h) 37.3%; busy (0 h) 37.3% | 37.3% | welcome | busy | yes |
+| old_head_chef | 353 | go (5 h) 55.0%; decline (0 h) 55.0% | 55.2% | go | decline | yes |
+| tv_cooking_show | 400 | film (8 h) 48.5%; decline (0 h) 50.0% | 48.8% | decline | decline | yes |
+| parents_visit | 589 | welcome (2 h) 33.1%; busy (0 h) 33.1% | 33.1% | welcome | busy | yes |
 | night_shift_sleep | 0 | sleep (0 h) 0.0%; push (0 h) 0.0% | 0.0% | sleep | sleep | not judged |
-| cooking_class_offer | 375 | teach (6 h) 65.1%; decline (0 h) 65.9% | 65.1% | decline | decline | yes |
-| friend_wedding | 393 | go (0 h) 61.8%; work (0 h) 62.3% | 62.1% | work | go | no |
+| cooking_class_offer | 299 | teach (6 h) 65.2%; decline (0 h) 66.2% | 65.2% | decline | decline | yes |
+| friend_wedding | 332 | go (0 h) 59.0%; work (0 h) 59.0% | 58.7% | go | go | yes |
 | season_end_fatigue | 0 | rest (0 h) 0.0%; push (0 h) 0.0% | 0.0% | rest | rest | not judged |
-| family_sunday | 979 | go (0 h) 24.8%; skip (0 h) 24.9% | 24.9% | skip | go | no |
-| winter_course | 347 | attend (6 h, 150 EUR) 70.0%; skip (0 h) 70.0% | 70.3% | attend | skip | yes |
-| cook_saturdays | 571 | agree (6 h) 42.7%; refuse (0 h) 41.7% | 42.7% | agree | refuse | no |
-| server_quits | 683 | agency (1 h, 250 EUR) 35.6%; yourself (8 h) 35.9%; short (0 h) 35.4% | 35.7% | yourself | short | no |
-| apprentice_offer | 440 | take (2 h) 33.2%; decline (0 h) 55.5% | 55.5% | decline | decline | yes |
-| tips_dispute | 506 | pool (2 h) 48.2%; ignore (0 h) 47.4% | 48.2% | pool | ignore | no |
-| staff_meal | 566 | agree (0 h) 40.1%; decline (0 h) 42.9% | 43.1% | decline | agree | no |
-| dishwasher_minijob | 512 | hire (1 h) 37.7%; decline (0 h) 46.9% | 47.7% | decline | decline | yes |
-| cook_poached | 353 | match (1 h) 64.3%; let_go (0 h) 69.4% | 69.1% | let_go | let_go | yes |
-| staff_holiday_clash | 444 | both (6 h) 54.7%; first (0 h) 54.3% | 55.0% | both | first | no |
-| staff_thank_you | 492 | dinner (3 h, 300 EUR) 48.6%; skip (0 h) 49.2% | 49.6% | skip | skip | yes |
+| family_sunday | 971 | go (0 h) 20.7%; skip (0 h) 20.7% | 20.1% | go | go | yes |
+| winter_course | 281 | attend (6 h, 150 EUR) 70.5%; skip (0 h) 70.5% | 69.4% | attend | skip | yes |
+| cook_saturdays | 497 | agree (6 h) 39.2%; refuse (0 h) 39.4% | 39.2% | refuse | refuse | yes |
+| server_quits | 583 | agency (1 h, 250 EUR) 33.4%; yourself (8 h) 33.8%; short (0 h) 33.8% | 33.4% | yourself | short | yes |
+| apprentice_offer | 361 | take (2 h) 39.1%; decline (0 h) 55.4% | 54.0% | decline | decline | yes |
+| tips_dispute | 446 | pool (2 h) 43.7%; ignore (0 h) 44.2% | 43.7% | ignore | ignore | yes |
+| staff_meal | 500 | agree (0 h) 38.0%; decline (0 h) 39.8% | 39.0% | decline | agree | no |
+| dishwasher_minijob | 454 | hire (1 h) 37.2%; decline (0 h) 43.4% | 43.0% | decline | decline | yes |
+| cook_poached | 271 | match (1 h) 68.6%; let_go (0 h) 74.9% | 72.0% | let_go | let_go | yes |
+| staff_holiday_clash | 374 | both (6 h) 52.9%; first (0 h) 53.5% | 52.1% | first | first | yes |
+| staff_thank_you | 396 | dinner (3 h, 300 EUR) 51.0%; skip (0 h) 49.5% | 49.2% | dinner | skip | no |
 | investor_hire_push | 0 | explain (2 h) 0.0%; promise (0 h) 0.0%; ignore (0 h) 0.0% | 0.0% | explain | promise | not judged |
 | investor_price_push | 0 | call (2 h) 0.0%; skip (0 h) 0.0% | 0.0% | call | skip | not judged |
 | investor_checkin | 0 | attend (4 h) 0.0%; postpone (0 h) 0.0% | 0.0% | attend | postpone | not judged |
@@ -2356,7 +2356,7 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 | investor_second_intro | 0 | call (1 h) 0.0%; later (0 h) 0.0% | 0.0% | call | later | not judged |
 | investor_praise | 0 | smile (0 h) 0.0%; thank (1 h) 0.0% | 0.0% | smile | smile | not judged |
 
-Of 64 judged events, 35 favour the cheapest answer and 29 favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.
+Of 64 judged events, 48 favour the cheapest answer and 16 favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.
 
 ## Pacing in weeks 1 to 20
 
@@ -2364,41 +2364,41 @@ Share of weeks with at least one noteworthy thing: a new message, new leads, a l
 
 | Strategy | Weeks with something noteworthy | Weeks with decision news (stricter) | Weeks with a new message | Median noteworthy weeks per run | Runs with 5 or more weeks without decision news |
 |---|---|---|---|---|---|
-| tourism_careful | 84.9% | 91.1% | 80.5% | 17 of 20 | 0.0% |
-| tourism_platform_only | 84.2% | 91.0% | 79.6% | 17 of 20 | 0.0% |
-| tourism_overstaffing | 83.4% | 90.3% | 78.0% | 15 of 20 | 0.0% |
-| tourism_understaffing | 82.5% | 90.9% | 78.3% | 16 of 20 | 0.0% |
-| tourism_no_tests | 87.2% | 95.1% | 82.1% | 17 of 20 | 0.0% |
-| tourism_price_blind | 85.2% | 91.1% | 80.8% | 17 of 20 | 0.0% |
-| tourism_review_blind | 84.8% | 91.0% | 80.4% | 17 of 20 | 0.0% |
-| tourism_always_flexible | 84.9% | 91.1% | 80.5% | 17 of 20 | 0.0% |
-| tourism_overworker | 87.1% | 85.5% | 74.3% | 10 of 12 | 0.0% |
-| tourism_inbox_none | 78.3% | 88.3% | 70.3% | 16 of 20 | 0.4% |
-| tourism_inbox_effort | 89.9% | 95.5% | 85.9% | 18 of 20 | 0.0% |
-| tourism_naive_careful | 79.1% | 88.9% | 70.6% | 16 of 20 | 0.0% |
-| tourism_always_strict | 84.9% | 91.1% | 80.2% | 17 of 20 | 0.0% |
-| tourism_overborrow | 86.5% | 91.1% | 82.0% | 17 of 20 | 0.0% |
-| tourism_reckless | 86.5% | 91.1% | 82.0% | 17 of 20 | 0.0% |
-| tourism_refit_loan | 84.9% | 91.1% | 80.5% | 17 of 20 | 0.0% |
+| tourism_careful | 84.3% | 89.9% | 79.7% | 17 of 20 | 0.1% |
+| tourism_platform_only | 82.9% | 89.6% | 78.7% | 16 of 20 | 0.0% |
+| tourism_overstaffing | 82.9% | 89.0% | 77.9% | 15 of 17 | 0.1% |
+| tourism_understaffing | 80.9% | 88.2% | 76.1% | 13 of 16 | 0.1% |
+| tourism_no_tests | 88.6% | 95.0% | 82.0% | 18 of 20 | 0.0% |
+| tourism_price_blind | 84.4% | 89.9% | 80.0% | 17 of 20 | 0.1% |
+| tourism_review_blind | 84.1% | 89.8% | 79.7% | 17 of 20 | 0.1% |
+| tourism_always_flexible | 84.3% | 89.9% | 79.7% | 17 of 20 | 0.1% |
+| tourism_overworker | 86.0% | 84.0% | 74.4% | 10 of 12 | 0.0% |
+| tourism_inbox_none | 77.0% | 85.7% | 69.7% | 15 of 20 | 1.0% |
+| tourism_inbox_effort | 88.5% | 93.7% | 85.1% | 17 of 20 | 0.0% |
+| tourism_naive_careful | 77.6% | 85.7% | 70.0% | 15 of 20 | 1.2% |
+| tourism_always_strict | 84.2% | 89.9% | 79.7% | 17 of 20 | 0.1% |
+| tourism_overborrow | 86.2% | 90.1% | 81.5% | 17 of 20 | 0.1% |
+| tourism_reckless | 86.2% | 90.1% | 81.5% | 17 of 20 | 0.1% |
+| tourism_refit_loan | 84.3% | 89.9% | 79.7% | 17 of 20 | 0.1% |
 
 ## Strategies
 
-- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. (63.0 s for 1000 runs)
-- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (34.0 s for 1000 runs)
-- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (17.0 s for 1000 runs)
-- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (8.6 s for 1000 runs)
-- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (31.0 s for 1000 runs)
-- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (50.9 s for 1000 runs)
-- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (32.8 s for 1000 runs)
-- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (50.9 s for 1000 runs)
-- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (2.3 s for 1000 runs)
-- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (44.1 s for 1000 runs)
-- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (45.4 s for 1000 runs)
-- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (47.1 s for 1000 runs)
-- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (50.0 s for 1000 runs)
-- `tourism_overborrow`: Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written. (79.8 s for 1000 runs)
-- `tourism_reckless`: Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term. (70.5 s for 1000 runs)
-- `tourism_refit_loan`: Plays like tourism_careful and takes a second loan for the own fit-out once guests pay about 20,000 EUR a month. (45.2 s for 1000 runs)
+- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. (118.7 s for 1000 runs)
+- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (55.2 s for 1000 runs)
+- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (32.9 s for 1000 runs)
+- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (9.4 s for 1000 runs)
+- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (72.2 s for 1000 runs)
+- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (93.7 s for 1000 runs)
+- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (57.5 s for 1000 runs)
+- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (89.8 s for 1000 runs)
+- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (4.1 s for 1000 runs)
+- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (78.6 s for 1000 runs)
+- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (79.5 s for 1000 runs)
+- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (83.5 s for 1000 runs)
+- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (89.7 s for 1000 runs)
+- `tourism_overborrow`: Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written. (149.0 s for 1000 runs)
+- `tourism_reckless`: Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term. (133.5 s for 1000 runs)
+- `tourism_refit_loan`: Plays like tourism_careful and takes a second loan for the own fit-out once guests pay about 20,000 EUR a month. (83.7 s for 1000 runs)
 
 # Seeblick, long mode
 
@@ -2410,43 +2410,43 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 
 | # | Target | Value | Margin | Met |
 |---|---|---|---|---|
-| T1 | tourism_careful wins (Sustainable or Growing) 25 to 45% of runs | 31.4% | ±2.9 | yes |
-| T2 | No strategy wins over 60%; tourism_no_tests under 5% | top tourism_always_strict 35.1%; no tests 4.3% | ±3.0; ±1.3 | yes |
-| T3 | tourism_careful win rates across the viable segments lie within 15 points | 22.4 points (groups 19.2%, leisure 41.6%, project_guests 33.6%) |  | no |
-| T4 | The first guest from the viable segment is served by week 12 in the median winning run | week 6.0 |  | yes |
-| T5 | Decision news in at least 85% of weeks 1 to 20 and 70% of weeks 53 to 104 | 96.4%; year 2 99.4% |  | yes |
-| T6 | Reading the inbox pays: tourism_careful beats leaving every message to its default by at least 3 points, and blind effort gains at most a third of that | reading +6.4, blind effort +5.7 | ±2.0 | no |
-| T7 | Seasonal pricing pays: tourism_careful (prices from hints per season) beats tourism_price_blind by 2 to 10 points | -1.1 | ±2.1 | no |
-| T8 | Platform dependence is a trap: tourism_platform_only loses at least 3 points to the careful mix | -26.5 | ±2.7 | yes |
-| T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -2.6, under -24.7 | ±2.0, ±2.7 | yes |
-| T10 | Reviews matter: tourism_review_blind loses at least 2 points | -2.2 | ±2.0 | yes |
-| T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +4.3 overall; groups +5.5, leisure +8.3, project_guests -1.3 | ±2.2 | no |
-| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 51.6 s per 1000 runs |  | yes |
-| T13 | L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other | second loan -0.1 against none (second loan taken in 33.8% of runs) | ±1.4 | yes |
-| T14 | L2. Over-borrowing (the most the bank lends, early) loses to borrowing what the plan needs | +0.6 | ±2.4 | no |
-| T15 | L3. Default is reachable but avoidable: tourism_careful misses a loan payment the business itself could carry (the four weeks before covered every other cost) in under 3% of runs, tourism_reckless in over 15% | careful 1.5%; reckless 2.1% | ±0.8; ±0.9 | no |
-| T16 | L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers) | 100.0% borrowed; median interest and fees 2230 EUR |  | yes |
+| T1 | tourism_careful wins (Sustainable or Growing) 25 to 45% of runs | 28.2% | ±2.8 | yes |
+| T2 | No strategy wins over 60%; tourism_no_tests under 5% | top tourism_overborrow 34.7%; no tests 0.2% | ±3.0; ±0.3 | yes |
+| T3 | tourism_careful win rates across the viable segments lie within 15 points | 18.2 points (groups 16.3%, leisure 34.5%, project_guests 34.3%) |  | no |
+| T4 | The first guest from the viable segment is served by week 12 in the median winning run | week 5.0 |  | yes |
+| T5 | Decision news in at least 85% of weeks 1 to 20 and 70% of weeks 53 to 104 | 96.5%; year 2 99.6% |  | yes |
+| T6 | Reading the inbox pays: tourism_careful beats leaving every message to its default by at least 3 points, and blind effort gains at most a third of that | reading +5.7, blind effort +6.3 | ±2.1 | no |
+| T7 | Seasonal pricing pays: tourism_careful (prices from hints per season) beats tourism_price_blind by 2 to 10 points | -0.7 | ±1.9 | no |
+| T8 | Platform dependence is a trap: tourism_platform_only loses at least 3 points to the careful mix | -25.3 | ±2.7 | yes |
+| T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -4.0, under -20.5 | ±2.1, ±2.6 | yes |
+| T10 | Reviews matter: tourism_review_blind loses at least 2 points | -2.7 | ±1.7 | yes |
+| T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +3.0 overall; groups +4.7, leisure +4.7, project_guests -0.6 | ±2.1 | no |
+| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 91.0 s per 1000 runs |  | yes |
+| T13 | L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other | second loan +0.2 against none (second loan taken in 20.1% of runs) | ±0.7 | yes |
+| T14 | L2. Over-borrowing (the most the bank lends, early) loses to borrowing what the plan needs | +6.5 | ±2.6 | no |
+| T15 | L3. Default is reachable but avoidable: tourism_careful misses a loan payment the business itself could carry (the four weeks before covered every other cost) in under 3% of runs, tourism_reckless in over 15% | careful 1.0%; reckless 2.8% | ±0.6; ±1.0 | no |
+| T16 | L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers) | 100.0% borrowed; median interest and fees 1282 EUR |  | yes |
 
 ## Endings
 
 | Strategy | Sustainable | Still searching | Bankrupt | Burnout | Shut down | Median week of bankruptcy | Median losing run length | Median peak monthly revenue | Median customers at end |
 |---|---|---|---|---|---|---|---|---|---|
-| tourism_careful | 31.4% | 12.2% | 5.8% | 0.0% | 0.0% | 57 | 48 | 0 EUR | 0 |
-| tourism_platform_only | 4.9% | 0.9% | 11.8% | 0.0% | 0.0% | 30 | 28 | 0 EUR | 0 |
-| tourism_overstaffing | 28.8% | 11.3% | 5.4% | 0.0% | 0.0% | 32 | 40 | 0 EUR | 0 |
-| tourism_understaffing | 6.7% | 10.5% | 8.5% | 0.0% | 0.0% | 58 | 48 | 0 EUR | 0 |
-| tourism_no_tests | 4.3% | 18.4% | 35.4% | 0.0% | 0.0% | 14 | 64 | 0 EUR | 0 |
-| tourism_price_blind | 32.5% | 13.0% | 5.8% | 0.0% | 0.0% | 41 | 52 | 0 EUR | 0 |
-| tourism_review_blind | 29.2% | 10.5% | 7.0% | 0.0% | 0.0% | 48 | 44 | 0 EUR | 0 |
-| tourism_always_flexible | 30.8% | 12.9% | 5.7% | 0.0% | 0.0% | 52 | 48 | 0 EUR | 0 |
+| tourism_careful | 28.2% | 6.8% | 6.5% | 0.0% | 0.0% | 29 | 28 | 0 EUR | 0 |
+| tourism_platform_only | 2.9% | 0.0% | 9.4% | 0.0% | 0.0% | 23 | 24 | 0 EUR | 0 |
+| tourism_overstaffing | 24.2% | 6.1% | 7.3% | 0.0% | 0.0% | 25 | 24 | 0 EUR | 0 |
+| tourism_understaffing | 7.7% | 4.8% | 9.3% | 0.0% | 0.0% | 29 | 28 | 0 EUR | 0 |
+| tourism_no_tests | 0.2% | 0.0% | 91.6% | 0.0% | 0.0% | 8 | 8 | 0 EUR | 0 |
+| tourism_price_blind | 28.9% | 7.8% | 7.3% | 0.0% | 0.0% | 28 | 28 | 0 EUR | 0 |
+| tourism_review_blind | 25.5% | 6.0% | 7.6% | 0.0% | 0.0% | 28 | 28 | 0 EUR | 0 |
+| tourism_always_flexible | 27.7% | 7.3% | 6.5% | 0.0% | 0.0% | 29 | 28 | 0 EUR | 0 |
 | tourism_overworker | 0.0% | 0.0% | 0.0% | 100.0% | 0.0% | - | 12 | 0 EUR | 0 |
-| tourism_inbox_none | 25.0% | 10.5% | 8.2% | 0.0% | 0.0% | 53 | 44 | 0 EUR | 0 |
-| tourism_inbox_effort | 30.7% | 11.3% | 6.2% | 0.0% | 0.0% | 57 | 55 | 0 EUR | 0 |
-| tourism_naive_careful | 15.3% | 2.0% | 6.6% | 0.0% | 0.0% | 22 | 24 | 0 EUR | 0 |
-| tourism_always_strict | 35.1% | 10.3% | 5.8% | 0.0% | 0.0% | 47 | 44 | 0 EUR | 0 |
-| tourism_overborrow | 32.0% | 36.9% | 7.1% | 0.0% | 0.0% | 74 | 104 | 0 EUR | 0 |
-| tourism_reckless | 27.0% | 34.8% | 8.4% | 0.0% | 0.0% | 73 | 100 | 0 EUR | 0 |
-| tourism_refit_loan | 31.3% | 16.8% | 5.6% | 0.0% | 0.0% | 46 | 48 | 0 EUR | 0 |
+| tourism_inbox_none | 22.5% | 6.8% | 8.4% | 0.0% | 0.0% | 29 | 28 | 0 EUR | 0 |
+| tourism_inbox_effort | 28.8% | 6.8% | 5.1% | 0.0% | 0.0% | 32 | 28 | 0 EUR | 0 |
+| tourism_naive_careful | 16.5% | 1.4% | 6.6% | 0.0% | 0.0% | 22 | 24 | 0 EUR | 0 |
+| tourism_always_strict | 30.7% | 5.1% | 6.6% | 0.0% | 0.0% | 25 | 25 | 0 EUR | 0 |
+| tourism_overborrow | 34.7% | 30.2% | 8.0% | 0.0% | 0.0% | 68 | 98 | 0 EUR | 0 |
+| tourism_reckless | 30.1% | 27.3% | 10.0% | 0.0% | 0.0% | 64 | 80 | 0 EUR | 0 |
+| tourism_refit_loan | 28.4% | 8.2% | 6.0% | 0.0% | 0.0% | 29 | 28 | 0 EUR | 0 |
 
 ## Wins by viable market
 
@@ -2454,22 +2454,22 @@ Share of runs ending Sustainable, split by which market was secretly viable in t
 
 | Strategy | groups | leisure | project_guests | Spread |
 |---|---|---|---|---|
-| tourism_careful | 19.2% | 41.6% | 33.6% | 22.4 |
-| tourism_platform_only | 0.3% | 13.0% | 1.3% | 12.7 |
-| tourism_overstaffing | 17.8% | 39.2% | 29.6% | 21.4 |
-| tourism_understaffing | 2.9% | 14.2% | 2.8% | 11.3 |
-| tourism_no_tests | 0.3% | 7.7% | 5.0% | 7.4 |
-| tourism_price_blind | 17.2% | 42.8% | 38.1% | 25.6 |
-| tourism_review_blind | 18.1% | 37.8% | 32.1% | 19.7 |
-| tourism_always_flexible | 19.0% | 40.1% | 33.6% | 21.2 |
+| tourism_careful | 16.3% | 34.5% | 34.3% | 18.2 |
+| tourism_platform_only | 0.0% | 7.7% | 0.9% | 7.7 |
+| tourism_overstaffing | 14.6% | 28.3% | 30.2% | 15.6 |
+| tourism_understaffing | 4.1% | 16.2% | 2.5% | 13.7 |
+| tourism_no_tests | 0.0% | 0.3% | 0.3% | 0.3 |
+| tourism_price_blind | 14.3% | 34.2% | 39.0% | 24.7 |
+| tourism_review_blind | 15.2% | 28.0% | 34.0% | 18.8 |
+| tourism_always_flexible | 14.9% | 34.5% | 34.3% | 19.6 |
 | tourism_overworker | 0.0% | 0.0% | 0.0% | 0.0 |
-| tourism_inbox_none | 9.6% | 35.7% | 30.2% | 26.1 |
-| tourism_inbox_effort | 17.5% | 42.5% | 32.4% | 25.0 |
-| tourism_naive_careful | 2.9% | 22.1% | 21.4% | 19.2 |
-| tourism_always_strict | 24.5% | 48.4% | 32.4% | 23.9 |
-| tourism_overborrow | 19.0% | 49.0% | 28.0% | 30.0 |
-| tourism_reckless | 13.1% | 44.5% | 23.3% | 31.4 |
-| tourism_refit_loan | 18.7% | 42.5% | 33.0% | 23.8 |
+| tourism_inbox_none | 9.9% | 28.0% | 30.2% | 20.3 |
+| tourism_inbox_effort | 13.4% | 36.9% | 36.8% | 23.5 |
+| tourism_naive_careful | 2.6% | 16.8% | 31.1% | 28.5 |
+| tourism_always_strict | 19.5% | 39.2% | 33.6% | 19.7 |
+| tourism_overborrow | 21.0% | 54.0% | 28.9% | 33.0 |
+| tourism_reckless | 15.2% | 49.9% | 25.2% | 34.7 |
+| tourism_refit_loan | 16.3% | 35.1% | 34.3% | 18.8 |
 
 ## Guests (tourism)
 
@@ -2477,22 +2477,22 @@ Per strategy, medians over its runs: guests served, what they paid (net of commi
 
 | Strategy | Win rate | Guests | Paid (EUR) | Rating | Platform share | Turned away | Company cancelled |
 |---|---|---|---|---|---|---|---|
-| tourism_careful | 31.4% | 2210 | 68,365 | 3.98 | 36.7% | 9 | 15 |
-| tourism_platform_only | 4.9% | 220 | 8,383 | 3.99 | 83.3% | 0 | 7 |
-| tourism_overstaffing | 28.8% | 1987 | 62,843 | 4.00 | 37.9% | 7 | 0 |
-| tourism_understaffing | 6.7% | 1050 | 35,961 | 3.67 | 37.3% | 3 | 250 |
-| tourism_no_tests | 4.3% | 1623 | 104,880 | 3.96 | 58.7% | 0 | 12 |
-| tourism_price_blind | 32.5% | 2451 | 67,014 | 3.99 | 36.7% | 10 | 16 |
-| tourism_review_blind | 29.2% | 1931 | 61,688 | 3.92 | 36.7% | 9 | 24 |
-| tourism_always_flexible | 30.8% | 2203 | 68,365 | 3.98 | 36.7% | 9 | 15 |
-| tourism_overworker | 0.0% | 60 | 2,134 | 3.31 | 45.9% | 0 | 3 |
-| tourism_inbox_none | 25.0% | 1458 | 46,014 | 3.79 | 37.2% | 3 | 10 |
-| tourism_inbox_effort | 30.7% | 2176 | 74,795 | 3.92 | 37.0% | 18 | 17 |
-| tourism_naive_careful | 15.3% | 237 | 10,568 | 3.83 | 44.9% | 0 | 6 |
-| tourism_always_strict | 35.1% | 2038 | 70,433 | 3.98 | 36.8% | 4 | 16 |
-| tourism_overborrow | 32.0% | 3086 | 131,302 | 4.00 | 35.1% | 27 | 20 |
-| tourism_reckless | 27.0% | 3005 | 121,336 | 4.00 | 35.5% | 25 | 20 |
-| tourism_refit_loan | 31.3% | 2476 | 68,365 | 3.99 | 36.7% | 15 | 16 |
+| tourism_careful | 28.2% | 801 | 30,106 | 4.01 | 38.8% | 0 | 12 |
+| tourism_platform_only | 2.9% | 179 | 5,832 | 4.00 | 86.1% | 0 | 6 |
+| tourism_overstaffing | 24.2% | 615 | 24,586 | 4.02 | 41.4% | 0 | 0 |
+| tourism_understaffing | 7.7% | 475 | 18,491 | 3.72 | 40.4% | 0 | 124 |
+| tourism_no_tests | 0.2% | 60 | 1,288 | 3.75 | 81.4% | 0 | 3 |
+| tourism_price_blind | 28.9% | 951 | 33,121 | 4.01 | 39.7% | 0 | 13 |
+| tourism_review_blind | 25.5% | 648 | 26,804 | 3.93 | 39.6% | 0 | 17 |
+| tourism_always_flexible | 27.7% | 801 | 30,106 | 4.01 | 38.8% | 0 | 13 |
+| tourism_overworker | 0.0% | 59 | 2,251 | 3.32 | 43.2% | 0 | 4 |
+| tourism_inbox_none | 22.5% | 559 | 20,309 | 3.84 | 39.4% | 0 | 9 |
+| tourism_inbox_effort | 28.8% | 1178 | 32,476 | 3.95 | 40.1% | 6 | 14 |
+| tourism_naive_careful | 16.5% | 224 | 11,242 | 3.86 | 44.4% | 0 | 7 |
+| tourism_always_strict | 30.7% | 952 | 30,472 | 4.01 | 40.0% | 0 | 13 |
+| tourism_overborrow | 34.7% | 3124 | 117,549 | 4.11 | 35.2% | 30 | 19 |
+| tourism_reckless | 30.1% | 2980 | 103,941 | 4.08 | 36.1% | 26 | 18 |
+| tourism_refit_loan | 28.4% | 810 | 30,106 | 4.01 | 38.7% | 0 | 12 |
 
 ## Week the run ended
 
@@ -2500,22 +2500,22 @@ Share of all runs per strategy, by the week the run ended. Runs that reach the l
 
 | Strategy | 1 to 10 | 11 to 20 | 21 to 30 | 31 to 40 | 41 to 50 | 51 to 60 | 61 to 70 | 71 to 80 | 81 to 90 | 91 to 100 | 101 to 104 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| tourism_careful | 0.0% | 1.6% | 21.1% | 8.9% | 3.4% | 5.7% | 3.8% | 7.4% | 1.8% | 2.1% | 44.2% |
-| tourism_platform_only | 0.0% | 6.8% | 46.4% | 35.0% | 1.3% | 1.4% | 1.5% | 1.5% | 0.3% | 0.0% | 5.8% |
-| tourism_overstaffing | 0.0% | 2.9% | 22.9% | 10.4% | 2.9% | 5.0% | 4.5% | 7.1% | 1.7% | 2.1% | 40.5% |
-| tourism_understaffing | 0.0% | 1.9% | 24.1% | 17.4% | 4.1% | 10.9% | 10.0% | 9.5% | 1.6% | 2.9% | 17.6% |
-| tourism_no_tests | 0.0% | 23.3% | 0.0% | 0.5% | 3.2% | 16.0% | 13.9% | 17.0% | 2.2% | 0.5% | 23.4% |
-| tourism_price_blind | 0.0% | 1.3% | 20.7% | 8.7% | 2.7% | 5.9% | 4.0% | 5.9% | 2.3% | 2.1% | 46.4% |
-| tourism_review_blind | 0.0% | 2.4% | 22.0% | 9.4% | 3.2% | 6.2% | 4.7% | 7.7% | 1.9% | 1.9% | 40.6% |
-| tourism_always_flexible | 0.0% | 1.6% | 21.1% | 8.9% | 3.4% | 5.8% | 3.8% | 7.7% | 1.7% | 1.9% | 44.1% |
+| tourism_careful | 0.0% | 7.4% | 38.2% | 5.4% | 1.0% | 3.7% | 3.5% | 3.5% | 0.8% | 1.0% | 35.5% |
+| tourism_platform_only | 0.0% | 23.3% | 51.7% | 20.1% | 0.7% | 0.8% | 0.2% | 0.3% | 0.0% | 0.0% | 2.9% |
+| tourism_overstaffing | 0.0% | 10.6% | 40.5% | 4.1% | 1.9% | 2.9% | 2.7% | 4.8% | 0.8% | 0.9% | 30.8% |
+| tourism_understaffing | 0.0% | 8.8% | 43.8% | 9.5% | 2.5% | 8.9% | 5.0% | 5.4% | 1.4% | 1.9% | 12.8% |
+| tourism_no_tests | 67.3% | 22.6% | 2.2% | 2.1% | 0.1% | 1.5% | 2.4% | 1.6% | 0.0% | 0.0% | 0.2% |
+| tourism_price_blind | 0.0% | 7.0% | 36.9% | 5.0% | 0.9% | 3.9% | 3.5% | 3.5% | 1.0% | 1.4% | 36.9% |
+| tourism_review_blind | 0.0% | 8.6% | 39.1% | 5.7% | 1.7% | 3.4% | 3.4% | 3.8% | 0.8% | 1.3% | 32.2% |
+| tourism_always_flexible | 0.0% | 7.4% | 38.2% | 5.4% | 1.0% | 3.7% | 3.6% | 3.5% | 0.7% | 1.0% | 35.5% |
 | tourism_overworker | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| tourism_inbox_none | 0.0% | 3.7% | 21.7% | 11.5% | 3.9% | 6.4% | 6.2% | 7.4% | 1.5% | 1.4% | 36.3% |
-| tourism_inbox_effort | 0.0% | 1.5% | 18.5% | 9.3% | 3.2% | 7.5% | 5.5% | 7.0% | 1.9% | 3.1% | 42.5% |
-| tourism_naive_careful | 0.0% | 36.7% | 37.5% | 3.6% | 0.3% | 1.1% | 1.6% | 1.4% | 0.3% | 0.2% | 17.3% |
-| tourism_always_strict | 0.0% | 1.8% | 19.9% | 9.8% | 3.2% | 4.7% | 5.6% | 5.5% | 2.0% | 1.6% | 45.9% |
-| tourism_overborrow | 0.0% | 0.0% | 0.0% | 0.1% | 1.0% | 5.1% | 6.1% | 10.4% | 4.2% | 2.8% | 70.3% |
-| tourism_reckless | 0.0% | 0.0% | 0.0% | 0.3% | 3.3% | 6.6% | 7.4% | 12.3% | 3.7% | 3.0% | 63.4% |
-| tourism_refit_loan | 0.0% | 1.6% | 21.1% | 9.1% | 3.5% | 5.2% | 2.8% | 4.7% | 1.3% | 2.1% | 48.6% |
+| tourism_inbox_none | 0.0% | 13.0% | 35.6% | 5.5% | 2.5% | 4.2% | 4.1% | 3.5% | 0.5% | 1.0% | 30.1% |
+| tourism_inbox_effort | 0.0% | 7.2% | 34.2% | 5.8% | 2.2% | 3.9% | 3.6% | 4.2% | 1.0% | 1.6% | 36.3% |
+| tourism_naive_careful | 0.0% | 32.3% | 38.9% | 3.1% | 0.3% | 1.0% | 2.7% | 3.1% | 0.6% | 0.0% | 18.0% |
+| tourism_always_strict | 0.0% | 7.1% | 35.7% | 5.8% | 1.9% | 2.9% | 3.2% | 5.7% | 0.7% | 1.0% | 36.0% |
+| tourism_overborrow | 0.0% | 0.0% | 1.7% | 6.2% | 1.2% | 5.4% | 5.1% | 8.9% | 3.0% | 2.4% | 66.1% |
+| tourism_reckless | 0.0% | 0.0% | 4.7% | 9.9% | 0.8% | 4.9% | 5.7% | 9.3% | 2.5% | 3.3% | 58.9% |
+| tourism_refit_loan | 0.0% | 7.4% | 38.2% | 5.4% | 1.0% | 3.5% | 2.5% | 3.2% | 0.6% | 1.1% | 37.1% |
 
 ## Losing runs: what they earned
 
@@ -2523,22 +2523,22 @@ Losing runs only (bankrupt, burnout, still searching). "Never paid" means no cus
 
 | Strategy | Losing runs | Never paid | Peak monthly revenue (EUR): 0 / 1 to 899 / 900 to 1,799 / 1,800 to 3,104 / 3,105 or more | Peak customers: 0 / 1 / 2 to 3 / 4 to 6 / 7 or more |
 |---|---|---|---|---|
-| tourism_careful | 686 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_platform_only | 951 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_overstaffing | 712 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_understaffing | 933 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_no_tests | 957 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_price_blind | 675 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_review_blind | 708 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_always_flexible | 692 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_overworker | 1000 | 1.1% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_inbox_none | 750 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_inbox_effort | 693 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_naive_careful | 847 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_always_strict | 649 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_overborrow | 680 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_reckless | 730 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
-| tourism_refit_loan | 687 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_careful | 718 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_platform_only | 971 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_overstaffing | 758 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_understaffing | 923 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_no_tests | 998 | 2.7% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_price_blind | 711 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_review_blind | 745 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_always_flexible | 723 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_overworker | 1000 | 3.9% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_inbox_none | 775 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_inbox_effort | 712 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_naive_careful | 835 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_always_strict | 693 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_overborrow | 653 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_reckless | 699 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
+| tourism_refit_loan | 716 | 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% | 100.0% / 0.0% / 0.0% / 0.0% / 0.0% |
 
 ## First paying customer
 
@@ -2567,22 +2567,22 @@ Week in which the first customer signed. Medians count only runs that had one.
 
 | Strategy | Median customers at week 15 | Median monthly revenue at week 15 | Leads per outreach hour | Mean planned hours | Median lowest energy | Runs with energy below 30 |
 |---|---|---|---|---|---|---|
-| tourism_careful | 0 | 0 EUR | - | 29.0 | 80.0 | 0.0% |
-| tourism_platform_only | 0 | 0 EUR | - | 16.5 | 80.0 | 0.0% |
-| tourism_overstaffing | 0 | 0 EUR | - | 40.0 | 80.0 | 0.0% |
-| tourism_understaffing | 0 | 0 EUR | - | 23.9 | 80.0 | 0.0% |
-| tourism_no_tests | 0 | 0 EUR | - | 22.9 | 80.0 | 0.0% |
-| tourism_price_blind | 0 | 0 EUR | - | 29.2 | 80.0 | 0.0% |
-| tourism_review_blind | 0 | 0 EUR | - | 28.1 | 80.0 | 0.0% |
-| tourism_always_flexible | 0 | 0 EUR | - | 28.9 | 80.0 | 0.0% |
-| tourism_overworker | 0 | 0 EUR | - | 59.5 | 0.0 | 100.0% |
-| tourism_inbox_none | 0 | 0 EUR | - | 26.5 | 80.0 | 0.0% |
-| tourism_inbox_effort | 0 | 0 EUR | - | 29.2 | 80.0 | 0.0% |
-| tourism_naive_careful | 0 | 0 EUR | - | 29.0 | 80.0 | 0.0% |
-| tourism_always_strict | 0 | 0 EUR | - | 28.0 | 80.0 | 0.0% |
+| tourism_careful | 0 | 0 EUR | - | 28.5 | 80.0 | 0.0% |
+| tourism_platform_only | 0 | 0 EUR | - | 16.6 | 80.0 | 0.0% |
+| tourism_overstaffing | 0 | 0 EUR | - | 39.9 | 80.0 | 0.0% |
+| tourism_understaffing | 0 | 0 EUR | - | 24.1 | 80.0 | 0.0% |
+| tourism_no_tests | 0 | 0 EUR | - | 29.8 | 80.0 | 0.0% |
+| tourism_price_blind | 0 | 0 EUR | - | 28.8 | 80.0 | 0.0% |
+| tourism_review_blind | 0 | 0 EUR | - | 27.7 | 80.0 | 0.0% |
+| tourism_always_flexible | 0 | 0 EUR | - | 28.5 | 80.0 | 0.0% |
+| tourism_overworker | 0 | 0 EUR | - | 58.8 | 0.0 | 100.0% |
+| tourism_inbox_none | 0 | 0 EUR | - | 26.1 | 80.0 | 0.0% |
+| tourism_inbox_effort | 0 | 0 EUR | - | 28.8 | 80.0 | 0.0% |
+| tourism_naive_careful | 0 | 0 EUR | - | 29.3 | 80.0 | 0.0% |
+| tourism_always_strict | 0 | 0 EUR | - | 27.7 | 80.0 | 0.0% |
 | tourism_overborrow | 0 | 0 EUR | - | 29.7 | 80.0 | 0.0% |
-| tourism_reckless | 0 | 0 EUR | - | 29.7 | 80.0 | 0.0% |
-| tourism_refit_loan | 0 | 0 EUR | - | 29.0 | 80.0 | 0.0% |
+| tourism_reckless | 0 | 0 EUR | - | 29.6 | 80.0 | 0.0% |
+| tourism_refit_loan | 0 | 0 EUR | - | 28.6 | 80.0 | 0.0% |
 
 ## Interview signal in week 1
 
@@ -2612,22 +2612,22 @@ Per run, averaged over all runs of a strategy. Books left is the number of accou
 
 | Strategy | Landing tests | Pre-sale batches | Invoices issued | Written off | Books left | Messages | Messages answered |
 |---|---|---|---|---|---|---|---|
-| tourism_careful | 0.7 | 1.0 | 186.7 | 3.6% | 0.00 | 55.6 | 58.2% |
-| tourism_platform_only | 0.7 | 1.0 | 27.3 | 2.7% | 0.00 | 31.1 | 57.9% |
-| tourism_overstaffing | 0.7 | 1.0 | 171.9 | 3.6% | 0.00 | 53.8 | 58.4% |
-| tourism_understaffing | 0.7 | 1.0 | 88.2 | 3.3% | 0.00 | 48.3 | 56.4% |
-| tourism_no_tests | 0.0 | 0.0 | 100.1 | 3.5% | 0.00 | 51.7 | 58.0% |
-| tourism_price_blind | 0.7 | 1.0 | 201.4 | 3.6% | 0.00 | 56.5 | 58.3% |
-| tourism_review_blind | 0.7 | 1.0 | 177.2 | 3.6% | 0.00 | 54.7 | 58.3% |
-| tourism_always_flexible | 0.7 | 1.0 | 186.4 | 3.6% | 0.00 | 55.6 | 58.2% |
-| tourism_overworker | 0.7 | 1.0 | 10.4 | 0.0% | 0.00 | 10.2 | 56.8% |
-| tourism_inbox_none | 0.7 | 1.0 | 166.0 | 3.7% | 0.00 | 48.5 | 0.0% |
-| tourism_inbox_effort | 0.7 | 1.0 | 186.4 | 3.7% | 0.00 | 57.9 | 72.8% |
-| tourism_naive_careful | 1.0 | 1.0 | 108.4 | 3.4% | 0.00 | 29.2 | 4.3% |
-| tourism_always_strict | 0.7 | 1.0 | 172.6 | 3.7% | 0.00 | 56.2 | 58.6% |
-| tourism_overborrow | 0.7 | 1.0 | 235.0 | 3.8% | 0.00 | 71.5 | 58.1% |
-| tourism_reckless | 0.7 | 1.0 | 228.8 | 3.8% | 0.00 | 69.9 | 58.2% |
-| tourism_refit_loan | 0.7 | 1.0 | 188.3 | 3.6% | 0.00 | 56.2 | 58.1% |
+| tourism_careful | 0.0 | 0.0 | 174.7 | 3.7% | 0.00 | 46.8 | 58.6% |
+| tourism_platform_only | 0.0 | 0.0 | 22.0 | 2.3% | 0.00 | 25.4 | 58.2% |
+| tourism_overstaffing | 0.0 | 0.0 | 156.7 | 3.6% | 0.00 | 44.1 | 58.8% |
+| tourism_understaffing | 0.0 | 0.0 | 78.9 | 3.3% | 0.00 | 39.4 | 57.3% |
+| tourism_no_tests | 0.0 | 0.0 | 15.4 | 1.9% | 0.00 | 11.8 | 54.8% |
+| tourism_price_blind | 0.0 | 0.0 | 189.9 | 3.8% | 0.00 | 47.8 | 58.6% |
+| tourism_review_blind | 0.0 | 0.0 | 163.9 | 3.6% | 0.00 | 45.4 | 58.9% |
+| tourism_always_flexible | 0.0 | 0.0 | 174.5 | 3.7% | 0.00 | 46.7 | 58.6% |
+| tourism_overworker | 0.0 | 0.0 | 11.2 | 0.0% | 0.00 | 10.2 | 57.6% |
+| tourism_inbox_none | 0.0 | 0.0 | 155.0 | 3.7% | 0.00 | 40.2 | 0.0% |
+| tourism_inbox_effort | 0.0 | 0.0 | 178.3 | 3.7% | 0.00 | 49.4 | 72.3% |
+| tourism_naive_careful | 0.0 | 0.0 | 128.7 | 3.6% | 0.00 | 30.4 | 4.4% |
+| tourism_always_strict | 0.0 | 0.0 | 160.8 | 3.7% | 0.00 | 47.7 | 58.5% |
+| tourism_overborrow | 0.0 | 0.0 | 230.7 | 3.9% | 0.00 | 68.8 | 57.2% |
+| tourism_reckless | 0.0 | 0.0 | 222.7 | 3.8% | 0.00 | 65.5 | 57.3% |
+| tourism_refit_loan | 0.0 | 0.0 | 175.7 | 3.7% | 0.00 | 47.0 | 58.5% |
 
 ## Inbox pool
 
@@ -2635,22 +2635,22 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 
 | Strategy | Mean weeks | Mean messages | Runs with a dry week | Mean dry weeks | Median first dry week | Repeats |
 |---|---|---|---|---|---|---|
-| tourism_careful | 71.0 | 55.6 | 57.7% | 9.72 | 64 | 0 |
-| tourism_platform_only | 35.1 | 31.1 | 8.6% | 1.24 | 64 | 0 |
-| tourism_overstaffing | 68.0 | 53.8 | 54.7% | 9.13 | 63 | 0 |
-| tourism_understaffing | 56.8 | 48.3 | 34.2% | 3.87 | 65 | 0 |
-| tourism_no_tests | 62.6 | 51.7 | 54.5% | 6.25 | 61 | 0 |
-| tourism_price_blind | 72.4 | 56.5 | 59.0% | 10.23 | 64 | 0 |
-| tourism_review_blind | 68.9 | 54.7 | 54.4% | 8.71 | 65 | 0 |
-| tourism_always_flexible | 70.9 | 55.6 | 57.7% | 9.69 | 64 | 0 |
+| tourism_careful | 58.9 | 46.8 | 43.2% | 7.50 | 64 | 0 |
+| tourism_platform_only | 28.2 | 25.4 | 3.2% | 0.57 | 61 | 0 |
+| tourism_overstaffing | 55.0 | 44.1 | 39.0% | 6.64 | 64 | 0 |
+| tourism_understaffing | 45.9 | 39.4 | 23.1% | 2.93 | 65 | 0 |
+| tourism_no_tests | 13.5 | 11.8 | 3.3% | 0.15 | 61 | 0 |
+| tourism_price_blind | 60.4 | 47.8 | 45.4% | 7.89 | 63 | 0 |
+| tourism_review_blind | 56.6 | 45.4 | 39.8% | 6.77 | 65 | 0 |
+| tourism_always_flexible | 58.9 | 46.7 | 43.1% | 7.44 | 64 | 0 |
 | tourism_overworker | 11.7 | 10.2 | 0.0% | 0.00 | - | 0 |
-| tourism_inbox_none | 65.7 | 48.5 | 42.1% | 3.01 | 76 | 0 |
-| tourism_inbox_effort | 71.8 | 57.9 | 60.6% | 11.36 | 60 | 0 |
-| tourism_naive_careful | 39.0 | 29.2 | 18.3% | 1.63 | 75 | 0 |
-| tourism_always_strict | 71.7 | 56.2 | 58.0% | 9.82 | 64 | 0 |
-| tourism_overborrow | 94.7 | 71.5 | 91.3% | 15.64 | 64 | 0 |
-| tourism_reckless | 91.5 | 69.9 | 86.8% | 14.39 | 63 | 0 |
-| tourism_refit_loan | 72.4 | 56.2 | 58.7% | 10.17 | 64 | 0 |
+| tourism_inbox_none | 54.9 | 40.2 | 32.2% | 2.50 | 76 | 0 |
+| tourism_inbox_effort | 60.8 | 49.4 | 46.6% | 9.29 | 60 | 0 |
+| tourism_naive_careful | 40.9 | 30.4 | 19.7% | 1.80 | 74 | 0 |
+| tourism_always_strict | 60.1 | 47.7 | 45.5% | 7.54 | 64 | 0 |
+| tourism_overborrow | 90.0 | 68.8 | 83.4% | 13.86 | 64 | 0 |
+| tourism_reckless | 85.1 | 65.5 | 76.6% | 12.66 | 64 | 0 |
+| tourism_refit_loan | 59.5 | 47.0 | 43.7% | 7.69 | 64 | 0 |
 
 ## Inbox events: which answer wins
 
@@ -2658,71 +2658,71 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 
 | Event | Seeds | Win rate per answer (hours, money) | Reading | Best fixed | Cheapest | Cheapest wins |
 |---|---|---|---|---|---|---|
-| tourism_statistics | 938 | read (3 h) 34.0%; skim (0 h) 34.3% | 33.5% | skim | skim | yes |
-| open_house_offer | 923 | host (8 h, 200 EUR) 31.3%; decline (0 h) 31.6% | 31.3% | decline | decline | yes |
-| plant_office_manager | 974 | meet (3 h) 31.8%; later (0 h) 32.3% | 32.2% | later | later | yes |
-| wedding_planner_visit | 882 | show (3 h) 35.0%; later (0 h) 35.3% | 35.6% | later | later | yes |
-| previous_guestbook | 930 | read (4 h) 34.2%; shelf (0 h) 34.7% | 33.8% | shelf | shelf | yes |
-| travel_blogger | 810 | host (2 h) 39.3%; decline (0 h) 41.1% | 38.8% | decline | decline | yes |
-| test_rates_advice | 825 | listen (3 h, 20 EUR) 38.1%; decline (0 h) 38.1% | 38.1% | listen | decline | yes |
-| local_newspaper_feature | 855 | interview (2 h) 38.7%; decline (0 h) 36.6% | 36.7% | interview | decline | no |
-| guest_survey_cards | 907 | cards (2 h) 34.5%; skip (0 h) 34.5% | 34.6% | cards | skip | yes |
-| competitor_visit | 895 | go (6 h, 90 EUR) 35.6%; skip (0 h) 35.5% | 35.1% | go | skip | no |
-| preferred_partner_badge | 849 | accept (1 h) 32.7%; decline (0 h) 37.3% | 37.0% | decline | decline | yes |
-| firm_block_booking | 916 | accept (2 h) 34.0%; decline (0 h) 34.5% | 34.3% | decline | decline | yes |
-| village_festival | 552 | push (6 h) 56.2%; usual (0 h) 55.3% | 56.2% | push | usual | no |
-| boat_package | 772 | join (2 h, 150 EUR) 40.7%; decline (0 h) 42.4% | 40.7% | decline | decline | yes |
-| twelve_room_cancel | 899 | complain (2 h) 34.9%; accept (0 h) 34.9% | 34.9% | complain | accept | yes |
-| november_empty | 934 | call_firms (6 h) 33.5%; close_floor (1 h) 32.4%; wait (0 h) 31.8% | 33.2% | call_firms | wait | no |
-| wedding_fair | 750 | stand (14 h, 600 EUR) 42.3%; skip (0 h) 42.5% | 41.9% | skip | skip | yes |
-| christmas_vouchers_hotel | 753 | sell (5 h) 38.6%; skip (0 h) 38.9% | 38.2% | skip | skip | yes |
-| rate_parity_letter | 905 | ignore (1 h) 35.8%; comply (0 h) 35.6% | 34.7% | ignore | comply | no |
-| regatta_weekend | 535 | host (3 h) 58.7%; decline (0 h) 59.4% | 58.7% | decline | decline | yes |
-| platform_ranking_drop | 880 | ask_reviews (2 h) 35.9%; ignore (0 h) 36.6% | 35.7% | ignore | ignore | yes |
-| platform_fee_change | 695 | complain (1 h) 44.6%; accept (0 h) 44.6% | 45.2% | complain | accept | yes |
-| repeat_guest_thanks | 72 | discount (0 h, 50 EUR) 31.9%; no (0 h) 34.7% | 31.9% | no | no | not judged |
-| tourism_fair | 650 | stand (12 h, 400 EUR) 49.4%; skip (0 h) 48.9% | 48.3% | stand | skip | no |
-| review_reply_bad | 142 | apologise (1 h) 31.7%; ignore (0 h) 30.3% | 30.3% | apologise | ignore | not judged |
-| heating_fails | 790 | engineer (2 h, 900 EUR) 39.7%; blankets (0 h) 40.9% | 39.7% | blankets | blankets | yes |
-| bathroom_review | 863 | reply (1 h) 36.4%; ignore (0 h) 35.8% | 36.4% | reply | ignore | no |
-| dripping_shower | 116 | fix (2 h, 150 EUR) 37.9%; later (0 h) 34.5% | 37.9% | fix | later | not judged |
-| fire_inspection | 884 | prepare (6 h) 35.5%; wing_it (0 h, 800 EUR) 33.1% | 35.5% | prepare | wing_it | no |
-| lake_flood | 585 | pump (1 h, 700 EUR) 53.7%; bucket (0 h) 54.2% | 53.7% | bucket | bucket | yes |
-| wifi_complaints | 778 | upgrade (6 h, 1,200 EUR) 40.1%; stairs (0 h) 41.5% | 40.4% | stairs | stairs | yes |
-| breakfast_supplier | 828 | farm (1 h) 37.8%; decline (0 h) 40.0% | 37.9% | decline | decline | yes |
-| noisy_neighbour_build | 743 | move (3 h) 42.3%; nothing (0 h) 43.5% | 42.3% | nothing | nothing | yes |
-| health_and_safety_check | 865 | prepare (5 h) 37.6%; wing_it (0 h, 300 EUR) 36.4% | 36.3% | prepare | wing_it | no |
-| equipment_supplier_sale | 759 | buy (1 h, 400 EUR) 41.0%; decline (0 h) 41.0% | 41.4% | buy | decline | yes |
-| booking_system_outage | 965 | check (4 h) 34.2%; wait (0 h) 32.2% | 32.5% | check | wait | no |
-| refresh_offer | 295 | refresh (6 h, 60,000 EUR) 13.9%; not_now (0 h) 68.5% | 66.8% | not_now | not_now | yes |
-| lease_increase | 661 | negotiate (5 h) 47.5%; accept (0 h) 44.8% | 47.5% | negotiate | accept | no |
-| wedding_cancels | 807 | refund (1 h, 1,500 EUR) 38.9%; keep (0 h) 41.3% | 38.9% | keep | keep | yes |
-| bank_quarterly_hotel | 943 | send (3 h) 33.3%; ignore (0 h) 33.2% | 33.3% | send | ignore | no |
-| bank_missed_hotel | 23 | talk (2 h) 4.3%; let_ring (0 h) 4.3% | 4.3% | talk | let_ring | not judged |
-| tourist_tax_audit | 777 | prepare (6 h) 40.4%; ignore (0 h, 400 EUR) 41.2% | 40.4% | ignore | ignore | yes |
-| winter_heating_bill | 658 | spread (1 h) 47.1%; pay (0 h, 1,500 EUR) 47.7% | 47.3% | pay | pay | yes |
-| insulation_grant | 733 | apply (8 h) 42.4%; ignore (0 h) 42.8% | 42.8% | ignore | ignore | yes |
-| tax_advance_tourism | 709 | object (3 h, 600 EUR) 45.1%; pay (0 h, 600 EUR) 45.0% | 44.3% | object | pay | no |
-| bank_card_terminal | 898 | sign (1 h) 35.4%; decline (0 h) 35.1% | 35.0% | sign | decline | no |
-| energy_bill | 716 | plan (1 h) 43.0%; pay (0 h, 450 EUR) 43.9% | 43.3% | pay | pay | yes |
+| tourism_statistics | 902 | read (3 h) 31.5%; skim (0 h) 31.5% | 31.3% | read | skim | yes |
+| open_house_offer | 926 | host (8 h, 200 EUR) 27.6%; decline (0 h) 27.5% | 27.6% | host | decline | no |
+| plant_office_manager | 966 | meet (3 h) 29.0%; later (0 h) 29.2% | 29.2% | later | later | yes |
+| wedding_planner_visit | 780 | show (3 h) 36.3%; later (0 h) 34.7% | 36.2% | show | later | no |
+| previous_guestbook | 915 | read (4 h) 31.5%; shelf (0 h) 31.8% | 30.8% | shelf | shelf | yes |
+| travel_blogger | 662 | host (2 h) 42.6%; decline (0 h) 41.1% | 42.6% | host | decline | no |
+| test_rates_advice | 733 | listen (3 h, 20 EUR) 38.5%; decline (0 h) 38.3% | 38.5% | listen | decline | no |
+| local_newspaper_feature | 722 | interview (2 h) 40.6%; decline (0 h) 39.1% | 39.1% | interview | decline | no |
+| guest_survey_cards | 778 | cards (2 h) 37.4%; skip (0 h) 37.4% | 36.2% | cards | skip | yes |
+| competitor_visit | 792 | go (6 h, 90 EUR) 35.5%; skip (0 h) 35.4% | 35.6% | go | skip | no |
+| preferred_partner_badge | 712 | accept (1 h) 36.5%; decline (0 h) 39.9% | 39.6% | decline | decline | yes |
+| firm_block_booking | 841 | accept (2 h) 33.8%; decline (0 h) 33.8% | 33.5% | accept | decline | yes |
+| village_festival | 418 | push (6 h) 67.2%; usual (0 h) 66.7% | 67.2% | push | usual | no |
+| boat_package | 629 | join (2 h, 150 EUR) 44.8%; decline (0 h) 45.8% | 44.8% | decline | decline | yes |
+| twelve_room_cancel | 815 | complain (2 h) 34.6%; accept (0 h) 34.6% | 34.6% | complain | accept | yes |
+| november_empty | 917 | call_firms (6 h) 31.0%; close_floor (1 h) 29.7%; wait (0 h) 30.0% | 30.3% | call_firms | wait | no |
+| wedding_fair | 678 | stand (14 h, 600 EUR) 41.3%; skip (0 h) 40.0% | 41.6% | stand | skip | no |
+| christmas_vouchers_hotel | 718 | sell (5 h) 37.5%; skip (0 h) 36.6% | 37.3% | sell | skip | no |
+| rate_parity_letter | 834 | ignore (1 h) 34.5%; comply (0 h) 33.9% | 33.8% | ignore | comply | no |
+| regatta_weekend | 411 | host (3 h) 69.8%; decline (0 h) 69.6% | 68.6% | host | decline | no |
+| platform_ranking_drop | 770 | ask_reviews (2 h) 36.4%; ignore (0 h) 36.1% | 36.5% | ask_reviews | ignore | no |
+| platform_fee_change | 495 | complain (1 h) 58.2%; accept (0 h) 58.2% | 57.0% | complain | accept | yes |
+| repeat_guest_thanks | 99 | discount (0 h, 50 EUR) 67.7%; no (0 h) 67.7% | 65.7% | discount | no | not judged |
+| tourism_fair | 478 | stand (12 h, 400 EUR) 57.1%; skip (0 h) 57.9% | 59.0% | skip | skip | yes |
+| review_reply_bad | 110 | apologise (1 h) 32.7%; ignore (0 h) 35.5% | 37.3% | ignore | ignore | not judged |
+| heating_fails | 731 | engineer (2 h, 900 EUR) 38.6%; blankets (0 h) 38.6% | 38.6% | engineer | blankets | yes |
+| bathroom_review | 731 | reply (1 h) 38.6%; ignore (0 h) 37.3% | 38.6% | reply | ignore | no |
+| dripping_shower | 171 | fix (2 h, 150 EUR) 31.6%; later (0 h) 32.7% | 31.6% | later | later | yes |
+| fire_inspection | 821 | prepare (6 h) 34.3%; wing_it (0 h, 800 EUR) 32.4% | 34.3% | prepare | wing_it | no |
+| lake_flood | 451 | pump (1 h, 700 EUR) 62.7%; bucket (0 h) 61.0% | 62.5% | pump | bucket | no |
+| wifi_complaints | 611 | upgrade (6 h, 1,200 EUR) 46.0%; stairs (0 h) 47.8% | 46.2% | stairs | stairs | yes |
+| breakfast_supplier | 731 | farm (1 h) 38.4%; decline (0 h) 40.2% | 38.6% | decline | decline | yes |
+| noisy_neighbour_build | 568 | move (3 h) 49.8%; nothing (0 h) 50.2% | 49.6% | nothing | nothing | yes |
+| health_and_safety_check | 746 | prepare (5 h) 38.3%; wing_it (0 h, 300 EUR) 39.5% | 37.8% | wing_it | wing_it | yes |
+| equipment_supplier_sale | 575 | buy (1 h, 400 EUR) 48.0%; decline (0 h) 48.7% | 49.0% | decline | decline | yes |
+| booking_system_outage | 892 | check (4 h) 32.3%; wait (0 h) 32.8% | 31.6% | wait | wait | yes |
+| refresh_offer | 188 | refresh (6 h, 60,000 EUR) 16.5%; not_now (0 h) 84.6% | 84.0% | not_now | not_now | yes |
+| lease_increase | 480 | negotiate (5 h) 58.8%; accept (0 h) 56.7% | 58.8% | negotiate | accept | no |
+| wedding_cancels | 637 | refund (1 h, 1,500 EUR) 44.3%; keep (0 h) 46.5% | 44.3% | keep | keep | yes |
+| bank_quarterly_hotel | 879 | send (3 h) 32.1%; ignore (0 h) 32.0% | 32.1% | send | ignore | no |
+| bank_missed_hotel | 28 | talk (2 h) 7.1%; let_ring (0 h) 7.1% | 7.1% | talk | let_ring | not judged |
+| tourist_tax_audit | 646 | prepare (6 h) 43.7%; ignore (0 h, 400 EUR) 44.7% | 43.7% | ignore | ignore | yes |
+| winter_heating_bill | 563 | spread (1 h) 49.0%; pay (0 h, 1,500 EUR) 49.2% | 49.0% | pay | pay | yes |
+| insulation_grant | 566 | apply (8 h) 50.2%; ignore (0 h) 48.8% | 49.8% | apply | ignore | no |
+| tax_advance_tourism | 504 | object (3 h, 600 EUR) 55.8%; pay (0 h, 600 EUR) 55.8% | 56.0% | object | pay | yes |
+| bank_card_terminal | 841 | sign (1 h) 34.0%; decline (0 h) 34.0% | 33.5% | sign | decline | yes |
+| energy_bill | 652 | plan (1 h) 42.0%; pay (0 h, 450 EUR) 42.8% | 42.8% | pay | pay | yes |
 | night_bell | 0 | nap (0 h) 0.0%; carry_on (0 h) 0.0% | 0.0% | nap | nap | not judged |
 | lake_swim | 0 | swim (1 h) 0.0%; work (0 h) 0.0% | 0.0% | swim | work | not judged |
-| former_colleague | 795 | dinner (4 h, 80 EUR) 39.5%; decline (0 h) 39.4% | 39.5% | dinner | decline | no |
-| family_christmas | 803 | go (0 h) 38.0%; stay (0 h) 37.2% | 36.9% | go | go | yes |
+| former_colleague | 647 | dinner (4 h, 80 EUR) 43.6%; decline (0 h) 43.7% | 43.6% | decline | decline | yes |
+| family_christmas | 725 | go (0 h) 37.1%; stay (0 h) 38.3% | 36.8% | stay | go | no |
 | back_strain | 0 | physio (3 h, 120 EUR) 0.0%; ignore (0 h) 0.0% | 0.0% | physio | ignore | not judged |
-| village_council | 676 | join (4 h) 46.4%; decline (0 h) 49.0% | 46.4% | decline | decline | yes |
-| friend_wedding | 613 | go (0 h) 52.0%; work (0 h) 51.9% | 51.2% | go | go | yes |
+| village_council | 489 | join (4 h) 57.7%; decline (0 h) 58.9% | 57.7% | decline | decline | yes |
+| friend_wedding | 438 | go (0 h) 65.5%; work (0 h) 65.5% | 64.4% | go | go | yes |
 | season_end_fatigue | 0 | rest (0 h) 0.0%; push (0 h) 0.0% | 0.0% | rest | rest | not judged |
-| family_sunday | 1000 | go (0 h) 31.8%; skip (0 h) 32.6% | 31.4% | skip | go | no |
-| winter_course | 643 | attend (6 h, 150 EUR) 50.1%; skip (0 h) 49.9% | 48.8% | attend | skip | no |
-| housekeeper_quits | 548 | agency (1 h, 800 EUR) 57.3%; yourself (0 h) 56.9% | 57.3% | agency | yourself | no |
-| breakfast_help_late | 894 | talk (1 h) 35.1%; ride (0 h) 35.9% | 35.1% | ride | ride | yes |
-| caretaker_offer | 839 | hire (1 h) 32.8%; decline (0 h) 37.9% | 37.4% | decline | decline | yes |
-| minijob_student | 571 | hire (1 h) 49.6%; decline (0 h) 54.3% | 55.0% | decline | decline | yes |
-| laundry_service | 827 | sign (1 h) 34.6%; decline (0 h) 38.9% | 38.0% | decline | decline | yes |
-| staff_bonus_summer | 522 | bonus (1 h, 600 EUR) 60.2%; skip (0 h) 60.3% | 60.2% | skip | skip | yes |
-| staff_holiday_clash | 663 | both (6 h) 46.6%; first (0 h) 47.2% | 47.4% | first | first | yes |
-| staff_thank_you | 701 | dinner (3 h, 300 EUR) 46.1%; skip (0 h) 46.2% | 44.8% | skip | skip | yes |
+| family_sunday | 1000 | go (0 h) 27.8%; skip (0 h) 28.2% | 28.2% | skip | go | no |
+| winter_course | 467 | attend (6 h, 150 EUR) 61.5%; skip (0 h) 61.5% | 60.4% | attend | skip | yes |
+| housekeeper_quits | 411 | agency (1 h, 800 EUR) 68.6%; yourself (0 h) 68.4% | 68.6% | agency | yourself | no |
+| breakfast_help_late | 783 | talk (1 h) 36.0%; ride (0 h) 36.1% | 36.0% | ride | ride | yes |
+| caretaker_offer | 760 | hire (1 h) 32.4%; decline (0 h) 37.4% | 37.1% | decline | decline | yes |
+| minijob_student | 422 | hire (1 h) 62.1%; decline (0 h) 66.8% | 66.8% | decline | decline | yes |
+| laundry_service | 704 | sign (1 h) 34.4%; decline (0 h) 39.3% | 40.1% | decline | decline | yes |
+| staff_bonus_summer | 400 | bonus (1 h, 600 EUR) 70.8%; skip (0 h) 71.3% | 70.5% | skip | skip | yes |
+| staff_holiday_clash | 486 | both (6 h) 58.4%; first (0 h) 59.7% | 58.0% | first | first | yes |
+| staff_thank_you | 534 | dinner (3 h, 300 EUR) 52.1%; skip (0 h) 52.1% | 52.8% | dinner | skip | yes |
 | investor_hire_push | 0 | explain (2 h) 0.0%; promise (0 h) 0.0%; ignore (0 h) 0.0% | 0.0% | explain | promise | not judged |
 | investor_price_push | 0 | call (2 h) 0.0%; skip (0 h) 0.0% | 0.0% | call | skip | not judged |
 | investor_checkin | 0 | attend (4 h) 0.0%; postpone (0 h) 0.0% | 0.0% | attend | postpone | not judged |
@@ -2735,7 +2735,7 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 | investor_second_intro | 0 | call (1 h) 0.0%; later (0 h) 0.0% | 0.0% | call | later | not judged |
 | investor_praise | 0 | smile (0 h) 0.0%; thank (1 h) 0.0% | 0.0% | smile | smile | not judged |
 
-Of 57 judged events, 39 favour the cheapest answer and 18 favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.
+Of 58 judged events, 36 favour the cheapest answer and 22 favour a more effortful one. "Reading" is the win rate when every arrival is read; it sits above every fixed answer where the right answer depends on the situation.
 
 ## Pacing in weeks 1 to 20
 
@@ -2743,41 +2743,41 @@ Share of weeks with at least one noteworthy thing: a new message, new leads, a l
 
 | Strategy | Weeks with something noteworthy | Weeks with decision news (stricter) | Weeks with a new message | Median noteworthy weeks per run | Runs with 5 or more weeks without decision news |
 |---|---|---|---|---|---|
-| tourism_careful | 91.1% | 96.4% | 84.1% | 18 of 20 | 0.5% |
-| tourism_platform_only | 89.6% | 95.4% | 83.7% | 18 of 20 | 1.2% |
-| tourism_overstaffing | 91.5% | 96.4% | 84.2% | 18 of 20 | 0.5% |
-| tourism_understaffing | 90.6% | 96.4% | 83.9% | 18 of 20 | 0.5% |
-| tourism_no_tests | 93.5% | 99.6% | 82.7% | 19 of 20 | 0.0% |
-| tourism_price_blind | 90.9% | 96.4% | 84.1% | 18 of 20 | 0.5% |
-| tourism_review_blind | 91.0% | 96.4% | 84.2% | 18 of 20 | 0.5% |
-| tourism_always_flexible | 91.1% | 96.4% | 84.1% | 18 of 20 | 0.5% |
-| tourism_overworker | 85.1% | 94.0% | 77.1% | 10 of 12 | 0.0% |
-| tourism_inbox_none | 84.4% | 95.1% | 71.4% | 17 of 20 | 1.2% |
-| tourism_inbox_effort | 93.9% | 96.8% | 89.1% | 19 of 20 | 0.0% |
-| tourism_naive_careful | 84.1% | 97.4% | 70.6% | 17 of 20 | 0.0% |
-| tourism_always_strict | 90.8% | 96.3% | 84.1% | 18 of 20 | 0.4% |
-| tourism_overborrow | 89.9% | 95.3% | 83.5% | 18 of 20 | 0.4% |
-| tourism_reckless | 89.9% | 95.3% | 83.5% | 18 of 20 | 0.4% |
-| tourism_refit_loan | 91.1% | 96.4% | 84.1% | 18 of 20 | 0.5% |
+| tourism_careful | 91.1% | 96.5% | 84.4% | 18 of 20 | 0.1% |
+| tourism_platform_only | 89.5% | 95.5% | 83.3% | 18 of 20 | 0.8% |
+| tourism_overstaffing | 92.0% | 96.5% | 84.1% | 19 of 20 | 0.2% |
+| tourism_understaffing | 90.8% | 96.5% | 84.1% | 18 of 20 | 0.2% |
+| tourism_no_tests | 89.1% | 99.2% | 76.5% | 8 of 8 | 0.0% |
+| tourism_price_blind | 91.3% | 96.6% | 84.5% | 18 of 20 | 0.1% |
+| tourism_review_blind | 91.0% | 96.5% | 84.2% | 18 of 20 | 0.1% |
+| tourism_always_flexible | 91.1% | 96.5% | 84.4% | 18 of 20 | 0.1% |
+| tourism_overworker | 85.4% | 94.1% | 77.3% | 10 of 12 | 0.0% |
+| tourism_inbox_none | 84.1% | 94.3% | 70.6% | 17 of 20 | 1.6% |
+| tourism_inbox_effort | 93.6% | 96.7% | 88.3% | 19 of 20 | 0.0% |
+| tourism_naive_careful | 84.2% | 96.2% | 70.5% | 17 of 20 | 0.2% |
+| tourism_always_strict | 91.0% | 96.3% | 84.4% | 18 of 20 | 0.1% |
+| tourism_overborrow | 90.5% | 95.5% | 83.9% | 18 of 20 | 0.0% |
+| tourism_reckless | 90.5% | 95.5% | 83.9% | 18 of 20 | 0.0% |
+| tourism_refit_loan | 91.1% | 96.5% | 84.4% | 18 of 20 | 0.1% |
 
 ## Strategies
 
-- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. (50.7 s for 1000 runs)
-- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (20.6 s for 1000 runs)
-- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (40.3 s for 1000 runs)
-- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (22.1 s for 1000 runs)
-- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (29.9 s for 1000 runs)
-- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (39.9 s for 1000 runs)
-- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (37.0 s for 1000 runs)
-- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (39.5 s for 1000 runs)
-- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (3.2 s for 1000 runs)
-- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (33.9 s for 1000 runs)
-- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (38.8 s for 1000 runs)
-- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (20.4 s for 1000 runs)
-- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (36.5 s for 1000 runs)
-- `tourism_overborrow`: Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written. (51.6 s for 1000 runs)
-- `tourism_reckless`: Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term. (47.1 s for 1000 runs)
-- `tourism_refit_loan`: Plays like tourism_careful and takes a second loan for the own fit-out once guests pay about 20,000 EUR a month. (32.3 s for 1000 runs)
+- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. (84.7 s for 1000 runs)
+- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (30.9 s for 1000 runs)
+- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (66.3 s for 1000 runs)
+- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (37.0 s for 1000 runs)
+- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (9.7 s for 1000 runs)
+- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (65.8 s for 1000 runs)
+- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (56.5 s for 1000 runs)
+- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (61.5 s for 1000 runs)
+- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (5.9 s for 1000 runs)
+- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (52.6 s for 1000 runs)
+- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (62.7 s for 1000 runs)
+- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (40.6 s for 1000 runs)
+- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (57.1 s for 1000 runs)
+- `tourism_overborrow`: Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written. (91.0 s for 1000 runs)
+- `tourism_reckless`: Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term. (83.5 s for 1000 runs)
+- `tourism_refit_loan`: Plays like tourism_careful and takes a second loan for the own fit-out once guests pay about 20,000 EUR a month. (46.2 s for 1000 runs)
 
 # Tuning notes
 
