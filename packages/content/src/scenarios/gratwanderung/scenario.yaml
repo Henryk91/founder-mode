@@ -480,6 +480,14 @@ bookings:
       # Scarce in July and August.
       available: [10, 10, 10, 10, 10, 8, 5, 5, 8, 10, 10, 10]
       founderHours: 9
+      # Plan 2 step 1b. An employed guide earns about 3,500 to 4,500 gross a month (est.); with
+      # employer costs about 1,150 a week for five days: under half a freelance day's rate, but
+      # paid in November too. A season runs June to September and cannot be ended early.
+      contracts:
+        permanent: { centsPerWeek: 115000, shifts: 5, noticeWeeks: 4, quality: 0.3, max: 2 }
+        part_time: { centsPerWeek: 72000, shifts: 3, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 125000, shifts: 5, months: [6, 7, 8, 9], quality: 0.25, max: 2 }
     hiking_leader:
       name: Hiking leader
       # Up to about 215 a day for hiking leaders with tour operators (2025 job advert); 215 here.
@@ -490,6 +498,49 @@ bookings:
         team_day: 0.5
         school_day: 1
       available: [14, 14, 14, 14, 14, 14, 12, 12, 14, 14, 14, 14]
+      # About 2,600 gross a month employed (est.), 650 a week with employer costs.
+      contracts:
+        permanent: { centsPerWeek: 65000, shifts: 5, noticeWeeks: 4, quality: 0.3, max: 2 }
+        part_time: { centsPerWeek: 40000, shifts: 3, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 70000, shifts: 5, months: [5, 6, 7, 8, 9], quality: 0.25, max: 2 }
+  # Plan 2 step 1a: the spec's own experiments (docs/scenario-outdoor.md section 5).
+  trials:
+    pilot_day:
+      name: Pilot day
+      # A free guided day for a few people from one group: a full founder day, snacks and some
+      # gear wear (est.). Those who would book again say so; a tourist leaves a review.
+      hours: 10
+      cents: 15000
+      weeks: 1
+      people: 8
+      choose: true
+      reach: { tourists: 1, team_events: 1, school_groups: 1 }
+      rate: { base: 0, perPain: 0.4 }
+      reviewFrom: [tourists]
+      repeat: true
+      max: 2
+    test_listing:
+      name: Test listing
+      # Two weeks on the platform at the current price with a promoted listing (est.). Mostly
+      # tourists see it; it says little about firms and schools.
+      hours: 3
+      cents: 30000
+      weeks: 2
+      people: 240
+      reach: { tourists: 0.85, team_events: 0.1, school_groups: 0.05 }
+      rate: { base: 0.01, perPain: 0.12 }
+      max: 3
+  # Gift vouchers for a guided day, sold over the winter for the summer. Paid now, owed later.
+  vouchers:
+    hoursPerBatch: 4
+    batchSize: 20
+    rate: { base: 0, perPain: 0.12 }
+    segments: [tourists]
+    units: 1
+    maxBatches: 4
+    redeemShare: 0.85
+    redeemWeeks: { min: 10, max: 30 }
   reviews:
     qualityBase: 4.4
     noiseSd: 0.3

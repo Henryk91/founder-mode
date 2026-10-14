@@ -175,6 +175,32 @@ export function guestsEconomics(state: GameState): GuestsEconomics | null {
     bookingCostsCents: state.ledger.reduce((t, l) => t + l.bookingCostsCents, 0),
     rating: b.rating,
     reviews: b.reviews,
+    ...(cfg.vouchers
+      ? {
+          vouchers: {
+            sold: b.vouchers?.length ?? 0,
+            redeemed: (b.vouchers ?? []).filter((v) => v.redeemedWeek !== null).length,
+            openCount: (b.vouchers ?? []).filter((v) => v.redeemedWeek === null).length,
+            openValueCents: (b.vouchers ?? [])
+              .filter((v) => v.redeemedWeek === null)
+              .reduce((t, v) => t + v.valueCents, 0),
+          },
+        }
+      : {}),
+    ...(Object.values(cfg.products).some((p) => p.prepared)
+      ? {
+          wasteCents: b.wasteCents ?? 0,
+        }
+      : {}),
+    ...(Object.values(cfg.roles).some((r) => r.contracts)
+      ? {
+          contracts: {
+            permanent: (b.contracts ?? []).filter((c) => c.kind === 'permanent').length,
+            part_time: (b.contracts ?? []).filter((c) => c.kind === 'part_time').length,
+            seasonal: (b.contracts ?? []).filter((c) => c.kind === 'seasonal').length,
+          },
+        }
+      : {}),
   }
 }
 
@@ -716,8 +742,13 @@ function rankedFirst(
   return null
 }
 
-function experimentEvents(state: GameState): ExperimentEvent[] {
-  return state.eventLog.flatMap((e) => (e.kind === 'landing' || e.kind === 'presale' ? [e] : []))
+type SubscriptionExperimentEvent = ExperimentEvent & { kind: 'landing' | 'presale' }
+
+/** Landing tests and pre-sales; tourism trials and vouchers have their own lines. */
+function experimentEvents(state: GameState): SubscriptionExperimentEvent[] {
+  return state.eventLog.flatMap((e) =>
+    e.kind === 'landing' || e.kind === 'presale' ? [e as SubscriptionExperimentEvent] : [],
+  )
 }
 
 /** Visitors of a landing test or prospects of a pre-sale, from the evidence of that week. */

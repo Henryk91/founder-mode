@@ -1,4 +1,11 @@
-import type { ChannelId, GameMode, MessageLook, Scenario, TeamRoleId } from '@founder-mode/content'
+import type {
+  ChannelId,
+  ContractKind,
+  GameMode,
+  MessageLook,
+  Scenario,
+  TeamRoleId,
+} from '@founder-mode/content'
 
 export type { GameMode, Scenario, TeamRoleId }
 
@@ -198,7 +205,35 @@ export type Booking = {
   status: BookingStatus
   /** Paid when booked (a deposit, step 7); the rest is due at the stay. Absent: none. */
   depositCents?: number
+  /** Plan 2: a voucher redeemed for this booking; it was paid when the voucher was sold. */
+  voucherId?: string
 }
+
+/** Plan 2 step 1a: a voucher sold; a liability until it is redeemed. */
+export type Voucher = {
+  id: string
+  segmentId: SegmentId
+  soldWeek: number
+  units: number
+  /** What the buyer paid. */
+  valueCents: number
+  /** The week the guests came, or null while it is open. */
+  redeemedWeek: number | null
+}
+
+/** Plan 2 step 1b: staff on a contract rather than shifts booked week by week. */
+export type StaffContract = {
+  id: string
+  roleId: string
+  kind: ContractKind
+  name: string
+  startWeek: number
+  /** The last week worked and paid, once notice is given or a season ends; null while running. */
+  endWeek: number | null
+}
+
+/** Plan 2 step 1d: a room under works, closed until its end week. */
+export type RoomWorks = { startWeek: number; endWeek: number }
 
 /** Why the bank said no, in the words the player sees. */
 export type LoanRefusal = 'own_money' | 'no_guests' | 'missed_payment' | 'too_many'
@@ -288,6 +323,19 @@ export type BookingsState = {
   forecast: WeatherState
   /** Requests turned away for lack of room, per week (the last 12 weeks). */
   turnedAway: { week: number; segmentId: SegmentId; units: number }[]
+  /** Plan 2 step 1a: vouchers sold. Absent before any was. */
+  vouchers?: Voucher[]
+  /** Plan 2 step 1b: contracts, running and ended. Absent before any was signed. */
+  contracts?: StaffContract[]
+  /** Plan 2 step 1c: units prepared per service product, kept from week to week. */
+  prep?: Record<FeatureId, number>
+  /** Plan 2 step 1c: food cost of everything thrown away over the run. */
+  wasteCents?: number
+  /** Plan 2 step 1d: rooms renovated, and rooms under works. */
+  renovated?: number
+  works?: RoomWorks[]
+  /** Plan 2 step 1d: a minimum stay of two nights in the minimum stay months. */
+  minStay?: boolean
 }
 
 export type HiddenBookings = {
@@ -296,6 +344,8 @@ export type HiddenBookings = {
   season: Record<SegmentId, number[]>
   /** Next week's true weather. */
   nextWeather: WeatherState
+  /** Plan 2 step 1a: the week each voucher's guests ask for a date, or null for never. */
+  voucherWeeks?: Record<string, number | null>
 }
 
 /**
@@ -310,6 +360,18 @@ export type BookingsPlan = {
   platform: boolean | null
   partnerships: SegmentId[]
   outreach: Record<SegmentId, number>
+  /** Plan 2 step 1a: trials started this week, with the segment where the player picks one. */
+  trials?: { id: string; segmentId: SegmentId | null }[]
+  /** Plan 2 step 1a: voucher batches offered per segment. */
+  vouchers?: Record<SegmentId, number>
+  /** Plan 2 step 1b: contracts to sign (a role and a kind), and contracts to end (ids). */
+  hire?: { roleId: string; kind: ContractKind }[]
+  endContracts?: string[]
+  /** Plan 2 step 1c: units to prepare per service product, from this week on. */
+  prep?: Record<FeatureId, number>
+  /** Plan 2 step 1d: rooms whose works start this week; a minimum stay on or off. */
+  renovate?: number
+  minStay?: boolean | null
 }
 
 export type HiddenFunding = {
@@ -475,11 +537,42 @@ export type PresaleEvidence = {
   priceCents: number
 }
 
-export type Evidence = InterviewEvidence | LandingEvidence | PresaleEvidence
+/** Plan 2 step 1a: what a tourism trial heard from one segment. */
+export type TrialEvidence = {
+  kind: 'trial'
+  week: number
+  segmentId: SegmentId
+  trialId: string
+  people: number
+  /** People who booked again, ordered again or asked for dates. */
+  responses: number
+  /** The segment's price per unit at the time. */
+  priceCents: number
+}
+
+/** Plan 2 step 1a: vouchers offered to one segment. */
+export type VoucherEvidence = {
+  kind: 'voucher'
+  week: number
+  segmentId: SegmentId
+  prospects: number
+  sold: number
+  /** What one voucher cost. */
+  priceCents: number
+}
+
+export type Evidence =
+  | InterviewEvidence
+  | LandingEvidence
+  | PresaleEvidence
+  | TrialEvidence
+  | VoucherEvidence
 
 /** A landing page test or pre-sale in progress. Holds the hidden chance, so it stays hidden. */
 export type PendingExperiment = {
-  kind: 'landing' | 'presale'
+  kind: 'landing' | 'presale' | 'trial' | 'voucher'
+  /** Plan 2: the tourism trial, for kind trial. */
+  trialId?: string
   segmentId: SegmentId
   startWeek: number
   resolveWeek: number
@@ -627,6 +720,10 @@ export type WeekLedger = {
   bookingRevenueCents: number
   /** Tourism: shifts, unit costs and products' one-off costs, company costs in the win test. */
   bookingCostsCents: number
+  /** Plan 2: vouchers sold this week. Cash, but a liability: never revenue, never in runway. */
+  voucherCents?: number
+  /** Plan 2: what the vouchers redeemed this week were sold for, counted as earned in the win test. */
+  voucherRedeemedCents?: number
   /**
    * The bank loan (step 6): money paid out (never revenue), and repayments, interest and fees
    * paid (outgoings in the net change and the win test). 0 without a loan.
@@ -669,7 +766,7 @@ export type InterviewEvent = {
 
 /** A landing page test or pre-sale result next to what its chance predicted. */
 export type ExperimentEvent = {
-  kind: 'landing' | 'presale'
+  kind: 'landing' | 'presale' | 'trial' | 'voucher'
   week: number
   segmentId: SegmentId
   expected: number
@@ -1115,6 +1212,78 @@ export type CalendarCell = {
   lastYear: number | null
 }
 
+export type ContractOptionView = {
+  kind: ContractKind
+  centsPerWeek: number
+  shifts: number
+  /** Weeks paid after notice; null when it cannot be ended (seasonal). */
+  noticeWeeks: number | null
+  /** Months it runs in; null for all year. */
+  months: number[] | null
+  max: number
+  /** Such contracts running now in this role. */
+  running: number
+}
+
+export type ContractView = {
+  id: string
+  roleId: string
+  kind: ContractKind
+  name: string
+  startWeek: number
+  endWeek: number | null
+  /** Works this week (a seasonal contract waits for its months). */
+  working: boolean
+  centsPerWeek: number
+  shifts: number
+  canEnd: boolean
+}
+
+export type TrialOptionView = {
+  id: string
+  name: string
+  hours: number
+  cents: number
+  weeks: number
+  people: number
+  /** The player picks one of these segments; otherwise it reaches them all, mostly the first. */
+  choose: boolean
+  segments: SegmentId[]
+  paid: boolean
+  /** Runs left: per segment where the player picks one, else one number under the key ''. */
+  left: Record<string, number>
+  /** False once the product it comes before has opened. */
+  open: boolean
+}
+
+export type VouchersView = {
+  hoursPerBatch: number
+  batchSize: number
+  units: number
+  segments: { id: SegmentId; batchesLeft: number; priceCents: number }[]
+  sold: number
+  redeemed: number
+  /** Sold and not yet redeemed: guests still owed, and what they paid. */
+  openCount: number
+  openUnits: number
+  openValueCents: number
+}
+
+export type RenovationView = {
+  rooms: number
+  renovated: number
+  underWorks: number
+  /** Works planned that have not ended yet, under works now or not. */
+  inProgress: { startWeek: number; endWeek: number }[]
+  centsPerRoom: number
+  weeks: number
+  atOnce: number
+  mustHaveRooms: number
+  unitsPerRoom: number
+  /** Rooms that can start works this week. */
+  canStart: number
+}
+
 /** Tourism as the player sees it. No demand, no season curve, no true weather. */
 export type BookingsView = {
   weekOfYear: number
@@ -1158,7 +1327,23 @@ export type BookingsView = {
     units: Record<FeatureId, number>
     available: number
     founderHours: number | null
+    /** Plan 2 step 1c: kitchen roles cook, floor roles serve; `serve` does both. */
+    kind: 'serve' | 'kitchen' | 'floor'
+    /** Plan 2 step 1b: the contracts this role can be hired on. */
+    contracts: ContractOptionView[]
   }[]
+  /** Plan 2 step 1b: contracts signed, running or in notice; ended ones drop out. */
+  contracts: ContractView[]
+  /** Plan 2 step 1a: the scenario's trials. Empty where it has none. */
+  trials: TrialOptionView[]
+  /** Plan 2 step 1a: vouchers, where the scenario sells them. */
+  vouchers: VouchersView | null
+  /** Plan 2 step 1c: units prepared per service product, or null to prepare what the roster can cook. */
+  prep: { productId: FeatureId; units: number | null }[]
+  /** Plan 2 step 1d: rooms renovated one at a time, where the scenario has it. */
+  renovation: RenovationView | null
+  /** Plan 2 step 1d: the minimum stay, where the scenario has one. */
+  minStay: { on: boolean; months: number[]; segments: SegmentId[]; nights: number } | null
   /** Next 12 weeks per product, this week first. */
   calendar: { productId: FeatureId; cells: CalendarCell[] }[]
   /** Bookings for this week per product, the units the roster must cover. */
@@ -1317,7 +1502,9 @@ export type TeamView = {
 }
 
 export type PendingExperimentView = {
-  kind: 'landing' | 'presale'
+  kind: 'landing' | 'presale' | 'trial' | 'voucher'
+  /** Plan 2: the tourism trial, for kind trial. */
+  trialId?: string
   segmentId: SegmentId
   resolveWeek: number
 }
@@ -1331,6 +1518,18 @@ export type LandingView = {
 
 export type PresaleView = { week: number; prospects: number; commits: number; priceCents: number }
 
+/** Plan 2 step 1a: a tourism trial's result for one segment. */
+export type TrialView = {
+  week: number
+  trialId: string
+  people: number
+  responses: number
+  priceCents: number
+}
+
+/** Plan 2 step 1a: vouchers offered to one segment. */
+export type VoucherView = { week: number; prospects: number; sold: number; priceCents: number }
+
 export type SegmentView = {
   id: SegmentId
   name: string
@@ -1338,6 +1537,9 @@ export type SegmentView = {
   interviews: InterviewView[]
   landingTests: LandingView[]
   presales: PresaleView[]
+  /** Plan 2, tourism only: trial results and voucher offers. */
+  trials?: TrialView[]
+  vouchers?: VoucherView[]
   /** Leads of this segment that are not lost and not yet customers. */
   openLeads: number
   /** Pre-sale batches still allowed in this market, after the ones already run. */
@@ -1413,7 +1615,33 @@ export type ReportEntry =
   | { kind: 'guests_served'; units: number; revenueCents: number; commissionCents: number }
   /** Guests who cancelled: paid anyway under a strict policy (`kept`). */
   | { kind: 'bookings_cancelled'; units: number; kept: boolean }
-  | { kind: 'company_cancelled'; units: number; reason: 'staff' | 'weather' }
+  | {
+      kind: 'company_cancelled'
+      units: number
+      /** Plan 2: `sold_out` when the kitchen prepared too little, `works` for rooms under works. */
+      reason: 'staff' | 'weather' | 'sold_out' | 'works'
+    }
+  | {
+      kind: 'trial_result'
+      trialId: string
+      segmentId: SegmentId
+      people: number
+      responses: number
+    }
+  | {
+      kind: 'voucher_result'
+      segmentId: SegmentId
+      prospects: number
+      sold: number
+      amountCents: number
+    }
+  | { kind: 'vouchers_redeemed'; vouchers: number; units: number; valueCents: number }
+  | { kind: 'food_waste'; units: number; amountCents: number }
+  | { kind: 'contract_signed'; roleId: string; contractKind: ContractKind; name: string }
+  | { kind: 'contract_ended'; roleId: string; contractKind: ContractKind; name: string }
+  | { kind: 'contracts_paid'; contracts: number; amountCents: number }
+  | { kind: 'works_started'; rooms: number; amountCents: number }
+  | { kind: 'works_done'; rooms: number; renovated: number }
   | { kind: 'shifts_paid'; shifts: number; amountCents: number }
   | { kind: 'review'; rating: number; reviews: number; added: number }
   /** The bank loan (step 6). */
@@ -1723,6 +1951,14 @@ export type GuestsEconomics = {
   bookingCostsCents: number
   rating: number | null
   reviews: number
+  /**
+   * Plan 2: vouchers sold and never redeemed by the end (a debt in guests still owed), and food
+   * prepared and thrown away. Absent where the scenario has neither.
+   */
+  vouchers?: { sold: number; redeemed: number; openCount: number; openValueCents: number }
+  wasteCents?: number
+  /** Plan 2: contracts signed over the run, per kind. */
+  contracts?: { permanent: number; part_time: number; seasonal: number }
 }
 
 export type PostMortem = {

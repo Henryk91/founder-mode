@@ -232,7 +232,10 @@ export function resolveExperiments(
   state: GameState,
   rng: Rng,
 ): { state: GameState; entries: ReportEntry[]; depositsCents: number } {
-  const due = state.hidden.experiments.filter((e) => e.resolveWeek <= state.week)
+  // Tourism trials and vouchers resolve in `trials.ts` (plan 2).
+  const due = state.hidden.experiments.filter(
+    (e) => e.resolveWeek <= state.week && (e.kind === 'landing' || e.kind === 'presale'),
+  )
   if (due.length === 0) return { state, entries: [], depositsCents: 0 }
   let depositsCents = 0
   const entries: ReportEntry[] = []
@@ -327,7 +330,7 @@ export function resolveExperiments(
       knowledge,
       hidden: {
         ...state.hidden,
-        experiments: state.hidden.experiments.filter((e) => e.resolveWeek > state.week),
+        experiments: state.hidden.experiments.filter((e) => !due.includes(e)),
       },
       eventLog: [...state.eventLog, ...events],
     },

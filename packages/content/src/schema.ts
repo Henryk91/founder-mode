@@ -382,13 +382,45 @@ export const BookingProductSchema = z.object({
   requires: Id.optional(),
   // Step 6: a cost per unit as a share of its price (food cost), on top of unitCostCents.
   unitCostShare: Share.optional(),
+  // Plan 2 step 1c: food is prepared per service. The unit cost is paid on every prepared unit,
+  // served or not, and guests beyond what was prepared are turned away.
+  prepared: z.boolean().optional(),
   // Step 7: sells from that product's capacity instead of its own (whole-house bookings use the
   // rooms); both count against one pool.
   capacityOf: Id.optional(),
 })
 
+// Plan 2 step 1b: a contract instead of shifts booked week by week. Permanent and part time staff
+// work every week and are paid whether busy or not, until a notice period runs out; a seasonal
+// contract runs through its months and cannot be ended early.
+export const ContractSchema = z.object({
+  centsPerWeek: Cents.positive(),
+  // Shifts a week the contract covers.
+  shifts: z.number().int().positive(),
+  // Weeks paid after notice is given. Absent: cannot be ended (seasonal).
+  noticeWeeks: z.number().int().nonnegative().optional(),
+  // Seasonal: the months it runs in; it ends when they end. Absent: all year.
+  months: z.array(z.number().int().min(1).max(12)).optional(),
+  // Review quality added when contract staff do all of a week's shifts (they know the place).
+  quality: z.number().nonnegative(),
+  // Most such contracts in this role at once.
+  max: z.number().int().positive(),
+})
+export const CONTRACT_KINDS = ['permanent', 'part_time', 'seasonal'] as const
+export type ContractKind = (typeof CONTRACT_KINDS)[number]
+
 export const StaffRoleSchema = z.object({
   name: z.string().min(1),
+  // Plan 2 step 1c: kitchen roles decide how many covers a service can serve; floor roles do not
+  // add covers but set how well they are served (reviews). Default: a role that serves.
+  kind: z.enum(['serve', 'kitchen', 'floor']).optional(),
+  contracts: z
+    .object({
+      permanent: ContractSchema.optional(),
+      part_time: ContractSchema.optional(),
+      seasonal: ContractSchema.optional(),
+    })
+    .optional(),
   centsPerShift: Cents.nonnegative(),
   // Units of each product one shift can serve.
   units: z.record(Id, z.number().nonnegative()),
@@ -431,6 +463,83 @@ export const LoanConfigSchema = z.object({
 })
 export type LoanConfig = z.infer<typeof LoanConfigSchema>
 
+// Plan 2 step 1a: the specs' own experiments (a pilot day, a test listing, a pop-up dinner, a
+// lunch test, test rates, an open house). Each speaks honestly, with noise, about the segments it
+// reaches; never about the others.
+export const TrialSchema = z.object({
+  name: z.string().min(1),
+  hours: z.number().int().nonnegative(),
+  cents: Cents.nonnegative(),
+  // Weeks until the result.
+  weeks: z.number().int().positive(),
+  // People it reaches.
+  people: z.number().int().positive(),
+  // Share of the people from each segment; with `choose`, the player picks one of these segments
+  // and everyone comes from it.
+  reach: z.record(Id, Share),
+  choose: z.boolean().default(false),
+  // Chance a person responds (books again, orders again, asks for dates): base plus perPain times
+  // the segment's pain, times the price curve at the segment's own price.
+  rate: z.object({ base: Share, perPain: Share }),
+  // People pay the segment's price on the day (a pop-up dinner, lunch boxes).
+  paid: z.boolean().default(false),
+  // Guests from these segments leave a review.
+  reviewFrom: z.array(Id).default([]),
+  // Those who respond join the segment's repeat guests.
+  repeat: z.boolean().default(false),
+  // Most runs per run (per segment where the player chooses).
+  max: z.number().int().positive(),
+  // Only while this product has not shipped (before opening).
+  before: Id.optional(),
+})
+export type TrialConfig = z.infer<typeof TrialSchema>
+
+// Plan 2 step 1a: vouchers instead of pre-sales. Cash now and a liability: redeemed later as
+// bookings that use capacity and pay nothing more; some are never redeemed.
+export const VoucherConfigSchema = z.object({
+  hoursPerBatch: z.number().int().nonnegative(),
+  // People offered vouchers per batch.
+  batchSize: z.number().int().positive(),
+  rate: z.object({ base: Share, perPain: Share }),
+  segments: z.array(Id).min(1),
+  // Units one voucher buys (a person, a dinner for two, two nights).
+  units: z.number().int().positive(),
+  maxBatches: z.number().int().positive(),
+  // Share redeemed at all, and the weeks after the sale a redeemed one asks for a date.
+  redeemShare: Share,
+  redeemWeeks: IntRange,
+})
+export type VoucherConfig = z.infer<typeof VoucherConfigSchema>
+
+// Plan 2 step 1d: rooms renovated one at a time. A room under works is closed for `weeks`; the
+// feature counts as a must have once `mustHaveRooms` rooms are done.
+export const RenovationSchema = z.object({
+  product: Id,
+  feature: Id,
+  rooms: z.number().int().positive(),
+  unitsPerRoom: z.number().int().positive(),
+  centsPerRoom: Cents.positive(),
+  weeks: z.number().int().positive(),
+  mustHaveRooms: z.number().int().positive(),
+  // Most rooms under works at once.
+  atOnce: z.number().int().positive(),
+  // Review quality per renovated room, at most this times rooms (tired rooms get remarks).
+  qualityPerRoom: z.number().nonnegative(),
+})
+export type RenovationConfig = z.infer<typeof RenovationSchema>
+
+// Plan 2 step 1d: a minimum stay in some months. Fewer of these segments' requests book, but
+// each stays longer (no empty Sundays).
+export const MinStaySchema = z.object({
+  segments: z.array(Id).min(1),
+  months: z.array(z.number().int().min(1).max(12)).min(1),
+  // Share of requests that still book with a minimum stay of two nights.
+  conversion: Share,
+  // Units added to each such booking.
+  extraUnits: z.number().int().positive(),
+})
+export type MinStayConfig = z.infer<typeof MinStaySchema>
+
 export const BookingsConfigSchema = z.object({
   startWeekOfYear: z.number().int().min(1).max(52),
   seasonNoise: Share,
@@ -459,6 +568,14 @@ export const BookingsConfigSchema = z.object({
   segments: z.record(Id, BookingSegmentSchema),
   products: z.record(Id, BookingProductSchema),
   roles: z.record(Id, StaffRoleSchema),
+  trials: z.record(Id, TrialSchema).optional(),
+  vouchers: VoucherConfigSchema.optional(),
+  renovation: RenovationSchema.optional(),
+  minStay: MinStaySchema.optional(),
+  // Plan 2 step 1c, with floor roles: a short floor still serves up to `stretch` times its units
+  // (slower turns, fewer covers beyond that), and reviews lose `penalty` times the share of covers
+  // served beyond the floor's units.
+  floor: z.object({ stretch: z.number().min(1), penalty: z.number().nonnegative() }).optional(),
   reviews: z.object({
     qualityBase: z.number(),
     noiseSd: z.number().nonnegative(),
@@ -921,6 +1038,32 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       for (const f of Object.keys(r.units)) {
         if (!s.bookings.products[f]) issue(`unknown product ${f}`, ['bookings', 'roles', id])
       }
+    }
+    const bk = s.bookings
+    for (const [id, t] of Object.entries(bk.trials ?? {})) {
+      for (const seg of Object.keys(t.reach)) {
+        if (!segIds.has(seg)) issue(`unknown segment ${seg}`, ['bookings', 'trials', id, 'reach'])
+      }
+      for (const seg of t.reviewFrom) {
+        if (!segIds.has(seg)) issue(`unknown segment ${seg}`, ['bookings', 'trials', id])
+      }
+      if (t.before && !featureIds.has(t.before)) {
+        issue(`unknown feature ${t.before}`, ['bookings', 'trials', id, 'before'])
+      }
+    }
+    for (const seg of bk.vouchers?.segments ?? []) {
+      if (!segIds.has(seg)) issue(`unknown segment ${seg}`, ['bookings', 'vouchers', 'segments'])
+    }
+    if (bk.renovation) {
+      if (!bk.products[bk.renovation.product]) {
+        issue('unknown product', ['bookings', 'renovation', 'product'])
+      }
+      if (!featureIds.has(bk.renovation.feature)) {
+        issue('unknown feature', ['bookings', 'renovation', 'feature'])
+      }
+    }
+    for (const seg of bk.minStay?.segments ?? []) {
+      if (!segIds.has(seg)) issue(`unknown segment ${seg}`, ['bookings', 'minStay', 'segments'])
     }
     if (!featureIds.has(s.bookings.website.product)) {
       issue('unknown website product', ['bookings', 'website', 'product'])

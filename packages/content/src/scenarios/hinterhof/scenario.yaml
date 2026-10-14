@@ -453,6 +453,7 @@ bookings:
       # 110,000 depending on choices; the basic version here).
       oneOffCents: 6000000
     fast_lunch:
+      prepared: true
       # Forty seats, two sittings, five lunches.
       capacity: 400
       serves: [office_lunch, tourists]
@@ -467,6 +468,7 @@ bookings:
       capacity: 0
       monthlyCents: 3000
     dinner_menu:
+      prepared: true
       # Forty seats, one and a half turns, four evenings.
       capacity: 240
       serves: [evening_locals, tourists]
@@ -483,12 +485,14 @@ bookings:
     english_menu:
       capacity: 0
     open_sundays:
+      prepared: true
       capacity: 80
       serves: [tourists, evening_locals]
       requires: fit_out
       monthlyCents: 100000
       unitCostShare: 0.32
     courtyard:
+      prepared: true
       # Twenty more seats in summer, closed in storms.
       capacity: 100
       serves: [tourists, evening_locals]
@@ -515,11 +519,14 @@ bookings:
       unitCostCents: 150
       unitCostShare: 0.62
   roles:
-    crew:
-      name: Cook and server
-      # A cook at about 3,000 gross a month (union entry pay in Bavaria) and a server, five hours
-      # each with employer costs, for one service (est.).
-      centsPerShift: 30000
+    # Plan 2 step 1c: the kitchen and the floor apart. A cook decides how many covers a service
+    # can send out; a server how well they are looked after (a short floor turns tables slower).
+    cook:
+      name: Cook
+      kind: kitchen
+      # A cook at about 3,000 gross a month (union entry pay in Bavaria), booked by the service
+      # through an agency: five hours with costs (est.).
+      centsPerShift: 17000
       units:
         fast_lunch: 110
         dinner_menu: 45
@@ -529,8 +536,33 @@ bookings:
         delivery: 50
       available: [14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
       founderHours: 8
+      # Plan 2 step 1b. Employed: about 3,000 gross a month plus a fifth for employer costs, eight
+      # services a week (est.); about 100 a service against 170 from the agency.
+      contracts:
+        permanent: { centsPerWeek: 81000, shifts: 8, noticeWeeks: 4, quality: 0.3, max: 2 }
+        part_time: { centsPerWeek: 42000, shifts: 4, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 85000, shifts: 8, months: [5, 6, 7, 8, 9], quality: 0.2, max: 2 }
+    server:
+      name: Server
+      kind: floor
+      # Five hours with costs, from an agency or a minijob pool (est.).
+      centsPerShift: 13000
+      units:
+        fast_lunch: 110
+        dinner_menu: 45
+        open_sundays: 40
+        courtyard: 30
+      available: [14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
+      # About 2,600 gross a month employed, plus tips that stay with the staff (est.).
+      contracts:
+        permanent: { centsPerWeek: 73000, shifts: 8, noticeWeeks: 4, quality: 0.3, max: 2 }
+        part_time: { centsPerWeek: 38000, shifts: 4, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 76000, shifts: 8, months: [5, 6, 7, 8, 9], quality: 0.2, max: 2 }
     helper:
       name: Minijob helper
+      kind: kitchen
       # Five hours at the minimum wage of 13.90 (2026).
       centsPerShift: 7000
       units:
@@ -541,6 +573,49 @@ bookings:
         catering: 10
         delivery: 15
       available: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
+  # A short floor still gets a quarter more covers out, slowly; reviews notice.
+  floor: { stretch: 1.25, penalty: 1.5 }
+  # Plan 2 step 1a: the spec's own experiments (docs/scenario-restaurant.md B.5b), before opening.
+  trials:
+    popup_dinner:
+      name: Pop-up dinner
+      # One evening in a friend's bar: a day of cooking and the ingredients (est.). Guests pay the
+      # dinner price; the neighbours come most, some visitors, the odd office worker.
+      hours: 10
+      cents: 60000
+      weeks: 1
+      people: 24
+      reach: { evening_locals: 0.6, tourists: 0.3, office_lunch: 0.1 }
+      rate: { base: 0, perPain: 0.5 }
+      paid: true
+      reviewFrom: [evening_locals]
+      repeat: true
+      max: 2
+      before: fit_out
+    lunch_test:
+      name: Lunch test
+      # Lunch boxes to two or three offices for a week: ingredients and boxes (est.). Who orders
+      # again says something about office lunch, and nothing about anyone else.
+      hours: 12
+      cents: 30000
+      weeks: 1
+      people: 40
+      reach: { office_lunch: 1 }
+      rate: { base: 0, perPain: 0.5 }
+      paid: true
+      repeat: true
+      max: 2
+      before: fit_out
+  # Opening vouchers for a dinner for two, sold to the neighbourhood. Paid now, owed later.
+  vouchers:
+    hoursPerBatch: 4
+    batchSize: 20
+    rate: { base: 0, perPain: 0.12 }
+    segments: [evening_locals]
+    units: 2
+    maxBatches: 4
+    redeemShare: 0.8
+    redeemWeeks: { min: 2, max: 20 }
   reviews:
     qualityBase: 4.3
     noiseSd: 0.3
