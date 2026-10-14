@@ -121,16 +121,17 @@ events:
     from: none
     sender: A travel blogger
     text: >-
-      A travel blogger asks for two free nights in exchange for a post to her followers. Her
-      photos are lovely and her followers mostly live in Australia. Two free nights in a full
-      week are two nights nobody pays for.
+      A travel blogger asks for two free nights in exchange for a post to her followers. Her photos
+      are lovely and her followers mostly live in Australia. Two free nights in a full week are two
+      nights nobody pays for. Her followers book the quiet months; in season you would be giving
+      away nights you could sell.
     defaultChoice: decline
     choices:
       - id: host
         label: Give her two nights
         hours: 2
         effects:
-          - { type: guests, segment: leisure, count: 8 }
+          - { type: guests, segment: leisure, count: 8, when: [tour.peak == 0] }
           - { type: review, rating: 3, count: 2, when: [tour.bookedWeek >= 60] }
       - id: decline
         label: Decline politely

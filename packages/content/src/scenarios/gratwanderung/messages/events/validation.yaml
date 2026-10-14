@@ -29,15 +29,16 @@ events:
     from: none
     sender: Gasthof Zur Post Oberau
     text: >-
-      The owner of the Gasthof asks whether you would take her guests up the mountain. Her
-      guests ask every morning, she says, mostly in English and mostly before coffee.
+      The owner of the Gasthof asks whether you would take her guests up the mountain. Her guests
+      ask every morning, she says, mostly in English and mostly before coffee. Her house is full in
+      summer; the rest of the year it is her, three guests and a dog.
     defaultChoice: later
     choices:
       - id: meet
         label: Meet her and ask what her guests want
         hours: 2
         effects:
-          - { type: guests, segment: tourists, count: 3 }
+          - { type: guests, segment: tourists, count: 3, when: [tour.peak == 1] }
       - id: later
         label: Say you will be in touch
         hours: 0
@@ -50,15 +51,16 @@ events:
     from: none
     sender: An HR network in Munich
     text: >-
-      A Munich HR network invites you to speak for ten minutes about team days. There will be
-      thirty people, sandwiches, and a projector that works on the second attempt.
+      A Munich HR network invites you to speak for ten minutes about team days. There will be thirty
+      people, sandwiches, and a projector that works on the second attempt. HR books next year's
+      team days in the quiet months; in summer they are all on holiday.
     defaultChoice: decline
     choices:
       - id: speak
         label: Prepare a short talk
         hours: 5
         effects:
-          - { type: guests, segment: team_events, count: 1 }
+          - { type: guests, segment: team_events, count: 1, when: [tour.peak == 0] }
           - { type: energy, delta: -3 }
       - id: decline
         label: Decline politely
@@ -73,15 +75,16 @@ events:
     sender: District teacher training
     look: official
     text: >-
-      The district's teacher training day has a slot for outdoor education providers. The slot
-      is at four in the afternoon, which teachers consider the middle of the night.
+      The district's teacher training day has a slot for outdoor education providers. The slot is at
+      four in the afternoon, which teachers consider the middle of the night. Teachers plan next
+      year's trips in autumn and winter; in summer they plan nothing at all.
     defaultChoice: skip
     choices:
       - id: attend
         label: Take the slot and bring forms
         hours: 4
         effects:
-          - { type: guests, segment: school_groups, count: 1 }
+          - { type: guests, segment: school_groups, count: 1, when: [tour.peak == 0] }
       - id: skip
         label: Skip it
         hours: 0

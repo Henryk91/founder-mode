@@ -150,6 +150,19 @@ export const cloneBookingsPlan = (p: BookingsPlan): BookingsPlan => ({
   ...(p.minStay !== undefined ? { minStay: p.minStay } : {}),
 })
 
+/**
+ * Founder hours guests take this week (plan 2 step 3): per unit served last week, capped. Known
+ * before the week is planned, like hours already given to messages.
+ */
+export function hostingHours(state: Pick<GameState, 'scenario' | 'bookings' | 'week'>): number {
+  const h = state.scenario.bookings?.hosting
+  if (!h || !state.bookings) return 0
+  const units = state.bookings.bookings
+    .filter((x) => x.week === state.week - 1 && x.status === 'served')
+    .reduce((t, x) => t + x.units, 0)
+  return Math.min(h.maxHours, Math.round(units * h.hoursPerUnit))
+}
+
 /** Founder hours the bookings part of a plan takes: own shifts, outreach, new partnerships. */
 export function bookingsHours(state: Pick<GameState, 'scenario'>, plan: WeekPlan): number {
   const cfg = bookingsConfig(state)
@@ -1191,6 +1204,7 @@ export function bookingsView(state: GameState): BookingsView | null {
           }
         })()
       : null,
+    hostingHours: hostingHours(state),
     lastWeek: Object.keys(cfg.products).flatMap((id) => {
       const mine = b.bookings.filter((x) => x.productId === id && x.week === state.week - 1)
       const served = mine.filter((x) => x.status === 'served').reduce((t, x) => t + x.units, 0)

@@ -38,14 +38,14 @@ events:
     text: >-
       A firm wants six rooms for eight weeks at a fixed low rate for a project team. It is
       guaranteed occupancy in a quiet season. In summer the same rooms would sell for more on a
-      weekend.
+      weekend. Out of season the rooms would stand empty otherwise.
     defaultChoice: decline
     choices:
       - id: accept
         label: Take the block booking
         hours: 2
         effects:
-          - { type: guests, segment: project_guests, count: 30 }
+          - { type: guests, segment: project_guests, count: 30, when: [tour.peak == 0] }
           - { type: review, rating: 3, count: 2, when: [tour.peak == 1] }
       - id: decline
         label: Decline
@@ -83,15 +83,16 @@ events:
     from: none
     sender: The tourism office
     text: >-
-      The tourism office asks you to join a package with the boat company: a night, breakfast and
-      a cruise. The office takes a commission, the boat takes a cut, and guests take photos.
+      The tourism office asks you to join a package with the boat company: a night, breakfast and a
+      cruise. The office takes a commission, the boat takes a cut, and guests take photos. The boats
+      run in the summer months only.
     defaultChoice: decline
     choices:
       - id: join
         label: Join the package
         hours: 2
         effects:
-          - { type: guests, segment: leisure, count: 10 }
+          - { type: guests, segment: leisure, count: 10, when: [tour.peak == 1] }
           - { type: cash, amountCents: -15000 }
       - id: decline
         label: Decline

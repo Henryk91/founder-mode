@@ -513,7 +513,8 @@ export function readInbox(
           : rule
     const c = m.choices.find((x) => x.id === id)
     if (!c) continue
-    if (used + c.hours + view.forcedHours > view.founder.maxHoursPerWeek) continue
+    const hosting = view.bookings?.hostingHours ?? 0
+    if (used + c.hours + view.forcedHours + hosting > view.founder.maxHoursPerWeek) continue
     if (c.costCents > 0 && view.company.cashCents - c.costCents < MESSAGE_CASH_FLOOR_CENTS) continue
     answers.push({ messageId: m.id, choiceId: c.id })
     used += c.hours
@@ -763,7 +764,8 @@ export function answerInbox(view: PlayerView): { messageId: string; choiceId: st
           c.monthlyCostCents === 0 &&
           c.hours <= MESSAGE_HOURS_MAX &&
           used + c.hours <= MESSAGE_HOURS_PER_WEEK &&
-          used + c.hours + view.forcedHours <= view.founder.maxHoursPerWeek &&
+          used + c.hours + view.forcedHours + (view.bookings?.hostingHours ?? 0) <=
+            view.founder.maxHoursPerWeek &&
           (c.costCents === 0 ||
             (c.costCents <= cash * MESSAGE_CASH_SHARE &&
               cash - c.costCents >= MESSAGE_CASH_FLOOR_CENTS)),
@@ -1547,7 +1549,12 @@ export function validatingPlayer(
         ? books.flatMap((m) => {
             const c = m.choices.find((x) => x.id === BOOKS_CHOICE)
             const fits =
-              c && view.committedHours + view.forcedHours + c.hours <= view.founder.maxHoursPerWeek
+              c &&
+              view.committedHours +
+                view.forcedHours +
+                (view.bookings?.hostingHours ?? 0) +
+                c.hours <=
+                view.founder.maxHoursPerWeek
             return fits ? [{ messageId: m.id, choiceId: BOOKS_CHOICE }] : []
           })
         : []

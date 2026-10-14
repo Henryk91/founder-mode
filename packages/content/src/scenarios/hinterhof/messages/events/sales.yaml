@@ -38,8 +38,9 @@ events:
     sender: Tafelrunde
     look: official
     text: >-
-      Tafelrunde offers you a featured spot on its Friday evening list for a month. It costs a
-      flat fee and promises "visibility". They need tables free on Fridays to send anyone.
+      Tafelrunde offers you a featured spot on its Friday evening list for a month. It costs a flat
+      fee and promises "visibility". They need tables free on Fridays to send anyone. In the busy
+      months your Fridays are full anyway; the spot pays in the quiet ones.
     defaultChoice: decline
     choices:
       - id: feature
@@ -47,7 +48,7 @@ events:
         hours: 1
         effects:
           - { type: cash, amountCents: -40000 }
-          - { type: guests, segment: evening_locals, count: 20 }
+          - { type: guests, segment: evening_locals, count: 20, when: [tour.peak == 0] }
       - id: decline
         label: Decline
         hours: 0
@@ -137,16 +138,16 @@ events:
     from: none
     sender: Hotel Lindenstube
     text: >-
-      A small hotel nearby offers to recommend you to its guests for a modest cut of each bill.
-      The manager calls it a partnership; his spreadsheet calls it a commission. The guests would
-      need tables.
+      A small hotel nearby offers to recommend you to its guests for a modest cut of each bill. The
+      manager calls it a partnership; his spreadsheet calls it a commission. The guests would need
+      tables. His hotel fills up in the busy months and is half empty otherwise.
     defaultChoice: decline
     choices:
       - id: accept
         label: Agree to the cut
         hours: 2
         effects:
-          - { type: guests, segment: tourists, count: 15 }
+          - { type: guests, segment: tourists, count: 15, when: [tour.peak == 1] }
           - { type: cash, amountCents: -15000 }
       - id: decline
         label: Decline
@@ -208,16 +209,16 @@ events:
     sender: A group of neighbours
     look: note
     text: >-
-      Eight neighbours want a reserved table every Thursday for their Stammtisch. They drink a
-      lot and eat a little. On a quiet Thursday that is good news; on a full one, it is a big
-      table of beer.
+      Eight neighbours want a reserved table every Thursday for their Stammtisch. They drink a lot
+      and eat a little. On a quiet Thursday that is good news; on a full one, it is a big table of
+      beer. The busy months are not quiet Thursdays.
     defaultChoice: decline
     choices:
       - id: reserve
         label: Reserve the table every week
         hours: 1
         effects:
-          - { type: guests, segment: evening_locals, count: 16 }
+          - { type: guests, segment: evening_locals, count: 16, when: [tour.peak == 0] }
       - id: decline
         label: Decline
         hours: 0

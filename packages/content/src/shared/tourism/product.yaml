@@ -68,3 +68,53 @@ events:
         hours: 0
         effects:
           - { type: review, rating: 2, count: 1, chance: 0.5 }
+
+  # Plan 2 step 3: the effortful answer pays only in the situation the text names.
+  - id: quality_seal
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: A regional quality seal
+    look: official
+    text: >-
+      A regional quality seal costs 400 EUR and a morning of inspection. Guests trust the sticker
+      when a place has few reviews to go on. With thirty reviews on the platform, nobody reads the
+      door.
+    defaultChoice: decline
+    choices:
+      - id: apply
+        label: Apply for the seal
+        hours: 4
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: review, rating: 5, count: 4, when: [tour.reviews < 10] }
+      - id: decline
+        label: Skip the sticker
+        hours: 0
+
+  - id: rainy_day_plan
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [week >= 8]
+    from: none
+    sender: Your notebook
+    look: note
+    text: >-
+      You could write a proper programme for rainy days: games, a museum deal, a pot of soup,
+      300 EUR of supplies. Worth it with storms in next week's forecast. With sunshine ahead it is
+      a folder nobody opens.
+    defaultChoice: later
+    choices:
+      - id: prepare
+        label: Prepare the rainy day plan
+        hours: 5
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: review, rating: 5, count: 3, when: [tour.forecast >= 2] }
+      - id: later
+        label: Hope for sun
+        hours: 0

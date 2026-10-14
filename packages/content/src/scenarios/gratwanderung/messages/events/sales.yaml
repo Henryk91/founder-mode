@@ -9,13 +9,14 @@ events:
     text: >-
       Trailbuddy offers "featured placement" in your region for five points more commission.
       Featured partners get more bookings, the email says, and less sleep, it does not say.
+      Placement matters while people are searching, which is summer.
     defaultChoice: decline
     choices:
       - id: accept
         label: Pay for placement this season
         hours: 1
         effects:
-          - { type: guests, segment: tourists, count: 25 }
+          - { type: guests, segment: tourists, count: 25, when: [tour.peak == 1] }
           - { type: cash, amountCents: -60000 }
       - id: decline
         label: Stay as you are
@@ -121,15 +122,16 @@ events:
     from: none
     sender: Bergreisen Süd
     text: >-
-      A small travel agency wants to bundle your hikes into its Bavaria weeks. It pays thirty
-      days after the trip, it says, as if that were a feature.
+      A small travel agency wants to bundle your hikes into its Bavaria weeks. It pays thirty days
+      after the trip, it says, as if that were a feature. The agency checks your reviews before it
+      prints anything.
     defaultChoice: decline
     choices:
       - id: sign
         label: Sign the bundle deal
         hours: 2
         effects:
-          - { type: guests, segment: tourists, count: 10 }
+          - { type: guests, segment: tourists, count: 10, when: [tour.rating >= 40] }
       - id: decline
         label: Decline
         hours: 0
@@ -142,15 +144,16 @@ events:
     from: none
     sender: Jugendherberge am See
     text: >-
-      The youth hostel by the lake gets asked for guided days by every school that stays. The
-      warden would recommend you, if you send her something she can photocopy.
+      The youth hostel by the lake gets asked for guided days by every school that stays. The warden
+      would recommend you, if you send her something she can photocopy. She updates her folder in
+      winter, for the spring classes.
     defaultChoice: later
     choices:
       - id: send
         label: Write a one page programme for schools
         hours: 3
         effects:
-          - { type: guests, segment: school_groups, count: 2 }
+          - { type: guests, segment: school_groups, count: 2, when: [tour.peak == 0] }
       - id: later
         label: Put it on the list
         hours: 0

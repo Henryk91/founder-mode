@@ -547,6 +547,9 @@ bookings:
     months: [6, 7, 8, 9]
     conversion: 0.8
     extraUnits: 1
+  # Plan 2 step 3: guests take the founder's time: welcoming, the phone, the bookings, a word at
+  # the table (est.). Hours per guest served last week, capped.
+  hosting: { hoursPerUnit: 0.15, maxHours: 15 }
   # Plan 2 step 1a: the spec's own experiments (docs/scenario-hotel.md section 5).
   trials:
     test_rates:

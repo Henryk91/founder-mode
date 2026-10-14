@@ -8,15 +8,16 @@ events:
     from: none
     sender: The local paper
     text: >-
-      The local paper wants to feature "a young business in the area". The photographer will
-      come on Tuesday and wants you to look relaxed, which costs extra.
+      The local paper wants to feature "a young business in the area". The photographer will come on
+      Tuesday and wants you to look relaxed, which costs extra. Readers will look you up, and they
+      read the reviews before the article.
     defaultChoice: decline
     choices:
       - id: interview
         label: Do the interview and the photo
         hours: 2
         effects:
-          - { type: guests, count: 4 }
+          - { type: guests, count: 4, when: [tour.rating >= 40] }
       - id: decline
         label: Decline
         hours: 0
