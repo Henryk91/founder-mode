@@ -388,6 +388,9 @@ export const BookingProductSchema = z.object({
   // Step 7: sells from that product's capacity instead of its own (whole-house bookings use the
   // rooms); both count against one pool.
   capacityOf: Id.optional(),
+  // Plan 2 step 2: shipping it moves the business to this office stage (a restaurant's own
+  // fit-out).
+  stage: Id.optional(),
 })
 
 // Plan 2 step 1b: a contract instead of shifts booked week by week. Permanent and part time staff
@@ -460,6 +463,12 @@ export const LoanConfigSchema = z.object({
   missedFeeCents: Cents.nonnegative(),
   earlyFeeShare: Share,
   maxLoans: z.number().int().positive(),
+  // Plan 2 step 2: the bank lends against a plan. It lists these products (bought when the money
+  // arrives), rooms where the scenario renovates room by room, and working capital of at most
+  // this many months of fixed costs; nothing else. Absent: an amount of the founder's choosing.
+  items: z.array(Id).optional(),
+  financeRooms: z.boolean().optional(),
+  workingCapitalMonths: z.number().positive().optional(),
 })
 export type LoanConfig = z.infer<typeof LoanConfigSchema>
 
@@ -1040,6 +1049,14 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       }
     }
     const bk = s.bookings
+    for (const id of s.loan?.items ?? []) {
+      if (!bk.products[id]) issue(`unknown product ${id}`, ['loan', 'items'])
+    }
+    for (const [id, p] of Object.entries(bk.products)) {
+      if (p.stage && !s.officeStages.some((o) => o.id === p.stage)) {
+        issue(`unknown office stage ${p.stage}`, ['bookings', 'products', id, 'stage'])
+      }
+    }
     for (const [id, t] of Object.entries(bk.trials ?? {})) {
       for (const seg of Object.keys(t.reach)) {
         if (!segIds.has(seg)) issue(`unknown segment ${seg}`, ['bookings', 'trials', id, 'reach'])

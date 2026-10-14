@@ -12,6 +12,7 @@ import type {
   WeekPlan,
 } from '../types'
 import { bookingsRevenueOrSubscriptions } from './bookings'
+import { monthlyFixedCostsCents } from './finance'
 
 /**
  * The bank loan (step 6, docs/loan-proposal.md). A business plan in hours, an application the
@@ -62,6 +63,45 @@ export function ceilingCents(state: GameState): number {
   return Math.min(cfg.maxCents, Math.max(cfg.unprovenMaxCents, Math.round(proven)))
 }
 
+/** Plan 2 step 2: the bank lends against a listed plan where the scenario says so. */
+export const lendsAgainstPlan = (cfg: LoanConfig): boolean => cfg.items !== undefined
+
+/** The most working capital the bank lends: its stated months of the current fixed costs. */
+export function workingCapitalMaxCents(state: GameState): number {
+  const cfg = loanConfig(state)!
+  return Math.round((cfg.workingCapitalMonths ?? 0) * monthlyFixedCostsCents(state))
+}
+
+/** What the listed products and rooms cost. */
+export function planItemsCents(
+  state: GameState,
+  terms: Pick<LoanTerms, 'items' | 'rooms'>,
+): number {
+  const products = state.scenario.bookings?.products ?? {}
+  const room = state.scenario.bookings?.renovation?.centsPerRoom ?? 0
+  return (
+    (terms.items ?? []).reduce((t, id) => t + (products[id]?.oneOffCents ?? 0), 0) +
+    (terms.rooms ?? 0) * room
+  )
+}
+
+/** Rooms a plan may still list: not renovated, not under works, not bought by a loan already. */
+export function roomsToFinance(state: GameState): number {
+  const r = state.scenario.bookings?.renovation
+  if (!r || !loanConfig(state)?.financeRooms) return 0
+  const b = state.bookings
+  const works = (b?.works ?? []).filter((x) => x.endWeek >= state.week).length
+  return Math.max(0, r.rooms - (b?.renovated ?? 0) - works - (state.loan?.roomsBought ?? 0))
+}
+
+/** A product a plan may list: in the bank's list, not shipped, not bought already. */
+export function canFinance(state: GameState, id: string): boolean {
+  const cfg = loanConfig(state)
+  if (!cfg?.items?.includes(id)) return false
+  if (state.product.features.some((f) => f.id === id && f.shippedWeek !== null)) return false
+  return !(state.loan?.bought ?? []).includes(id)
+}
+
 /** The bank's answer to an application: the main reason to refuse, or null for an offer. */
 export function judgeLoan(state: GameState, terms: LoanTerms): LoanRefusal | null {
   const cfg = loanConfig(state)!
@@ -71,6 +111,9 @@ export function judgeLoan(state: GameState, terms: LoanTerms): LoanRefusal | nul
   const own = ownMoneyCents(state)
   const borrowed = borrowedCents(state) + terms.amountCents
   if (own < cfg.ownShare * (own + borrowed)) return 'own_money'
+  if (lendsAgainstPlan(cfg) && (terms.workingCapitalCents ?? 0) > workingCapitalMaxCents(state)) {
+    return 'working_capital'
+  }
   if (borrowedCents(state) + terms.amountCents > ceilingCents(state)) return 'no_guests'
   return null
 }
@@ -125,7 +168,18 @@ export function loanValid(state: GameState, plan: WeekPlan): boolean {
     const waiting = l.refusal !== null && state.week < l.refusal.week + cfg.retryWeeks
     if (!ready || waiting || l.application || l.offer || l.accepted) return false
     if (t.amountCents < cfg.minCents || t.amountCents > cfg.maxCents) return false
-    if (t.amountCents % cfg.stepCents !== 0) return false
+    if (lendsAgainstPlan(cfg)) {
+      // A plan: listed products and rooms at their prices, and working capital in steps.
+      const items = t.items ?? []
+      if (new Set(items).size !== items.length || !items.every((id) => canFinance(state, id))) {
+        return false
+      }
+      const rooms = t.rooms ?? 0
+      if (!Number.isInteger(rooms) || rooms < 0 || rooms > roomsToFinance(state)) return false
+      const wc = t.workingCapitalCents ?? 0
+      if (!Number.isInteger(wc) || wc < 0 || wc % cfg.stepCents !== 0) return false
+      if (t.amountCents !== planItemsCents(state, t) + wc) return false
+    } else if (t.amountCents % cfg.stepCents !== 0) return false
     if (!cfg.termMonths.includes(t.termMonths) || !cfg.graceMonths.includes(t.graceMonths)) {
       return false
     }
@@ -153,8 +207,9 @@ export function applyLoan(
   const entries: ReportEntry[] = []
   let l: LoanState = { ...l0, planHours: Math.min(l0.planNeeded, l0.planHours + p.planHours) }
   if (p.accept && l.offer) {
-    const { amountCents, termMonths, graceMonths, rateBp } = l.offer
-    l = { ...l, accepted: { amountCents, termMonths, graceMonths, rateBp }, offer: null }
+    const { week: _week, paymentCents: _payment, ...terms } = l.offer
+    l = { ...l, accepted: terms, offer: null }
+    const amountCents = terms.amountCents
     entries.push({ kind: 'loan_accepted', amountCents })
   } else if (p.decline && l.offer) {
     l = { ...l, offer: null, planHours: 0, planNeeded: Math.ceil(cfg.planHours / 2) }
@@ -164,8 +219,7 @@ export function applyLoan(
     entries.push({ kind: 'loan_applied', amountCents: p.apply.amountCents })
   }
   if (l.application && state.week >= l.application.decideWeek) {
-    const { amountCents, termMonths, graceMonths } = l.application
-    const terms = { amountCents, termMonths, graceMonths }
+    const { decideWeek: _decide, ...terms } = l.application
     const reason = judgeLoan(state, terms)
     if (reason) {
       l = {
@@ -198,6 +252,8 @@ export function applyLoan(
 
 export type LoanMoney = {
   inCents: number
+  /** Plan 2 step 2: the listed products and rooms, bought as the money arrives. */
+  itemsCents: number
   principalCents: number
   interestCents: number
   feeCents: number
@@ -214,7 +270,13 @@ export function settleLoans(
   available: number,
   monthEnd: boolean,
 ): { state: GameState; money: LoanMoney; entries: ReportEntry[] } {
-  const money: LoanMoney = { inCents: 0, principalCents: 0, interestCents: 0, feeCents: 0 }
+  const money: LoanMoney = {
+    inCents: 0,
+    itemsCents: 0,
+    principalCents: 0,
+    interestCents: 0,
+    feeCents: 0,
+  }
   const cfg = loanConfig(state)
   const l0 = state.loan
   if (!cfg || !l0 || !monthEnd) return { state, money, entries: [] }
@@ -283,6 +345,8 @@ export function settleLoans(
     }
   }
   let accepted = l0.accepted
+  let bought = [...(l0.bought ?? [])]
+  let roomsBought = l0.roomsBought ?? 0
   if (accepted) {
     const id = `loan_${loans.length + 1}`
     loans.push({
@@ -304,12 +368,36 @@ export function settleLoans(
       missedInRow: 0,
       missedTotal: 0,
       status: 'running',
+      ...(accepted.items ? { items: [...accepted.items] } : {}),
+      ...(accepted.rooms ? { rooms: accepted.rooms } : {}),
+      ...(accepted.workingCapitalCents !== undefined
+        ? { workingCapitalCents: accepted.workingCapitalCents }
+        : {}),
     })
     money.inCents += accepted.amountCents
+    // A plan's products and rooms are bought as the money arrives; only the working capital stays.
+    money.itemsCents += planItemsCents(state, accepted)
     entries.push({ kind: 'loan_paid_out', amountCents: accepted.amountCents, name: cfg.bankName })
+    if (accepted.items?.length || accepted.rooms) {
+      bought = [...bought, ...(accepted.items ?? [])]
+      roomsBought += accepted.rooms ?? 0
+    }
     accepted = null
   }
-  return { state: { ...state, loan: { ...l0, loans, accepted } }, money, entries }
+  return {
+    state: {
+      ...state,
+      loan: {
+        ...l0,
+        loans,
+        accepted,
+        ...(bought.length || l0.bought ? { bought } : {}),
+        ...(roomsBought || l0.roomsBought !== undefined ? { roomsBought } : {}),
+      },
+    },
+    money,
+    entries,
+  }
 }
 
 /** A running loan with its last payment missed. */
@@ -325,8 +413,29 @@ export function loanView(state: GameState): LoanView | null {
   const cfg = loanConfig(state)
   const l = state.loan
   if (!cfg || !l) return null
+  const products = state.scenario.bookings?.products ?? {}
+  const reno = state.scenario.bookings?.renovation
   return {
     bankName: cfg.bankName,
+    plan: lendsAgainstPlan(cfg)
+      ? {
+          items: (cfg.items ?? [])
+            .filter((id) => canFinance(state, id))
+            .map((id) => ({
+              id,
+              name: state.scenario.features.find((f) => f.id === id)?.name ?? id,
+              cents: products[id]?.oneOffCents ?? 0,
+            })),
+          rooms:
+            cfg.financeRooms && reno
+              ? { centsPerRoom: reno.centsPerRoom, left: roomsToFinance(state) }
+              : null,
+          workingCapitalMonths: cfg.workingCapitalMonths ?? 0,
+          workingCapitalMaxCents: workingCapitalMaxCents(state),
+          bought: [...(l.bought ?? [])],
+          roomsBought: l.roomsBought ?? 0,
+        }
+      : null,
     planHours: l.planHours,
     planNeeded: l.planNeeded,
     meetingHours: cfg.meetingHours,

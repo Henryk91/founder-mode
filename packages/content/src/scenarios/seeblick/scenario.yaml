@@ -366,6 +366,11 @@ loan:
   missedFeeCents: 5000
   earlyFeeShare: 0.01
   maxLoans: 2
+  # Plan 2 step 2: the bank lends against the business plan: listed items, rooms to renovate, and
+  # working capital of at most three months of fixed costs (est.).
+  items: [workspace, event_room, wellness]
+  financeRooms: true
+  workingCapitalMonths: 3
 
 # Bookings (docs/tourism-proposal.md). A unit is a room night. Week 1 is the first week of
 # November.

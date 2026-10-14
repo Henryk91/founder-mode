@@ -308,9 +308,32 @@ export function PostMortem({ desk }: { desk: boolean }) {
             rate: (l.rateBp / 100).toFixed(2),
             interest: formatEuro(l.interestPaidCents + l.feesCents),
           })}{' '}
-          {l.paidFor.length > 0
-            ? label('pm.money.loanPaidFor', stage, { items: l.paidFor.join(', ') })
-            : label('pm.money.loanPaidForNothing', stage)}{' '}
+          {l.items
+            ? `${label('pm.loan.items', stage, {
+                items: l.items.map((x) => x.name).join(', ') || '-',
+                wc: formatEuro(l.workingCapitalCents ?? 0),
+              })} ${l.items
+                .map((x) =>
+                  x.earnedCents === null
+                    ? label(
+                        x.kind === 'base'
+                          ? 'pm.loan.itemBase'
+                          : x.kind === 'rooms'
+                            ? 'pm.loan.itemRooms'
+                            : 'pm.loan.itemNone',
+                        stage,
+                        { name: x.name, cost: formatEuro(x.cents) },
+                      )
+                    : label('pm.loan.itemEarned', stage, {
+                        name: x.name,
+                        cost: formatEuro(x.cents),
+                        earned: formatEuro(x.earnedCents),
+                      }),
+                )
+                .join(' ')}`
+            : l.paidFor.length > 0
+              ? label('pm.money.loanPaidFor', stage, { items: l.paidFor.join(', ') })
+              : label('pm.money.loanPaidForNothing', stage)}{' '}
           {label(`pm.money.loan.${l.status}`, stage, { balance: formatEuro(l.balanceCents) })}
         </p>
       ))}
