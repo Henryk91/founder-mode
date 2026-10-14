@@ -79,6 +79,7 @@ type Part =
   | 'funding'
   | 'energy'
   | 'events'
+  | 'skips'
 const PARTS: Part[] = [
   'main',
   'paired',
@@ -90,7 +91,10 @@ const PARTS: Part[] = [
   'funding',
   'energy',
   'events',
+  'skips',
 ]
+/** The blind effort policy whose events the skips part leaves out one at a time. */
+const SKIP_BASE = 'tourism_inbox_effort'
 type Planned = { strategy: Strategy; spec: StrategySpec; part: Part; runs: number }
 
 /** Every strategy one scenario's report needs, with the spec a worker builds it from. */
@@ -164,6 +168,10 @@ function planFor(scenario: Scenario): Planned[] {
   // The energy curve, on the wide seeds, only when asked for.
   if (full && args.parts.includes('energy'))
     out.push(...ENERGY_SPECS.map((spec) => plan(spec, 'energy', args.wideRuns)))
+  // Plan 2 step 3: blind effort with one event left to its default, every event (tourism).
+  if (args.parts.includes('skips') && scenario.bookings)
+    for (const e of scenario.events)
+      out.push(plan({ kind: 'skip', base: SKIP_BASE, eventId: e.id }, 'skips'))
   // Every answer of every event, forced, on validate_then_build. Slow, so only on request.
   if (args.parts.includes('events'))
     for (const e of scenario.events)
@@ -280,7 +288,7 @@ if (args.desk) {
  * the careful bot's result is reused under the forced strategy's id.
  */
 function forcedSeeds(task: Task, reader: RunResult[] | undefined): number[] | undefined {
-  if (task.spec.kind !== 'forced' || !reader) return undefined
+  if ((task.spec.kind !== 'forced' && task.spec.kind !== 'skip') || !reader) return undefined
   const eventId = task.spec.eventId
   return taskSeeds(task).filter((i) => reader[i]?.eventsSeen.includes(eventId) ?? true)
 }
@@ -308,8 +316,8 @@ if (units.length === 0) throw new Error(`No scenario has mode ${args.mode}`)
 const plans = units.map((u) => planFor(u.scenario))
 const done = plans.map((p) => p.map((): TaskDone => ({ results: [], seconds: 0 })))
 const timings: string[] = []
-const readerOf = (s: number): RunResult[] | undefined => {
-  const careful = carefulId(units[s]!.scenario)
+const readerOf = (s: number, spec?: StrategySpec): RunResult[] | undefined => {
+  const careful = spec?.kind === 'skip' ? spec.base : carefulId(units[s]!.scenario)
   const i = plans[s]!.findIndex((p) => p.part === 'main' && p.strategy.id === careful)
   return i >= 0 ? done[s]![i]!.results : undefined
 }
@@ -325,7 +333,7 @@ for (const part of PARTS) {
       seedPrefix: args.seedPrefix,
       runs: p[i]!.runs,
     }
-    const seeds = forcedSeeds(task, readerOf(s))
+    const seeds = forcedSeeds(task, readerOf(s, task.spec))
     return seeds ? { ...task, seeds } : task
   })
   const started = performance.now()
@@ -336,7 +344,7 @@ for (const part of PARTS) {
       )
   })
   index.forEach(({ s, i }, k) => {
-    const reader = readerOf(s)
+    const reader = readerOf(s, tasks[k]!.spec)
     done[s]![i] = reader
       ? withReused(tasks[k]!, finished[k]!, reader, plans[s]![i]!.strategy.id)
       : finished[k]!
@@ -350,6 +358,31 @@ for (const part of PARTS) {
   )
   console.log(`Part ${timings[timings.length - 1]}`)
 }
+// The skips part: what each event adds to blind effort, paired on the same seeds (plan 2 step 3).
+plans.forEach((p, s) => {
+  const base = p.findIndex((x) => x.part === 'main' && x.strategy.id === SKIP_BASE)
+  const skips = p.flatMap((x, i) => (x.spec.kind === 'skip' ? [i] : []))
+  if (base < 0 || skips.length === 0) return
+  const win = (r: RunResult) =>
+    r.ending === 'sustainable' || r.ending === 'growing' ? 1 : 0
+  const full = done[s]![base]!.results
+  const rows = skips.map((i) => {
+    const spec = p[i]!.spec as { eventId: string }
+    const res = done[s]![i]!.results
+    const diffs = full.map((r, k) => win(r) - win(res[k]!))
+    const n = diffs.length
+    const mean = diffs.reduce((t, x) => t + x, 0) / n
+    const sd = Math.sqrt(diffs.reduce((t, x) => t + (x - mean) ** 2, 0) / Math.max(1, n - 1))
+    const seen = full.filter((r) => r.eventsSeen.includes(spec.eventId)).length
+    return { id: spec.eventId, gain: 100 * mean, margin: (196 * sd) / Math.sqrt(n), seen }
+  })
+  rows.sort((a, b) => b.gain - a.gain)
+  const total = rows.reduce((t, r) => t + r.gain, 0)
+  console.log(`\nSkips for ${units[s]!.about.id}: what each event adds to ${SKIP_BASE} (points, paired)`)
+  console.log(`Sum of all events: ${total.toFixed(1)}`)
+  for (const r of rows)
+    console.log(`${r.id}\t${r.gain.toFixed(2)}\t±${r.margin.toFixed(2)}\tseen ${r.seen}`)
+})
 const reports = new Map(
   units.map((u, i) => [u.section.id, reportFor(u.scenario, plans[i]!, done[i]!)] as const),
 )

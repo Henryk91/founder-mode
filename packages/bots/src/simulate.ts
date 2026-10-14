@@ -184,6 +184,11 @@ export type RunResult = {
      */
     missedByLoan: boolean
     second: boolean
+    /**
+     * Plan 2 step 2 (L3 restated): the run ended with the bank calling the loan, or bankrupt
+     * with a loan still owed.
+     */
+    failedOwing: boolean
   } | null
   /** For runs with a hire: what it cost per customer it found, and what a customer was worth. */
   hire: HireEconomics | null
@@ -485,6 +490,10 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
             return before.length > 0 && operating >= 0
           }),
           second: state.loan.loans.length >= 2,
+          failedOwing:
+            state.ending === 'bank_called' ||
+            (state.ending === 'bankrupt' &&
+              state.loan.loans.some((l) => l.status !== 'repaid' && l.balanceCents > 0)),
         }
       : null,
     freelance: freelanceAt && {

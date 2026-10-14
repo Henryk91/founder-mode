@@ -72,3 +72,10 @@
   buildHours: 10
   bugsOnShip: { min: 0, max: 1 }
   mention: Honestly, I would order it to my desk if I could. I do not like leaving the building.
+
+# Plan 2 step 2: the own fit-out as something to plan and finance, not only an inbox offer.
+- id: own_fitout
+  name: Own fit-out
+  buildHours: 6
+  bugsOnShip: { min: 0, max: 0 }
+  mention: The chairs wobble and the lamps hum. It is cosy, in the way a waiting room is cosy.

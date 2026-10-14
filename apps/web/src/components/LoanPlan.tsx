@@ -153,33 +153,38 @@ export function LoanPlan() {
               }
             />
           )}
+          {ready && !waiting && l.plan && (
+            <PlanForm view={view} apply={apply} change={change} stage={stage} />
+          )}
           {ready && !waiting && (
             <>
-              <Market
-                label={label('loan.amount', stage)}
-                // What the amount buys in time: months of the company's fixed costs.
-                note={
-                  view.company.monthlyFixedCostsCents > 0
-                    ? label('loan.amountMonths', stage, {
-                        n: Math.round(apply.amountCents / view.company.monthlyFixedCostsCents),
-                      })
-                    : undefined
-                }
-                control={
-                  <Stepper
-                    stage={stage}
-                    value={apply.amountCents}
-                    onChange={(v) => change({ ...apply, amountCents: v })}
-                    what={label('loan.amountWhat', stage)}
-                    names={{ minus: 'loan.amount.minus', plus: 'loan.amount.plus' }}
-                    step={l.stepCents}
-                    formatStep={(c) => formatEuro(c)}
-                    display={formatEuro(apply.amountCents)}
-                    min={l.minCents}
-                    max={l.maxCents}
-                  />
-                }
-              />
+              {!l.plan && (
+                <Market
+                  label={label('loan.amount', stage)}
+                  // What the amount buys in time: months of the company's fixed costs.
+                  note={
+                    view.company.monthlyFixedCostsCents > 0
+                      ? label('loan.amountMonths', stage, {
+                          n: Math.round(apply.amountCents / view.company.monthlyFixedCostsCents),
+                        })
+                      : undefined
+                  }
+                  control={
+                    <Stepper
+                      stage={stage}
+                      value={apply.amountCents}
+                      onChange={(v) => change({ ...apply, amountCents: v })}
+                      what={label('loan.amountWhat', stage)}
+                      names={{ minus: 'loan.amount.minus', plus: 'loan.amount.plus' }}
+                      step={l.stepCents}
+                      formatStep={(c) => formatEuro(c)}
+                      display={formatEuro(apply.amountCents)}
+                      min={l.minCents}
+                      max={l.maxCents}
+                    />
+                  }
+                />
+              )}
               <Market
                 label={label('loan.term', stage)}
                 choices={
@@ -209,13 +214,14 @@ export function LoanPlan() {
                 }
               />
               <Choices>
-                {chip(
-                  draft.apply !== null,
-                  draft.apply
-                    ? label('loan.applyBooked', stage)
-                    : label('loan.applyChip', stage, { hours: hours(l.meetingHours) }),
-                  () => set({ apply: draft.apply ? null : apply }),
-                )}
+                {(draft.apply !== null || apply.amountCents >= l.minCents) &&
+                  chip(
+                    draft.apply !== null,
+                    draft.apply
+                      ? label('loan.applyBooked', stage)
+                      : label('loan.applyChip', stage, { hours: hours(l.meetingHours) }),
+                    () => set({ apply: draft.apply ? null : apply }),
+                  )}
               </Choices>
             </>
           )}
@@ -231,6 +237,102 @@ export function LoanPlan() {
         </>
       )}
       <HintLine term="loan" hint={label('plan.hint.loan', stage)} />
+    </>
+  )
+}
+
+/**
+ * Plan 2 step 2: the bank lends against a plan. The items it lists (bought the day the money
+ * arrives), rooms to renovate, and working capital up to its stated months of fixed costs; the
+ * amount is their sum.
+ */
+function PlanForm({
+  view,
+  apply,
+  change,
+  stage,
+}: {
+  view: PlayerView
+  apply: LoanTerms
+  change: (t: LoanTerms) => void
+  stage: Voice
+}) {
+  const l = view.loan!
+  const plan = l.plan!
+  const items = apply.items ?? []
+  const rooms = apply.rooms ?? 0
+  const wc = apply.workingCapitalCents ?? 0
+  const sum = (next: Partial<LoanTerms>): LoanTerms => {
+    const t = { ...apply, items, rooms, workingCapitalCents: wc, ...next }
+    const cents =
+      (t.items ?? []).reduce((s, id) => s + (plan.items.find((x) => x.id === id)?.cents ?? 0), 0) +
+      (t.rooms ?? 0) * (plan.rooms?.centsPerRoom ?? 0) +
+      (t.workingCapitalCents ?? 0)
+    return { ...t, amountCents: cents }
+  }
+  return (
+    <>
+      <Writing>
+        {label('loan.planRule', stage, {
+          bank: l.bankName,
+          months: plan.workingCapitalMonths,
+          max: formatEuro(plan.workingCapitalMaxCents),
+        })}
+      </Writing>
+      {plan.items.map((x) => {
+        const on = items.includes(x.id)
+        return (
+          <Market
+            key={x.id}
+            stack
+            label={x.name}
+            note={formatEuro(x.cents)}
+            choices={chip(
+              on,
+              on ? label('loan.item.listed', stage) : label('loan.item.list', stage),
+              () => change(sum({ items: on ? items.filter((y) => y !== x.id) : [...items, x.id] })),
+            )}
+          />
+        )
+      })}
+      {plan.rooms && plan.rooms.left > 0 && (
+        <Market
+          stack
+          label={label('loan.rooms', stage)}
+          note={label('loan.roomsNote', stage, { amount: formatEuro(plan.rooms.centsPerRoom) })}
+          control={
+            <Stepper
+              stage={stage}
+              value={rooms}
+              onChange={(v) => change(sum({ rooms: v }))}
+              what={label('loan.rooms', stage)}
+              max={plan.rooms.left}
+            />
+          }
+        />
+      )}
+      <Market
+        stack
+        label={label('loan.workingCapital', stage)}
+        control={
+          <Stepper
+            stage={stage}
+            value={wc}
+            onChange={(v) => change(sum({ workingCapitalCents: v }))}
+            what={label('loan.workingCapital', stage)}
+            names={{ minus: 'loan.amount.minus', plus: 'loan.amount.plus' }}
+            step={l.stepCents}
+            formatStep={(c) => formatEuro(c)}
+            display={formatEuro(wc)}
+            max={Math.floor(plan.workingCapitalMaxCents / l.stepCents) * l.stepCents}
+          />
+        }
+      />
+      <Writing warn={apply.amountCents > 0 && apply.amountCents < l.minCents}>
+        {apply.amountCents > 0 && apply.amountCents < l.minCents
+          ? label('loan.planTooSmall', stage, { min: formatEuro(l.minCents) })
+          : label('loan.planTotal', stage, { amount: formatEuro(apply.amountCents) })}
+      </Writing>
     </>
   )
 }

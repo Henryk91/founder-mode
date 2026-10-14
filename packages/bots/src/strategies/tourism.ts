@@ -98,6 +98,8 @@ const LOAN_BUFFER_MONTHS = 4
  */
 const BRIDGE_MONTHS: Record<string, number> = { seeblick: 6 }
 const RESERVE_MONTHS = 1
+/** Rooms a refreshed guesthouse has renovated, as the scenario's stage says (plan 2 step 2). */
+const REFRESH_ROOMS = 8
 /** A further product is built when its one-off cost is at most this share of the money. */
 const EXTRA_SHARE = 0.2
 /**
@@ -262,6 +264,77 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const borrowed = runningLoans.reduce((t, x) => t + x.principalCents, 0)
     const allowed =
       Math.floor(((l.ownMoneyCents * (1 - l.ownShare)) / l.ownShare - borrowed) / step) * step
+    const term = mode === 'reckless' ? l.termMonths[0]! : (l.termMonths[1] ?? l.termMonths[0]!)
+    const grace = mode === 'reckless' ? l.graceMonths[0]! : (l.graceMonths[1] ?? l.graceMonths[0]!)
+    if (l.plan) {
+      // Plan 2 step 2: a plan of listed items and working capital up to the bank's months.
+      const plan = l.plan
+      const greedy = mode === 'max' || mode === 'reckless'
+      const roomsNeeded = rooms / Math.max(1, reno?.centsPerRoom ?? 1)
+      let items = refit
+        ? plan.items.filter((x) => cfg.products[x.id]?.stage === refitOffer!.stage)
+        : greedy
+          ? // Everything the bank lists, temptations included; a refit is a choice of its own (L1).
+            plan.items.filter((x) => !cfg.products[x.id]?.stage)
+          : plan.items.filter((x) => unshipped.includes(x.id))
+      const renovated =
+        (view.bookings?.renovation?.renovated ?? 0) +
+        (view.bookings?.renovation?.inProgress.length ?? 0)
+      // A refit where no product makes it: more rooms, up to the refreshed house's eight.
+      const refitRooms = refit && items.length === 0 && plan.rooms
+      let roomCount = refitRooms
+        ? Math.max(0, Math.min(plan.rooms!.left, REFRESH_ROOMS - renovated))
+        : refit || !plan.rooms
+          ? 0
+          : greedy
+            ? plan.rooms.left
+            : Math.min(plan.rooms.left, roomsNeeded)
+      if (refit && items.length === 0 && roomCount === 0) return
+      const itemsCents = () =>
+        items.reduce((t, x) => t + x.cents, 0) + roomCount * (plan.rooms?.centsPerRoom ?? 0)
+      const wcNeed = refit
+        ? 0
+        : greedy
+          ? plan.workingCapitalMaxCents
+          : Math.max(0, need - itemsCents())
+      let wc = Math.floor(Math.min(plan.workingCapitalMaxCents, roundUp(wcNeed)) / step) * step
+      // Within the own-money rule and below the last refused amount: less working capital
+      // first, then the items listed last.
+      // After a refusal, a fifth less each time.
+      const cap = Math.min(
+        l.maxCents,
+        allowed,
+        refusedAt === null ? Infinity : Math.floor((refusedAt * 0.8) / step) * step,
+      )
+      while (itemsCents() + wc > cap && wc > 0) wc -= step
+      while (itemsCents() + wc > cap && (items.length > 0 || roomCount > 0)) {
+        if (roomCount > 0 && greedy) roomCount--
+        else if (items.length > 0) items = items.slice(0, -1)
+        else roomCount--
+      }
+      let amount = itemsCents() + wc
+      if (amount < l.minCents) {
+        wc += roundUp(l.minCents - amount)
+        amount = itemsCents() + wc
+        if (wc > plan.workingCapitalMaxCents || amount > cap) return
+      }
+      if (b.free < l.meetingHours) {
+        b.plan.loan = p
+        return
+      }
+      b.free -= l.meetingHours
+      refusedAt = amount
+      p.apply = {
+        amountCents: amount,
+        termMonths: term,
+        graceMonths: grace,
+        items: items.map((x) => x.id),
+        rooms: roomCount,
+        workingCapitalCents: wc,
+      }
+      b.plan.loan = p
+      return
+    }
     let amount = refit
       ? roundUp(refitOffer!.cents)
       : mode === 'careful'
@@ -276,12 +349,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     }
     b.free -= l.meetingHours
     refusedAt = amount
-    p.apply = {
-      amountCents: amount,
-      termMonths: mode === 'reckless' ? l.termMonths[0]! : (l.termMonths[1] ?? l.termMonths[0]!),
-      graceMonths:
-        mode === 'reckless' ? l.graceMonths[0]! : (l.graceMonths[1] ?? l.graceMonths[0]!),
-    }
+    p.apply = { amountCents: amount, termMonths: term, graceMonths: grace }
     b.plan.loan = p
   }
 
@@ -421,8 +489,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const r = view.bookings!.renovation
     if (!r || r.canStart === 0) return
     const feature = scenario.bookings!.renovation!.feature
-    if (!rule.buildAll && !wanted.includes(feature)) return
-    const goal = rule.buildAll ? r.rooms : r.mustHaveRooms
+    if (!rule.buildAll && !wanted.includes(feature) && !(view.loan?.plan?.roomsBought ?? 0)) return
+    const paid = view.loan?.plan?.roomsBought ?? 0
+    const goal = Math.max(
+      rule.buildAll ? r.rooms : r.mustHaveRooms,
+      r.renovated + r.inProgress.length + paid,
+    )
     const left = goal - r.renovated - r.inProgress.length
     if (left <= 0) return
     const cal = view.bookings!.calendar.find(
@@ -433,7 +505,8 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const busy = cap > 0 ? cells.reduce((t, c) => t + c.booked, 0) / cap : 0
     if (busy > WORKS_BUSY && !rule.buildAll) return
     const reserve = (RESERVE_MONTHS + 1) * view.company.monthlyFixedCostsCents
-    const affordable = Math.floor((view.company.cashCents - reserve) / r.centsPerRoom)
+    const affordable =
+      paid + Math.floor(Math.max(0, view.company.cashCents - reserve) / r.centsPerRoom)
     const n = Math.min(r.canStart, left, Math.max(0, affordable))
     if (n > 0) plan.renovate = n
   }
@@ -713,7 +786,15 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           : own
       // With a bank loan on offer (step 6): build what is required first, and never a product
       // the money cannot pay for yet.
-      const building = view.loan ? withRequired(toBuild) : toBuild
+      // Products a loan bought are built whatever else happens (plan 2 step 2).
+      const bought = [
+        ...(view.loan?.plan?.bought ?? []),
+        // Rooms bought need the works planned.
+        ...((view.loan?.plan?.roomsBought ?? 0) > 0 && cfg.renovation
+          ? [cfg.renovation.feature]
+          : []),
+      ]
+      const building = view.loan ? withRequired([...new Set([...toBuild, ...bought])]) : toBuild
       if (view.loan) {
         // Keep the bridge a long-lead market needs (the months beyond the usual buffer) as well.
         const lead = rule.naive ? 0 : (cfg.segments[seg]?.leadWeeks.max ?? 0)
@@ -727,7 +808,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         )
         const now = required.length > 0 ? required : building
         for (const f of now) {
-          const cost = cfg.products[f]?.oneOffCents ?? 0
+          const cost = bought.includes(f) ? 0 : (cfg.products[f]?.oneOffCents ?? 0)
           const keep = required.length > 0 ? 0 : reserve
           if (cost > 0 && view.company.cashCents - keep < cost) continue
           b.build(f, 40 - (b.plan.build[f] ?? 0))

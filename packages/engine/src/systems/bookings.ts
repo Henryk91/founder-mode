@@ -22,6 +22,7 @@ import {
   contractsValid,
 } from './contracts'
 import { energyFactor } from './founder'
+import { moveOffice } from './office'
 import { priceCurve } from './market'
 import { openVouchers, trialOpen, trialsUsed, trialsValid, voucherBatchesUsed } from './trials'
 
@@ -379,14 +380,21 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       out.entries.push({ kind: 'works_done', rooms: finished, renovated: b.renovated })
     }
   }
+  // Rooms a loan bought are paid for already (plan 2 step 2).
+  let roomsPaid = 0
   if (reno && (p.renovate ?? 0) > 0) {
     const n = p.renovate!
     b.works = [
       ...(b.works ?? []),
       ...Array.from({ length: n }, () => ({ startWeek: week, endWeek: week + reno.weeks - 1 })),
     ]
-    out.costsCents += n * reno.centsPerRoom
-    out.entries.push({ kind: 'works_started', rooms: n, amountCents: n * reno.centsPerRoom })
+    roomsPaid = Math.min(n, input.loan?.roomsBought ?? 0)
+    out.costsCents += (n - roomsPaid) * reno.centsPerRoom
+    out.entries.push({
+      kind: 'works_started',
+      rooms: n,
+      amountCents: (n - roomsPaid) * reno.centsPerRoom,
+    })
   }
 
   // 2. Weather.
@@ -396,12 +404,18 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   b.forecast = forecastOf(cfg, nextWeather, rng)
   out.entries.push({ kind: 'weather', weather })
 
-  // 3. Products shipped this week.
+  // 3. Products shipped this week. One a loan bought is paid for already (plan 2 step 2).
   let fixedCosts = state.company.fixedCosts
+  let loan = state.loan
+  if (loan && roomsPaid > 0) loan = { ...loan, roomsBought: (loan.roomsBought ?? 0) - roomsPaid }
+  const stages: string[] = []
   for (const f of state.product.features) {
     const prod = cfg.products[f.id]
     if (!prod || f.shippedWeek !== week) continue
-    out.costsCents += prod.oneOffCents
+    if (loan?.bought?.includes(f.id)) {
+      loan = { ...loan, bought: loan.bought.filter((x) => x !== f.id) }
+    } else out.costsCents += prod.oneOffCents
+    if (prod.stage) stages.push(prod.stage)
     if (prod.monthlyCents > 0 && !fixedCosts.some((c) => c.id === `product_${f.id}`)) {
       const name = state.scenario.features.find((x) => x.id === f.id)?.name ?? f.id
       fixedCosts = [...fixedCosts, { id: `product_${f.id}`, name, monthlyCents: prod.monthlyCents }]
@@ -410,9 +424,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   state = {
     ...state,
     company: { ...state.company, fixedCosts },
+    ...(loan !== state.loan ? { loan } : {}),
     bookings: b,
     hidden: { ...state.hidden, bookings: { ...input.hidden.bookings, nextWeather } },
   }
+  for (const stage of stages) state = moveOffice(state, stage)
 
   // 4. New requests.
   const bookings = [...b.bookings]
@@ -775,6 +791,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   // Money: paid on the day (net of commission), or invoiced.
   const invoices: Invoice[] = []
+  const earned = { ...(b.earned ?? {}) }
   const payWeeks = { ...state.hidden.payWeeks }
   const waitsForChase = [...state.hidden.waitsForChase]
   const dueDays = state.scenario.finance.invoiceDueDays
@@ -793,11 +810,14 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     commission += cut
     // What a deposit already paid comes off what is due now.
     const owed = gross - cut - (x.depositCents ?? 0)
+    let cost = 0
     if (x.status === 'served') {
       const prod = cfg.products[x.productId]
-      unitCosts +=
-        x.units * (prod?.unitCostCents ?? 0) + Math.round(gross * (prod?.unitCostShare ?? 0))
+      cost = x.units * (prod?.unitCostCents ?? 0) + Math.round(gross * (prod?.unitCostShare ?? 0))
+      unitCosts += cost
     }
+    // What each product earns, for the post-mortem's loan lines (plan 2 step 2).
+    earned[x.productId] = (earned[x.productId] ?? 0) + gross - cut - cost
     if (!s.invoiced) {
       out.revenueCents += owed
       continue
@@ -924,6 +944,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     bookings: {
       ...b,
       ...(b.vouchers ? { vouchers } : {}),
+      ...(Object.keys(earned).length ? { earned } : {}),
       ...archiveOld(bookings, b.archived, week),
       repeatGuests,
       turnedAway,

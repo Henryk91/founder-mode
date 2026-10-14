@@ -288,3 +288,83 @@ describe('renovation and minimum stay (plan 2 step 1d)', () => {
     expect(ok(createGame(quiet('hinterhof'), 'x'), plan(bp({ minStay: true })))).toBe(false)
   })
 })
+
+describe('the bank lends against a plan (plan 2 step 2)', () => {
+  const lp = (apply: object | null, over: object = {}): Partial<WeekPlan> => ({
+    loan: {
+      planHours: 0,
+      apply: apply as never,
+      accept: false,
+      decline: false,
+      repay: null,
+      ...over,
+    },
+  })
+
+  /** Writes the plan, applies, accepts the offer, and plays to the payout. */
+  function borrow(s: GameState, terms: object): GameState {
+    let state = endWeek(s, plan(lp(null, { planHours: 30 }))).state
+    state = endWeek(state, plan(lp(terms))).state
+    for (let i = 0; i < 6 && !state.loan!.offer; i++) state = endWeek(state, plan()).state
+    expect(state.loan!.offer).not.toBeNull()
+    state = endWeek(state, plan(lp(null, { accept: true }))).state
+    for (let i = 0; i < 6 && state.loan!.loans.length === 0; i++)
+      state = endWeek(state, plan()).state
+    return state
+  }
+
+  it('lists items at their price and caps working capital at the stated months', () => {
+    const s = endWeek(
+      createGame(quiet('hinterhof'), 'plan-1'),
+      plan(lp(null, { planHours: 30 })),
+    ).state
+    const v = getView(s).loan!
+    expect(v.plan!.workingCapitalMonths).toBe(3)
+    const max = v.plan!.workingCapitalMaxCents
+    const wc = Math.floor(max / 500_000) * 500_000
+    const fit = v.plan!.items.find((x) => x.id === 'fit_out')!
+    const ok = (a: object) => validatePlan(s, plan(lp(a))).length === 0
+    const t = { termMonths: 84, graceMonths: 6 }
+    expect(
+      ok({ ...t, items: ['fit_out'], workingCapitalCents: wc, amountCents: fit.cents + wc }),
+    ).toBe(true)
+    // The amount must be the plan's sum, and working capital in the bank's steps.
+    expect(
+      ok({
+        ...t,
+        items: ['fit_out'],
+        workingCapitalCents: wc,
+        amountCents: fit.cents + wc + 500_000,
+      }),
+    ).toBe(false)
+    expect(
+      ok({ ...t, items: ['fit_out'], workingCapitalCents: 123, amountCents: fit.cents + 123 }),
+    ).toBe(false)
+    expect(ok({ ...t, items: ['nothing'], workingCapitalCents: 0, amountCents: 1_000_000 })).toBe(
+      false,
+    )
+  })
+
+  it('buys the items when the money arrives, so only working capital reaches the account', () => {
+    const s = createGame(rich('hinterhof'), 'plan-2')
+    const t = { termMonths: 84, graceMonths: 6, items: ['fit_out'], rooms: 0 }
+    const cash0 = s.company.cashCents
+    const state = borrow(s, { ...t, workingCapitalCents: 1_000_000, amountCents: 7_000_000 })
+    const payout = state.ledger.find((l) => l.loanInCents > 0)!
+    expect(payout.loanInCents).toBe(7_000_000)
+    expect(payout.bookingCostsCents).toBeGreaterThanOrEqual(6_000_000)
+    expect(state.loan!.bought).toEqual(['fit_out'])
+    expect(getView(state).loan!.plan!.items.some((x) => x.id === 'fit_out')).toBe(false)
+    expect(state.company.cashCents).toBeLessThan(cash0 + 1_000_000)
+    // Built later, the fit-out costs nothing more.
+    let after = state
+    for (let i = 0; i < 4; i++) {
+      const left = getView(after).product.features.find((f) => f.id === 'fit_out')!.remainingHours
+      after = endWeek(after, plan({ build: left > 0 ? { fit_out: Math.min(40, left) } : {} })).state
+    }
+    expect(after.product.features.find((f) => f.id === 'fit_out')?.shippedWeek).not.toBeNull()
+    const shipWeek = after.product.features.find((f) => f.id === 'fit_out')!.shippedWeek!
+    expect(after.ledger.find((l) => l.week === shipWeek)!.bookingCostsCents).toBeLessThan(6_000_000)
+    expect(after.loan!.bought).toEqual([])
+  })
+})
