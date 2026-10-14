@@ -1,15 +1,15 @@
 # Autonomous run 2 status
 
 ## Current
-Step: 3, merged into main; its gate is running (scratchpad gate3.sh: 60 week, Kantino long, three tourism reports with events into docs/balancing.md).
-Last commit: Step 3: hosting hours, situational events and guests; runway band wraps
-Next action: compare the gate's 60 week and Kantino long sections with step 2 (identical expected), write reports/step3-inbox.md with T6 per scenario and the event table summary (share of cheapest wins), add T6 Seeblick to open issues, tag plan2-inbox. Then step 4 (retune tourism; new targets T13 naive careful, T14 contract kinds).
+Step: 4, retune the three tourism scenarios (not started).
+Last commit: Step 3 done (tag plan2-inbox)
+Next action: step 4 from AUTONOMOUS_PLAN_2.md section 5: add targets T13 (naive careful at least 20% and within 10 of careful) and T14 (every contract kind wins somewhere; bots tourism_permanent, tourism_seasonal, tourism_part_time via TourismRule.contracts) to packages/bots/src/tourismReport.ts; then tune Hinterhof (T1 17.3%, T2 no-tests 6.8%, T3 22.9, L3), Seeblick (T3 23.8, T6, T11), Gratwanderung (T3 17.2, T11, school demand nearer the spec). Work on branch plan2-work in ../founder-mode-plan2; quick checks with packages/bots/scratch/dbg2.ts.
 
 ## Checklist
 - [x] Step 0: take stock (tag plan2-baseline)
 - [x] Step 1: spec features (tag plan2-features)
 - [x] Step 2: bank loan (tag plan2-loan)
-- [ ] Step 3: tourism inbox (tag plan2-inbox)
+- [x] Step 3: tourism inbox (tag plan2-inbox)
 - [ ] Step 4: retune tourism (tag plan2-tourism)
 - [ ] Step 5: Kantino long, funding and target 20 (tag plan2-kantino-long)
 - [ ] Step 6: wrap up (tag plan2-complete)
