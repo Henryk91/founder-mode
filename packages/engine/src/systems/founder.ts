@@ -1,5 +1,5 @@
 import type { FounderState, GameState, HoursByActivity, Scenario, WeekPlan } from '../types'
-import { bookingsHours } from './bookings'
+import { bookingsHours, hostingHours } from './bookings'
 import { fundingHours } from './funding'
 import { loanHours } from './loan'
 import { managementHours } from './team'
@@ -57,6 +57,7 @@ export function hoursByActivity(
       (plan.searchRole === null ? 0 : scenario.team.searchHours) +
       committedHours(state) +
       state.founder.forcedHours +
+      hostingHours(state as GameState) +
       managementHours(state) +
       fundingHours(state as GameState, plan) +
       loanHours(state as GameState, plan),

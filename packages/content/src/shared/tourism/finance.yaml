@@ -70,3 +70,52 @@ events:
         hours: 0
         effects:
           - { type: cash, amountCents: -45000 }
+
+  # Plan 2 step 3: the effortful answer pays only in the situation the text names.
+  - id: energy_audit
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: An energy consultant
+    text: >-
+      An energy consultant offers an audit for 400 EUR and an afternoon of your time. The savings
+      come in the cold months, about 1,200 EUR of them. Booked in season, the report arrives after
+      the heating is off and is forgotten by autumn.
+    defaultChoice: decline
+    choices:
+      - id: audit
+        label: Book the audit
+        hours: 4
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: cash, amountCents: 120000, when: [tour.peak == 0] }
+      - id: decline
+        label: Not now
+        hours: 0
+
+  - id: tax_seminar
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: The chamber of commerce
+    look: official
+    text: >-
+      The chamber runs a seminar on cash planning for small businesses, 250 EUR and a day. It pays
+      for itself only if money is already tight: the trainer finds a few months of quiet payments
+      you can move. With plenty in the bank it is a long day of slides.
+    defaultChoice: decline
+    choices:
+      - id: attend
+        label: Attend the seminar
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -25000 }
+          - { type: energy, delta: -3 }
+          - { type: cash, amountCents: 150000, when: [runwayWeeks < 12] }
+      - id: decline
+        label: Skip it
+        hours: 0

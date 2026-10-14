@@ -79,13 +79,15 @@ events:
     text: >-
       The concierge of the hotel two streets away drops in to ask what you serve and when. Her
       guests ask every evening for somewhere local. She would send a few, if the kitchen is open.
+      Her hotel is full in summer and at the Oktoberfest; the rest of the year its guests are
+      travelling salesmen who eat in.
     defaultChoice: later
     choices:
       - id: show
         label: Show her round and feed her
         hours: 2
         effects:
-          - { type: guests, segment: tourists, count: 6 }
+          - { type: guests, segment: tourists, count: 6, when: [tour.peak == 1] }
           - { type: cash, amountCents: -3000 }
       - id: later
         label: Another time
@@ -99,15 +101,16 @@ events:
     from: none
     sender: A local food blog
     text: >-
-      A local food blog wants to interview you about the opening. They ask about your
-      inspiration, your favourite herb and whether you have a dog. You have none of the three.
+      A local food blog wants to interview you about the opening. They ask about your inspiration,
+      your favourite herb and whether you have a dog. You have none of the three. Readers check your
+      reviews before they check the blog.
     defaultChoice: decline
     choices:
       - id: interview
         label: Give the interview
         hours: 2
         effects:
-          - { type: guests, count: 6 }
+          - { type: guests, count: 6, when: [tour.rating >= 40] }
       - id: decline
         label: Decline politely
         hours: 0
@@ -168,14 +171,15 @@ events:
     look: official
     text: >-
       The tourism office would list you in its neighbourhood guide if you send a description in
-      English and two photos. The form asks for your "culinary concept", in capitals.
+      English and two photos. The form asks for your "culinary concept", in capitals. The guide also
+      prints your rating, which helps only if it is a good one.
     defaultChoice: skip
     choices:
       - id: send
         label: Write the description
         hours: 3
         effects:
-          - { type: guests, segment: tourists, count: 8 }
+          - { type: guests, segment: tourists, count: 8, when: [tour.rating >= 40] }
       - id: skip
         label: Skip it
         hours: 0

@@ -54,7 +54,9 @@ export class PlanBuilder {
     // Hours already taken by answers to messages and by earlier penalties come off the budget.
     // So do the hours the working team takes (long mode, 2 h each).
     const manage = view.team.members.reduce((t, m) => t + (m.working ? m.managementHours : 0), 0)
-    const taken = view.committedHours + view.forcedHours + manage
+    // Tourism: guests take some of the founder's week (plan 2 step 3).
+    const taken =
+      view.committedHours + view.forcedHours + manage + (view.bookings?.hostingHours ?? 0)
     this.free = Math.max(0, Math.min(budget, view.founder.maxHoursPerWeek) - taken)
   }
 

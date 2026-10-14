@@ -80,8 +80,9 @@ events:
     from: none
     sender: A regional tourism fair
     text: >-
-      A regional tourism fair offers a small stand for two days. Lots of brochures, lots of
-      coffee, and a few people who actually book things.
+      A regional tourism fair offers a small stand for two days. Lots of brochures, lots of coffee,
+      and a few people who actually book things. Visitors take a brochure and check your reviews on
+      the train home.
     defaultChoice: skip
     choices:
       - id: stand
@@ -89,7 +90,7 @@ events:
         hours: 12
         effects:
           - { type: cash, amountCents: -40000 }
-          - { type: guests, count: 10 }
+          - { type: guests, count: 10, when: [tour.rating >= 40] }
           - { type: energy, delta: -5 }
       - id: skip
         label: Skip it
@@ -119,3 +120,75 @@ events:
         hours: 0
         effects:
           - { type: review, rating: 2, count: 1 }
+
+  # Plan 2 step 3: the effortful answer pays only in the situation the text names.
+  - id: photo_shoot
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: A photographer
+    text: >-
+      A photographer offers a day's shoot for 600 EUR: guests enjoying themselves, the view at its
+      best. In a busy peak week the guests in the pictures post them for you. In a quiet month you
+      get lovely photos of empty chairs.
+    defaultChoice: decline
+    choices:
+      - id: shoot
+        label: Book the shoot
+        hours: 5
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: energy, delta: -3 }
+          - { type: review, rating: 5, count: 4, when: [tour.peak == 1] }
+      - id: decline
+        label: Not now
+        hours: 0
+
+  - id: guidebook_page
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: A guidebook editor
+    text: >-
+      A guidebook editor asks for a page of text about your place, written by you, by Friday. They
+      print only places rated 4.2 or better; below that, your page goes into a drawer and stays
+      there.
+    defaultChoice: decline
+    choices:
+      - id: write
+        label: Write the page
+        hours: 5
+        effects:
+          - { type: energy, delta: -3 }
+          - { type: review, rating: 5, count: 4, when: [tour.rating >= 42] }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: tasting_evening
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: The village association
+    text: >-
+      The village association suggests a tasting evening for locals, ingredients 400 EUR on you.
+      Off season the neighbours have time and talk about you all winter. In season they are busy
+      renting out their spare rooms.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Host the evening
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: energy, delta: -4 }
+          - { type: review, rating: 5, count: 4, when: [tour.peak == 0] }
+      - id: decline
+        label: Not this year
+        hours: 0

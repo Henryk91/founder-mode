@@ -1,5 +1,11 @@
 import type { Scenario } from '@founder-mode/content'
-import type { BookingsPlan, PlayerView, WeekPlan, WeekReport } from '@founder-mode/engine'
+import {
+  viewConditionsHold,
+  type BookingsPlan,
+  type PlayerView,
+  type WeekPlan,
+  type WeekReport,
+} from '@founder-mode/engine'
 import { budgetHints } from '../pricing'
 import { PlanBuilder, segmentNotes, type Player, type Strategy } from '../strategy'
 import { TOURISM_READER } from './tourismReader'
@@ -51,6 +57,9 @@ export type TourismRule = {
    */
   contracts?: 'careful' | 'none' | 'permanent' | 'seasonal' | 'part_time'
 }
+
+/** Hours this week's guests take before anything is planned (plan 2 step 3). */
+const bv0 = (view: PlayerView) => view.bookings?.hostingHours ?? 0
 
 export const CAREFUL_TOURISM: TourismRule = {
   tests: true,
@@ -555,7 +564,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     if (rule.naive) {
       // Only what a message's own conditions say; everything else keeps its default.
       const out: { messageId: string; choiceId: string }[] = []
-      let used = view.committedHours + view.forcedHours
+      let used = view.committedHours + view.forcedHours + bv0(view)
       for (const m of view.inbox) {
         if (m.answeredChoiceId !== null) continue
         const event = scenario.events.find((e) => e.id === m.eventId)
@@ -573,7 +582,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     // The reader: listed answers where the bots have them, else the declared conditions.
     const listed = readInbox(view, scenario)
     const answered = new Set(listed.map((a) => a.messageId))
-    let used = view.committedHours + view.forcedHours
+    let used = view.committedHours + view.forcedHours + bv0(view)
     const extra: { messageId: string; choiceId: string }[] = []
     const rules = TOURISM_READER[scenario.id] ?? {}
     for (const m of view.inbox) {
@@ -583,9 +592,26 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       const rule = rules[event.id]
       const conditional = event.choices.some((c) => c.effects.some((fx) => fx.when.length > 0))
       if (!rule && !conditional) continue
-      const id = rule
+      let id = rule
         ? (rule(view, { target }) ?? event.defaultChoice)
         : fromConditions(event, view, m)
+      // A rule's answer whose good effects all wait for a situation the card names: only in that
+      // situation (plan 2 step 3).
+      const chosen = event.choices.find((x) => x.id === id)
+      const gated = chosen?.effects.filter(
+        (fx) => fx.when.length > 0 && (fx.type === 'guests' || fx.type === 'review'),
+      )
+      if (
+        rule &&
+        gated &&
+        gated.length > 0 &&
+        !chosen!.effects.some(
+          (fx) => fx.when.length === 0 && (fx.type === 'guests' || fx.type === 'review'),
+        ) &&
+        !gated.some((fx) => viewConditionsHold(view, fx.when, m))
+      ) {
+        id = event.defaultChoice
+      }
       const c = m.choices.find((x) => x.id === id)
       if (!c || id === event.defaultChoice) continue
       if (used + c.hours > view.founder.maxHoursPerWeek) continue

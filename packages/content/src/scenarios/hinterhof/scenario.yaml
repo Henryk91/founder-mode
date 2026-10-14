@@ -594,6 +594,9 @@ bookings:
       available: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
   # A short floor still gets a quarter more covers out, slowly; reviews notice.
   floor: { stretch: 1.25, penalty: 1 }
+  # Plan 2 step 3: guests take the founder's time: welcoming, the phone, the bookings, a word at
+  # the table (est.). Hours per guest served last week, capped.
+  hosting: { hoursPerUnit: 0.04, maxHours: 15 }
   # Plan 2 step 1a: the spec's own experiments (docs/scenario-restaurant.md B.5b), before opening.
   trials:
     popup_dinner:

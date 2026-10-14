@@ -95,3 +95,51 @@ events:
       - id: skip
         label: Skip it
         hours: 0
+
+  # Plan 2 step 3: the effortful answer pays only in the situation the text names.
+  - id: rest_course
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: A friend who does yoga
+    text: >-
+      A friend books you on a weekend course in resting properly, 300 EUR. If you are running on
+      empty it is the best money you will spend this year. If you are fine, it is a weekend of
+      breathing exercises and nobody minding the business.
+    defaultChoice: decline
+    choices:
+      - id: go
+        label: Go on the course
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: energy, delta: 25, when: [energy < 40] }
+      - id: decline
+        label: Rest at home instead
+        hours: 0
+
+  - id: language_evenings
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: The adult education centre
+    text: >-
+      Evening classes in English for hospitality, 200 EUR for the term. Guests with poor reviews
+      complain about being misunderstood; guests who already rate you highly mostly want the WiFi
+      password.
+    defaultChoice: decline
+    choices:
+      - id: enrol
+        label: Enrol for the term
+        hours: 4
+        effects:
+          - { type: cash, amountCents: -20000 }
+          - { type: energy, delta: -3 }
+          - { type: review, rating: 5, count: 4, when: [tour.rating < 40, tour.reviews >= 5] }
+      - id: decline
+        label: Manage with gestures
+        hours: 0

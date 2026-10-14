@@ -1360,6 +1360,8 @@ export type BookingsView = {
   trials: TrialOptionView[]
   /** Plan 2 step 1a: vouchers, where the scenario sells them. */
   vouchers: VouchersView | null
+  /** Plan 2 step 3: founder hours this week's guests take (from last week's), before planning. */
+  hostingHours: number
   /** Plan 2 step 1c: units prepared per service product, or null to prepare what the roster can cook. */
   prep: { productId: FeatureId; units: number | null }[]
   /**

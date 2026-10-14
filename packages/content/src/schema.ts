@@ -578,6 +578,11 @@ export const BookingsConfigSchema = z.object({
   products: z.record(Id, BookingProductSchema),
   roles: z.record(Id, StaffRoleSchema),
   trials: z.record(Id, TrialSchema).optional(),
+  // Plan 2 step 3: guests take the founder's time (welcoming, the phone, the bookings, a word at
+  // the table): this many hours per unit served last week, at most maxHours a week.
+  hosting: z
+    .object({ hoursPerUnit: z.number().nonnegative(), maxHours: z.number().int().nonnegative() })
+    .optional(),
   vouchers: VoucherConfigSchema.optional(),
   renovation: RenovationSchema.optional(),
   minStay: MinStaySchema.optional(),
