@@ -1,14 +1,14 @@
 # Autonomous run 2 status
 
 ## Current
-Step: 2 gate finishing (60 week and Kantino long identical; Hinterhof and Seeblick reports with events writing to docs/balancing.md). Step 3 in progress on branch plan2-work (worktree ../founder-mode-plan2, commit "Step 3 WIP").
+Step: 3 (step 2 done, tag plan2-loan). Was: 2 gate finishing (60 week and Kantino long identical; Hinterhof and Seeblick reports with events writing to docs/balancing.md). Step 3 in progress on branch plan2-work (worktree ../founder-mode-plan2, commit "Step 3 WIP").
 Last commit: Step 2: fingerprints, seeds, lint (main); Step 3 WIP (plan2-work)
-Next action: write reports/step2-loan.md from docs/balancing.md (L2 pass in both; L3 Seeblick pass, Hinterhof gap +11.3 against 15: open, step 4), commit, tag plan2-loan. Then step 3: measured on 2,000 seeds (scratch dbg2 in packages/bots/scratch): Gratwanderung reading +15.6 / effort +5.2 (at the limit), Seeblick +9.4 / +6.5 (fail), Hinterhof +2.5 / -0.2 (reading under 3). Next lever for Seeblick: its effort gain is not from guests; ablate effect classes there (scratch dbg2 variants noReview, noCashIn, ...) and make the top class situational; then the event table, docs, decisions, tag plan2-inbox.
+Next action: step 3 on branch plan2-work: measured on 2,000 seeds (packages/bots/scratch/dbg2.ts): Gratwanderung reading +15.6 / effort +5.2 (at the limit), Seeblick +9.4 / +6.5 (fail), Hinterhof +2.5 / -0.2. Next: ablate effect classes in Seeblick (dbg2 variants noReview, noCashIn, noGuests) and make the top class situational; then event table, docs, decisions, merge, tag plan2-inbox.
 
 ## Checklist
 - [x] Step 0: take stock (tag plan2-baseline)
-- [ ] Step 1: spec features (tag plan2-features)
-- [ ] Step 2: bank loan (tag plan2-loan)
+- [x] Step 1: spec features (tag plan2-features)
+- [x] Step 2: bank loan (tag plan2-loan)
 - [ ] Step 3: tourism inbox (tag plan2-inbox)
 - [ ] Step 4: retune tourism (tag plan2-tourism)
 - [ ] Step 5: Kantino long, funding and target 20 (tag plan2-kantino-long)
@@ -22,6 +22,7 @@ Next action: write reports/step2-loan.md from docs/balancing.md (L2 pass in both
 
 ## Open issues
 - L3 Hinterhof (step 2): reckless ends owing the bank +11.3 ±3.4 points more often than careful (needs 15); careful already fails owing in 76% of runs (T1 19.5%). Revisit with step 4's retune.
+- Hinterhof T2: the no-tests bot wins 11.9% since step 2 (limit 5%); step 4.
 - Hinterhof T1 19.5% and T3 spread 26.7 (evening locals 7.5%) since the kitchen and floor split (step 1); step 4.
 - T6 inbox, all three tourism scenarios (step 3).
 - L2, L3 bank loan, Hinterhof and Seeblick (step 2).
