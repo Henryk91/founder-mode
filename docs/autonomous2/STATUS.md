@@ -1,9 +1,9 @@
 # Autonomous run 2 status
 
 ## Current
-Step: 1, spec features (work in the worktree `../founder-mode-plan2`, branch `plan2-work`)
-Last commit: Step 0 done (tag plan2-baseline)
-Next action: finish step 1 on branch plan2-work (engine, content, bots done for 1a to 1d; UI, results, Market and Money lines, post-mortem UI next), merge into main, report targets before and after.
+Step: 1 gate running on main (60 week identical; Kantino long and tourism reports running); step 2 built on branch plan2-work (worktree ../founder-mode-plan2), being measured.
+Last commit: Step 1: screen test for the new parts, schema and decisions (main); Step 2 WIP (plan2-work)
+Next action: when the gate finishes, write reports/step1-features.md (targets before and after), tag plan2-features; then finish step 2 (measure L1 to L4, UI test, seeds, fingerprints), merge, tag plan2-loan.
 
 ## Checklist
 - [x] Step 0: take stock (tag plan2-baseline)
