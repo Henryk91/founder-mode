@@ -45,6 +45,11 @@ export type TourismRule = {
   naive?: boolean
   /** The event table (tourism fixes, item 18): always this answer to this event. */
   forced?: { eventId: string; choiceId: string }
+  /**
+   * Plan 2 step 1b, contracts: the careful mix (seasonal in season, permanent or part time for
+   * steady work), shifts only, or always one kind where the role offers it.
+   */
+  contracts?: 'careful' | 'none' | 'permanent' | 'seasonal' | 'part_time'
 }
 
 export const CAREFUL_TOURISM: TourismRule = {
@@ -92,12 +97,35 @@ const BRIDGE_MONTHS: Record<string, number> = { seeblick: 6 }
 const RESERVE_MONTHS = 1
 /** A further product is built when its one-off cost is at most this share of the money. */
 const EXTRA_SHARE = 0.2
+/**
+ * Plan 2 step 1a: a small trial (a pilot day, a pop-up dinner) counts like a pre-sale against a
+ * bar of one in eight responding; a large one (a listing) by its standing against the other
+ * segments that saw it.
+ */
+const TRIAL_WEIGHT = 3
+const TRIAL_BAR = 0.12
+const TRIAL_LARGE = 50
+const LISTING_WEIGHT = 0.1
+/** Plan 2 step 1b: weeks of steady shifts before a contract, and of idle contract shifts before notice. */
+const STEADY_WEEKS = 6
+const IDLE_WEEKS = 6
+/** Plan 2 step 1d: rooms under works only in weeks this little booked; a minimum stay this busy. */
+const WORKS_BUSY = 0.5
+const MIN_STAY_BUSY = 0.8
 
 export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   const cfg = scenario.bookings!
   let target: string | null = null
   let cancelledRecent: number[] = []
   let servedRecent: number[] = []
+  /** Plan 2: paid and contract shifts used per role in recent weeks, newest last. */
+  let shiftsUsed: Record<string, number>[] = []
+
+  /** Markets by the evidence on screen: interviews, then trials and vouchers (plan 2). */
+  const rank = (view: PlayerView) =>
+    rankMarkets(scenario, view)
+      .map((r) => ({ ...r, score: r.score + trialScore(view, r.id) }))
+      .sort((a, b) => b.score - a.score)
 
   const productsFor = (seg: string) =>
     Object.entries(cfg.products)
@@ -180,7 +208,18 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const unshipped = wanted.filter(
       (id) => !view.product.features.find((f) => f.id === id)?.shipped,
     )
-    const oneOff = unshipped.reduce((t, id) => t + (cfg.products[id]?.oneOffCents ?? 0), 0)
+    // Rooms renovated one at a time count at their price per room (plan 2 step 1d).
+    const reno = cfg.renovation
+    const rooms =
+      reno && wanted.includes(reno.feature) && l
+        ? Math.max(
+            0,
+            reno.mustHaveRooms -
+              (view.bookings!.renovation?.renovated ?? 0) -
+              (view.bookings!.renovation?.inProgress.length ?? 0),
+          ) * reno.centsPerRoom
+        : 0
+    const oneOff = unshipped.reduce((t, id) => t + (cfg.products[id]?.oneOffCents ?? 0), 0) + rooms
     // Guests who book months ahead (weddings) need a longer bridge: their lead time in months.
     const lead = target && !rule.naive ? (cfg.segments[target]?.leadWeeks.max ?? 0) : 0
     const bufferMonths = Math.max(
@@ -249,6 +288,159 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       if (!out.includes(id)) out.push(id)
     }
     return out
+  }
+
+  /** What a segment's trials and vouchers say, next to its interviews (plan 2 step 1a). */
+  function trialScore(view: PlayerView, seg: string): number {
+    const mine = view.segments.find((x) => x.id === seg)
+    let score = 0
+    // Small trials: like a pre-sale, against a bar.
+    const small = (mine?.trials ?? []).filter((t) => t.people <= TRIAL_LARGE)
+    const people =
+      small.reduce((t, x) => t + x.people, 0) +
+      (mine?.vouchers ?? []).reduce((t, x) => t + x.prospects, 0)
+    const yes =
+      small.reduce((t, x) => t + x.responses, 0) +
+      (mine?.vouchers ?? []).reduce((t, x) => t + x.sold, 0)
+    if (people > 0) score += TRIAL_WEIGHT * (yes / people - TRIAL_BAR)
+    // Large trials (a listing): this segment's rate against everyone who saw the same trial.
+    for (const id of new Set(
+      (mine?.trials ?? []).filter((t) => t.people > TRIAL_LARGE).map((t) => t.trialId),
+    )) {
+      const all = view.segments.flatMap((x) => (x.trials ?? []).filter((t) => t.trialId === id))
+      const n = all.reduce((t, x) => t + x.people, 0)
+      const pooled = all.reduce((t, x) => t + x.responses, 0) / Math.max(1, n)
+      const own = (mine?.trials ?? []).filter((t) => t.trialId === id)
+      const on = own.reduce((t, x) => t + x.people, 0)
+      const se = Math.sqrt((pooled * (1 - pooled)) / Math.max(1, on))
+      if (se > 0)
+        score += (LISTING_WEIGHT * (own.reduce((t, x) => t + x.responses, 0) / on - pooled)) / se
+    }
+    return score
+  }
+
+  /**
+   * Week 2's tests where the scenario has its own (plan 2 step 1a): every trial that reaches the
+   * segment the interviews favour (the one it picks, or one whose main audience it is), and a
+   * batch of vouchers where that segment buys them.
+   */
+  function planTrials(view: PlayerView, b: PlanBuilder, plan: BookingsPlan, top: string): void {
+    const bv = view.bookings!
+    plan.trials = []
+    for (const t of bv.trials) {
+      if (!t.open || b.free < t.hours + 10 || view.company.cashCents < t.cents * 4) continue
+      if (t.choose && t.segments.includes(top) && (t.left[top] ?? 0) > 0) {
+        plan.trials.push({ id: t.id, segmentId: top })
+        b.free -= t.hours
+      } else if (!t.choose && t.segments[0] === top && (t.left[''] ?? 0) > 0) {
+        plan.trials.push({ id: t.id, segmentId: null })
+        b.free -= t.hours
+      }
+    }
+    const v = bv.vouchers
+    const vs = v?.segments.find((x) => x.id === top)
+    if (v && vs && vs.batchesLeft > 0 && b.free >= v.hoursPerBatch + 10) {
+      plan.vouchers = { [top]: 1 }
+      b.free -= v.hoursPerBatch
+    }
+  }
+
+  /**
+   * Contracts (plan 2 step 1b): a seasonal contract while its season needs the shifts, a permanent
+   * one (or part time) for work that has stayed steady for weeks, and notice for contract shifts
+   * that have gone unused for weeks.
+   */
+  function planContracts(view: PlayerView, plan: BookingsPlan): void {
+    const mode = rule.contracts ?? 'careful'
+    if (mode === 'none') return
+    const bv = view.bookings!
+    const hire: NonNullable<BookingsPlan['hire']> = []
+    const end: string[] = []
+    const money = view.company.cashCents
+    const monthly = view.company.monthlyFixedCostsCents
+    for (const r of bv.roles) {
+      if (r.contracts.length === 0) continue
+      const hist = shiftsUsed.map((w) => w[r.id] ?? 0)
+      const mine = bv.contracts.filter((c) => c.roleId === r.id && c.endWeek === null)
+      const contracted = mine.reduce((t, c) => t + c.shifts, 0)
+      const recent = hist.slice(-3)
+      const recentAvg = recent.length ? recent.reduce((t, x) => t + x, 0) / recent.length : 0
+      const steady = hist.length >= STEADY_WEEKS ? Math.min(...hist.slice(-STEADY_WEEKS)) : 0
+      const option = (k: string) =>
+        mode === 'careful' || mode === k ? r.contracts.find((c) => c.kind === k) : undefined
+      const seasonal = option('seasonal')
+      const permanent = option('permanent')
+      const partTime = option('part_time')
+      const affordable = (cents: number) => money >= 3 * monthly + 13 * cents
+      if (seasonal && seasonal.months!.includes(bv.month) && seasonal.running < seasonal.max) {
+        const seasonalShifts = bv.contracts
+          .filter((c) => c.roleId === r.id && c.kind === 'seasonal' && c.working)
+          .reduce((t, c) => t + c.shifts, 0)
+        if (recentAvg - seasonalShifts >= seasonal.shifts && affordable(seasonal.centsPerWeek)) {
+          hire.push({ roleId: r.id, kind: 'seasonal' })
+          continue
+        }
+      }
+      const inSeason = seasonal?.months?.includes(bv.month) ?? false
+      if (!inSeason || mode !== 'careful') {
+        if (permanent && permanent.running < permanent.max) {
+          if (steady - contracted >= permanent.shifts && affordable(permanent.centsPerWeek)) {
+            hire.push({ roleId: r.id, kind: 'permanent' })
+            continue
+          }
+        }
+        if (partTime && partTime.running < partTime.max) {
+          if (steady - contracted >= partTime.shifts && affordable(partTime.centsPerWeek)) {
+            hire.push({ roleId: r.id, kind: 'part_time' })
+            continue
+          }
+        }
+      }
+      // Notice for the newest contract whose shifts have gone unused for weeks.
+      const endable = mine.filter((c) => c.canEnd).sort((a, z) => z.startWeek - a.startWeek)[0]
+      if (endable && hist.length >= IDLE_WEEKS) {
+        const peak = Math.max(...hist.slice(-IDLE_WEEKS))
+        if (peak <= contracted - endable.shifts) end.push(endable.id)
+      }
+    }
+    if (hire.length) plan.hire = hire
+    if (end.length) plan.endContracts = end
+  }
+
+  /**
+   * Rooms renovated one at a time (plan 2 step 1d): as many as the segment needs, in weeks the
+   * calendar is quiet, while the money lasts. The no-tests bot renovates every room.
+   */
+  function planRenovation(view: PlayerView, plan: BookingsPlan, wanted: string[]): void {
+    const r = view.bookings!.renovation
+    if (!r || r.canStart === 0) return
+    const feature = scenario.bookings!.renovation!.feature
+    if (!rule.buildAll && !wanted.includes(feature)) return
+    const goal = rule.buildAll ? r.rooms : r.mustHaveRooms
+    const left = goal - r.renovated - r.inProgress.length
+    if (left <= 0) return
+    const cal = view.bookings!.calendar.find(
+      (c) => c.productId === scenario.bookings!.renovation!.product,
+    )
+    const cells = cal?.cells.slice(0, r.weeks) ?? []
+    const cap = cells.reduce((t, c) => t + c.capacity, 0)
+    const busy = cap > 0 ? cells.reduce((t, c) => t + c.booked, 0) / cap : 0
+    if (busy > WORKS_BUSY && !rule.buildAll) return
+    const reserve = (RESERVE_MONTHS + 1) * view.company.monthlyFixedCostsCents
+    const affordable = Math.floor((view.company.cashCents - reserve) / r.centsPerRoom)
+    const n = Math.min(r.canStart, left, Math.max(0, affordable))
+    if (n > 0) plan.renovate = n
+  }
+
+  /** A minimum stay while the target's weekends fill up (plan 2 step 1d). */
+  function planMinStay(view: PlayerView, plan: BookingsPlan): void {
+    const m = view.bookings!.minStay
+    if (!m || target === null || !m.segments.includes(target)) return
+    const cells = view.bookings!.calendar.flatMap((c) => c.cells.slice(0, 4))
+    const cap = cells.reduce((t, c) => t + c.capacity, 0)
+    const busy = cap > 0 ? cells.reduce((t, c) => t + c.booked, 0) / cap : 0
+    const want = m.months.includes(view.bookings!.month) && busy >= MIN_STAY_BUSY
+    if (want !== m.on) plan.minStay = want
   }
 
   return {
@@ -342,6 +534,17 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     // This week's guests come first: the roster.
     const pool: Record<string, number> = {}
     for (const r of bv.roles) pool[r.id] = r.available
+    // Contract staff working this week are paid already: their shifts go first (plan 2).
+    const contractLeft: Record<string, number> = {}
+    for (const c of bv.contracts) {
+      if (c.working) contractLeft[c.roleId] = (contractLeft[c.roleId] ?? 0) + c.shifts
+    }
+    const used: Record<string, number> = {}
+    // Kitchen and floor apart (plan 2 step 1c): each side covers what is booked on its own.
+    const hasFloor = bv.roles.some((r) => r.kind === 'floor')
+    const sides: ('kitchen' | 'floor' | 'any')[] = hasFloor ? ['kitchen', 'floor'] : ['any']
+    const onSide = (kind: string, side: string) =>
+      side === 'any' || (side === 'floor' ? kind === 'floor' : kind !== 'floor')
     // Walk-ins expected this week, shared over the products open now by capacity (step 6).
     const open = bv.products.filter((p) => p.shipped && p.inSeason && p.capacity > 0)
     const openCapacity = open.reduce((t, p) => t + p.capacity, 0)
@@ -353,6 +556,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       (t, x) => t + (bv.products.find((p) => p.id === x.productId)?.shipped ? x.booked : 0),
       0,
     )
+    const prep: Record<string, number> = {}
     for (const { productId, booked: bookedNow } of bv.thisWeek) {
       const product = bv.products.find((p) => p.id === productId)
       const expected =
@@ -368,54 +572,79 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           : rule.roster === 'under'
             ? booked * UNDER_SHARE
             : booked * (rule.reviews ? 1 + ROSTER_MARGIN : 1)
-      let covered = 0
-      // The founder's own shifts first: they cost hours, not money.
-      for (const r of bv.roles) {
-        const per = r.units[productId] ?? 0
-        const own = Object.values(plan.founderShifts).reduce((t, n) => t + n, 0)
-        if (per <= 0 || r.founderHours === null) continue
-        let taken = own
-        while (
-          covered < need &&
-          taken < FOUNDER_SHIFTS &&
-          b.free >= r.founderHours + FOUNDER_KEEP_HOURS
-        ) {
-          plan.founderShifts[r.id] = (plan.founderShifts[r.id] ?? 0) + 1
-          b.free -= r.founderHours
-          covered += per
-          taken++
-        }
+      // Food for what the roster is meant to serve; the overstaffing bot leaves the kitchen to
+      // cook for every cover it can.
+      if (bv.prep.some((x) => x.productId === productId) && rule.roster !== 'over') {
+        prep[productId] = Math.ceil(need)
       }
-      // Then paid shifts, the cheapest per guest first.
-      const byCost = [...bv.roles]
-        .filter((r) => (r.units[productId] ?? 0) > 0)
-        .sort(
-          (x, y) => x.centsPerShift / x.units[productId]! - y.centsPerShift / y.units[productId]!,
-        )
-      for (const r of byCost) {
-        const per = r.units[productId] ?? 0
-        while (covered < need && (pool[r.id] ?? 0) > 0) {
-          pool[r.id]!--
-          plan.shifts[r.id] = (plan.shifts[r.id] ?? 0) + 1
-          covered += per
+      for (const side of sides) {
+        let covered = 0
+        // The founder's own shifts first: they cost hours, not money.
+        for (const r of bv.roles) {
+          const per = r.units[productId] ?? 0
+          const own = Object.values(plan.founderShifts).reduce((t, n) => t + n, 0)
+          if (per <= 0 || r.founderHours === null || !onSide(r.kind, side)) continue
+          let taken = own
+          while (
+            covered < need &&
+            taken < FOUNDER_SHIFTS &&
+            b.free >= r.founderHours + FOUNDER_KEEP_HOURS
+          ) {
+            plan.founderShifts[r.id] = (plan.founderShifts[r.id] ?? 0) + 1
+            b.free -= r.founderHours
+            covered += per
+            taken++
+          }
+        }
+        // Then contract shifts, then paid shifts, the cheapest per guest first.
+        const byCost = [...bv.roles]
+          .filter((r) => (r.units[productId] ?? 0) > 0 && onSide(r.kind, side))
+          .sort(
+            (x, y) => x.centsPerShift / x.units[productId]! - y.centsPerShift / y.units[productId]!,
+          )
+        for (const r of byCost) {
+          const per = r.units[productId] ?? 0
+          while (covered < need && (contractLeft[r.id] ?? 0) > 0) {
+            contractLeft[r.id]!--
+            used[r.id] = (used[r.id] ?? 0) + 1
+            covered += per
+          }
+        }
+        for (const r of byCost) {
+          const per = r.units[productId] ?? 0
+          while (covered < need && (pool[r.id] ?? 0) > 0) {
+            pool[r.id]!--
+            plan.shifts[r.id] = (plan.shifts[r.id] ?? 0) + 1
+            used[r.id] = (used[r.id] ?? 0) + 1
+            covered += per
+          }
         }
       }
     }
+    // Prepared services nobody is expected at this week get nothing cooked.
+    if (rule.roster !== 'over' && bv.prep.length > 0) {
+      plan.prep = Object.fromEntries(bv.prep.map((x) => [x.productId, prep[x.productId] ?? 0]))
+    }
+    shiftsUsed = [...shiftsUsed, used].slice(-Math.max(STEADY_WEEKS, IDLE_WEEKS))
+    planContracts(view, plan)
 
     // Week 1: listen to everyone. Week 2: a test listing and a pilot where it points.
     if (rule.tests && view.week === 1) {
       for (const id of ids) b.interviews(id, FIRST_WEEK_INTERVIEWS)
     }
     if (rule.tests && view.week === 2) {
-      const top = rankMarkets(scenario, view)
+      const top = rank(view)
       if (top[0]) {
-        b.presale(top[0].id)
-        if (reaches(top[0].id, 'platform')) b.landing(top[0].id)
+        if (bv.trials.length > 0 || bv.vouchers) planTrials(view, b, plan, top[0].id)
+        else {
+          b.presale(top[0].id)
+          if (reaches(top[0].id, 'platform')) b.landing(top[0].id)
+        }
       }
       for (const { id } of top.slice(0, 2)) b.interviews(id, MORE_INTERVIEWS)
     }
     if (view.week >= (rule.tests ? 3 : 1) && target === null) {
-      target = rule.tests ? (rankMarkets(scenario, view)[0]?.id ?? ids[0]!) : ids[0]!
+      target = rule.tests ? (rank(view)[0]?.id ?? ids[0]!) : ids[0]!
     }
 
     if (target !== null) {
@@ -424,9 +653,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       // guest: the next segment the evidence ranks, so quiet weeks still bring someone.
       const own = wanted(view, seg)
       const done = own.every((f) => view.product.features.find((x) => x.id === f)?.shipped)
-      const second = rule.tests
-        ? rankMarkets(scenario, view).find((r) => r.id !== seg)?.id
-        : undefined
+      const second = rule.tests ? rank(view).find((r) => r.id !== seg)?.id : undefined
       // More products for the same guests (other months, other days out), when one costs at
       // most a fifth of the money in hand.
       const money = view.company.cashCents + Math.max(0, view.founder.savingsCents)
@@ -468,6 +695,8 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       } else {
         for (const f of building) b.build(f, 40 - (b.plan.build[f] ?? 0))
       }
+      planRenovation(view, plan, building)
+      planMinStay(view, plan)
       if (done && second && rule.channels === 'mix') {
         if (
           reaches(second, 'partnership') &&

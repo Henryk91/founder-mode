@@ -4,6 +4,7 @@ import { resolveExperiments, runInterviews, startExperiments } from './systems/e
 import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
 import { applyFounderWeek, hoursByActivity, livingCostsFor } from './systems/founder'
 import { applyBookings } from './systems/bookings'
+import { resolveTrials, startTrials, trialsCostCents } from './systems/trials'
 import { applyFunding } from './systems/funding'
 import { applyLoan } from './systems/loan'
 import { drawMessages, resolveMessages } from './systems/inbox'
@@ -92,6 +93,16 @@ export function endWeek(
   state = results.state
   entries.push(...results.entries)
   extras.depositsCents += results.depositsCents
+  // Tourism trials and vouchers (plan 2 step 1a): costs now, results when due.
+  if (state.bookings) {
+    state = startTrials(state, plan)
+    extras.bookingCostsCents += trialsCostCents(state, plan)
+    const trials = resolveTrials(state, rng)
+    state = trials.state
+    entries.push(...trials.entries)
+    extras.depositsCents += trials.revenueCents
+    extras.voucherCents = (extras.voucherCents ?? 0) + trials.voucherCents
+  }
 
   // 5. Product: bug fixing, build progress, shipping. A working developer or freelance developer
   // adds build hours.
@@ -114,6 +125,7 @@ export function endWeek(
     entries.push(...tourism.entries)
     extras.bookingRevenueCents += tourism.revenueCents
     extras.bookingCostsCents += tourism.costsCents
+    extras.voucherRedeemedCents = (extras.voucherRedeemedCents ?? 0) + tourism.voucherRedeemedCents
   } else {
     // 6. Sales: demos, trials, new leads, ghosting. A working salesperson helps.
     const sales = applySales(state, plan, rng, team, freelance)

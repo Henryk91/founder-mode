@@ -467,10 +467,8 @@ bookings:
       capacity: 0
       monthlyCents: 3000
     renovated_rooms:
+      # Planning the works; each room is then renovated on its own (renovation, below).
       capacity: 0
-      # Four rooms at about 10,000 each: a new bathroom (3,600 to 10,500 for 3 square metres),
-      # paint, floors and furniture (est.).
-      oneOffCents: 4000000
     invoice_billing:
       capacity: 0
     workspace:
@@ -504,6 +502,13 @@ bookings:
         rooms: 10
         whole_house_booking: 10
       available: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
+      # Employed at a little over the minimum wage, about 2,500 gross a month with employer costs,
+      # eight shifts a week (est.): under 80 a shift against 90 booked by the week.
+      contracts:
+        permanent: { centsPerWeek: 62000, shifts: 8, noticeWeeks: 4, quality: 0.3, max: 2 }
+        part_time: { centsPerWeek: 32000, shifts: 4, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 60000, shifts: 8, months: [5, 6, 7, 8, 9], quality: 0.2, max: 2 }
     host:
       name: Reception and breakfast help
       # Six hours with employer costs (est.).
@@ -513,6 +518,66 @@ bookings:
         whole_house_booking: 25
       available: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
       founderHours: 7
+      # Employed, about 2,700 gross a month with employer costs, six shifts a week (est.).
+      contracts:
+        permanent: { centsPerWeek: 60000, shifts: 6, noticeWeeks: 4, quality: 0.3, max: 2 }
+        part_time: { centsPerWeek: 31000, shifts: 3, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 62000, shifts: 6, months: [5, 6, 7, 8, 9], quality: 0.2, max: 2 }
+  # Plan 2 step 1d: each room renovated on its own, closed for three weeks while it is done. A
+  # new bathroom is 3,600 to 10,500 for 3 square metres; with paint, floors and furniture about
+  # 10,000 a room (est.). Leisure guests want at least four.
+  renovation:
+    product: rooms
+    feature: renovated_rooms
+    rooms: 12
+    unitsPerRoom: 7
+    centsPerRoom: 1000000
+    weeks: 3
+    mustHaveRooms: 4
+    atOnce: 3
+    qualityPerRoom: 0.03
+  # Plan 2 step 1d: two nights at least on summer weekends. Fewer couples book, those who do
+  # stay the Sunday too.
+  minStay:
+    segments: [leisure]
+    months: [6, 7, 8, 9]
+    conversion: 0.8
+    extraUnits: 1
+  # Plan 2 step 1a: the spec's own experiments (docs/scenario-hotel.md section 5).
+  trials:
+    test_rates:
+      name: Test rates
+      # A few rooms on the platform at the current rate for two weeks, promoted (est.). Mostly
+      # couples see it, some project staff, no wedding planner.
+      hours: 3
+      cents: 20000
+      weeks: 2
+      people: 200
+      reach: { leisure: 0.75, project_guests: 0.25 }
+      rate: { base: 0.01, perPain: 0.12 }
+      max: 3
+    open_house:
+      name: Open house
+      # An afternoon for wedding planners and office managers: a day and some cake (est.).
+      hours: 8
+      cents: 25000
+      weeks: 1
+      people: 12
+      reach: { groups: 0.5, project_guests: 0.5 }
+      rate: { base: 0, perPain: 0.5 }
+      repeat: true
+      max: 2
+  # Gift vouchers for two nights, sold at Christmas for the summer. Paid now, owed later.
+  vouchers:
+    hoursPerBatch: 4
+    batchSize: 20
+    rate: { base: 0, perPain: 0.12 }
+    segments: [leisure]
+    units: 2
+    maxBatches: 4
+    redeemShare: 0.85
+    redeemWeeks: { min: 6, max: 34 }
   reviews:
     qualityBase: 4.3
     noiseSd: 0.3

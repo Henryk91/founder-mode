@@ -170,6 +170,7 @@ export function getView(state: GameState): PlayerView {
       kind: e.kind,
       segmentId: e.segmentId,
       resolveWeek: e.resolveWeek,
+      ...(e.trialId ? { trialId: e.trialId } : {}),
     })),
     guidance: {
       intro: scenario.intro.cards.map((c) => ({ id: c.id, title: c.title, body: c.body })),
@@ -249,6 +250,28 @@ export function getView(state: GameState): PlayerView {
           ? [{ week: e.week, prospects: e.prospects, commits: e.commits, priceCents: e.priceCents }]
           : [],
       ),
+      ...(state.bookings
+        ? {
+            trials: (state.knowledge[seg.id] ?? []).flatMap((e) =>
+              e.kind === 'trial'
+                ? [
+                    {
+                      week: e.week,
+                      trialId: e.trialId,
+                      people: e.people,
+                      responses: e.responses,
+                      priceCents: e.priceCents,
+                    },
+                  ]
+                : [],
+            ),
+            vouchers: (state.knowledge[seg.id] ?? []).flatMap((e) =>
+              e.kind === 'voucher'
+                ? [{ week: e.week, prospects: e.prospects, sold: e.sold, priceCents: e.priceCents }]
+                : [],
+            ),
+          }
+        : {}),
       openLeads: openLeadCount(state, seg.id),
       presaleBatchesLeft: Math.max(
         0,

@@ -46,6 +46,9 @@ export type WeekExtras = {
   bookingRevenueCents: number
   /** Tourism: shifts, unit costs and products' one-off costs. Company costs. */
   bookingCostsCents: number
+  /** Plan 2: vouchers sold (cash, a liability) and redeemed (earned, paid before). */
+  voucherCents?: number
+  voucherRedeemedCents?: number
 }
 
 export const noExtras = (): WeekExtras => ({
@@ -111,6 +114,7 @@ export function applyFinanceWeek(
   cash -= extras.bookingCostsCents
   cash += extras.otherIncomeCents
   cash += extras.investmentCents
+  cash += extras.voucherCents ?? 0
 
   const settled = settleInvoices(state)
   state = settled.state
@@ -177,6 +181,8 @@ export function applyFinanceWeek(
     investmentCents: extras.investmentCents,
     bookingRevenueCents: extras.bookingRevenueCents,
     bookingCostsCents: extras.bookingCostsCents,
+    ...(extras.voucherCents ? { voucherCents: extras.voucherCents } : {}),
+    ...(extras.voucherRedeemedCents ? { voucherRedeemedCents: extras.voucherRedeemedCents } : {}),
     loanInCents: loans.money.inCents,
     loanPrincipalCents: loans.money.principalCents,
     loanInterestCents: loans.money.interestCents,
@@ -309,7 +315,8 @@ export function profitableOverMonths(state: GameState, months: number): boolean 
   const weeks = months * state.scenario.finance.weeksPerMonth
   if (state.ledger.length < weeks) return false
   const span = state.ledger.slice(-weeks)
-  const revenue = span.reduce((t, l) => t + l.revenueCents, 0)
+  // A voucher counts when its guests come (plan 2): sold, it is a debt in guests.
+  const revenue = span.reduce((t, l) => t + l.revenueCents + (l.voucherRedeemedCents ?? 0), 0)
   // Loan repayments, interest and fees count: a business that cannot serve its debt is not one.
   const costs = span.reduce(
     (t, l) =>

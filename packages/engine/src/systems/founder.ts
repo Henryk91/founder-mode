@@ -3,6 +3,7 @@ import { bookingsHours } from './bookings'
 import { fundingHours } from './funding'
 import { loanHours } from './loan'
 import { managementHours } from './team'
+import { trialsHours } from './trials'
 
 /** Hours of the answers given this week to inbox messages. They count against the week. */
 export function committedHours(state: Pick<GameState, 'inbox'>): number {
@@ -43,7 +44,8 @@ export function hoursByActivity(
       sum(Object.values(plan.interviews)) * scenario.experiments.interview.hours +
       Object.values(plan.landing).filter((budget) => budget > 0).length *
         scenario.experiments.landing.hours +
-      sum(Object.values(plan.presales)) * scenario.experiments.presale.hoursPerBatch,
+      sum(Object.values(plan.presales)) * scenario.experiments.presale.hoursPerBatch +
+      trialsHours(state, plan),
     building: sum(Object.values(plan.build)) + plan.bugFixHours,
     selling:
       bookingsHours(state, plan) +

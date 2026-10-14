@@ -21,7 +21,7 @@
   mention: I want to see the room, the price and a button. Then I want to stop thinking.
 
 - id: renovated_rooms
-  name: Renovate four rooms
+  name: Plan the room renovations
   buildHours: 10
   bugsOnShip: { min: 1, max: 2 }
   mention: A bathroom from this century would be nice. A shower that does not sing at night, too.
