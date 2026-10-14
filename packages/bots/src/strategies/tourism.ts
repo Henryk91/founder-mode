@@ -1037,6 +1037,26 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     'Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17).',
     { ...CAREFUL_TOURISM, naive: true },
   ),
+  tourism(
+    'tourism_contracts_none',
+    'Plays like tourism_careful but books every staff shift by the week and signs no contracts.',
+    { ...CAREFUL_TOURISM, contracts: 'none' },
+  ),
+  tourism(
+    'tourism_permanent',
+    'Plays like tourism_careful but signs only permanent staff contracts where steady work supports them.',
+    { ...CAREFUL_TOURISM, contracts: 'permanent' },
+  ),
+  tourism(
+    'tourism_seasonal',
+    'Plays like tourism_careful but signs only seasonal staff contracts where the current season supports them.',
+    { ...CAREFUL_TOURISM, contracts: 'seasonal' },
+  ),
+  tourism(
+    'tourism_part_time',
+    'Plays like tourism_careful but signs only part time staff contracts where steady work supports them.',
+    { ...CAREFUL_TOURISM, contracts: 'part_time' },
+  ),
   tourism('tourism_always_strict', 'Plays like tourism_careful with a strict policy all run.', {
     ...CAREFUL_TOURISM,
     policy: 'strict',

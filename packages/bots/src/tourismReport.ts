@@ -75,6 +75,25 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
   const over = vs('tourism_overstaffing')
   const under = vs('tourism_understaffing')
   const review = vs('tourism_review_blind')
+  const naive = s('tourism_naive_careful')
+  const noContracts = s('tourism_contracts_none')
+  const contractKinds = [
+    ['permanent', s('tourism_permanent')],
+    ['seasonal', s('tourism_seasonal')],
+    ['part time', s('tourism_part_time')],
+  ] as const
+  const contractResults = noContracts
+    ? contractKinds.map(([kind, strategy]) => {
+        const splits = strategy
+          ? markets.map((market) => {
+              const seeds = all.filter((i) => careful.results[i]!.viableSegment === market)
+              return { market, pair: pairedOn(noContracts, strategy, seeds) }
+            })
+          : []
+        const best = [...splits].sort((a, b) => b.pair.change - a.pair.change)[0]
+        return { kind, strategy, best }
+      })
+    : []
   const flex = s('tourism_always_flexible')
   const strict = s('tourism_always_strict')
   const policy = flex && strict ? pairedOn(flex, strict, all) : null
@@ -192,6 +211,37 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
       margin: '',
       pass: slowest < 150,
     },
+    {
+      id: 13,
+      text: 'A player without scenario-specific bot knowledge can win: tourism_naive_careful wins at least 20% and no more than 10 points less than tourism_careful',
+      value: naive ? `${fmtPct(rate(naive))}; gap ${signed(rate(naive) - r)}` : '-',
+      margin: naive
+        ? `${fmtMargin(margin(naive))}; ${fmtMargin(pairedOn(careful, naive, all).margin)}`
+        : '',
+      pass:
+        !!naive &&
+        rate(naive) + margin(naive) >= 20 &&
+        -pairedOn(careful, naive, all).change - pairedOn(careful, naive, all).margin <= 10,
+    },
+    {
+      id: 14,
+      text: 'Every staff contract kind wins somewhere: permanent, seasonal and part time each beat weekly shifts in at least one viable-segment split by their margin',
+      value: contractResults.length
+        ? contractResults
+            .map(({ kind, best }) =>
+              best ? `${kind} ${signed(best.pair.change)} (${best.market})` : `${kind} -`,
+            )
+            .join('; ')
+        : '-',
+      margin: contractResults.length
+        ? contractResults.map(({ best }) => (best ? fmtMargin(best.pair.margin) : '')).join('; ')
+        : '',
+      pass:
+        contractResults.length === contractKinds.length &&
+        contractResults.every(({ strategy, best }) =>
+          Boolean(strategy && best && best.pair.change - best.pair.margin > 0),
+        ),
+    },
     ...loanTargets(input, careful, s, all),
   ]
 }
@@ -246,7 +296,7 @@ function loanTargets(
   void input
   return [
     {
-      id: 13,
+      id: 15,
       text: 'L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other',
       value: optional
         ? `second loan ${signed(optional.change)} against none (second loan taken in ${fmtPct(second)} of runs)`
@@ -255,21 +305,21 @@ function loanTargets(
       pass: !!optional && second > 0 && Math.abs(optional.change) - optional.margin <= 5,
     },
     {
-      id: 14,
+      id: 16,
       text: 'L2. Borrowing for a temptation no segment requires (tourism_overborrow: every item the bank lists and the most working capital, early) loses clearly against borrowing only what the business needs: at least 3 points',
       value: overVs ? signed(overVs.change) : '-',
       margin: overVs ? fmtMargin(overVs.margin) : '',
       pass: !!overVs && overVs.change + overVs.margin <= -3,
     },
     {
-      id: 15,
+      id: 17,
       text: 'L3. Debt is dangerous: tourism_reckless (the most the bank lends, a temptation included, no repayment-free start) ends with the loan called or bankrupt owing the bank at least 15 points more often than tourism_careful, and tourism_careful misses a payment the business itself could carry in under 3% of runs',
       value: `ending owing: reckless ${recklessOwing ? fmtPct(recklessOwing.p) : '-'}, careful ${fmtPct(carefulOwing.p)} (gap ${owingGap ? signed(owingGap.p) : '-'}); careful loan-caused misses ${fmtPct(carefulMissed.p)}`,
       margin: `${owingGap ? fmtMargin(owingGap.m) : ''}; ${fmtMargin(carefulMissed.m)}`,
       pass: carefulMissed.p - carefulMissed.m < 3 && !!owingGap && owingGap.p + owingGap.m >= 15,
     },
     {
-      id: 16,
+      id: 18,
       text: "L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers)",
       value: borrowers.length
         ? `${fmtPct(pct(borrowers.length, careful.results.length))} borrowed; median interest and fees ${fmtNum(interest ?? 0)} EUR`

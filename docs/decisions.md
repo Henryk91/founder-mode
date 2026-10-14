@@ -538,3 +538,8 @@ Short log of design and tuning decisions. One or two lines each, newest last.
 - Result (2,000 seeds, careful against leaving every message and against blind effort): Gratwanderung reading +15.6, blind effort +5.2 (33%, at the limit); Hinterhof reading +2.5, blind effort -0.2; Seeblick reading +9.4, blind effort +6.5 (69%, fails). Report seeds in the step 3 report.
 - Budget: two formula rounds (hosting hours, tired host) and two content rounds (situational events, situational guests). Seeblick's T6 stays an open issue: options are a Seeblick-specific pass over its effortful answers with unconditional positive effects, or fewer events with mild unconditional benefits.
 - UI fix found by the screen test: the runway band's change note ("now covered since last week") wraps instead of being cut at 375 and 390 px.
+
+## Plan 2, step 4: retune the tourism scenarios
+
+- AUTONOMOUS: T14 compares each single-kind contract bot with an otherwise identical bot that buys shifts by the week, split by the secretly viable segment. A contract kind "wins somewhere" only when it is ahead by more than its paired margin in at least one split. This keeps the target situational like targets 19 and 20, rather than rewarding a contract merely for appearing in a winning run.
+- Target numbering: the new plan 2 targets are T13 (naive careful) and T14 (contract kinds). The four loan targets move from T13 to T16 to T15 to T18; their wording and measurements do not change.
