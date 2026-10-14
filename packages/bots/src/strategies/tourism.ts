@@ -300,7 +300,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       let wc = Math.floor(Math.min(plan.workingCapitalMaxCents, roundUp(wcNeed)) / step) * step
       // Within the own-money rule and below the last refused amount: less working capital
       // first, then the items listed last.
-      const cap = Math.min(l.maxCents, allowed, refusedAt === null ? Infinity : refusedAt - step)
+      // After a refusal, a fifth less each time.
+      const cap = Math.min(
+        l.maxCents,
+        allowed,
+        refusedAt === null ? Infinity : Math.floor((refusedAt * 0.8) / step) * step,
+      )
       while (itemsCents() + wc > cap && wc > 0) wc -= step
       while (itemsCents() + wc > cap && (items.length > 0 || roomCount > 0)) {
         if (roomCount > 0 && greedy) roomCount--

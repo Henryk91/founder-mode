@@ -8,6 +8,7 @@ import { TOURISM_STRATEGIES } from '@founder-mode/bots/src/strategies/tourism'
 import { loadScenario, type ScenarioId } from '@founder-mode/content'
 import {
   createGame,
+  emptyPlan,
   endWeek,
   getView,
   respond,
@@ -30,11 +31,30 @@ import { CHROMIUM, WEBKIT, type Engine } from './browsers'
  */
 const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8')
 
-const RUNS: { id: ScenarioId; seed: string; week: number }[] = [
+const RUNS: { id: ScenarioId; seed: string; week: number; loanForm?: boolean }[] = [
   { id: 'gratwanderung', seed: 'shot-1', week: 20 },
   { id: 'hinterhof', seed: 'shot-5', week: 24 },
   { id: 'seeblick', seed: 'shot-1', week: 30 },
+  // Plan 2 step 2: the business plan written, the bank's plan form open.
+  { id: 'seeblick', seed: 'shot-1', week: 2, loanForm: true },
 ]
+
+/** One week of writing the business plan, then the form to list items is on the page. */
+function loanFormSave(id: ScenarioId, seed: string): SaveFile {
+  const scenario = loadScenario(id, 'long')
+  const s = createGame(scenario, seed)
+  const p = {
+    ...emptyPlan(),
+    loan: {
+      planHours: scenario.loan!.planHours,
+      apply: null,
+      accept: false,
+      decline: false,
+      repay: null,
+    },
+  }
+  return toSave(endWeek(s, p).state)
+}
 const WIDTHS = [375, 390, 430, 1440]
 
 /** Adds to the bot's plan what it may not do on its own, where the plan stays valid. */
@@ -105,7 +125,11 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 2 step 1 screens', () => {
     })
     await server.listen()
     url = server.resolvedUrls?.local[0] ?? ''
-    for (const run of RUNS) files.set(run.id, save(run.id, run.seed, run.week))
+    for (const run of RUNS)
+      files.set(
+        `${run.id}${run.loanForm ? '-loan' : ''}` as ScenarioId,
+        run.loanForm ? loanFormSave(run.id, run.seed) : save(run.id, run.seed, run.week),
+      )
   }, 120_000)
 
   afterAll(async () => {
@@ -126,7 +150,7 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 2 step 1 screens', () => {
 
       for (const run of RUNS)
         for (const width of WIDTHS) {
-          it(`shows ${run.id} in its season at ${width} px`, async () => {
+          it(`shows ${run.id}${run.loanForm ? ', the loan plan,' : ''} at ${width} px`, async () => {
             const page = await browser.newPage({ viewport: { width, height: 900 } })
             await page.goto(url)
             await page.evaluate(
@@ -136,7 +160,10 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 2 step 1 screens', () => {
                 localStorage.setItem('founder-mode.scenario.v1', id as string)
                 localStorage.setItem('founder-mode.mode.v1', 'long')
               },
-              [run.id, files.get(run.id)!] as const,
+              [
+                run.id,
+                files.get(`${run.id}${run.loanForm ? '-loan' : ''}` as ScenarioId)!,
+              ] as const,
             )
             await page.reload()
             await page.getByRole('button', { name: 'Continue' }).click()
@@ -164,6 +191,13 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 2 step 1 screens', () => {
               }
             }
             // The new parts are on the page.
+            if (run.loanForm) {
+              expect(text).toMatch(/It does not lend a cushion on top/)
+              expect(text).toMatch(/Working capital/)
+              expect(found).toEqual([])
+              await page.close()
+              return
+            }
             expect(text).toMatch(/Staff on contracts/)
             if (run.id === 'hinterhof') expect(text).toMatch(/Food prepared/)
             if (run.id === 'seeblick') expect(text).toMatch(/Minimum stay/)

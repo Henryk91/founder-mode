@@ -52,6 +52,7 @@ const PARTS = [
   'funding',
   'energy',
   'events',
+  'skips',
 ]
 
 /** `developer:20`, `developer:20:0`, `salesperson:20:0:8`. */
