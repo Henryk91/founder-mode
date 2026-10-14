@@ -1,9 +1,9 @@
 # Autonomous run 2 status
 
 ## Current
-Step: 3 (step 2 done, tag plan2-loan). Was: 2 gate finishing (60 week and Kantino long identical; Hinterhof and Seeblick reports with events writing to docs/balancing.md). Step 3 in progress on branch plan2-work (worktree ../founder-mode-plan2, commit "Step 3 WIP").
-Last commit: Step 2: fingerprints, seeds, lint (main); Step 3 WIP (plan2-work)
-Next action: step 3 on branch plan2-work: measured on 2,000 seeds (packages/bots/scratch/dbg2.ts): Gratwanderung reading +15.6 / effort +5.2 (at the limit), Seeblick +9.4 / +6.5 (fail), Hinterhof +2.5 / -0.2. Next: ablate effect classes in Seeblick (dbg2 variants noReview, noCashIn, noGuests) and make the top class situational; then event table, docs, decisions, merge, tag plan2-inbox.
+Step: 3, merged into main; its gate is running (scratchpad gate3.sh: 60 week, Kantino long, three tourism reports with events into docs/balancing.md).
+Last commit: Step 3: hosting hours, situational events and guests; runway band wraps
+Next action: compare the gate's 60 week and Kantino long sections with step 2 (identical expected), write reports/step3-inbox.md with T6 per scenario and the event table summary (share of cheapest wins), add T6 Seeblick to open issues, tag plan2-inbox. Then step 4 (retune tourism; new targets T13 naive careful, T14 contract kinds).
 
 ## Checklist
 - [x] Step 0: take stock (tag plan2-baseline)
@@ -24,7 +24,7 @@ Next action: step 3 on branch plan2-work: measured on 2,000 seeds (packages/bots
 - L3 Hinterhof (step 2): reckless ends owing the bank +11.3 ±3.4 points more often than careful (needs 15); careful already fails owing in 76% of runs (T1 19.5%). Revisit with step 4's retune.
 - Hinterhof T2: the no-tests bot wins 11.9% since step 2 (limit 5%); step 4.
 - Hinterhof T1 19.5% and T3 spread 26.7 (evening locals 7.5%) since the kitchen and floor split (step 1); step 4.
-- T6 inbox, all three tourism scenarios (step 3).
+- T6 Seeblick (step 3, budget used): reading +9.4, blind effort +6.5 on 2,000 seeds. Options: a Seeblick pass over effortful answers with unconditional positive effects; fewer mild unconditional benefits.
 - L2, L3 bank loan, Hinterhof and Seeblick (step 2).
 - Seeblick T3 spread 22.4, T7 pricing -1.1, T11 policy strict +4.3 (step 4).
 - Kantino long 31, 32, 33, 36, 20; 27 at the limit (step 5).
