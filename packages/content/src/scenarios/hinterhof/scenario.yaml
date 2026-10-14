@@ -330,11 +330,13 @@ officeStages:
     name: Inherited dining room
     monthlyCents: 0
     # Mismatched chairs and a tired carpet: "a bit tired" in the reviews.
-    qualityBonus: -0.3
+    qualityBonus: -0.15
+  # Plan 2 step 2: mostly a draw for the neighbours (evening walk-ins), a little for everyone's
+  # reviews; worth it where evening locals come, a loss where they do not (spec B.11).
   - id: own_fitout
     name: Own fit-out
     monthlyCents: 0
-    qualityBonus: 0.2
+    qualityBonus: 0
     energyPerWeek: 1
     walkIns: { segment: evening_locals, leadsPerWeek: 0.3 }
 
@@ -364,6 +366,11 @@ loan:
   missedFeeCents: 5000
   earlyFeeShare: 0.01
   maxLoans: 2
+  # Plan 2 step 2: the bank lends against the business plan: what it lists (bought when the
+  # money arrives) and working capital of at most three months of fixed costs (est.; banks
+  # finance the start-up costs and a short run of operating costs, not a cushion).
+  items: [fit_out, wine_list, courtyard, own_fitout, delivery]
+  workingCapitalMonths: 3
 
 # Bookings (docs/tourism-proposal.md). A unit is a cover. Week 1 is the first week of January.
 bookings:
@@ -502,6 +509,12 @@ bookings:
       unitCostShare: 0.27
       months: [5, 6, 7, 8, 9]
       weatherClosed: true
+    own_fitout:
+      # Lamps over the tables, proper chairs, a new window to the courtyard (est.).
+      capacity: 0
+      requires: fit_out
+      oneOffCents: 2500000
+      stage: own_fitout
     catering:
       capacity: 150
       serves: [office_lunch]
@@ -515,6 +528,9 @@ bookings:
       capacity: 200
       serves: [office_lunch, tourists]
       requires: fit_out
+      # Plan 2 step 2: a second fryer, a packing station and insulated bags (est.), the thing a
+      # loan plan can be talked into.
+      oneOffCents: 900000
       # The platform's tablet and a stock of packaging (est.).
       monthlyCents: 40000
       unitCostCents: 150

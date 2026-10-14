@@ -139,6 +139,41 @@ export function loanEconomics(state: GameState): LoanEconomics[] {
           (products[f.id]?.oneOffCents ?? 0) > 0,
       )
       .map((f) => state.scenario.features.find((x) => x.id === f.id)?.name ?? f.id),
+    // A plan's items, each with what it earned from its own guests (plan 2 step 2).
+    ...(l.items || l.rooms
+      ? {
+          items: [
+            ...(l.items ?? []).map((id) => ({
+              name: state.scenario.features.find((x) => x.id === id)?.name ?? id,
+              cents: products[id]?.oneOffCents ?? 0,
+              earnedCents:
+                (products[id]?.capacity ?? 0) > 0 && (products[id]?.serves.length ?? 0) > 0
+                  ? (state.bookings?.earned?.[id] ?? 0)
+                  : null,
+              kind:
+                (products[id]?.capacity ?? 0) > 0 && (products[id]?.serves.length ?? 0) > 0
+                  ? ('earns' as const)
+                  : Object.values(products).some((p) => p.requires === id)
+                    ? ('base' as const)
+                    : ('other' as const),
+            })),
+            ...(l.rooms
+              ? [
+                  {
+                    name:
+                      state.scenario.features.find(
+                        (x) => x.id === state.scenario.bookings?.renovation?.feature,
+                      )?.name ?? 'rooms',
+                    cents: l.rooms * (state.scenario.bookings?.renovation?.centsPerRoom ?? 0),
+                    earnedCents: null,
+                    kind: 'rooms' as const,
+                  },
+                ]
+              : []),
+          ],
+          workingCapitalCents: l.workingCapitalCents ?? 0,
+        }
+      : {}),
   }))
 }
 

@@ -155,6 +155,7 @@ export function applyFinanceWeek(
   state = loans.state
   cash +=
     loans.money.inCents -
+    loans.money.itemsCents -
     loans.money.principalCents -
     loans.money.interestCents -
     loans.money.feeCents
@@ -180,7 +181,8 @@ export function applyFinanceWeek(
     otherIncomeCents: extras.otherIncomeCents,
     investmentCents: extras.investmentCents,
     bookingRevenueCents: extras.bookingRevenueCents,
-    bookingCostsCents: extras.bookingCostsCents,
+    // A loan's listed products and rooms, bought as the money arrives, are company costs too.
+    bookingCostsCents: extras.bookingCostsCents + loans.money.itemsCents,
     ...(extras.voucherCents ? { voucherCents: extras.voucherCents } : {}),
     ...(extras.voucherRedeemedCents ? { voucherRedeemedCents: extras.voucherRedeemedCents } : {}),
     loanInCents: loans.money.inCents,

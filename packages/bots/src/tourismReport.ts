@@ -220,8 +220,24 @@ function loanTargets(
           m: rateMargin(x.results.filter((r) => r.loan?.missedByLoan).length, x.results.length),
         }
       : null
+  // Plan 2 step 2: L3 counts runs that ended owing the bank (called, or bankrupt with a loan).
+  const owingShare = (x: StrategyRuns | undefined) =>
+    x
+      ? {
+          p: pct(x.results.filter((r) => r.loan?.failedOwing).length, x.results.length),
+          m: rateMargin(x.results.filter((r) => r.loan?.failedOwing).length, x.results.length),
+        }
+      : null
+  const carefulOwing = owingShare(careful)!
+  const recklessOwing = owingShare(reckless)
   const carefulMissed = missedShare(careful)!
-  const recklessMissed = missedShare(reckless)
+  // Ending owing the bank, reckless against careful on the same seeds.
+  const owingGap = recklessOwing
+    ? {
+        p: recklessOwing.p - carefulOwing.p,
+        m: Math.sqrt(recklessOwing.m ** 2 + carefulOwing.m ** 2),
+      }
+    : null
   const second = refit
     ? pct(refit.results.filter((r) => r.loan?.second).length, refit.results.length)
     : 0
@@ -240,20 +256,17 @@ function loanTargets(
     },
     {
       id: 14,
-      text: 'L2. Over-borrowing (the most the bank lends, early) loses to borrowing what the plan needs',
+      text: 'L2. Borrowing for a temptation no segment requires (tourism_overborrow: every item the bank lists and the most working capital, early) loses clearly against borrowing only what the business needs: at least 3 points',
       value: overVs ? signed(overVs.change) : '-',
       margin: overVs ? fmtMargin(overVs.margin) : '',
-      pass: !!overVs && overVs.change + overVs.margin < 0,
+      pass: !!overVs && overVs.change + overVs.margin <= -3,
     },
     {
       id: 15,
-      text: 'L3. Default is reachable but avoidable: tourism_careful misses a loan payment the business itself could carry (the four weeks before covered every other cost) in under 3% of runs, tourism_reckless in over 15%',
-      value: `careful ${fmtPct(carefulMissed.p)}; reckless ${recklessMissed ? fmtPct(recklessMissed.p) : '-'}`,
-      margin: `${fmtMargin(carefulMissed.m)}; ${recklessMissed ? fmtMargin(recklessMissed.m) : ''}`,
-      pass:
-        carefulMissed.p - carefulMissed.m < 3 &&
-        !!recklessMissed &&
-        recklessMissed.p + recklessMissed.m > 15,
+      text: 'L3. Debt is dangerous: tourism_reckless (the most the bank lends, a temptation included, no repayment-free start) ends with the loan called or bankrupt owing the bank at least 15 points more often than tourism_careful, and tourism_careful misses a payment the business itself could carry in under 3% of runs',
+      value: `ending owing: reckless ${recklessOwing ? fmtPct(recklessOwing.p) : '-'}, careful ${fmtPct(carefulOwing.p)} (gap ${owingGap ? signed(owingGap.p) : '-'}); careful loan-caused misses ${fmtPct(carefulMissed.p)}`,
+      margin: `${owingGap ? fmtMargin(owingGap.m) : ''}; ${fmtMargin(carefulMissed.m)}`,
+      pass: carefulMissed.p - carefulMissed.m < 3 && !!owingGap && owingGap.p + owingGap.m >= 15,
     },
     {
       id: 16,

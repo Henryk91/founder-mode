@@ -236,9 +236,26 @@ export type StaffContract = {
 export type RoomWorks = { startWeek: number; endWeek: number }
 
 /** Why the bank said no, in the words the player sees. */
-export type LoanRefusal = 'own_money' | 'no_guests' | 'missed_payment' | 'too_many'
+export type LoanRefusal =
+  | 'own_money'
+  | 'no_guests'
+  | 'missed_payment'
+  | 'too_many'
+  /** Plan 2 step 2: more working capital than the bank's stated months of fixed costs. */
+  | 'working_capital'
 
-export type LoanTerms = { amountCents: number; termMonths: number; graceMonths: number }
+export type LoanTerms = {
+  amountCents: number
+  termMonths: number
+  graceMonths: number
+  /**
+   * Plan 2 step 2, where the bank lends against a plan: the products it pays for (bought when
+   * the money arrives), rooms to renovate, and working capital. The amount is their sum.
+   */
+  items?: FeatureId[]
+  rooms?: number
+  workingCapitalCents?: number
+}
 
 export type Loan = {
   id: string
@@ -261,6 +278,10 @@ export type Loan = {
   /** The week the first payment was missed, if one was. */
   firstMissedWeek?: number
   status: 'running' | 'repaid' | 'called'
+  /** Plan 2 step 2: what the plan listed. */
+  items?: FeatureId[]
+  rooms?: number
+  workingCapitalCents?: number
 }
 
 export type LoanState = {
@@ -273,6 +294,9 @@ export type LoanState = {
   accepted: (LoanTerms & { rateBp: number }) | null
   refusal: { reason: LoanRefusal; week: number } | null
   loans: Loan[]
+  /** Plan 2 step 2: products and rooms a loan bought, not yet shipped or started. */
+  bought?: FeatureId[]
+  roomsBought?: number
 }
 
 /** The loan part of a week's plan. */
@@ -331,6 +355,8 @@ export type BookingsState = {
   prep?: Record<FeatureId, number>
   /** Plan 2 step 1c: food cost of everything thrown away over the run. */
   wasteCents?: number
+  /** Plan 2 step 2: what each product earned over the run, net of commission and unit costs. */
+  earned?: Record<FeatureId, number>
   /** Plan 2 step 1d: rooms renovated, and rooms under works. */
   renovated?: number
   works?: RoomWorks[]
@@ -1389,6 +1415,20 @@ export type InvestorView = {
 /** Raising money as the player sees it. The investors' confidence shows only as their mood. */
 export type LoanView = {
   bankName: string
+  /**
+   * Plan 2 step 2, where the bank lends against a plan: the products it may list (not shipped
+   * or bought yet), rooms to renovate, and the most working capital it lends (its stated months
+   * of fixed costs). Null where the founder names any amount.
+   */
+  plan: {
+    items: { id: FeatureId; name: string; cents: number }[]
+    rooms: { centsPerRoom: number; left: number } | null
+    workingCapitalMonths: number
+    workingCapitalMaxCents: number
+    /** Bought by a loan and not shipped or started yet. */
+    bought: FeatureId[]
+    roomsBought: number
+  } | null
   planHours: number
   planNeeded: number
   meetingHours: number
@@ -1934,6 +1974,18 @@ export type LoanEconomics = {
   startWeek: number
   /** Products with a one-off cost shipped after the money arrived, by name. */
   paidFor: string[]
+  /**
+   * Plan 2 step 2: what the plan listed, each with its price and what it earned from its own
+   * guests (net of commission and unit costs), or null for an item that serves nobody itself.
+   */
+  items?: {
+    name: string
+    cents: number
+    earnedCents: number | null
+    /** What it is: sells to guests itself, others need it first, a renovated room, or neither. */
+    kind: 'earns' | 'base' | 'rooms' | 'other'
+  }[]
+  workingCapitalCents?: number
 }
 
 /** What the guests of a bookings run came to, from the bookings and the ledger. */
