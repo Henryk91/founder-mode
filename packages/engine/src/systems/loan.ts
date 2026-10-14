@@ -207,7 +207,17 @@ export function applyLoan(
   const entries: ReportEntry[] = []
   let l: LoanState = { ...l0, planHours: Math.min(l0.planNeeded, l0.planHours + p.planHours) }
   if (p.accept && l.offer) {
-    const { week: _week, paymentCents: _payment, ...terms } = l.offer
+    const { amountCents: amount, termMonths, graceMonths, rateBp } = l.offer
+    const { items, rooms, workingCapitalCents } = l.offer
+    const terms = {
+      amountCents: amount,
+      termMonths,
+      graceMonths,
+      rateBp,
+      ...(items ? { items } : {}),
+      ...(rooms !== undefined ? { rooms } : {}),
+      ...(workingCapitalCents !== undefined ? { workingCapitalCents } : {}),
+    }
     l = { ...l, accepted: terms, offer: null }
     const amountCents = terms.amountCents
     entries.push({ kind: 'loan_accepted', amountCents })
@@ -219,7 +229,16 @@ export function applyLoan(
     entries.push({ kind: 'loan_applied', amountCents: p.apply.amountCents })
   }
   if (l.application && state.week >= l.application.decideWeek) {
-    const { decideWeek: _decide, ...terms } = l.application
+    const { amountCents, termMonths, graceMonths, items, rooms, workingCapitalCents } =
+      l.application
+    const terms: LoanTerms = {
+      amountCents,
+      termMonths,
+      graceMonths,
+      ...(items ? { items } : {}),
+      ...(rooms !== undefined ? { rooms } : {}),
+      ...(workingCapitalCents !== undefined ? { workingCapitalCents } : {}),
+    }
     const reason = judgeLoan(state, terms)
     if (reason) {
       l = {

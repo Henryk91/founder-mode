@@ -363,8 +363,7 @@ plans.forEach((p, s) => {
   const base = p.findIndex((x) => x.part === 'main' && x.strategy.id === SKIP_BASE)
   const skips = p.flatMap((x, i) => (x.spec.kind === 'skip' ? [i] : []))
   if (base < 0 || skips.length === 0) return
-  const win = (r: RunResult) =>
-    r.ending === 'sustainable' || r.ending === 'growing' ? 1 : 0
+  const win = (r: RunResult) => (r.ending === 'sustainable' || r.ending === 'growing' ? 1 : 0)
   const full = done[s]![base]!.results
   const rows = skips.map((i) => {
     const spec = p[i]!.spec as { eventId: string }
@@ -378,7 +377,9 @@ plans.forEach((p, s) => {
   })
   rows.sort((a, b) => b.gain - a.gain)
   const total = rows.reduce((t, r) => t + r.gain, 0)
-  console.log(`\nSkips for ${units[s]!.about.id}: what each event adds to ${SKIP_BASE} (points, paired)`)
+  console.log(
+    `\nSkips for ${units[s]!.about.id}: what each event adds to ${SKIP_BASE} (points, paired)`,
+  )
   console.log(`Sum of all events: ${total.toFixed(1)}`)
   for (const r of rows)
     console.log(`${r.id}\t${r.gain.toFixed(2)}\t±${r.margin.toFixed(2)}\tseen ${r.seen}`)
