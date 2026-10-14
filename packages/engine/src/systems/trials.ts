@@ -64,7 +64,11 @@ export function trialsUsed(
 }
 
 /** Voucher batches offered to a segment so far. */
-export function voucherBatchesUsed(state: GameState, segmentId: SegmentId, plan?: WeekPlan): number {
+export function voucherBatchesUsed(
+  state: GameState,
+  segmentId: SegmentId,
+  plan?: WeekPlan,
+): number {
   let n = 0
   for (const p of plansOf(state, plan)) n += p.bookings?.vouchers?.[segmentId] ?? 0
   return n

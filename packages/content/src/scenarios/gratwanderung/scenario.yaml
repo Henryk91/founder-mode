@@ -486,8 +486,7 @@ bookings:
       contracts:
         permanent: { centsPerWeek: 115000, shifts: 5, noticeWeeks: 4, quality: 0.3, max: 2 }
         part_time: { centsPerWeek: 72000, shifts: 3, noticeWeeks: 4, quality: 0.2, max: 2 }
-        seasonal:
-          { centsPerWeek: 125000, shifts: 5, months: [6, 7, 8, 9], quality: 0.25, max: 2 }
+        seasonal: { centsPerWeek: 125000, shifts: 5, months: [6, 7, 8, 9], quality: 0.25, max: 2 }
     hiking_leader:
       name: Hiking leader
       # Up to about 215 a day for hiking leaders with tour operators (2025 job advert); 215 here.
@@ -502,8 +501,7 @@ bookings:
       contracts:
         permanent: { centsPerWeek: 65000, shifts: 5, noticeWeeks: 4, quality: 0.3, max: 2 }
         part_time: { centsPerWeek: 40000, shifts: 3, noticeWeeks: 4, quality: 0.2, max: 2 }
-        seasonal:
-          { centsPerWeek: 70000, shifts: 5, months: [5, 6, 7, 8, 9], quality: 0.25, max: 2 }
+        seasonal: { centsPerWeek: 70000, shifts: 5, months: [5, 6, 7, 8, 9], quality: 0.25, max: 2 }
   # Plan 2 step 1a: the spec's own experiments (docs/scenario-outdoor.md section 5).
   trials:
     pilot_day:

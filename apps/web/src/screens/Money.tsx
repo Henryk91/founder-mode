@@ -143,6 +143,25 @@ export function Money() {
         />
       </section>
 
+      {/* Vouchers sold and not yet redeemed: cash in the bank, guests still owed (plan 2). */}
+      {view.bookings?.vouchers && view.bookings.vouchers.sold > 0 && (
+        <section className={styles.card}>
+          <h2 className={styles.title}>{label('money.vouchers', stage)}</h2>
+          <p>
+            {count('money.vouchers.open', stage, view.bookings.vouchers.openCount, {
+              amount: formatEuro(view.bookings.vouchers.openValueCents),
+              units: view.bookings.vouchers.openUnits,
+            })}
+          </p>
+          <p className={styles.hint}>
+            {label('money.vouchers.hint', stage, {
+              sold: view.bookings.vouchers.sold,
+              redeemed: view.bookings.vouchers.redeemed,
+            })}
+          </p>
+        </section>
+      )}
+
       {/* A tourism business where every guest pays on the day sends no invoices at all. */}
       {invoicing && (
         <section className={styles.card}>

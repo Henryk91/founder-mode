@@ -460,8 +460,9 @@ bookings:
       requires: fit_out
       # Keeping a service open: prep, a standing crew hour and the gas, however few come (est.).
       monthlyCents: 150000
-      # Food cost 28 to 35% of food sales (est.).
-      unitCostShare: 0.32
+      # Food cost 28 to 35% of food sales with waste (est.); waste is counted on its own here, so
+      # the food on a served plate is the low end.
+      unitCostShare: 0.28
     weekly_menu:
       capacity: 0
     card_payment:
@@ -474,7 +475,7 @@ bookings:
       serves: [evening_locals, tourists]
       requires: fit_out
       monthlyCents: 200000
-      unitCostShare: 0.3
+      unitCostShare: 0.27
     wine_list:
       capacity: 0
       # Opening stock (est.).
@@ -490,7 +491,7 @@ bookings:
       serves: [tourists, evening_locals]
       requires: fit_out
       monthlyCents: 100000
-      unitCostShare: 0.32
+      unitCostShare: 0.28
     courtyard:
       prepared: true
       # Twenty more seats in summer, closed in storms.
@@ -498,7 +499,7 @@ bookings:
       serves: [tourists, evening_locals]
       requires: fit_out
       oneOffCents: 400000
-      unitCostShare: 0.3
+      unitCostShare: 0.27
       months: [5, 6, 7, 8, 9]
       weatherClosed: true
     catering:
@@ -541,25 +542,27 @@ bookings:
       contracts:
         permanent: { centsPerWeek: 81000, shifts: 8, noticeWeeks: 4, quality: 0.3, max: 2 }
         part_time: { centsPerWeek: 42000, shifts: 4, noticeWeeks: 4, quality: 0.2, max: 2 }
-        seasonal:
-          { centsPerWeek: 85000, shifts: 8, months: [5, 6, 7, 8, 9], quality: 0.2, max: 2 }
+        seasonal: { centsPerWeek: 85000, shifts: 8, months: [5, 6, 7, 8, 9], quality: 0.2, max: 2 }
     server:
       name: Server
       kind: floor
-      # Five hours with costs, from an agency or a minijob pool (est.).
-      centsPerShift: 13000
+      # Five hours at the minimum wage of 13.90 (2026) with a minijob's employer costs of about
+      # 30% (est.).
+      centsPerShift: 9000
+      # A server carries about thirty lunches an hour, a dozen dinners (est.).
       units:
-        fast_lunch: 110
-        dinner_menu: 45
-        open_sundays: 40
-        courtyard: 30
+        fast_lunch: 150
+        dinner_menu: 60
+        open_sundays: 55
+        courtyard: 40
       available: [14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
+      # The founder can run the floor too, on a day the kitchen does without them.
+      founderHours: 8
       # About 2,600 gross a month employed, plus tips that stay with the staff (est.).
       contracts:
         permanent: { centsPerWeek: 73000, shifts: 8, noticeWeeks: 4, quality: 0.3, max: 2 }
         part_time: { centsPerWeek: 38000, shifts: 4, noticeWeeks: 4, quality: 0.2, max: 2 }
-        seasonal:
-          { centsPerWeek: 76000, shifts: 8, months: [5, 6, 7, 8, 9], quality: 0.2, max: 2 }
+        seasonal: { centsPerWeek: 76000, shifts: 8, months: [5, 6, 7, 8, 9], quality: 0.2, max: 2 }
     helper:
       name: Minijob helper
       kind: kitchen
@@ -574,7 +577,7 @@ bookings:
         delivery: 15
       available: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
   # A short floor still gets a quarter more covers out, slowly; reviews notice.
-  floor: { stretch: 1.25, penalty: 1.5 }
+  floor: { stretch: 1.25, penalty: 1 }
   # Plan 2 step 1a: the spec's own experiments (docs/scenario-restaurant.md B.5b), before opening.
   trials:
     popup_dinner:

@@ -19,9 +19,13 @@ import {
   guestsSummary,
   PricesPlan,
   pricesSummary,
+  RenovationPlan,
   RosterPlan,
   rosterHours,
   rosterSummary,
+  TrialsPlan,
+  trialsHours,
+  trialsSummary,
 } from '../components/TourismPlan'
 import { TeamPlan } from '../components/TeamPlan'
 import { formatEnergy, formatEuro } from '../format'
@@ -56,7 +60,8 @@ export function hoursByActivity(
   const learn =
     sum(Object.values(p.interviews)) * costs.interviewHours +
     Object.values(p.landing).filter((b) => b > 0).length * costs.landingHours +
-    sum(Object.values(p.presales)) * costs.presaleHoursPerBatch
+    sum(Object.values(p.presales)) * costs.presaleHoursPerBatch +
+    trialsHours(view, p.bookings)
   const rest = p.restHours
   return { sales, build, learn, rest, admin: Math.max(0, planned - sales - build - learn - rest) }
 }
@@ -68,7 +73,8 @@ function sectionHours(view: PlayerView, p: WeekPlan): Record<SectionId, number> 
     talk: sum(Object.values(p.interviews)) * costs.interviewHours,
     test:
       Object.values(p.landing).filter((b) => b > 0).length * costs.landingHours +
-      sum(Object.values(p.presales)) * costs.presaleHoursPerBatch,
+      sum(Object.values(p.presales)) * costs.presaleHoursPerBatch +
+      trialsHours(view, p.bookings),
     build: sum(Object.values(p.build)) + p.bugFixHours,
     sell: sum(Object.values(p.outreach).map((o) => o.hours)),
     demos:
@@ -132,10 +138,12 @@ function summaries(view: PlayerView, p: WeekPlan, stage: Voice): Record<SectionI
 
   return {
     talk: interviews > 0 ? count('plan.sum.interviews', stage, interviews) : none,
-    test: list([
-      ...(landing > 0 ? [count('plan.sum.landing', stage, landing)] : []),
-      ...(batches > 0 ? [count('plan.presale.batches', stage, batches)] : []),
-    ]),
+    test: hasTrials(view)
+      ? trialsSummary(view, p.bookings, stage)
+      : list([
+          ...(landing > 0 ? [count('plan.sum.landing', stage, landing)] : []),
+          ...(batches > 0 ? [count('plan.presale.batches', stage, batches)] : []),
+        ]),
     build: list([...features, ...(p.bugFixHours > 0 ? [label('plan.sum.fixing', stage)] : [])]),
     sell: list(outreach),
     demos: list([
@@ -187,7 +195,7 @@ export function Plan() {
   // time, so React would rebuild the open section on every tap and the browser lose its place.
   const bodies: Record<SectionId, React.JSX.Element> = {
     talk: <TalkBody free={free} />,
-    test: <TestBody free={free} />,
+    test: hasTrials(view) ? <TrialsPlan /> : <TestBody free={free} />,
     build: <BuildBody free={free} />,
     sell: <SellBody free={free} />,
     demos: <DemosBody free={free} />,
@@ -252,6 +260,10 @@ export function Plan() {
     </>
   )
 }
+
+/** A scenario with its own trials or vouchers in place of landing tests and pre-sales (plan 2). */
+const hasTrials = (view: PlayerView) =>
+  !!view.bookings && (view.bookings.trials.length > 0 || view.bookings.vouchers !== null)
 
 /** Demos, follow ups and chasing only matter once there is someone to demo, follow or chase. */
 function hasDemosSection(view: PlayerView, p: WeekPlan): boolean {
@@ -654,6 +666,7 @@ function BuildBody({ free }: { free: number }) {
           />
         </Row>
       )}
+      <RenovationPlan />
       <HintLine term="build" hint={label('plan.hint.build', stage)} />
     </>
   )

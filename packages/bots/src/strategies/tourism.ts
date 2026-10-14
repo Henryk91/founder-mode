@@ -68,6 +68,9 @@ const MORE_INTERVIEWS = 4
 const ROSTER_MARGIN = 0.1
 /** The understaffing bot covers this share of what is booked. */
 const UNDER_SHARE = 0.6
+/** Food prepared beyond the busiest recent week's guests (plan 2 step 1c). */
+const PREP_MARGIN = 0.05
+const FIRST_PREP_SHARE = 0.4
 /** Founder shifts a week at most, so selling and building still get some hours. */
 const FOUNDER_SHIFTS = 4
 /** Hours the founder keeps free beside their own shifts. */
@@ -158,6 +161,9 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
    */
   let arrivals: number[] = []
   let bookedAtPlan = 0
+  /** Plan 2: walk-ins per product in recent weeks (who came less what was booked at planning). */
+  const walkInsBy: Record<string, number[]> = {}
+  let bookedAtPlanBy: Record<string, number> = {}
 
   /**
    * The refit offered by an inbox event (loan target L1): the office stage it moves to, what it
@@ -552,6 +558,17 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       scenario.loan && arrivals.length > 0
         ? arrivals.reduce((t, x) => t + x, 0) / arrivals.length
         : 0
+    // Last week's guests per product, against what was booked when it was planned (plan 2).
+    if (view.week > 1) {
+      for (const p of bv.products) {
+        if (!p.shipped || p.capacity === 0) continue
+        const came = bv.lastWeek.find((x) => x.productId === p.id)?.came ?? 0
+        const was = bookedAtPlanBy[p.id]
+        if (was === undefined) continue
+        walkInsBy[p.id] = [...(walkInsBy[p.id] ?? []), Math.max(0, came - was)].slice(-4)
+      }
+    }
+    bookedAtPlanBy = Object.fromEntries(bv.thisWeek.map((x) => [x.productId, x.booked]))
     bookedAtPlan = bv.thisWeek.reduce(
       (t, x) => t + (bv.products.find((p) => p.id === x.productId)?.shipped ? x.booked : 0),
       0,
@@ -559,10 +576,20 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const prep: Record<string, number> = {}
     for (const { productId, booked: bookedNow } of bv.thisWeek) {
       const product = bv.products.find((p) => p.id === productId)
+      // Walk-ins: this product's own recent weeks where the screen shows them (plan 2), else the
+      // week's walk-ins shared over the open products by capacity (step 6).
+      const own = walkInsBy[productId]
       const expected =
-        product && openCapacity > 0 && open.includes(product)
-          ? (walkIns * product.capacity) / openCapacity
-          : 0
+        product &&
+        open.includes(product) &&
+        scenario.loan &&
+        own &&
+        own.length > 0 &&
+        bv.prep.length > 0
+          ? own.reduce((t, x) => t + x, 0) / own.length
+          : product && openCapacity > 0 && open.includes(product)
+            ? (walkIns * product.capacity) / openCapacity
+            : 0
       const booked = rule.roster === 'under' ? bookedNow : bookedNow + expected
       if (booked === 0 && rule.roster !== 'over') continue
       if (!product?.shipped) continue
@@ -574,8 +601,20 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
             : booked * (rule.reviews ? 1 + ROSTER_MARGIN : 1)
       // Food for what the roster is meant to serve; the overstaffing bot leaves the kitchen to
       // cook for every cover it can.
+      // Food (plan 2 step 1c): for what is booked and the walk-ins of recent weeks, a tenth more,
+      // and never less than last week's guests; with no guests yet, for two fifths of the seats.
+      // Running out turns guests away; a little waste costs less.
       if (bv.prep.some((x) => x.productId === productId) && rule.roster !== 'over') {
-        prep[productId] = Math.ceil(need)
+        const history = (walkInsBy[productId]?.length ?? 0) >= 2
+        const lastShare = walkInsBy[productId]?.at(-1) ?? 0
+        prep[productId] =
+          rule.roster === 'under'
+            ? Math.ceil(need)
+            : history
+              ? Math.ceil(
+                  Math.max(need, (bookedNow + Math.max(expected, lastShare)) * (1 + PREP_MARGIN)),
+                )
+              : Math.ceil(Math.max(need, product.capacity * FIRST_PREP_SHARE))
       }
       for (const side of sides) {
         let covered = 0
@@ -621,7 +660,8 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         }
       }
     }
-    // Prepared services nobody is expected at this week get nothing cooked.
+    // Prepared services nobody is expected at this week get nothing cooked; with no history yet
+    // the kitchen's own default stands.
     if (rule.roster !== 'over' && bv.prep.length > 0) {
       plan.prep = Object.fromEntries(bv.prep.map((x) => [x.productId, prep[x.productId] ?? 0]))
     }
@@ -799,7 +839,9 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     for (const e of report.entries) {
       if (e.kind === 'bookings_cancelled') cancelled += e.units
       if (e.kind === 'guests_served') served += e.units
-      if (e.kind === 'company_cancelled' && e.reason === 'staff') staffCancelled += e.units
+      // Guests sent away for want of staff or food came all the same (plan 2: prep).
+      if (e.kind === 'company_cancelled' && (e.reason === 'staff' || e.reason === 'sold_out'))
+        staffCancelled += e.units
     }
     arrivals = [...arrivals, Math.max(0, served + staffCancelled - bookedAtPlan)].slice(-4)
     cancelledRecent = [...cancelledRecent, cancelled].slice(-4)

@@ -125,56 +125,103 @@ export function Market() {
               </ul>
             </div>
           )}
-          {(seg.landingTests.length > 0 ||
-            seg.presales.length > 0 ||
-            view.pendingExperiments.some((e) => e.segmentId === seg.id)) && (
-            <div className={styles.row}>
-              <div className={styles.rowHead}>
-                <span>{label('market.landing.title', stage)}</span>
-              </div>
-              <ul className={styles.list}>
-                {seg.landingTests.map((t, i) => (
-                  <li key={`l${i}`}>
-                    {label('market.landing.result', stage, {
-                      week: t.week,
-                      signups: t.signups,
-                      visitors: t.visitors,
-                      budget: formatEuro(t.budgetCents),
-                    })}
-                  </li>
-                ))}
-                {view.pendingExperiments
-                  .filter((e) => e.segmentId === seg.id && e.kind === 'landing')
-                  .map((e, i) => (
-                    <li key={`lp${i}`} className={styles.hint}>
-                      {label('market.landing.pending', stage, { week: e.resolveWeek })}
+          {seg.trials !== undefined &&
+            (seg.trials.length > 0 ||
+              (seg.vouchers ?? []).length > 0 ||
+              view.pendingExperiments.some((e) => e.segmentId === seg.id)) && (
+              <div className={styles.row}>
+                <div className={styles.rowHead}>
+                  <span>{label('market.trials.title', stage)}</span>
+                </div>
+                <ul className={styles.list}>
+                  {seg.trials.map((t, i) => (
+                    <li key={`t${i}`}>
+                      {label('market.trial.result', stage, {
+                        week: t.week,
+                        trial: view.bookings?.trials.find((x) => x.id === t.trialId)?.name ?? '',
+                        responses: t.responses,
+                        people: t.people,
+                        price: formatEuro(t.priceCents),
+                      })}
                     </li>
                   ))}
-              </ul>
-              <div className={styles.rowHead}>
-                <span>{label('market.presale.title', stage)}</span>
-              </div>
-              <ul className={styles.list}>
-                {seg.presales.map((t, i) => (
-                  <li key={`s${i}`}>
-                    {label('market.presale.result', stage, {
-                      week: t.week,
-                      commits: t.commits,
-                      prospects: t.prospects,
-                      price: formatEuro(t.priceCents),
-                    })}
-                  </li>
-                ))}
-                {view.pendingExperiments
-                  .filter((e) => e.segmentId === seg.id && e.kind === 'presale')
-                  .map((e, i) => (
-                    <li key={`sp${i}`} className={styles.hint}>
-                      {label('market.presale.pending', stage, { week: e.resolveWeek })}
+                  {(seg.vouchers ?? []).map((t, i) => (
+                    <li key={`v${i}`}>
+                      {label('market.voucher.result', stage, {
+                        week: t.week,
+                        sold: t.sold,
+                        prospects: t.prospects,
+                        price: formatEuro(t.priceCents),
+                      })}
                     </li>
                   ))}
-              </ul>
-            </div>
-          )}
+                  {view.pendingExperiments
+                    .filter((e) => e.segmentId === seg.id)
+                    .map((e, i) => (
+                      <li key={`tp${i}`} className={styles.hint}>
+                        {e.kind === 'voucher'
+                          ? label('market.voucher.pending', stage, { week: e.resolveWeek })
+                          : label('market.trial.pending', stage, {
+                              week: e.resolveWeek,
+                              trial:
+                                view.bookings?.trials.find((x) => x.id === e.trialId)?.name ?? '',
+                            })}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
+          {seg.trials === undefined &&
+            (seg.landingTests.length > 0 ||
+              seg.presales.length > 0 ||
+              view.pendingExperiments.some((e) => e.segmentId === seg.id)) && (
+              <div className={styles.row}>
+                <div className={styles.rowHead}>
+                  <span>{label('market.landing.title', stage)}</span>
+                </div>
+                <ul className={styles.list}>
+                  {seg.landingTests.map((t, i) => (
+                    <li key={`l${i}`}>
+                      {label('market.landing.result', stage, {
+                        week: t.week,
+                        signups: t.signups,
+                        visitors: t.visitors,
+                        budget: formatEuro(t.budgetCents),
+                      })}
+                    </li>
+                  ))}
+                  {view.pendingExperiments
+                    .filter((e) => e.segmentId === seg.id && e.kind === 'landing')
+                    .map((e, i) => (
+                      <li key={`lp${i}`} className={styles.hint}>
+                        {label('market.landing.pending', stage, { week: e.resolveWeek })}
+                      </li>
+                    ))}
+                </ul>
+                <div className={styles.rowHead}>
+                  <span>{label('market.presale.title', stage)}</span>
+                </div>
+                <ul className={styles.list}>
+                  {seg.presales.map((t, i) => (
+                    <li key={`s${i}`}>
+                      {label('market.presale.result', stage, {
+                        week: t.week,
+                        commits: t.commits,
+                        prospects: t.prospects,
+                        price: formatEuro(t.priceCents),
+                      })}
+                    </li>
+                  ))}
+                  {view.pendingExperiments
+                    .filter((e) => e.segmentId === seg.id && e.kind === 'presale')
+                    .map((e, i) => (
+                      <li key={`sp${i}`} className={styles.hint}>
+                        {label('market.presale.pending', stage, { week: e.resolveWeek })}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           <Quotes interviews={seg.interviews} />
         </section>
       ))}

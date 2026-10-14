@@ -110,7 +110,10 @@ export function upcoming(view: PlayerView): Upcoming[] {
   for (const e of view.pendingExperiments) {
     items.push({
       week: e.resolveWeek,
-      text: label(`coming.${e.kind}`, stage, { segment: segment(e.segmentId) }),
+      text: label(`coming.${e.kind}`, stage, {
+        segment: segment(e.segmentId),
+        trial: view.bookings?.trials.find((t) => t.id === e.trialId)?.name ?? '',
+      }),
       warn: false,
     })
   }

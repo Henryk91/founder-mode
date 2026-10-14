@@ -153,6 +153,45 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       return count('results.entry.shifts_paid', stage, entry.shifts, {
         amount: formatEuro(entry.amountCents),
       })
+    case 'trial_result':
+      return label('results.entry.trial_result', stage, {
+        trial: view.bookings?.trials.find((t) => t.id === entry.trialId)?.name ?? entry.trialId,
+        segment: segment(entry.segmentId),
+        responses: entry.responses,
+        people: entry.people,
+      })
+    case 'voucher_result':
+      return label('results.entry.voucher_result', stage, {
+        segment: segment(entry.segmentId),
+        sold: entry.sold,
+        prospects: entry.prospects,
+        amount: formatEuro(entry.amountCents),
+      })
+    case 'vouchers_redeemed':
+      return count('results.entry.vouchers_redeemed', stage, entry.vouchers, {
+        amount: formatEuro(entry.valueCents),
+      })
+    case 'food_waste':
+      return count('results.entry.food_waste', stage, entry.units, {
+        amount: formatEuro(entry.amountCents),
+      })
+    case 'contract_signed':
+    case 'contract_ended':
+      return label(`results.entry.${entry.kind}`, stage, {
+        name: entry.name,
+        role: view.bookings?.roles.find((r) => r.id === entry.roleId)?.name ?? entry.roleId,
+        kind: label(`tour.contract.kind.${entry.contractKind}`, stage),
+      })
+    case 'contracts_paid':
+      return count('results.entry.contracts_paid', stage, entry.contracts, {
+        amount: formatEuro(entry.amountCents),
+      })
+    case 'works_started':
+      return count('results.entry.works_started', stage, entry.rooms, {
+        amount: formatEuro(entry.amountCents),
+      })
+    case 'works_done':
+      return count('results.entry.works_done', stage, entry.rooms, { renovated: entry.renovated })
     case 'review':
       return count('results.entry.review', stage, entry.added, {
         rating: entry.rating.toFixed(1),
@@ -345,7 +384,18 @@ function place(entry: ReportEntry): [Group, number] {
     case 'review':
       return ['sales', 4]
     case 'shifts_paid':
+    case 'contracts_paid':
+    case 'food_waste':
       return ['money', 3]
+    case 'trial_result':
+    case 'voucher_result':
+      return ['learning', 7]
+    case 'vouchers_redeemed':
+    case 'works_started':
+    case 'works_done':
+    case 'contract_signed':
+    case 'contract_ended':
+      return ['sales', 4]
     case 'weather':
       return ['founder', 2]
     case 'term_sheet':
