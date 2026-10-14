@@ -70,12 +70,8 @@ describe('trials (plan 2 step 1a)', () => {
     expect(ok(s, p)).toBe(true)
     expect(hoursByActivity(s, p).learning).toBe(10)
     // A trial where the player picks a segment needs one it reaches; one that reaches all, none.
-    expect(ok(s, plan(bp({ trials: [{ id: 'pilot_day', segmentId: null }] })))).toBe(
-      false,
-    )
-    expect(
-      ok(s, plan(bp({ trials: [{ id: 'test_listing', segmentId: 'tourists' }] }))),
-    ).toBe(false)
+    expect(ok(s, plan(bp({ trials: [{ id: 'pilot_day', segmentId: null }] })))).toBe(false)
+    expect(ok(s, plan(bp({ trials: [{ id: 'test_listing', segmentId: 'tourists' }] })))).toBe(false)
     const after = endWeek(s, p).state
     expect(after.company.cashCents).toBeLessThan(s.company.cashCents)
   })
@@ -103,16 +99,14 @@ describe('trials (plan 2 step 1a)', () => {
     expect(state.bookings!.reviews).toBe(1)
     state = endWeek(state, p).state
     expect(ok(state, p)).toBe(false)
-    expect(
-      ok(state, plan(bp({ trials: [{ id: 'pilot_day', segmentId: 'school_groups' }] }))),
-    ).toBe(true)
+    expect(ok(state, plan(bp({ trials: [{ id: 'pilot_day', segmentId: 'school_groups' }] })))).toBe(
+      true,
+    )
   })
 
   it('runs a trial before opening only', () => {
     const s = ship(createGame(quiet('hinterhof'), 'trial-4'), ['fit_out'])
-    expect(ok(s, plan(bp({ trials: [{ id: 'lunch_test', segmentId: null }] })))).toBe(
-      false,
-    )
+    expect(ok(s, plan(bp({ trials: [{ id: 'lunch_test', segmentId: null }] })))).toBe(false)
     expect(getView(s).bookings!.trials.find((t) => t.id === 'lunch_test')!.open).toBe(false)
   })
 })
@@ -291,8 +285,6 @@ describe('renovation and minimum stay (plan 2 step 1d)', () => {
     expect(getView(s).bookings!.minStay).toMatchObject({ on: false, nights: 2 })
     const state = endWeek(s, plan(bp({ minStay: true }))).state
     expect(getView(state).bookings!.minStay!.on).toBe(true)
-    expect(ok(createGame(quiet('hinterhof'), 'x'), plan(bp({ minStay: true })))).toBe(
-      false,
-    )
+    expect(ok(createGame(quiet('hinterhof'), 'x'), plan(bp({ minStay: true })))).toBe(false)
   })
 })

@@ -562,11 +562,7 @@ export type VoucherEvidence = {
 }
 
 export type Evidence =
-  | InterviewEvidence
-  | LandingEvidence
-  | PresaleEvidence
-  | TrialEvidence
-  | VoucherEvidence
+  InterviewEvidence | LandingEvidence | PresaleEvidence | TrialEvidence | VoucherEvidence
 
 /** A landing page test or pre-sale in progress. Holds the hidden chance, so it stays hidden. */
 export type PendingExperiment = {
@@ -1340,6 +1336,11 @@ export type BookingsView = {
   vouchers: VouchersView | null
   /** Plan 2 step 1c: units prepared per service product, or null to prepare what the roster can cook. */
   prep: { productId: FeatureId; units: number | null }[]
+  /**
+   * Plan 2 step 1c: last week per product, the guests who came (served, or sent away for want of
+   * staff or food) and those served. Empty in the first week.
+   */
+  lastWeek: { productId: FeatureId; came: number; served: number }[]
   /** Plan 2 step 1d: rooms renovated one at a time, where the scenario has it. */
   renovation: RenovationView | null
   /** Plan 2 step 1d: the minimum stay, where the scenario has one. */

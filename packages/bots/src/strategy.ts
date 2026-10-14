@@ -92,6 +92,7 @@ export class PlanBuilder {
 
   /** A landing page test with the smallest (or the largest) ad budget, if the hours fit. */
   landing(segmentId: string, size: 'small' | 'large' = 'small'): boolean {
+    if (this.ownTrials()) return false
     const budgets = this.view.costs.landingBudgetsCents
     const budget = size === 'small' ? budgets[0] : budgets[budgets.length - 1]
     if (budget === undefined || this.free < this.view.costs.landingHours) return false
@@ -105,6 +106,7 @@ export class PlanBuilder {
 
   /** One batch of pre-sale pitches, if the market has batches left and the hours fit. */
   presale(segmentId: string): boolean {
+    if (this.ownTrials()) return false
     const seg = this.view.segments.find((x) => x.id === segmentId)
     const c = this.view.costs
     const batches = this.plan.presales[segmentId] ?? 0
@@ -113,6 +115,12 @@ export class PlanBuilder {
     this.plan.presales[segmentId] = batches + 1
     this.free -= c.presaleHoursPerBatch
     return true
+  }
+
+  /** A tourism scenario with its own trials and vouchers has no landing tests or pre-sales. */
+  private ownTrials(): boolean {
+    const b = this.view.bookings
+    return !!b && (b.trials.length > 0 || b.vouchers !== null)
   }
 
   interviews(segmentId: string, count: number): number {

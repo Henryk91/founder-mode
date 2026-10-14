@@ -132,6 +132,29 @@ export function PostMortem({ desk }: { desk: boolean }) {
         </li>
         {g.turnedAwayRecent > 0 && <li>{count('pm.guests.away', stage, g.turnedAwayRecent)}</li>}
         <li>{label('pm.guests.costs', stage, { amount: formatEuro(g.bookingCostsCents) })}</li>
+        {g.wasteCents !== undefined && g.wasteCents > 0 && (
+          <li>{label('pm.guests.waste', stage, { amount: formatEuro(g.wasteCents) })}</li>
+        )}
+        {g.vouchers && g.vouchers.sold > 0 && (
+          <li>
+            {label('pm.guests.vouchers', stage, {
+              sold: g.vouchers.sold,
+              redeemed: g.vouchers.redeemed,
+              open: g.vouchers.openCount,
+              amount: formatEuro(g.vouchers.openValueCents),
+            })}
+          </li>
+        )}
+        {g.contracts &&
+          g.contracts.permanent + g.contracts.part_time + g.contracts.seasonal > 0 && (
+            <li>
+              {label('pm.guests.contracts', stage, {
+                permanent: g.contracts.permanent,
+                partTime: g.contracts.part_time,
+                seasonal: g.contracts.seasonal,
+              })}
+            </li>
+          )}
       </ul>
     </Fold>
   )

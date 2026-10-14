@@ -23,13 +23,7 @@ import {
 } from './contracts'
 import { energyFactor } from './founder'
 import { priceCurve } from './market'
-import {
-  openVouchers,
-  trialOpen,
-  trialsUsed,
-  trialsValid,
-  voucherBatchesUsed,
-} from './trials'
+import { openVouchers, trialOpen, trialsUsed, trialsValid, voucherBatchesUsed } from './trials'
 
 // Tourism (step 4, docs/tourism-proposal.md): bookings of capacity that expires. Every function
 // here runs only for a scenario with a `bookings` block, so the subscription model never draws a
@@ -739,9 +733,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     if (waste === 0) continue
     const meanPrice = used > 0 ? mine.reduce((t, x) => t + x.units * x.priceCents, 0) / used : 0
     wasteUnits += waste
-    wasteCents += Math.round(
-      waste * (prod.unitCostCents + meanPrice * (prod.unitCostShare ?? 0)),
-    )
+    wasteCents += Math.round(waste * (prod.unitCostCents + meanPrice * (prod.unitCostShare ?? 0)))
   }
   // A kitchen that prepared food for a service nobody booked throws all of it away.
   for (const [id, prod] of Object.entries(cfg.products)) {
@@ -846,7 +838,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   if (staffCancelled > 0)
     out.entries.push({ kind: 'company_cancelled', units: staffCancelled, reason: 'staff' })
-  if (soldOut > 0) out.entries.push({ kind: 'company_cancelled', units: soldOut, reason: 'sold_out' })
+  if (soldOut > 0)
+    out.entries.push({ kind: 'company_cancelled', units: soldOut, reason: 'sold_out' })
   if (closedForWorks > 0)
     out.entries.push({ kind: 'company_cancelled', units: closedForWorks, reason: 'works' })
   if (weatherClosed > 0)
@@ -865,11 +858,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   // 7. Reviews.
   let rating = b.rating
   let reviews = b.reviews
-  const guests = servedUnits + staffCancelled + weatherClosed + soldOut + closedForWorks
+  // Guests turned away because the food ran out never sat down: they leave no review.
+  const guests = servedUnits + staffCancelled + weatherClosed + closedForWorks
   if (servedUnits > 0) {
     const r = cfg.reviews
-    const shortfall =
-      guests > 0 ? (staffCancelled + weatherClosed + soldOut + closedForWorks) / guests : 0
+    const shortfall = guests > 0 ? (staffCancelled + weatherClosed + closedForWorks) / guests : 0
     // Plan 2: contract staff who know the place, renovated rooms, and a floor stretched thin.
     const contractBonus = allShifts > 0 ? contracts.qualityShifts / allShifts : 0
     const roomsBonus = (cfg.renovation?.qualityPerRoom ?? 0) * (b.renovated ?? 0)
@@ -1177,6 +1170,14 @@ export function bookingsView(state: GameState): BookingsView | null {
           }
         })()
       : null,
+    lastWeek: Object.keys(cfg.products).flatMap((id) => {
+      const mine = b.bookings.filter((x) => x.productId === id && x.week === state.week - 1)
+      const served = mine.filter((x) => x.status === 'served').reduce((t, x) => t + x.units, 0)
+      const came = mine
+        .filter((x) => x.status === 'served' || x.status === 'company_cancelled')
+        .reduce((t, x) => t + x.units, 0)
+      return came > 0 ? [{ productId: id, came, served }] : []
+    }),
     prep: Object.entries(cfg.products)
       .filter(([, p]) => p.prepared)
       .map(([id]) => ({ productId: id, units: b.prep?.[id] ?? null })),

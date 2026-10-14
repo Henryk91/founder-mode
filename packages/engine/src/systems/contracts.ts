@@ -100,7 +100,7 @@ export function applyContracts(input: GameState, plan: WeekPlan): ContractsWeek 
   const b = input.bookings
   if (!cfg || !b) return out
   const p = plan.bookings
-  let contracts = [...(b.contracts ?? [])]
+  const contracts = [...(b.contracts ?? [])]
   const names = input.scenario.team.candidateNames
   for (const h of p?.hire ?? []) {
     const c = contractConfig(input, h.roleId, h.kind)
@@ -122,7 +122,12 @@ export function applyContracts(input: GameState, plan: WeekPlan): ContractsWeek 
     const notice = x ? contractConfig(input, x.roleId, x.kind)?.noticeWeeks : undefined
     if (!x || notice === undefined) continue
     contracts[i] = { ...x, endWeek: input.week + notice }
-    out.entries.push({ kind: 'contract_ended', roleId: x.roleId, contractKind: x.kind, name: x.name })
+    out.entries.push({
+      kind: 'contract_ended',
+      roleId: x.roleId,
+      contractKind: x.kind,
+      name: x.name,
+    })
   }
   let working = 0
   for (const x of contracts) {

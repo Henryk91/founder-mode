@@ -31,12 +31,11 @@ describe('long mode in the content', () => {
     // block does not touch them.
     expect(scenarioHash(loadScenario('kantino'))).toBe('2dda4b4b1831c529')
     expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
-    // Gratwanderung is protected from step 5 on (its tag `scenario-outdoor`), Hinterhof from
-    // step 6 (`scenario-restaurant`), Seeblick from step 7 (`scenario-hotel`). The tourism fixes
-    // changed text only (how each group books, Seeblick's intro): games unchanged.
-    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('88823a116d13f3c7')
-    expect(scenarioHash(loadScenario('hinterhof'))).toBe('12d54060f62d830e')
-    expect(scenarioHash(loadScenario('seeblick'))).toBe('c28f9cc7a4b1cd85')
+    // The tourism scenarios change in plan 2 steps 1 to 4 (the spec features, the loan, the
+    // inbox, the retune) and are protected again from the end of step 4 (tag `plan2-tourism`).
+    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('25fbb3280f48c646')
+    expect(scenarioHash(loadScenario('hinterhof'))).toBe('5fd47d55ebdbed07')
+    expect(scenarioHash(loadScenario('seeblick'))).toBe('b9a43c5c578dee36')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })

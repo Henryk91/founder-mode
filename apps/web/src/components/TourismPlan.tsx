@@ -49,13 +49,29 @@ export function coverage(b: BookingsView, p: BookingsPlan) {
     .filter((t) => staffed(b, t.productId))
     .map((t) => {
       const product = b.products.find((x) => x.id === t.productId)!
-      const units = b.roles.reduce(
-        (sum, r) =>
-          sum +
-          ((p.shifts[r.id] ?? 0) + (p.founderShifts[r.id] ?? 0)) * (r.units[t.productId] ?? 0),
-        0,
-      )
-      return { product, booked: t.booked, covers: Math.min(units, product.capacity) }
+      // Contract staff working this week count with the shifts (plan 2).
+      const contract = (role: string) =>
+        b.contracts.filter((c) => c.roleId === role && c.working).reduce((n, c) => n + c.shifts, 0)
+      const side = (floor: boolean) =>
+        b.roles
+          .filter((r) => (r.kind === 'floor') === floor)
+          .reduce(
+            (sum, r) =>
+              sum +
+              ((p.shifts[r.id] ?? 0) + (p.founderShifts[r.id] ?? 0) + contract(r.id)) *
+                (r.units[t.productId] ?? 0),
+            0,
+          )
+      const kitchen = Math.min(side(false), product.capacity)
+      const needsFloor = b.roles.some((r) => r.kind === 'floor' && (r.units[t.productId] ?? 0) > 0)
+      const floor = needsFloor ? side(true) : null
+      return {
+        product,
+        booked: t.booked,
+        covers: floor === null ? kitchen : Math.min(kitchen, floor),
+        kitchen,
+        floor,
+      }
     })
 }
 
@@ -102,13 +118,20 @@ export function RosterPlan() {
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   return (
     <>
-      {coverage(b, draft).map(({ product, booked, covers }) => (
+      {coverage(b, draft).map(({ product, booked, covers, kitchen, floor }) => (
         <Writing key={product.id} warn={covers < booked}>
-          {label(covers < booked ? 'tour.roster.short' : 'tour.roster.line', stage, {
-            product: product.name,
-            booked,
-            covers,
-          })}
+          {floor === null
+            ? label(covers < booked ? 'tour.roster.short' : 'tour.roster.line', stage, {
+                product: product.name,
+                booked,
+                covers,
+              })
+            : label(covers < booked ? 'tour.roster.splitShort' : 'tour.roster.split', stage, {
+                product: product.name,
+                booked,
+                kitchen,
+                floor,
+              })}
         </Writing>
       ))}
       {b.roles.map((r) => {
@@ -157,6 +180,8 @@ export function RosterPlan() {
             />
           )
         })}
+      <ContractsPlan />
+      <PrepPlan />
       <HintLine term="roster" hint={label('plan.hint.roster', stage)} />
     </>
   )
@@ -326,6 +351,7 @@ export function PricesPlan() {
           )}
         </Choices>
       )}
+      <MinStayPlan />
       <HintLine term="prices" hint={label('plan.hint.prices', stage)} />
     </>
   )
@@ -342,5 +368,392 @@ function chip(on: boolean, text: string, onClick: () => void) {
     >
       {text}
     </button>
+  )
+}
+
+// Plan 2 step 1: the scenario's own trials and vouchers, contracts, food prepared, rooms renovated
+// one at a time, and a minimum stay.
+
+/** Founder hours of the week's trials and voucher batches. */
+export function trialsHours(view: PlayerView, p: BookingsPlan | undefined): number {
+  const b = view.bookings
+  if (!b || !p) return 0
+  let hours = 0
+  for (const t of p.trials ?? []) hours += b.trials.find((x) => x.id === t.id)?.hours ?? 0
+  for (const n of Object.values(p.vouchers ?? {})) hours += n * (b.vouchers?.hoursPerBatch ?? 0)
+  return hours
+}
+
+export function trialsSummary(view: PlayerView, p: BookingsPlan | undefined, stage: Voice) {
+  const b = view.bookings
+  if (!b) return ''
+  const names = (p?.trials ?? []).map((t) => b.trials.find((x) => x.id === t.id)?.name ?? t.id)
+  const batches = Object.values(p?.vouchers ?? {}).reduce((t, n) => t + n, 0)
+  const parts = [
+    ...new Set(names),
+    ...(batches > 0 ? [count('tour.sum.vouchers', stage, batches)] : []),
+  ]
+  return parts.length ? parts.join(', ') : label('plan.sum.none', stage)
+}
+
+/** The Test section where a scenario has its own trials: each trial, then vouchers. */
+export function TrialsPlan() {
+  const view = useGame((s) => s.view)
+  const draft = useGame((s) => s.plan.bookings) ?? noBookings()
+  const planned = useGame((s) => s.plannedHours)
+  const set = useGame((s) => s.setBookings)
+  if (!view?.bookings) return null
+  const b = view.bookings
+  const stage = voiceOf(view)
+  const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
+  const trials = draft.trials ?? []
+  const has = (id: string, seg: string | null) =>
+    trials.some((t) => t.id === id && t.segmentId === seg)
+  const toggle = (id: string, seg: string | null) =>
+    set({
+      trials: has(id, seg)
+        ? trials.filter((t) => !(t.id === id && t.segmentId === seg))
+        : [...trials, { id, segmentId: seg }],
+    })
+  const runChip = (t: (typeof b.trials)[number], seg: string | null) => {
+    const on = has(t.id, seg)
+    const left = t.left[seg ?? ''] ?? 0
+    if (!on && left <= 0) return <Writing>{label('tour.trial.done', stage)}</Writing>
+    return (
+      <button
+        type="button"
+        aria-pressed={on}
+        disabled={!on && free < t.hours}
+        className={`${styles.chip} ${on ? styles.chipOn : ''}`}
+        onClick={() => toggle(t.id, seg)}
+      >
+        {on ? label('tour.trial.planned', stage) : label('tour.trial.run', stage)}
+      </button>
+    )
+  }
+  return (
+    <>
+      {b.trials.map((t) => (
+        <div key={t.id}>
+          <SubHeading>{t.name}</SubHeading>
+          <Writing>
+            {count('tour.trial.note', stage, t.weeks, {
+              people: t.people,
+              hours: label('unit.hours', stage, { n: t.hours }),
+              amount: formatEuro(t.cents),
+            })}
+            {t.paid ? ` ${label('tour.trial.paid', stage)}` : ''}
+          </Writing>
+          {!t.open ? (
+            <Writing>{label('tour.trial.closed', stage)}</Writing>
+          ) : t.choose ? (
+            <>
+              <Writing>{label('tour.trial.pick', stage)}</Writing>
+              {t.segments.map((seg) => (
+                <Market
+                  key={seg}
+                  label={segName(view, seg)}
+                  note={count('tour.trial.left', stage, t.left[seg] ?? 0)}
+                  choices={runChip(t, seg)}
+                />
+              ))}
+            </>
+          ) : (
+            <Market
+              stack
+              label={
+                t.segments.length > 1
+                  ? label('tour.trial.reach', stage, {
+                      main: segName(view, t.segments[0]!),
+                      others: t.segments
+                        .slice(1)
+                        .map((x) => segName(view, x))
+                        .join(', '),
+                    })
+                  : label('tour.trial.reachOne', stage, { main: segName(view, t.segments[0]!) })
+              }
+              note={count('tour.trial.left', stage, t.left[''] ?? 0)}
+              choices={runChip(t, null)}
+            />
+          )}
+        </div>
+      ))}
+      {b.vouchers && (
+        <>
+          <SubHeading>{label('tour.vouchers', stage)}</SubHeading>
+          {b.vouchers.segments.map((v) => {
+            const n = draft.vouchers?.[v.id] ?? 0
+            const per = b.vouchers!.hoursPerBatch
+            return (
+              <div key={v.id}>
+                <Writing>
+                  {label('tour.vouchers.note', stage, {
+                    people: b.vouchers!.batchSize,
+                    amount: formatEuro(v.priceCents),
+                    hours: label('unit.hours', stage, { n: per }),
+                  })}
+                </Writing>
+                <Market
+                  stack
+                  label={segName(view, v.id)}
+                  control={
+                    <Stepper
+                      stage={stage}
+                      value={n}
+                      onChange={(x) => set({ vouchers: { ...draft.vouchers, [v.id]: x } })}
+                      what={label('tour.vouchers.what', stage, { segment: segName(view, v.id) })}
+                      display={
+                        n === 0
+                          ? label('tour.vouchers.none', stage)
+                          : count('tour.vouchers.batches', stage, n)
+                      }
+                      max={Math.min(v.batchesLeft, n + Math.floor(free / Math.max(1, per)))}
+                    />
+                  }
+                />
+              </div>
+            )
+          })}
+        </>
+      )}
+      <HintLine term="test" hint={label('plan.hint.trials', stage)} />
+    </>
+  )
+}
+
+const monthName = (m: number, stage: Voice) => label(`tour.month.${m}` as 'tour.month.1', stage)
+
+/** Contracts running and on offer, inside the Who works section. */
+function ContractsPlan() {
+  const view = useGame((s) => s.view)
+  const draft = useGame((s) => s.plan.bookings) ?? noBookings()
+  const set = useGame((s) => s.setBookings)
+  if (!view?.bookings) return null
+  const b = view.bookings
+  const stage = voiceOf(view)
+  if (!b.roles.some((r) => r.contracts.length > 0)) return null
+  const hire = draft.hire ?? []
+  const ending = draft.endContracts ?? []
+  const roleName = (id: string) => b.roles.find((r) => r.id === id)?.name ?? id
+  return (
+    <>
+      <SubHeading>{label('tour.contracts', stage)}</SubHeading>
+      {b.contracts.map((c) => {
+        const on = ending.includes(c.id)
+        return (
+          <Market
+            key={c.id}
+            stack
+            label={label('tour.contract.line', stage, {
+              name: c.name,
+              role: roleName(c.roleId),
+              kind: label(`tour.contract.kind.${c.kind}`, stage),
+              shifts: c.shifts,
+              amount: formatEuro(c.centsPerWeek),
+            })}
+            note={
+              c.endWeek !== null
+                ? label('tour.contract.ends', stage, { week: c.endWeek })
+                : !c.working
+                  ? label('tour.contract.waits', stage)
+                  : undefined
+            }
+            choices={
+              c.canEnd
+                ? chip(
+                    on,
+                    on
+                      ? label('tour.contract.noticeGiven', stage)
+                      : label('tour.contract.notice', stage),
+                    () =>
+                      set({
+                        endContracts: on ? ending.filter((x) => x !== c.id) : [...ending, c.id],
+                      }),
+                  )
+                : undefined
+            }
+          />
+        )
+      })}
+      {b.roles.flatMap((r) =>
+        r.contracts.map((o) => {
+          const planned = hire.filter((h) => h.roleId === r.id && h.kind === o.kind).length
+          const on = planned > 0
+          const full = o.running >= o.max
+          const months = o.months ?? []
+          return (
+            <Market
+              key={`${r.id}-${o.kind}`}
+              stack
+              label={label('tour.contract.option', stage, {
+                role: r.name,
+                kind: label(`tour.contract.kind.${o.kind}`, stage),
+              })}
+              note={
+                o.noticeWeeks !== null
+                  ? label('tour.contract.noteNotice', stage, {
+                      shifts: o.shifts,
+                      amount: formatEuro(o.centsPerWeek),
+                      weeks: o.noticeWeeks,
+                    })
+                  : label('tour.contract.noteSeason', stage, {
+                      shifts: o.shifts,
+                      amount: formatEuro(o.centsPerWeek),
+                      from: monthName(months[0] ?? 1, stage),
+                      to: monthName(months.at(-1) ?? 12, stage),
+                    })
+              }
+              choices={
+                full && !on ? (
+                  <Writing>{label('tour.contract.full', stage)}</Writing>
+                ) : (
+                  chip(
+                    on,
+                    on ? label('tour.contract.hiring', stage) : label('tour.contract.hire', stage),
+                    () =>
+                      set({
+                        hire: on
+                          ? hire.filter((h) => !(h.roleId === r.id && h.kind === o.kind))
+                          : [...hire, { roleId: r.id, kind: o.kind }],
+                      }),
+                  )
+                )
+              }
+            />
+          )
+        }),
+      )}
+    </>
+  )
+}
+
+/** Food prepared per service, inside the Who works section (a restaurant). */
+function PrepPlan() {
+  const view = useGame((s) => s.view)
+  const draft = useGame((s) => s.plan.bookings) ?? noBookings()
+  const set = useGame((s) => s.setBookings)
+  if (!view?.bookings) return null
+  const b = view.bookings
+  const stage = voiceOf(view)
+  const rows = b.prep.filter((x) => b.products.find((p) => p.id === x.productId)?.shipped)
+  if (rows.length === 0) return null
+  return (
+    <>
+      <SubHeading>{label('tour.prep', stage)}</SubHeading>
+      <Writing>{label('tour.prep.note', stage)}</Writing>
+      {rows.map((x) => {
+        const product = b.products.find((p) => p.id === x.productId)!
+        const set0 = draft.prep?.[x.productId]
+        const now = set0 ?? x.units
+        return (
+          <Market
+            key={x.productId}
+            stack
+            label={product.name}
+            control={
+              <Stepper
+                stage={stage}
+                value={now ?? 0}
+                onChange={(v) => set({ prep: { ...draft.prep, [x.productId]: v } })}
+                what={label('tour.prep.what', stage, { product: product.name })}
+                step={10}
+                bigStep={50}
+                display={
+                  now === null
+                    ? label('tour.prep.auto', stage)
+                    : label('tour.prep.n', stage, { n: now })
+                }
+                max={product.capacity}
+              />
+            }
+          />
+        )
+      })}
+    </>
+  )
+}
+
+/** Rooms renovated one at a time, inside the Build section (a guesthouse). */
+export function RenovationPlan() {
+  const view = useGame((s) => s.view)
+  const draft = useGame((s) => s.plan.bookings) ?? noBookings()
+  const set = useGame((s) => s.setBookings)
+  const r = view?.bookings?.renovation
+  if (!view || !r) return null
+  const stage = voiceOf(view)
+  const n = draft.renovate ?? 0
+  const planned = r.canStart > 0 || r.renovated > 0 || r.inProgress.length > 0
+  return (
+    <>
+      <SubHeading>{label('tour.reno', stage)}</SubHeading>
+      <Writing>
+        {label('tour.reno.state', stage, {
+          done: r.renovated,
+          rooms: r.rooms,
+          works: r.underWorks,
+        })}
+      </Writing>
+      {!planned ? (
+        <Writing>{label('tour.reno.planFirst', stage)}</Writing>
+      ) : (
+        <>
+          <Writing>
+            {label('tour.reno.note', stage, {
+              weeks: r.weeks,
+              amount: formatEuro(r.centsPerRoom),
+            })}
+          </Writing>
+          <Market
+            stack
+            label={label('tour.reno.what', stage)}
+            control={
+              <Stepper
+                stage={stage}
+                value={n}
+                onChange={(v) => set({ renovate: v })}
+                what={label('tour.reno.what', stage)}
+                display={
+                  n === 0
+                    ? label('tour.reno.none', stage)
+                    : count('tour.reno.rooms', stage, n, { amount: formatEuro(n * r.centsPerRoom) })
+                }
+                max={r.canStart}
+              />
+            }
+          />
+        </>
+      )}
+    </>
+  )
+}
+
+/** The minimum stay, inside the Prices section (a guesthouse). */
+function MinStayPlan() {
+  const view = useGame((s) => s.view)
+  const draft = useGame((s) => s.plan.bookings) ?? noBookings()
+  const set = useGame((s) => s.setBookings)
+  const m = view?.bookings?.minStay
+  if (!view || !m) return null
+  const stage = voiceOf(view)
+  const on = draft.minStay ?? m.on
+  return (
+    <>
+      <SubHeading>{label('tour.minStay', stage)}</SubHeading>
+      <Writing>
+        {label('tour.minStay.note', stage, {
+          from: monthName(m.months[0] ?? 1, stage),
+          to: monthName(m.months.at(-1) ?? 12, stage),
+          nights: m.nights,
+        })}
+      </Writing>
+      <Choices>
+        {chip(!on, label('tour.minStay.one', stage), () =>
+          set({ minStay: m.on === false ? null : false }),
+        )}
+        {chip(on, label('tour.minStay.on', stage, { nights: m.nights }), () =>
+          set({ minStay: m.on === true ? null : true }),
+        )}
+      </Choices>
+    </>
   )
 }
