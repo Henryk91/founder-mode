@@ -896,3 +896,7 @@ type PostMortem = {
 - Plan: `BookingsPlan.trials?`, `vouchers?`, `hire?`, `endContracts?`, `prep?`, `renovate?`, `minStay?`. A scenario with trials or vouchers refuses landing tests and pre-sales (`invalid_bookings`).
 - View: `BookingsView.contracts`, `trials`, `vouchers`, `prep`, `lastWeek` (per product, guests who came and were served last week), `renovation`, `minStay`; `roles[].kind` and `roles[].contracts`; calendar capacity less rooms under works. `SegmentView.trials?` and `vouchers?` in tourism. `PendingExperimentView.trialId?`. `ReportEntry` adds `trial_result`, `voucher_result`, `vouchers_redeemed`, `food_waste`, `contract_signed`, `contract_ended`, `contracts_paid`, `works_started`, `works_done`; `company_cancelled.reason` adds `sold_out` and `works`. `GuestsEconomics.vouchers?`, `wasteCents?`, `contracts?`.
 - The tourism fingerprints change; the 60 week and Kantino long ones do not, and no rule of theirs changed (proven in the step 1 report).
+
+### Plan 2 step 3: hosting hours (engine 0.14.0)
+
+- Content: `BookingsConfig.hosting?: { hoursPerUnit, maxHours }`. Engine: `hostingHours(state)` counts as admin hours in the week's plan. View: `BookingsView.hostingHours`. Ten new shared tourism events; guests effects in 17 events gained conditions. Tourism fingerprints change; 60 week and Kantino long do not.
