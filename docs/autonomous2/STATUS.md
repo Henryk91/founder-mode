@@ -1,9 +1,9 @@
 # Autonomous run 2 status
 
 ## Current
-Step: 4, retune the three tourism scenarios (not started).
-Last commit: Step 3 done (tag plan2-inbox)
-Next action: step 4 from AUTONOMOUS_PLAN_2.md section 5: add targets T13 (naive careful at least 20% and within 10 of careful) and T14 (every contract kind wins somewhere; bots tourism_permanent, tourism_seasonal, tourism_part_time via TourismRule.contracts) to packages/bots/src/tourismReport.ts; then tune Hinterhof (T1 17.3%, T2 no-tests 6.8%, T3 22.9, L3), Seeblick (T3 23.8, T6, T11), Gratwanderung (T3 17.2, T11, school demand nearer the spec). Work on branch plan2-work in ../founder-mode-plan2; quick checks with packages/bots/scratch/dbg2.ts.
+Step: 4, retune the three tourism scenarios (targets T13 and T14 added).
+Last commit: Step 3 done (tag plan2-inbox); step 4 target commit pending.
+Next action: measure T13 and T14 on small samples, check that the contract variants actually sign their named contracts, then tune Hinterhof (T1 17.3%, T2 no-tests 6.8%, T3 22.9, L3), Seeblick (T3 23.8, T6, T11), and Gratwanderung (T3 17.2, T11, school demand nearer the spec). Continue on main; the plan2-work worktree is clean and behind main's completed step 3.
 
 ## Checklist
 - [x] Step 0: take stock (tag plan2-baseline)
@@ -30,6 +30,7 @@ Next action: step 4 from AUTONOMOUS_PLAN_2.md section 5: add targets T13 (naive 
 - Kantino long 31, 32, 33, 36, 20; 27 at the limit (step 5).
 
 ## For Henry to review (non-blocking)
+- Step 4: T14 judges each contract kind against weekly shifts in its best viable-segment split, by more than the paired margin (decisions, plan 2 step 4).
 - Step 0: the 60 week event table heading now names the reading run `validate_then_build inbox:reader` (text only, from the fixes session) (step0-baseline report).
 
 ## Stopped
