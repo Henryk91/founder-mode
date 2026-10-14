@@ -63,10 +63,9 @@
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--on-dark-muted);
-  white-space: nowrap;
-  /* Never into the next column: a change too long for its column is cut. */
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Never into the next column, and never cut: a long change wraps onto a second line. */
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .good {
