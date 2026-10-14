@@ -472,6 +472,22 @@ const labels = {
   'market.presale.title': 'Pre-sales',
   'market.trials.title': 'Trials and vouchers',
   'money.vouchers': 'Vouchers you still owe',
+  'loan.planRule':
+    '{bank} lends for what your plan lists, paid to the supplier the day the money arrives, plus working capital of at most {months} months of fixed costs (now {max}). It does not lend a cushion on top.',
+  'loan.item.list': 'List it',
+  'loan.item.listed': 'Listed',
+  'loan.rooms': 'Rooms to renovate',
+  'loan.roomsNote': '{amount} a room',
+  'loan.workingCapital': 'Working capital',
+  'loan.planTotal': 'The plan asks for {amount} in all.',
+  'loan.planTooSmall': 'The bank lends {min} at least. List more, or nothing.',
+  'loan.reason.working_capital':
+    'more working capital than the months of fixed costs the bank lends for.',
+  'pm.loan.items': 'It bought {items} and kept {wc} as working capital.',
+  'pm.loan.itemEarned': '{name} ({cost}) earned {earned} from its own guests.',
+  'pm.loan.itemNone': '{name} ({cost}) brought no guests of its own.',
+  'pm.loan.itemBase': '{name} ({cost}): nothing sold without it.',
+  'pm.loan.itemRooms': '{name} ({cost}): rooms guests pay more for and review better.',
   'pm.guests.waste': 'Food thrown away over the run: {amount}.',
   'pm.guests.vouchers':
     'Vouchers: {sold} sold, {redeemed} redeemed, {open} never redeemed by the end ({amount} paid for guests who never came).',
