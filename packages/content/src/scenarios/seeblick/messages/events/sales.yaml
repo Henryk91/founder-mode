@@ -171,7 +171,8 @@ events:
         hours: 14
         effects:
           - { type: cash, amountCents: -60000 }
-          - { type: guests, segment: groups, count: 48 }
+          # Plan 2 audit: as the text says, without an event room nobody books.
+          - { type: guests, segment: groups, count: 48, when: [shipped.event_room >= 1] }
           - { type: energy, delta: -5 }
       - id: skip
         label: Skip it
@@ -243,6 +244,124 @@ events:
         effects:
           - { type: guests, segment: groups, count: 24 }
           - { type: review, rating: 3, count: 2, when: [tour.bookedWeek >= 70] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  # Plan 2 audit, T6 round 2: offers whose effort pays only in the situation their text names.
+  - id: travel_fair_stand
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 10, tour.month >= 1, tour.month <= 3]
+    from: none
+    sender: The travel fair in Munich
+    look: official
+    text: >-
+      The travel fair in Munich has a stand left in the lakes hall: 900 EUR and two long days.
+      The buyers walk straight past any house rated under 4.3, and they have had a lot of
+      practice.
+    defaultChoice: skip
+    choices:
+      - id: stand
+        label: Take the stand
+        hours: 12
+        effects:
+          - { type: cash, amountCents: -90000 }
+          - { type: guests, segment: leisure, count: 30, when: [tour.rating >= 43] }
+      - id: skip
+        label: Skip the fair
+        hours: 0
+
+  - id: influencer_couple
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Two people with a travel account
+    text: >-
+      A couple with a travel account asks for two free nights in exchange for photos of the lake.
+      Their followers check the reviews before they book anything. With fewer than twenty, the
+      photos are just a nice weekend for two people you have never met.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Host them for free
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: guests, segment: leisure, count: 12, when: [tour.reviews >= 20] }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: winter_rates_mailing
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: Your booking software
+    text: >-
+      Your booking software suggests a mailing to past guests with a quiet-season rate, a fifth
+      off. When the house is empty it fills rooms that would earn nothing. In the summer it only
+      sells cheaply what would have sold anyway.
+    defaultChoice: decline
+    choices:
+      - id: send
+        label: Write and send the mailing
+        hours: 4
+        effects:
+          - { type: guests, segment: leisure, count: 10, when: [tour.peak == 0] }
+          - { type: cash, amountCents: -60000, when: [tour.peak == 1] }
+      - id: decline
+        label: Not now
+        hours: 0
+
+  - id: conference_directory
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 15]
+    from: none
+    sender: A conference directory
+    look: official
+    text: >-
+      A conference directory offers a listing for 400 EUR. Firms that book project teams through
+      it filter for a room to work in first and the view second. A house without a workspace
+      does not appear in their search at all.
+    defaultChoice: decline
+    choices:
+      - id: list
+        label: Buy the listing
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: guests, segment: project_guests, count: 15, when: [shipped.workspace >= 1] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: sauna_salesman
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: A sauna salesman
+    text: >-
+      A sauna salesman offers to bring his best customers on a weekend tour of houses with his
+      cabins. It takes a Saturday of showing people round. They only stay where there is a sauna
+      to admire, and he checks.
+    defaultChoice: decline
+    choices:
+      - id: tour
+        label: Join his weekend tour
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -15000 }
+          - { type: guests, segment: leisure, count: 10, when: [shipped.wellness >= 1] }
       - id: decline
         label: Decline
         hours: 0

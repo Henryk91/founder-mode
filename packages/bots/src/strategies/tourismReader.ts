@@ -12,6 +12,9 @@ export const serves = (view: PlayerView, segmentId: string) =>
   (view.bookings?.products ?? []).some((p) => p.shipped && p.serves.includes(segmentId))
 
 const cashEur = (view: PlayerView) => view.company.cashCents / 100
+/** A feature or product is ready, as the product list shows it. */
+const shipped = (view: PlayerView, id: string) =>
+  view.product.features.some((f) => f.id === id && f.shipped)
 const energy = (view: PlayerView) => view.founder.energy
 /** Guests for a segment are worth it once something serves them. */
 const ifServes = (segmentId: string, yes: string) => (view: PlayerView) =>
@@ -166,8 +169,10 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
     // Validation: contacts where rooms can take their guests; lessons in the quiet winter.
     tourism_statistics: (v) => (v.week <= 12 ? 'read' : null),
     open_house_offer: (v) => (cashEur(v) >= 3000 ? 'host' : null),
-    plant_office_manager: ifServes('project_guests', 'meet'),
-    wedding_planner_visit: ifServes('groups', 'show'),
+    // Plan 2 audit: the texts name what must be ready (invoices, a room to marry in).
+    plant_office_manager: (v) =>
+      serves(v, 'project_guests') && shipped(v, 'invoice_billing') ? 'meet' : null,
+    wedding_planner_visit: (v) => (serves(v, 'groups') && shipped(v, 'event_room') ? 'show' : null),
     previous_guestbook: (v) => (v.week <= 10 ? 'read' : null),
     travel_blogger: (v) => (serves(v, 'leisure') && bookedNow(v) < 60 ? 'host' : null),
     test_rates_advice: () => 'listen',
@@ -178,7 +183,8 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
     twelve_room_cancel: () => 'complain',
     november_empty: (v) =>
       serves(v, 'project_guests') ? 'call_firms' : bookedNow(v) < 10 ? 'close_floor' : null,
-    wedding_fair: (v) => (serves(v, 'groups') && cashEur(v) >= 5000 ? 'stand' : null),
+    wedding_fair: (v) =>
+      serves(v, 'groups') && shipped(v, 'event_room') && cashEur(v) >= 5000 ? 'stand' : null,
     christmas_vouchers_hotel: (v) => (serves(v, 'leisure') ? 'sell' : null),
     regatta_weekend: (v) => (serves(v, 'groups') && bookedNow(v) < 70 ? 'host' : null),
     // Product: the house first, fines avoided.
