@@ -11,6 +11,7 @@ import type {
 } from '../types'
 import { isOverdue } from './invoices'
 import { canBookDemo } from './sales'
+import { currentStage, desksFree } from './office'
 
 /** Members who work this week: started and not let go, in hiring order. */
 export function workingMembers(state: Pick<GameState, 'team' | 'week'>): TeamMember[] {
@@ -22,14 +23,25 @@ export function activeMembers(state: Pick<GameState, 'team'>): TeamMember[] {
   return state.team.members.filter((m) => m.letGoWeek === null)
 }
 
-/** People who may work at once, and hires over the run: 1 and 1 in the 60 week game. */
-export const maxMembers = (s: Pick<GameState, 'scenario'>) => s.scenario.team.maxMembers ?? 1
+/**
+ * People who may work at once, and hires over the run: 1 and 1 in the 60 week game. An office
+ * stage may set its own team size (plan 3).
+ */
+export const maxMembers = (s: Pick<GameState, 'scenario'> & Partial<Pick<GameState, 'company'>>) =>
+  (s.company ? currentStage({ scenario: s.scenario, company: s.company }).maxMembers : undefined) ??
+  s.scenario.team.maxMembers ??
+  1
 export const maxHires = (s: Pick<GameState, 'scenario'>) => s.scenario.team.maxHires ?? 1
 
-/** Room for one more person: the team is not full and hires are left. */
-export function canHire(state: Pick<GameState, 'team' | 'scenario'>): boolean {
+/**
+ * Room for one more person: the team is not full, hires are left, and (plan 3) a desk is free
+ * where the stage has a desk limit.
+ */
+export function canHire(state: Pick<GameState, 'team' | 'scenario' | 'company'>): boolean {
   return (
-    activeMembers(state).length < maxMembers(state) && state.team.members.length < maxHires(state)
+    activeMembers(state).length < maxMembers(state) &&
+    state.team.members.length < maxHires(state) &&
+    desksFree(state) > 0
   )
 }
 
@@ -224,7 +236,9 @@ export function applyTeam(
   }
 
   if (plan.searchRole) {
-    search = { role: plan.searchRole, readyWeek: week + cfg.searchWeeks }
+    // Plan 3: a stage with room to receive candidates shortens the search, never under a week.
+    const less = currentStage(state).searchWeeksLess ?? 0
+    search = { role: plan.searchRole, readyWeek: week + Math.max(1, cfg.searchWeeks - less) }
     if (plan.searchPartTime) search.partTime = true
     candidates = []
   }

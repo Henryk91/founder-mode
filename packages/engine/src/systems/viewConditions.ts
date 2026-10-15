@@ -50,6 +50,15 @@ const VIEW_METRICS: Record<ConditionPath, (v: PlayerView, m: MessageView | null)
     ),
   'loan.missed': (v) => Math.max(0, ...(v.loan?.loans ?? []).map((l) => l.missedInRow)),
   'loan.running': (v) => (v.loan?.loans ?? []).filter((l) => l.status === 'running').length,
+  'office.stage': (v) => v.office.stage,
+  'office.weeksAtStage': (v) => v.office.weeksAtStage,
+  'office.desksFree': (v) => v.office.desksFree,
+  'office.busy': (v) => v.office.busy,
+  'months.coveringAll': (v) => v.office.monthsCoveringAll,
+  'months.profitable': (v) => v.office.monthsProfitable,
+  'tour.turnedAwayWeeks': (v) => v.office.turnedAwayWeeks,
+  'tour.peakTurnedAwayWeeks': (v) => v.office.peakTurnedAwayWeeks,
+  'tour.occupancy': (v) => v.office.occupancyPct,
   'sender.overdue': (v, m) =>
     m && v.invoices.some((i) => i.customerName === m.fromName && i.status === 'overdue') ? 1 : 0,
   'sender.silent': (v, m) =>

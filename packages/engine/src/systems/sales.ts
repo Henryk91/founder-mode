@@ -1,3 +1,4 @@
+import { currentStage } from './office'
 import type { Rng } from '../rng'
 import type {
   ChannelId,
@@ -268,6 +269,7 @@ export function applySales(
     }
   }
 
+  const stage = currentStage(state)
   // 0. Follow ups
   for (const lead of leads) {
     if (!followedUp.has(lead.id) || !canFollowUp(lead)) continue
@@ -283,7 +285,13 @@ export function applySales(
     }
     lead.lastContactWeek = week
     touched.add(lead.id)
-    const p = (cfg.demoToTrialBase + cfg.demoToTrialPerFit * fit(state, lead.segmentId)) * tired
+    // Plan 3: demos held in a proper office convert a little better.
+    const p = Math.min(
+      1,
+      (cfg.demoToTrialBase + cfg.demoToTrialPerFit * fit(state, lead.segmentId)) *
+        tired *
+        (stage.demoFactor ?? 1),
+    )
     const trial = rng.chance(p)
     odds.roll('demo', lead.segmentId, p, trial)
     if (trial) {
@@ -300,7 +308,11 @@ export function applySales(
   for (const lead of leads) {
     if (lead.stage !== 'trial' || week - lead.stageSinceWeek < cfg.trialWeeks) continue
     // One draw: below p a yes; between p and the chance without the price, a no over the price.
-    const withoutPrice = fit(state, lead.segmentId) * tired
+    // Plan 3: visiting firms trust what they see (a stage's segment factor).
+    const withoutPrice = Math.min(
+      1,
+      fit(state, lead.segmentId) * tired * (stage.segmentFactors?.[lead.segmentId] ?? 1),
+    )
     const p = withoutPrice * priceFactor(state, lead.segmentId)
     const draw = rng.next()
     const won = draw < p

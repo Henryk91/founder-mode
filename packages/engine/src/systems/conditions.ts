@@ -6,7 +6,9 @@ import { moodLevel } from './funding'
 import { openLeadCount } from './experiments'
 import { isOverdue, isUnpaid, maxOverdueDays } from './invoices'
 import { monthOf } from './bookings'
-import { runwayWeeks } from './finance'
+import { monthsCovering, runwayWeeks } from './finance'
+import { desksFree, officeBusy, stageNumber } from './office'
+import { occupancyPct, turnedAwayWeeks } from './bookings'
 import { canBookDemo } from './sales'
 
 /** Whether someone is on the team now or has been hired and is about to start. */
@@ -56,6 +58,15 @@ const METRICS: Record<ConditionPath, (state: GameState, sender: ConditionSender)
     ),
   'loan.missed': (s) => Math.max(0, ...(s.loan?.loans ?? []).map((l) => l.missedInRow)),
   'loan.running': (s) => (s.loan?.loans ?? []).filter((l) => l.status === 'running').length,
+  'office.stage': (s) => stageNumber(s, s.company.officeStage),
+  'office.weeksAtStage': (s) => s.week - s.company.office.sinceWeek,
+  'office.desksFree': (s) => Math.min(99, desksFree(s)),
+  'office.busy': (s) => (officeBusy(s) ? 1 : 0),
+  'months.coveringAll': (s) => monthsCovering(s, true),
+  'months.profitable': (s) => monthsCovering(s, false),
+  'tour.turnedAwayWeeks': (s) => turnedAwayWeeks(s),
+  'tour.peakTurnedAwayWeeks': (s) => turnedAwayWeeks(s, true),
+  'tour.occupancy': occupancyPct,
   'sender.overdue': (s, m) =>
     m?.targetId && s.invoices.some((i) => i.customerId === m.targetId && isOverdue(i, s.week))
       ? 1

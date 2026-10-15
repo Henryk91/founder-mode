@@ -1,4 +1,14 @@
 import { loanView } from './systems/loan'
+import {
+  canGiveNotice,
+  currentStage,
+  desks,
+  desksFree,
+  officeBusy,
+  stageNumber,
+} from './systems/office'
+import { occupancyPct, turnedAwayWeeks } from './systems/bookings'
+import { monthsCovering } from './systems/finance'
 import { bookingsRevenueOrSubscriptions, bookingsView } from './systems/bookings'
 import { fundingView } from './systems/funding'
 import {
@@ -30,6 +40,7 @@ import { canBookDemo, canFollowUp } from './systems/sales'
 import type {
   ChannelId,
   GameState,
+  OfficeView,
   InterviewEvidence,
   InterviewView,
   InvoiceStatus,
@@ -166,6 +177,7 @@ export function getView(state: GameState): PlayerView {
     funding: fundingView(state),
     bookings: bookingsView(state),
     loan: loanView(state),
+    office: officeView(state),
     pendingExperiments: state.hidden.experiments.map((e) => ({
       kind: e.kind,
       segmentId: e.segmentId,
@@ -450,4 +462,40 @@ function demoFunnel(state: GameState): PlayerView['funnel'] {
     trialsFromDemos += e.observed
   }
   return { demosHeld, trialsFromDemos }
+}
+
+/** Plan 3: the Office card, from what the player can see. */
+export function officeView(state: GameState): OfficeView {
+  const stage = currentStage(state)
+  const office = state.company.office
+  const nameOf = (id: string) => state.scenario.officeStages.find((o) => o.id === id)?.name ?? id
+  const n = stageNumber(state, stage.id)
+  const back = n > 1 ? state.scenario.officeStages[n - 2]! : stage
+  const d = desks(state)
+  return {
+    stageId: stage.id,
+    name: stage.name,
+    stage: n,
+    stages: state.scenario.officeStages.length,
+    rentCents: stage.monthlyCents,
+    desks: Number.isFinite(d) ? d : null,
+    people: 1 + state.team.members.filter((m) => m.letGoWeek === null).length,
+    desksFree: Math.min(99, desksFree(state)),
+    weeksAtStage: state.week - office.sinceWeek,
+    busy: officeBusy(state) ? 1 : 0,
+    move: office.move
+      ? { name: nameOf(office.move.stage), readyWeek: office.move.readyWeek }
+      : null,
+    notice: office.notice
+      ? { endWeek: office.notice.endWeek, backTo: back.name, depositCents: stage.depositCents ?? 0 }
+      : null,
+    canGiveNotice: canGiveNotice(state),
+    noticeWeeks: state.scenario.office?.noticeWeeks ?? null,
+    monthsCoveringAll: monthsCovering(state, true),
+    monthsProfitable: monthsCovering(state, false),
+    turnedAwayWeeks: turnedAwayWeeks(state),
+    peakTurnedAwayWeeks: turnedAwayWeeks(state, true),
+    occupancyPct: occupancyPct(state),
+    prepaid: office.prepaid.map(nameOf),
+  }
 }
