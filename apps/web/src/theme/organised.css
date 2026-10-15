@@ -1,5 +1,9 @@
-/* Organised stage, see docs/design/design.md: only the pipeline panel changes. */
-[data-stage='organised'] {
+/*
+ * Organised stage, see docs/design/design.md: only the pipeline panel changes. The established
+ * stage (plan 3) keeps it under its own tokens.
+ */
+[data-stage='organised'],
+[data-stage='established'] {
   --board-surface: var(--paper);
   --board-frame: 1px solid #d9dee4;
   --board-radius: 12px;
