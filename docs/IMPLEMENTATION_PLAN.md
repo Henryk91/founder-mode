@@ -741,6 +741,18 @@ Known leftovers:
 
 Steps 3 to 8 of `docs/AUTONOMOUS_PLAN.md` are done: situational events as a general system, the tourism (bookings) engine, Gratwanderung, the bank loan and Hinterhof, Seeblick, and a wrap up with a lazy per-scenario content load (Start screen 2.39 s on the emulated mid range phone). Reports per step in `docs/autonomous/reports/`, the summary in `docs/autonomous/reports/final.md`, open issues in `docs/autonomous/STATUS.md`.
 
+### After the first autonomous plan: plan 2
+
+`docs/AUTONOMOUS_PLAN_2.md` finished what the first run simplified (reports in `docs/autonomous2/reports/`, audited in `docs/autonomous3/reports/audit.md`):
+
+- Tourism experiments per scenario (pilot day, test listing, pop-up dinner, lunch test, test rates, open house) instead of landing tests and pre-sales, and vouchers as a liability that uses capacity when redeemed.
+- Staff contracts (permanent, part time, seasonal) beside weekly shifts; Hinterhof's food prepared per service with kitchen and floor apart; Seeblick's renovation room by room and a minimum stay on summer weekends.
+- The bank lends against a plan: listed items are bought at payout, working capital is capped at three months of fixed costs, and temptations can be financed, which is how a player over-borrows (L2 and L3 restated, reported as T16 and T17).
+- Guests take part of the founder's week; situational tourism events whose effortful answer pays only in the situation the text names.
+- Tourism retune with two new targets (T13: a player without hidden knowledge can win; T14: every staff contract kind wins somewhere), and Kantino long funding terms (a founder salary once funded, weaker terms before the revenue bar, target 20 restated).
+
+Open issues are in `docs/autonomous2/STATUS.md`.
+
 ## 10. How to start with Claude Code
 
 1. Create an empty repo, add this file as `docs/IMPLEMENTATION_PLAN.md` and the provided `CLAUDE.md` at the root.

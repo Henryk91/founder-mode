@@ -188,3 +188,14 @@ Checked figures (2025 and 2026 sources):
 - Via ferrata lanyard about 88 to 127 EUR (check24, bergsteigen.com); e-MTB 3,000 to 6,000 EUR each (bike-magazin.de; estimate for a fleet price).
 
 Changed from this file while tuning (reasons in `docs/decisions.md`, step 5): school groups demand 6 to 12 groups a week at peak (was 0.3 to 1.2) with four classes a day; tourists' willingness to pay 60 to 120 EUR (estimate, was 70 to 140); a run is won when its last 13 months together cover every cost.
+
+## 15. What changed in plan 2, and why
+
+Reasons in `docs/decisions.md`, plan 2 steps 1 to 4 and the plan 2 audit.
+
+- **Experiments (5):** a pilot day (eight people from one group the player picks; tourists leave a review) and a test listing (two weeks on the platform, 85% tourists) replace the landing tests and pre-sales. Gift vouchers sell to tourists in winter and are owed until redeemed.
+- **Staff contracts:** permanent, part time and seasonal contracts for guides and hiking leaders beside freelance shifts.
+- **Guests take the founder's time:** 0.08 h a guest served last week, up to 20 h.
+- **Events:** guests sent by events come only in the situation the text names (in season, with a good rating), and ten shared events reward effort only where their text says so.
+- **School groups:** demand stays above the spec. After plan 2 step 4 kept 9 to 12 groups a week at peak, the plan 2 audit priced a school day at 750 EUR a class (30 EUR a pupil, est.; willingness to pay 500 to 1,100 a class) and lowered demand to 5 to 8 groups; 4 to 7 left schools 17 points behind the other groups. The spec's 0.3 to 1.2 cannot carry a school-focused company.
+- **Team events:** a strict policy converts 70% of requests (was 80%, est.), so flexible terms are right for teams and strict terms for tourists.
