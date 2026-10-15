@@ -191,3 +191,44 @@ describe('office stages: the 60 week game', () => {
     expect(v.noticeWeeks).toBeNull()
   })
 })
+
+describe('office stages: a bank loan pays for a stage (Seeblick)', () => {
+  it('lists the stage while its offer is open, pays it at payout, and the move then costs nothing', () => {
+    const base = loadScenario('seeblick')
+    const scenario: Scenario = {
+      ...base,
+      inbox: { ...base.inbox, drawChance: 0, guaranteeBelowOpen: 0 },
+      events: base.events.map((e) =>
+        e.id === 'office_annex_offer'
+          ? { ...e, trigger: [{ path: 'week', op: '>=', value: 2 }] }
+          : e,
+      ),
+    }
+    let s = createGame(scenario, 'annex')
+    expect(getView(s).loan!.plan!.stages).toEqual([])
+    s = next(next(s).state).state
+    const m = offer(s, 'office_annex_offer')!
+    const view = getView(s)
+    expect(view.loan!.plan!.stages).toEqual([
+      { id: 'annex', name: 'An annex with four more rooms', cents: 12_000_000 },
+    ])
+    expect(view.inbox.find((x) => x.id === m.id)!.choices[0]!.costCents).toBe(12_000_000)
+    // The bank has said yes to a plan listing the annex: it is paid at the next month end.
+    const terms = { amountCents: 12_000_000, termMonths: 120, graceMonths: 0, stage: 'annex' }
+    s = { ...s, loan: { ...s.loan!, accepted: { ...terms, rateBp: 500 } } }
+    for (let w = 0; w < 5 && s.company.office.prepaid.length === 0; w++) s = next(s).state
+    expect(s.company.office.prepaid).toEqual(['annex'])
+    expect(s.loan!.loans.at(-1)).toMatchObject({ stage: 'annex' })
+    expect(getView(s).office.prepaid).toEqual(['An annex with four more rooms'])
+    // The offer is still open: taking it now costs nothing more.
+    const open = offer(s, 'office_annex_offer')!
+    expect(getView(s).inbox.find((x) => x.id === open.id)!.choices[0]!.costCents).toBe(0)
+    const r = next(respond(s, open.id, 'move'))
+    expect(r.report.entries).toContainEqual(
+      expect.objectContaining({ kind: 'office_accepted', costCents: 0 }),
+    )
+    expect(r.state.company.office.prepaid).toEqual([])
+    const pm = buildPostMortem({ ...r.state, status: 'ended', ending: 'shut_down' })
+    expect(pm.office[0]).toMatchObject({ place: 'An annex with four more rooms', paidByLoan: true })
+  })
+})

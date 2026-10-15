@@ -170,7 +170,11 @@ export function getView(state: GameState): PlayerView {
         fromName: m.fromName,
         look: scenario.events.find((e) => e.id === m.eventId)?.look ?? 'letter',
         text: m.text,
-        choices: m.choices.map((c) => ({ ...c })),
+        choices: m.choices.map((c) => ({
+          ...c,
+          // Plan 3: a stage a loan has paid for costs nothing more to take.
+          ...(prepaidMove(state, m.eventId, c.id) ? { costCents: 0 } : {}),
+        })),
         answeredChoiceId: m.status === 'answered' ? m.choiceId : null,
       })),
     team: teamView(state),
@@ -498,4 +502,14 @@ export function officeView(state: GameState): OfficeView {
     occupancyPct: occupancyPct(state),
     prepaid: office.prepaid.map(nameOf),
   }
+}
+
+/** Plan 3: this choice takes an office stage whose one-off a loan has already paid. */
+function prepaidMove(state: GameState, eventId: string, choiceId: string): boolean {
+  const prepaid = state.company.office.prepaid
+  if (prepaid.length === 0) return false
+  const choice = state.scenario.events
+    .find((e) => e.id === eventId)
+    ?.choices.find((c) => c.id === choiceId)
+  return !!choice?.effects.some((f) => f.type === 'officeMove' && prepaid.includes(f.stage))
 }
