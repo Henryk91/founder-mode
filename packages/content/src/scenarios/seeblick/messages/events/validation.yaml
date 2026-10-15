@@ -64,7 +64,13 @@ events:
         label: Meet her and show the rooms
         hours: 3
         effects:
-          - { type: guests, segment: project_guests, count: 10 }
+          # Plan 2 audit: as the text says, only if you can invoice them.
+          - {
+              type: guests,
+              segment: project_guests,
+              count: 10,
+              when: [shipped.invoice_billing >= 1],
+            }
       - id: later
         label: Not yet
         hours: 0
@@ -86,7 +92,8 @@ events:
         label: Show her round properly
         hours: 3
         effects:
-          - { type: guests, segment: groups, count: 24 }
+          # Plan 2 audit: as the text says, only once there is a room to marry in.
+          - { type: guests, segment: groups, count: 24, when: [shipped.event_room >= 1] }
       - id: later
         label: Another time
         hours: 0

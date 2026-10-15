@@ -474,7 +474,7 @@ bookings:
       capacity: 84
       serves: [leisure, project_guests]
       # Laundry, amenities and breakfast for two per occupied room night (est.; step 8, was 15).
-      unitCostCents: 3000
+      unitCostCents: 2500
     breakfast_buffet:
       capacity: 0
     online_booking:

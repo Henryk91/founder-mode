@@ -35,7 +35,7 @@ describe('long mode in the content', () => {
     // inbox, the retune) and are protected again from the end of step 4 (tag `plan2-tourism`).
     expect(scenarioHash(loadScenario('gratwanderung'))).toBe('729a0e559cfc68e3')
     expect(scenarioHash(loadScenario('hinterhof'))).toBe('0ddd9910e0c559ee')
-    expect(scenarioHash(loadScenario('seeblick'))).toBe('b4be2a32cc3ae104')
+    expect(scenarioHash(loadScenario('seeblick'))).toBe('067ac8fab071bf3c')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })
