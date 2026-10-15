@@ -1,3 +1,4 @@
+import { answerOffers, officeOffers, stageToFinance, type OfficeRule } from '../office'
 import type { Scenario } from '@founder-mode/content'
 import {
   viewConditionsHold,
@@ -56,6 +57,8 @@ export type TourismRule = {
    * steady work), shifts only, or always one kind where the role offers it.
    */
   contracts?: 'careful' | 'none' | 'permanent' | 'seasonal' | 'part_time'
+  /** Plan 3: office stage offers (`office.ts`). Missing: careful. */
+  office?: OfficeRule
 }
 
 /** Hours this week's guests take before anything is planned (plan 2 step 3). */
@@ -124,6 +127,8 @@ const MIN_STAY_BUSY = 0.8
 
 export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   const cfg = scenario.bookings!
+  /** Plan 3: the scenario's office stage offers. */
+  const stageOffers = officeOffers(scenario)
   let target: string | null = null
   let cancelledRecent: number[] = []
   let servedRecent: number[] = []
@@ -244,7 +249,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       view.monthlyRevenueCents >= refitOffer.revenueCents &&
       cash < refitOffer.cents + RESERVE_MONTHS * monthly
     const first = runningLoans.length === 0 && (need > 0 || mode !== 'careful')
-    if (!first && !refit) return
+    // Plan 3: an office stage on offer that the money in hand cannot carry goes to the bank.
+    const stageLoan =
+      !first && !refit && l.plan
+        ? stageToFinance(view, stageOffers, rule.office ?? 'careful')
+        : null
+    if (!first && !refit && !stageLoan) return
     const left = Math.max(0, l.planNeeded - l.planHours)
     if (left > 0) {
       p.planHours = Math.min(left, Math.max(0, b.free - 10))
@@ -271,37 +281,45 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       const plan = l.plan
       const greedy = mode === 'max' || mode === 'reckless'
       const roomsNeeded = rooms / Math.max(1, reno?.centsPerRoom ?? 1)
-      let items = refit
-        ? plan.items.filter((x) => cfg.products[x.id]?.stage === refitOffer!.stage)
-        : greedy
-          ? // Everything the bank lists, temptations included; a refit is a choice of its own (L1).
-            plan.items
-              .filter((x) => !cfg.products[x.id]?.stage)
-              // If the own-money cap forces something out, a deliberately reckless plan keeps
-              // the products nobody needs. Removing the temptation first made the max-loan and
-              // no-tests bots quietly prudent (plan 2 targets T2 and L2).
-              .sort((a, z) => Number(isTemptation(z.id)) - Number(isTemptation(a.id)))
-          : plan.items.filter((x) => unshipped.includes(x.id))
+      const stageCents = stageLoan ? (plan.stages.find((x) => x.id === stageLoan)?.cents ?? 0) : 0
+      let items = stageLoan
+        ? []
+        : refit
+          ? plan.items.filter((x) => cfg.products[x.id]?.stage === refitOffer!.stage)
+          : greedy
+            ? // Everything the bank lists, temptations included; a refit is a choice of its own (L1).
+              plan.items
+                .filter((x) => !cfg.products[x.id]?.stage)
+                // If the own-money cap forces something out, a deliberately reckless plan keeps
+                // the products nobody needs. Removing the temptation first made the max-loan and
+                // no-tests bots quietly prudent (plan 2 targets T2 and L2).
+                .sort((a, z) => Number(isTemptation(z.id)) - Number(isTemptation(a.id)))
+            : plan.items.filter((x) => unshipped.includes(x.id))
       const renovated =
         (view.bookings?.renovation?.renovated ?? 0) +
         (view.bookings?.renovation?.inProgress.length ?? 0)
       // A refit where no product makes it: more rooms, up to the refreshed house's eight.
       const refitRooms = refit && items.length === 0 && plan.rooms
-      let roomCount = refitRooms
-        ? Math.max(0, Math.min(plan.rooms!.left, REFRESH_ROOMS - renovated))
-        : refit || !plan.rooms
-          ? 0
-          : greedy
-            ? plan.rooms.left
-            : Math.min(plan.rooms.left, roomsNeeded)
+      let roomCount = stageLoan
+        ? 0
+        : refitRooms
+          ? Math.max(0, Math.min(plan.rooms!.left, REFRESH_ROOMS - renovated))
+          : refit || !plan.rooms
+            ? 0
+            : greedy
+              ? plan.rooms.left
+              : Math.min(plan.rooms.left, roomsNeeded)
       if (refit && items.length === 0 && roomCount === 0) return
       const itemsCents = () =>
-        items.reduce((t, x) => t + x.cents, 0) + roomCount * (plan.rooms?.centsPerRoom ?? 0)
-      const wcNeed = refit
-        ? 0
-        : greedy
-          ? plan.workingCapitalMaxCents
-          : Math.max(0, need - itemsCents())
+        items.reduce((t, x) => t + x.cents, 0) +
+        roomCount * (plan.rooms?.centsPerRoom ?? 0) +
+        stageCents
+      const wcNeed =
+        refit || stageLoan
+          ? 0
+          : greedy
+            ? plan.workingCapitalMaxCents
+            : Math.max(0, need - itemsCents())
       let wc = Math.floor(Math.min(plan.workingCapitalMaxCents, roundUp(wcNeed)) / step) * step
       // Within the own-money rule and below the last refused amount: less working capital
       // first, then the items listed last.
@@ -336,6 +354,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         items: items.map((x) => x.id),
         rooms: roomCount,
         workingCapitalCents: wc,
+        ...(stageLoan ? { stage: stageLoan } : {}),
       }
       b.plan.loan = p
       return
@@ -555,8 +574,24 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
 
   return {
     focus: () => target,
-    respond(view) {
-      const answers = answer(view)
+    respond(input) {
+      // Plan 3: office stage offers by the bot's office rule, whatever its inbox policy.
+      const office = answerOffers(
+        input,
+        stageOffers,
+        rule.office ?? 'careful',
+        false,
+        input.founder.maxHoursPerWeek - input.committedHours - input.forcedHours - bv0(input),
+      )
+      const view = {
+        ...input,
+        committedHours: input.committedHours + office.reduce((t, a) => t + a.hours, 0),
+        inbox: input.inbox.filter((m) => !stageOffers.has(m.eventId)),
+      }
+      const answers = [
+        ...office.map(({ messageId, choiceId }) => ({ messageId, choiceId })),
+        ...answer(view),
+      ]
       if (!rule.forced) return answers
       // Every arrival of the forced event gets the forced answer; the rest as the bot reads them.
       const { eventId, choiceId } = rule.forced
@@ -1082,6 +1117,16 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     'tourism_part_time',
     'Plays like tourism_careful but signs only part time staff contracts where steady work supports them.',
     { ...CAREFUL_TOURISM, contracts: 'part_time' },
+  ),
+  tourism(
+    'tourism_never_move',
+    'Plays like tourism_careful but declines every offer of a bigger place (plan 3, target O1).',
+    { ...CAREFUL_TOURISM, office: 'never' },
+  ),
+  tourism(
+    'tourism_always_move',
+    'Plays like tourism_careful but accepts every offer of a bigger place at once, and lists it in the bank plan where there is one (plan 3, target O2).',
+    { ...CAREFUL_TOURISM, office: 'always' },
   ),
   tourism('tourism_always_strict', 'Plays like tourism_careful with a strict policy all run.', {
     ...CAREFUL_TOURISM,

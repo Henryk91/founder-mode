@@ -38,7 +38,7 @@ describe('tourism bots (step 4)', () => {
     const signed = { permanent: 0, seasonal: 0, partTime: 0 }
     for (const [kind, field] of Object.entries(kinds)) {
       const bot = TOURISM_STRATEGIES.find((t) => t.id === `tourism_${kind}`)!
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 12; i++) {
         const c = runGame(grat, bot, `contracts-${i}`).tourism!.contracts
         for (const other of Object.values(kinds)) if (other !== field) expect(c[other]).toBe(0)
         signed[field] += c[field]
@@ -78,7 +78,7 @@ describe('the tourism report (step 4)', () => {
       tourism: true,
     }
     expect(evaluateTourismTargets(input).map((t) => t.id)).toEqual([
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 19, 20, 21,
     ])
     const md = buildReport(input)
     expect(md).toContain('## Targets (tourism)')
