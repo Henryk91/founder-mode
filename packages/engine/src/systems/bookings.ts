@@ -1,3 +1,4 @@
+import type { OfficeStage } from '@founder-mode/content'
 import type { BookingsConfig, Scenario, WeatherState } from '@founder-mode/content'
 import type { Rng } from '../rng'
 import type {
@@ -151,16 +152,49 @@ export const cloneBookingsPlan = (p: BookingsPlan): BookingsPlan => ({
 })
 
 /**
- * Founder hours guests take this week (plan 2 step 3): per unit served last week, capped. Known
- * before the week is planned, like hours already given to messages.
+ * Plan 3: the office stage whose tourism effects apply this week. A stage that needs someone
+ * stationed there (`needsContract`) closes in a week without such a contract: the stage before it
+ * applies instead.
  */
-export function hostingHours(state: Pick<GameState, 'scenario' | 'bookings' | 'week'>): number {
+export function stageInEffect(
+  state: Pick<GameState, 'scenario' | 'company' | 'bookings' | 'week'>,
+): OfficeStage {
+  const stages = state.scenario.officeStages
+  let i = Math.max(
+    0,
+    stages.findIndex((o) => o.id === state.company.officeStage),
+  )
+  while (i > 0) {
+    const stage = stages[i]!
+    const role = stage.needsContract
+    if (
+      !role ||
+      (state.bookings?.contracts ?? []).some(
+        (c) => c.roleId === role && contractWorks(state, c, state.week),
+      )
+    ) {
+      return stage
+    }
+    i--
+  }
+  return stages[0]!
+}
+
+/**
+ * Founder hours guests take this week (plan 2 step 3): per unit served last week, capped. Known
+ * before the week is planned, like hours already given to messages. A reception (plan 3) takes
+ * some of them.
+ */
+export function hostingHours(
+  state: Pick<GameState, 'scenario' | 'bookings' | 'week' | 'company'>,
+): number {
   const h = state.scenario.bookings?.hosting
   if (!h || !state.bookings) return 0
   const units = state.bookings.bookings
     .filter((x) => x.week === state.week - 1 && x.status === 'served')
     .reduce((t, x) => t + x.units, 0)
-  return Math.min(h.maxHours, Math.round(units * h.hoursPerUnit))
+  const less = stageInEffect(state).hostingHoursLess ?? 0
+  return Math.max(0, Math.min(h.maxHours, Math.round(units * h.hoursPerUnit)) - less)
 }
 
 /** Founder hours the bookings part of a plan takes: own shifts, outreach, new partnerships. */
@@ -200,7 +234,8 @@ export function roomsUnderWorks(state: Pick<GameState, 'bookings'>, week: number
 export function capacityAt(state: GameState, pool: FeatureId, week: number): number {
   const cfg = bookingsConfig(state)!
   const r = cfg.renovation
-  const base = cfg.products[pool]?.capacity ?? 0
+  // Plan 3: an office stage adds seats, rooms or gear.
+  const base = (cfg.products[pool]?.capacity ?? 0) + (stageInEffect(state).capacity?.[pool] ?? 0)
   if (!r || r.product !== pool) return base
   return Math.max(0, base - r.unitsPerRoom * roomsUnderWorks(state, week))
 }
@@ -501,7 +536,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       priceCurve(state.scenario, price / wtp) *
       reviewFactor(state, seg.id) *
       weatherF *
-      roleFactor(seg.id)
+      roleFactor(seg.id) *
+      (stageInEffect(state).segmentFactors?.[seg.id] ?? 1)
     const meanSize = (s.size.min + s.size.max) / 2
     // Guests sent by an inbox answer ask like anyone else, in groups of the usual size.
     const sent = b.eventGuests?.[seg.id] ?? 0
@@ -628,6 +664,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   // 5. This week's bookings.
   const alternativeShipped = (id: FeatureId) => {
     const alt = cfg.products[id]?.alternative
+    // Plan 3: a stage with changing rooms is the bad weather plan itself.
+    if (stageInEffect(state).weatherPlanFor?.includes(id)) return true
     return alt !== undefined && isShipped(state, alt)
   }
   let cancelledUnits = 0
@@ -679,11 +717,13 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const kitchenCovers = new Map<FeatureId, number>()
   const floorUnits = new Map<FeatureId, number>()
   const why = new Map<FeatureId, 'staff' | 'sold_out' | 'works'>()
+  // Plan 3: a bigger kitchen sends out more per shift.
+  const staffFactor = (role: string) => stageInEffect(state).staffFactors?.[role] ?? 1
   for (const [id, units] of [...booked.entries()].sort((a, z) => z[1] - a[1])) {
     let covered = 0
     for (const [role, r] of Object.entries(cfg.roles)) {
       if (kindOf(role) === 'floor') continue
-      const per = r.units[id] ?? 0
+      const per = (r.units[id] ?? 0) * staffFactor(role)
       while (per > 0 && covered < units && (pool[role] ?? 0) > 0) {
         pool[role]!--
         covered += per
@@ -750,6 +790,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
   }
   // Food prepared and not served is lost (plan 2 step 1c): its food cost is paid all the same.
+  // Plan 3: a stage with a cold room keeps some of it.
+  const wasteFactor = stageInEffect(state).wasteFactor ?? 1
   let wasteUnits = 0
   let wasteCents = 0
   for (const [id, prod] of Object.entries(cfg.products)) {
@@ -758,7 +800,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const prep = b.prep?.[id] ?? kitchenCovers.get(id) ?? 0
     const mine = served.filter((x) => x.productId === id)
     const used = mine.reduce((t, x) => t + x.units, 0)
-    const waste = Math.max(0, prep - used)
+    const waste = Math.round(Math.max(0, prep - used) * wasteFactor)
     if (waste === 0) continue
     const meanPrice = used > 0 ? mine.reduce((t, x) => t + x.units * x.priceCents, 0) / used : 0
     wasteUnits += waste
@@ -770,8 +812,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     if (!prod.prepared || booked.has(id) || prep === 0 || !sells(state, id, week)) continue
     const seg = prod.serves[0]
     const price = seg ? priceFor(state, seg, week) : 0
-    wasteUnits += prep
-    wasteCents += Math.round(prep * (prod.unitCostCents + price * (prod.unitCostShare ?? 0)))
+    const lost = Math.round(prep * wasteFactor)
+    wasteUnits += lost
+    wasteCents += Math.round(lost * (prod.unitCostCents + price * (prod.unitCostShare ?? 0)))
   }
   if (wasteUnits > 0) {
     b = { ...b, wasteCents: (b.wasteCents ?? 0) + wasteCents }
@@ -1276,4 +1319,42 @@ export function bookingsView(state: GameState): BookingsView | null {
           .reduce((t, x) => t + x.units, 0),
       ),
   }
+}
+
+/** Plan 3: weeks of the last 8 (peak months only, if asked) in which guests were turned away. */
+export function turnedAwayWeeks(
+  state: Pick<GameState, 'scenario' | 'bookings' | 'week'>,
+  peakOnly = false,
+): number {
+  const b = state.bookings
+  const cfg = state.scenario.bookings
+  if (!b || !cfg) return 0
+  const weeks = new Set(
+    b.turnedAway
+      .filter((t) => t.units > 0 && t.week > state.week - 8 && t.week < state.week)
+      .filter((t) => !peakOnly || cfg.peakMonths.includes(monthOf(state.scenario, t.week)))
+      .map((t) => t.week),
+  )
+  return weeks.size
+}
+
+/** Plan 3: units served against the capacity open over the last 4 weeks, in percent (0 to 100). */
+export function occupancyPct(state: GameState): number {
+  const cfg = bookingsConfig(state)
+  const b = state.bookings
+  if (!cfg || !b) return 0
+  let used = 0
+  let open = 0
+  for (let w = Math.max(1, state.week - 4); w < state.week; w++) {
+    const pools = new Set(
+      Object.keys(cfg.products)
+        .filter((id) => sells(state, id, w))
+        .map((id) => poolOf(cfg, id)),
+    )
+    for (const pool of pools) open += capacityAt(state, pool, w)
+    used += b.bookings
+      .filter((x) => x.week === w && x.status === 'served' && pools.has(poolOf(cfg, x.productId)))
+      .reduce((t, x) => t + x.units, 0)
+  }
+  return open > 0 ? Math.min(100, Math.round((100 * used) / open)) : 0
 }

@@ -24,6 +24,8 @@ export type ScenarioSources = {
   longEvents: string
   /** Long mode events about investors (Part D), drawn only once money is raised. */
   fundingEvents?: string
+  /** Plan 3: long mode offers of office stages 3 to 5 (triggered events), this scenario's own. */
+  officeEvents?: string
 }
 
 /** Events every scenario gets: the founder's life, money, the hire, generic sales moments. */
@@ -122,6 +124,7 @@ export function parseScenario(sources: ScenarioSources, mode: GameMode = 'standa
     ),
     ...(mode === 'long' ? eventsIn(sources.longEvents) : []),
     ...(mode === 'long' && sources.fundingEvents ? eventsIn(sources.fundingEvents) : []),
+    ...(mode === 'long' && sources.officeEvents ? eventsIn(sources.officeEvents) : []),
   ]
   return ScenarioSchema.parse({
     ...(typeof file === 'object' && file !== null ? file : {}),

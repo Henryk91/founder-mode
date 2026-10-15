@@ -1,0 +1,88 @@
+# Plan 3 (docs/office-stages.md): offers of office stages 3 to 5, long mode only. Each arrives for
+# sure in the first week a trigger holds (and `when` holds), and comes back after its cooldown if
+# a trigger still holds. The text names the condition it reacts to, the costs and the effect.
+# Accepting pays the one-off at once (unless a loan paid it) and moves the rent from now; the
+# move takes the stage's moving weeks and 4 h a week of the founder's time.
+events:
+  - id: office_courtyard_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage <= 2, office.busy == 0]
+    trigger: [team.size >= 1, months.coveringAll >= 2]
+    from: none
+    sender: Hofmann Design, subletting
+    look: letter
+    text: >-
+      A design studio is leaving its small office in a back courtyard in Haidhausen: four desks,
+      1,500 EUR a month, and 6,000 EUR for the deposit and their furniture. With someone working
+      beside you or the money covering the month, the kitchen table is getting crowded. A proper
+      room for demos helps a little; the rent helps nobody.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the courtyard office
+        hours: 2
+        effects:
+          - { type: officeMove, stage: courtyard_office }
+      - id: stay
+        label: Stay where you are
+        hours: 0
+        effects: []
+
+  - id: office_floor_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 3, office.busy == 0]
+    trigger: [office.desksFree <= 0, months.coveringAll >= 3]
+    from: none
+    sender: Brandl Immobilien
+    look: official
+    text: >-
+      Your desks are all taken, or the business has paid for itself three months running, and a
+      letting agent has noticed. A whole office floor nearby: six desks, 3,800 EUR a month, and
+      15,000 EUR for deposit and furniture. Demos go better there and candidates come faster.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the office floor
+        hours: 2
+        effects:
+          - { type: officeMove, stage: office_floor }
+      - id: stay
+        label: Stay in the courtyard
+        hours: 0
+        effects: []
+
+  - id: office_front_desk_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 4, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [funding.raised >= 1, team.size >= 4]
+    from: none
+    sender: Brandl Immobilien
+    look: official
+    text: >-
+      With investors on board or a team of four, the agent is back with a floor that has a front
+      desk and a proper meeting room. Ten desks and room for a team of eight, 7,500 EUR a month,
+      and 25,000 EUR for deposit and fit-out. Coworking operators sign faster when they like the
+      lobby.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the bigger floor
+        hours: 2
+        effects:
+          - { type: officeMove, stage: front_desk }
+      - id: stay
+        label: Stay on this floor
+        hours: 0
+        effects: []

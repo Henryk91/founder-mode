@@ -354,6 +354,53 @@ modes:
           # A professional seller: better than a founder at the skill cap (0.8), C3 plan 3.1.
           selling: 1.0
           partTime: { monthlyCents: 302500, weeklyHours: 20 }
+    # Plan 3 (docs/office-stages.md): office stages 3 to 5, offered by the inbox (office.yaml).
+    # Every person needs a desk, the founder included. Munich office rents of about 20 to 25 EUR a
+    # square metre a month plus service costs (est.); deposits of three months' rent.
+    office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
+    officeStages:
+      - { id: kitchen_table, name: Kitchen table, monthlyCents: 0, desks: 2 }
+      - id: coworking_desk
+        name: Coworking desk
+        monthlyCents: 37500
+        desks: 2
+        walkIns: { segment: coworking, leadsPerWeek: 0.9 }
+      - id: courtyard_office
+        name: Small office in a back courtyard
+        # About 60 m² (est.); 4,500 EUR deposit and 1,500 EUR of furniture.
+        monthlyCents: 150000
+        oneOffCents: 600000
+        depositCents: 450000
+        moveWeeks: 2
+        desks: 4
+        energyPerWeek: 1
+        demoFactor: 1.05
+      - id: office_floor
+        name: Office floor
+        # About 150 m² (est.); 11,400 EUR deposit and 3,600 EUR of furniture.
+        monthlyCents: 380000
+        oneOffCents: 1500000
+        depositCents: 1140000
+        moveWeeks: 3
+        desks: 6
+        energyPerWeek: 2
+        demoFactor: 1.1
+        searchWeeksLess: 1
+        established: true
+      - id: front_desk
+        name: Front desk and a proper meeting room
+        # About 300 m² (est.); 22,500 EUR deposit and 2,500 EUR of furniture.
+        monthlyCents: 750000
+        oneOffCents: 2500000
+        depositCents: 2250000
+        moveWeeks: 4
+        desks: 10
+        maxMembers: 8
+        energyPerWeek: 2
+        demoFactor: 1.1
+        searchWeeksLess: 1
+        # Coworking operators pay the most and judge a supplier by the office they visit.
+        segmentFactors: { coworking: 1.1 }
     experiments:
       # Money cannot buy leads without limit: three landing tests per market (Part D).
       landing: { maxTestsPerSegment: 3 }

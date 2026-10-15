@@ -137,7 +137,8 @@ describe('long mode chasing and pricing (C3)', () => {
     let handed = 0
     let founderChasesWithTeam = 0
     let priced = 0
-    for (let i = 0; i < 6; i++) {
+    // Plan 3: desks limit the team until the company moves, so more seeds to see a team chase.
+    for (let i = 0; i < 12; i++) {
       const seed = `c3-${i}`
       let state = createGame(scenario, seed)
       const player = validateThenBuild.create(scenario, seed)

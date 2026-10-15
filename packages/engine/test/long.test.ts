@@ -1,3 +1,4 @@
+import { moveOffice } from '../src/systems/office'
 import { loadScenario, scenarioModes, type Scenario } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
 import {
@@ -33,9 +34,9 @@ describe('long mode in the content', () => {
     expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
     // The tourism scenarios change in plan 2 steps 1 to 4 and the plan 2 audit's open-issue
     // rounds, and in plan 3 steps 1 and 2 (office stages); protected again from `plan3-tuned`.
-    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('88384e54c55270e6')
-    expect(scenarioHash(loadScenario('hinterhof'))).toBe('1009af8aa1fa66a4')
-    expect(scenarioHash(loadScenario('seeblick'))).toBe('067ac8fab071bf3c')
+    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('496325c5b286e28b')
+    expect(scenarioHash(loadScenario('hinterhof'))).toBe('4aac710034974db2')
+    expect(scenarioHash(loadScenario('seeblick'))).toBe('24bca2d81d41a146')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })
@@ -132,8 +133,9 @@ function hireOne(s: GameState, role: 'developer' | 'salesperson'): GameState {
 }
 
 describe('several hires in long mode', () => {
+  // Plan 3: every person needs a desk; the office floor has six.
   const rich = (seed: string): GameState => {
-    const s = createGame(quietLong(), seed)
+    const s = moveOffice(createGame(quietLong(), seed), 'office_floor')
     return { ...s, company: { ...s.company, cashCents: 100_000_000 } }
   }
 

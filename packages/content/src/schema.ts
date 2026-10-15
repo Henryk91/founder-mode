@@ -679,6 +679,20 @@ export const CONDITION_PATHS = [
   'loan.balanceEur',
   'loan.missed',
   'loan.running',
+  // Plan 3, office stages: the stage's place in the list (1 to 5), weeks since moving in, desks
+  // free (99 without a desk limit), 1 while a move or notice runs; months in a row, up to the last
+  // closed one, whose revenue covered all costs (the founder's living included) or company costs.
+  'office.stage',
+  'office.weeksAtStage',
+  'office.desksFree',
+  'office.busy',
+  'months.coveringAll',
+  'months.profitable',
+  // Tourism: weeks of the last 8 in which guests were turned away for lack of room, the same in
+  // peak months only, and the share of capacity booked over the last 4 weeks in percent.
+  'tour.turnedAwayWeeks',
+  'tour.peakTurnedAwayWeeks',
+  'tour.occupancy',
 ] as const
 
 /** Paths about a message's sender: they make sense only once a message has a sender. */
@@ -754,6 +768,9 @@ export const EffectSchema = z.discriminatedUnion('type', [
   // Moves the company to one of the scenario's office stages: its monthly cost and its lasting
   // effects (energy each week, outreach response by channel) replace the previous stage's.
   z.object({ type: z.literal('moveOffice'), stage: Id, ...fx }),
+  // Plan 3: accepts an office stage's offer: pays its one-off cost (unless a loan bought it),
+  // takes its rent from now, and moves in after the stage's moving weeks.
+  z.object({ type: z.literal('officeMove'), stage: Id, ...fx }),
   // Tourism: guests who heard of you join a segment's repeat guests (a random one when absent).
   z.object({
     type: z.literal('guests'),
@@ -799,8 +816,11 @@ export const EventSchema = z
     area: z.enum(EVENT_AREAS),
     weight: z.number().positive(),
     once: z.boolean().default(false),
-    // Weeks before a repeatable event can come back, instead of the inbox cooldown.
+    // Weeks before a repeatable event can come back, instead of the inbox cooldown. A triggered
+    // event that is not `once` comes back this many weeks after it arrived, if a trigger holds.
     cooldownWeeks: z.number().int().nonnegative().optional(),
+    // Weeks the message stays open, instead of the inbox's (plan 3: an office offer).
+    openWeeks: z.number().int().positive().optional(),
     when: z.array(ConditionSchema).default([]),
     // Arrives for sure, without a draw, in the first week any of these holds (and `when` holds).
     // Such an event never comes through the random draw.
@@ -916,8 +936,53 @@ export const OfficeStageSchema = z.object({
   walkIns: z.object({ segment: Id, leadsPerWeek: z.number().positive() }).optional(),
   // Tourism (step 6): added to the quality guests rate while working here (a better room).
   qualityBonus: z.number().optional(),
+  // Plan 3 (docs/office-stages.md): stages 3 to 5, offered by an inbox event (effect `officeMove`).
+  // Every field is optional, with no default, so stages 1 and 2 keep their fingerprints.
+  // Paid when the offer is accepted (fit-out, furniture, deposit); the deposit part comes back
+  // when the company gives notice.
+  oneOffCents: Cents.nonnegative().optional(),
+  depositCents: Cents.nonnegative().optional(),
+  // Weeks from accepting to working there; the old stage applies meanwhile.
+  moveWeeks: z.number().int().positive().optional(),
+  // People who can work here at once, the founder included. Absent: no limit.
+  desks: z.number().int().positive().optional(),
+  // People on the team at once while here, instead of the scenario's `team.maxMembers`.
+  maxMembers: z.number().int().positive().optional(),
+  // Demo to trial chance multiplied by this (demos held in the office).
+  demoFactor: z.number().positive().optional(),
+  // A hire search takes this many weeks less (never under one).
+  searchWeeksLess: z.number().int().nonnegative().optional(),
+  // Per segment: a subscription segment's trial conversion, or a bookings segment's requests,
+  // multiplied by this while here (visiting firms trust what they see, a private table).
+  segmentFactors: z.record(Id, z.number().positive()).optional(),
+  // Tourism: units a week added to a product's capacity (more seats, rooms, gear).
+  capacity: z.record(Id, z.number().int().nonnegative()).optional(),
+  // Tourism: a role's units per shift multiplied by this (a bigger kitchen).
+  staffFactors: z.record(Id, z.number().positive()).optional(),
+  // Tourism: food prepared and not sold is multiplied by this (less waste).
+  wasteFactor: z.number().min(0).max(1).optional(),
+  // Tourism: founder hours guests take, less this many (a reception).
+  hostingHoursLess: z.number().int().nonnegative().optional(),
+  // Tourism: a product that may run in bad weather counts as its alternative's bad weather plan.
+  weatherPlanFor: z.array(Id).optional(),
+  // Tourism: more contracts of a role allowed at once while here.
+  contractMax: z.record(Id, z.number().int().positive()).optional(),
+  // Tourism: the stage's capacity, reach and segment effects need a running contract in this
+  // role (someone stationed there); without one they are off that week.
+  needsContract: Id.optional(),
+  // The UI turns established the week the move here completes (plan 3 step 3).
+  established: z.boolean().optional(),
 })
 export type OfficeStage = z.infer<typeof OfficeStageSchema>
+
+/** Plan 3: moving and leaving office stages. Absent: stages only change by `moveOffice`. */
+export const OfficeConfigSchema = z.object({
+  // Notice to leave a stage: rent until then, the deposit back, the stage drops by one.
+  noticeWeeks: z.number().int().positive(),
+  // Founder hours a week the move takes while it lasts.
+  moveHoursPerWeek: z.number().int().nonnegative(),
+})
+export type OfficeConfig = z.infer<typeof OfficeConfigSchema>
 
 /** The run lengths a scenario can be played in. `standard` is the 60 week game. */
 export const GAME_MODES = ['standard', 'long'] as const
@@ -991,6 +1056,8 @@ export const ScenarioFileSchema = z.object({
   segments: z.array(SegmentSchema).min(1),
   milestones: z.array(MilestoneSchema).min(1),
   officeStages: z.array(OfficeStageSchema).min(1),
+  // Plan 3: moving between stages by offer, and giving notice. Absent: no moves of that kind.
+  office: OfficeConfigSchema.optional(),
   // The UI turns organised at the first of these milestones.
   organisedAt: z.array(Id).min(1),
   // Long mode: raising money from angels and a seed fund (Part D). Absent: no funding.
@@ -1044,6 +1111,24 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     if (o.walkIns && !s.segments.some((x) => x.id === o.walkIns!.segment)) {
       issue(`unknown segment ${o.walkIns.segment}`, ['officeStages', i, 'walkIns', 'segment'])
     }
+    for (const seg of Object.keys(o.segmentFactors ?? {})) {
+      if (!s.segments.some((x) => x.id === seg)) {
+        issue(`unknown segment ${seg}`, ['officeStages', i, 'segmentFactors'])
+      }
+    }
+    const products = s.bookings?.products ?? {}
+    const roles = s.bookings?.roles ?? {}
+    for (const id of [...Object.keys(o.capacity ?? {}), ...(o.weatherPlanFor ?? [])]) {
+      if (!products[id]) issue(`unknown product ${id}`, ['officeStages', i])
+    }
+    for (const id of [...Object.keys(o.staffFactors ?? {}), ...Object.keys(o.contractMax ?? {})]) {
+      if (!roles[id]) issue(`unknown role ${id}`, ['officeStages', i])
+    }
+    if (o.needsContract && !roles[o.needsContract]) {
+      issue(`unknown role ${o.needsContract}`, ['officeStages', i, 'needsContract'])
+    }
+    if ((o.depositCents ?? 0) > (o.oneOffCents ?? 0))
+      issue('deposit above the one-off', ['officeStages', i])
   })
   const featureIdSet = new Set(s.features.map((x) => x.id))
   const checkShipped = (conditions: readonly Condition[], path: (string | number)[]) => {
@@ -1057,12 +1142,14 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     e.choices.forEach((c, j) =>
       c.effects.forEach((f, k) => {
         checkShipped(f.when, ['events', i, 'choices', j, 'effects', k])
-        if (f.type === 'moveOffice' && !stageIds.has(f.stage)) {
+        if ((f.type === 'moveOffice' || f.type === 'officeMove') && !stageIds.has(f.stage)) {
           issue(`unknown office stage ${f.stage}`, ['events', i, 'choices', j, 'effects', k])
         }
       }),
     )
-    if (e.trigger.length > 0 && !e.once) issue('a triggered event must be once', ['events', i])
+    if (e.trigger.length > 0 && !e.once && e.cooldownWeeks === undefined) {
+      issue('a triggered event must be once or set cooldownWeeks', ['events', i])
+    }
   })
 
   // Tourism: the bookings block names real markets and features.

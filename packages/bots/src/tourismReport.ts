@@ -1,3 +1,4 @@
+import { evaluateOfficeTargets } from './officeTargets'
 import {
   find,
   fmtNum,
@@ -247,6 +248,8 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
         ),
     },
     ...loanTargets(input, careful, s, all),
+    // Plan 3: office stages, on the main part's seeds.
+    ...evaluateOfficeTargets(19, careful, s('tourism_never_move'), s('tourism_always_move')),
   ]
 }
 

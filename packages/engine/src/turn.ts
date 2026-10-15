@@ -21,7 +21,7 @@ import {
 } from './systems/team'
 import { checkEnding } from './systems/endings'
 import { checkMilestones } from './systems/milestones'
-import { applyWalkIns, energyPerWeek } from './systems/office'
+import { applyOfficeWeek, applyWalkIns, energyPerWeek } from './systems/office'
 import type { GameState, ReportEntry, WeekPlan, WeekReport } from './types'
 import { interviewView } from './view'
 
@@ -60,6 +60,12 @@ export function endWeek(
   if (plan.priceCentsPerMonth !== null) {
     state = { ...state, company: { ...state.company, priceCentsPerMonth: plan.priceCentsPerMonth } }
   }
+  // Plan 3: a move completes, notice starts or runs out. A move takes founder hours next week.
+  const office = applyOfficeWeek(state, plan)
+  state = office.state
+  entries.push(...office.entries)
+  extras.otherIncomeCents += office.incomeCents
+  forcedNextWeek += office.forcedHours
 
   // 3. Founder: living costs that change this week (long mode), hours and energy
   const living = livingCostsFor(state.scenario, state.week, state.founder.livingCostCentsPerWeek)
@@ -234,7 +240,7 @@ export function endWeek(
     ledger: state.ledger.at(-1) ?? finance.ledger,
     ending,
     milestones: milestones.reached,
-    uiStageChanged: organise,
+    uiStageChanged: organise || office.entries.some((e) => e.kind === 'ui_established'),
   }
   state = {
     ...state,

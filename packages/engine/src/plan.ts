@@ -1,3 +1,4 @@
+import { officePlanValid } from './systems/office'
 import { landingTestsUsed, presaleBatchesUsed } from './systems/experiments'
 import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
@@ -53,6 +54,7 @@ export function clonePlan(plan: WeekPlan): WeekPlan {
     ...(plan.loan
       ? { loan: { ...plan.loan, apply: plan.loan.apply ? { ...plan.loan.apply } : null } }
       : {}),
+    ...(plan.office ? { office: { ...plan.office } } : {}),
   }
 }
 
@@ -247,6 +249,7 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
   if (!fundingValid(state, plan)) issues.push({ code: 'invalid_funding' })
   if (!bookingsValid(state, plan)) issues.push({ code: 'invalid_bookings' })
   if (!loanValid(state, plan)) issues.push({ code: 'invalid_loan' })
+  if (!officePlanValid(state, plan)) issues.push({ code: 'invalid_office' })
 
   // Hours only make sense once every number is valid.
   if (!issues.some((i) => i.code === 'invalid_number')) {

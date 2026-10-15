@@ -40,6 +40,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       fixedCosts: start.fixedCosts.map((c) => ({ ...c })),
       uiStage: 'scrappy',
       officeStage: '',
+      office: { sinceWeek: 1, move: null, notice: null, prepaid: [], stays: [] },
     },
     hidden: {
       segments: hiddenSegments,

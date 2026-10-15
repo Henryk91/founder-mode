@@ -1,3 +1,4 @@
+import { answerOffers, officeOffers, type OfficeRule } from '../office'
 import {
   loadScenario,
   type Scenario,
@@ -613,6 +614,8 @@ export type Behaviours = {
    * the founder keeps chasing.
    */
   chaseBy?: 'team' | 'founder'
+  /** Plan 3: office stage offers (`office.ts`). Missing: careful. */
+  office?: OfficeRule
 }
 
 /**
@@ -812,6 +815,9 @@ export function validatingPlayer(
   behaviours: Behaviours = ALL_BEHAVIOURS,
 ): Player {
   const channels = new ChannelLog(scenario.sales)
+  // Plan 3: office stage offers, and whether the team rule wanted a hire the desks blocked.
+  const stageOffers = officeOffers(scenario)
+  let wantsDesk = false
   const long = scenario.mode === 'long'
   // In long mode a careful player reads the budget hints and the trials' answers to set its price
   // (plan 3.1), as `price_aware` does.
@@ -1196,7 +1202,20 @@ export function validatingPlayer(
     if (rule.freelanceFirst) freelancingFirst(b, view, unshipped, market, beforeFirstHire)
 
     // The offer is made only if the rule still holds (candidates not hired lapse at the next search).
-    if (b.plan.letGo === null && team.candidates.length > 0 && team.canHire && hireAffordable) {
+    const settled =
+      !newest || funded || (newest.working && view.week - newest.startWeek >= SETTLE_WEEKS)
+    const offer = b.plan.letGo === null && team.candidates.length > 0 && team.canHire
+    // Plan 3: the rule would look for someone, but every desk or place on the team is taken.
+    wantsDesk =
+      b.plan.letGo === null &&
+      !team.canHire &&
+      team.search === null &&
+      team.candidates.length === 0 &&
+      team.hiresLeft > 0 &&
+      !!market &&
+      settled &&
+      hireAffordable
+    if (offer && hireAffordable) {
       const best = [...team.candidates].sort(
         (x, y) => impressionOrder.indexOf(y.impression) - impressionOrder.indexOf(x.impression),
       )[0]
@@ -1206,7 +1225,7 @@ export function validatingPlayer(
       team.canSearch &&
       market &&
       b.free >= view.costs.searchHours &&
-      (!newest || funded || (newest.working && view.week - newest.startWeek >= SETTLE_WEEKS)) &&
+      settled &&
       hireAffordable
     ) {
       b.plan.searchRole = role
@@ -1573,6 +1592,19 @@ export function validatingPlayer(
       }
       // An office move that brings walk-in leads: taken only when this bot's own evidence ranks
       // that market first, else left to its default.
+      // Plan 3: office stage offers by the bot's own office rule, whatever its inbox policy.
+      const stageMoves = answerOffers(
+        rest,
+        stageOffers,
+        behaviours.office ?? 'careful',
+        wantsDesk,
+        rest.founder.maxHoursPerWeek -
+          rest.committedHours -
+          rest.forcedHours -
+          (rest.bookings?.hostingHours ?? 0),
+      )
+      rest.committedHours += stageMoves.reduce((t, a) => t + a.hours, 0)
+      rest.inbox = rest.inbox.filter((m) => !stageOffers.has(m.eventId))
       const moves =
         behaviours.inbox === 'reader'
           ? rest.inbox.flatMap((m) => {
@@ -1586,6 +1618,7 @@ export function validatingPlayer(
       return [
         ...forcedAnswers,
         ...answers,
+        ...stageMoves.map(({ messageId, choiceId }) => ({ messageId, choiceId })),
         ...moves,
         ...(behaviours.inbox === 'reader'
           ? readInbox(rest, scenario)
@@ -1793,7 +1826,7 @@ const DESCRIPTION =
   'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
 
 /** What the careful bot adds in long mode: the reference team rule. */
-export const LONG_TEAM_TEXT = ` In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for ${HIRE_RUNWAY_MONTHS} months, and at least ${HIRE_HORIZON_WEEKS} weeks would be left once the hire starts: a developer while the features its market asks for need ${BACKLOG_HOURS} h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked ${SETTLE_WEEKS} weeks. The newest hire is let go once the runway shown falls below ${LET_GO_MONTHS} months, and a developer once every feature has shipped.`
+export const LONG_TEAM_TEXT = ` In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for ${HIRE_RUNWAY_MONTHS} months, and at least ${HIRE_HORIZON_WEEKS} weeks would be left once the hire starts: a developer while the features its market asks for need ${BACKLOG_HOURS} h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked ${SETTLE_WEEKS} weeks. The newest hire is let go once the runway shown falls below ${LET_GO_MONTHS} months, and a developer once every feature has shipped. It takes a bigger office when its offer arrives and the reason is real: its hiring rule wants someone and every desk or place is taken, or, for the first office, three months that paid all costs; and cash and savings cover the move, six months of the added rent and two months of today's costs.`
 
 export const validateThenBuild: Strategy = {
   id: 'validate_then_build',
@@ -1853,6 +1886,20 @@ export const TEAM_VARIANTS: {
     team: CAREFUL_TEAM,
     extra: { expand: true },
     description: `Plays like validate_then_build, and from week ${EXPAND_FROM}, once its leads per outreach hour in its market over the last ${RATE_WEEKS} weeks of selling fall below ${DRY_SHARE * 100}% of its best ${RATE_WEEKS} weeks so far, opens the best ranked other market: interviews there until it has heard ${SECOND_INTERVIEWS}, builds what they ask for (up to ${SECOND_BUILD_HOURS} h a week itself), then sells there with half its outreach, and gives it up after ${SECOND_GIVE_UP_WEEKS} weeks of selling there without a customer. Its team rule serves the second market: a developer while its features need ${BACKLOG_HOURS} h, building them first, then a salesperson selling there.`,
+  },
+  {
+    id: 'validate_then_build_never_move',
+    team: CAREFUL_TEAM,
+    extra: { office: 'never' },
+    description:
+      'Plays like validate_then_build but declines every office offer (plan 3, target O1): it stays where it started, desks or not.',
+  },
+  {
+    id: 'validate_then_build_always_move',
+    team: CAREFUL_TEAM,
+    extra: { office: 'always' },
+    description:
+      'Plays like validate_then_build but accepts every office offer at once (plan 3, target O2), whether or not it needs the room or has the money.',
   },
   {
     id: 'validate_then_build_expand_solo',

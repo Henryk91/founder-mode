@@ -1,0 +1,88 @@
+# Plan 3 (docs/office-stages.md): offers of office stages 3 to 5. Each arrives for sure in the
+# first week a trigger holds (and `when` holds), and comes back 12 weeks later if one still holds.
+# The text names the condition, the costs and the effect. Accepting pays the one-off at once,
+# unless the bank's plan paid it, and moves the rent from now.
+events:
+  - id: office_gear_store_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage <= 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Sporthaus Reindl, closing down
+    look: letter
+    text: >-
+      Now that the tours pay their way, or guests are being turned away, old Reindl offers his
+      shop on the square: a gear store and meeting point for 1,400 EUR a month and 8,000 EUR for
+      deposit and racks. Gear for twelve more on the via ferrata, and a third more walk-ins. Your
+      garage is relieved.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the shop on the square
+        hours: 2
+        effects:
+          - { type: officeMove, stage: gear_store }
+      - id: stay
+        label: Keep things as they are
+        hours: 0
+        effects: []
+
+  - id: office_guiding_centre_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: The valley's tourism association
+    look: official
+    text: >-
+      You keep turning guests away, so the tourism association offers its old ski school as a
+      guiding centre with changing rooms: 3,200 EUR a month and 25,000 EUR to fit out. Canyoning
+      half as big again, tours that run in foul weather, and room for four permanent guides. It
+      is wasted on a company whose guests come by coach for a day.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the guiding centre
+        hours: 2
+        effects:
+          - { type: officeMove, stage: guiding_centre }
+      - id: stay
+        label: Stay at the shop
+        hours: 0
+        effects: []
+
+  - id: office_second_base_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: Gemeinde Hinterau
+    look: official
+    text: >-
+      Tourists were turned away at the peak again, and the next valley wants a guiding company of
+      its own. A second base costs 1,800 EUR a month more and 15,000 EUR to set up, and brings
+      about two fifths more tourists. It needs a permanent guide stationed there, or it stays shut
+      that week.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Open the second base
+        hours: 2
+        effects:
+          - { type: officeMove, stage: second_base }
+      - id: stay
+        label: One valley is plenty
+        hours: 0
+        effects: []

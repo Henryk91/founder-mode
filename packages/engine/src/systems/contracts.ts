@@ -1,5 +1,6 @@
 import type { ContractKind } from '@founder-mode/content'
 import type { GameState, ReportEntry, StaffContract, WeekPlan } from '../types'
+import { currentStage } from './office'
 
 // Plan 2 step 1b: staff on contracts. Permanent and part time staff work every week and are paid
 // whether busy or not; notice keeps them (and their pay) for a few weeks more. A seasonal contract
@@ -64,7 +65,9 @@ export function contractsValid(state: GameState, plan: WeekPlan): boolean {
     const key = `${h.roleId}|${h.kind}`
     added[key] = (added[key] ?? 0) + 1
     const have = running.filter((x) => x.roleId === h.roleId && x.kind === h.kind).length
-    if (have + added[key]! > c.max) return false
+    // Plan 3: a bigger base has room for more contract staff in a role.
+    const max = currentStage(state).contractMax?.[h.roleId] ?? c.max
+    if (have + added[key]! > max) return false
   }
   for (const id of p.endContracts ?? []) {
     const c = running.find((x) => x.id === id)
