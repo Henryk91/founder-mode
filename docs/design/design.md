@@ -127,6 +127,10 @@ When `uiStage` becomes `organised`, only the pipeline panel changes:
 
 All other panels keep the scrappy look.
 
+## The established stage (plan 3)
+
+The third look, reached the week a move into office stage 4 completes (long mode only), is specified in `established.md`, with the mockups `established-desk-v2.html` and `established-phone.html`. White cards on a cool grey, a scenario accent, Bricolage Grotesque for headings, the notebook as a plain form with the same 44 px rows. The older drawing `desk-established.html` is **superseded** by `established-desk-v2.html`.
+
 ## Component mapping
 
 | Mockup element | Component | Notes |
