@@ -1,8 +1,6 @@
-import { readFileSync } from 'node:fs'
-import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import type { Browser, Page } from 'playwright-core'
+import type { Browser } from 'playwright-core'
 import { createServer, type ViteDevServer } from 'vite'
 import { TOURISM_STRATEGIES } from '@founder-mode/bots/src/strategies/tourism'
 import { loadScenario, type ScenarioId } from '@founder-mode/content'
@@ -21,6 +19,7 @@ import {
   type WeekPlan,
 } from '@founder-mode/engine'
 import { CHROMIUM, WEBKIT, type Engine } from './browsers'
+import { axe, cut } from './screen'
 
 /**
  * Plan 2 step 1 on screen: trials and vouchers, contracts (one in notice), food prepared, kitchen
@@ -29,7 +28,6 @@ import { CHROMIUM, WEBKIT, type Engine } from './browsers'
  * save is opened with every tab and notebook section at 375, 390, 430 and 1440 px in Chrome and
  * WebKit. Nothing may be cut short, and axe finds nothing on the plan.
  */
-const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8')
 
 const RUNS: { id: ScenarioId; seed: string; week: number; loanForm?: boolean }[] = [
   { id: 'gratwanderung', seed: 'shot-1', week: 20 },
@@ -209,59 +207,3 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 2 step 1 screens', () => {
     })
   }
 })
-
-type Violation = { id: string; nodes: string[] }
-
-async function axe(page: Page): Promise<Violation[]> {
-  await page.evaluate(AXE)
-  return page.evaluate(async () => {
-    const w = window as unknown as {
-      axe: {
-        run(
-          ctx: Document,
-          opts: object,
-        ): Promise<{ violations: { id: string; nodes: { target: string[] }[] }[] }>
-      }
-    }
-    const r = await w.axe.run(document, {
-      runOnly: {
-        type: 'tag',
-        values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'],
-      },
-      resultTypes: ['violations'],
-    })
-    return r.violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target.join(' ')) }))
-  })
-}
-
-/** Elements whose own text is cut (as in cutoff.browser.test.ts). */
-function cut(page: Page, where: string): Promise<string[]> {
-  return page.evaluate((where) => {
-    const phone = !document.querySelector('[data-layout="desk"]')
-    const out: string[] = []
-    for (const el of document.querySelectorAll<HTMLElement>('body *')) {
-      if (!el.textContent?.trim() || el.closest('.visually-hidden')) continue
-      const css = getComputedStyle(el)
-      const clips = css.textOverflow === 'ellipsis' || css.overflowX === 'hidden'
-      if (!clips || el.scrollWidth <= el.clientWidth + 1) continue
-      if (/_segment_/.test(el.className)) continue
-      if (phone && /_summary_/.test(el.className) && el.closest('[class*="_sectionLine_"]')) {
-        continue
-      }
-      out.push(`${where}: ${el.tagName}.${el.className} "${el.textContent.trim().slice(0, 60)}"`)
-    }
-    for (const label of phone
-      ? document.querySelectorAll<HTMLElement>('[class*="_rowStack_"] > [class*="_wrapped_"]')
-      : []) {
-      const row = label.parentElement!.getBoundingClientRect()
-      const box = label.getBoundingClientRect()
-      if (box.height > 45 && box.width < row.width - 1) {
-        out.push(`${where}: "${label.textContent?.trim()}" wraps beside its controls`)
-      }
-    }
-    if (document.documentElement.scrollWidth > window.innerWidth + 1) {
-      out.push(`${where}: the page scrolls sideways`)
-    }
-    return out
-  }, where)
-}
