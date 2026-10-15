@@ -67,6 +67,8 @@ export function isNoteworthy(e: WeekReport['entries'][number]): boolean {
 }
 
 export type RunResult = {
+  /** Plan 3: office stages offered and taken over the run, by stage number (3 to 5). */
+  office: { offered: number[]; taken: number[] }
   strategy: string
   seed: string
   ending: EndingId
@@ -415,10 +417,27 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     customersBySource[key] = (customersBySource[key] ?? 0) + 1
   }
   const signal = firstReport && viable ? firstWeekSignal(scenario, firstReport, viable[0]) : null
+  // Plan 3: office stages offered (by stage number) and taken over the run.
+  const offerStage = (eventId: string) => {
+    for (const c of state.scenario.events.find((e) => e.id === eventId)?.choices ?? []) {
+      const fx = c.effects.find((x) => x.type === 'officeMove')
+      if (fx?.type === 'officeMove') {
+        return state.scenario.officeStages.findIndex((o) => o.id === fx.stage) + 1
+      }
+    }
+    return 0
+  }
+  const officeOffered = [
+    ...new Set(state.inbox.map((m) => offerStage(m.eventId)).filter((n) => n > 0)),
+  ].sort()
+  const officeTaken = state.company.office.stays.map(
+    (x) => state.scenario.officeStages.findIndex((o) => o.id === x.stage) + 1,
+  )
   return {
     strategy: strategy.id,
     seed,
     ending: state.ending ?? 'still_searching',
+    office: { offered: officeOffered, taken: [...new Set(officeTaken)].sort() },
     weeks: state.week,
     viableSegment: viable?.[0] ?? '',
     roles: Object.fromEntries(

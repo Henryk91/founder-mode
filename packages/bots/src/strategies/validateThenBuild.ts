@@ -1,3 +1,4 @@
+import { answerOffers, officeOffers, type OfficeRule } from '../office'
 import {
   loadScenario,
   type Scenario,
@@ -613,6 +614,8 @@ export type Behaviours = {
    * the founder keeps chasing.
    */
   chaseBy?: 'team' | 'founder'
+  /** Plan 3: office stage offers (`office.ts`). Missing: careful. */
+  office?: OfficeRule
 }
 
 /**
@@ -812,6 +815,9 @@ export function validatingPlayer(
   behaviours: Behaviours = ALL_BEHAVIOURS,
 ): Player {
   const channels = new ChannelLog(scenario.sales)
+  // Plan 3: office stage offers, and whether the team rule wanted a hire the desks blocked.
+  const stageOffers = officeOffers(scenario)
+  let wantsDesk = false
   const long = scenario.mode === 'long'
   // In long mode a careful player reads the budget hints and the trials' answers to set its price
   // (plan 3.1), as `price_aware` does.
@@ -1196,7 +1202,20 @@ export function validatingPlayer(
     if (rule.freelanceFirst) freelancingFirst(b, view, unshipped, market, beforeFirstHire)
 
     // The offer is made only if the rule still holds (candidates not hired lapse at the next search).
-    if (b.plan.letGo === null && team.candidates.length > 0 && team.canHire && hireAffordable) {
+    const settled =
+      !newest || funded || (newest.working && view.week - newest.startWeek >= SETTLE_WEEKS)
+    const offer = b.plan.letGo === null && team.candidates.length > 0 && team.canHire
+    // Plan 3: the rule would look for someone, but every desk or place on the team is taken.
+    wantsDesk =
+      b.plan.letGo === null &&
+      !team.canHire &&
+      team.search === null &&
+      team.candidates.length === 0 &&
+      team.hiresLeft > 0 &&
+      !!market &&
+      settled &&
+      hireAffordable
+    if (offer && hireAffordable) {
       const best = [...team.candidates].sort(
         (x, y) => impressionOrder.indexOf(y.impression) - impressionOrder.indexOf(x.impression),
       )[0]
@@ -1206,7 +1225,7 @@ export function validatingPlayer(
       team.canSearch &&
       market &&
       b.free >= view.costs.searchHours &&
-      (!newest || funded || (newest.working && view.week - newest.startWeek >= SETTLE_WEEKS)) &&
+      settled &&
       hireAffordable
     ) {
       b.plan.searchRole = role
@@ -1573,6 +1592,19 @@ export function validatingPlayer(
       }
       // An office move that brings walk-in leads: taken only when this bot's own evidence ranks
       // that market first, else left to its default.
+      // Plan 3: office stage offers by the bot's own office rule, whatever its inbox policy.
+      const stageMoves = answerOffers(
+        rest,
+        stageOffers,
+        behaviours.office ?? 'careful',
+        wantsDesk,
+        rest.founder.maxHoursPerWeek -
+          rest.committedHours -
+          rest.forcedHours -
+          (rest.bookings?.hostingHours ?? 0),
+      )
+      rest.committedHours += stageMoves.reduce((t, a) => t + a.hours, 0)
+      rest.inbox = rest.inbox.filter((m) => !stageOffers.has(m.eventId))
       const moves =
         behaviours.inbox === 'reader'
           ? rest.inbox.flatMap((m) => {
@@ -1586,6 +1618,7 @@ export function validatingPlayer(
       return [
         ...forcedAnswers,
         ...answers,
+        ...stageMoves.map(({ messageId, choiceId }) => ({ messageId, choiceId })),
         ...moves,
         ...(behaviours.inbox === 'reader'
           ? readInbox(rest, scenario)
@@ -1853,6 +1886,20 @@ export const TEAM_VARIANTS: {
     team: CAREFUL_TEAM,
     extra: { expand: true },
     description: `Plays like validate_then_build, and from week ${EXPAND_FROM}, once its leads per outreach hour in its market over the last ${RATE_WEEKS} weeks of selling fall below ${DRY_SHARE * 100}% of its best ${RATE_WEEKS} weeks so far, opens the best ranked other market: interviews there until it has heard ${SECOND_INTERVIEWS}, builds what they ask for (up to ${SECOND_BUILD_HOURS} h a week itself), then sells there with half its outreach, and gives it up after ${SECOND_GIVE_UP_WEEKS} weeks of selling there without a customer. Its team rule serves the second market: a developer while its features need ${BACKLOG_HOURS} h, building them first, then a salesperson selling there.`,
+  },
+  {
+    id: 'validate_then_build_never_move',
+    team: CAREFUL_TEAM,
+    extra: { office: 'never' },
+    description:
+      'Plays like validate_then_build but declines every office offer (plan 3, target O1): it stays where it started, desks or not.',
+  },
+  {
+    id: 'validate_then_build_always_move',
+    team: CAREFUL_TEAM,
+    extra: { office: 'always' },
+    description:
+      'Plays like validate_then_build but accepts every office offer at once (plan 3, target O2), whether or not it needs the room or has the money.',
   },
   {
     id: 'validate_then_build_expand_solo',
