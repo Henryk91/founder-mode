@@ -1,4 +1,9 @@
-import type { Condition, ConditionPath } from '@founder-mode/content'
+import {
+  shippedFeature,
+  type Condition,
+  type ConditionPath,
+  type FixedConditionPath,
+} from '@founder-mode/content'
 import type { MessageView, PlayerView } from '../types'
 import { conditionHolds } from './conditions'
 
@@ -10,7 +15,7 @@ import { conditionHolds } from './conditions'
 const MOODS = { worried: 0, patient: 1, pleased: 2 } as const
 const FORECASTS = ['good', 'mixed', 'bad', 'dangerous']
 
-const VIEW_METRICS: Record<ConditionPath, (v: PlayerView, m: MessageView | null) => number> = {
+const VIEW_METRICS: Record<FixedConditionPath, (v: PlayerView, m: MessageView | null) => number> = {
   week: (v) => v.week,
   'customers.count': (v) => v.customers.length,
   'customers.won': (v) => v.customersWon,
@@ -67,7 +72,11 @@ export function viewConditionValue(
   path: ConditionPath,
   message: MessageView | null = null,
 ): number {
-  return VIEW_METRICS[path](view, message)
+  const feature = shippedFeature(path)
+  if (feature !== null) {
+    return view.product.features.some((f) => f.id === feature && f.shipped) ? 1 : 0
+  }
+  return VIEW_METRICS[path as FixedConditionPath](view, message)
 }
 
 /** True when every condition holds in the view. An empty list always holds. */
@@ -76,5 +85,5 @@ export function viewConditionsHold(
   conditions: readonly Condition[],
   message: MessageView | null = null,
 ): boolean {
-  return conditions.every((c) => conditionHolds(VIEW_METRICS[c.path](view, message), c))
+  return conditions.every((c) => conditionHolds(viewConditionValue(view, c.path, message), c))
 }

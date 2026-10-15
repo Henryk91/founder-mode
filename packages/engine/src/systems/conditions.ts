@@ -1,4 +1,9 @@
-import type { Condition, ConditionPath } from '@founder-mode/content'
+import {
+  shippedFeature,
+  type Condition,
+  type ConditionPath,
+  type FixedConditionPath,
+} from '@founder-mode/content'
 import { bookingsRevenueOrSubscriptions } from './bookings'
 import type { GameState } from '../types'
 import { activeCustomers } from './customers'
@@ -17,7 +22,7 @@ export function hasHire(state: Pick<GameState, 'team'>): boolean {
 /** The message a condition is read for, if any: its sender's customer or lead. */
 export type ConditionSender = { targetId: string | null } | null
 
-const METRICS: Record<ConditionPath, (state: GameState, sender: ConditionSender) => number> = {
+const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSender) => number> = {
   week: (s) => s.week,
   'customers.count': (s) => activeCustomers(s).length,
   'customers.won': (s) => s.customers.length,
@@ -105,7 +110,12 @@ export function conditionValue(
   path: ConditionPath,
   sender: ConditionSender = null,
 ): number {
-  return METRICS[path](state, sender)
+  const feature = shippedFeature(path)
+  if (feature !== null) {
+    const f = state.product.features.find((x) => x.id === feature)
+    return f && f.shippedWeek !== null ? 1 : 0
+  }
+  return METRICS[path as FixedConditionPath](state, sender)
 }
 
 /** True when every condition holds. An empty list always holds. */
@@ -114,7 +124,7 @@ export function conditionsHold(
   conditions: readonly Condition[],
   sender: ConditionSender = null,
 ): boolean {
-  return conditions.every((c) => holds(METRICS[c.path](state, sender), c))
+  return conditions.every((c) => holds(conditionValue(state, c.path, sender), c))
 }
 
 export { holds as conditionHolds }
