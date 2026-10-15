@@ -49,9 +49,9 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | kantino (long) | shut_down | `shut_down@10` | `ending-1` | 10 |
 | kantino (long) | shut_down | `shut_down@10` | `ending-2` | 10 |
 | kantino (long) | shut_down | `shut_down@10` | `ending-3` | 10 |
-| kantino (long) | growing | `raise_late` | `ending-40` | 104 |
-| kantino (long) | growing | `raise_late` | `ending-147` | 104 |
-| kantino (long) | growing | `raise_late` | `ending-171` | 104 |
+| kantino (long) | growing | `raise_late` | `ending-8` | 104 |
+| kantino (long) | growing | `raise_late` | `ending-74` | 104 |
+| kantino (long) | growing | `raise_late` | `ending-116` | 104 |
 | zollstock | sustainable | `validate_then_build` | `ending-3` | 60 |
 | zollstock | sustainable | `validate_then_build` | `ending-5` | 60 |
 | zollstock | sustainable | `validate_then_build` | `ending-7` | 60 |
