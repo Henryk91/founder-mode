@@ -1,2 +1,87 @@
-# Plan 3: offers of office stages 3 to 5 (filled in step 1).
-events: []
+# Plan 3 (docs/office-stages.md): offers of office stages 3 to 5. Each arrives for sure in the
+# first week a trigger holds (and `when` holds), and comes back 12 weeks later if one still holds.
+# The text names the condition, the costs and the effect. Accepting pays the one-off at once,
+# unless the bank's plan paid it, and moves the rent from now.
+events:
+  - id: office_annex_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 10
+    when: [office.stage <= 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Zimmerei Brunner
+    look: letter
+    text: >-
+      The house is paying for itself, or turning guests away, and the carpenter has drawn an
+      annex: four more rooms for 120,000 EUR and about 900 EUR a month in lease and heating. It
+      takes twelve weeks and the bank will want to talk. An annex on a half-empty house is a loan
+      that nobody pays.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Build the annex
+        hours: 2
+        effects:
+          - { type: officeMove, stage: annex }
+      - id: stay
+        label: Twelve rooms will do
+        hours: 0
+        effects: []
+
+  - id: office_pavilion_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Zimmerei Brunner
+    look: letter
+    text: >-
+      Guests and groups keep being turned away, so the carpenter suggests a garden pavilion and a
+      proper reception: 40,000 EUR, no more rent. Weddings and groups book about a fifth more
+      readily, and the reception takes five hours a week of the phone off you. The bell is
+      included.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Build the pavilion
+        hours: 2
+        effects:
+          - { type: officeMove, stage: pavilion }
+      - id: stay
+        label: Not this year
+        hours: 0
+        effects: []
+
+  - id: office_second_house_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0, tour.peak == 1]
+    trigger: [tour.occupancy > 80]
+    from: none
+    sender: Familie Hartl
+    look: letter
+    text: >-
+      The house is more than four fifths full in the summer, and the Hartls want to let their old
+      guesthouse in the village: eight more rooms for 4,000 EUR a month and 30,000 EUR to make
+      ready. No lake view, so couples pay a little less, and it needs its own housekeeping.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Lease the second house
+        hours: 2
+        effects:
+          - { type: officeMove, stage: second_house }
+      - id: stay
+        label: One house is plenty
+        hours: 0
+        effects: []
