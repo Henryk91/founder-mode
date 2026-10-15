@@ -1,7 +1,7 @@
 # Autonomous run 2 status
 
 ## Current
-Step: complete.
+Step: complete, audited (tag `plan2-audited`).
 Last commit: final Plan 2 checkpoint (this commit; tag `plan2-complete`).
 Next action: Plan 3 may begin from its section 0.
 
@@ -21,13 +21,15 @@ Next action: Plan 3 may begin from its section 0.
 - Item 11: an invoiced platform booking is invoiced net; a firm that never pays costs only the net.
 
 ## Open issues
-- T14 all tourism scenarios: no contract kind clears its paired margin consistently. Three formula rounds were tried and reverted; fresh step 6 budget.
-- Hinterhof T2: no-tests wins 20.6% (limit 5%); T3 spread is 15.9 points (limit 15). Value budget used; fresh step 6 budget.
-- Seeblick T6: reading +9.5, blind effort +6.8. Value and inbox budgets used; fresh step 6 budget.
-- Gratwanderung school demand remains 9 to 12 groups at peak against the spec's 0.3 to 1.2; every closer tested range was unplayable or less fair.
-- Kantino long: T20 stays open (burst neutral, steady hire trails); T32 founder value 1.23x rather than 1.3x; T33 early raise +1.4 against traction despite visible weak terms. T27 remains at the limit. Fresh step 6 budget.
+After the audit (`docs/autonomous3/reports/audit.md`; details and options in `reports/final.md`):
+- Tourism T14, all three: contract bots sign only once a run is won, so win rates cannot show a contract paying.
+- Hinterhof T2: no-tests 16.6% (limit 5%). Hinterhof T7: +0.0 ±1.8, fails within noise.
+- Seeblick T6: reading +7.7, blind effort +5.7. Seeblick T7 and T11: fail within noise after the T1 fix.
+- Gratwanderung school demand 5 to 8 groups at peak, above the spec's 0.3 to 1.2.
+- Kantino long T20, T27 (at the limit), T32, T33: carried to plan 3 step 2.
 
 ## For Henry to review (non-blocking)
+- Plan 2 audit: see the priority list in `reports/final.md` (T14's measure, T32 and T33 restatement options, estimates chosen while tuning).
 - Step 4: T14 judges each contract kind against weekly shifts in its best viable-segment split, by more than the paired margin (decisions, plan 2 step 4).
 - Step 0: the 60 week event table heading now names the reading run `validate_then_build inbox:reader` (text only, from the fixes session) (step0-baseline report).
 

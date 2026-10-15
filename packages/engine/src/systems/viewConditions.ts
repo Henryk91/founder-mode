@@ -1,11 +1,6 @@
-import {
-  shippedFeature,
-  type Condition,
-  type ConditionPath,
-  type FixedConditionPath,
-} from '@founder-mode/content'
+import type { Condition, ConditionPath, FixedConditionPath } from '@founder-mode/content'
 import type { MessageView, PlayerView } from '../types'
-import { conditionHolds } from './conditions'
+import { conditionHolds, shippedFeature } from './conditions'
 
 /**
  * Condition paths read from the player's view (situational events, step 3). Every path reads the

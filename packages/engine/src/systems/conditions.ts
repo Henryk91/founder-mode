@@ -1,9 +1,4 @@
-import {
-  shippedFeature,
-  type Condition,
-  type ConditionPath,
-  type FixedConditionPath,
-} from '@founder-mode/content'
+import type { Condition, ConditionPath, FixedConditionPath } from '@founder-mode/content'
 import { bookingsRevenueOrSubscriptions } from './bookings'
 import type { GameState } from '../types'
 import { activeCustomers } from './customers'
@@ -13,6 +8,13 @@ import { isOverdue, isUnpaid, maxOverdueDays } from './invoices'
 import { monthOf } from './bookings'
 import { runwayWeeks } from './finance'
 import { canBookDemo } from './sales'
+
+/**
+ * The feature a `shipped.<id>` path asks about, or null for any other path (plan 2 audit). The
+ * same rule as the content package's, here because the engine takes content as data only.
+ */
+export const shippedFeature = (path: ConditionPath): string | null =>
+  path.startsWith('shipped.') ? path.slice('shipped.'.length) : null
 
 /** Whether someone is on the team now or has been hired and is about to start. */
 export function hasHire(state: Pick<GameState, 'team'>): boolean {
