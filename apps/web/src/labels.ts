@@ -474,6 +474,8 @@ const labels = {
   'money.vouchers': 'Vouchers you still owe',
   'loan.planRule':
     '{bank} lends for what your plan lists, paid to the supplier the day the money arrives, plus working capital of at most {months} months of fixed costs (now {max}). It does not lend a cushion on top.',
+  'loan.bridgeHint':
+    'Your first useful season is about {months} months away. The plan needs to carry the business there.',
   'loan.item.list': 'List it',
   'loan.item.listed': 'Listed',
   'loan.rooms': 'Rooms to renovate',

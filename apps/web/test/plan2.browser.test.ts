@@ -88,7 +88,7 @@ function extra(state: GameState, view: PlayerView, plan: WeekPlan): WeekPlan {
 /** The first seed from `seed` on (shot-1, shot-2, ...) whose run is still going at `week`. */
 function save(id: ScenarioId, seed: string, week: number): SaveFile {
   const n = Number(seed.split('-')[1])
-  for (let i = n; i < n + 30; i++) {
+  for (let i = n; i < n + 300; i++) {
     const file = play(id, `shot-${i}`, week)
     if (file) return file
   }

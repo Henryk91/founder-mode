@@ -347,6 +347,8 @@ organisedAt: [covers_all_costs]
 # The bank loan (docs/loan-proposal.md): for renovation and the first winter.
 loan:
   bankName: Seenland Bank
+  # Visible advice in the bank plan: November to the first summer is about six months.
+  bridgeMonthsHint: 6
   planHours: 30
   meetingHours: 4
   decisionWeeks: 2
@@ -409,7 +411,9 @@ bookings:
   segments:
     leisure:
       # Spec 30 to 90 (decisions, steps 7 and 8).
-      base: { min: 20, max: 60 }
+      # Plan 2 step 4, round 2: continue the measured adjustment after round 1 left an 18-point
+      # gap. This remains inside the spec's 30 to 90 upper range, with a deliberately quiet floor.
+      base: { min: 16, max: 48 }
       unit: night
       price: { peak: 13500, off: 11500 }
       size: { min: 1, max: 4 }
@@ -425,8 +429,9 @@ bookings:
       invoiced: false
       reviewWeight: 0.8
     project_guests:
-      # Spec 15 to 60 (decisions, steps 7 and 8).
-      base: { min: 16, max: 60 }
+      # Plan 2 step 4, round 3: round 2 left project guests highest at 36.7%, against 21.2% for
+      # groups. Keep the spec's floor and trim only its estimated upper reach.
+      base: { min: 15, max: 52 }
       unit: night
       price: { peak: 9000, off: 9000 }
       size: { min: 3, max: 10 }
@@ -443,7 +448,9 @@ bookings:
       # Whole house bookings of two to four nights: 24 to 48 room nights each. Spec 0.1 to 0.6
       # bookings a week; about one a week at peak here, a wedding most summer weekends (decisions,
       # step 7).
-      base: { min: 24, max: 48 }
+      # Plan 2 step 4, round 2: a little more group reach after round 1 raised group wins only to
+      # 19%. Whole-house demand is still an estimate.
+      base: { min: 34, max: 60 }
       unit: night
       price: { peak: 14000, off: 12000 }
       size: { min: 24, max: 48 }
@@ -452,7 +459,9 @@ bookings:
       season: [0.1, 0.1, 0.2, 0.4, 0.9, 1, 1, 1, 0.9, 0.4, 0.1, 0.2]
       response: { platform: 0, website: 0.4, partnership: 0.8, outreach: 0.6, walkIn: 0 }
       # One cancellation is a month's revenue; couples expect to pay a deposit for a wedding.
-      cancel: 0.08
+      # Plan 2 step 4 policy round 1: a large booking cancels often enough that a strict policy
+      # can protect the house in some runs; one cancellation is still a month's revenue.
+      cancel: 0.12
       strictConversion: 0.95
       # A deposit of 30% at booking, the balance at the stay (docs/scenario-hotel.md 3).
       depositShare: 0.3

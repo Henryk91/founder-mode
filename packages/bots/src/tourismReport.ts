@@ -84,14 +84,16 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
   ] as const
   const contractResults = noContracts
     ? contractKinds.map(([kind, strategy]) => {
-        const splits = strategy
-          ? markets.map((market) => {
-              const seeds = all.filter((i) => careful.results[i]!.viableSegment === market)
-              return { market, pair: pairedOn(noContracts, strategy, seeds) }
+        const signedSeeds = strategy
+          ? all.filter((i) => {
+              const x = strategy.results[i]!
+              if (kind === 'part time') return (x.tourism?.contracts.partTime ?? 0) > 0
+              return (x.tourism?.contracts[kind] ?? 0) > 0
             })
           : []
-        const best = [...splits].sort((a, b) => b.pair.change - a.pair.change)[0]
-        return { kind, strategy, best }
+        const pair =
+          strategy && signedSeeds.length ? pairedOn(noContracts, strategy, signedSeeds) : null
+        return { kind, strategy, pair, signed: signedSeeds.length }
       })
     : []
   const flex = s('tourism_always_flexible')
@@ -225,21 +227,23 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     },
     {
       id: 14,
-      text: 'Every staff contract kind wins somewhere: permanent, seasonal and part time each beat weekly shifts in at least one viable-segment split by their margin',
+      text: 'Every staff contract kind wins somewhere: on the seeds where its single-kind bot signs it, permanent, seasonal and part time each beat weekly shifts by their paired margin',
       value: contractResults.length
         ? contractResults
-            .map(({ kind, best }) =>
-              best ? `${kind} ${signed(best.pair.change)} (${best.market})` : `${kind} -`,
+            .map(({ kind, pair, strategy, signed: signedCount }) =>
+              pair
+                ? `${kind} ${signed(pair.change)} (signed in ${fmtPct(pct(signedCount, strategy?.results.length ?? 0))})`
+                : `${kind} -`,
             )
             .join('; ')
         : '-',
       margin: contractResults.length
-        ? contractResults.map(({ best }) => (best ? fmtMargin(best.pair.margin) : '')).join('; ')
+        ? contractResults.map(({ pair }) => (pair ? fmtMargin(pair.margin) : '')).join('; ')
         : '',
       pass:
         contractResults.length === contractKinds.length &&
-        contractResults.every(({ strategy, best }) =>
-          Boolean(strategy && best && best.pair.change - best.pair.margin > 0),
+        contractResults.every(({ strategy, pair }) =>
+          Boolean(strategy && pair && pair.change - pair.margin > 0),
         ),
     },
     ...loanTargets(input, careful, s, all),

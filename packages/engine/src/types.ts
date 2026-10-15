@@ -1417,6 +1417,8 @@ export type InvestorView = {
 /** Raising money as the player sees it. The investors' confidence shows only as their mood. */
 export type LoanView = {
   bankName: string
+  /** Honest bank-plan signal: months to bridge before the first useful season. */
+  bridgeMonthsHint: number | null
   /**
    * Plan 2 step 2, where the bank lends against a plan: the products it may list (not shipped
    * or bought yet), rooms to renovate, and the most working capital it lends (its stated months

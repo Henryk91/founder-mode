@@ -33,9 +33,9 @@ describe('long mode in the content', () => {
     expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
     // The tourism scenarios change in plan 2 steps 1 to 4 (the spec features, the loan, the
     // inbox, the retune) and are protected again from the end of step 4 (tag `plan2-tourism`).
-    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('3596d3bf83002e8d')
-    expect(scenarioHash(loadScenario('hinterhof'))).toBe('f2c47ca2ed6bf3f8')
-    expect(scenarioHash(loadScenario('seeblick'))).toBe('bb368ba6e8efbcf0')
+    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('729a0e559cfc68e3')
+    expect(scenarioHash(loadScenario('hinterhof'))).toBe('0ddd9910e0c559ee')
+    expect(scenarioHash(loadScenario('seeblick'))).toBe('b4be2a32cc3ae104')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })
