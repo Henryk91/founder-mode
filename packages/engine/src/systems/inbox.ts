@@ -15,7 +15,7 @@ import { committedHours } from './founder'
 import { isOverdue, nudgeInvoice } from './invoices'
 import { OddsTally } from './odds'
 import { qualityFor } from './product'
-import { moveOffice } from './office'
+import { acceptOffice, moveOffice } from './office'
 import { addLeads } from './sales'
 
 /** What resolving messages adds to the week besides changes to the state. */
@@ -204,6 +204,12 @@ function applyEffect(
       return state
     case 'moveOffice':
       return moveOffice(state, effect.stage)
+    case 'officeMove': {
+      const moved = acceptOffice(state, effect.stage)
+      out.costsCents += moved.costCents
+      out.entries.push(...moved.entries)
+      return moved.state
+    }
     case 'guests': {
       const b = state.bookings
       if (!b) return state
@@ -292,14 +298,17 @@ export function drawMessages(state: GameState, rng: Rng): GameState {
   // Triggered events arrive for sure the first week any trigger holds. They sit outside the
   // draw: they never count as open messages for it and are made after it, so they never change
   // which events are drawn.
-  const triggered = state.scenario.events.filter(
-    (e) =>
-      e.trigger.length > 0 &&
-      e.once &&
-      !state.drawnEvents.some((d) => d.eventId === e.id) &&
-      conditionsHold(state, e.when) &&
-      e.trigger.some((t) => conditionsHold(state, [t])),
-  )
+  // A triggered event that is not `once` (plan 3: an office offer) comes back once its cooldown
+  // has passed since it last arrived, if a trigger still holds and no copy is open.
+  const triggered = state.scenario.events.filter((e) => {
+    if (e.trigger.length === 0) return false
+    const drawn = state.drawnEvents.filter((d) => d.eventId === e.id)
+    if (e.once ? drawn.length > 0 : drawn.some((d) => arrival - d.week < e.cooldownWeeks!)) {
+      return false
+    }
+    if (state.inbox.some((m) => m.eventId === e.id && m.status === 'open')) return false
+    return conditionsHold(state, e.when) && e.trigger.some((t) => conditionsHold(state, [t]))
+  })
   for (let slot = 0; slot < cfg.maxPerWeek && open < cfg.openLimit; slot++) {
     if (!rng.chance(cfg.drawChance)) continue
     const eligible = eligibleEvents(state, taken)
@@ -354,7 +363,7 @@ function makeMessage(
     eventId: event.id,
     area: event.area,
     week: arrival,
-    expiresWeek: arrival + cfg.openWeeks - 1,
+    expiresWeek: arrival + (event.openWeeks ?? cfg.openWeeks) - 1,
     fromRole: event.sender,
     fromName: from.name,
     targetId: from.targetId,
@@ -365,7 +374,12 @@ function makeMessage(
       hours: c.hours,
       costCents: c.effects.reduce(
         (sum, e) =>
-          sum + (e.type === 'cash' && e.amountCents < 0 && isSure(e) ? -e.amountCents : 0),
+          sum +
+          (e.type === 'cash' && e.amountCents < 0 && isSure(e)
+            ? -e.amountCents
+            : e.type === 'officeMove'
+              ? officeOneOff(state, e.stage)
+              : 0),
         0,
       ),
       possibleCostCents: c.effects.reduce(
@@ -378,7 +392,7 @@ function makeMessage(
           sum +
           (e.type === 'fixedCost'
             ? e.monthlyCents
-            : e.type === 'moveOffice'
+            : e.type === 'moveOffice' || e.type === 'officeMove'
               ? officeRentChange(state, e.stage)
               : 0),
         0,
@@ -394,6 +408,12 @@ function officeRentChange(state: GameState, stageId: string): number {
   const rent = (id: string) =>
     state.scenario.officeStages.find((o) => o.id === id)?.monthlyCents ?? 0
   return Math.max(0, rent(stageId) - rent(state.company.officeStage))
+}
+
+/** What accepting a stage's offer costs at once: its one-off, unless a loan bought it. */
+function officeOneOff(state: GameState, stageId: string): number {
+  if (state.company.office.prepaid.includes(stageId)) return 0
+  return state.scenario.officeStages.find((o) => o.id === stageId)?.oneOffCents ?? 0
 }
 
 /** A message from an event that arrives by trigger rather than by the draw. */

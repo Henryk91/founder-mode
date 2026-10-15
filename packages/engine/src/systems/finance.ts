@@ -351,3 +351,28 @@ export function profitableForMonths(state: GameState, months: number): boolean {
   }
   return true
 }
+
+/**
+ * Plan 3: months in a row, counted back from the latest week in blocks of a month, whose money
+ * received covered that month's company costs, and with `all` the founder's living costs too.
+ */
+export function monthsCovering(state: GameState, all: boolean): number {
+  const weeksPerMonth = state.scenario.finance.weeksPerMonth
+  let n = 0
+  for (let end = state.ledger.length; end >= weeksPerMonth; end -= weeksPerMonth) {
+    const month = state.ledger.slice(end - weeksPerMonth, end)
+    const revenue = month.reduce((t, l) => t + l.revenueCents + (l.voucherRedeemedCents ?? 0), 0)
+    const costs = month.reduce(
+      (t, l) =>
+        t +
+        l.fixedCostsCents +
+        l.freelanceCents +
+        l.bookingCostsCents +
+        (all ? l.livingCostsCents : 0),
+      0,
+    )
+    if (revenue < costs) break
+    n++
+  }
+  return n
+}

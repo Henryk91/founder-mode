@@ -1277,3 +1277,41 @@ export function bookingsView(state: GameState): BookingsView | null {
       ),
   }
 }
+
+/** Plan 3: weeks of the last 8 (peak months only, if asked) in which guests were turned away. */
+export function turnedAwayWeeks(
+  state: Pick<GameState, 'scenario' | 'bookings' | 'week'>,
+  peakOnly = false,
+): number {
+  const b = state.bookings
+  const cfg = state.scenario.bookings
+  if (!b || !cfg) return 0
+  const weeks = new Set(
+    b.turnedAway
+      .filter((t) => t.units > 0 && t.week > state.week - 8 && t.week < state.week)
+      .filter((t) => !peakOnly || cfg.peakMonths.includes(monthOf(state.scenario, t.week)))
+      .map((t) => t.week),
+  )
+  return weeks.size
+}
+
+/** Plan 3: units served against the capacity open over the last 4 weeks, in percent (0 to 100). */
+export function occupancyPct(state: GameState): number {
+  const cfg = bookingsConfig(state)
+  const b = state.bookings
+  if (!cfg || !b) return 0
+  let used = 0
+  let open = 0
+  for (let w = Math.max(1, state.week - 4); w < state.week; w++) {
+    const pools = new Set(
+      Object.keys(cfg.products)
+        .filter((id) => sells(state, id, w))
+        .map((id) => poolOf(cfg, id)),
+    )
+    for (const pool of pools) open += capacityAt(state, pool, w)
+    used += b.bookings
+      .filter((x) => x.week === w && x.status === 'served' && pools.has(poolOf(cfg, x.productId)))
+      .reduce((t, x) => t + x.units, 0)
+  }
+  return open > 0 ? Math.min(100, Math.round((100 * used) / open)) : 0
+}
