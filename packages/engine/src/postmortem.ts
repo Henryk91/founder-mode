@@ -1,3 +1,4 @@
+import { stageNumber } from './systems/office'
 import { bookingTotals, bookingsRevenueOrSubscriptions } from './systems/bookings'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
@@ -6,6 +7,7 @@ import { reachedMilestones } from './systems/milestones'
 import { freelanceEconomics, hiresEconomics, salaryId } from './systems/team'
 import type {
   LoanEconomics,
+  OfficeEconomics,
   GuestsEconomics,
   Activity,
   ChainItem,
@@ -113,11 +115,60 @@ export function buildPostMortem(state: GameState): PostMortem {
       funding: fundingEconomics(state),
       loans: loanEconomics(state),
     },
+    office: officeEconomics(state),
     walkIns: walkInCounts(state),
     sources: sourceCounts(state),
     guests: guestsEconomics(state),
     luck,
   }
+}
+
+/**
+ * Plan 3: each office stage reached by an offer: when, what it cost in total (the one-off, rent
+ * from accepting to leaving or the end, less the deposit back), and what changed while there.
+ */
+export function officeEconomics(state: GameState): OfficeEconomics[] {
+  const weeksPerMonth = state.scenario.finance.weeksPerMonth
+  const revenueAt = (week: number) =>
+    state.ledger
+      .filter((l) => l.week > week - 4 && l.week <= week)
+      .reduce((t, l) => t + l.revenueCents, 0)
+  return state.company.office.stays.map((stay) => {
+    const stage = state.scenario.officeStages.find((o) => o.id === stay.stage)!
+    const until = stay.leftWeek ?? state.week
+    const rentCents = Math.round(
+      ((until - stay.acceptedWeek + 1) * stage.monthlyCents) / weeksPerMonth,
+    )
+    const guests = (state.bookings?.bookings ?? [])
+      .filter(
+        (b) =>
+          b.status === 'served' &&
+          stay.movedWeek !== null &&
+          b.week >= stay.movedWeek &&
+          b.week <= until,
+      )
+      .reduce((t, b) => t + b.units, 0)
+    const loanPaid = (state.loan?.loans ?? []).some((l) => l.stage === stay.stage)
+    return {
+      place: stage.name,
+      stage: stageNumber(state, stage.id),
+      acceptedWeek: stay.acceptedWeek,
+      movedWeek: stay.movedWeek,
+      leftWeek: stay.leftWeek,
+      oneOffCents: stay.oneOffCents,
+      paidByLoan: loanPaid,
+      rentCents,
+      depositBackCents: stay.depositBackCents,
+      totalCents: stay.oneOffCents + rentCents - stay.depositBackCents,
+      revenueBeforeCents: stay.revenueBeforeCents,
+      revenueAfterCents: revenueAt(until),
+      teamBefore: stay.teamBefore,
+      teamAfter: state.team.members.filter(
+        (m) => m.offerWeek <= until && (m.letGoWeek === null || m.letGoWeek > until),
+      ).length,
+      guests: state.bookings ? guests : null,
+    }
+  })
 }
 
 /** Each loan of the run: its cost, the products bought after it arrived, and how it ended. */

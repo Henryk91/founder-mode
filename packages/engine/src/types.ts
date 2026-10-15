@@ -2062,6 +2062,30 @@ export type FundingEconomics = {
 }
 
 /** A loan in the post-mortem: what it cost, what it paid for, and how it ended. */
+/** Plan 3: one office stage in the post-mortem: when, what it cost, what changed. */
+export type OfficeEconomics = {
+  place: string
+  stage: number
+  acceptedWeek: number
+  movedWeek: number | null
+  leftWeek: number | null
+  oneOffCents: number
+  /** The one-off came from a bank loan's plan. */
+  paidByLoan: boolean
+  rentCents: number
+  depositBackCents: number
+  /** One-off plus rent less the deposit back. */
+  totalCents: number
+  /** Money received in the four weeks before accepting, and the last four weeks there. */
+  revenueBeforeCents: number
+  revenueAfterCents: number
+  /** People on the team when accepting, and at the end of the stay. */
+  teamBefore: number
+  teamAfter: number
+  /** Tourism: guests served while there; null elsewhere. */
+  guests: number | null
+}
+
 export type LoanEconomics = {
   amountCents: number
   rateBp: number
@@ -2164,6 +2188,8 @@ export type PostMortem = {
     /** The bank loans of the run (step 6), oldest first; empty without one. */
     loans: LoanEconomics[]
   }
+  /** Plan 3: each office stage reached by an offer, oldest first. */
+  office: OfficeEconomics[]
   /** Leads that walked in at an office, and the customers they became, per office and market. */
   walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]
   /**
