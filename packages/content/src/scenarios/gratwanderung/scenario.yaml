@@ -286,8 +286,8 @@ segments:
     name: School and youth groups
     description: Schools, clubs and youth groups on class trips. Teachers plan months ahead and want to talk to a person
     size: { min: 200, max: 500 }
-    # Per group of about 25 pupils at 15 to 35 per pupil (est., 3.1).
-    wtpCents: { min: 40000, max: 90000 }
+    # Per group of about 25 pupils at 20 to 44 per pupil (est.; plan 2 audit, was 15 to 35).
+    wtpCents: { min: 50000, max: 110000 }
     mustHave: [safety_concept, group_pricing]
     channelResponse:
       cold_email: { min: 0.01, max: 0.03 }
@@ -397,13 +397,12 @@ bookings:
       reviewWeight: 0.3
     school_groups:
       # The spec's 0.3 to 1.2 groups a week left schools unable to carry the company even when
-      # viable. Plan 2 retested 2 to 4, 4 to 8 and 5 to 10; the first two were below the 15%
-      # playability floor and the third widened the viable-segment spread to 25.6 points.
-      # Plan 2 step 4 spread rounds: the realism trials prove a high range is necessary; lifting
-      # only the floor tests whether school-viable runs can come within the 15-point fairness band.
-      base: { min: 9, max: 12 }
+      # viable. Plan 2 retested 2 to 4, 4 to 8 and 5 to 10 at 625 EUR a class and kept 9 to 12.
+      # Plan 2 audit: at 750 EUR a class (30 EUR a pupil for a class of 25, est.) 5 to 8 groups
+      # carry a school-focused company; 4 to 7 widened the spread to 17 points (decisions).
+      base: { min: 5, max: 8 }
       unit: group
-      price: { peak: 62500, off: 62500 }
+      price: { peak: 75000, off: 75000 }
       size: { min: 1, max: 1 }
       leadWeeks: { min: 8, max: 24 }
       # School trips in May to July and September, youth groups in the summer holidays.

@@ -31,9 +31,9 @@ describe('long mode in the content', () => {
     // block does not touch them.
     expect(scenarioHash(loadScenario('kantino'))).toBe('2dda4b4b1831c529')
     expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
-    // The tourism scenarios change in plan 2 steps 1 to 4 (the spec features, the loan, the
-    // inbox, the retune) and are protected again from the end of step 4 (tag `plan2-tourism`).
-    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('729a0e559cfc68e3')
+    // The tourism scenarios change in plan 2 steps 1 to 4 and the plan 2 audit's open-issue
+    // rounds, and in plan 3 steps 1 and 2 (office stages); protected again from `plan3-tuned`.
+    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('88384e54c55270e6')
     expect(scenarioHash(loadScenario('hinterhof'))).toBe('1009af8aa1fa66a4')
     expect(scenarioHash(loadScenario('seeblick'))).toBe('067ac8fab071bf3c')
     expect(loadScenario('kantino').mode).toBeUndefined()
