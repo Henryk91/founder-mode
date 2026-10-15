@@ -169,3 +169,15 @@ Checked figures:
 - Current listings checked again 14 October 2026. An 11-room renovated hotel in Lam is offered for lease but the rent is on request ([ImmobilienScout24](https://www.immobilienscout24.de/expose/171278462)); the comparable lakeside results are sales or development sites rather than leases. No priced, comparable twelve-room lakeside lease was found, so lease and utilities remain labelled estimates.
 
 Changed from this spec while tuning (reasons in `docs/decisions.md`, step 7): lease 4,800 and utilities 1,800 a month; leisure 25 to 75 and project guests 12 to 50 room nights at peak; groups about one whole-house booking a week at peak, booked 8 to 30 weeks ahead, with a 30% deposit; couples use about a third of the rooms outside the summer (weekends); renovation in one block of four rooms; no minimum stay. A run is won when its last 13 months together cover every cost, loan repayments included.
+
+## 15. What changed in plan 2, and why
+
+Reasons in `docs/decisions.md`, plan 2 steps 1 to 4 and the plan 2 audit.
+
+- **Experiments (5):** test rates (some rooms on the platform for two weeks, mostly leisure) and an open house (an afternoon for wedding planners and office managers) replace the landing tests and pre-sales. Gift vouchers sell to leisure guests and are owed until redeemed.
+- **Renovation room by room:** 10,000 EUR a room, each closed for three weeks, at most three at once, instead of one block of four rooms. The bank can finance rooms.
+- **Minimum stay:** two nights on summer weekends (June to September) for leisure guests: fewer bookings, but no empty Sundays.
+- **Staff contracts:** permanent, part time and seasonal contracts for housekeeping and reception.
+- **The bank lends against a plan:** workspace, event room, the wellness area (the temptation) and rooms, plus at most three months of working capital, and says how many months a guesthouse that opens in November should bridge (six). Guests take 0.15 h a room night of the founder's week, up to 15 h.
+- **Demand and terms:** leisure 16 to 48 room nights a week at peak, groups 34 to 60, project guests 15 to 52; a group cancels with 12% (was 8%), so a strict policy can protect the house; from the plan 2 audit, laundry, amenities and breakfast cost 25 EUR a room night (was 30, est.).
+- **Events:** the wedding planner and the wedding fair send couples only once there is an event room, and the plant's office manager sends fitters only once you can invoice them, as their texts say.

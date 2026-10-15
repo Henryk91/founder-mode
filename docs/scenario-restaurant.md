@@ -203,3 +203,15 @@ Checked figures:
 - Current Munich listings checked 14 October 2026: 112 m² near Ostbahnhof at 1,450 EUR cold plus 600 EUR service costs and a 130,000 EUR transfer fee ([ImmobilienScout24](https://www.immobilienscout24.de/expose/166645214)); 110 m² in Schwabing at 3,800 EUR ([ImmobilienScout24](https://www.immobilienscout24.de/expose/171160203)); and 140 m² in Neuhausen at 2,900 EUR plus about 400 EUR service costs, with the new rent still to be negotiated ([ImmobilienScout24](https://www.immobilienscout24.de/expose/171036842)). These are not like-for-like and carry large or undisclosed transfer costs. Keep 4,500 EUR as a conservative all-location estimate rather than pretending the listings establish a market rate.
 
 Changed from this spec while tuning (reasons in `docs/decisions.md`, step 6): staff are a cook and server crew per service plus a minijob helper; office lunch 170 to 380 covers a week at peak at 13 to 20 EUR; evening locals 35 to 140 covers; open services carry a standing monthly cost; the bank lends up to 120,000 EUR before any guest has paid. No investors in this scenario. A run is won when its last 13 months together cover every cost, loan repayments included.
+
+## D. What changed in plan 2, and why
+
+Reasons in `docs/decisions.md`, plan 2 steps 1 to 4 and the plan 2 audit.
+
+- **Experiments (B.5b):** a pop-up dinner (24 guests, mostly neighbours, paid, a first review) and a lunch test (40 lunch boxes, office lunch only), both before opening, replace the landing tests and pre-sales the first build reused. Opening vouchers sell to evening locals and are owed until redeemed.
+- **Kitchen and floor apart, food prepared per service (B.7):** cooks set how many covers a service can serve; servers set how well. A short floor still serves up to a quarter more covers, at a review cost. Prepared and unsold food is thrown away at its food cost. Servers are priced as minijobs, the founder can work the floor, and a served plate's food cost sits at the low end of the range, since waste is now counted separately (the first version fell from 24% to 1% wins once the founder stopped being a free cook and server in one).
+- **Staff contracts:** permanent, part time and seasonal contracts for cooks and servers, cheaper per service than the agency and better for reviews, paid whether busy or not.
+- **The bank lends against a plan:** fit-out, wine list, courtyard, own fit-out and the delivery kit, plus at most three months of working capital. The delivery kit is the temptation no segment needs: 25,000 EUR (est.) and, from the plan 2 audit, 1,500 EUR a month for the tablet, packaging and a minijob packer (est.).
+- **Guests take the founder's time:** 0.04 h a cover served last week, up to 15 h.
+- **Demand:** evening locals 45 to 170 covers a week at peak (was 35 to 140; spec 40 to 160) and tourists 40 to 200 (est.), so dinner can carry the restaurant in its own runs.
+- **Open issue:** a player who never tests and builds everything still wins about one run in six (target 2 wants under 5%), because one dining room serves every segment. See `docs/autonomous2/STATUS.md`.
