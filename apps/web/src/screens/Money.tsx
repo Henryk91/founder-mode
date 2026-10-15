@@ -1,5 +1,6 @@
 import { BankStatement, ComingUp, WorryNote } from '../components/Statement'
 import { Stepper } from '../components/Stepper'
+import { OfficeCard } from '../components/OfficePlan'
 import { formatEuro } from '../format'
 import { count, label, voiceOf } from '../labels'
 import { useGame } from '../useGame'
@@ -48,6 +49,7 @@ export function Money() {
       <BankStatement view={view} />
       <WorryNote view={view} />
       <ComingUp view={view} />
+      <OfficeCard />
       <section className={styles.card}>
         <h2 className={styles.title}>{label('money.title', stage)}</h2>
         {stat('money.savings', founder.savingsCents)}
