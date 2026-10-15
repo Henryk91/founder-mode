@@ -23,7 +23,7 @@ import {
   contractsValid,
 } from './contracts'
 import { energyFactor } from './founder'
-import { currentStage, moveOffice } from './office'
+import { moveOffice } from './office'
 import { priceCurve } from './market'
 import { openVouchers, trialOpen, trialsUsed, trialsValid, voucherBatchesUsed } from './trials'
 
@@ -153,17 +153,31 @@ export const cloneBookingsPlan = (p: BookingsPlan): BookingsPlan => ({
 
 /**
  * Plan 3: the office stage whose tourism effects apply this week. A stage that needs someone
- * stationed there (`needsContract`) has its effects only while such a contract works; else null.
+ * stationed there (`needsContract`) closes in a week without such a contract: the stage before it
+ * applies instead.
  */
 export function stageInEffect(
   state: Pick<GameState, 'scenario' | 'company' | 'bookings' | 'week'>,
-): OfficeStage | null {
-  const stage = currentStage(state)
-  if (!stage.needsContract) return stage
-  const staffed = (state.bookings?.contracts ?? []).some(
-    (c) => c.roleId === stage.needsContract && contractWorks(state, c, state.week),
+): OfficeStage {
+  const stages = state.scenario.officeStages
+  let i = Math.max(
+    0,
+    stages.findIndex((o) => o.id === state.company.officeStage),
   )
-  return staffed ? stage : null
+  while (i > 0) {
+    const stage = stages[i]!
+    const role = stage.needsContract
+    if (
+      !role ||
+      (state.bookings?.contracts ?? []).some(
+        (c) => c.roleId === role && contractWorks(state, c, state.week),
+      )
+    ) {
+      return stage
+    }
+    i--
+  }
+  return stages[0]!
 }
 
 /**
@@ -179,7 +193,7 @@ export function hostingHours(
   const units = state.bookings.bookings
     .filter((x) => x.week === state.week - 1 && x.status === 'served')
     .reduce((t, x) => t + x.units, 0)
-  const less = stageInEffect(state)?.hostingHoursLess ?? 0
+  const less = stageInEffect(state).hostingHoursLess ?? 0
   return Math.max(0, Math.min(h.maxHours, Math.round(units * h.hoursPerUnit)) - less)
 }
 
@@ -221,7 +235,7 @@ export function capacityAt(state: GameState, pool: FeatureId, week: number): num
   const cfg = bookingsConfig(state)!
   const r = cfg.renovation
   // Plan 3: an office stage adds seats, rooms or gear.
-  const base = (cfg.products[pool]?.capacity ?? 0) + (stageInEffect(state)?.capacity?.[pool] ?? 0)
+  const base = (cfg.products[pool]?.capacity ?? 0) + (stageInEffect(state).capacity?.[pool] ?? 0)
   if (!r || r.product !== pool) return base
   return Math.max(0, base - r.unitsPerRoom * roomsUnderWorks(state, week))
 }
@@ -523,7 +537,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       reviewFactor(state, seg.id) *
       weatherF *
       roleFactor(seg.id) *
-      (stageInEffect(state)?.segmentFactors?.[seg.id] ?? 1)
+      (stageInEffect(state).segmentFactors?.[seg.id] ?? 1)
     const meanSize = (s.size.min + s.size.max) / 2
     // Guests sent by an inbox answer ask like anyone else, in groups of the usual size.
     const sent = b.eventGuests?.[seg.id] ?? 0
@@ -651,7 +665,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const alternativeShipped = (id: FeatureId) => {
     const alt = cfg.products[id]?.alternative
     // Plan 3: a stage with changing rooms is the bad weather plan itself.
-    if (stageInEffect(state)?.weatherPlanFor?.includes(id)) return true
+    if (stageInEffect(state).weatherPlanFor?.includes(id)) return true
     return alt !== undefined && isShipped(state, alt)
   }
   let cancelledUnits = 0
@@ -704,7 +718,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const floorUnits = new Map<FeatureId, number>()
   const why = new Map<FeatureId, 'staff' | 'sold_out' | 'works'>()
   // Plan 3: a bigger kitchen sends out more per shift.
-  const staffFactor = (role: string) => stageInEffect(state)?.staffFactors?.[role] ?? 1
+  const staffFactor = (role: string) => stageInEffect(state).staffFactors?.[role] ?? 1
   for (const [id, units] of [...booked.entries()].sort((a, z) => z[1] - a[1])) {
     let covered = 0
     for (const [role, r] of Object.entries(cfg.roles)) {
@@ -777,7 +791,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   // Food prepared and not served is lost (plan 2 step 1c): its food cost is paid all the same.
   // Plan 3: a stage with a cold room keeps some of it.
-  const wasteFactor = stageInEffect(state)?.wasteFactor ?? 1
+  const wasteFactor = stageInEffect(state).wasteFactor ?? 1
   let wasteUnits = 0
   let wasteCents = 0
   for (const [id, prod] of Object.entries(cfg.products)) {

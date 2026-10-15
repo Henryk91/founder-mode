@@ -341,6 +341,50 @@ officeStages:
     qualityBonus: 0.3
     energyPerWeek: 1
     walkIns: { segment: leisure, leadsPerWeek: 0.3 }
+  # Plan 3 (docs/office-stages.md): offered by the inbox (office.yaml). Each stage lists all its
+  # effects, the earlier stages' included. Costs are estimates.
+  - id: annex
+    name: An annex with four more rooms
+    # The annex's share of the lease and heating (est.).
+    monthlyCents: 90000
+    oneOffCents: 12000000
+    # Twelve weeks of building; the old rooms stay open meanwhile.
+    moveWeeks: 12
+    qualityBonus: 0.3
+    energyPerWeek: 1
+    walkIns: { segment: leisure, leadsPerWeek: 0.3 }
+    capacity: { rooms: 28 }
+  - id: pavilion
+    name: A garden pavilion and a proper reception
+    monthlyCents: 90000
+    oneOffCents: 4000000
+    moveWeeks: 6
+    qualityBonus: 0.3
+    energyPerWeek: 1
+    walkIns: { segment: leisure, leadsPerWeek: 0.3 }
+    capacity: { rooms: 28 }
+    # Weddings and groups book more readily; the reception takes 5 h a week off the founder.
+    segmentFactors: { groups: 1.2 }
+    hostingHoursLess: 5
+    established: true
+  - id: second_house
+    name: A second house in the village
+    # The annex plus 4,000 a month for the second house (est.).
+    monthlyCents: 490000
+    oneOffCents: 3000000
+    depositCents: 1200000
+    moveWeeks: 4
+    qualityBonus: 0.3
+    energyPerWeek: 1
+    walkIns: { segment: leisure, leadsPerWeek: 0.3 }
+    # Eight more rooms, without a lake view; they need their own housekeeping shifts.
+    capacity: { rooms: 84 }
+    segmentFactors: { groups: 1.2 }
+    hostingHoursLess: 5
+    established: true
+
+# Plan 3: moving and giving notice.
+office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
 

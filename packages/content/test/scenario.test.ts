@@ -57,6 +57,14 @@ describe('the scenario catalogue (step 8)', () => {
   })
 })
 
+/** Plan 3: the amounts an office offer may name: its one-off, then its rent and what it adds. */
+function officeAmounts(s: Scenario, stageId: string): number[] {
+  const i = s.officeStages.findIndex((o) => o.id === stageId)
+  const stage = s.officeStages[i]!
+  const before = s.officeStages[i - 1]?.monthlyCents ?? 0
+  return [stage.oneOffCents ?? 0, stage.monthlyCents, stage.monthlyCents - before]
+}
+
 describe('content', () => {
   it.each(SCENARIO_IDS)('%s passes its schema', (id) => {
     expect(() => loadScenario(id)).not.toThrow()
@@ -345,13 +353,36 @@ describe('content', () => {
                   ? [eur(fx.monthlyCents)]
                   : fx.type === 'moveOffice'
                     ? [eur(s.officeStages.find((o) => o.id === fx.stage)!.monthlyCents)]
-                    : [],
+                    : fx.type === 'officeMove'
+                      ? officeAmounts(s, fx.stage).map(eur)
+                      : [],
             ),
           ),
         )
         for (const m of e.text.matchAll(/[\d,.]+ EUR/g)) {
           expect([e.id, amounts.has(m[0])]).toEqual([e.id, true])
         }
+      }
+    })
+
+    it('names the one-off, the rent and the condition in every office offer (plan 3, O4)', () => {
+      const eur = (cents: number) => `${(cents / 100).toLocaleString('en-GB')} EUR`
+      // Office offers are long mode content: Kantino's 60 week game has none.
+      const ls = scenarioModes(id).includes('long') ? loadScenario(id, 'long') : s
+      const offers = ls.events.filter((e) =>
+        e.choices.some((c) => c.effects.some((fx) => fx.type === 'officeMove')),
+      )
+      expect(offers).toHaveLength(ls.mode === 'long' ? 3 : 0)
+      for (const e of offers) {
+        const fx = e.choices.flatMap((c) => c.effects).find((x) => x.type === 'officeMove')!
+        if (fx.type !== 'officeMove') continue
+        const [oneOff, ...rents] = officeAmounts(ls, fx.stage)
+        expect([e.id, e.text.includes(eur(oneOff!))]).toEqual([e.id, true])
+        // The rent: what it costs a month, or what it adds, or that it adds nothing.
+        const rent = rents.some((r) => e.text.includes(eur(r))) || /no more rent/.test(e.text)
+        expect([e.id, rent]).toEqual([e.id, true])
+        expect(e.trigger.length).toBeGreaterThan(0)
+        expect(e.cooldownWeeks).toBe(12)
       }
     })
 
