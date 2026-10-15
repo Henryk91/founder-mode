@@ -166,6 +166,6 @@ Checked figures:
 - Booking platforms: about 11 to 15% commission in Germany, depending on place (2025 reports quoting the largest platform's European management; secondary FAQ sites). Content: 15%.
 - Bathroom renovation: 3,600 to 10,500 EUR for 3 square metres (aroundhome.de, immoportal.com); a room with paint, floors and furniture about 10,000 (estimate).
 - Minimum wage 13.90 EUR from January 2026; housekeeping and reception shifts priced with employer costs (estimates).
-- Not found: leases for a twelve room lakeside guesthouse, utilities (kept as estimates).
+- Current listings checked again 14 October 2026. An 11-room renovated hotel in Lam is offered for lease but the rent is on request ([ImmobilienScout24](https://www.immobilienscout24.de/expose/171278462)); the comparable lakeside results are sales or development sites rather than leases. No priced, comparable twelve-room lakeside lease was found, so lease and utilities remain labelled estimates.
 
 Changed from this spec while tuning (reasons in `docs/decisions.md`, step 7): lease 4,800 and utilities 1,800 a month; leisure 25 to 75 and project guests 12 to 50 room nights at peak; groups about one whole-house booking a week at peak, booked 8 to 30 weeks ahead, with a 30% deposit; couples use about a third of the rooms outside the summer (weekends); renovation in one block of four rooms; no minimum stay. A run is won when its last 13 months together cover every cost, loan repayments included.

@@ -279,6 +279,9 @@ function PlanForm({
           max: formatEuro(plan.workingCapitalMaxCents),
         })}
       </Writing>
+      {l.bridgeMonthsHint !== null && (
+        <Writing>{label('loan.bridgeHint', stage, { months: l.bridgeMonthsHint })}</Writing>
+      )}
       {plan.items.map((x) => {
         const on = items.includes(x.id)
         return (

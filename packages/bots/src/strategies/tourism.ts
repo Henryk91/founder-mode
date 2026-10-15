@@ -101,11 +101,6 @@ const BUG_LIMIT = 2
 const THIN_MARGIN_SHARE = 0.5
 /** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
 const LOAN_BUFFER_MONTHS = 4
-/**
- * What a careful founder of this business knows about its first months (step 7): a guesthouse
- * that opens in November borrows to reach the summer.
- */
-const BRIDGE_MONTHS: Record<string, number> = { seeblick: 6 }
 const RESERVE_MONTHS = 1
 /** Rooms a refreshed guesthouse has renovated, as the scenario's stage says (plan 2 step 2). */
 const REFRESH_ROOMS = 8
@@ -239,11 +234,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const oneOff = unshipped.reduce((t, id) => t + (cfg.products[id]?.oneOffCents ?? 0), 0) + rooms
     // Guests who book months ahead (weddings) need a longer bridge: their lead time in months.
     const lead = target && !rule.naive ? (cfg.segments[target]?.leadWeeks.max ?? 0) : 0
-    const bufferMonths = Math.max(
-      LOAN_BUFFER_MONTHS,
-      Math.ceil(lead / 4),
-      rule.naive ? 0 : (BRIDGE_MONTHS[scenario.id] ?? 0),
-    )
+    const bufferMonths = Math.max(LOAN_BUFFER_MONTHS, Math.ceil(lead / 4), l.bridgeMonthsHint ?? 0)
     const need = oneOff + bufferMonths * monthly - cash
     const refit =
       rule.refitLoan &&
@@ -284,7 +275,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         ? plan.items.filter((x) => cfg.products[x.id]?.stage === refitOffer!.stage)
         : greedy
           ? // Everything the bank lists, temptations included; a refit is a choice of its own (L1).
-            plan.items.filter((x) => !cfg.products[x.id]?.stage)
+            plan.items
+              .filter((x) => !cfg.products[x.id]?.stage)
+              // If the own-money cap forces something out, a deliberately reckless plan keeps
+              // the products nobody needs. Removing the temptation first made the max-loan and
+              // no-tests bots quietly prudent (plan 2 targets T2 and L2).
+              .sort((a, z) => Number(isTemptation(z.id)) - Number(isTemptation(a.id)))
           : plan.items.filter((x) => unshipped.includes(x.id))
       const renovated =
         (view.bookings?.renovation?.renovated ?? 0) +
@@ -360,6 +356,18 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     refusedAt = amount
     p.apply = { amountCents: amount, termMonths: term, graceMonths: grace }
     b.plan.loan = p
+  }
+
+  /** A loan-plan item no segment needs, directly or as a dependency, and which is not a refit. */
+  function isTemptation(id: string): boolean {
+    const required = new Set(scenario.segments.flatMap((s) => s.mustHave))
+    for (const feature of scenario.features) {
+      if (required.has(feature.id)) {
+        const dependency = cfg.products[feature.id]?.requires
+        if (dependency) required.add(dependency)
+      }
+    }
+    return !required.has(id) && !cfg.products[id]?.stage
   }
 
   /** Products and what they require, the required first (a restaurant's fit-out). */
@@ -455,11 +463,19 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       const permanent = option('permanent')
       const partTime = option('part_time')
       const affordable = (cents: number) => money >= 3 * monthly + 13 * cents
+      // Compare a contract with the weekly shifts it replaces. Requiring every contracted shift
+      // to have been used made even a clearly cheaper part time contract impossible for the bot:
+      // the founder covers the first shifts, and demand seldom lands on the contract's exact size.
+      const breakEvenShifts = (c: NonNullable<typeof seasonal>) =>
+        Math.min(c.shifts, c.centsPerWeek / r.centsPerShift)
       if (seasonal && seasonal.months!.includes(bv.month) && seasonal.running < seasonal.max) {
         const seasonalShifts = bv.contracts
           .filter((c) => c.roleId === r.id && c.kind === 'seasonal' && c.working)
           .reduce((t, c) => t + c.shifts, 0)
-        if (recentAvg - seasonalShifts >= seasonal.shifts && affordable(seasonal.centsPerWeek)) {
+        if (
+          recentAvg - seasonalShifts >= breakEvenShifts(seasonal) &&
+          affordable(seasonal.centsPerWeek)
+        ) {
           hire.push({ roleId: r.id, kind: 'seasonal' })
           continue
         }
@@ -467,13 +483,19 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       const inSeason = seasonal?.months?.includes(bv.month) ?? false
       if (!inSeason || mode !== 'careful') {
         if (permanent && permanent.running < permanent.max) {
-          if (steady - contracted >= permanent.shifts && affordable(permanent.centsPerWeek)) {
+          if (
+            steady - contracted >= breakEvenShifts(permanent) &&
+            affordable(permanent.centsPerWeek)
+          ) {
             hire.push({ roleId: r.id, kind: 'permanent' })
             continue
           }
         }
         if (partTime && partTime.running < partTime.max) {
-          if (steady - contracted >= partTime.shifts && affordable(partTime.centsPerWeek)) {
+          if (
+            steady - contracted >= breakEvenShifts(partTime) &&
+            affordable(partTime.centsPerWeek)
+          ) {
             hire.push({ roleId: r.id, kind: 'part_time' })
             continue
           }
@@ -717,7 +739,23 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       }
       for (const side of sides) {
         let covered = 0
-        // The founder's own shifts first: they cost hours, not money.
+        // Contract shifts are paid whether used or not, so use them before spending founder
+        // hours. The old order left signed staff idle while the founder worked their shifts and
+        // made every fixed contract look worse than buying shifts by the week.
+        const byCost = [...bv.roles]
+          .filter((r) => (r.units[productId] ?? 0) > 0 && onSide(r.kind, side))
+          .sort(
+            (x, y) => x.centsPerShift / x.units[productId]! - y.centsPerShift / y.units[productId]!,
+          )
+        for (const r of byCost) {
+          const per = r.units[productId] ?? 0
+          while (covered < need && (contractLeft[r.id] ?? 0) > 0) {
+            contractLeft[r.id]!--
+            used[r.id] = (used[r.id] ?? 0) + 1
+            covered += per
+          }
+        }
+        // The founder's own shifts next: they cost hours, not money.
         for (const r of bv.roles) {
           const per = r.units[productId] ?? 0
           const own = Object.values(plan.founderShifts).reduce((t, n) => t + n, 0)
@@ -734,20 +772,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
             taken++
           }
         }
-        // Then contract shifts, then paid shifts, the cheapest per guest first.
-        const byCost = [...bv.roles]
-          .filter((r) => (r.units[productId] ?? 0) > 0 && onSide(r.kind, side))
-          .sort(
-            (x, y) => x.centsPerShift / x.units[productId]! - y.centsPerShift / y.units[productId]!,
-          )
-        for (const r of byCost) {
-          const per = r.units[productId] ?? 0
-          while (covered < need && (contractLeft[r.id] ?? 0) > 0) {
-            contractLeft[r.id]!--
-            used[r.id] = (used[r.id] ?? 0) + 1
-            covered += per
-          }
-        }
+        // Finally buy flexible shifts, cheapest per guest first.
         for (const r of byCost) {
           const per = r.units[productId] ?? 0
           while (covered < need && (pool[r.id] ?? 0) > 0) {
@@ -823,8 +848,9 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       const building = view.loan ? withRequired([...new Set([...toBuild, ...bought])]) : toBuild
       if (view.loan) {
         // Keep the bridge a long-lead market needs (the months beyond the usual buffer) as well.
-        const lead = rule.naive ? 0 : (cfg.segments[seg]?.leadWeeks.max ?? 0)
-        const bridge = Math.max(0, Math.ceil(lead / 4) - LOAN_BUFFER_MONTHS)
+        const leadMonths = rule.naive ? 0 : Math.ceil((cfg.segments[seg]?.leadWeeks.max ?? 0) / 4)
+        const visibleBridge = view.loan?.bridgeMonthsHint ?? 0
+        const bridge = Math.max(0, Math.max(leadMonths, visibleBridge) - LOAN_BUFFER_MONTHS)
         const reserve = (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
         const shipped = (id: string) => !!view.product.features.find((x) => x.id === id)?.shipped
         planLoan(view, b, building)

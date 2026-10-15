@@ -1,16 +1,16 @@
 # Autonomous run 2 status
 
 ## Current
-Step: 4, retune the three tourism scenarios (targets T13 and T14 added).
-Last commit: Step 3 done (tag plan2-inbox); step 4 target commit pending.
-Next action: measure T13 and T14 on small samples, check that the contract variants actually sign their named contracts, then tune Hinterhof (T1 17.3%, T2 no-tests 6.8%, T3 22.9, L3), Seeblick (T3 23.8, T6, T11), and Gratwanderung (T3 17.2, T11, school demand nearer the spec). Continue on main; the plan2-work worktree is clean and behind main's completed step 3.
+Step: 5, Kantino long mode, funding and target 20.
+Last commit: Step 4 tourism checkpoint (this commit; tag `plan2-tourism`); Step 4 gates passed.
+Next action: read the current Kantino long reports and tune targets 31, 32, 33, 36 and 20 without changing the protected 60 week scenarios. Continue on main; the stale plan2-work worktree remains behind main.
 
 ## Checklist
 - [x] Step 0: take stock (tag plan2-baseline)
 - [x] Step 1: spec features (tag plan2-features)
 - [x] Step 2: bank loan (tag plan2-loan)
 - [x] Step 3: tourism inbox (tag plan2-inbox)
-- [ ] Step 4: retune tourism (tag plan2-tourism)
+- [x] Step 4: retune tourism (tag plan2-tourism)
 - [ ] Step 5: Kantino long, funding and target 20 (tag plan2-kantino-long)
 - [ ] Step 6: wrap up (tag plan2-complete)
 
@@ -21,12 +21,10 @@ Next action: measure T13 and T14 on small samples, check that the contract varia
 - Item 11: an invoiced platform booking is invoiced net; a firm that never pays costs only the net.
 
 ## Open issues
-- L3 Hinterhof (step 2): reckless ends owing the bank +11.3 ±3.4 points more often than careful (needs 15); careful already fails owing in 76% of runs (T1 19.5%). Revisit with step 4's retune.
-- Hinterhof T2: the no-tests bot wins 11.9% since step 2 (limit 5%); step 4.
-- Hinterhof T1 19.5% and T3 spread 26.7 (evening locals 7.5%) since the kitchen and floor split (step 1); step 4.
-- T6 Seeblick (step 3, budget used): reading +9.4, blind effort +6.5 on 2,000 seeds. Options: a Seeblick pass over effortful answers with unconditional positive effects; fewer mild unconditional benefits.
-- L2, L3 bank loan, Hinterhof and Seeblick (step 2).
-- Seeblick T3 spread 22.4, T7 pricing -1.1, T11 policy strict +4.3 (step 4).
+- T14 all tourism scenarios: no contract kind clears its paired margin consistently. Three formula rounds were tried and reverted; fresh step 6 budget.
+- Hinterhof T2: no-tests wins 20.6% (limit 5%); T3 spread is 15.9 points (limit 15). Value budget used; fresh step 6 budget.
+- Seeblick T6: reading +9.5, blind effort +6.8. Value and inbox budgets used; fresh step 6 budget.
+- Gratwanderung school demand remains 9 to 12 groups at peak against the spec's 0.3 to 1.2; every closer tested range was unplayable or less fair.
 - Kantino long 31, 32, 33, 36, 20; 27 at the limit (step 5).
 
 ## For Henry to review (non-blocking)

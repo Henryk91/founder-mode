@@ -168,6 +168,8 @@ export type RunResult = {
     turnedAway: number
     companyCancelled: number
     firstViableWeek: number | null
+    /** Staff contracts signed over the run, by kind (plan 2 target T14). */
+    contracts: { permanent: number; seasonal: number; partTime: number }
   } | null
   /**
    * The bank loan (step 6): what was borrowed over the run, interest and fees paid, how many
@@ -592,5 +594,10 @@ function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
       .filter((x) => x.status === 'company_cancelled')
       .reduce((t, x) => t + x.units, 0),
     firstViableWeek: Number.isFinite(first) ? first : null,
+    contracts: {
+      permanent: (b.contracts ?? []).filter((x) => x.kind === 'permanent').length,
+      seasonal: (b.contracts ?? []).filter((x) => x.kind === 'seasonal').length,
+      partTime: (b.contracts ?? []).filter((x) => x.kind === 'part_time').length,
+    },
   }
 }

@@ -21,7 +21,8 @@ start:
     interviewing: 0.1
     selling: 0.1
   fixedCosts:
-    # About 120 square metres in a residential street (est., no current source found).
+    # About 120 square metres in a residential street (est.; current listings vary widely and
+    # carry transfer costs, so they do not establish a comparable market rate; sources in spec).
     - id: rent
       name: Rent
       monthlyCents: 450000
@@ -423,8 +424,10 @@ bookings:
       invoiced: false
       reviewWeight: 0.4
     evening_locals:
-      # Spec 40 to 160; a little lower so dinner does not carry every run (decisions, step 6).
-      base: { min: 35, max: 140 }
+      # Plan 2 step 4, round 1: inside a wider version of the spec's 40 to 160 range. Dinner was
+      # viable in only 7% of report seeds while lunch reached 30%; the restaurant as a whole won
+      # 17%, so lowering lunch would only make the scenario unplayable.
+      base: { min: 45, max: 170 }
       unit: cover
       price: { peak: 3800, off: 3800 }
       size: { min: 2, max: 6 }
@@ -439,7 +442,9 @@ bookings:
       invoiced: false
       reviewWeight: 0.6
     tourists:
-      base: { min: 30, max: 180 }
+      # Plan 2 step 4, round 1: visitors also sat below lunch without helping the no-tests bot,
+      # which builds for the first segment. A modestly broader reachable range (est.).
+      base: { min: 40, max: 200 }
       unit: cover
       price: { peak: 3000, off: 2800 }
       size: { min: 2, max: 4 }
@@ -530,7 +535,9 @@ bookings:
       requires: fit_out
       # Plan 2 step 2: a second fryer, a packing station and insulated bags (est.), the thing a
       # loan plan can be talked into.
-      oneOffCents: 900000
+      # Plan 2 step 4, round 2 retried after fixing the greedy loan plan: two fryers, extraction
+      # changes, a packing station and insulated storage (25,000 EUR, estimate).
+      oneOffCents: 2500000
       # The platform's tablet and a stock of packaging (est.).
       monthlyCents: 40000
       unitCostCents: 150

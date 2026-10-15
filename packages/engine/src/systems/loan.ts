@@ -436,6 +436,7 @@ export function loanView(state: GameState): LoanView | null {
   const reno = state.scenario.bookings?.renovation
   return {
     bankName: cfg.bankName,
+    bridgeMonthsHint: cfg.bridgeMonthsHint ?? null,
     plan: lendsAgainstPlan(cfg)
       ? {
           items: (cfg.items ?? [])

@@ -469,6 +469,8 @@ export const LoanConfigSchema = z.object({
   items: z.array(Id).optional(),
   financeRooms: z.boolean().optional(),
   workingCapitalMonths: z.number().positive().optional(),
+  // Honest bank advice shown in the plan: months to bridge before the first useful season.
+  bridgeMonthsHint: z.number().int().positive().optional(),
 })
 export type LoanConfig = z.infer<typeof LoanConfigSchema>
 

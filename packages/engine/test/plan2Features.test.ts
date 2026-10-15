@@ -320,6 +320,8 @@ describe('the bank lends against a plan (plan 2 step 2)', () => {
     ).state
     const v = getView(s).loan!
     expect(v.plan!.workingCapitalMonths).toBe(3)
+    expect(v.bridgeMonthsHint).toBeNull()
+    expect(getView(createGame(quiet('seeblick'), 'bridge-hint')).loan!.bridgeMonthsHint).toBe(6)
     const max = v.plan!.workingCapitalMaxCents
     const wc = Math.floor(max / 500_000) * 500_000
     const fit = v.plan!.items.find((x) => x.id === 'fit_out')!
