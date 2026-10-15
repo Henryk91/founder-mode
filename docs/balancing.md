@@ -16,7 +16,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 2 | validate_then_build reaches it in 25 to 45% of runs | 27.9% | ±2.8 | yes | 0.7% | no | 9.2% | no |
 | 3 | No strategy exceeds 60% | price_aware 37.2% | ±3.0 | yes | | | | |
 | 4 | Median run length of losing runs (all strategies) is between week 20 and week 40 | week 29.0 | ±0.0 | yes | | | | |
-| 5 | 1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run) | 29.2 s per 1000 runs |  | yes | | | | |
+| 5 | 1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run) | 31.5 s per 1000 runs |  | yes | | | | |
 | 6 | validate_then_build win rates across the three viable markets lie within 15 points (on 10000 seeds) | 1.4 points | ±2.2 | yes | 1.2 points | yes | 8.9 points | yes |
 | 7 | validate_then_build gets its first paying customer between week 4 and 10 in the median winning run | week 6.0 (mean 5.84) | ±0.5 (mean ±0.15) | yes | week 5.0 (mean 5.43) | yes | week 6.0 (mean 6.34) | yes |
 | 8 | By week 10, at least 70% of validate_then_build runs have a paying customer or have left a market that is not viable | 96.0% | ±1.2 | yes | 96.0% | yes | 96.0% | yes |
@@ -451,16 +451,16 @@ Runs where answering made the run last longer: 272, shorter: 575, same length: 1
 
 ## Strategies
 
-- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (9.4 s for 1000 runs)
-- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (4.2 s for 1000 runs)
-- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (5.0 s for 1000 runs)
-- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (29.2 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (24.0 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (17.0 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (22.1 s for 1000 runs)
-- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (27.3 s for 1000 runs)
-- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.6 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.5 s for 1000 runs)
+- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (11.2 s for 1000 runs)
+- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (4.8 s for 1000 runs)
+- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (6.1 s for 1000 runs)
+- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (31.5 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (25.7 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (17.6 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (22.3 s for 1000 runs)
+- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (28.4 s for 1000 runs)
+- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.4 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.8 s for 1000 runs)
 
 # Kantino, long mode
 
@@ -472,8 +472,8 @@ Targets 20 to 30 (`docs/phase9-proposal.md` 2.9 and Part C2), judged on `validat
 
 | # | Target | Value | Margin | Met |
 |---|---|---|---|---|
-| 20 | Freelancer or hire is each the right call in its own situation: for a burst (the build, from week 3 until it ships), a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady work (selling from the week the business can carry a part time salesperson by the careful rule, to the end), a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. Both on top of the solo careful bot, on the same seeds (on 10000 seeds) | burst: freelancer ahead by +0.0; steady: hire ahead by -2.4 | ±1.0, ±0.9 | no |
-| 21 | build_only reaches Sustainable business in under 5% of runs; no strategy exceeds 60% | build_only 0.0%; top raise_late 47.2% | ±0.0; ±3.1 | yes |
+| 20 | Renting loses less than hiring for a burst of work, and hiring loses less than renting for steady work: for the build burst (from week 3 until it ships), a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady selling (from the week the business can carry a part time salesperson by the careful rule, to the end), a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. Same seeds (on 10000 seeds) | burst: freelancer ahead by +0.0; steady: hire ahead by -2.4 | ±1.0, ±0.9 | no |
+| 21 | build_only reaches Sustainable business in under 5% of runs; no strategy exceeds 60% | build_only 0.0%; top validate_then_build 44.7% | ±0.0; ±3.1 | yes |
 | 22 | validate_then_build reaches it in 25 to 45% of runs | 44.7% | ±3.1 | yes |
 | 23 | Median run length of losing runs (all strategies) is between week 30 and week 70 | week 33.0 | ±0.5 | yes |
 | 24 | validate_then_build win rates across the three viable markets lie within 15 points (on 10000 seeds) | 5.5 points | ±2.4 | yes |
@@ -482,14 +482,14 @@ Targets 20 to 30 (`docs/phase9-proposal.md` 2.9 and Part C2), judged on `validat
 | 27 | Target 11 holds (blind inbox policies gain at most a third of reading's gain, reading beats each by 4 points), no event arrives twice unless it recurs on purpose, and under 1% of validate_then_build runs have a week when the inbox ran dry (on 10000 seeds) | effort +7.1 (37% of reading), cheapest -1.2, reading +19.3; 0 repeats; dry in 0.2% of runs | ±1.0, ±0.9, ±1.0 over the best blind; ±0.1 | no |
 | 28 | Year 2 matters: of validate_then_build runs profitable in each of the two months to week 60, at most 85% end Sustainable; of runs alive but not profitable at week 60, at least 15% end Sustainable (on 10000 seeds) | 74.9% of 2871; 55.3% of 3872 | ±1.6; ±1.6 | yes |
 | 29 | Hiring pays only when the business can carry it: validate_then_build's hiring is not worse than validate_then_build_solo overall (within its margin); validate_then_build_savings_hire (first hire in week 3, paid from savings) loses to solo by more than its margin; and in at least one situation hiring beats its solo counterpart by at least 2 points: (a) pricing from the hints (validate_then_build against validate_then_build_solo) or (b) opening a second market once the first runs dry (validate_then_build_expand against validate_then_build_expand_solo) (on 10000 seeds) | overall (a) +2.6; on savings -29.9; (b) +2.4 | ±0.6; ±1.1; ±0.6 | yes |
-| 30 | 1000 long runs complete in under 120 seconds (slowest strategy, timed while the other bot processes run) | 64.3 s per 1000 runs |  | yes |
-| 31 | Both paths are viable: the careful bot that never raises (bootstrap, validate_then_build) and raise_on_traction each win (Sustainable or Growing) 25 to 45%, within 8 points of each other | bootstrap 42.9%, raise_on_traction 47.0% | ±1.0, ±1.0 | no |
-| 32 | Neither dominates: bootstrap wins at least as often as raise_on_traction (within its margin), and raise_on_traction's median founder share value in winning runs is at least 1.3 times bootstrap's (share x company value by the visible rule) | raise_on_traction +4.0; value 1,050,105 EUR against 725,808 EUR | ±0.9 | no |
-| 33 | Raising on weak traction is punished: raise_early wins at least 8 points less than raise_on_traction and less than bootstrap, and the post-mortem names the round as a cause (bankrupt while or after raising, or investors met before a paying customer who passed as too early) in at least half of its losing runs | -6.8 against raise_on_traction, -2.8 against bootstrap; round named in 100.0% of losses | ±1.1, ±1.1 | no |
-| 34 | Raising when you do not need to costs you: on the seeds bootstrap wins, raise_always ends with a lower median founder share value than bootstrap and wins no more often | value 680,215 EUR against 725,808 EUR (in its wins 938,775 EUR against 725,808 EUR); wins -31.9 | ±1.4 | yes |
+| 30 | 1000 long runs complete in under 120 seconds (slowest strategy, timed while the other bot processes run) | 67.2 s per 1000 runs |  | yes |
+| 31 | Both paths are viable: the careful bot that never raises (bootstrap, validate_then_build) and raise_on_traction each win (Sustainable or Growing) 25 to 45%, within 8 points of each other | bootstrap 42.9%, raise_on_traction 38.7% | ±1.0, ±1.0 | yes |
+| 32 | Neither dominates: bootstrap wins at least as often as raise_on_traction (within its margin), and raise_on_traction's median founder share value in winning runs is at least 1.3 times bootstrap's (share x company value by the visible rule) | raise_on_traction -4.2; value 891,165 EUR against 725,808 EUR | ±1.0 | no |
+| 33 | Raising on weak traction is punished: raise_early wins at least 8 points less than raise_on_traction and less than bootstrap, and the post-mortem names the round as a cause (bankrupt while or after raising, or investors met before a paying customer who passed as too early) in at least half of its losing runs | +1.4 against raise_on_traction, -2.9 against bootstrap; round named in 100.0% of losses | ±1.1, ±1.1 | no |
+| 34 | Raising when you do not need to costs you: on the seeds bootstrap wins, raise_always ends with a lower median founder share value than bootstrap and wins no more often | value 660,870 EUR against 725,808 EUR (in its wins 872,390 EUR against 725,808 EUR); wins -37.2 | ±1.4 | yes |
 | 35 | Running out while raising is real: raise_late goes bankrupt with a round still open or closing in at least 25% of its runs; raise_on_traction in under 5% | raise_late 38.2%, raise_on_traction 0.3% |  | yes |
-| 36 | Updates are worth a little, not a lot: on the seeds where raise_on_traction raised money (3230), proper monthly updates beat none by 1 to 5 points | -1.1 (all seeds -0.4) | ±1.4 (±0.5) | no |
-| 37 | No raising strategy wins over 60%; 1000 funded runs complete in under 150 seconds | top raise_late 47.2%; 66.9 s per 1000 runs | ±3.1 | yes |
+| 36 | Updates are worth a little, not a lot: on the seeds where raise_on_traction raised money (3230), proper monthly updates beat none by 1 to 5 points | -0.5 (all seeds -0.2) | ±1.9 (±0.6) | yes |
+| 37 | No raising strategy wins over 60%; 1000 funded runs complete in under 150 seconds | top raise_early 41.5%; 67.2 s per 1000 runs | ±3.1 | yes |
 
 For information only, as the 60 week report words them:
 
@@ -521,10 +521,10 @@ For information only, as the 60 week report words them:
 | validate_then_build_expand | 41.6% | 0.0% | 19.5% | 38.9% | 0.0% | 0.0% | 40 | 53 | 6,520 EUR | 6 |
 | validate_then_build_expand_solo | 38.2% | 0.0% | 23.1% | 38.7% | 0.0% | 0.0% | 40 | 54 | 6,520 EUR | 6 |
 | validate_then_build_founder_chases | 43.0% | 0.0% | 18.7% | 38.3% | 0.0% | 0.0% | 40 | 52 | 6,595 EUR | 6 |
-| raise_on_traction | 44.8% | 1.0% | 16.1% | 38.1% | 0.0% | 0.0% | 39 | 46 | 7,045 EUR | 7 |
-| raise_early | 41.6% | 0.0% | 17.4% | 41.0% | 0.0% | 0.0% | 40 | 48 | 6,475 EUR | 6 |
-| raise_always | 42.3% | 0.5% | 18.8% | 38.4% | 0.0% | 0.0% | 40 | 50 | 6,520 EUR | 6 |
-| raise_late | 44.5% | 2.7% | 14.5% | 38.3% | 0.0% | 0.0% | 40 | 47 | 6,880 EUR | 6 |
+| raise_on_traction | 37.5% | 2.0% | 20.9% | 39.6% | 0.0% | 0.0% | 40 | 51 | 6,790 EUR | 7 |
+| raise_early | 41.5% | 0.0% | 17.5% | 41.0% | 0.0% | 0.0% | 40 | 48 | 6,475 EUR | 6 |
+| raise_always | 38.9% | 0.4% | 21.7% | 39.0% | 0.0% | 0.0% | 40 | 54 | 6,380 EUR | 6 |
+| raise_late | 34.8% | 4.7% | 21.4% | 39.1% | 0.0% | 0.0% | 40 | 53 | 6,710 EUR | 6 |
 
 ## Wins by viable market
 
@@ -549,10 +549,10 @@ Share of runs ending Sustainable, split by which market was secretly viable in t
 | validate_then_build_expand | 42.1% | 39.9% | 42.8% | 2.8 |
 | validate_then_build_expand_solo | 36.5% | 35.9% | 42.2% | 6.3 |
 | validate_then_build_founder_chases | 51.9% | 35.9% | 41.9% | 16.0 |
-| raise_on_traction | 51.3% | 42.6% | 44.0% | 8.7 |
-| raise_early | 42.5% | 40.8% | 41.6% | 1.6 |
-| raise_always | 47.5% | 39.9% | 41.3% | 7.5 |
-| raise_late | 54.7% | 43.1% | 44.2% | 11.6 |
+| raise_on_traction | 41.8% | 37.0% | 39.8% | 4.8 |
+| raise_early | 42.5% | 40.5% | 41.6% | 1.9 |
+| raise_always | 41.8% | 37.6% | 38.6% | 4.2 |
+| raise_late | 42.1% | 37.0% | 39.5% | 5.1 |
 
 ## Price aware against plain
 
@@ -597,10 +597,10 @@ Per strategy, over all its runs. Hire weeks are the weeks of the offers (they st
 | validate_then_build_expand | 1000 | 41.6% | 31.3% | 0.43 | 48, 57, 67 | 0.0% | 0.0% | 0.40 | 0 | 0 | 2 |
 | validate_then_build_expand_solo | 1000 | 38.2% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | validate_then_build_founder_chases | 1000 | 43.0% | 31.7% | 0.44 | 48, 57, 68 | 0.0% | 0.0% | 0.40 | 0 | 0 | 2 |
-| raise_on_traction | 1000 | 45.8% | 40.1% | 1.51 | 30, 49, 59 | 0.0% | 0.0% | 1.39 | 0 | 0 | 3 |
-| raise_early | 1000 | 41.6% | 31.0% | 0.41 | 49, 59, 68 | 0.0% | 0.0% | 0.39 | 0 | 0 | 2 |
-| raise_always | 1000 | 42.8% | 33.1% | 0.83 | 31, 52, 62 | 0.0% | 0.0% | 0.78 | 0 | 0 | 2 |
-| raise_late | 1000 | 47.2% | 38.6% | 0.87 | 41, 53, 67 | 0.0% | 0.0% | 0.82 | 0 | 0 | 3 |
+| raise_on_traction | 1000 | 39.5% | 36.7% | 1.07 | 31, 52, 62 | 0.0% | 0.0% | 1.00 | 0 | 0 | 3 |
+| raise_early | 1000 | 41.5% | 31.0% | 0.41 | 49, 59, 68 | 0.0% | 0.0% | 0.38 | 0 | 0 | 2 |
+| raise_always | 1000 | 39.3% | 32.2% | 0.66 | 42, 54, 64 | 0.0% | 0.0% | 0.61 | 0 | 0 | 3 |
+| raise_late | 1000 | 39.5% | 34.8% | 0.64 | 42, 56, 67 | 0.0% | 0.0% | 0.60 | 0 | 0 | 2 |
 | validate_then_build inbox:reader | 10000 | 42.9% | 31.3% | 0.43 | 48, 58, 68 | 0.0% | 0.0% | 0.40 | 0 | 0 | 3 |
 | team:validate_then_build_solo | 10000 | 40.4% | 0.0% | 0.00 | - | - | - | 0.00 | 0 | - | 0 |
 | team:validate_then_build_freelance_first | 10000 | 32.8% | 6.1% | 0.09 | 56, 64, 70 | 0.0% | 0.0% | 0.08 | 0 | 0 | 3 |
@@ -703,12 +703,12 @@ The careful bot that never raises (bootstrap) and the raising bots on the same 1
 | Strategy | Runs | Win rate | Sustainable | Growing | Bankrupt | Raised money | Raised a seed round | Median week of the first money | Median raised (EUR) | Median founder share, wins | Median founder value, wins (EUR) | Bankrupt while raising |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | bootstrap (validate_then_build) | 10000 | 42.9% | 42.9% | 0.0% | 38.8% | 0.0% | 0.0% | - | - | 100.0% | 725,808 | 0.0% |
-| raise_on_traction | 10000 | 47.0% | 46.0% | 0.9% | 37.7% | 32.3% | 23.0% | 23 | 1,580,000 | 88.2% | 1,050,105 | 0.3% |
-| raise_early | 10000 | 40.1% | 40.1% | 0.0% | 42.0% | 0.2% | 0.0% | 12 | 160,000 | 100.0% | 725,080 | 0.0% |
-| raise_always | 10000 | 41.7% | 41.2% | 0.5% | 40.7% | 17.1% | 14.4% | 37 | 1,680,000 | 100.0% | 802,073 | 0.3% |
-| raise_late | 10000 | 47.0% | 44.8% | 2.2% | 38.2% | 28.9% | 0.0% | 65 | 170,000 | 95.9% | 768,609 | 38.2% |
-| raise_on_traction_short_updates | 10000 | 46.9% | 45.9% | 0.9% | 37.7% | 32.3% | 23.0% | 23 | 1,580,000 | 87.7% | 1,063,185 | 0.3% |
-| raise_on_traction_no_updates | 10000 | 47.3% | 46.2% | 1.1% | 37.7% | 32.3% | 20.6% | 23 | 1,440,000 | 89.3% | 961,653 | 0.3% |
+| raise_on_traction | 10000 | 38.7% | 36.4% | 2.3% | 38.7% | 32.3% | 19.2% | 23 | 1,320,000 | 94.3% | 891,165 | 0.3% |
+| raise_early | 10000 | 40.1% | 40.1% | 0.0% | 42.0% | 0.2% | 0.0% | 12 | 100,000 | 100.0% | 724,935 | 0.0% |
+| raise_always | 10000 | 38.2% | 37.3% | 0.8% | 41.2% | 17.1% | 13.0% | 37 | 1,560,000 | 100.0% | 762,373 | 0.3% |
+| raise_late | 10000 | 39.1% | 34.9% | 4.2% | 38.8% | 28.9% | 0.0% | 65 | 130,000 | 100.0% | 771,760 | 38.2% |
+| raise_on_traction_short_updates | 10000 | 39.0% | 36.8% | 2.2% | 38.6% | 32.3% | 19.9% | 23 | 1,350,000 | 94.3% | 916,970 | 0.3% |
+| raise_on_traction_no_updates | 10000 | 38.9% | 36.6% | 2.3% | 38.6% | 32.3% | 16.9% | 23 | 1,140,000 | 94.9% | 852,943 | 0.3% |
 
 ## Week the run ended
 
@@ -733,10 +733,10 @@ Share of all runs per strategy, by the week the run ended. Runs that reach the l
 | validate_then_build_expand | 0.0% | 0.0% | 2.9% | 16.6% | 8.7% | 4.3% | 2.1% | 1.4% | 1.8% | 0.8% | 61.4% |
 | validate_then_build_expand_solo | 0.0% | 0.0% | 2.9% | 16.6% | 8.7% | 4.3% | 2.1% | 1.4% | 1.8% | 0.7% | 61.5% |
 | validate_then_build_founder_chases | 0.0% | 0.0% | 2.9% | 16.6% | 8.7% | 4.3% | 2.1% | 1.5% | 1.6% | 0.5% | 61.8% |
-| raise_on_traction | 0.0% | 0.0% | 2.8% | 18.8% | 8.5% | 3.1% | 2.3% | 0.8% | 1.1% | 0.6% | 62.0% |
+| raise_on_traction | 0.0% | 0.0% | 2.8% | 18.8% | 8.5% | 3.3% | 2.4% | 1.0% | 1.5% | 1.0% | 60.7% |
 | raise_early | 0.0% | 0.0% | 3.3% | 18.8% | 9.2% | 3.9% | 2.7% | 1.2% | 1.0% | 0.6% | 59.3% |
-| raise_always | 0.0% | 0.0% | 3.3% | 16.9% | 9.2% | 3.9% | 1.9% | 1.6% | 0.6% | 0.7% | 61.9% |
-| raise_late | 0.0% | 0.0% | 3.3% | 17.6% | 8.2% | 3.7% | 2.2% | 1.4% | 1.0% | 0.7% | 61.9% |
+| raise_always | 0.0% | 0.0% | 3.3% | 16.9% | 9.2% | 3.9% | 2.0% | 1.6% | 0.8% | 0.8% | 61.5% |
+| raise_late | 0.0% | 0.0% | 3.3% | 17.6% | 8.2% | 3.7% | 2.4% | 1.6% | 1.2% | 0.8% | 61.2% |
 
 ## Losing runs: what they earned
 
@@ -761,10 +761,10 @@ Losing runs only (bankrupt, burnout, still searching). "Never paid" means no cus
 | validate_then_build_expand | 584 | 0.3% | 0.0% / 2.9% / 18.5% / 22.6% / 56.0% | 0.0% / 2.9% / 18.3% / 33.4% / 45.4% |
 | validate_then_build_expand_solo | 618 | 0.3% | 0.0% / 2.8% / 17.5% / 21.4% / 58.4% | 0.0% / 2.8% / 17.3% / 31.6% / 48.4% |
 | validate_then_build_founder_chases | 570 | 0.4% | 0.0% / 3.0% / 18.9% / 23.2% / 54.9% | 0.0% / 3.0% / 18.8% / 33.9% / 44.4% |
-| raise_on_traction | 542 | 0.4% | 0.0% / 3.3% / 21.4% / 26.6% / 48.7% | 0.0% / 3.1% / 21.6% / 34.7% / 40.6% |
-| raise_early | 584 | 0.2% | 0.2% / 5.0% / 18.7% / 26.5% / 49.7% | 0.2% / 3.3% / 21.6% / 31.3% / 43.7% |
-| raise_always | 572 | 0.3% | 0.0% / 4.2% / 18.9% / 26.2% / 50.7% | 0.0% / 3.0% / 21.2% / 32.3% / 43.5% |
-| raise_late | 528 | 0.8% | 0.2% / 4.7% / 21.2% / 27.5% / 46.4% | 0.2% / 3.2% / 25.2% / 33.0% / 38.4% |
+| raise_on_traction | 605 | 0.3% | 0.0% / 3.0% / 19.2% / 23.8% / 54.0% | 0.0% / 2.8% / 19.3% / 31.6% / 46.3% |
+| raise_early | 585 | 0.2% | 0.2% / 5.0% / 18.6% / 26.5% / 49.7% | 0.2% / 3.2% / 21.5% / 31.3% / 43.8% |
+| raise_always | 607 | 0.3% | 0.0% / 4.0% / 17.8% / 24.9% / 53.4% | 0.0% / 2.8% / 19.9% / 30.5% / 46.8% |
+| raise_late | 605 | 0.7% | 0.2% / 4.1% / 18.5% / 24.0% / 53.2% | 0.2% / 2.8% / 22.0% / 29.4% / 45.6% |
 
 ## First paying customer
 
@@ -815,10 +815,10 @@ Week in which the first customer signed. Medians count only runs that had one.
 | validate_then_build_expand | 3 | 1,800 EUR | 0.087 | 49.9 | 80.0 | 0.0% |
 | validate_then_build_expand_solo | 3 | 1,800 EUR | 0.081 | 49.9 | 80.0 | 0.0% |
 | validate_then_build_founder_chases | 3 | 1,800 EUR | 0.086 | 49.9 | 80.0 | 0.0% |
-| raise_on_traction | 3 | 1,800 EUR | 0.104 | 49.9 | 80.0 | 0.0% |
+| raise_on_traction | 3 | 1,800 EUR | 0.095 | 49.9 | 80.0 | 0.0% |
 | raise_early | 3 | 1,765 EUR | 0.084 | 49.9 | 80.0 | 0.0% |
-| raise_always | 3 | 1,800 EUR | 0.088 | 49.9 | 80.0 | 0.0% |
-| raise_late | 3 | 1,800 EUR | 0.091 | 49.9 | 80.0 | 0.0% |
+| raise_always | 3 | 1,800 EUR | 0.085 | 49.9 | 80.0 | 0.0% |
+| raise_late | 3 | 1,800 EUR | 0.088 | 49.9 | 80.0 | 0.0% |
 
 ## Interview signal in week 1
 
@@ -876,10 +876,10 @@ Per run, averaged over all runs of a strategy. Books left is the number of accou
 | validate_then_build_expand | 3.0 | 4.0 | 145.0 | 4.8% | 0.00 | 116.2 | 99.3% |
 | validate_then_build_expand_solo | 3.0 | 4.0 | 133.9 | 5.5% | 0.00 | 116.3 | 99.3% |
 | validate_then_build_founder_chases | 3.0 | 4.0 | 145.8 | 5.5% | 0.00 | 116.2 | 99.3% |
-| raise_on_traction | 3.0 | 4.1 | 173.7 | 4.2% | 0.00 | 115.7 | 99.3% |
-| raise_early | 3.0 | 4.0 | 139.2 | 4.7% | 0.00 | 113.6 | 99.3% |
-| raise_always | 3.0 | 4.1 | 149.6 | 4.5% | 0.00 | 115.9 | 99.3% |
-| raise_late | 3.0 | 4.0 | 152.9 | 4.6% | 0.00 | 116.0 | 99.3% |
+| raise_on_traction | 3.0 | 4.1 | 160.5 | 4.4% | 0.00 | 115.4 | 99.3% |
+| raise_early | 3.0 | 4.0 | 139.1 | 4.7% | 0.00 | 113.6 | 99.3% |
+| raise_always | 3.0 | 4.1 | 146.0 | 4.6% | 0.00 | 115.9 | 99.3% |
+| raise_late | 3.0 | 4.0 | 148.7 | 4.7% | 0.00 | 115.7 | 99.3% |
 
 ## What each behaviour changed: validate_then_build
 
@@ -945,10 +945,10 @@ A dry week is one where the inbox should have brought a message (nothing new, fe
 | validate_then_build_expand | 81.4 | 116.2 | 0.1% | 0.00 | 103 | 0 |
 | validate_then_build_expand_solo | 81.4 | 116.3 | 0.5% | 0.01 | 103 | 0 |
 | validate_then_build_founder_chases | 81.5 | 116.2 | 0.2% | 0.01 | 99 | 0 |
-| raise_on_traction | 81.1 | 115.7 | 0.3% | 0.00 | 102 | 0 |
+| raise_on_traction | 80.8 | 115.4 | 0.3% | 0.00 | 102 | 0 |
 | raise_early | 79.6 | 113.6 | 0.0% | 0.00 | - | 0 |
 | raise_always | 81.2 | 115.9 | 0.2% | 0.00 | 101 | 0 |
-| raise_late | 81.3 | 116.0 | 0.2% | 0.00 | 101 | 0 |
+| raise_late | 81.1 | 115.7 | 0.2% | 0.00 | 101 | 0 |
 
 ## Inbox events: which answer wins
 
@@ -1197,27 +1197,27 @@ Runs where answering made the run last longer: 275, shorter: 592, same length: 1
 
 ## Strategies
 
-- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (10.3 s for 1000 runs)
-- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (5.0 s for 1000 runs)
-- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (6.1 s for 1000 runs)
-- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for 6 months, and at least 26 weeks would be left once the hire starts: a developer while the features its market asks for need 40 h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked 8 weeks. The newest hire is let go once the runway shown falls below 3 months, and a developer once every feature has shipped. (55.8 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (48.7 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (11.4 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (41.2 s for 1000 runs)
-- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (49.6 s for 1000 runs)
-- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.1 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.7 s for 1000 runs)
-- `validate_then_build_solo`: Plays like validate_then_build and never hires or rents anyone: the bootstrapped solo founder. (47.4 s for 1000 runs)
-- `validate_then_build_savings_hire`: Plays like validate_then_build, and makes its first hire on savings: it looks for one as soon as building starts (week 3), while cash and savings hold 3 months of the salary, and keeps that hire until the runway shown falls below 1 month. Later hires follow the reference rule. (20.1 s for 1000 runs)
-- `validate_then_build_part_time`: Plays like validate_then_build, with the same team rule, but hires only part time (20 h at half the salary). (49.8 s for 1000 runs)
-- `validate_then_build_freelance_first`: Plays like validate_then_build, and until its first hire is on the way rents a 20 h freelancer in the role that limits it. A developer for the build, as a burst: from week 3, while the features its market asks for need 40 h or more and cash and savings cover the whole build left at the freelancer's rate plus 3 months of the current loss. A salesperson for the pipeline, steady: from the first paying customer, while cash and savings would pay the added loss for 3 months. Gives notice when the role needed changes, the runway shown falls below 3 months, or the reference rule starts a search for a hire. (42.6 s for 1000 runs)
-- `validate_then_build_expand`: Plays like validate_then_build, and from week 53, once its leads per outreach hour in its market over the last 8 weeks of selling fall below 60% of its best 8 weeks so far, opens the best ranked other market: interviews there until it has heard 12, builds what they ask for (up to 20 h a week itself), then sells there with half its outreach, and gives it up after 16 weeks of selling there without a customer. Its team rule serves the second market: a developer while its features need 40 h, building them first, then a salesperson selling there. (50.0 s for 1000 runs)
-- `validate_then_build_expand_solo`: Plays like validate_then_build_expand, but never hires or rents anyone: the founder opens the second market alone. (46.2 s for 1000 runs)
-- `validate_then_build_founder_chases`: Plays like validate_then_build, but the founder keeps chasing late invoices when someone is on the team, instead of handing it to them. (49.7 s for 1000 runs)
-- `raise_on_traction`: Plays like validate_then_build, and raises once it has traction: an angel round once monthly revenue covers the company's costs and grew in each of the last two months, with at least 20 weeks of runway; a seed round once monthly revenue reaches the seed bar and grew in each of the last two months. While a round is open it pitches 10 h a week, books a second look with every interested investor and accepts the first term sheet; a round that runs out of investors is stopped and tried again after 12 weeks. With investors' money it hires while the money would last 9 months after the hire. Sends a proper update every month. (64.3 s for 1000 runs)
-- `raise_early`: Plays like raise_on_traction, but starts an angel round in week 3, on interviews and sign ups, starts again at once when a round runs out of investors, and starts a seed round as soon as the angel money is in. (49.1 s for 1000 runs)
-- `raise_always`: Plays like raise_on_traction, but starts an angel round at its first paying customer, whether or not it needs the money. (51.3 s for 1000 runs)
-- `raise_late`: Plays like validate_then_build, and starts an angel round only once the runway shown falls below 12 weeks; it keeps that round open to the end, as a founder who needs the money does. (48.2 s for 1000 runs)
+- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (11.4 s for 1000 runs)
+- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (5.1 s for 1000 runs)
+- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (6.7 s for 1000 runs)
+- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for 6 months, and at least 26 weeks would be left once the hire starts: a developer while the features its market asks for need 40 h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked 8 weeks. The newest hire is let go once the runway shown falls below 3 months, and a developer once every feature has shipped. (62.8 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (53.9 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (12.2 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (45.8 s for 1000 runs)
+- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (54.9 s for 1000 runs)
+- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.6 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (3.0 s for 1000 runs)
+- `validate_then_build_solo`: Plays like validate_then_build and never hires or rents anyone: the bootstrapped solo founder. (53.2 s for 1000 runs)
+- `validate_then_build_savings_hire`: Plays like validate_then_build, and makes its first hire on savings: it looks for one as soon as building starts (week 3), while cash and savings hold 3 months of the salary, and keeps that hire until the runway shown falls below 1 month. Later hires follow the reference rule. (23.0 s for 1000 runs)
+- `validate_then_build_part_time`: Plays like validate_then_build, with the same team rule, but hires only part time (20 h at half the salary). (56.7 s for 1000 runs)
+- `validate_then_build_freelance_first`: Plays like validate_then_build, and until its first hire is on the way rents a 20 h freelancer in the role that limits it. A developer for the build, as a burst: from week 3, while the features its market asks for need 40 h or more and cash and savings cover the whole build left at the freelancer's rate plus 3 months of the current loss. A salesperson for the pipeline, steady: from the first paying customer, while cash and savings would pay the added loss for 3 months. Gives notice when the role needed changes, the runway shown falls below 3 months, or the reference rule starts a search for a hire. (48.5 s for 1000 runs)
+- `validate_then_build_expand`: Plays like validate_then_build, and from week 53, once its leads per outreach hour in its market over the last 8 weeks of selling fall below 60% of its best 8 weeks so far, opens the best ranked other market: interviews there until it has heard 12, builds what they ask for (up to 20 h a week itself), then sells there with half its outreach, and gives it up after 16 weeks of selling there without a customer. Its team rule serves the second market: a developer while its features need 40 h, building them first, then a salesperson selling there. (57.6 s for 1000 runs)
+- `validate_then_build_expand_solo`: Plays like validate_then_build_expand, but never hires or rents anyone: the founder opens the second market alone. (54.9 s for 1000 runs)
+- `validate_then_build_founder_chases`: Plays like validate_then_build, but the founder keeps chasing late invoices when someone is on the team, instead of handing it to them. (58.5 s for 1000 runs)
+- `raise_on_traction`: Plays like validate_then_build, and raises once it has traction: an angel round once monthly revenue covers the company's costs and grew in each of the last two months, with at least 20 weeks of runway; a seed round once monthly revenue reaches the seed bar and grew in each of the last two months. While a round is open it pitches 10 h a week, books a second look with every interested investor and accepts the first term sheet; a round that runs out of investors is stopped and tried again after 12 weeks. With investors' money it hires while the money would last 9 months after the hire. Sends a proper update every month. (67.2 s for 1000 runs)
+- `raise_early`: Plays like raise_on_traction, but starts an angel round in week 3, on interviews and sign ups, starts again at once when a round runs out of investors, and starts a seed round as soon as the angel money is in. (56.3 s for 1000 runs)
+- `raise_always`: Plays like raise_on_traction, but starts an angel round at its first paying customer, whether or not it needs the money. (56.9 s for 1000 runs)
+- `raise_late`: Plays like validate_then_build, and starts an angel round only once the runway shown falls below 12 weeks; it keeps that round open to the end, as a founder who needs the money does. (52.4 s for 1000 runs)
 
 # Zollstock
 
@@ -1233,7 +1233,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 2 | validate_then_build reaches it in 25 to 45% of runs | 27.0% | ±2.8 | yes | 0.6% | no | 4.7% | no |
 | 3 | No strategy exceeds 60% | price_aware 35.7% | ±3.0 | yes | | | | |
 | 4 | Median run length of losing runs (all strategies) is between week 20 and week 40 | week 29.0 | ±0.0 | yes | | | | |
-| 5 | 1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run) | 25.8 s per 1000 runs |  | yes | | | | |
+| 5 | 1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run) | 26.3 s per 1000 runs |  | yes | | | | |
 | 6 | validate_then_build win rates across the three viable markets lie within 15 points (on 10000 seeds) | 14.1 points | ±2.1 | yes | 1.5 points | yes | 3.6 points | yes |
 | 7 | validate_then_build gets its first paying customer between week 4 and 10 in the median winning run | week 5.0 (mean 5.68) | ±0.0 (mean ±0.18) | yes | week 4.5 (mean 4.83) | yes | week 6.0 (mean 6.85) | yes |
 | 8 | By week 10, at least 70% of validate_then_build runs have a paying customer or have left a market that is not viable | 96.2% | ±1.2 | yes | 96.2% | yes | 96.2% | yes |
@@ -1668,16 +1668,16 @@ Runs where answering made the run last longer: 288, shorter: 568, same length: 1
 
 ## Strategies
 
-- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (5.3 s for 1000 runs)
+- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (5.9 s for 1000 runs)
 - `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (2.3 s for 1000 runs)
 - `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (2.8 s for 1000 runs)
-- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (25.8 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (20.7 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (14.0 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (22.5 s for 1000 runs)
+- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (26.3 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (21.2 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (14.1 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (22.4 s for 1000 runs)
 - `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (23.2 s for 1000 runs)
-- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.1 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three contractors features in weeks 2 to 4, 45 h of in person outreach to contractors in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.2 s for 1000 runs)
+- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.3 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three contractors features in weeks 2 to 4, 45 h of in person outreach to contractors in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.3 s for 1000 runs)
 
 # Gratwanderung, long mode
 

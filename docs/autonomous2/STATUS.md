@@ -1,9 +1,9 @@
 # Autonomous run 2 status
 
 ## Current
-Step: 6, wrap up.
-Last commit: Step 5 Kantino-long checkpoint (this commit; tag `plan2-kantino-long`).
-Next action: finish the 60 week protection gate, regenerate seeds and all final reports, then revisit the open issues once and complete the documentation.
+Step: complete.
+Last commit: final Plan 2 checkpoint (this commit; tag `plan2-complete`).
+Next action: Plan 3 may begin from its section 0.
 
 ## Checklist
 - [x] Step 0: take stock (tag plan2-baseline)
@@ -12,7 +12,7 @@ Next action: finish the 60 week protection gate, regenerate seeds and all final 
 - [x] Step 3: tourism inbox (tag plan2-inbox)
 - [x] Step 4: retune tourism (tag plan2-tourism)
 - [x] Step 5: Kantino long, funding and target 20 (tag plan2-kantino-long)
-- [ ] Step 6: wrap up (tag plan2-complete)
+- [x] Step 6: wrap up (tag plan2-complete)
 
 ## Carried over from the tourism fixes
 - Naive careful (1000 seeds): Gratwanderung 32.8% (careful 44.2), Hinterhof 20.9% (24.4), Seeblick 15.3% (31.4). Gaps: the reader (all three), Seeblick's loan bridge.
