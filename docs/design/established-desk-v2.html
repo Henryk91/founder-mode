@@ -1,0 +1,114 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Established stage, desktop (v2)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Caveat:wght@500;700&display=swap">
+<style>:root{--bg:#EEF0F3;--surface:#FFFFFF;--line:#D9DEE4;--ink:#14181F;--muted:#55606E;--accent:#C8371F;--on-accent:#FFFFFF;--good:#16663F;--warn:#A0440A;--soft:#F5F6F8;--sales:#2456D6;--build:#1B7A4B;--learn:#5B3C8C;--admin:#4B5A68;--sticky:#FFE27A}
+*{box-sizing:border-box}body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:var(--ink);font-size:14px;line-height:1.4}
+button{font-family:inherit}
+.h{font-family:'Bricolage Grotesque','IBM Plex Sans',sans-serif;font-weight:700}
+.mono{font-family:'IBM Plex Mono',monospace;font-weight:600}
+.lab{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.pill{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;border-radius:22px;border:1px solid var(--ink);background:var(--surface);font-weight:600;font-size:14px;color:var(--ink)}
+.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg span{height:32px;display:flex;align-items:center;padding:0 10px;font-size:13px;font-weight:600;color:var(--muted);border-right:1px solid var(--line)}
+.seg span:last-child{border-right:0}.seg .on{background:var(--ink);color:#fff}
+.step{display:inline-flex;align-items:center;gap:2px}.step b{width:44px;height:44px;display:flex;align-items:center;justify-content:center}.step b i{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:600;background:var(--soft)}
+.step .v{min-width:46px;text-align:center}
+.bar{display:flex;height:22px;border-radius:6px;overflow:hidden;font-size:12px;font-weight:700;color:#fff}
+.bar div{display:flex;align-items:center;padding-left:8px;white-space:nowrap;overflow:hidden}
+.row{min-height:44px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--line)}
+.up{color:var(--good);font-size:12px}.down{color:var(--warn);font-size:12px}
+.tag{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--muted)}
+.sticky{background:var(--sticky);padding:10px 14px;box-shadow:0 2px 0 #B9BFC8;transform:rotate(-1deg);font-family:'Caveat',cursive;font-size:22px;line-height:1.15;color:#2A2200}
+
+.wrap{width:1440px;height:1010px;background:var(--bg);display:flex;flex-direction:column}
+.top{height:68px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:30px;padding:0 20px}
+.metric .mono{font-size:18px}
+.cols{flex:1;min-height:0;display:flex;gap:14px;padding:14px}
+.left{width:350px;display:flex;flex-direction:column;gap:12px}
+.mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
+.right{width:290px;display:flex;flex-direction:column;gap:12px}
+.msg{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.choice{min-height:44px;text-align:left;padding:8px 14px;border:1px solid var(--ink);border-radius:8px;background:#fff;font-weight:600}
+.choice span{font-weight:400;color:var(--muted)}
+.tabs{display:flex;gap:6px}.tabs div{height:40px;padding:0 16px;display:flex;align-items:center;border-radius:8px 8px 0 0;font-weight:600;color:var(--muted)}.tabs .on{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-bottom:0}
+.plan{padding:0 18px 6px;border-top-left-radius:0}
+.sec{min-height:44px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--line)}
+.sec .t{font-weight:700;font-size:15px}.sec .s{color:var(--muted);flex:1}
+.chev{width:14px;color:var(--muted);font-size:12px}
+.in{padding-left:24px}
+</style></head><body>
+<div class="wrap">
+<div class="top">
+ <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Bricolage Grotesque'">K</div>
+ <div><div class="h" style="font-size:20px;line-height:1.1;font-weight:800">Kantino GmbH</div><div style="font-size:12px;color:var(--muted)">Week 78 of 104 · Office floor</div></div></div>
+ <div style="flex:1"></div>
+ <div class="metric"><div class="lab">Cash</div><div class="mono">€84,300 <span class="down">▼ €3,100</span></div></div>
+ <div class="metric"><div class="lab">Runway</div><div class="mono">Covered</div></div>
+ <div class="metric"><div class="lab">Monthly revenue</div><div class="mono">€18,600 <span class="up">▲ €1,200</span></div></div>
+ <div class="metric"><div class="lab">Customers</div><div class="mono">31 <span class="up">▲ 2</span></div></div>
+ <div class="metric"><div class="lab">Team</div><div class="mono">4 + you</div></div>
+ <button class="pill primary" style="height:46px;padding:0 26px;font-size:16px;font-weight:700">End week</button>
+</div>
+<div class="cols">
+<div class="left">
+ <div class="h" style="font-size:20px">Inbox <span style="font-family:'IBM Plex Sans';font-weight:500;font-size:14px;color:var(--muted)">3 need you this week</span></div>
+ <div class="card msg" style="border-left:6px solid var(--accent)">
+  <div style="display:flex;justify-content:space-between"><span class="tag">CUSTOMER · RENEWAL</span><span style="font-size:12px;color:var(--muted)">answer by W80</span></div>
+  <div style="font-weight:600">Zahnarztpraxis Dr. Huber wants a discount to renew</div>
+  <div style="color:var(--muted);font-size:13px">"Twelve percent off, or we look around. Nothing personal."</div>
+  <button class="choice">Meet them and talk it through <span>· 3 h</span></button>
+  <button class="choice">Give the discount <span>· 0 h, €110 a month less</span></button>
+  <button class="choice">Hold the price <span>· 0 h</span></button>
+ </div>
+ <div class="card msg"><span class="tag">TEAM · LENA, SALES</span><div style="font-weight:600">Pipeline in coworking spaces is drying up</div><div style="color:var(--muted);font-size:13px">7 leads this month, 15 last month.</div></div>
+ <div class="card msg"><span class="tag">INVESTOR · MONTHLY UPDATE</span><div style="font-weight:600">Due at month end</div><div style="color:var(--muted);font-size:13px">Mood: content.</div></div>
+ <div class="sticky">Coffee machine is broken. Again.<div style="text-align:right;font-weight:700">Lena</div></div>
+</div>
+<div class="mid">
+ <div class="card" style="height:230px;overflow:hidden;position:relative;background:#E4E6EA">
+  <div style="position:absolute;left:0;right:0;bottom:0;height:24%;background:#B9B2A8"></div><svg viewBox="0 0 360 170" preserveAspectRatio="xMidYMax meet" style="position:absolute;inset:0;width:100%;height:100%"><rect width="360" height="170" fill="#E4E6EA"/><rect y="120" width="360" height="50" fill="#B9B2A8"/><rect y="117" width="360" height="3" fill="#8A7458"/><rect x="250" y="28" width="96" height="92" fill="#D7E3EA" stroke="#9FB3C1" stroke-width="3"/><rect x="268" y="80" width="60" height="6" fill="#E0B777"/><path d="M273.2 112 v-19.200000000000003 q0 -8.0 8.8 -8.0 q8.8 0 8.8 8.0 v19.200000000000003 z" fill="#5B6B78"/><circle cx="282" cy="80.8" r="5.6000000000000005" fill="#C9A487"/><path d="M303.2 112 v-19.200000000000003 q0 -8.0 8.8 -8.0 q8.8 0 8.8 8.0 v19.200000000000003 z" fill="#7A6A58"/><circle cx="312" cy="80.8" r="5.6000000000000005" fill="#C9A487"/><rect x="20" y="30" width="28" height="28" rx="6" fill="#C8371F"/><text x="56" y="50" font-family="sans-serif" font-size="14" font-weight="700" fill="#14181F">Kantino</text><rect x="18" y="112" width="40" height="6" fill="#E0B777"/><rect x="21" y="118" width="3" height="18" fill="#B08E5B"/><rect x="52" y="118" width="3" height="18" fill="#B08E5B"/><rect x="29.0" y="98" width="18" height="13" rx="1" fill="#3E4A55"/><rect x="76" y="112" width="40" height="6" fill="#E0B777"/><rect x="79" y="118" width="3" height="18" fill="#B08E5B"/><rect x="110" y="118" width="3" height="18" fill="#B08E5B"/><rect x="87.0" y="98" width="18" height="13" rx="1" fill="#3E4A55"/><rect x="134" y="112" width="40" height="6" fill="#E0B777"/><rect x="137" y="118" width="3" height="18" fill="#B08E5B"/><rect x="168" y="118" width="3" height="18" fill="#B08E5B"/><rect x="145.0" y="98" width="18" height="13" rx="1" fill="#3E4A55"/><rect x="192" y="112" width="40" height="6" fill="#E0B777"/><rect x="195" y="118" width="3" height="18" fill="#B08E5B"/><rect x="226" y="118" width="3" height="18" fill="#B08E5B"/><rect x="203.0" y="98" width="18" height="13" rx="1" fill="#3E4A55"/><path d="M28.1 142 v-21.6 q0 -9.0 9.9 -9.0 q9.9 0 9.9 9.0 v21.6 z" fill="#4E6656"/><circle cx="38" cy="106.9" r="6.3" fill="#C9A487"/><path d="M86.1 142 v-21.6 q0 -9.0 9.9 -9.0 q9.9 0 9.9 9.0 v21.6 z" fill="#5B6B78"/><circle cx="96" cy="106.9" r="6.3" fill="#C9A487"/><path d="M144.1 142 v-21.6 q0 -9.0 9.9 -9.0 q9.9 0 9.9 9.0 v21.6 z" fill="#8A6E5A"/><circle cx="154" cy="106.9" r="6.3" fill="#C9A487"/><path d="M202.1 142 v-21.6 q0 -9.0 9.9 -9.0 q9.9 0 9.9 9.0 v21.6 z" fill="#6B5B78"/><circle cx="212" cy="106.9" r="6.3" fill="#C9A487"/><rect x="237" y="136" width="14" height="14" fill="#A0705A"/><circle cx="244" cy="126" r="11" fill="#6F8F6A"/><circle cx="236" cy="132" r="7" fill="#7E9D78"/></svg><div style="position:absolute;left:14px;top:14px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px">Office floor · stage 4 of 5</div>
+  
+ </div>
+ <div class="card" style="display:flex;align-items:center;gap:14px;padding:10px 16px"><span style="font-weight:600">Next milestone: three profitable months</span><div style="flex:1;height:8px;background:var(--soft);border-radius:4px;overflow:hidden"><div style="width:66%;height:100%;background:var(--accent)"></div></div><span class="mono">2 / 3</span></div>
+ <div>
+ <div class="tabs"><div class="on">This week</div><div>Market</div><div>Pipeline</div></div>
+ <div class="card plan">
+  <div style="display:flex;align-items:center;height:52px"><span class="h" style="font-size:20px;flex:1">This week</span><span class="mono">46 of 50 h planned</span></div>
+  <div class="bar" style="margin-bottom:10px"><div style="width:30%;background:var(--sales)">Sales 15 h</div><div style="width:20%;background:var(--build)">Product 10 h</div><div style="width:12%;background:var(--learn)">Research 6 h</div><div style="width:30%;background:var(--admin)">Team and admin 15 h</div><div style="width:8%;background:#fff;color:var(--ink);border:1px solid var(--line)"></div></div>
+  <div class="row" style="border-top:0"><span>Energy 74 of 100</span><span style="flex:1"></span><span class="pill" style="min-height:36px">Same as last week</span></div>
+  <div class="sec"><span class="chev">▸</span><span class="t">Customer research</span><span class="s">3 interviews</span><span class="mono">6 h</span></div>
+  <div class="sec"><span class="chev">▸</span><span class="t">Product</span><span class="s">Several locations in one account</span><span class="mono">10 h</span></div>
+  <div class="sec"><span class="chev">▾</span><span class="t">Outreach</span><span class="s">phone to small offices</span><span class="mono">15 h</span></div>
+  <div class="row in"><span style="width:200px">Small offices</span><span class="step"><b><i>−</i></b><span class="v mono">10 h</span><b><i>+</i></b></span><span class="seg"><span>Email</span><span class="on">Phone</span><span>In person</span></span></div>
+  <div class="row in"><span style="width:200px">Coworking spaces</span><span class="step"><b><i>−</i></b><span class="v mono">5 h</span><b><i>+</i></b></span><span class="seg"><span>Email</span><span>Phone</span><span class="on">In person</span></span></div>
+  <div class="row in"><span style="width:200px">Medical practices</span><span class="step"><b><i>−</i></b><span class="v mono">0 h</span><b><i>+</i></b></span><span class="seg"><span class="on">Email</span><span>Phone</span><span>In person</span></span></div>
+  <div class="row in" style="color:var(--muted);font-size:13px">Hours on one channel per market find leads. Channels wear out. <u style="color:var(--sales)">More</u></div>
+  <div class="sec"><span class="chev">▸</span><span class="t">Team</span><span class="s">4 people, 8 h of your time</span><span class="mono">8 h</span></div>
+  <div class="sec"><span class="chev">▸</span><span class="t">Investors</span><span class="s">update due at month end</span></div>
+  <div class="sec"><span class="chev">▸</span><span class="t">Office</span><span class="s">Office floor, 5 of 5 desks used</span></div>
+  <div class="sec"><span class="chev">▸</span><span class="t">Time off</span><span class="s">none</span></div>
+ </div></div>
+</div>
+<div class="right">
+ <div class="card" style="padding:14px 16px">
+  <div class="lab">Cash flow</div><div class="mono" style="font-size:28px">€84,300</div>
+  <div style="display:flex;align-items:flex-end;gap:5px;height:70px;margin:10px 0">
+   <div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:30px;background:var(--good)"></div><div style="width:8px;height:42px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:36px;background:var(--good)"></div><div style="width:8px;height:48px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:30px;background:var(--good)"></div><div style="width:8px;height:36px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:42px;background:var(--good)"></div><div style="width:8px;height:48px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:48px;background:var(--good)"></div><div style="width:8px;height:42px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:36px;background:var(--good)"></div><div style="width:8px;height:54px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:54px;background:var(--good)"></div><div style="width:8px;height:48px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:42px;background:var(--good)"></div><div style="width:8px;height:54px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:60px;background:var(--good)"></div><div style="width:8px;height:48px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:48px;background:var(--good)"></div><div style="width:8px;height:54px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:54px;background:var(--good)"></div><div style="width:8px;height:60px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:8px;height:30px;background:var(--good)"></div><div style="width:8px;height:48px;background:#B4BCC6"></div></div>
+  </div>
+  <div style="font-size:12px;color:var(--muted)">In and out, last 12 weeks</div>
+  <div class="row"><span style="flex:1">Received</span><span class="mono up" style="font-size:13px">€4,900</span></div>
+  <div class="row"><span style="flex:1">Paid out</span><span class="mono" style="font-size:13px">€8,000</span></div>
+ </div>
+ <div class="card" style="padding:14px 16px"><div class="lab" style="margin-bottom:6px">Calendar</div>
+  <div class="row" style="border-top:0"><span class="mono" style="width:44px">W80</span><span>Month end: €21,400 out, invoices go out</span></div>
+  <div class="row"><span class="mono" style="width:44px">W80</span><span>Renewal: Dr. Huber</span></div>
+  <div class="row"><span class="mono" style="width:44px">W84</span><span>Lena's trial period ends</span></div>
+ </div>
+ <div class="card" style="padding:14px 16px"><div class="lab" style="margin-bottom:6px">Cap table</div>
+  <div style="display:flex;height:14px;border-radius:4px;overflow:hidden"><div style="width:82%;background:var(--accent)"></div><div style="width:18%;background:#B4BCC6"></div></div>
+  <div class="row" style="border-top:0"><span style="flex:1">You</span><span class="mono">82%</span></div>
+  <div class="row"><span style="flex:1">Angel: Dr. Ilse Brand</span><span class="mono">18%</span></div>
+ </div>
+</div>
+</div></div></body></html>

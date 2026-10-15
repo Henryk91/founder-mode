@@ -1,0 +1,131 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Established stage, phone</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Caveat:wght@500;700&display=swap">
+<style>:root{--bg:#EEF0F3;--surface:#FFFFFF;--line:#D9DEE4;--ink:#14181F;--muted:#55606E;--accent:#C8371F;--on-accent:#FFFFFF;--good:#16663F;--warn:#A0440A;--soft:#F5F6F8;--sales:#2456D6;--build:#1B7A4B;--learn:#5B3C8C;--admin:#4B5A68;--sticky:#FFE27A}
+*{box-sizing:border-box}body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:var(--ink);font-size:14px;line-height:1.4}
+button{font-family:inherit}
+.h{font-family:'Bricolage Grotesque','IBM Plex Sans',sans-serif;font-weight:700}
+.mono{font-family:'IBM Plex Mono',monospace;font-weight:600}
+.lab{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.pill{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;border-radius:22px;border:1px solid var(--ink);background:var(--surface);font-weight:600;font-size:14px;color:var(--ink)}
+.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg span{height:32px;display:flex;align-items:center;padding:0 10px;font-size:13px;font-weight:600;color:var(--muted);border-right:1px solid var(--line)}
+.seg span:last-child{border-right:0}.seg .on{background:var(--ink);color:#fff}
+.step{display:inline-flex;align-items:center;gap:2px}.step b{width:44px;height:44px;display:flex;align-items:center;justify-content:center}.step b i{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:600;background:var(--soft)}
+.step .v{min-width:46px;text-align:center}
+.bar{display:flex;height:22px;border-radius:6px;overflow:hidden;font-size:12px;font-weight:700;color:#fff}
+.bar div{display:flex;align-items:center;padding-left:8px;white-space:nowrap;overflow:hidden}
+.row{min-height:44px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--line)}
+.up{color:var(--good);font-size:12px}.down{color:var(--warn);font-size:12px}
+.tag{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--muted)}
+.sticky{background:var(--sticky);padding:10px 14px;box-shadow:0 2px 0 #B9BFC8;transform:rotate(-1deg);font-family:'Caveat',cursive;font-size:22px;line-height:1.15;color:#2A2200}
+
+body{background:#2A2F36;padding:24px}
+.sheet{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.cap{color:#C9D1DA;font-size:14px;margin:0 0 8px;width:390px}
+.cap b{color:#fff}
+.ph{width:390px;height:844px;background:var(--bg);display:flex;flex-direction:column;border-radius:6px;overflow:hidden}
+.tb{height:60px;background:var(--surface);display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--line)}
+.logo{width:32px;height:32px;border-radius:8px;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque'}
+.band{height:56px;background:var(--surface);border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:0 14px;align-items:center}
+.band .mono{font-size:14px}
+.body{flex:1;overflow:hidden;padding:12px;display:flex;flex-direction:column;gap:10px}
+.nav{height:64px;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
+.nav div{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--muted);gap:4px}
+.nav i{width:20px;height:20px;border:2px solid currentColor;border-radius:5px}
+.nav .on{color:var(--accent)}
+.choice{min-height:44px;text-align:left;padding:8px 12px;border:1px solid var(--ink);border-radius:8px;background:#fff;font-weight:600;width:100%}
+.choice span{font-weight:400;color:var(--muted)}
+.sec{min-height:44px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--line)}
+.sec .t{font-weight:700}.sec .s{color:var(--muted);flex:1;font-size:13px}
+.cal{display:grid;grid-template-columns:62px repeat(7,1fr);gap:3px;font-size:11px}
+.cal div{height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.cal .h0{background:transparent;color:var(--muted);font-weight:600;justify-content:flex-start}
+</style></head><body><div class="sheet">
+
+<div><p class="cap"><b>Inbox</b>, Kantino long, office floor. Messages are cards, choices are full width, personal notes stay handwritten.</p>
+<div class="ph">
+ <div class="tb"><div class="logo">K</div><div style="flex:1"><div class="h" style="font-size:17px;line-height:1.1">Kantino GmbH</div><div style="font-size:12px;color:var(--muted)">Week 78 of 104</div></div><button class="pill primary" style="font-weight:700">End week</button></div>
+ <div class="band"><div><div class="lab">Cash</div><div class="mono">€84.3k</div></div><div><div class="lab">Runway</div><div class="mono">Covered</div></div><div><div class="lab">Revenue</div><div class="mono">€18.6k</div></div><div><div class="lab">Customers</div><div class="mono">31</div></div></div>
+ <div class="body">
+  <div style="display:flex;align-items:baseline;gap:8px"><span class="h" style="font-size:20px">Inbox</span><span style="color:var(--muted)">3 need you</span></div>
+  <div class="card" style="padding:12px 14px;border-left:6px solid var(--accent);display:flex;flex-direction:column;gap:8px">
+   <div style="display:flex;justify-content:space-between"><span class="tag">CUSTOMER · RENEWAL</span><span style="font-size:12px;color:var(--muted)">by W80</span></div>
+   <div style="font-weight:600">Zahnarztpraxis Dr. Huber wants a discount to renew</div>
+   <div style="color:var(--muted);font-size:13px">"Twelve percent off, or we look around. Nothing personal."</div>
+   <button class="choice">Meet them and talk it through <span>· 3 h</span></button>
+   <button class="choice">Give the discount <span>· €110 a month less</span></button>
+   <button class="choice">Hold the price <span>· 0 h</span></button>
+  </div>
+  <div class="card" style="padding:12px 14px"><span class="tag">TEAM · LENA, SALES</span><div style="font-weight:600">Pipeline in coworking spaces is drying up</div><div style="color:var(--muted);font-size:13px">7 leads this month, 15 last month.</div></div>
+  <div class="sticky" style="margin:4px 6px">Coffee machine is broken. Again. <b style="float:right">Lena</b></div>
+ </div>
+ <div class="nav"><div class="on"><i></i>Inbox (3)</div><div><i></i>Plan</div><div><i></i>Pipeline</div><div><i></i>Market</div><div><i></i>Finance</div></div>
+</div></div>
+
+<div><p class="cap"><b>Plan</b>. The notebook becomes a plain form: no ruled paper, no handwriting, same 44 px rows and controls. The money band swaps to hours when the hours bar scrolls away, as today.</p>
+<div class="ph">
+ <div class="tb"><div class="logo">K</div><div style="flex:1"><div class="h" style="font-size:17px;line-height:1.1">Kantino GmbH</div><div style="font-size:12px;color:var(--muted)">Week 78 of 104</div></div><button class="pill primary" style="font-weight:700">End week</button></div>
+ <div class="band" style="grid-template-columns:1fr auto;gap:10px"><div class="bar" style="height:18px"><div style="width:33%;background:var(--sales)"></div><div style="width:22%;background:var(--build)"></div><div style="width:13%;background:var(--learn)"></div><div style="width:24%;background:var(--admin)"></div><div style="width:8%;background:#fff;border:1px solid var(--line)"></div></div><span class="mono" style="font-size:13px">46 of 50 h · 4 free</span></div>
+ <div class="body" style="padding:0">
+  <div class="card" style="margin:12px;padding:0 14px;border-radius:12px">
+   <div class="sec" style="border-top:0"><span class="h" style="font-size:19px;flex:1">This week</span><span class="mono">46 of 50 h</span></div>
+   <div class="sec"><span style="flex:1">Energy 74 of 100</span><span class="pill" style="min-height:34px;font-size:13px">Same as last week</span></div>
+   <div class="sec"><span>▸</span><span class="t">Research</span><span class="s">3 interviews</span><span class="mono">6 h</span></div>
+   <div class="sec"><span>▸</span><span class="t">Product</span><span class="s">Several locations</span><span class="mono">10 h</span></div>
+   <div class="sec"><span>▾</span><span class="t">Outreach</span><span class="s">phone, in person</span><span class="mono">15 h</span></div>
+   <div class="sec" style="padding-left:20px"><span style="flex:1">Small offices</span><span class="step"><b><i>−</i></b><span class="v mono">10 h</span><b><i>+</i></b></span></div>
+   <div style="padding:0 0 8px 20px"><span class="seg"><span>Email</span><span class="on">Phone</span><span>In person</span></span></div>
+   <div class="sec" style="padding-left:20px"><span style="flex:1">Coworking spaces</span><span class="step"><b><i>−</i></b><span class="v mono">5 h</span><b><i>+</i></b></span></div>
+   <div style="padding:0 0 8px 20px"><span class="seg"><span>Email</span><span>Phone</span><span class="on">In person</span></span></div>
+   <div class="sec" style="padding-left:20px;color:var(--muted);font-size:13px">Channels wear out. <u style="color:var(--sales);margin-left:4px">More</u></div>
+   <div class="sec"><span>▸</span><span class="t">Team</span><span class="s">4 people</span><span class="mono">8 h</span></div>
+   <div class="sec"><span>▸</span><span class="t">Office</span><span class="s">5 of 5 desks used</span></div>
+  </div>
+ </div>
+ <div class="nav"><div><i></i>Inbox (3)</div><div class="on"><i></i>Plan</div><div><i></i>Pipeline</div><div><i></i>Market</div><div><i></i>Finance</div></div>
+</div></div>
+
+<div><p class="cap"><b>Finance</b>. Statement, office and ownership as cards. The office card offers the next stage when the game offers it (an inbox event triggers it, the card only shows the state).</p>
+<div class="ph">
+ <div class="tb"><div class="logo">K</div><div style="flex:1"><div class="h" style="font-size:17px;line-height:1.1">Kantino GmbH</div><div style="font-size:12px;color:var(--muted)">Week 78 of 104</div></div><button class="pill primary" style="font-weight:700">End week</button></div>
+ <div class="band"><div><div class="lab">Cash</div><div class="mono">€84.3k</div></div><div><div class="lab">Runway</div><div class="mono">Covered</div></div><div><div class="lab">Revenue</div><div class="mono">€18.6k</div></div><div><div class="lab">Customers</div><div class="mono">31</div></div></div>
+ <div class="body">
+  <div class="card" style="padding:12px 14px"><div class="lab">Cash flow</div><div class="mono" style="font-size:26px">€84,300</div>
+   <div style="display:flex;align-items:flex-end;gap:4px;height:56px;margin:8px 0"><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:25px;background:var(--good)"></div><div style="width:9px;height:35px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:30px;background:var(--good)"></div><div style="width:9px;height:40px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:25px;background:var(--good)"></div><div style="width:9px;height:30px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:35px;background:var(--good)"></div><div style="width:9px;height:40px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:40px;background:var(--good)"></div><div style="width:9px;height:35px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:30px;background:var(--good)"></div><div style="width:9px;height:45px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:45px;background:var(--good)"></div><div style="width:9px;height:40px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:35px;background:var(--good)"></div><div style="width:9px;height:45px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:50px;background:var(--good)"></div><div style="width:9px;height:40px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:40px;background:var(--good)"></div><div style="width:9px;height:45px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:45px;background:var(--good)"></div><div style="width:9px;height:50px;background:#B4BCC6"></div></div><div style="display:flex;gap:1px;align-items:flex-end"><div style="width:9px;height:25px;background:var(--good)"></div><div style="width:9px;height:40px;background:#B4BCC6"></div></div></div>
+   <div class="sec"><span style="flex:1">Received this week</span><span class="mono up">€4,900</span></div>
+   <div class="sec"><span style="flex:1">Paid out this week</span><span class="mono">€8,000</span></div></div>
+  <div class="card" style="padding:12px 14px"><div class="lab">Office</div>
+   <div class="sec" style="border-top:0"><span style="flex:1;font-weight:600">Office floor</span><span class="mono">stage 4 of 5</span></div>
+   <div class="sec"><span style="flex:1">Desks</span><span class="mono">5 of 5 used</span></div>
+   <div class="sec"><span style="flex:1">Rent</span><span class="mono">€4,500 a month</span></div>
+   <div class="sec" style="color:var(--muted);font-size:13px">A full office means no new hire until you move.</div></div>
+  <div class="card" style="padding:12px 14px"><div class="lab">Cap table</div>
+   <div style="display:flex;height:12px;border-radius:4px;overflow:hidden;margin:8px 0"><div style="width:82%;background:var(--accent)"></div><div style="width:18%;background:#B4BCC6"></div></div>
+   <div class="sec" style="border-top:0"><span style="flex:1">You</span><span class="mono">82%</span></div>
+   <div class="sec"><span style="flex:1">Angel: Dr. Ilse Brand</span><span class="mono">18%</span></div></div>
+ </div>
+ <div class="nav"><div><i></i>Inbox (3)</div><div><i></i>Plan</div><div><i></i>Pipeline</div><div><i></i>Market</div><div class="on"><i></i>Finance</div></div>
+</div></div>
+
+<div><p class="cap"><b>Occupancy</b>, Seeblick established (accent per scenario). The bookings calendar becomes a heat grid by week; occupancy and average rate lead the band.</p>
+<div class="ph" style="--accent:#2B5F8A">
+ <div class="tb"><div class="logo">S</div><div style="flex:1"><div class="h" style="font-size:17px;line-height:1.1">Gasthaus Seeblick</div><div style="font-size:12px;color:var(--muted)">Week 61 of 104 · June</div></div><button class="pill primary" style="font-weight:700">End week</button></div>
+ <div class="band"><div><div class="lab">Cash</div><div class="mono">€41.2k</div></div><div><div class="lab">Runway</div><div class="mono">31 wks</div></div><div><div class="lab">Occupancy</div><div class="mono">78%</div></div><div><div class="lab">Avg rate</div><div class="mono">€128</div></div></div>
+ <div class="body">
+  <div style="display:flex;align-items:baseline;gap:8px"><span class="h" style="font-size:20px">Occupancy</span><span style="color:var(--muted)">next 8 weeks, rooms booked</span></div>
+  <div class="card" style="padding:12px">
+   <div class="cal"><div class="h0"></div><div class="h0" style="justify-content:center">M</div><div class="h0" style="justify-content:center">T</div><div class="h0" style="justify-content:center">W</div><div class="h0" style="justify-content:center">T</div><div class="h0" style="justify-content:center">F</div><div class="h0" style="justify-content:center">S</div><div class="h0" style="justify-content:center">S</div><div class="h0">W61</div><div style="background:#8FB0C8;color:#14181F" class="mono">5</div><div style="background:#8FB0C8;color:#14181F" class="mono">6</div><div style="background:#8FB0C8;color:#14181F" class="mono">5</div><div style="background:#8FB0C8;color:#14181F" class="mono">6</div><div style="background:#2B5F8A;color:#fff" class="mono">10</div><div style="background:#8FB0C8;color:#14181F" class="mono">8</div><div style="background:#8FB0C8;color:#14181F" class="mono">7</div><div class="h0">W62</div><div style="background:#8FB0C8;color:#14181F" class="mono">8</div><div style="background:#8FB0C8;color:#14181F" class="mono">5</div><div style="background:#8FB0C8;color:#14181F" class="mono">5</div><div style="background:#8FB0C8;color:#14181F" class="mono">9</div><div style="background:#2B5F8A;color:#fff" class="mono">10</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">10</div><div class="h0">W63</div><div style="background:#8FB0C8;color:#14181F" class="mono">8</div><div style="background:#8FB0C8;color:#14181F" class="mono">5</div><div style="background:#8FB0C8;color:#14181F" class="mono">8</div><div style="background:#8FB0C8;color:#14181F" class="mono">9</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div class="h0">W64</div><div style="background:#8FB0C8;color:#14181F" class="mono">5</div><div style="background:#8FB0C8;color:#14181F" class="mono">9</div><div style="background:#8FB0C8;color:#14181F" class="mono">8</div><div style="background:#8FB0C8;color:#14181F" class="mono">6</div><div style="background:#8FB0C8;color:#14181F" class="mono">9</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div class="h0">W65</div><div style="background:#8FB0C8;color:#14181F" class="mono">9</div><div style="background:#2B5F8A;color:#fff" class="mono">10</div><div style="background:#8FB0C8;color:#14181F" class="mono">9</div><div style="background:#2B5F8A;color:#fff" class="mono">10</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div class="h0">W66</div><div style="background:#2B5F8A;color:#fff" class="mono">10</div><div style="background:#2B5F8A;color:#fff" class="mono">10</div><div style="background:#8FB0C8;color:#14181F" class="mono">6</div><div style="background:#8FB0C8;color:#14181F" class="mono">7</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div class="h0">W67</div><div style="background:#8FB0C8;color:#14181F" class="mono">9</div><div style="background:#8FB0C8;color:#14181F" class="mono">8</div><div style="background:#8FB0C8;color:#14181F" class="mono">9</div><div style="background:#8FB0C8;color:#14181F" class="mono">8</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div class="h0">W68</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div style="background:#2B5F8A;color:#fff" class="mono">10</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">12</div><div style="background:#2B5F8A;color:#fff" class="mono">11</div></div>
+   <div style="display:flex;gap:10px;margin-top:10px;font-size:12px;color:var(--muted);align-items:center"><span style="width:14px;height:14px;background:#E8EEF3;border-radius:3px"></span>empty<span style="width:14px;height:14px;background:#8FB0C8;border-radius:3px"></span>half<span style="width:14px;height:14px;background:#2B5F8A;border-radius:3px"></span>full</div>
+  </div>
+  <div class="card" style="padding:12px 14px"><div class="lab">By guest type, last 4 weeks</div>
+   <div class="sec" style="border-top:0"><span style="flex:1">Leisure couples</span><span class="mono">142 nights · €136</span></div>
+   <div class="sec"><span style="flex:1">Project guests</span><span class="mono">88 nights · €94</span></div>
+   <div class="sec"><span style="flex:1">Groups and weddings</span><span class="mono">1 house · €1,650</span></div></div>
+  <div class="card" style="padding:12px 14px"><div class="lab">Reviews</div><div class="sec" style="border-top:0"><span class="mono" style="font-size:20px">4.4</span><span style="flex:1;color:var(--muted)">from 63 reviews</span><span class="up">▲ 0.1</span></div></div>
+ </div>
+ <div class="nav"><div><i></i>Inbox</div><div><i></i>Plan</div><div class="on"><i></i>Occupancy</div><div><i></i>Market</div><div><i></i>Finance</div></div>
+</div></div>
+
+</div></body></html>
