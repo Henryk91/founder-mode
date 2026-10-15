@@ -254,6 +254,14 @@ export const RoundConfigSchema = z.object({
   // The bar as investors state it, shown in the round's description.
   barText: z.string().min(1),
   amountCents: rangeOf(Cents.positive()),
+  // Before the round's visible revenue bar, terms are deliberately worse: less money for more
+  // equity. It makes a premature raise costly in the offer itself, not in a hidden pass chance.
+  weakTractionTerms: z
+    .object({
+      amountFactor: z.number().positive().max(1),
+      preMoneyFactor: z.number().positive().max(1),
+    })
+    .optional(),
   // Pre-money valuation: the larger of the floor and this multiple of yearly revenue.
   preMoneyFloorCents: Cents.positive(),
   revenueMultiple: z.number().positive(),
@@ -268,6 +276,8 @@ export const RoundConfigSchema = z.object({
 
 export const FundingConfigSchema = z.object({
   rounds: z.object({ angel: RoundConfigSchema, seed: RoundConfigSchema }),
+  // Once the first round closes, the company pays the founder this monthly salary.
+  founderSalaryCents: Cents.positive().optional(),
   // Hidden appetite of each investor: the score they need, uniform in this range.
   appetite: rangeOf(z.number().positive()),
   noiseSd: z.number().nonnegative(),

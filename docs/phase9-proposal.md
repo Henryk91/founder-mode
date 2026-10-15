@@ -102,7 +102,7 @@ Name, role, rate per hour, hours a week, cost per week, "starts next week", "one
 
 **19. The freelancer is a decision, not a default (60 weeks, each scenario, 10,000 seeds).** `validate_then_build_freelance_build` against `validate_then_build` on the same seeds, split by the build hours of the market the bot chose (observable on screen): with 120 h or more it gains at least 2 points; with 90 h or less it loses or stays within its margin of 0. Overall it is not more than 5 points ahead. Within its own margin of a limit counts as at the limit, as for 17.
 
-**20. Rent for a burst, hire for the long run (long mode, each scenario, 10,000 seeds).** Same seeds: for the build burst, `freelance_burst` beats `hire_burst` by at least 2 points; for steady sales from the first customer to the end, `hire_steady` beats `freelance_steady` by at least 2 points.
+**20. Rent for a burst, hire for the long run (long mode, each scenario, 10,000 seeds).** Same seeds: for the build burst, `freelance_burst` loses less than `hire_burst` by at least 2 points; for steady sales from the week the business can carry a part-time salesperson to the end, `hire_steady` loses less than `freelance_steady` by at least 2 points. It does not require either choice to beat the solo founder: at this company size that would reward an uneconomic hire.
 
 Also reported, without a target: the freelancer variants in targets 2, 3, 6 and 15. A freelancer variant above 45% would show the freelancer is too cheap.
 
@@ -676,4 +676,3 @@ The angel ticket and round sizes are in 8.1 (BAND survey, PitchBook DACH 2025, K
 ### 11.5 After tuning (decisions log, part D)
 
 Changed from 11.2: angel bar 3,000 EUR a month; appetite 1.4 to 2.0; growth factor capped at 1.5; score uses revenue against the bar directly (`scoreExponent` 1); first meetings 5 h each (preparation and follow up included), angel second look 5 h, partner meeting 8 h, seed due diligence 16 h, angel closing 3 weeks; an investor is met at most once a run; existing investors' mood scales the next round's appetite (pleased 0.8, worried 1.25); introductions (pleased) and check-ins (worried) recur every 8 weeks. Targets 33 to 35 and 37 pass; 31, 32 and 36 are open issues (raising on traction +3.2 to +3.9 over bootstrap; updates do not pay for their hours).
-

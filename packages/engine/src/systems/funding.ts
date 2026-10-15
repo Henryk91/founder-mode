@@ -222,9 +222,17 @@ function judge(
 /** Terms for an investor who says yes: amount from the round's range, valuation by the rule. */
 function termsFor(state: GameState, round: RoundConfig, rng: Rng): Investor['terms'] {
   const step = 1_000_000
-  const amount = Math.round(rng.range(round.amountCents.min, round.amountCents.max) / step) * step
   const now = monthlyNow(state)
-  const pre = Math.max(round.preMoneyFloorCents, Math.round(round.revenueMultiple * 12 * now))
+  const weak = now < round.barMonthlyCents ? round.weakTractionTerms : undefined
+  const amountFactor = weak?.amountFactor ?? 1
+  const preMoneyFactor = weak?.preMoneyFactor ?? 1
+  const amount =
+    Math.round((rng.range(round.amountCents.min, round.amountCents.max) * amountFactor) / step) *
+    step
+  const pre = Math.max(
+    Math.round(round.preMoneyFloorCents * preMoneyFactor),
+    Math.round(round.revenueMultiple * 12 * now * preMoneyFactor),
+  )
   return {
     amountCents: amount,
     preMoneyCents: pre,
@@ -266,6 +274,7 @@ export function applyFunding(input: GameState, plan: WeekPlan, rng: Rng): Fundin
   const week = input.week
   let f: FundingState = input.funding
   let hidden: HiddenFunding = input.hidden.funding
+  let company = input.company
   const clampConf = (c: number) => Math.min(1, Math.max(0, c))
   const setInvestor = (id: string, change: Partial<Investor>) => {
     f = { ...f, investors: f.investors.map((i) => (i.id === id ? { ...i, ...change } : i)) }
@@ -429,7 +438,18 @@ export function applyFunding(input: GameState, plan: WeekPlan, rng: Rng): Fundin
       }
     }
     // The first money in starts the investors' confidence where the scenario says.
-    if (f.stakes.length === 1) hidden = { ...hidden, confidence: cfg.startConfidence }
+    if (f.stakes.length === 1) {
+      hidden = { ...hidden, confidence: cfg.startConfidence }
+      if (cfg.founderSalaryCents && !company.fixedCosts.some((c) => c.id === 'founder_salary')) {
+        company = {
+          ...company,
+          fixedCosts: [
+            ...company.fixedCosts,
+            { id: 'founder_salary', name: 'Founder salary', monthlyCents: cfg.founderSalaryCents },
+          ],
+        }
+      }
+    }
     out.investmentCents += inv.terms.amountCents
     out.entries.push({
       kind: 'round_closed',
@@ -441,7 +461,7 @@ export function applyFunding(input: GameState, plan: WeekPlan, rng: Rng): Fundin
   }
 
   if (f === input.funding && hidden === input.hidden.funding) return out
-  out.state = { ...input, funding: f, hidden: { ...input.hidden, funding: hidden } }
+  out.state = { ...input, company, funding: f, hidden: { ...input.hidden, funding: hidden } }
   return out
 }
 

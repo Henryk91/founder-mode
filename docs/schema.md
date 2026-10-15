@@ -845,6 +845,10 @@ type PostMortem = {
 - Bots: `RunResult.funding` (raised, rounds, founder share and value, first money week, rounds started, bankrupt while or after raising, pitched too early); report part `funding` (`--parts funding`, long mode), targets 31 to 37 (`evaluateFundingTargets`), the "Raising money" table; Growing counts as a win (`isWin`). `docs/seeds.md` rows can be long mode (`kantino (long)`), with Growing reached by the raising bots.
 - Web: Plan section `raise` ("Money from investors", organised "Raise"), `setFunding`, `noFunding()`; a chasing and admin chip on every working member and the freelancer; "Who owns what" (organised "Cap table") on the Money tab; investment weeks marked on the statement; landing tests left per market in long mode; the post-mortem's funding lines; best runs count Growing as a win and show the founder's share (`RunRecord.founderShareBp`).
 
+### Plan 2 step 5: funded founder salary and weak-traction terms (engine 0.14.0)
+
+- Content: `FundingConfig.founderSalaryCents?` becomes a visible fixed company cost named "Founder salary" when the first round closes. `RoundConfig.weakTractionTerms?` lowers the cheque and pre-money valuation before that round's visible revenue bar, so a premature raise is costly in its terms rather than in a hidden pass chance. Both are Kantino long-mode content: its changed fingerprint refuses old long saves while all 60 week replays remain unchanged.
+
 ### Step 3: situational events as a general system (engine 0.14.0)
 
 - Condition language (closed grammar `path op number`, zod-validated): new paths `team.size`, `runwayWeeks` (the runway shown, or the weeks left when money is not shrinking), and the sender paths `sender.overdue` and `sender.silent`. Sender paths read the message's sender and may only appear in an effect's `when` of an event with a customer or lead sender (`EventSchema` refuses them in `when`/`trigger` and in events from nobody). `SENDER_PATHS`.

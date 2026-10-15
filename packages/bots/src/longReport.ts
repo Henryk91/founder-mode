@@ -69,10 +69,11 @@ export function evaluateLongTargets(input: ReportInput): Target[] {
   const std = evaluateTargets(input)
   const t = (id: number) => std.find((x) => x.id === id)!
 
-  // 20: freelancer or hire, each in its own situation.
+  // 20: rent loses less for a burst; a hire loses less for steady work. At this company's size
+  // neither necessarily beats the solo founder, so the comparison is between the two choices.
   const sit = (kind: string, by: string) => find(input, `team:validate_then_build_${kind}_${by}`)
   const t20 = (() => {
-    const text = `Freelancer or hire is each the right call in its own situation: for a burst (the build, from week 3 until it ships), a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady work (selling from the week the business can carry a part time salesperson by the careful rule, to the end), a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. Both on top of the solo careful bot, on the same seeds${wideNote}`
+    const text = `Renting loses less than hiring for a burst of work, and hiring loses less than renting for steady work: for the build burst (from week 3 until it ships), a 20 h freelance developer beats a part time developer hire by at least 2 points; for steady selling (from the week the business can carry a part time salesperson by the careful rule, to the end), a part time salesperson hire beats a 20 h freelance salesperson by at least 2 points. Same seeds${wideNote}`
     const bf = sit('burst', 'freelancer')
     const bh = sit('burst', 'hire')
     const sf = sit('steady', 'freelancer')
