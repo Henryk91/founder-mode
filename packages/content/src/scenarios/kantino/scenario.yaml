@@ -360,8 +360,8 @@ modes:
     # Raising money (Part D, docs/phase9-proposal.md section 11). Amounts are realistic for a
     # Munich start-up (8.1 and 11.4); the pre-money floors are estimates.
     funding:
-      # The company starts paying its founder only after outside money arrives: a modest 3,000 EUR
-      # monthly salary, on top of the living-cost draw that had previously come from savings.
+      # The company starts paying its founder only after outside money arrives: a modest 2,500 EUR
+      # monthly salary (plan 2 step 5), on top of the living costs that came from savings.
       founderSalaryCents: 250000
       rounds:
         angel:
