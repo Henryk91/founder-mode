@@ -62,16 +62,27 @@ All targets 1 to 11 and 13 to 19 pass, unchanged since plan 1. At the limit: 11 
 
 ### Seeblick
 
-SEEBLICK_TABLE
+| Target | Result | Status |
+|---|---|---|
+| T1 careful 25 to 45% | 27.2% (was 23.0) | pass |
+| T2, T4, T5, T8, T9, T10, T12 | see `docs/balancing.md` | pass |
+| T3 spread | 8.2 | pass |
+| T6 blind effort at most a third of reading | reading +7.7, effort +5.7 | fail (open) |
+| T7 seasonal pricing 2 to 10 | -0.2 ±1.8 (was +2.0) | fail within noise (open; see decisions, plan 2 audit) |
+| T11 cancellation policy | strict +1.8 overall; project guests -2.5 ±2.2, not beyond its margin | fail within noise (open) |
+| T13 naive careful | 27.8%, gap +0.6 | pass |
+| T14 contract kinds | permanent and seasonal never signed; part time +3.4 ±4.6 | fail (open) |
+| T15 to T18 (L1 to L4) | -1.2; -22.5; gap +29.1, misses 1.2%; named | pass |
 
 ## Open issues (closest result and options)
 
 1. **Tourism T14, all three:** a contract kind never decides a run, because the bots sign contracts only once a run is already won (Hinterhof: weeks 43 to 95). Win rates cannot show a contract paying. Options: judge T14 on money (profit or wealth at the end on signed seeds) instead of wins; or a bot that commits to a contract early in a named situation (a steady segment), accepting the risk. One value round (contract quality doubled) changed nothing.
 2. **Hinterhof T2 (no-tests 16.6%):** one dining room serves every segment, so building everything without tests still finds guests. Options in decisions.
 3. **Hinterhof T7 (+0.0 ±1.8):** fails by 0.2 points after moving within noise; seasonal pricing pays little in a restaurant whose menus barely change with the season.
-4. **Seeblick T6:** blind effort keeps about two thirds of reading's gain; most effortful answers at Seeblick are simply good. Options: scarcer founder hours in season, fewer events with unconditional benefits.
-5. **Gratwanderung school demand:** 5 to 8 groups at peak (spec 0.3 to 1.2), down from 9 to 12; the spec's figure cannot carry a school-focused company.
-6. **Kantino long T20, T27, T32, T33:** carried to plan 3 step 2, which changes hiring (desks). T33 conflicts with T32 under the current bots (raise_early raises money in 0.2% of runs).
+4. **Seeblick T7 and T11:** fail within noise after the room night cost that fixed T1; 25, 27.50 and 30 EUR were measured.
+5. **Seeblick T6:** blind effort keeps about two thirds of reading's gain; most effortful answers at Seeblick are simply good. Options: scarcer founder hours in season, fewer events with unconditional benefits.
+6. **Gratwanderung school demand:** 5 to 8 groups at peak (spec 0.3 to 1.2), down from 9 to 12; the spec's figure cannot carry a school-focused company.
+7. **Kantino long T20, T27, T32, T33:** carried to plan 3 step 2, which changes hiring (desks). T33 conflicts with T32 under the current bots (raise_early raises money in 0.2% of runs).
 
 ## For Henry to review, in priority order
 
