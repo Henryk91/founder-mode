@@ -12,6 +12,7 @@ import hinterhofProduct from '../scenarios/hinterhof/messages/events/product.yam
 import hinterhofFinance from '../scenarios/hinterhof/messages/events/finance.yaml?raw'
 import hinterhofFounder from '../scenarios/hinterhof/messages/events/founder.yaml?raw'
 import hinterhofTeam from '../scenarios/hinterhof/messages/events/team.yaml?raw'
+import hinterhofOffice from '../scenarios/hinterhof/messages/events/office.yaml?raw'
 import hinterhofNames from '../scenarios/hinterhof/messages/company_names.yaml?raw'
 import { FUNDING_EVENTS, NO_EVENTS, TOURISM_EVENTS } from './shared'
 
@@ -33,4 +34,5 @@ export const sources: ScenarioSources = {
   sharedEvents: TOURISM_EVENTS,
   longEvents: NO_EVENTS,
   fundingEvents: FUNDING_EVENTS,
+  officeEvents: hinterhofOffice,
 }

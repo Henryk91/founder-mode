@@ -12,6 +12,7 @@ import gratwanderungProduct from '../scenarios/gratwanderung/messages/events/pro
 import gratwanderungFinance from '../scenarios/gratwanderung/messages/events/finance.yaml?raw'
 import gratwanderungFounder from '../scenarios/gratwanderung/messages/events/founder.yaml?raw'
 import gratwanderungTeam from '../scenarios/gratwanderung/messages/events/team.yaml?raw'
+import gratwanderungOffice from '../scenarios/gratwanderung/messages/events/office.yaml?raw'
 import gratwanderungNames from '../scenarios/gratwanderung/messages/company_names.yaml?raw'
 import { FUNDING_EVENTS, NO_EVENTS, TOURISM_EVENTS } from './shared'
 
@@ -33,4 +34,5 @@ export const sources: ScenarioSources = {
   sharedEvents: TOURISM_EVENTS,
   longEvents: NO_EVENTS,
   fundingEvents: FUNDING_EVENTS,
+  officeEvents: gratwanderungOffice,
 }

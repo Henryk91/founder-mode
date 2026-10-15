@@ -1,3 +1,4 @@
+import { moveOffice } from '../src/systems/office'
 import { loadScenario, scenarioModes, type Scenario } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
 import {
@@ -132,8 +133,9 @@ function hireOne(s: GameState, role: 'developer' | 'salesperson'): GameState {
 }
 
 describe('several hires in long mode', () => {
+  // Plan 3: every person needs a desk; the office floor has six.
   const rich = (seed: string): GameState => {
-    const s = createGame(quietLong(), seed)
+    const s = moveOffice(createGame(quietLong(), seed), 'office_floor')
     return { ...s, company: { ...s.company, cashCents: 100_000_000 } }
   }
 
