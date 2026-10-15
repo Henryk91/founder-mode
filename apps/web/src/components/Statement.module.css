@@ -84,7 +84,7 @@
 
 .hand {
   margin: 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 700;
   font-size: 26px;
   line-height: 1;
@@ -132,4 +132,65 @@
   font-weight: 500;
   font-size: 23px;
   line-height: 1.15;
+}
+
+/* Plan 3, the established stage: Cash flow and Calendar cards. */
+.flow,
+.calendar {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.flowTitle {
+  margin: 0 0 6px;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.flowBars {
+  display: block;
+  width: 100%;
+  height: 60px;
+  margin-top: 12px;
+}
+
+.flowIn {
+  fill: var(--good);
+}
+
+.flowOut {
+  fill: #b9bfc8;
+}
+
+.calendarRow {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  min-height: 44px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+:global([data-stage='established']) .lines {
+  border-top: 0;
+  gap: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+:global([data-stage='established']) .line {
+  min-height: 44px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+}
+
+:global([data-stage='established']) .line > span:last-child {
+  font-family: var(--font-mono);
+  font-weight: 600;
 }

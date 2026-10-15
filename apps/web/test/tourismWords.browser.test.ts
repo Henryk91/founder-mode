@@ -6,6 +6,7 @@ import { TOURISM_STRATEGIES } from '@founder-mode/bots/src/strategies/tourism'
 import { loadScenario, type ScenarioId } from '@founder-mode/content'
 import { createGame, endWeek, getView, respond, toSave, type SaveFile } from '@founder-mode/engine'
 import { CHROMIUM, WEBKIT } from './browsers'
+import { ALLOWED, WORDS } from './screen'
 
 /**
  * Tourism screens speak tourism (tourism fixes, item 12): no bugs, customers, landing pages,
@@ -13,21 +14,6 @@ import { CHROMIUM, WEBKIT } from './browsers'
  * careful tourism bot plays each scenario into its summer and to its end; the plan with every
  * section open, the week's results, Money, Help and the post-mortem are read at 390 and 1440 px.
  */
-const WORDS = [
-  /\bbugs?\b/i,
-  /\bcustomers?\b/i,
-  /landing page/i,
-  /\bpre-?sales?\b/i,
-  /\bdemos?\b/i,
-  /per month/i,
-  /\bshipped\b/i,
-  /\bleads?\b/i,
-  /\btrials?\b/i,
-]
-
-/** Where a listed word is right: fixed costs do run per month. */
-const ALLOWED = [/^Company costs per month \(/]
-
 /** A seed and a week in season where the careful bot is still in business. */
 const RUNS: { id: ScenarioId; seed: string; week: number }[] = [
   { id: 'gratwanderung', seed: 'shot-1', week: 20 },

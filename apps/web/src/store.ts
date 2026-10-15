@@ -235,6 +235,11 @@ export type StoreDeps = {
   profiles?: ProfileStorage
   /** Scenarios offered on the Start screen. The built in ones unless given. */
   catalogue?: () => ScenarioAbout[]
+  /**
+   * Plan 3, development only: show every run in this UI stage (`?stage=established`), to look at
+   * a stage without playing to it. `main.tsx` passes it only in a dev build.
+   */
+  previewStage?: PlayerView['company']['uiStage']
 }
 
 /**
@@ -284,6 +289,10 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
     const runsTrouble = (scenarioId: string) =>
       profiles.unreadable(scenarioId) ? ('unreadable' as const) : null
 
+    const previewed = (view: PlayerView): PlayerView =>
+      deps.previewStage
+        ? { ...view, company: { ...view.company, uiStage: deps.previewStage } }
+        : view
     const refresh = (patch: Partial<UiState> = {}) => {
       if (!game) {
         set({ view: null, plan: emptyPlan(), plannedHours: 0, issues: [], report: null, ...patch })
@@ -295,7 +304,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       set({
         postMortem: ended?.postMortem ?? null,
         suggestion: ended?.suggestion ?? null,
-        view: getView(game),
+        view: previewed(getView(game)),
         plan,
         plannedHours: check.plannedHours,
         issues: check.issues,

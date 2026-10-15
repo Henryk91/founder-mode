@@ -62,6 +62,8 @@ const labels = {
   'crash.start': 'Back to the start',
 
   'bar.week': 'Week {week} of {max}',
+  'bar.weekPlace': 'Week {week} of {max} · {place}',
+  'bar.company': { scrappy: '{name}', organised: '{name}', established: '{name} GmbH' },
   'bar.endWeek': 'End week',
   'bar.endWeekBlocked': 'Fix the plan first',
   /** Next to buttons that are off because the week's hours are used up. */
@@ -72,7 +74,7 @@ const labels = {
   'tab.pipeline': { scrappy: 'Who pays', organised: 'Pipeline' },
   'tab.inbox': 'Inbox',
   'tab.team': 'Team',
-  'tab.money': 'Money',
+  'tab.money': { scrappy: 'Money', organised: 'Money', established: 'Finance' },
   'tab.inboxCount': 'Inbox ({n})',
   'tab.nav': 'Main sections',
 
@@ -81,7 +83,7 @@ const labels = {
   'unit.weeks.one': '{n} week',
   'unit.weeks.other': '{n} weeks',
 
-  'plan.title': 'My week',
+  'plan.title': { scrappy: 'My week', organised: 'My week', established: 'This week' },
   'plan.energy': 'Energy {energy} of {max}',
   'plan.energyLow': 'Running on fumes. Below {low} everything you try works less well.',
   'plan.energyZero.one': 'Empty. One more week at 0 and you burn out.',
@@ -89,12 +91,28 @@ const labels = {
   'plan.issue.too_many_hours': 'That is more than {max} hours. Take something out.',
   'plan.issue.transfer_exceeds_savings': 'You do not have that much in savings.',
   'plan.issue.other': 'Something in this plan does not add up.',
-  'plan.section.talk': 'Talk to people',
-  'plan.section.build': 'Build and fix',
+  'plan.section.talk': {
+    scrappy: 'Talk to people',
+    organised: 'Talk to people',
+    established: 'Customer research',
+  },
+  'plan.section.build': {
+    scrappy: 'Build and fix',
+    organised: 'Build and fix',
+    established: 'Product',
+  },
   'plan.section.fix': 'Fix bugs',
-  'plan.section.sell': 'Find customers',
-  'plan.section.demos': 'Demos and follow ups',
-  'plan.section.rest': 'Rest',
+  'plan.section.sell': {
+    scrappy: 'Find customers',
+    organised: 'Find customers',
+    established: 'Outreach',
+  },
+  'plan.section.demos': {
+    scrappy: 'Demos and follow ups',
+    organised: 'Demos and follow ups',
+    established: 'Sales meetings',
+  },
+  'plan.section.rest': { scrappy: 'Rest', organised: 'Rest', established: 'Time off' },
   'plan.interviews': 'Interviews: {segment}',
   'plan.featureShipped': 'Shipped',
   'plan.bugs.one': '{n} bug open',
@@ -599,7 +617,7 @@ const labels = {
   'results.entry.loan_paid_out': '{bank} paid out {amount}.',
 
   // Plan 3: office stages.
-  'plan.section.office': { scrappy: 'Where you work', organised: 'Office' },
+  'plan.section.office': { scrappy: 'Where you work', organised: 'Office', established: 'Office' },
   'plan.sum.office': '{name}, {stage}',
   'plan.sum.officeMoving': 'Moving, ready in week {week}',
   'plan.sum.officeNotice': 'Notice given, out in week {week}',
@@ -632,7 +650,8 @@ const labels = {
   'results.entry.office_moved': 'You moved into {place}.',
   'results.entry.office_notice': 'Notice given on {place}. You are out in week {week}.',
   'results.entry.office_left': 'You left {place} for {back}. {deposit} of deposit came back.',
-  'results.entry.ui_established': 'The screens have grown up with the company.',
+  'results.entry.ui_established':
+    "You moved onto the office floor. The kitchen table is now somebody else's problem.",
   'loan.stage': 'A bigger place on offer: {name}',
   'loan.stage.list': 'List it',
   'loan.stage.listed': 'Listed',
@@ -658,8 +677,8 @@ const labels = {
   'loan.reason.too_many': 'you already have as many loans as the bank will give you.',
   'results.entry.review.one': '{n} new review. Rating {rating} from {reviews}.',
   'results.entry.review.other': '{n} new reviews. Rating {rating} from {reviews}.',
-  'tab.calendar': { scrappy: 'Bookings', organised: 'Calendar' },
-  'plan.section.roster': { scrappy: 'Who works', organised: 'Roster' },
+  'tab.calendar': { scrappy: 'Bookings', organised: 'Calendar', established: 'Occupancy' },
+  'plan.section.roster': { scrappy: 'Who works', organised: 'Roster', established: 'Rota' },
   'plan.section.guests': { scrappy: 'Getting guests', organised: 'Channels' },
   'plan.section.prices': { scrappy: 'Prices and rules', organised: 'Prices and policy' },
   'plan.hint.roster': 'Shifts cost money whether guests come or not.',
@@ -966,9 +985,21 @@ const labels = {
 
   'desk.centreNav': 'Plan or market',
 
-  'inbox.deskTitle.one': 'On your desk · {n} open',
-  'inbox.deskTitle.other': 'On your desk · {n} open',
-  'inbox.deskTitle.zero': 'On your desk',
+  'inbox.deskTitle.one': {
+    scrappy: 'On your desk · {n} open',
+    organised: 'On your desk · {n} open',
+    established: 'Inbox · {n} open',
+  },
+  'inbox.deskTitle.other': {
+    scrappy: 'On your desk · {n} open',
+    organised: 'On your desk · {n} open',
+    established: 'Inbox · {n} open',
+  },
+  'inbox.deskTitle.zero': {
+    scrappy: 'On your desk',
+    organised: 'On your desk',
+    established: 'Inbox',
+  },
   'inbox.stamp.answered': 'Answered',
   'inbox.stamp.last': 'Last week to answer',
 
@@ -985,9 +1016,13 @@ const labels = {
   'needs.hours.one': '{n} hour of a normal week still unplanned',
   'needs.hours.other': '{n} hours of a normal week still unplanned',
 
-  'plan.section.team': 'Hiring',
-  'plan.section.raise': { scrappy: 'Money from investors', organised: 'Raise' },
-  'plan.section.loan': { scrappy: 'Bank loan', organised: 'Loan' },
+  'plan.section.team': { scrappy: 'Hiring', organised: 'Hiring', established: 'Team' },
+  'plan.section.raise': {
+    scrappy: 'Money from investors',
+    organised: 'Raise',
+    established: 'Investors',
+  },
+  'plan.section.loan': { scrappy: 'Bank loan', organised: 'Loan', established: 'Financing' },
   'plan.repeat': 'Same as last week',
   'plan.act.sales': 'Sales',
   'plan.act.build': 'Building',
@@ -1032,7 +1067,17 @@ const labels = {
   'money.trend.other': 'Balance, last {n} weeks. Your savings: {savings}',
   'money.savingsLine': 'Your savings: {savings}',
 
-  'coming.title': 'Coming up',
+  'stat.team': 'Team',
+  'tour.heat.caption': 'Booked against what can be sold, per week and product',
+  'tour.heat.week': 'Week',
+  'tour.heat.cell': '{booked}/{capacity}',
+  'stat.teamValue': '{n} + you',
+  'coming.title': { scrappy: 'Coming up', organised: 'Coming up', established: 'Calendar' },
+  'money.cashFlow': 'Cash flow',
+  'money.flowWeeks.one': 'In and out, the last week',
+  'money.flowWeeks.other': 'In and out, the last {n} weeks',
+  'money.received': 'Received last week',
+  'money.paidOut': 'Paid out last week',
   'coming.week': 'W{week}',
   'coming.monthEnd': 'Month end. Costs {amount}, invoices go out',
   'coming.landing': 'Landing page result, {segment}',

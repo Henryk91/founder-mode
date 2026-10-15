@@ -162,3 +162,45 @@
   font-weight: 400;
   color: var(--ink-muted);
 }
+
+/*
+ * Plan 3, the established stage (docs/design/established.md): message cards. White, a 1 px line,
+ * 12 px corners, no tilt; an accent stripe on the left while a message waits for an answer.
+ * Choices full width with 8 px corners, hours and cost in muted text. The sticky note stays.
+ */
+:global([data-stage='established']) .letter,
+:global([data-stage='established']) .official {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface, #ffffff);
+  transform: none !important;
+}
+
+:global([data-stage='established']) .open {
+  border-left: 4px solid var(--accent);
+}
+
+:global([data-stage='established']) .from,
+:global([data-stage='established']) .officialHead {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+:global([data-stage='established']) .portrait {
+  display: none;
+}
+
+:global([data-stage='established']) .stamp,
+:global([data-stage='established']) .stampGood {
+  padding: 0;
+  border: 0;
+  transform: none;
+  font-size: 11px;
+}
+
+:global([data-stage='established']) .choice {
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+}

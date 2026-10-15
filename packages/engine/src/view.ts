@@ -17,7 +17,12 @@ import {
   presaleBatchesUsed,
   landingTestsUsed,
 } from './systems/experiments'
-import { monthlyFixedCostsCents, receivablesCents, runwayWeeks } from './systems/finance'
+import {
+  monthlyFixedCostsCents,
+  netChangeCents,
+  receivablesCents,
+  runwayWeeks,
+} from './systems/finance'
 import { committedHours } from './systems/founder'
 import { isOverdue, overdueWeeks } from './systems/invoices'
 import { nextMilestone, reachedMilestones } from './systems/milestones'
@@ -312,6 +317,10 @@ export function getView(state: GameState): PlayerView {
       customers: l.customers,
       runwayWeeks: l.runwayWeeks,
       investmentCents: l.investmentCents,
+      // Plan 3 (the cash flow card): money that came in and went out that week, as the runway
+      // counts it (`netChangeCents`); investment and loans paid out are not in either.
+      inCents: l.revenueCents + l.otherIncomeCents,
+      outCents: l.revenueCents + l.otherIncomeCents - netChangeCents(l),
     })),
   }
 }

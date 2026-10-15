@@ -1,8 +1,27 @@
 /*
- * Established stage tokens (plan 3, docs/design/established.md section 2). Applied when the
- * shell's data-stage is `established`; the accent comes per scenario through data-scenario.
+ * Established stage tokens (plan 3, docs/design/established.md section 2). Loaded only once a run
+ * reaches the established stage (App.tsx), with its heading font; applied by data-stage.
  * White cards on a cool grey, no ruled paper; the sticky note is the one bit of paper left.
  */
+/* Headings: Bricolage Grotesque, cut to Latin-1 like the other fonts (scripts/subset-fonts.mjs). */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('./fonts/bricolage-grotesque-700.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+20AC, U+2212;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 800;
+  src: url('./fonts/bricolage-grotesque-800.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+20AC, U+2212;
+}
+
 [data-stage='established'] {
   --ground: #eef0f3;
   --bar: #ffffff;
@@ -10,10 +29,11 @@
   --on-dark: #14181f;
   --on-dark-muted: #55606e;
   --paper: #ffffff;
+  --surface: #ffffff;
   --paper-grey: #f5f6f8;
   --ink: #14181f;
   --ink-muted: #55606e;
-  --rule: transparent;
+  --rule: #d9dee4;
   --line: #d9dee4;
   --soft: #f5f6f8;
   --good: #16663f;
@@ -26,11 +46,12 @@
   --focus-outer: #ffd34d;
   --primary: var(--accent);
   --on-primary: #ffffff;
-  --accent: #c8371f;
+  --accent: var(--scenario-accent, #c8371f);
   --on-accent: #ffffff;
 
   --font-head: 'Bricolage Grotesque', 'IBM Plex Sans', system-ui, sans-serif;
-  --font-hand: var(--font-body);
+  /* Caveat stays, but only on sticky notes written by people in the game. */
+  --font-paper: var(--font-body);
 
   --paper-radius: 12px;
   --panel-radius: 12px;
@@ -45,19 +66,22 @@
   --board-card-tilt: 0;
 }
 
-/* Accent per scenario; white text on each reaches 4.5:1 (checked in the a11y test). */
-[data-stage='established'][data-scenario='kantino'] {
-  --accent: #c8371f;
+/*
+ * Accent per scenario, set on <html> by the app (data-scenario) and inherited; white text on each
+ * reaches 4.5:1 (5.2 to 7.6). Zollstock's is ready in case it ever gets a long mode.
+ */
+[data-scenario='kantino'] {
+  --scenario-accent: #c8371f;
 }
-[data-stage='established'][data-scenario='zollstock'] {
-  --accent: #9a5b13;
+[data-scenario='zollstock'] {
+  --scenario-accent: #9a5b13;
 }
-[data-stage='established'][data-scenario='gratwanderung'] {
-  --accent: #2e6b4f;
+[data-scenario='gratwanderung'] {
+  --scenario-accent: #2e6b4f;
 }
-[data-stage='established'][data-scenario='hinterhof'] {
-  --accent: #8c3b2e;
+[data-scenario='hinterhof'] {
+  --scenario-accent: #8c3b2e;
 }
-[data-stage='established'][data-scenario='seeblick'] {
-  --accent: #2b5f8a;
+[data-scenario='seeblick'] {
+  --scenario-accent: #2b5f8a;
 }

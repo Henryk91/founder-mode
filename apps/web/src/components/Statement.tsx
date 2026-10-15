@@ -1,16 +1,19 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type Voice, voiceOf } from '../labels'
+import { count, label, stageOf, type Voice, voiceOf } from '../labels'
 import styles from './Statement.module.css'
 
 /** Weeks of balance in the trend line and lines in the statement. */
 const TREND_WEEKS = 8
 const STATEMENT_LINES = 4
 const COMING_UP = 4
+/** Plan 3: weeks of in and out bars on the established Cash flow card. */
+const FLOW_WEEKS = 12
 
 /** Balance, the trend of the last weeks, and the latest weekly changes. */
 export function BankStatement({ view }: { view: PlayerView }) {
   const stage = voiceOf(view)
+  if (stageOf(stage) === 'established') return <CashFlow view={view} />
   const recent = view.history.slice(-TREND_WEEKS)
   const lines = view.history
     .map((h, i) => ({
@@ -54,6 +57,55 @@ export function BankStatement({ view }: { view: PlayerView }) {
           ))}
         </ul>
       )}
+    </section>
+  )
+}
+
+/**
+ * Plan 3, the established stage: "Cash flow", the balance, the last 12 weeks of money in and out
+ * as paired bars (in green, out grey; the rows below say the same in words), and last week's.
+ */
+function CashFlow({ view }: { view: PlayerView }) {
+  const stage = voiceOf(view)
+  const weeks = view.history.slice(-FLOW_WEEKS)
+  const last = weeks.at(-1)
+  const top = Math.max(1, ...weeks.flatMap((w) => [w.inCents, w.outCents]))
+  const h = 60
+  return (
+    <section className={styles.flow} aria-label={label('money.cashFlow', stage)}>
+      <div className={styles.flowTitle}>{label('money.cashFlow', stage)}</div>
+      <div className={styles.balance}>{formatEuro(view.company.cashCents)}</div>
+      {weeks.length > 0 && (
+        <svg className={styles.flowBars} viewBox={`0 0 ${FLOW_WEEKS * 22} ${h}`} aria-hidden="true">
+          {weeks.map((w, i) => {
+            const inH = Math.round((w.inCents / top) * h)
+            const outH = Math.round((w.outCents / top) * h)
+            return (
+              <g key={w.week}>
+                <rect className={styles.flowIn} x={i * 22 + 2} y={h - inH} width="8" height={inH} />
+                <rect
+                  className={styles.flowOut}
+                  x={i * 22 + 11}
+                  y={h - outH}
+                  width="8"
+                  height={outH}
+                />
+              </g>
+            )
+          })}
+        </svg>
+      )}
+      <div className={styles.caption}>{count('money.flowWeeks', stage, weeks.length)}</div>
+      <ul className={styles.lines}>
+        <li className={styles.line}>
+          <span>{label('money.received', stage)}</span>
+          <span className={styles.up}>{formatEuro(last?.inCents ?? 0)}</span>
+        </li>
+        <li className={styles.line}>
+          <span>{label('money.paidOut', stage)}</span>
+          <span>{formatEuro(last?.outCents ?? 0)}</span>
+        </li>
+      </ul>
     </section>
   )
 }
@@ -180,6 +232,24 @@ const NOTE_TILTS = [-1, 0.8, 1.2, -0.7]
 export function ComingUp({ view }: { view: PlayerView }) {
   const stage = voiceOf(view)
   const items = upcoming(view)
+  if (stageOf(stage) === 'established') {
+    // Plan 3: a calendar card, one row per item, the week in mono.
+    return (
+      <section aria-label={label('coming.title', stage)} className={styles.calendar}>
+        <h2 className={styles.flowTitle}>{label('coming.title', stage)}</h2>
+        <ul className={styles.lines}>
+          {items.map((item) => (
+            <li key={item.week + item.text} className={styles.calendarRow}>
+              <span className={styles.noteWeek}>
+                {label('coming.week', stage, { week: item.week })}
+              </span>
+              <span className={item.warn ? styles.noteWarn : undefined}>{item.text}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
   return (
     <section aria-label={label('coming.title', stage)} className={styles.coming}>
       <h2 className={styles.hand}>{label('coming.title', stage)}</h2>
