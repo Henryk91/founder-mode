@@ -538,8 +538,9 @@ bookings:
       # Plan 2 step 4, round 2 retried after fixing the greedy loan plan: two fryers, extraction
       # changes, a packing station and insulated storage (25,000 EUR, estimate).
       oneOffCents: 2500000
-      # The platform's tablet and a stock of packaging (est.).
-      monthlyCents: 40000
+      # The platform's tablet and a stock of packaging, and a minijob packer for the rush (plan 2
+      # audit, T2 round 2: about 600 EUR plus employer costs; est.).
+      monthlyCents: 150000
       unitCostCents: 150
       unitCostShare: 0.62
   roles:
