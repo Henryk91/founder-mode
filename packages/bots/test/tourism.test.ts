@@ -32,6 +32,25 @@ describe('tourism bots (step 4)', () => {
     },
   )
 
+  it('signs only its own contract kind in the T14 variants (plan 2 step 4)', () => {
+    const grat = loadScenario('gratwanderung', 'long')
+    const kinds = { permanent: 'permanent', seasonal: 'seasonal', part_time: 'partTime' } as const
+    const signed = { permanent: 0, seasonal: 0, partTime: 0 }
+    for (const [kind, field] of Object.entries(kinds)) {
+      const bot = TOURISM_STRATEGIES.find((t) => t.id === `tourism_${kind}`)!
+      for (let i = 0; i < 6; i++) {
+        const c = runGame(grat, bot, `contracts-${i}`).tourism!.contracts
+        for (const other of Object.values(kinds)) if (other !== field) expect(c[other]).toBe(0)
+        signed[field] += c[field]
+      }
+    }
+    const none = TOURISM_STRATEGIES.find((t) => t.id === 'tourism_contracts_none')!
+    const c = runGame(grat, none, 'contracts-0').tourism!.contracts
+    expect(c.permanent + c.seasonal + c.partTime).toBe(0)
+    // Each kind is signed somewhere in these seeds, so T14 measures something.
+    expect(Object.values(signed).every((n) => n > 0)).toBe(true)
+  })
+
   it('makes money from guests when it plays carefully', () => {
     const careful = TOURISM_STRATEGIES.find((t) => t.id === 'tourism_careful')!
     const rs = Array.from({ length: 4 }, (_, i) => runGame(scenario, careful, `money-${i}`))
