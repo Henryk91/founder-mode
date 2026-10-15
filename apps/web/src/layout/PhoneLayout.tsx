@@ -25,7 +25,8 @@ export function PhoneLayout(props: { main: React.ReactNode | null }) {
     <div className={styles.phone} data-stage={stageOf(stage)} data-layout="phone">
       <TopBar wide={false} planHours={onPlan ? barOut : null} />
       {props.main === null && tab === 'inbox' && <SceneStrip />}
-      <main className={styles.phoneContent}>
+      {/* Focusable, so a tab with nothing to tap (the calendar) still scrolls by keyboard. */}
+      <main className={styles.phoneContent} tabIndex={0}>
         <StorageNote />
         <Explain />
         <HoursBarOutOfView value={setBarOut}>{props.main ?? <Screen />}</HoursBarOutOfView>

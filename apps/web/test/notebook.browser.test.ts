@@ -316,9 +316,11 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
           focus:
             active === document.body
               ? 'body'
-              : active?.hasAttribute('data-tapped')
-                ? 'the tapped button'
-                : `${active?.tagName} ${active?.textContent?.slice(0, 30)}`,
+              : active === main
+                ? 'the scroll area'
+                : active?.hasAttribute('data-tapped')
+                  ? 'the tapped button'
+                  : `${active?.tagName} ${active?.textContent?.slice(0, 30)}`,
         }
       })
     const before = await where()
@@ -330,8 +332,9 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
     expect(after.top).toBe(before.top)
     expect(after.left).toBe(before.left)
     expect(after.page).toBe(before.page)
-    // Chrome focuses a tapped button, WebKit does not; either way focus never jumps elsewhere.
-    expect(['body', 'the tapped button']).toContain(after.focus)
+    // Chrome focuses a tapped button; WebKit does not, and leaves focus on the scroll area that
+    // holds it (focusable for keyboard scrolling). Either way focus never jumps elsewhere.
+    expect(['body', 'the scroll area', 'the tapped button']).toContain(after.focus)
     await page.close()
   }, 60_000)
 

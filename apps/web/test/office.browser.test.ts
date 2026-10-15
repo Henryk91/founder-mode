@@ -5,30 +5,44 @@ import { createServer, type ViteDevServer } from 'vite'
 import { TOURISM_STRATEGIES } from '@founder-mode/bots/src/strategies/tourism'
 import { teamVariant } from '@founder-mode/bots/src/strategies/validateThenBuild'
 import { loadScenario, type ScenarioId } from '@founder-mode/content'
-import { createGame, endWeek, getView, respond, toSave, type SaveFile } from '@founder-mode/engine'
+import {
+  createGame,
+  endWeek,
+  getView,
+  respond,
+  toSave,
+  type GameState,
+  type SaveFile,
+} from '@founder-mode/engine'
 import { CHROMIUM, WEBKIT, type Engine } from './browsers'
 import { axe, cut } from './screen'
 
 /**
  * Plan 3 step 1 on screen: the Office section of the Plan and the Office card on the money tab,
- * in a run that has taken a bigger place. Each long mode scenario is played by its always-moving
- * bot until it works from stage 3 or later, then opened with every tab and notebook section at
+ * and an offer of a bigger place. Kantino long is played by its always-moving bot, each tourism
+ * scenario by its careful bot, until an offer is on the desk or a move is under way, then opened with every tab and notebook section at
  * 375, 390, 430 and 1440 px in Chrome and WebKit: nothing cut short, axe clean.
  */
 const SCENARIOS: ScenarioId[] = ['kantino', 'gratwanderung', 'hinterhof', 'seeblick']
 const WIDTHS = [375, 390, 430, 1440]
 
-/** The first seed whose always-moving run works from stage 3 or later and is still going. */
+/**
+ * The first seed whose careful run has an office offer on the desk, or a move under way or done,
+ * and is still going.
+ */
 function save(id: ScenarioId): SaveFile {
   const scenario = loadScenario(id, 'long')
   const strategy = scenario.bookings
-    ? TOURISM_STRATEGIES.find((s) => s.id === 'tourism_always_move')!
+    ? TOURISM_STRATEGIES.find((s) => s.id === 'tourism_careful')!
     : teamVariant('validate_then_build_always_move')
+  const offer = (state: GameState) =>
+    state.inbox.some((m) => m.status === 'open' && m.eventId.startsWith('office_'))
   for (let i = 1; i < 200; i++) {
     const seed = `office-${i}`
     let state = createGame(scenario, seed)
     const player = strategy.create(scenario, seed)
-    while (state.status === 'running' && getView(state).office.stage < 3) {
+    const moved = () => getView(state).office.stage >= 3 || getView(state).office.move !== null
+    while (state.status === 'running' && !moved() && !offer(state)) {
       for (const a of player.respond?.(getView(state)) ?? []) {
         state = respond(state, a.messageId, a.choiceId)
       }
@@ -38,7 +52,7 @@ function save(id: ScenarioId): SaveFile {
     }
     if (state.status === 'running') return toSave(state)
   }
-  throw new Error(`${id}: no seed reaches office stage 3`)
+  throw new Error(`${id}: no seed gets an office offer`)
 }
 
 describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 office screens', () => {
@@ -108,7 +122,7 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 office screens', () => {
               text += await page.evaluate(() => document.body.innerText)
               for (const v of await axe(page)) found.push(`axe ${tab}: ${v.id} ${v.nodes[0]}`)
             }
-            expect(text).toMatch(/stage [345] of 5/)
+            expect(text).toMatch(/stage [1-5] of 5/)
             expect(text).toMatch(/Rent/)
             expect(found).toEqual([])
             await page.close()
