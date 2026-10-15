@@ -360,6 +360,9 @@ modes:
     # Raising money (Part D, docs/phase9-proposal.md section 11). Amounts are realistic for a
     # Munich start-up (8.1 and 11.4); the pre-money floors are estimates.
     funding:
+      # The company starts paying its founder only after outside money arrives: a modest 3,000 EUR
+      # monthly salary, on top of the living-cost draw that had previously come from savings.
+      founderSalaryCents: 250000
       rounds:
         angel:
           name: Angel round
@@ -371,9 +374,13 @@ modes:
           dueDiligenceHours: 0
           barMonthlyCents: 300000
           barText: We back companies with paying customers and revenue that grows.
-          amountCents: { min: 10000000, max: 25000000 }
+          # A smaller angel cheque gives traction enough runway without making bootstrapping moot.
+          amountCents: { min: 8000000, max: 18000000 }
           preMoneyFloorCents: 150000000
           revenueMultiple: 20
+          # An angel who invests before the revenue bar offers a smaller cheque at a lower
+          # valuation: visibly more equity for less money, instead of a hidden luck penalty.
+          weakTractionTerms: { amountFactor: 0.25, preMoneyFactor: 0.4 }
           investors:
             - Margit Ostler
             - Benedikt Rauch

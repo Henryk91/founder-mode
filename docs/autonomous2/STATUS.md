@@ -1,9 +1,9 @@
 # Autonomous run 2 status
 
 ## Current
-Step: 5, Kantino long mode, funding and target 20.
-Last commit: Step 4 tourism checkpoint (this commit; tag `plan2-tourism`); Step 4 gates passed.
-Next action: read the current Kantino long reports and tune targets 31, 32, 33, 36 and 20 without changing the protected 60 week scenarios. Continue on main; the stale plan2-work worktree remains behind main.
+Step: 6, wrap up.
+Last commit: Step 5 Kantino-long checkpoint (this commit; tag `plan2-kantino-long`).
+Next action: finish the 60 week protection gate, regenerate seeds and all final reports, then revisit the open issues once and complete the documentation.
 
 ## Checklist
 - [x] Step 0: take stock (tag plan2-baseline)
@@ -11,7 +11,7 @@ Next action: read the current Kantino long reports and tune targets 31, 32, 33, 
 - [x] Step 2: bank loan (tag plan2-loan)
 - [x] Step 3: tourism inbox (tag plan2-inbox)
 - [x] Step 4: retune tourism (tag plan2-tourism)
-- [ ] Step 5: Kantino long, funding and target 20 (tag plan2-kantino-long)
+- [x] Step 5: Kantino long, funding and target 20 (tag plan2-kantino-long)
 - [ ] Step 6: wrap up (tag plan2-complete)
 
 ## Carried over from the tourism fixes
@@ -25,7 +25,7 @@ Next action: read the current Kantino long reports and tune targets 31, 32, 33, 
 - Hinterhof T2: no-tests wins 20.6% (limit 5%); T3 spread is 15.9 points (limit 15). Value budget used; fresh step 6 budget.
 - Seeblick T6: reading +9.5, blind effort +6.8. Value and inbox budgets used; fresh step 6 budget.
 - Gratwanderung school demand remains 9 to 12 groups at peak against the spec's 0.3 to 1.2; every closer tested range was unplayable or less fair.
-- Kantino long 31, 32, 33, 36, 20; 27 at the limit (step 5).
+- Kantino long: T20 stays open (burst neutral, steady hire trails); T32 founder value 1.23x rather than 1.3x; T33 early raise +1.4 against traction despite visible weak terms. T27 remains at the limit. Fresh step 6 budget.
 
 ## For Henry to review (non-blocking)
 - Step 4: T14 judges each contract kind against weekly shifts in its best viable-segment split, by more than the paired margin (decisions, plan 2 step 4).
