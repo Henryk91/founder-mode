@@ -431,15 +431,23 @@ describe('content', () => {
       expect(s.officeStages[0]!.id).toBe('kitchen_table')
     })
 
-    it('refuses a triggered event that is not once, an unknown office stage, or an unknown milestone', () => {
+    it('refuses a recurring triggered event without a cooldown, an unknown office stage, or an unknown milestone', () => {
       const base = scenarioSources('kantino')
       const founder = base.events.founder.replace(
         'once: true\n    trigger:',
-        'once: false\n    cooldownWeeks: 4\n    trigger:',
+        'once: false\n    trigger:',
       )
       expect(() => parseScenario({ ...base, events: { ...base.events, founder } })).toThrow(
-        /triggered event must be once/,
+        /triggered event must be once or set cooldownWeeks/,
       )
+      // Plan 3: one that comes back after its cooldown is fine.
+      const recurring = base.events.founder.replace(
+        'once: true\n    trigger:',
+        'once: false\n    cooldownWeeks: 4\n    trigger:',
+      )
+      expect(() =>
+        parseScenario({ ...base, events: { ...base.events, founder: recurring } }),
+      ).not.toThrow()
       const moved = base.events.founder.replace('stage: coworking_desk', 'stage: penthouse')
       expect(() => parseScenario({ ...base, events: { ...base.events, founder: moved } })).toThrow(
         /unknown office stage penthouse/,

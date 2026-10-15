@@ -12,6 +12,7 @@ import seeblickProduct from '../scenarios/seeblick/messages/events/product.yaml?
 import seeblickFinance from '../scenarios/seeblick/messages/events/finance.yaml?raw'
 import seeblickFounder from '../scenarios/seeblick/messages/events/founder.yaml?raw'
 import seeblickTeam from '../scenarios/seeblick/messages/events/team.yaml?raw'
+import seeblickOffice from '../scenarios/seeblick/messages/events/office.yaml?raw'
 import seeblickNames from '../scenarios/seeblick/messages/company_names.yaml?raw'
 import { FUNDING_EVENTS, NO_EVENTS, TOURISM_EVENTS } from './shared'
 
@@ -33,4 +34,5 @@ export const sources: ScenarioSources = {
   sharedEvents: TOURISM_EVENTS,
   longEvents: NO_EVENTS,
   fundingEvents: FUNDING_EVENTS,
+  officeEvents: seeblickOffice,
 }

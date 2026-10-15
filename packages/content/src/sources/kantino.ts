@@ -12,6 +12,7 @@ import kantinoProduct from '../scenarios/kantino/messages/events/product.yaml?ra
 import kantinoFinance from '../scenarios/kantino/messages/events/finance.yaml?raw'
 import kantinoFounder from '../scenarios/kantino/messages/events/founder.yaml?raw'
 import kantinoTeam from '../scenarios/kantino/messages/events/team.yaml?raw'
+import kantinoOffice from '../scenarios/kantino/messages/events/office.yaml?raw'
 import kantinoNames from '../scenarios/kantino/messages/company_names.yaml?raw'
 import { FUNDING_EVENTS, SHARED_EVENTS, YEAR2_EVENTS } from './shared'
 
@@ -33,4 +34,5 @@ export const sources: ScenarioSources = {
   sharedEvents: SHARED_EVENTS,
   longEvents: YEAR2_EVENTS,
   fundingEvents: FUNDING_EVENTS,
+  officeEvents: kantinoOffice,
 }
