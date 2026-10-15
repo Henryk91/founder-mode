@@ -100,9 +100,9 @@ describe('funding: the pipeline', () => {
     }
     expect(offered).toBeDefined()
     const terms = s.funding.investors.find((i) => i.id === offered)!.terms!
-    // Angel: 100,000 to 250,000 EUR at the larger of 1.5 million and 20 times yearly revenue.
-    expect(terms.amountCents).toBeGreaterThanOrEqual(10_000_000)
-    expect(terms.amountCents).toBeLessThanOrEqual(25_000_000)
+    // Angel: 80,000 to 180,000 EUR at the larger of 1.5 million and 20 times yearly revenue.
+    expect(terms.amountCents).toBeGreaterThanOrEqual(8_000_000)
+    expect(terms.amountCents).toBeLessThanOrEqual(18_000_000)
     expect(terms.preMoneyCents).toBe(Math.max(150_000_000, 20 * 12 * 12 * 60_000))
     const cashBefore = s.company.cashCents
     const accepted = next(s, fp({ accept: offered! }))
@@ -125,6 +125,34 @@ describe('funding: the pipeline', () => {
     expect(view.raisedCents).toBe(terms.amountCents)
     expect(view.mood).not.toBeNull()
     expect(view.capTable[0]!.shareBp + view.capTable[1]!.shareBp).toBe(10_000)
+  })
+
+  it('offers weak terms before the revenue bar and pays the founder once money arrives', () => {
+    // Investors who say yes to anything, so the terms alone are under test.
+    const s0 = long()
+    const eager = { ...s0, funding: { ...s0.funding!, appetite: { min: 0.0001, max: 0.0002 } } }
+    // Four customers at 600 EUR: 2,400 EUR a month, under the angel bar of 3,000.
+    let s = withCustomers(createGame(eager, 'weak'), 4, 60_000)
+    expect(s.company.fixedCosts.some((c) => c.id === 'founder_salary')).toBe(false)
+    let offered: string | undefined
+    for (let w = 0; w < 12 && !offered; w++) {
+      const look = s.funding.investors.filter((i) => i.stage === 'interested').map((i) => i.id)
+      const p = w === 0 ? { start: 'angel' as const, pitchHours: 10 } : { pitchHours: 5 }
+      s = next(s, fp({ ...p, secondLooks: look })).state
+      offered = s.funding.investors.find((i) => i.stage === 'offered')?.id
+    }
+    expect(offered).toBeDefined()
+    const terms = s.funding.investors.find((i) => i.id === offered)!.terms!
+    // A quarter of the 80,000 to 180,000 EUR cheque, at 40% of the 1.5 million floor.
+    expect(terms.amountCents).toBeGreaterThanOrEqual(2_000_000)
+    expect(terms.amountCents).toBeLessThanOrEqual(5_000_000)
+    expect(terms.preMoneyCents).toBe(60_000_000)
+    s = next(s, fp({ accept: offered! })).state
+    for (let w = 0; w < 4 && s.funding.stakes.length === 0; w++) s = next(s).state
+    expect(s.funding.stakes).toHaveLength(1)
+    const salary = s.company.fixedCosts.find((c) => c.id === 'founder_salary')
+    expect(salary).toMatchObject({ monthlyCents: 250_000 })
+    expect(getView(s).company.fixedCosts.map((c) => c.name)).toContain(salary!.name)
   })
 
   it('draws nothing in a run that never raises', () => {
