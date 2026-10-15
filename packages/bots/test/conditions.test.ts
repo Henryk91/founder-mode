@@ -39,6 +39,13 @@ describe('the condition language (step 3)', () => {
             )
             checked++
           }
+          // Plan 2 audit: `shipped.<feature>` reads the same in both.
+          for (const f of scenario.features) {
+            const path = `shipped.${f.id}` as const
+            expect(viewConditionValue(view, path), `${path} week ${state.week}`).toBe(
+              conditionValue(state, path),
+            )
+          }
           for (const m of state.inbox.filter((x) => x.status === 'open')) {
             const mv = view.inbox.find((x) => x.id === m.id)!
             for (const path of ['sender.overdue', 'sender.silent'] as const) {
@@ -68,6 +75,9 @@ describe('the condition language (step 3)', () => {
     })
     expect(parseCondition('team.size >= 2')?.path).toBe('team.size')
     expect(parseCondition('sender.mood == 1')).toBeNull()
+    expect(parseCondition('shipped.event_room >= 1')?.path).toBe('shipped.event_room')
+    expect(parseCondition('shipped.Event >= 1')).toBeNull()
+    expect(() => loadScenario('seeblick', 'long').events.map((e) => e.id)).not.toThrow()
     const event = {
       id: 'x',
       area: 'sales',

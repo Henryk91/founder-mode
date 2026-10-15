@@ -683,17 +683,35 @@ export const CONDITION_PATHS = [
 
 /** Paths about a message's sender: they make sense only once a message has a sender. */
 export const SENDER_PATHS: readonly ConditionPath[] = ['sender.overdue', 'sender.silent']
-export type ConditionPath = (typeof CONDITION_PATHS)[number]
+/**
+ * `shipped.<feature id>` reads 1 once that feature or product is ready, else 0 (plan 2 audit), so
+ * an event whose text says "if there were a room to marry in" can say so in its conditions.
+ */
+export const SHIPPED_PREFIX = 'shipped.'
+export type FixedConditionPath = (typeof CONDITION_PATHS)[number]
+export type ConditionPath = FixedConditionPath | `shipped.${string}`
+/** The feature a `shipped.<id>` path asks about, or null for any other path. */
+export const shippedFeature = (path: ConditionPath): string | null =>
+  path.startsWith(SHIPPED_PREFIX) ? path.slice(SHIPPED_PREFIX.length) : null
 export const CONDITION_OPS = ['>=', '<=', '>', '<', '==', '!='] as const
 export type ConditionOp = (typeof CONDITION_OPS)[number]
 export type Condition = { path: ConditionPath; op: ConditionOp; value: number }
 
 /** Parses `customers.count >= 1`. Returns null for anything outside the closed grammar. */
 export function parseCondition(text: string): Condition | null {
-  const m = /^\s*([A-Za-z.]+)\s*(>=|<=|==|!=|>|<)\s*(-?\d+(?:\.\d+)?)\s*$/.exec(text)
+  const m =
+    /^\s*([A-Za-z.]+|shipped\.[a-z][a-z0-9_]*)\s*(>=|<=|==|!=|>|<)\s*(-?\d+(?:\.\d+)?)\s*$/.exec(
+      text,
+    )
   if (!m) return null
   const path = m[1] as ConditionPath
-  if (!(CONDITION_PATHS as readonly string[]).includes(path)) return null
+  const feature = shippedFeature(path)
+  if (
+    feature !== null
+      ? !/^[a-z][a-z0-9_]*$/.test(feature)
+      : !(CONDITION_PATHS as readonly string[]).includes(path)
+  )
+    return null
   return { path, op: m[2] as ConditionOp, value: Number(m[3]) }
 }
 
@@ -1027,9 +1045,18 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       issue(`unknown segment ${o.walkIns.segment}`, ['officeStages', i, 'walkIns', 'segment'])
     }
   })
+  const featureIdSet = new Set(s.features.map((x) => x.id))
+  const checkShipped = (conditions: readonly Condition[], path: (string | number)[]) => {
+    for (const c of conditions) {
+      const id = shippedFeature(c.path)
+      if (id !== null && !featureIdSet.has(id)) issue(`unknown feature ${id} in ${c.path}`, path)
+    }
+  }
   s.events.forEach((e, i) => {
+    checkShipped([...e.when, ...e.trigger], ['events', i])
     e.choices.forEach((c, j) =>
       c.effects.forEach((f, k) => {
+        checkShipped(f.when, ['events', i, 'choices', j, 'effects', k])
         if (f.type === 'moveOffice' && !stageIds.has(f.stage)) {
           issue(`unknown office stage ${f.stage}`, ['events', i, 'choices', j, 'effects', k])
         }
