@@ -247,6 +247,28 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         bank: entry.name,
         amount: formatEuro(entry.amountCents),
       })
+    case 'office_accepted':
+      return label('results.entry.office_accepted', stage, {
+        place: entry.place,
+        cost: formatEuro(entry.costCents),
+        rent: formatEuro(entry.monthlyCents),
+        week: entry.readyWeek,
+      })
+    case 'office_moved':
+      return label('results.entry.office_moved', stage, { place: entry.place })
+    case 'ui_established':
+      return label('results.entry.ui_established', stage, { place: entry.place })
+    case 'office_notice':
+      return label('results.entry.office_notice', stage, {
+        place: entry.place,
+        week: entry.endWeek,
+      })
+    case 'office_left':
+      return label('results.entry.office_left', stage, {
+        place: entry.place,
+        back: entry.backTo,
+        deposit: formatEuro(entry.depositCents),
+      })
     case 'loan_payment':
       return label('results.entry.loan_payment', stage, {
         amount: formatEuro(entry.amountCents),
@@ -411,6 +433,13 @@ function place(entry: ReportEntry): [Group, number] {
       return ['money', 2]
     case 'loan_missed':
       return ['money', 9]
+    case 'office_accepted':
+    case 'office_moved':
+    case 'office_left':
+    case 'ui_established':
+      return ['founder', 8]
+    case 'office_notice':
+      return ['founder', 5]
     case 'loan_refused':
     case 'loan_offer':
     case 'loan_paid_out':

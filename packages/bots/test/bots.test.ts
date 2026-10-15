@@ -40,6 +40,8 @@ describe('bots', () => {
       'validate_then_build_part_time',
       'validate_then_build_freelance_first',
       'validate_then_build_expand',
+      'validate_then_build_never_move',
+      'validate_then_build_always_move',
       'validate_then_build_expand_solo',
       'validate_then_build_founder_chases',
       'raise_on_traction',
@@ -49,7 +51,7 @@ describe('bots', () => {
       ...TOURISM_STRATEGIES.map((t) => t.id),
     ])
     // The team variants and the raising bots are long mode only.
-    expect(STRATEGIES.filter((s) => s.modes?.includes('long')).length).toBe(11)
+    expect(STRATEGIES.filter((s) => s.modes?.includes('long')).length).toBe(13)
   })
 
   it.each(STRATEGIES.filter((s) => !s.model).map((s) => [s.id, s] as const))(

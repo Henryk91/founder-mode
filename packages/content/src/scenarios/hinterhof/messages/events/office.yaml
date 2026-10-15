@@ -1,0 +1,87 @@
+# Plan 3 (docs/office-stages.md): offers of office stages 3 to 5. Each arrives for sure in the
+# first week a trigger holds (and `when` holds), and comes back 12 weeks later if one still holds.
+# The text names the condition, the costs and the effect. Accepting pays the one-off at once,
+# unless the bank's plan paid it, and moves the rent from now.
+events:
+  - id: office_kitchen_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage <= 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Gastrotechnik Huber
+    look: letter
+    text: >-
+      The kitchen fitter has heard the restaurant is paying its way, or turning guests away. A
+      bigger kitchen costs 35,000 EUR, the bank will happily discuss it, and no more rent. Each
+      cook sends out about two fifths more covers and a cold room halves the arguments about waste.
+      It helps only if the kitchen is what holds you back.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Order the bigger kitchen
+        hours: 2
+        effects:
+          - { type: officeMove, stage: bigger_kitchen }
+      - id: stay
+        label: Keep the kitchen you have
+        hours: 0
+        effects: []
+
+  - id: office_knock_through_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Frau Obermaier, your landlady
+    look: letter
+    text: >-
+      You keep turning guests away, and the shop next door is empty. Knocking through costs
+      45,000 EUR and 2,800 EUR a month more rent: seats from 40 to 70 and a private table for
+      parties and office lunches. A full Friday does not mean you need more seats on a Tuesday.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Knock through
+        hours: 2
+        effects:
+          - { type: officeMove, stage: knocked_through }
+      - id: stay
+        label: Keep forty seats
+        hours: 0
+        effects: []
+
+  - id: office_deli_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: Bäckerei Lanz, retiring
+    look: letter
+    text: >-
+      Covers were turned away at the peak again, and the bakery across the street is retiring.
+      Its kitchen and counter would cost 2,200 EUR a month and 30,000 EUR to fit out: twice the
+      catering and a takeaway lunch counter. Both need a cook on every lunch shift, and the cooks
+      know it.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the deli across the street
+        hours: 2
+        effects:
+          - { type: officeMove, stage: deli_kitchen }
+      - id: stay
+        label: One kitchen is plenty
+        hours: 0
+        effects: []

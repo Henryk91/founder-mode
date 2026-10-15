@@ -28,7 +28,8 @@ export type EndingId =
   | 'growing'
   /** The bank called the loan after a second missed payment in a row (step 6). */
   | 'bank_called'
-export type UiStage = 'scrappy' | 'organised'
+/** `established` (plan 3): from the week a move into an `established` office stage completes. */
+export type UiStage = 'scrappy' | 'organised' | 'established'
 
 // ---------------------------------------------------------------------------
 // Game state. Never passed to the UI. See docs/schema.md.
@@ -255,6 +256,8 @@ export type LoanTerms = {
   items?: FeatureId[]
   rooms?: number
   workingCapitalCents?: number
+  /** Plan 3: an office stage on offer, its fit-out paid for at payout. */
+  stage?: string
 }
 
 export type Loan = {
@@ -281,6 +284,8 @@ export type Loan = {
   /** Plan 2 step 2: what the plan listed. */
   items?: FeatureId[]
   rooms?: number
+  /** Plan 3: the office stage whose fit-out it paid for. */
+  stage?: string
   workingCapitalCents?: number
 }
 
@@ -443,6 +448,39 @@ export type CompanyState = {
   uiStage: UiStage
   /** Id of the scenario office stage the company works from. */
   officeStage: string
+  /** Plan 3: moves, notice and the stages the company worked from. */
+  office: OfficeState
+}
+
+/** Plan 3 (docs/office-stages.md): a move under way, from accepting an offer to moving in. */
+export type OfficeMove = { stage: string; startWeek: number; readyWeek: number }
+
+/** One stay at an office stage reached by an offer, for the post-mortem. */
+export type OfficeStay = {
+  stage: string
+  /** The week the offer was accepted, and the week the move completed (null while moving). */
+  acceptedWeek: number
+  movedWeek: number | null
+  /** The week the company left (notice ran out), or null. */
+  leftWeek: number | null
+  /** Paid when accepting (by the company or a loan), and the deposit back when leaving. */
+  oneOffCents: number
+  depositBackCents: number
+  /** Monthly revenue (the last four weeks) the week the offer was accepted. */
+  revenueBeforeCents: number
+  /** Team members the week the offer was accepted. */
+  teamBefore: number
+}
+
+export type OfficeState = {
+  /** The week the company moved to its current stage (1 at the start). */
+  sinceWeek: number
+  move: OfficeMove | null
+  /** Notice given: the stage drops by one at the end of this week. */
+  notice: { endWeek: number } | null
+  /** Stages whose one-off a loan paid for (bought at payout). */
+  prepaid: string[]
+  stays: OfficeStay[]
 }
 
 export type FeatureProgress = {
@@ -904,6 +942,8 @@ export type WeekPlan = {
   bookings?: BookingsPlan
   /** The bank loan (step 6). Missing means no change. */
   loan?: LoanPlan
+  /** Plan 3: give notice on the office stage. Missing means no. */
+  office?: { notice: boolean }
 }
 
 /**
@@ -975,6 +1015,8 @@ export type PlanIssue =
   | { code: 'invalid_funding' }
   | { code: 'invalid_bookings' }
   | { code: 'invalid_loan' }
+  /** Plan 3: notice cannot be given now (no stage to leave, a move or notice under way). */
+  | { code: 'invalid_office' }
   /** Long mode: the market has had every landing test allowed. */
   | { code: 'landing_limit'; segmentId: string }
 
@@ -1072,6 +1114,8 @@ export type PlayerView = {
   bookings: BookingsView | null
   /** The bank loan (step 6): null in a scenario without one. */
   loan: LoanView | null
+  /** Plan 3: where the company works, moves and notice (every scenario). */
+  office: OfficeView
   /** Landing page tests and pre-sales still running. */
   pendingExperiments: PendingExperimentView[]
   guidance: GuidanceView
@@ -1414,6 +1458,38 @@ export type InvestorView = {
   closeWeek: number | null
 }
 
+/** Plan 3: the Office card and the Plan's Office section. Only facts the player can see. */
+export type OfficeView = {
+  stageId: string
+  name: string
+  /** Its place in the scenario's list, from 1, and how many stages there are. */
+  stage: number
+  stages: number
+  rentCents: number
+  /** Desks here (the founder included) and people using them; null without a desk limit. */
+  desks: number | null
+  people: number
+  /** Desks left, at most 99 (99 without a desk limit). */
+  desksFree: number
+  weeksAtStage: number
+  /** 1 while a move or notice runs. */
+  busy: number
+  move: { name: string; readyWeek: number } | null
+  notice: { endWeek: number; backTo: string; depositCents: number } | null
+  canGiveNotice: boolean
+  noticeWeeks: number | null
+  /** Months in a row, up to the last closed one, whose money covered all costs (living too). */
+  monthsCoveringAll: number
+  /** The same for company costs only. */
+  monthsProfitable: number
+  /** Tourism: weeks of the last 8 with guests turned away (peak months only), and occupancy. */
+  turnedAwayWeeks: number
+  peakTurnedAwayWeeks: number
+  occupancyPct: number
+  /** Stages a loan paid for, by name: accepting their offer costs nothing more. */
+  prepaid: string[]
+}
+
 /** Raising money as the player sees it. The investors' confidence shows only as their mood. */
 export type LoanView = {
   bankName: string
@@ -1429,6 +1505,8 @@ export type LoanView = {
     rooms: { centsPerRoom: number; left: number } | null
     workingCapitalMonths: number
     workingCapitalMaxCents: number
+    /** Plan 3: office stages on offer that a plan may list, at their one-off cost. */
+    stages: { id: string; name: string; cents: number }[]
     /** Bought by a loan and not shipped or started yet. */
     bought: FeatureId[]
     roomsBought: number
@@ -1749,6 +1827,22 @@ export type ReportEntry =
   | { kind: 'lead_update'; change: LeadChange; leadId: string; name: string; segmentId: SegmentId }
   /** Leads that walked in at the office (`place` is the office stage's name). */
   | { kind: 'walk_in_leads'; segmentId: SegmentId; count: number; place: string }
+  /** Plan 3: an office stage's offer accepted; the move completes in `readyWeek`. */
+  | {
+      kind: 'office_accepted'
+      place: string
+      costCents: number
+      monthlyCents: number
+      readyWeek: number
+    }
+  /** Plan 3: the company moved in (`stage` is its number, 1 to 5). */
+  | { kind: 'office_moved'; place: string; stage: number }
+  /** Plan 3: the move into this stage switched the screens to the established style. */
+  | { kind: 'ui_established'; place: string }
+  /** Plan 3: notice given on the stage; the company leaves at the end of `endWeek`. */
+  | { kind: 'office_notice'; place: string; endWeek: number }
+  /** Plan 3: notice ran out; the company is back at `backTo` with the deposit. */
+  | { kind: 'office_left'; place: string; backTo: string; depositCents: number }
   /** A paying customer (`from`) recommended the company to a new lead (`name`). */
   | { kind: 'referral_lead'; segmentId: SegmentId; leadId: string; name: string; from: string }
   | {
@@ -1968,6 +2062,30 @@ export type FundingEconomics = {
 }
 
 /** A loan in the post-mortem: what it cost, what it paid for, and how it ended. */
+/** Plan 3: one office stage in the post-mortem: when, what it cost, what changed. */
+export type OfficeEconomics = {
+  place: string
+  stage: number
+  acceptedWeek: number
+  movedWeek: number | null
+  leftWeek: number | null
+  oneOffCents: number
+  /** The one-off came from a bank loan's plan. */
+  paidByLoan: boolean
+  rentCents: number
+  depositBackCents: number
+  /** One-off plus rent less the deposit back. */
+  totalCents: number
+  /** Money received in the four weeks before accepting, and the last four weeks there. */
+  revenueBeforeCents: number
+  revenueAfterCents: number
+  /** People on the team when accepting, and at the end of the stay. */
+  teamBefore: number
+  teamAfter: number
+  /** Tourism: guests served while there; null elsewhere. */
+  guests: number | null
+}
+
 export type LoanEconomics = {
   amountCents: number
   rateBp: number
@@ -2070,6 +2188,8 @@ export type PostMortem = {
     /** The bank loans of the run (step 6), oldest first; empty without one. */
     loans: LoanEconomics[]
   }
+  /** Plan 3: each office stage reached by an offer, oldest first. */
+  office: OfficeEconomics[]
   /** Leads that walked in at an office, and the customers they became, per office and market. */
   walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]
   /**

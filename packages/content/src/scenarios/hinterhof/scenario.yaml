@@ -340,6 +340,53 @@ officeStages:
     qualityBonus: 0
     energyPerWeek: 1
     walkIns: { segment: evening_locals, leadsPerWeek: 0.3 }
+  # Plan 3 (docs/office-stages.md): offered by the inbox (office.yaml). Each stage lists all its
+  # effects, the earlier stages' included. Costs are estimates; deposits three months' rent.
+  - id: bigger_kitchen
+    name: A bigger kitchen
+    monthlyCents: 0
+    oneOffCents: 3500000
+    moveWeeks: 3
+    qualityBonus: 0
+    energyPerWeek: 1
+    walkIns: { segment: evening_locals, leadsPerWeek: 0.3 }
+    # Covers per kitchen shift about two fifths up; a cold room wastes a quarter less.
+    staffFactors: { cook: 1.4 }
+    wasteFactor: 0.75
+  - id: knocked_through
+    name: The shop next door, knocked through
+    monthlyCents: 280000
+    oneOffCents: 4500000
+    depositCents: 840000
+    moveWeeks: 4
+    qualityBonus: 0
+    energyPerWeek: 1
+    walkIns: { segment: evening_locals, leadsPerWeek: 0.3 }
+    staffFactors: { cook: 1.4 }
+    wasteFactor: 0.75
+    # Seats from 40 to 70, and a private table for parties and office lunches.
+    capacity: { dinner_menu: 180, fast_lunch: 300, open_sundays: 60 }
+    segmentFactors: { evening_locals: 1.15, office_lunch: 1.15 }
+    established: true
+  - id: deli_kitchen
+    name: Deli and catering kitchen across the street
+    # The knocked-through rent plus 2,200 a month for the deli (est.).
+    monthlyCents: 500000
+    oneOffCents: 3000000
+    depositCents: 660000
+    moveWeeks: 4
+    qualityBonus: 0
+    energyPerWeek: 1
+    walkIns: { segment: evening_locals, leadsPerWeek: 0.3 }
+    staffFactors: { cook: 1.4 }
+    wasteFactor: 0.75
+    # Catering doubled and a takeaway counter for office lunch; both need cooks on shift.
+    capacity: { dinner_menu: 180, fast_lunch: 450, open_sundays: 60, catering: 150 }
+    segmentFactors: { evening_locals: 1.15, office_lunch: 1.15 }
+    established: true
+
+# Plan 3: moving and giving notice.
+office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
 

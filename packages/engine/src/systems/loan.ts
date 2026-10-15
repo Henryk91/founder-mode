@@ -1,3 +1,4 @@
+import { prepayOffice } from './office'
 import type { LoanConfig } from '@founder-mode/content'
 import { Rng, seedRng } from '../rng'
 import type {
@@ -75,13 +76,37 @@ export function workingCapitalMaxCents(state: GameState): number {
 /** What the listed products and rooms cost. */
 export function planItemsCents(
   state: GameState,
-  terms: Pick<LoanTerms, 'items' | 'rooms'>,
+  terms: Pick<LoanTerms, 'items' | 'rooms' | 'stage'>,
 ): number {
   const products = state.scenario.bookings?.products ?? {}
   const room = state.scenario.bookings?.renovation?.centsPerRoom ?? 0
+  const stage = terms.stage
+    ? (state.scenario.officeStages.find((o) => o.id === terms.stage)?.oneOffCents ?? 0)
+    : 0
   return (
     (terms.items ?? []).reduce((t, id) => t + (products[id]?.oneOffCents ?? 0), 0) +
-    (terms.rooms ?? 0) * room
+    (terms.rooms ?? 0) * room +
+    stage
+  )
+}
+
+/**
+ * Plan 3: an office stage a plan may list: its offer is open in the inbox, it has a one-off, no
+ * move or notice runs, and no loan has paid for it already.
+ */
+export function canFinanceStage(state: GameState, id: string): boolean {
+  const cfg = loanConfig(state)
+  if (!cfg || !lendsAgainstPlan(cfg)) return false
+  const stage = state.scenario.officeStages.find((o) => o.id === id)
+  if (!stage || (stage.oneOffCents ?? 0) === 0 || state.company.officeStage === id) return false
+  const o = state.company.office
+  if (o.move || o.notice || o.prepaid.includes(id)) return false
+  return state.inbox.some(
+    (m) =>
+      m.status === 'open' &&
+      state.scenario.events
+        .find((e) => e.id === m.eventId)
+        ?.choices.some((c) => c.effects.some((f) => f.type === 'officeMove' && f.stage === id)),
   )
 }
 
@@ -176,6 +201,7 @@ export function loanValid(state: GameState, plan: WeekPlan): boolean {
       }
       const rooms = t.rooms ?? 0
       if (!Number.isInteger(rooms) || rooms < 0 || rooms > roomsToFinance(state)) return false
+      if (t.stage !== undefined && !canFinanceStage(state, t.stage)) return false
       const wc = t.workingCapitalCents ?? 0
       if (!Number.isInteger(wc) || wc < 0 || wc % cfg.stepCents !== 0) return false
       if (t.amountCents !== planItemsCents(state, t) + wc) return false
@@ -366,6 +392,7 @@ export function settleLoans(
   let accepted = l0.accepted
   let bought = [...(l0.bought ?? [])]
   let roomsBought = l0.roomsBought ?? 0
+  let prepaidStage: string | null = null
   if (accepted) {
     const id = `loan_${loans.length + 1}`
     loans.push({
@@ -389,6 +416,7 @@ export function settleLoans(
       status: 'running',
       ...(accepted.items ? { items: [...accepted.items] } : {}),
       ...(accepted.rooms ? { rooms: accepted.rooms } : {}),
+      ...(accepted.stage ? { stage: accepted.stage } : {}),
       ...(accepted.workingCapitalCents !== undefined
         ? { workingCapitalCents: accepted.workingCapitalCents }
         : {}),
@@ -401,11 +429,13 @@ export function settleLoans(
       bought = [...bought, ...(accepted.items ?? [])]
       roomsBought += accepted.rooms ?? 0
     }
+    if (accepted.stage) prepaidStage = accepted.stage
     accepted = null
   }
+  const withStage = prepaidStage ? prepayOffice(state, prepaidStage) : state
   return {
     state: {
-      ...state,
+      ...withStage,
       loan: {
         ...l0,
         loans,
@@ -450,6 +480,9 @@ export function loanView(state: GameState): LoanView | null {
             cfg.financeRooms && reno
               ? { centsPerRoom: reno.centsPerRoom, left: roomsToFinance(state) }
               : null,
+          stages: state.scenario.officeStages
+            .filter((o) => canFinanceStage(state, o.id))
+            .map((o) => ({ id: o.id, name: o.name, cents: o.oneOffCents ?? 0 })),
           workingCapitalMonths: cfg.workingCapitalMonths ?? 0,
           workingCapitalMaxCents: workingCapitalMaxCents(state),
           bought: [...(l.bought ?? [])],

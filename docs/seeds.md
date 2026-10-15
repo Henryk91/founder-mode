@@ -34,12 +34,12 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | kantino | shut_down | `shut_down@10` | `ending-1` | 10 |
 | kantino | shut_down | `shut_down@10` | `ending-2` | 10 |
 | kantino | shut_down | `shut_down@10` | `ending-3` | 10 |
-| kantino (long) | sustainable | `validate_then_build` | `ending-2` | 104 |
 | kantino (long) | sustainable | `validate_then_build` | `ending-3` | 104 |
-| kantino (long) | sustainable | `validate_then_build` | `ending-4` | 104 |
+| kantino (long) | sustainable | `validate_then_build` | `ending-7` | 104 |
+| kantino (long) | sustainable | `validate_then_build` | `ending-8` | 104 |
 | kantino (long) | still_searching | `validate_then_build` | `ending-1` | 104 |
-| kantino (long) | still_searching | `validate_then_build` | `ending-9` | 104 |
-| kantino (long) | still_searching | `validate_then_build` | `ending-26` | 104 |
+| kantino (long) | still_searching | `validate_then_build` | `ending-2` | 104 |
+| kantino (long) | still_searching | `validate_then_build` | `ending-5` | 104 |
 | kantino (long) | bankrupt | `build_only` | `ending-1` | 28 |
 | kantino (long) | bankrupt | `build_only` | `ending-2` | 28 |
 | kantino (long) | bankrupt | `build_only` | `ending-3` | 28 |
@@ -49,9 +49,9 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | kantino (long) | shut_down | `shut_down@10` | `ending-1` | 10 |
 | kantino (long) | shut_down | `shut_down@10` | `ending-2` | 10 |
 | kantino (long) | shut_down | `shut_down@10` | `ending-3` | 10 |
-| kantino (long) | growing | `raise_late` | `ending-8` | 104 |
-| kantino (long) | growing | `raise_late` | `ending-74` | 104 |
-| kantino (long) | growing | `raise_late` | `ending-116` | 104 |
+| kantino (long) | growing | `raise_late` | `ending-18` | 104 |
+| kantino (long) | growing | `raise_late` | `ending-41` | 104 |
+| kantino (long) | growing | `raise_late` | `ending-64` | 104 |
 | zollstock | sustainable | `validate_then_build` | `ending-3` | 60 |
 | zollstock | sustainable | `validate_then_build` | `ending-5` | 60 |
 | zollstock | sustainable | `validate_then_build` | `ending-7` | 60 |
@@ -67,12 +67,12 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | zollstock | shut_down | `shut_down@10` | `ending-1` | 10 |
 | zollstock | shut_down | `shut_down@10` | `ending-2` | 10 |
 | zollstock | shut_down | `shut_down@10` | `ending-3` | 10 |
-| gratwanderung (long) | sustainable | `tourism_careful` | `ending-3` | 104 |
 | gratwanderung (long) | sustainable | `tourism_careful` | `ending-5` | 104 |
 | gratwanderung (long) | sustainable | `tourism_careful` | `ending-7` | 104 |
-| gratwanderung (long) | still_searching | `tourism_careful` | `ending-10` | 104 |
-| gratwanderung (long) | still_searching | `tourism_careful` | `ending-37` | 104 |
-| gratwanderung (long) | still_searching | `tourism_careful` | `ending-45` | 104 |
+| gratwanderung (long) | sustainable | `tourism_careful` | `ending-12` | 104 |
+| gratwanderung (long) | still_searching | `tourism_careful` | `ending-99` | 104 |
+| gratwanderung (long) | still_searching | `tourism_careful` | `ending-107` | 104 |
+| gratwanderung (long) | still_searching | `tourism_careful` | `ending-113` | 104 |
 | gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-1` | 6 |
 | gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-2` | 6 |
 | gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-3` | 5 |
@@ -85,9 +85,9 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | hinterhof (long) | sustainable | `tourism_careful` | `ending-3` | 104 |
 | hinterhof (long) | sustainable | `tourism_careful` | `ending-4` | 104 |
 | hinterhof (long) | sustainable | `tourism_careful` | `ending-5` | 104 |
-| hinterhof (long) | still_searching | `tourism_careful` | `ending-153` | 104 |
-| hinterhof (long) | still_searching | `tourism_careful` | `ending-166` | 104 |
-| hinterhof (long) | still_searching | `tourism_careful` | `ending-181` | 104 |
+| hinterhof (long) | still_searching | `tourism_careful` | `ending-6` | 104 |
+| hinterhof (long) | still_searching | `tourism_careful` | `ending-57` | 104 |
+| hinterhof (long) | still_searching | `tourism_careful` | `ending-58` | 104 |
 | hinterhof (long) | bankrupt | `tourism_no_tests` | `ending-15` | 60 |
 | hinterhof (long) | bankrupt | `tourism_no_tests` | `ending-16` | 56 |
 | hinterhof (long) | bankrupt | `tourism_no_tests` | `ending-17` | 48 |

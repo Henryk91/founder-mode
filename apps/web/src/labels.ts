@@ -1,8 +1,12 @@
 import { SCENARIO_LABELS } from './labels.tourism'
 
-export type UiStage = 'scrappy' | 'organised'
+export type UiStage = 'scrappy' | 'organised' | 'established'
 
-export type LabelEntry = string | Record<UiStage, string>
+/**
+ * A label for every stage, or one per stage. The established stage (plan 3) falls back to the
+ * organised wording where it has none of its own.
+ */
+export type LabelEntry = string | { scrappy: string; organised: string; established?: string }
 
 // Every string the player sees. `{name}` style placeholders are filled by `label`'s vars.
 // Counts use `.one` and `.other` keys, see `count`. Game text: short, dry, British, no em dashes.
@@ -385,6 +389,10 @@ const labels = {
   'explain.loan.text':
     'Write a business plan, then apply: the bank answers a couple of weeks later. It looks only at what you can see: how much of your own money is in the company against everything you borrow, and what guests have paid so far. Before anyone has paid, it lends only so much. An offer names the rate and the monthly payment; the money arrives at the next month end.\n\nRepayments start whether the guests come or not, after any repayment-free months. They come out of the company, and your savings stand behind them: you signed a personal guarantee. Miss a payment and the bank adds a fee; miss two in a row and it calls the loan, which ends the run. Loan money is not revenue, and repayments count against runway and the win.',
   'plan.hint.loan': 'Debt buys time and kit, not guests.',
+  'plan.hint.office': 'Space is a fixed cost that buys room.',
+  'explain.office.title': { scrappy: 'Where you work', organised: 'Office' },
+  'explain.office.text':
+    'A bigger place is offered in your post once the business has a reason for it: full desks, guests turned away, or months that pay their way. It costs money at once and rent every month, whether it is full or not. It pays only where room is what holds you back. Notice takes three months, gives the deposit back and puts you one stage down.',
   'loan.sum.apply': 'apply for {amount}',
   'loan.sum.accept': 'take the offer',
   'loan.sum.repay': 'pay off a loan',
@@ -589,6 +597,55 @@ const labels = {
     'The bank offers {amount} at {rate}% a year, {payment} a month once repayments start.',
   'results.entry.loan_accepted': 'You signed for {amount}. The money arrives at the month end.',
   'results.entry.loan_paid_out': '{bank} paid out {amount}.',
+
+  // Plan 3: office stages.
+  'plan.section.office': { scrappy: 'Where you work', organised: 'Office' },
+  'plan.sum.office': '{name}, {stage}',
+  'plan.sum.officeMoving': 'Moving, ready in week {week}',
+  'plan.sum.officeNotice': 'Notice given, out in week {week}',
+  'plan.sum.officeNoticeNow': 'Giving notice',
+  'office.title': { scrappy: 'Where you work', organised: 'Office' },
+  'office.stageOf': 'stage {n} of {of}',
+  'office.rent': 'Rent',
+  'office.rentValue': '{amount} a month',
+  'office.rentNone': 'none',
+  'office.desks': 'Desks',
+  'office.desksValue': '{used} of {desks} used',
+  'office.desksFull': 'Every desk is taken: nobody new can start until you move.',
+  'office.occupancy': 'Booked in the last four weeks',
+  'office.occupancyValue': '{pct}% of what was open',
+  'office.turnedAway': 'Weeks with guests turned away',
+  'office.turnedAwayValue': '{n} of the last 8',
+  'office.moving':
+    'Moving to {name}. Ready in week {week}; the move takes 4 h of your week until then.',
+  'office.notice':
+    'Notice given. Out in week {week}, back to {back}, and {deposit} of deposit comes back.',
+  'office.prepaid': 'Paid for by the bank: {names}. Taking its offer costs nothing more.',
+  'office.giveNotice': 'Give notice ({weeks} weeks)',
+  'office.noticeBooked': 'Notice this week',
+  'office.noticeLine':
+    'Rent runs until the notice ends; then the deposit comes back and you go back one stage.',
+  'office.offers':
+    'Bigger places are offered in your post once the business needs them. Each letter says what it costs.',
+  'results.entry.office_accepted':
+    'You took {place}: {cost} now and {rent} a month. You move in by week {week}.',
+  'results.entry.office_moved': 'You moved into {place}.',
+  'results.entry.office_notice': 'Notice given on {place}. You are out in week {week}.',
+  'results.entry.office_left': 'You left {place} for {back}. {deposit} of deposit came back.',
+  'results.entry.ui_established': 'The screens have grown up with the company.',
+  'loan.stage': 'A bigger place on offer: {name}',
+  'loan.stage.list': 'List it',
+  'loan.stage.listed': 'Listed',
+  'pm.office.title': { scrappy: 'Where you worked', organised: 'Office stages' },
+  'pm.office.stay':
+    '{place} (stage {n}), taken in week {week}: {total} in all, {oneOff} to move in{loan} and {rent} of rent{deposit}.',
+  'pm.office.loan': ' (paid by the loan)',
+  'pm.office.deposit': ', less {amount} of deposit back',
+  'pm.office.change':
+    'Money in over four weeks: {before} when you took it, {after} at the end of the stay. Team: {teamBefore} then {teamAfter}.',
+  'pm.office.changeGuests':
+    'Money in over four weeks: {before} when you took it, {after} at the end of the stay. Guests served there: {guests}.',
+  'pm.office.moving': 'The move was not finished when the run ended.',
   'results.entry.loan_payment':
     'Loan payment {amount}, of which {interest} interest. Still owed: {balance}.',
   'results.entry.loan_missed.one':
@@ -1302,7 +1359,12 @@ export const stageOf = (voice: Voice): UiStage => voice.split('@')[0] as UiStage
 export function label(key: LabelKey, voice: Voice, vars?: LabelVars): string {
   const [stage, scenario] = voice.split('@') as [UiStage, string | undefined]
   const entry: LabelEntry = (scenario && SCENARIO_LABELS[scenario]?.[key]) || labels[key]
-  const text = typeof entry === 'string' ? entry : entry[stage]
+  const text =
+    typeof entry === 'string'
+      ? entry
+      : stage === 'established'
+        ? (entry.established ?? entry.organised)
+        : entry[stage]
   if (!vars) return text
   return text.replace(/\{(\w+)\}/g, (match, name: string) =>
     name in vars ? String(vars[name]) : match,

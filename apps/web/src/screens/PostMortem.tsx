@@ -337,6 +337,37 @@ export function PostMortem({ desk }: { desk: boolean }) {
           {label(`pm.money.loan.${l.status}`, stage, { balance: formatEuro(l.balanceCents) })}
         </p>
       ))}
+      {pm.office.map((o, i) => (
+        <p key={`office-${i}`}>
+          {label('pm.office.stay', stage, {
+            place: o.place,
+            n: o.stage,
+            week: o.acceptedWeek,
+            total: formatEuro(o.totalCents),
+            oneOff: formatEuro(o.oneOffCents),
+            loan: o.paidByLoan ? label('pm.office.loan', stage) : '',
+            rent: formatEuro(o.rentCents),
+            deposit:
+              o.depositBackCents > 0
+                ? label('pm.office.deposit', stage, { amount: formatEuro(o.depositBackCents) })
+                : '',
+          })}{' '}
+          {o.movedWeek === null
+            ? label('pm.office.moving', stage)
+            : o.guests !== null
+              ? label('pm.office.changeGuests', stage, {
+                  before: formatEuro(o.revenueBeforeCents),
+                  after: formatEuro(o.revenueAfterCents),
+                  guests: o.guests,
+                })
+              : label('pm.office.change', stage, {
+                  before: formatEuro(o.revenueBeforeCents),
+                  after: formatEuro(o.revenueAfterCents),
+                  teamBefore: o.teamBefore,
+                  teamAfter: o.teamAfter,
+                })}
+        </p>
+      ))}
       {money.funding && money.funding.pitchedTooEarly > 0 && (
         <p>{count('pm.money.tooEarly', stage, money.funding.pitchedTooEarly)}</p>
       )}

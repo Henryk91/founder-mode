@@ -262,11 +262,12 @@ function PlanForm({
   const items = apply.items ?? []
   const rooms = apply.rooms ?? 0
   const wc = apply.workingCapitalCents ?? 0
-  const sum = (next: Partial<LoanTerms>): LoanTerms => {
-    const t = { ...apply, items, rooms, workingCapitalCents: wc, ...next }
+  const sum = (next: Partial<LoanTerms>, base: LoanTerms = apply): LoanTerms => {
+    const t = { ...base, items, rooms, workingCapitalCents: wc, ...next }
     const cents =
       (t.items ?? []).reduce((s, id) => s + (plan.items.find((x) => x.id === id)?.cents ?? 0), 0) +
       (t.rooms ?? 0) * (plan.rooms?.centsPerRoom ?? 0) +
+      (t.stage ? (plan.stages.find((x) => x.id === t.stage)?.cents ?? 0) : 0) +
       (t.workingCapitalCents ?? 0)
     return { ...t, amountCents: cents }
   }
@@ -294,6 +295,28 @@ function PlanForm({
               on,
               on ? label('loan.item.listed', stage) : label('loan.item.list', stage),
               () => change(sum({ items: on ? items.filter((y) => y !== x.id) : [...items, x.id] })),
+            )}
+          />
+        )
+      })}
+      {plan.stages.map((x) => {
+        // Plan 3: a bigger place on offer; one at a time.
+        const on = apply.stage === x.id
+        return (
+          <Market
+            key={x.id}
+            stack
+            label={label('loan.stage', stage, { name: x.name })}
+            note={formatEuro(x.cents)}
+            choices={chip(
+              on,
+              on ? label('loan.stage.listed', stage) : label('loan.stage.list', stage),
+              () => {
+                if (!on) return change(sum({ stage: x.id }))
+                const base = { ...apply }
+                delete base.stage
+                change(sum({}, base))
+              },
             )}
           />
         )

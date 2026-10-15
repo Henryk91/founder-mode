@@ -2,6 +2,7 @@ import type { PlayerView } from '@founder-mode/engine'
 import { label, type Voice, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import s from './Scene.module.css'
+import { STAGE_DRAWINGS } from './sceneStages'
 
 /**
  * The scene drawings. Office stages are scenario content; a stage is drawn by the drawing of the
@@ -18,6 +19,19 @@ export type OfficeStage =
   | 'own_fitout'
   | 'tired_house'
   | 'refreshed_house'
+  // Plan 3: office stages 3 to 5 (`sceneStages.ts`).
+  | 'courtyard_office'
+  | 'office_floor'
+  | 'front_desk'
+  | 'gear_store'
+  | 'guiding_centre'
+  | 'second_base'
+  | 'bigger_kitchen'
+  | 'knocked_through'
+  | 'deli_kitchen'
+  | 'annex'
+  | 'pavilion'
+  | 'second_house'
 
 const DRAWINGS: readonly OfficeStage[] = [
   'kitchen_table',
@@ -29,6 +43,7 @@ const DRAWINGS: readonly OfficeStage[] = [
   'own_fitout',
   'tired_house',
   'refreshed_house',
+  ...(Object.keys(STAGE_DRAWINGS) as OfficeStage[]),
 ]
 
 /** The drawing for where the company works, from the engine. */
@@ -92,7 +107,7 @@ function sceneData(view: PlayerView, plannedHours: number): SceneData {
 }
 
 /** The scene picture: one static image per office stage, with a stage chip. */
-export function Scene(props: { stage?: OfficeStage }) {
+export function Scene(props: { stage?: OfficeStage; compact?: boolean }) {
   const view = useGame((st) => st.view)
   const planned = useGame((st) => st.plannedHours)
   if (!view) return null
@@ -101,7 +116,7 @@ export function Scene(props: { stage?: OfficeStage }) {
   const data = sceneData(view, planned)
   return (
     <div
-      className={s.scene}
+      className={`${s.scene} ${props.compact ? s.compact : ''}`}
       role="img"
       aria-label={sceneLabel(view.company.officeStage.name, data, ui)}
     >
@@ -121,11 +136,28 @@ export function Scene(props: { stage?: OfficeStage }) {
         <Guesthouse data={data} refreshed={false} />
       ) : office === 'refreshed_house' ? (
         <Guesthouse data={data} refreshed />
+      ) : office in STAGE_DRAWINGS ? (
+        <StageDrawing markup={STAGE_DRAWINGS[office]!} data={data} />
       ) : (
         <TradesYard data={data} ui={ui} />
       )}
       <div className={s.chip}>{view.company.officeStage.name}</div>
     </div>
+  )
+}
+
+/**
+ * Plan 3: a drawing of office stages 3 to 5 (drawn at 360 x 170), laid over the scene's 732 x 330
+ * with the founder's and the first hire's labels and the rating where there are guests.
+ */
+function StageDrawing({ markup, data }: { markup: string; data: SceneData }) {
+  return (
+    <svg className={s.svg} viewBox="0 0 732 330" preserveAspectRatio="xMinYMid slice">
+      <g transform="scale(2.0333 1.9412)" dangerouslySetInnerHTML={{ __html: markup }} />
+      {data.rating !== null && <RatingSign x={580} y={60} text={data.rating} />}
+      <Labels x={150} figure={data.you} />
+      {data.hire && <Labels x={330} figure={data.hire} />}
+    </svg>
   )
 }
 
