@@ -60,3 +60,23 @@ export function cut(page: Page, where: string): Promise<string[]> {
     return out
   }, where)
 }
+
+/** Words that belong to the subscription game, never on a tourism screen (tourism fixes, item 12). */
+export const WORDS = [
+  /\bbugs?\b/i,
+  /\bcustomers?\b/i,
+  /landing page/i,
+  /\bpre-?sales?\b/i,
+  /\bdemos?\b/i,
+  /per month/i,
+  /\bshipped\b/i,
+  /\bleads?\b/i,
+  /\btrials?\b/i,
+]
+
+/** Where a listed word is right: fixed costs do run per month. */
+export const ALLOWED = [
+  /^Company costs per month \(/,
+  // A firm speaking of its own customers in an interview (Gratwanderung's team events).
+  /^Our customer event is in three weeks/,
+]

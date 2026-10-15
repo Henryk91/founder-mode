@@ -295,7 +295,7 @@
 /* Handwritten panel title on the dark desk. */
 .hand {
   margin: 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 700;
   font-size: 26px;
   line-height: 1;
@@ -304,7 +304,7 @@
 
 .handText {
   margin: 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 500;
   font-size: 23px;
   line-height: 1.15;
@@ -313,7 +313,7 @@
 /* Group heading on a results paper. */
 .paperHead {
   margin: 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 700;
   font-size: 24px;
   line-height: 1;
@@ -391,8 +391,83 @@
 
 .momentTitle {
   margin: 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 700;
   font-size: 34px;
   line-height: 1.05;
+}
+
+/* Plan 3, the established stage: card titles as small caps labels, as in the mockups. */
+:global([data-stage='established']) .title {
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Plan 3: the established cap table's stacked bar. */
+.capBar {
+  display: flex;
+  height: 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.capYou {
+  background: var(--accent);
+}
+
+.capOther {
+  background: #b9bfc8;
+}
+
+/* Plan 3: the established Occupancy heat grid. */
+.heat {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 12px;
+}
+
+.heat th {
+  padding: 4px;
+  color: var(--ink-muted);
+  font-weight: 600;
+  text-align: center;
+}
+
+.heat th[scope='row'] {
+  white-space: nowrap;
+  font-family: var(--font-mono);
+}
+
+.heat td {
+  height: 36px;
+  padding: 2px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-align: center;
+}
+
+.heatClosed {
+  background: var(--soft);
+  color: var(--ink-muted);
+}
+
+.heatLow {
+  background: color-mix(in srgb, var(--accent) 18%, white);
+  color: var(--ink);
+}
+
+.heatHalf {
+  background: color-mix(in srgb, var(--accent) 45%, white);
+  color: var(--ink);
+}
+
+.heatFull {
+  background: var(--accent);
+  color: var(--on-accent);
 }

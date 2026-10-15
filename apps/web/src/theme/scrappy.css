@@ -63,6 +63,8 @@
   --font-body: 'IBM Plex Sans', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --font-hand: 'Caveat', 'Segoe Print', cursive;
+  /* Writing on the paper (the notebook, the calendar): handwriting until the established stage. */
+  --font-paper: var(--font-hand);
 
   --paper-radius: 3px;
   --panel-radius: 8px;

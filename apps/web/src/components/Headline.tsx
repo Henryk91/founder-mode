@@ -1,6 +1,6 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
-import { count, label, type LabelKey, type Voice, voiceOf } from '../labels'
+import { count, label, stageOf, type LabelKey, type Voice, voiceOf } from '../labels'
 import type { ExplainKey } from '../store'
 import { useGame } from '../useGame'
 import styles from './Headline.module.css'
@@ -15,7 +15,7 @@ export const CHANGE_WEEKS = 1
 type Change = { text: string; spoken: string; good: boolean | null }
 
 type Stat = {
-  id: 'cash' | 'runway' | 'revenue' | 'customers' | 'guests'
+  id: 'cash' | 'runway' | 'revenue' | 'customers' | 'guests' | 'team'
   title: LabelKey
   /** A shorter title for the narrow phone band. */
   short: LabelKey
@@ -76,6 +76,23 @@ export function headlineStats(view: PlayerView): Stat[] {
           change: before && delta(stage, view.customers.length - before.customers, String),
           explain: null,
         },
+  ]
+}
+
+/** Plan 3: the established desk bar adds the team, "4 + you" (subscription long mode only). */
+function teamStat(view: PlayerView): Stat[] {
+  const stage = voiceOf(view)
+  if (stageOf(stage) !== 'established' || view.bookings || view.team.maxMembers <= 1) return []
+  return [
+    {
+      id: 'team',
+      title: 'stat.team',
+      short: 'stat.team',
+      value: label('stat.teamValue', stage, { n: view.team.members.length }),
+      note: null,
+      change: null,
+      explain: null,
+    },
   ]
 }
 
@@ -159,7 +176,7 @@ export function Headline(props: { size: 'band' | 'bar' }) {
   const period = label('stat.period', stage)
   return (
     <div className={props.size === 'bar' ? styles.bar : styles.band}>
-      {headlineStats(view).map((stat) => {
+      {[...headlineStats(view), ...(props.size === 'bar' ? teamStat(view) : [])].map((stat) => {
         const body = (
           <>
             <span className={styles.title}>

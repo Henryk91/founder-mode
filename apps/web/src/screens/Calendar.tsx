@@ -1,4 +1,5 @@
-import { label, voiceOf } from '../labels'
+import type { PlayerView } from '@founder-mode/engine'
+import { label, stageOf, voiceOf } from '../labels'
 import { Pipeline } from './Pipeline'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
@@ -26,36 +27,38 @@ export function Calendar() {
         {b.calendar.length === 0 && (
           <p className={styles.hint}>{label('tour.calendar.empty', stage)}</p>
         )}
-        {b.calendar.map((c) => {
-          const product = b.products.find((p) => p.id === c.productId)
-          return (
-            <div key={c.productId}>
-              <h3 className={styles.title}>{product?.name ?? c.productId}</h3>
-              <ul className={styles.list}>
-                {c.cells.map((cell) => (
-                  <li key={cell.week} className={styles.rowHead}>
-                    <span>{label('tour.calendar.week', stage, { week: cell.week })}</span>
-                    <span className={styles.mono}>
-                      {cell.capacity === 0
-                        ? label('tour.calendar.closed', stage)
-                        : label(
-                            cell.lastYear === null
-                              ? 'tour.calendar.cell'
-                              : 'tour.calendar.cellLast',
-                            stage,
-                            {
-                              booked: cell.booked,
-                              capacity: cell.capacity,
-                              last: cell.lastYear ?? 0,
-                            },
-                          )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )
-        })}
+        {stageOf(stage) === 'established' && b.calendar.length > 0 && <HeatGrid view={view} />}
+        {stageOf(stage) !== 'established' &&
+          b.calendar.map((c) => {
+            const product = b.products.find((p) => p.id === c.productId)
+            return (
+              <div key={c.productId}>
+                <h3 className={styles.title}>{product?.name ?? c.productId}</h3>
+                <ul className={styles.list}>
+                  {c.cells.map((cell) => (
+                    <li key={cell.week} className={styles.rowHead}>
+                      <span>{label('tour.calendar.week', stage, { week: cell.week })}</span>
+                      <span className={styles.mono}>
+                        {cell.capacity === 0
+                          ? label('tour.calendar.closed', stage)
+                          : label(
+                              cell.lastYear === null
+                                ? 'tour.calendar.cell'
+                                : 'tour.calendar.cellLast',
+                              stage,
+                              {
+                                booked: cell.booked,
+                                capacity: cell.capacity,
+                                last: cell.lastYear ?? 0,
+                              },
+                            )}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          })}
       </section>
       <section className={styles.card} aria-label={label('tour.demand', stage)}>
         <h2 className={styles.title}>{label('tour.demand', stage)}</h2>
@@ -72,6 +75,66 @@ export function Calendar() {
         ))}
       </section>
     </>
+  )
+}
+
+/**
+ * Plan 3, the established stage: occupancy as a heat grid, a row per week and a column per product,
+ * the units booked in each cell and three shades of the accent by the share booked. The bookings
+ * model counts weeks, not days, so the grid is by week and product (docs/decisions.md).
+ */
+function HeatGrid({ view }: { view: PlayerView }) {
+  const stage = voiceOf(view)
+  const b = view.bookings!
+  // Only what has room of its own (a whole-house booking shares the rooms' pool).
+  const pools = b.calendar.filter(
+    (c) => (b.products.find((p) => p.id === c.productId)?.capacity ?? 0) > 0,
+  )
+  const weeks = (pools[0] ?? b.calendar[0]!).cells.map((c) => c.week).slice(0, 8)
+  const shade = (booked: number, capacity: number) =>
+    capacity === 0
+      ? styles.heatClosed
+      : booked / capacity >= 0.85
+        ? styles.heatFull
+        : booked / capacity >= 0.4
+          ? styles.heatHalf
+          : styles.heatLow
+  return (
+    <table className={styles.heat}>
+      <caption className="visually-hidden">{label('tour.heat.caption', stage)}</caption>
+      <thead>
+        <tr>
+          <th scope="col">
+            <span className="visually-hidden">{label('tour.heat.week', stage)}</span>
+          </th>
+          {pools.map((c) => (
+            <th key={c.productId} scope="col">
+              {b.products.find((p) => p.id === c.productId)?.name ?? c.productId}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {weeks.map((week) => (
+          <tr key={week}>
+            <th scope="row">{label('coming.week', stage, { week })}</th>
+            {pools.map((c) => {
+              const cell = c.cells.find((x) => x.week === week)
+              return (
+                <td key={c.productId} className={shade(cell?.booked ?? 0, cell?.capacity ?? 0)}>
+                  {cell && cell.capacity > 0
+                    ? label('tour.heat.cell', stage, {
+                        booked: cell.booked,
+                        capacity: cell.capacity,
+                      })
+                    : label('tour.calendar.closed', stage)}
+                </td>
+              )
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   )
 }
 

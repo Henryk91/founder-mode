@@ -35,3 +35,8 @@
   font-weight: 600;
   white-space: nowrap;
 }
+
+/* Plan 3, the established stage: a white card with an accent progress bar. */
+:global([data-stage='established']) .track {
+  background: var(--soft);
+}

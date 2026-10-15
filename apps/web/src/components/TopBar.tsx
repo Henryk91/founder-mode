@@ -20,13 +20,26 @@ export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
   const openHelp = useGame((s) => s.openHelp)
   if (!view) return null
   const stage = voiceOf(view)
+  // Plan 3: the established company has a logo square, its full name and where it works.
+  const established = view.company.uiStage === 'established'
   const name = (
     <div className={styles.who}>
-      <h1 className={styles.name} tabIndex={-1} data-autofocus>
-        {view.scenarioName}
-      </h1>
-      <div className={styles.week}>
-        {label('bar.week', stage, { week: view.week, max: view.maxWeeks })}
+      {established && (
+        <span className={styles.logo} aria-hidden="true">
+          {view.scenarioName.slice(0, 1)}
+        </span>
+      )}
+      <div>
+        <h1 className={styles.name} tabIndex={-1} data-autofocus>
+          {label('bar.company', stage, { name: view.scenarioName })}
+        </h1>
+        <div className={styles.week}>
+          {label(established && props.wide ? 'bar.weekPlace' : 'bar.week', stage, {
+            week: view.week,
+            max: view.maxWeeks,
+            place: view.office.name,
+          })}
+        </div>
       </div>
     </div>
   )

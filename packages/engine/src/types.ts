@@ -1145,6 +1145,9 @@ export type PlayerView = {
     runwayWeeks: number | null
     /** Money from investors that arrived that week (Part D), never revenue. */
     investmentCents: number
+    /** Plan 3: money received that week, and everything paid out (as the runway counts them). */
+    inCents: number
+    outCents: number
   }[]
 }
 
