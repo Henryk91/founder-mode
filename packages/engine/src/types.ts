@@ -256,6 +256,8 @@ export type LoanTerms = {
   items?: FeatureId[]
   rooms?: number
   workingCapitalCents?: number
+  /** Plan 3: an office stage on offer, its fit-out paid for at payout. */
+  stage?: string
 }
 
 export type Loan = {
@@ -282,6 +284,8 @@ export type Loan = {
   /** Plan 2 step 2: what the plan listed. */
   items?: FeatureId[]
   rooms?: number
+  /** Plan 3: the office stage whose fit-out it paid for. */
+  stage?: string
   workingCapitalCents?: number
 }
 
@@ -1501,6 +1505,8 @@ export type LoanView = {
     rooms: { centsPerRoom: number; left: number } | null
     workingCapitalMonths: number
     workingCapitalMaxCents: number
+    /** Plan 3: office stages on offer that a plan may list, at their one-off cost. */
+    stages: { id: string; name: string; cents: number }[]
     /** Bought by a loan and not shipped or started yet. */
     bought: FeatureId[]
     roomsBought: number
