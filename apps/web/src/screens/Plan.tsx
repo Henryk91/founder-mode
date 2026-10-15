@@ -11,6 +11,7 @@ import {
   Writing,
 } from '../components/Ruled'
 import { Stepper } from '../components/Stepper'
+import { hasOffice, OfficePlan, officeSummary } from '../components/OfficePlan'
 import { LoanPlan, loanHours, loanSummary } from '../components/LoanPlan'
 import { RaisePlan, raiseHours, raiseSummary } from '../components/RaisePlan'
 import {
@@ -87,6 +88,7 @@ function sectionHours(view: PlayerView, p: WeekPlan): Record<SectionId, number> 
     team: p.searchRole === null ? 0 : costs.searchHours,
     raise: raiseHours(view, p.funding),
     loan: loanHours(view, p.loan),
+    office: 0,
     rest: p.restHours,
   }
 }
@@ -157,6 +159,7 @@ function summaries(view: PlayerView, p: WeekPlan, stage: Voice): Record<SectionI
     prices: pricesSummary(view, p.bookings, stage),
     raise: raiseSummary(view, p.funding, stage),
     loan: loanSummary(view, p.loan, stage),
+    office: officeSummary(view, p, stage),
     rest: p.restHours > 0 ? label('unit.hours', stage, { n: p.restHours }) : none,
   }
 }
@@ -173,6 +176,7 @@ const SECTIONS: { id: SectionId; title: LabelKey }[] = [
   { id: 'team', title: 'plan.section.team' },
   { id: 'raise', title: 'plan.section.raise' },
   { id: 'loan', title: 'plan.section.loan' },
+  { id: 'office', title: 'plan.section.office' },
   { id: 'rest', title: 'plan.section.rest' },
 ]
 
@@ -205,6 +209,7 @@ export function Plan() {
     team: <TeamPlan />,
     raise: <RaisePlan />,
     loan: <LoanPlan />,
+    office: <OfficePlan />,
     rest: <RestBody free={free} />,
   }
 
@@ -221,6 +226,8 @@ export function Plan() {
             if (id === 'raise' && !view.funding) return null
             // The bank loan exists only where the scenario offers one.
             if (id === 'loan' && !view.loan) return null
+            // Office stages to move between exist only in long mode (plan 3).
+            if (id === 'office' && !hasOffice(view)) return null
             // Tourism has its roster, guests and prices sections instead of selling and hiring.
             const tourismOnly = id === 'roster' || id === 'guests' || id === 'prices'
             const subscriptionOnly = id === 'sell' || id === 'demos' || id === 'team'

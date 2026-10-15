@@ -59,6 +59,7 @@ export type PlanSection =
   | 'team'
   | 'raise'
   | 'loan'
+  | 'office'
   | 'rest'
 
 export type ExplainKey =
@@ -74,6 +75,7 @@ export type ExplainKey =
   | 'hiring'
   | 'raise'
   | 'loan'
+  | 'office'
   | 'roster'
   | 'guests'
   | 'prices'
@@ -203,6 +205,8 @@ export type UiActions = {
   /** Changes part of the bookings plan (tourism): roster, prices, policy, channels. */
   setBookings(change: Partial<BookingsPlan>): void
   setLoan(change: Partial<LoanPlan>): void
+  /** Plan 3: give notice on the office stage this week, or take it back. */
+  setOfficeNotice(on: boolean): void
   /** Answers a message now: its hours count at once, its effects land when the week ends. */
   answer(messageId: string, choiceId: string): void
   /** First step of shutting down: shows the question. Nothing happens to the run yet. */
@@ -619,6 +623,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         editPlan((p) => ({ ...p, bookings: { ...(p.bookings ?? noBookings()), ...change } })),
       setLoan: (change) =>
         editPlan((p) => ({ ...p, loan: { ...(p.loan ?? noLoan()), ...change } })),
+      setOfficeNotice: (on) => editPlan((p) => ({ ...p, office: { notice: on } })),
       answer(messageId, choiceId) {
         if (!game || game.status !== 'running') return
         try {

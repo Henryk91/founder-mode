@@ -8,6 +8,11 @@
   box-shadow: var(--paper-shadow);
 }
 
+.compact {
+  height: 170px;
+  box-shadow: none;
+}
+
 .svg {
   position: absolute;
   inset: 0;
