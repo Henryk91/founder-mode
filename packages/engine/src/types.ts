@@ -28,7 +28,10 @@ export type EndingId =
   | 'growing'
   /** The bank called the loan after a second missed payment in a row (step 6). */
   | 'bank_called'
-/** `established` (plan 3): from the week a move into an `established` office stage completes. */
+/**
+ * `established` (plan 3, long modes): from the week revenue has covered all costs for the
+ * scenario's `establishedAt` months running with enough people working here.
+ */
 export type UiStage = 'scrappy' | 'organised' | 'established'
 
 // ---------------------------------------------------------------------------
@@ -1840,8 +1843,8 @@ export type ReportEntry =
     }
   /** Plan 3: the company moved in (`stage` is its number, 1 to 5). */
   | { kind: 'office_moved'; place: string; stage: number }
-  /** Plan 3: the move into this stage switched the screens to the established style. */
-  | { kind: 'ui_established'; place: string }
+  /** Plan 3: the company has grown into the established style (months in profit, a team). */
+  | { kind: 'ui_established' }
   /** Plan 3: notice given on the stage; the company leaves at the end of `endWeek`. */
   | { kind: 'office_notice'; place: string; endWeek: number }
   /** Plan 3: notice ran out; the company is back at `backTo` with the deposit. */

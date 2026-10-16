@@ -970,8 +970,6 @@ export const OfficeStageSchema = z.object({
   // Tourism: the stage's capacity, reach and segment effects need a running contract in this
   // role (someone stationed there); without one they are off that week.
   needsContract: Id.optional(),
-  // The UI turns established the week the move here completes (plan 3 step 3).
-  established: z.boolean().optional(),
 })
 export type OfficeStage = z.infer<typeof OfficeStageSchema>
 
@@ -1060,6 +1058,15 @@ export const ScenarioFileSchema = z.object({
   office: OfficeConfigSchema.optional(),
   // The UI turns organised at the first of these milestones.
   organisedAt: z.array(Id).min(1),
+  // Plan 3, long modes: the UI turns established once revenue has covered all costs (the
+  // founder's living costs included) for this many months running and this many people work
+  // here, the founder included (hires, or staff on contracts). Absent: never.
+  establishedAt: z
+    .object({
+      monthsCoveringAll: z.number().int().positive(),
+      people: z.number().int().min(2),
+    })
+    .optional(),
   // Long mode: raising money from angels and a seed fund (Part D). Absent: no funding.
   funding: FundingConfigSchema.optional(),
   // Tourism: bookings of capacity that expires (step 4). Absent: the subscription model.

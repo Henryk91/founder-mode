@@ -353,7 +353,7 @@ Phase 7 as built: the milestones live in the scenario (`milestones`, see `docs/s
 
 `uiStage` switches from `scrappy` to `organised` at the first hire or at 2,000 EUR monthly revenue, whichever comes first. (As built: at the first milestone listed in the scenario's `organisedAt`: the first hire, or monthly revenue covering all costs including the founder's living costs.) This is the single UI upgrade step in the early MVP: labels change, the pipeline shows one new number (conversion from demo to trial), and the handwriting font is replaced on that panel only.
 
-Plan 3 adds a third stage, `established` (long modes only), reached the week a move into office stage 4 completes; it never goes back, and a results line marks the switch. Its look is `docs/design/established.md`: tokens in `apps/web/src/theme/established.css` with an accent per scenario, Bricolage Grotesque for headings, and the CSS and font loaded only when a run first reaches it. Labels have an `established` set per long mode scenario.
+Plan 3 adds a third stage, `established` (long modes only), reached once revenue has covered all costs for six months running and three people work at the company (the founder, hires or staff on contracts; `establishedAt`, after the plan 3 review); it never goes back, and a results line marks the switch. Its look is `docs/design/established.md`: tokens in `apps/web/src/theme/established.css` with an accent per scenario, Bricolage Grotesque for headings, and the CSS and font loaded only when a run first reaches it. Labels have an `established` set per long mode scenario.
 
 ### 4.12b Office stages (plan 3)
 

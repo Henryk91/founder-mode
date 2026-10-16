@@ -651,19 +651,22 @@ const labels = {
   'results.entry.office_notice': 'Notice given on {place}. You are out in week {week}.',
   'results.entry.office_left': 'You left {place} for {back}. {deposit} of deposit came back.',
   'results.entry.ui_established':
-    "You moved onto the office floor. The kitchen table is now somebody else's problem.",
+    'Six months of covering every cost, and three of you to show for it. Kantino has stopped being a side project.',
   'loan.stage': 'A bigger place on offer: {name}',
   'loan.stage.list': 'List it',
   'loan.stage.listed': 'Listed',
   'pm.office.title': { scrappy: 'Where you worked', organised: 'Office stages' },
   'pm.office.stay':
-    '{place} (stage {n}), taken in week {week}: {total} in all, {oneOff} to move in{loan} and {rent} of rent{deposit}.',
+    '{place} (stage {n}), taken in week {week}. It cost {total}: {oneOff} to move in{loan} and {rent} of rent{deposit}.',
   'pm.office.loan': ' (paid by the loan)',
   'pm.office.deposit': ', less {amount} of deposit back',
   'pm.office.change':
-    'Money in over four weeks: {before} when you took it, {after} at the end of the stay. Team: {teamBefore} then {teamAfter}.',
+    'What changed: money in over four weeks went from {before} to {after} ({difference}), and the team from {teamBefore} to {teamAfter}.',
   'pm.office.changeGuests':
-    'Money in over four weeks: {before} when you took it, {after} at the end of the stay. Guests served there: {guests}.',
+    'What changed: money in over four weeks went from {before} to {after} ({difference}), with {guests} guests served there.',
+  'pm.office.up': 'up {amount}',
+  'pm.office.down': 'down {amount}',
+  'pm.office.same': 'no change',
   'pm.office.moving': 'The move was not finished when the run ended.',
   'results.entry.loan_payment':
     'Loan payment {amount}, of which {interest} interest. Still owed: {balance}.',

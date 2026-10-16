@@ -212,8 +212,7 @@ export function acceptOffice(
 }
 
 /**
- * Plan 3, each week after the inbox: a move completes in its ready week (the stage's effects and,
- * for an `established` stage, the established UI); notice given this week starts; notice that
+ * Plan 3, each week after the inbox: a move completes in its ready week (the stage's effects); notice given this week starts; notice that
  * runs out takes the company back one stage with the deposit. The move takes founder hours next
  * week while it lasts.
  */
@@ -244,10 +243,6 @@ export function applyOfficeWeek(
       place: stage.name,
       stage: stageNumber(state, stage.id),
     })
-    if (stage.established === true && state.company.uiStage !== 'established') {
-      state = { ...state, company: { ...state.company, uiStage: 'established' } }
-      out.entries.push({ kind: 'ui_established', place: stage.name })
-    }
   } else if (move) {
     out.forcedHours += cfg.moveHoursPerWeek
   }

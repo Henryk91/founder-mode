@@ -355,7 +355,6 @@ officeStages:
     weatherPlanFor: [via_ferrata, canyoning]
     # Room for more permanent guides than two.
     contractMax: { guide: 4 }
-    established: true
   - id: second_base
     name: A second base in the next valley
     # The centre's rent plus 1,800 a month for the second base (est.).
@@ -371,12 +370,14 @@ officeStages:
     # A second valley's tourists; it closes in a week without a guide stationed there.
     segmentFactors: { tourists: 1.4 }
     needsContract: guide
-    established: true
 
 # Plan 3: moving and giving notice.
 office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
+# Plan 3: the established look once all costs have been covered for six months running and three
+# people work here (the founder and two on contracts).
+establishedAt: { monthsCoveringAll: 6, people: 3 }
 
 # Bookings (docs/tourism-proposal.md). Week 1 is the first week of March.
 bookings:
