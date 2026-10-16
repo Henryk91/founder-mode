@@ -257,7 +257,7 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
     case 'office_moved':
       return label('results.entry.office_moved', stage, { place: entry.place })
     case 'ui_established':
-      return label('results.entry.ui_established', stage, { place: entry.place })
+      return label('results.entry.ui_established', stage)
     case 'office_notice':
       return label('results.entry.office_notice', stage, {
         place: entry.place,

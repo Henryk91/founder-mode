@@ -18,9 +18,9 @@ Mockups (static pictures, not code; ignore the inline styles' exact structure, c
 |---|---|---|
 | `scrappy` | Start | yes |
 | `organised` | Revenue covers all costs, or the first hire | yes (pipeline panel and a few labels only) |
-| `established` | The company moves into **office stage 4** (see `docs/office-stages.md`) | **new** |
+| `established` | Revenue has covered all costs for six months running and three people work at the company (after the plan 3 review; it was office stage 4), see `docs/office-stages.md` section 6 | **new** |
 
-- Office stage 4 exists only in long mode, so the 60 week game never reaches `established`. Kantino and Zollstock 60 week screens stay exactly as they are.
+- Only the long modes set `establishedAt`, so the 60 week game never reaches `established`. Kantino and Zollstock 60 week screens stay exactly as they are.
 - The stage never goes back down within a run, even if the company later moves out.
 - The switch happens on the results screen of the week the move completes, with one line in the scenario's dry tone (examples: Kantino "You moved onto the office floor. The kitchen table is now somebody else's problem."; Seeblick "The pavilion is up and the reception desk has a bell. Guests have started ringing it.").
 - A dev-only way to preview the stage (for example a URL parameter) is allowed, never in the production build.

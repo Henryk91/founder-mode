@@ -21,6 +21,7 @@ import {
 } from './systems/team'
 import { checkEnding } from './systems/endings'
 import { checkMilestones } from './systems/milestones'
+import { reachesEstablished } from './systems/uiStage'
 import { applyOfficeWeek, applyWalkIns, energyPerWeek } from './systems/office'
 import type { GameState, ReportEntry, WeekPlan, WeekReport } from './types'
 import { interviewView } from './view'
@@ -225,6 +226,12 @@ export function endWeek(
     state.company.uiStage === 'scrappy' &&
     state.milestones.some((m) => state.scenario.organisedAt.includes(m.id))
   if (organise) state = { ...state, company: { ...state.company, uiStage: 'organised' } }
+  // Plan 3, long modes: established after months covering all costs with a team (never back).
+  const establish = reachesEstablished(state)
+  if (establish) {
+    state = { ...state, company: { ...state.company, uiStage: 'established' } }
+    entries.push({ kind: 'ui_established' })
+  }
 
   // 13. Inbox events for next week
   if (state.status === 'running') state = drawMessages(state, rng)
@@ -240,7 +247,7 @@ export function endWeek(
     ledger: state.ledger.at(-1) ?? finance.ledger,
     ending,
     milestones: milestones.reached,
-    uiStageChanged: organise || office.entries.some((e) => e.kind === 'ui_established'),
+    uiStageChanged: organise || establish,
   }
   state = {
     ...state,

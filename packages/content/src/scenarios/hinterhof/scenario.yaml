@@ -367,7 +367,6 @@ officeStages:
     # Seats from 40 to 70, and a private table for parties and office lunches.
     capacity: { dinner_menu: 180, fast_lunch: 300, open_sundays: 60 }
     segmentFactors: { evening_locals: 1.15, office_lunch: 1.15 }
-    established: true
   - id: deli_kitchen
     name: Deli and catering kitchen across the street
     # The knocked-through rent plus 2,200 a month for the deli (est.).
@@ -383,12 +382,14 @@ officeStages:
     # Catering doubled and a takeaway counter for office lunch; both need cooks on shift.
     capacity: { dinner_menu: 180, fast_lunch: 450, open_sundays: 60, catering: 150 }
     segmentFactors: { evening_locals: 1.15, office_lunch: 1.15 }
-    established: true
 
 # Plan 3: moving and giving notice.
 office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
+# Plan 3: the established look once all costs have been covered for six months running and three
+# people work here (the founder and two on contracts).
+establishedAt: { monthsCoveringAll: 6, people: 3 }
 
 # The bank loan (docs/loan-proposal.md): needed to open.
 loan:

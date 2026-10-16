@@ -321,6 +321,9 @@ organisedAt: [first_hire, covers_all_costs]
 modes:
   long:
     maxWeeks: 104
+    # Plan 3: the established look once all costs have been covered for six months running and
+    # three people work here (the founder and two hires).
+    establishedAt: { monthsCoveringAll: 6, people: 3 }
     # A long game should prove it lasts: profitable in each of the last three months.
     win: { profitableMonths: 3 }
     founder:
@@ -389,7 +392,6 @@ modes:
         energyPerWeek: 2
         demoFactor: 1.1
         searchWeeksLess: 1
-        established: true
       - id: front_desk
         name: Front desk and a proper meeting room
         # About 300 m² (est.); 22,500 EUR deposit and 2,500 EUR of furniture.

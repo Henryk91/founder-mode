@@ -366,7 +366,6 @@ officeStages:
     # Weddings and groups book more readily; the reception takes 5 h a week off the founder.
     segmentFactors: { groups: 1.2 }
     hostingHoursLess: 5
-    established: true
   - id: second_house
     name: A second house in the village
     # The annex plus 4,000 a month for the second house (est.).
@@ -381,12 +380,14 @@ officeStages:
     capacity: { rooms: 84 }
     segmentFactors: { groups: 1.2 }
     hostingHoursLess: 5
-    established: true
 
 # Plan 3: moving and giving notice.
 office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
+# Plan 3: the established look once all costs have been covered for six months running and three
+# people work here (the founder and two on contracts).
+establishedAt: { monthsCoveringAll: 6, people: 3 }
 
 # The bank loan (docs/loan-proposal.md): for renovation and the first winter.
 loan:
