@@ -358,14 +358,15 @@ modes:
     # Every person needs a desk, the founder included. Munich office rents of about 20 to 25 EUR a
     # square metre a month plus service costs (est.); deposits of three months' rent.
     office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
-    # Three desks at the first two stages (spec: two), so a funded team can grow before it
-    # moves (plan 3 step 2, decisions).
+    # Three desks at the kitchen table and four at the coworking desk, where a desk more is only
+    # rent (spec: two each), so a funded team can grow before it moves (plan 3 steps 2 and 4,
+    # decisions).
     officeStages:
       - { id: kitchen_table, name: Kitchen table, monthlyCents: 0, desks: 3 }
       - id: coworking_desk
         name: Coworking desk
         monthlyCents: 37500
-        desks: 3
+        desks: 4
         walkIns: { segment: coworking, leadsPerWeek: 0.9 }
       - id: courtyard_office
         name: Small office in a back courtyard

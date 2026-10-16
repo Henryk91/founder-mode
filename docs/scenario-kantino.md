@@ -252,3 +252,11 @@ Reasons in `docs/decisions.md`, plan 2 step 5. The 60 week game is unchanged.
 - **Angel round:** 80,000 to 180,000 EUR (was 100,000 to 250,000). Before the round's stated revenue bar (3,000 EUR a month), an angel offers a quarter of the cheque at 40% of the valuation floor: an early raise is visibly worse in its terms, not in a hidden chance.
 - **Founder salary:** once the first round closes, the company pays its founder 2,500 EUR a month, a visible company cost.
 - **Target 20** compares renting with hiring for a burst and for steady work, not either against the solo founder, since a part time salary does not pay at Kantino's size.
+
+## 13. What changed in plan 3 (long mode only), and why
+
+Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/office-stages.md`. The 60 week game is unchanged.
+
+- **Desks:** every person needs a desk, the founder included, and no hire starts when they are all used. Three desks at the kitchen table and four at the coworking desk (the spec had two each): with two, the desks held a funded team to one hire and cost raise_on_traction about 4 points.
+- **Office stages 3 to 5:** a small office in a back courtyard (1,500 EUR a month, 6,000 to move in, four desks), an office floor (3,800 a month, 15,000, six desks, a week off each hire's search; moving in switches to the established look) and a front desk with a meeting room (7,500 a month, 25,000, ten desks, a team of up to eight, coworking operators convert better). Offered by letter: the courtyard once someone works for you or the money has covered two months, the floor when the desks are full or after three profitable months, the front desk after a funding round or at a team of four. Rents are Munich estimates.
+- **Bots:** the careful bot moves only when the desks stop a hire it wants and last month's surplus carries twice the added rent. Measured, an office never pays a solo founder at Kantino's size, so it rarely moves (targets 38 to 40, O1 to O3, open).

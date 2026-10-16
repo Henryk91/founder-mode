@@ -353,6 +353,12 @@ Phase 7 as built: the milestones live in the scenario (`milestones`, see `docs/s
 
 `uiStage` switches from `scrappy` to `organised` at the first hire or at 2,000 EUR monthly revenue, whichever comes first. (As built: at the first milestone listed in the scenario's `organisedAt`: the first hire, or monthly revenue covering all costs including the founder's living costs.) This is the single UI upgrade step in the early MVP: labels change, the pipeline shows one new number (conversion from demo to trial), and the handwriting font is replaced on that panel only.
 
+Plan 3 adds a third stage, `established` (long modes only), reached the week a move into office stage 4 completes; it never goes back, and a results line marks the switch. Its look is `docs/design/established.md`: tokens in `apps/web/src/theme/established.css` with an accent per scenario, Bricolage Grotesque for headings, and the CSS and font loaded only when a run first reaches it. Labels have an `established` set per long mode scenario.
+
+### 4.12b Office stages (plan 3)
+
+`docs/office-stages.md`. Every scenario has stages 1 and 2 as before; the long modes add stages 3 to 5 as scenario content (`officeStages`: one-off, deposit, moving weeks, rent, desks or capacity, effects). Offers arrive as inbox events that state their condition (desks full, guests turned away, a sustained profit), the one-off and the rent, and come back after a cooldown while the condition holds. Accepting pays the one-off (or the bank's plan paid it), moves the rent and takes founder hours for the moving weeks; notice takes 13 weeks, returns the deposit and drops one stage. In Kantino long every person needs a desk, so desks limit hiring. The view's `office` and the post-mortem show each stage's cost and what changed after it. Targets O1 to O5 (bots: `careful`, `never` and `always` move rules).
+
 ### 4.13 Endings
 
 | Ending | Condition |
@@ -733,7 +739,7 @@ Known leftovers:
 
 - Six bot targets sit exactly at their limit (within their own margin of error), in `docs/balancing.md`: Kantino 17, 18 and the books part of 13; Zollstock 11, the worst market of 17, and the landing part of 13. Any tuning change can tip one of them.
 - A segment's market size is used only by long mode's market saturation.
-- First load LCP is 2.38 s against a 2.5 s target, so the margin is small. The JS (200 kB gzipped) is what the first paint waits for.
+- First load LCP is 2.38 s against a 2.5 s target, so the margin is small. The JS (200 kB gzipped) is what the first paint waits for. (Plan 3: every screen after the Start screen now loads after its first paint; main bundle 184 kB gzipped, Start screen 2.28 s.)
 
 ---
 
@@ -752,6 +758,15 @@ Steps 3 to 8 of `docs/AUTONOMOUS_PLAN.md` are done: situational events as a gene
 - Tourism retune with two new targets (T13: a player without hidden knowledge can win; T14: every staff contract kind wins somewhere), and Kantino long funding terms (a founder salary once funded, weaker terms before the revenue bar, target 20 restated).
 
 Open issues are in `docs/autonomous2/STATUS.md`.
+
+### After plan 2: plan 3
+
+`docs/AUTONOMOUS_PLAN_3.md` added office stages and the established UI stage (reports in `docs/autonomous3/reports/`, summary in `docs/autonomous3/reports/final.md`):
+
+- Office stages 3 to 5 in every long mode scenario (section 4.12b), with twelve scene drawings, the Office section of the Plan, the Office card, the stage in the bank's plan, and post-mortem lines.
+- The careful bots move only when the reason is real and a year's (or, for a subscription business, last month's) surplus carries twice the added rent; a subscription business moves only when the desks stop a hire it wants.
+- The established UI stage (section 4.12), on phone and desktop, for every long mode scenario.
+- Targets O1 to O5. Offices rarely pay at these businesses' size, so O1 (moving at the right time pays) and O3 (no stage always right) are open issues; see `docs/autonomous3/STATUS.md`.
 
 ## 10. How to start with Claude Code
 
