@@ -2,7 +2,7 @@
 
 Everything planned or discussed that no plan builds yet. When a plan picks an item up, move it to that plan. When a plan leaves something out or opens an issue, add it here.
 
-Last updated: 16 October 2026, when plan 4 was written.
+Last updated: 16 October 2026, when plans 4 and 5 were written.
 
 ## 1. Left out of plan 4 (the abroad scenarios)
 
@@ -19,7 +19,20 @@ Last updated: 16 October 2026, when plan 4 was written.
 | Tuning beyond the first-pass budget | Targets still failing after plan 4 land in section 2 |
 | A surf school in Portugal | Atlantic swell, a different business from wind sports. A possible fourth abroad scenario |
 
-## 2. Open targets
+## 2. Left out of plan 5 (the leisure scenarios)
+
+Plan 5 (`docs/AUTONOMOUS_PLAN_5.md`) builds the escape room, event venue, fitness studio and climbing gym in Munich, under a new "Leisure" tab. It runs after plan 4.
+
+| Item | Notes |
+|---|---|
+| Office stages 3 to 5 for the leisure scenarios | Specs have stages 1 and 2 only |
+| A second location for any of them | A second studio, a second gym |
+| A full gym with machines | The fitness studio is classes only |
+| Personal training, physiotherapy or a shop as products | |
+| A real booking or access-control integration | |
+| New mockups or a new visual style for the leisure screens | Plan 5 reuses existing components |
+
+## 3. Open targets
 
 Details and options in `docs/autonomous3/STATUS.md`, `docs/autonomous2/STATUS.md` and `docs/decisions.md`. Plan 4 adds its own open issues in `docs/autonomous4/STATUS.md`; copy them here at its end.
 
@@ -34,12 +47,11 @@ Details and options in `docs/autonomous3/STATUS.md`, `docs/autonomous2/STATUS.md
 
 These are better as their own small tuning plan than mixed into a content plan.
 
-## 3. Features not in any plan
+## 4. Features not in any plan
 
 | Item | Notes |
 |---|---|
 | Zollstock long mode | With funding and office stages |
-| More business types | Escape room, event venue, fitness studio, agency |
 | The next batch of 60-week changes | Chasing invoices with a risk of chasing too early; automatic reminders |
 | Summarised inbox reports in the established look | From the old established mockup |
 | Cofounders | |
@@ -51,7 +63,7 @@ These are better as their own small tuning plan than mixed into a content plan.
 | Real illustration | |
 | Cloud saves | |
 
-## 4. Housekeeping
+## 5. Housekeeping
 
 | Item | Notes |
 |---|---|
