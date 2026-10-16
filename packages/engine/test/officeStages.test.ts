@@ -116,7 +116,9 @@ describe('office stages: moving, desks and notice', () => {
   })
 
   it('blocks a hire when every desk is used', () => {
-    const s = withTeam('desks', 1)
+    // The founder takes a desk too.
+    const desks = quiet().officeStages[0]!.desks!
+    const s = withTeam('desks', desks - 1)
     expect(getView(s).office.desksFree).toBe(0)
     expect(validatePlan(s, plan({ searchRole: 'developer' }))).toContainEqual({
       code: 'search_not_allowed',
