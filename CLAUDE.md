@@ -49,8 +49,7 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 
 - Before coding a phase, list the files you will touch and any ambiguity.
 - Write tests alongside each system. A phase is done only when its "Done when" criteria hold and `pnpm test` and `pnpm lint` pass.
-- After any change to formulas or scenario values, run the bots and update `docs/balancing.md`.
-- After any change to engine types, content fields, or bot logic, rerun the bot report with `--events` and commit the regenerated `docs/balancing.md` in the same piece of work.
+- Bot runs follow "Bot report budget" below. Update `docs/balancing.md` with whatever parts you ran.
 - Record design or tuning decisions in `docs/decisions.md` in one or two lines each.
 - Stop at the end of each phase and summarise.
 
@@ -60,3 +59,21 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 - Fictional company and person names only
 - British spelling, EUR, metric units
 - No em dashes
+
+## Bot report budget
+
+The full bot report (every scenario, 10,000 wide seeds, event tables) takes about two hours. It slows development badly, so run it only when it is truly needed. These rules override any plan file that asks for more.
+
+| Change | What to run |
+|---|---|
+| UI, labels, docs, game text only (no numbers, no engine, no bots) | `pnpm lint` and `pnpm test`. No bot runs |
+| Anything that only changes the view or the UI stage, not outcomes | Lint, tests, and the main part (`--parts main`) of the affected scenarios on 1,000 seeds to prove outcomes are identical. Minutes, not hours |
+| Content values or bot logic of one scenario | Only that scenario, only the parts whose targets can move, 1,000 seeds. 10,000 only for a target being tuned whose effect is smaller than its margin at 1,000 |
+| Engine changes | The main part of every scenario on 1,000 seeds. The engine is deterministic, so identical results on 1,000 seeds prove a game is unchanged; 10,000 seeds are never needed to prove "unchanged" |
+| Event content | The event table (`--events`) for the affected scenario only |
+| End of a whole plan, or before a release, or when Henry asks | The full report, once |
+
+- Never run the full report at the end of every step, and never rerun it to re-confirm something an earlier run already showed.
+- Before starting any run expected to take longer than 15 minutes, check this table. If the change is not in a row that requires it, do not run it.
+- When you report results, say which parts and how many seeds you ran.
+
