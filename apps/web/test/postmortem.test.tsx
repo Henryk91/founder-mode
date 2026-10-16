@@ -354,3 +354,38 @@ describe('the outdoor scenario (step 5)', () => {
     expect(page).toContain('Shifts and costs per guest came to')
   })
 })
+
+describe('office stages in the post-mortem (plan 3)', () => {
+  it('says plainly what each move cost and what changed after it', () => {
+    const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'pm-office' })
+    store.getState().startRun()
+    playToEnd(store)
+    const pm = store.getState().postMortem!
+    const stay = {
+      place: 'Small office in a back courtyard',
+      stage: 3,
+      acceptedWeek: 40,
+      movedWeek: 42,
+      leftWeek: null,
+      oneOffCents: 600_000,
+      paidByLoan: false,
+      rentCents: 1_500_000,
+      depositBackCents: 0,
+      totalCents: 2_100_000,
+      revenueBeforeCents: 800_000,
+      revenueAfterCents: 650_000,
+      teamBefore: 1,
+      teamAfter: 2,
+      guests: null,
+    }
+    store.setState({ postMortem: { ...pm, office: [stay] } })
+    // The desk shows every section open.
+    const page = text(store, 'desk')
+    expect(page).toContain(
+      'Small office in a back courtyard (stage 3), taken in week 40. It cost €21,000: €6,000 to move in and €15,000 of rent.',
+    )
+    expect(page).toContain(
+      'What changed: money in over four weeks went from €8,000 to €6,500 (down €1,500), and the team from 1 to 2.',
+    )
+  })
+})
