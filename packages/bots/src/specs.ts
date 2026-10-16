@@ -186,6 +186,9 @@ export const TEAM_SPECS: StrategySpec[] = [
   'validate_then_build_expand',
   'validate_then_build_expand_solo',
   'validate_then_build_founder_chases',
+  // Plan 3: targets O1 and O2 on the wide seeds.
+  'validate_then_build_never_move',
+  'validate_then_build_always_move',
   ...SITUATION_VARIANTS.map((v) => v.id),
 ].map((id) => ({ kind: 'team', id }))
 

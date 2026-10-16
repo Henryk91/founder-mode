@@ -264,14 +264,21 @@ export function evaluateLongTargets(input: ReportInput): Target[] {
       margin: '',
       pass: slowest < 120,
     },
-    // Plan 3: office stages, on the wide seeds (the team part).
-    ...evaluateOfficeTargets(
-      38,
-      reader,
-      find(input, 'team:validate_then_build_never_move'),
-      find(input, 'team:validate_then_build_always_move'),
-      wideNote,
-    ),
+    // Plan 3: office stages, on the wide seeds (the team part), else on the main part's seeds.
+    ...(find(input, 'team:validate_then_build_never_move')
+      ? evaluateOfficeTargets(
+          38,
+          reader,
+          find(input, 'team:validate_then_build_never_move'),
+          find(input, 'team:validate_then_build_always_move'),
+          wideNote,
+        )
+      : evaluateOfficeTargets(
+          38,
+          find(input, 'validate_then_build'),
+          find(input, 'validate_then_build_never_move'),
+          find(input, 'validate_then_build_always_move'),
+        )),
   ]
 }
 

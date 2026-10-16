@@ -1577,7 +1577,6 @@ export function validatingPlayer(
             return fits ? [{ messageId: m.id, choiceId: BOOKS_CHOICE }] : []
           })
         : []
-      if (behaviours.inbox === 'none') return [...forcedAnswers, ...answers]
       const used = answers.reduce(
         (t, a) =>
           t +
@@ -1605,6 +1604,9 @@ export function validatingPlayer(
       )
       rest.committedHours += stageMoves.reduce((t, a) => t + a.hours, 0)
       rest.inbox = rest.inbox.filter((m) => !stageOffers.has(m.eventId))
+      const stageAnswers = stageMoves.map(({ messageId, choiceId }) => ({ messageId, choiceId }))
+      // Leaving the inbox to its defaults is about messages, not where the company works.
+      if (behaviours.inbox === 'none') return [...forcedAnswers, ...answers, ...stageAnswers]
       const moves =
         behaviours.inbox === 'reader'
           ? rest.inbox.flatMap((m) => {
@@ -1618,7 +1620,7 @@ export function validatingPlayer(
       return [
         ...forcedAnswers,
         ...answers,
-        ...stageMoves.map(({ messageId, choiceId }) => ({ messageId, choiceId })),
+        ...stageAnswers,
         ...moves,
         ...(behaviours.inbox === 'reader'
           ? readInbox(rest, scenario)
