@@ -4,6 +4,7 @@ import type { Browser, Page } from 'playwright-core'
 import { createServer, type ViteDevServer } from 'vite'
 import { loadScenario } from '@founder-mode/content'
 import { CHROMIUM, WEBKIT, type Engine } from './browsers'
+import { newRun } from './screen'
 
 /**
  * The ruled notebook of the Plan tab, measured in a real browser: layout cannot be checked in the
@@ -62,7 +63,7 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
   async function planTab(width: number, height: number, touch = false): Promise<Page> {
     const page = await getBrowser().newPage({ viewport: { width, height }, hasTouch: touch })
     await page.goto(getUrl())
-    await page.getByRole('button', { name: 'New run' }).click()
+    await newRun(page)
     // The intro's screens load after the Start screen; wait for them before counting buttons.
     await page
       .getByRole('button', { name: /^(Next|Start week 1)/ })
@@ -145,8 +146,7 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
       await page.goto(getUrl())
       await page.evaluate(() => localStorage.clear())
       await page.reload()
-      await page.getByRole('button', { name: /^104 weeks/ }).click()
-      await page.getByRole('button', { name: 'New run' }).click()
+      await newRun(page, 'Kantino', '104 weeks')
       await page
         .getByRole('button', { name: /^(Next|Start week 1)/ })
         .first()

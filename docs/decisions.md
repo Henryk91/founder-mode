@@ -662,3 +662,11 @@ Fresh budget of 3 rounds for each plan 3 open issue. Measured first on 1,000 see
 - The company's name fits its line by stepping down to 12 px, then dropping the logo square ("Gratwanderung Bergtouren" at 375 px needs both); Help on the established phone is a round "?" named Help.
 - "Demand you missed" two-line rows apply in every stage, as the squeezed monospace columns were the same bug there.
 
+## Start screen redesign (web and content only)
+
+- Categories are content (`categories.yaml`, and `category`, `short`, `tags` in each `about.yaml`), so a new scenario adds a row to its tab without code. The layout follows the number of categories: tabs to three, chips to six, a grid from seven. With seven or more, the screen opens on the remembered category's list, or the grid when none was chosen.
+- The Continue card needs week and cash without replaying a save at first paint, so every autosave also writes a small note per slot (week, length, cash), most recently played first. A save from before the notes shows its week, counted from the save's actions, until its next week.
+- There was no warning before a new run replaced a save (only the "newer version" notice mentioned it). The sheet now asks first when the company and length have a save.
+- Tags: the mockup's (Kantino Software, Zollstock Trust over adverts, Gratwanderung Weather and Seasonal, Hinterhof Needs a loan, Seeblick Seasonal and Loan helps), plus a second where there was one: Kantino Subscriptions, Zollstock Software, Hinterhof Rent every month.
+- First load, production build, 375 x 812, 4x CPU, slow 4G, cold cache, median of 5 in Chrome, time from navigation to the first company row: 2.39 s before and 2.39 s after (the earlier 2.28 s was measured to a different point). New run still waits for the scenarios and the game screens.
+

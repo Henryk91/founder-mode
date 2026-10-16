@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { chromium, type Browser, type Page } from 'playwright-core'
 import { createServer, type ViteDevServer } from 'vite'
+import { newRun } from './screen'
 
 /** Crashes and storage trouble in a real browser. Skipped where no Chrome is installed. */
 const chromePath = [
@@ -37,7 +38,7 @@ describe.skipIf(!chromePath)('saves in the browser', () => {
   })
 
   async function inGame(page: Page) {
-    await page.getByRole('button', { name: 'New run' }).click()
+    await newRun(page)
     for (let i = 0; i < 6; i++) {
       const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
       if (await next.count()) await next.first().click()

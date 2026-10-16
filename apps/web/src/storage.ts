@@ -7,6 +7,13 @@ import type { EndingId, GameMode, SaveFile, SuggestionId } from '@founder-mode/e
 export const slotOf = (scenarioId: string, mode: GameMode = 'standard'): string =>
   mode === 'standard' ? scenarioId : `${scenarioId}.${mode}`
 
+/** The scenario and mode of a slot, the reverse of `slotOf`. */
+export function parseSlot(slot: string): { scenarioId: string; mode: GameMode } {
+  return slot.endsWith('.long')
+    ? { scenarioId: slot.slice(0, -'.long'.length), mode: 'long' }
+    : { scenarioId: slot, mode: 'standard' }
+}
+
 /** The slot a save file belongs to. */
 export const slotOfSave = (file: SaveFile): string => slotOf(file.scenarioId, file.mode)
 
@@ -23,11 +30,14 @@ export type SaveStorage = {
   /** Saves under the file's own slot. False when the browser would not store it. */
   save(file: SaveFile): boolean
   clear(slot: string): void
+  /** Every slot with something stored in it, readable or not. */
+  slots(): string[]
   /** False when this browser keeps nothing at all, as in some private windows. */
   available(): boolean
 }
 
-const saveKey = (scenarioId: string) => `founder-mode.save.v1.${scenarioId}`
+const SAVE_PREFIX = 'founder-mode.save.v1.'
+const saveKey = (scenarioId: string) => `${SAVE_PREFIX}${scenarioId}`
 /** Before there was more than one scenario, the one autosave lived here. */
 const LEGACY_SAVE_KEY = 'founder-mode.save.v1'
 const PROBE_KEY = 'founder-mode.probe'
@@ -113,6 +123,21 @@ export function browserStorage(): SaveStorage {
         // Nothing to do.
       }
     },
+    slots() {
+      try {
+        const found = new Set<string>()
+        for (let i = 0; i < window.localStorage.length; i++) {
+          const key = window.localStorage.key(i)
+          if (key?.startsWith(SAVE_PREFIX)) found.add(key.slice(SAVE_PREFIX.length))
+        }
+        const legacy = window.localStorage.getItem(LEGACY_SAVE_KEY)
+        const file = legacy === null ? null : readSave(legacy)
+        if (file && file !== UNREADABLE) found.add(slotOfSave(file))
+        return [...found]
+      } catch {
+        return []
+      }
+    },
     available: canStore,
   }
 }
@@ -147,6 +172,7 @@ export function memoryStorage(
       files.delete(id)
       last = id
     },
+    slots: () => [...files.keys()],
     available: () => !options.unavailable,
     current: (id) => {
       const f = read(id ?? last)
@@ -181,6 +207,12 @@ export const MAX_RUNS = 200
 
 export const emptyProfile = (): Profile => ({ current: null, lastSuggestion: null, runs: [] })
 
+/**
+ * What the Continue card shows about a save without replaying it: written with every autosave,
+ * most recently played first. Saves from before these notes have none until the next week.
+ */
+export type SaveNote = { slot: string; week: number; maxWeeks: number; cashCents: number }
+
 /** What went wrong with the best runs: could not be read, or could not be stored. */
 export type ProfileTrouble = 'unreadable' | 'unsaved'
 
@@ -199,6 +231,15 @@ export type ProfileStorage = {
   /** The run length picked last on the Start screen. */
   lastMode(): string | null
   setLastMode(mode: string): void
+  /** The category shown last on the Start screen. */
+  lastCategory(): string | null
+  setLastCategory(id: string): void
+  /** Scenario ids, the one played most recently first. */
+  recentScenarios(): string[]
+  setRecentScenarios(ids: string[]): void
+  /** Notes on the saves, the one played most recently first. */
+  saveNotes(): SaveNote[]
+  setSaveNotes(notes: SaveNote[]): void
 }
 
 const profileKey = (scenarioId: string) => `founder-mode.profile.v1.${scenarioId}`
@@ -207,6 +248,33 @@ export const unreadableProfileKey = (scenarioId: string) =>
   `founder-mode.profile.v1.${scenarioId}.unreadable`
 const SCENARIO_KEY = 'founder-mode.scenario.v1'
 const MODE_KEY = 'founder-mode.mode.v1'
+const CATEGORY_KEY = 'founder-mode.category.v1'
+const RECENT_KEY = 'founder-mode.recent.v1'
+const NOTES_KEY = 'founder-mode.saveNotes.v1'
+
+const isNote = (n: unknown): n is SaveNote => {
+  if (typeof n !== 'object' || n === null) return false
+  const x = n as Record<string, unknown>
+  return (
+    typeof x['slot'] === 'string' &&
+    typeof x['week'] === 'number' &&
+    typeof x['maxWeeks'] === 'number' &&
+    typeof x['cashCents'] === 'number'
+  )
+}
+
+/** A stored list, keeping only the entries that pass `keep`; empty when it cannot be read. */
+function readList<T>(raw: string | null, keep: (x: unknown) => x is T): T[] {
+  if (raw === null) return []
+  try {
+    const list: unknown = JSON.parse(raw)
+    return Array.isArray(list) ? list.filter(keep) : []
+  } catch {
+    return []
+  }
+}
+
+const isString = (x: unknown): x is string => typeof x === 'string'
 
 const isRun = (r: unknown): r is RunRecord => {
   if (typeof r !== 'object' || r === null) return false
@@ -293,6 +361,48 @@ export function browserProfiles(): ProfileStorage {
         // Next time the game opens on the 60 week game instead.
       }
     },
+    lastCategory() {
+      try {
+        return window.localStorage.getItem(CATEGORY_KEY)
+      } catch {
+        return null
+      }
+    },
+    setLastCategory(id) {
+      try {
+        window.localStorage.setItem(CATEGORY_KEY, id)
+      } catch {
+        // Next time the Start screen opens on the category of the company picked last.
+      }
+    },
+    recentScenarios() {
+      try {
+        return readList(window.localStorage.getItem(RECENT_KEY), isString)
+      } catch {
+        return []
+      }
+    },
+    setRecentScenarios(ids) {
+      try {
+        window.localStorage.setItem(RECENT_KEY, JSON.stringify(ids))
+      } catch {
+        // The list keeps its content order instead.
+      }
+    },
+    saveNotes() {
+      try {
+        return readList(window.localStorage.getItem(NOTES_KEY), isNote)
+      } catch {
+        return []
+      }
+    },
+    setSaveNotes(notes) {
+      try {
+        window.localStorage.setItem(NOTES_KEY, JSON.stringify(notes))
+      } catch {
+        // The Continue card shows the week only, read from the save itself.
+      }
+    },
   }
 }
 
@@ -303,7 +413,22 @@ export function memoryProfiles(options: { raw?: Record<string, string>; full?: b
   const aside = new Map<string, string>()
   let picked: string | null = null
   let pickedMode: string | null = null
+  let category: string | null = null
+  let recent: string[] = []
+  let notes: SaveNote[] = []
   const storage: ProfileStorage & { aside(scenarioId: string): string | null } = {
+    lastCategory: () => category,
+    setLastCategory: (id) => {
+      category = id
+    },
+    recentScenarios: () => recent,
+    setRecentScenarios: (ids) => {
+      recent = ids
+    },
+    saveNotes: () => notes,
+    setSaveNotes: (list) => {
+      notes = list
+    },
     lastScenario: () => picked,
     setLastScenario: (id) => {
       picked = id

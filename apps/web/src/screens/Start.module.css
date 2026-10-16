@@ -1,90 +1,326 @@
-/* The Start screen in the scrappy style: paper, a note, and the dark best runs panel. */
+/*
+ * The Start screen in the scrappy style (docs/design/start-screen.html): the title on the dark
+ * ground, a sticky note to continue, a tab switch, one paper list, and a paper sheet per company.
+ */
 .start {
   min-height: 100%;
   max-width: 460px;
   margin: 0 auto;
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 14px;
+  padding: 18px 16px 24px;
 }
 
-.paper {
-  gap: 16px;
-  padding: 22px 20px;
+/* At desk width the sheet is a panel beside the list. */
+.wide {
+  max-width: 980px;
+  display: grid;
+  grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+  align-items: start;
+  column-gap: 28px;
+  padding-top: 40px;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
 }
 
 .title {
   margin: 0;
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: 52px;
+  font-size: 44px;
   line-height: 1;
+  color: var(--on-dark);
 }
 
-/* The scenario picker: one paper option per scenario, the picked one with a heavier border. */
-.picker {
+.sub {
+  margin: -6px 0 2px;
+  color: var(--on-dark-muted);
+  font-size: 14px;
+}
+
+/* Continue: a sticky note with the game played last, and a link to any others. */
+.continue {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
+  padding: 12px 14px;
+  box-shadow: var(--paper-shadow);
 }
 
-.pickTitle {
+.continueMain {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.continueText {
+  flex: 1;
+  min-width: 0;
+}
+
+.continueTitle {
   margin: 0;
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: 26px;
-  line-height: 1.1;
+  font-size: 24px;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
-.option {
+.continueLine {
+  margin: 2px 0 0;
+  font-size: 13px;
+}
+
+/* A link-like button, still a 44 px target. */
+.link {
+  align-self: flex-start;
+  min-height: 44px;
+  margin-bottom: -10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.others {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgb(42 34 0 / 25%);
+}
+
+.other {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: flex-start;
+  width: 100%;
   min-height: 44px;
-  padding: 8px 12px 10px;
-  border: 1.5px solid var(--control-line);
-  border-radius: 3px;
-  background: var(--paper);
-  color: var(--ink);
-  font: inherit;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid rgb(42 34 0 / 25%);
+  background: transparent;
+  color: inherit;
   text-align: left;
 }
 
-.option[aria-pressed='true'] {
-  border: 2px solid var(--ink);
-  box-shadow: 0 3px 0 var(--shadow);
+.otherName {
+  font-weight: 700;
 }
 
-.optionName {
+.otherLine {
+  font-size: 13px;
+}
+
+/* Two or three categories: a segmented switch on the dark bar. */
+.tabs {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bar);
+}
+
+.tab {
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--on-dark-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tab[aria-selected='true'] {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* Four to six: a row of chips that scrolls sideways on its own, never the page. */
+.chipRow {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   gap: 8px;
+  margin: 0 -16px;
+  padding: 0 16px 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.catChip {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1.5px solid var(--on-dark-muted);
+  border-radius: 22px;
+  background: transparent;
+  color: var(--on-dark);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.catChip[aria-selected='true'] {
+  border-color: var(--paper);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* Seven or more: a grid of categories first. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gridCell {
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--paper-radius);
+  background: var(--paper);
+  box-shadow: var(--paper-shadow);
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.05;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.back {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--on-dark);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.back::before {
+  content: '‹ ';
+}
+
+.categoryTitle {
+  margin: -4px 0 0;
+  font-family: var(--font-hand);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--on-dark);
+}
+
+.categoryTitle:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 4px;
+  padding: 2px 8px;
+  border-radius: var(--paper-radius);
+  background: var(--paper);
+}
+
+/* The companies: one paper list, one row each. */
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--paper-radius);
+  background: var(--paper);
+  box-shadow: var(--paper-shadow);
+}
+
+.list li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 72px;
+  padding: 12px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+}
+
+.row[aria-expanded='true'] {
+  background: var(--paper-grey);
+}
+
+.rowText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rowName {
   font-family: var(--font-hand);
   font-weight: 700;
-  font-size: 28px;
-  line-height: 1.1;
+  font-size: 26px;
+  line-height: 1;
 }
 
-.picked {
-  font-family: var(--font-body);
-  font-size: 12px;
+.rowLine {
+  margin-top: 2px;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tag {
+  padding: 1px 8px;
+  border: 1px solid var(--control-line);
+  border-radius: 10px;
+  color: var(--ink-muted);
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
 }
 
-.optionLine {
-  font-size: 14px;
-  line-height: 1.35;
+.chevron {
   color: var(--ink-muted);
+  font-size: 22px;
 }
 
+.bestInside {
+  margin: 2px 0 0;
+  color: var(--on-dark-muted);
+  font-size: 13px;
+}
+
+/* At desk width, before a company is tapped. */
 .note {
-  margin: 0;
+  margin: 64px 0 0;
   font-family: var(--font-hand);
   font-weight: 500;
   font-size: 23px;
@@ -92,31 +328,120 @@
   transform: rotate(-1.2deg);
 }
 
-/* "Your best runs", as on desk-scrappy.html. */
-.best {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-  border-radius: 8px;
-  background: var(--bar);
-  color: var(--on-dark);
-  font-size: 13px;
+/* The company sheet: from the bottom on a phone, over a dimmed page. */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgb(10 20 20 / 55%);
 }
 
-.bestTitle {
-  margin: 4px 0 0;
-  font-size: 12px;
-  font-weight: 600;
+.sheet {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 11;
+  max-width: 460px;
+  max-height: 88dvh;
+  margin: 0 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 18px 18px;
+  border-radius: 14px 14px 0 0;
+  background: var(--paper);
+  box-shadow: 0 -3px 0 var(--shadow);
+  color: var(--ink);
+}
+
+.grab {
+  flex-shrink: 0;
+  width: 40px;
+  height: 4px;
+  margin: 0 auto;
+  border-radius: 2px;
+  background: var(--rule);
+}
+
+/* At desk width: a paper panel beside the list, staying in view. */
+.panel {
+  position: sticky;
+  top: 24px;
+  gap: 12px;
+  padding: 16px 20px 20px;
+}
+
+.sheetHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.sheetName {
+  flex: 1;
+  margin: 6px 0 0;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.sheetName:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.close {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin: -4px -10px 0 0;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+}
+
+.sheetLine {
+  margin: 0;
+  font-size: 14px;
+}
+
+.sheetLine + .sheetLine {
+  margin-top: -6px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--on-dark-muted);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-left: -4px;
 }
 
 .empty {
   margin: 0;
   font-family: var(--font-hand);
-  font-size: 22px;
+  font-size: 21px;
   line-height: 1.15;
 }
 
@@ -126,19 +451,25 @@
   flex-direction: column;
 }
 
-.row {
+.bestRow {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   column-gap: 10px;
   min-height: 44px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
 }
 
-.row dt {
+.bestRow:first-child {
+  border-top: 0;
+}
+
+.bestRow dt {
   min-width: 0;
 }
 
-.row dd {
+.bestRow dd {
   margin: 0;
 }
 
@@ -160,16 +491,69 @@
 /* A seed to play again: a small pill inside a 44 px tap target. */
 .seed {
   min-height: 44px;
-  max-width: 132px;
+  max-width: 120px;
   padding: 0 10px;
-  border: 1.5px solid var(--on-dark-muted);
+  border: 1.5px solid var(--control-line);
   border-radius: 999px;
-  background: transparent;
-  color: var(--on-dark);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.seed:disabled {
+  border-style: dashed;
+  color: var(--ink-muted);
+}
+
+.more {
+  border-top: 1px solid var(--rule);
+}
+
+.moreSummary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink-muted);
+  font-size: 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.moreSummary::-webkit-details-marker {
+  display: none;
+}
+
+.moreSummary::after {
+  content: '›';
+  margin-left: 6px;
+  font-size: 18px;
+}
+
+.more[open] .moreSummary::after {
+  transform: rotate(90deg);
+}
+
+.more[open] {
+  padding-bottom: 8px;
+}
+
+.warning {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.go {
+  flex: 1 1 160px;
 }

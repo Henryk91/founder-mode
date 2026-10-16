@@ -52,6 +52,7 @@ describe('best runs', () => {
       runs: [run({ seed: 'elsewhere', weeks: 59 })],
     })
     const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'x', profiles })
+    store.getState().openSheet('kantino')
     const page = text(store)
     expect(page).toContain('Your best runs')
     expect(page).toContain('Longest survival 41 weeks long-one')
@@ -62,6 +63,7 @@ describe('best runs', () => {
 
   it('says so when there are no runs yet', () => {
     const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'x' })
+    store.getState().openSheet('kantino')
     expect(text(store)).toContain('No finished runs yet.')
   })
 
@@ -83,6 +85,7 @@ describe('best runs', () => {
     store.getState().shutDown()
     store.getState().leaveRun()
     expect(store.getState().runs.map((r) => r.seed)).toEqual(['listed'])
+    store.getState().openSheet('kantino')
     expect(text(store)).toContain('listed')
   })
 })

@@ -9,6 +9,7 @@ import {
   parseScenario,
   SCENARIO_IDS,
   scenarioCatalogue,
+  scenarioCategories,
   SCENARIO_MODES,
   scenarioModes,
   scenarioSources,
@@ -253,6 +254,24 @@ describe('content', () => {
       expect(c.name).toBe(loadScenario(c.id).name)
       expect(c.lines).toHaveLength(2)
       for (const line of c.lines) expect(line).not.toContain('—')
+    }
+  })
+
+  it('puts every scenario in a category, with a short line and two or three tags', () => {
+    expect(scenarioCategories()).toEqual([
+      { id: 'startups', name: 'Startups', order: 1 },
+      { id: 'tourism', name: 'Tourism', order: 2 },
+    ])
+    const byCategory = (id: string) =>
+      scenarioCatalogue()
+        .filter((c) => c.category === id)
+        .map((c) => c.id)
+    expect(byCategory('startups')).toEqual(['kantino', 'zollstock'])
+    expect(byCategory('tourism')).toEqual(['gratwanderung', 'hinterhof', 'seeblick'])
+    for (const c of scenarioCatalogue()) {
+      expect(c.tags.length).toBeGreaterThanOrEqual(2)
+      expect(c.tags.length).toBeLessThanOrEqual(3)
+      for (const text of [c.short, ...c.tags]) expect(text).not.toContain('—')
     }
   })
 

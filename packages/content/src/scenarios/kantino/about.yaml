@@ -1,6 +1,12 @@
-# Shown on the Start screen before a run exists: the name and exactly two short lines.
+# Shown on the Start screen before a run exists: the name, its category (categories.yaml), one
+# short line and two or three tags for its row, and exactly two lines for its sheet.
 # Not part of the game rules, so it does not change the scenario fingerprint of a save.
 name: Kantino
+category: startups
+short: Shared lunch orders for offices
+tags:
+  - Software
+  - Subscriptions
 lines:
   - One shared lunch order for the whole office, instead of a group chat and a spreadsheet.
   - Agencies, coworking spaces, doctors. Everyone is interested. Somebody might pay.

@@ -80,3 +80,20 @@ export const ALLOWED = [
   // A firm speaking of its own customers in an interview (Gratwanderung's team events).
   /^Our customer event is in three weeks/,
 ]
+
+/** The tourism companies, listed under the Tourism tab of the Start screen. */
+const TOURISM = ['Gratwanderung', 'Hinterhof', 'Seeblick']
+
+/** Opens a company's sheet on the Start screen, on its category's tab. */
+export async function openCompany(page: Page, company = 'Kantino') {
+  const tab = TOURISM.includes(company) ? 'Tourism' : 'Startups'
+  await page.getByRole('tab', { name: tab }).click()
+  await page.getByRole('button', { name: new RegExp(`^${company}`) }).click()
+}
+
+/** Starts a new run of a company from the Start screen, in a length where it has two. */
+export async function newRun(page: Page, company = 'Kantino', length?: string) {
+  await openCompany(page, company)
+  if (length) await page.getByRole('button', { name: new RegExp(`^${length}`) }).click()
+  await page.getByRole('button', { name: 'Start a new run' }).click()
+}

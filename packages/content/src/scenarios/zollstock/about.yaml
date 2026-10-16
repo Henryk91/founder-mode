@@ -1,6 +1,12 @@
-# Shown on the Start screen before a run exists: the name and exactly two short lines.
+# Shown on the Start screen before a run exists: the name, its category (categories.yaml), one
+# short line and two or three tags for its row, and exactly two lines for its sheet.
 # Not part of the game rules, so it does not change the scenario fingerprint of a save.
 name: Zollstock
+category: startups
+short: Software for trade businesses
+tags:
+  - Software
+  - Trust over adverts
 lines:
   - Job plans, quotes and customer updates for trade businesses that run on paper and phone calls.
   - Electricians, builders, caretakers. They trust people, not adverts, and they do not read email.

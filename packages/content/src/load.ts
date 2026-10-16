@@ -19,7 +19,12 @@ export {
   parseScenario,
   type ScenarioSources,
 } from './parse'
-export { scenarioCatalogue, type ScenarioAbout } from './catalogue'
+export {
+  scenarioCatalogue,
+  scenarioCategories,
+  type ScenarioAbout,
+  type ScenarioCategory,
+} from './catalogue'
 
 /** Every scenario's files, loaded at once (Node: tests, bots; the web loads them lazily). */
 const SOURCES: Record<ScenarioId, ScenarioSources> = {

@@ -12,7 +12,8 @@ export {
   modesIn,
   parseScenario,
   scenarioCatalogue,
+  scenarioCategories,
   scenarioModes,
   scenarioSources,
 } from './load'
-export type { ScenarioAbout, ScenarioId, ScenarioSources } from './load'
+export type { ScenarioAbout, ScenarioCategory, ScenarioId, ScenarioSources } from './load'

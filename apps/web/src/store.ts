@@ -1,5 +1,9 @@
-import type { Scenario, ScenarioAbout, ScenarioId } from '@founder-mode/content'
-import { SCENARIO_IDS, scenarioCatalogue } from '@founder-mode/content/catalogue'
+import type { Scenario, ScenarioAbout, ScenarioCategory, ScenarioId } from '@founder-mode/content'
+import {
+  SCENARIO_IDS,
+  scenarioCatalogue,
+  scenarioCategories,
+} from '@founder-mode/content/catalogue'
 import { cachedScenario, scenariosLoaded } from './scenarios'
 import {
   ENGINE_VERSION,
@@ -36,6 +40,7 @@ import { carryFreelance, repeatPlan } from './repeatPlan'
 import {
   MAX_RUNS,
   memoryProfiles,
+  parseSlot,
   slotOf,
   UNREADABLE,
   type ProfileStorage,
@@ -89,6 +94,15 @@ export type SaveNotice = 'incompatible' | 'newer' | 'scenario_changed' | 'broken
 
 /** The browser keeps nothing at all (some private windows), or would not take the last save. */
 export type StorageNotice = 'unavailable' | 'full' | null
+
+/** A run that can be continued, for the Continue card. Week, length and cash where noted. */
+export type SavedGame = {
+  scenarioId: ScenarioId
+  mode: GameMode
+  week: number | null
+  maxWeeks: number | null
+  cashCents: number | null
+}
 
 /** True when version `a` is later than `b`. Versions are dotted numbers, as `0.11.0`. */
 export function isNewerVersion(a: string, b: string): boolean {
@@ -151,6 +165,16 @@ export type UiState = {
   scenarioId: ScenarioId
   /** The run length picked on the Start screen, among the scenario's modes. */
   mode: GameMode
+  /** The kinds of business the Start screen groups its companies into, in order. */
+  categories: ScenarioCategory[]
+  /** The category shown on the Start screen, or null for the category grid (seven or more). */
+  category: string | null
+  /** The company sheet of the picked scenario is open on the Start screen. */
+  sheetOpen: boolean
+  /** Every run that can be continued, the one played most recently first. */
+  saves: SavedGame[]
+  /** Scenarios played on this device, the most recent first, to list them first. */
+  recent: ScenarioId[]
 }
 
 export type UiActions = {
@@ -158,6 +182,11 @@ export type UiActions = {
   selectScenario(id: ScenarioId): void
   /** Picks the run length on the Start screen. Does nothing while a run is open. */
   selectMode(mode: GameMode): void
+  /** Shows a category on the Start screen, or the category grid with null. Remembered. */
+  selectCategory(id: string | null): void
+  /** Picks a scenario and opens its sheet on the Start screen. */
+  openSheet(id: ScenarioId): void
+  closeSheet(): void
   startRun(seed?: string): void
   /** A new run with a new seed, straight from the post-mortem. */
   newRun(): void
@@ -165,7 +194,8 @@ export type UiActions = {
   sameMarketAgain(): void
   /** A new run on a seed from the best runs, flagged as a replay. */
   replaySeed(seed: string): void
-  continueRun(): void
+  /** Continues the save of a scenario and mode, the picked ones unless given. */
+  continueRun(scenarioId?: ScenarioId, mode?: GameMode): void
   leaveRun(): void
   /** After the UI broke: back to the Start screen. Writes nothing, so the save stays as it was. */
   recover(): void
@@ -235,6 +265,8 @@ export type StoreDeps = {
   profiles?: ProfileStorage
   /** Scenarios offered on the Start screen. The built in ones unless given. */
   catalogue?: () => ScenarioAbout[]
+  /** Their categories. The built in ones unless given. */
+  categories?: () => ScenarioCategory[]
   /**
    * Plan 3, development only: show every run in this UI stage (`?stage=established`), to look at
    * a stage without playing to it. `main.tsx` passes it only in a dev build.
@@ -268,6 +300,70 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
   let mortemOf: GameState | null = null
   let mortem: { postMortem: PostMortem; suggestion: SuggestionId } | null = null
 
+  const categories = (deps.categories ?? scenarioCategories)()
+  const categoryOf = (id: ScenarioId) => scenarios.find((x) => x.id === id)?.category ?? null
+  const storedCategory = profiles.lastCategory()
+  const firstCategory =
+    categories.find((c) => c.id === storedCategory)?.id ??
+    // The category grid (seven or more) opens on the grid until a category has been chosen.
+    (categories.length >= 7 ? null : (categoryOf(firstId) ?? categories[0]?.id ?? null))
+
+  const known = (slot: string) => {
+    const { scenarioId, mode } = parseSlot(slot)
+    return modesOf(scenarioId as ScenarioId).includes(mode) &&
+      scenarios.some((x) => x.id === scenarioId)
+      ? { scenarioId: scenarioId as ScenarioId, mode }
+      : null
+  }
+  /**
+   * Every save, the noted ones in the order they were played, then any from before the notes in
+   * content order, with the week read from the save itself.
+   */
+  const listSaves = (): SavedGame[] => {
+    const slots = new Set(deps.storage.slots())
+    const notes = profiles.saveNotes().filter((n) => slots.has(n.slot) && known(n.slot))
+    const noted = new Set(notes.map((n) => n.slot))
+    const order = (slot: string) => scenarios.findIndex((x) => x.id === known(slot)?.scenarioId)
+    const rest = [...slots]
+      .filter((slot) => !noted.has(slot) && known(slot))
+      .sort((a, b) => order(a) - order(b) || a.localeCompare(b))
+    return [
+      ...notes.map((n) => ({
+        ...known(n.slot)!,
+        week: n.week,
+        maxWeeks: n.maxWeeks,
+        cashCents: n.cashCents,
+      })),
+      ...rest.map((slot) => {
+        const file = deps.storage.load(slot)
+        const week =
+          file && file !== UNREADABLE
+            ? file.actions.filter((a) => a.type === 'endWeek').length + 1
+            : null
+        return { ...known(slot)!, week, maxWeeks: null, cashCents: null }
+      }),
+    ]
+  }
+  const recentOf = () =>
+    profiles.recentScenarios().filter((id): id is ScenarioId => scenarios.some((x) => x.id === id))
+  /** Moves a scenario to the front of the recently played list. */
+  const played = (id: ScenarioId) => {
+    const recent = [id, ...recentOf().filter((x) => x !== id)]
+    profiles.setRecentScenarios(recent)
+    return recent
+  }
+  /** Notes a game's save as the one played last; `gone` drops the note of a cleared slot. */
+  const noteSave = (state: GameState | null, gone?: string) => {
+    const others = profiles.saveNotes().filter((n) => n.slot !== gone)
+    if (!state) return profiles.setSaveNotes(others)
+    const view = getView(state)
+    const slot = slotOf(state.scenarioId, state.scenario.mode)
+    profiles.setSaveNotes([
+      { slot, week: view.week, maxWeeks: view.maxWeeks, cashCents: view.company.cashCents },
+      ...others.filter((n) => n.slot !== slot),
+    ])
+  }
+
   const firstRuns = profiles.load(firstSlot).runs
   const firstRunsNotice: ProfileTrouble | null = profiles.unreadable(firstSlot)
     ? 'unreadable'
@@ -276,9 +372,14 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
   let storageWarned = false
 
   const store = createStore<GameStore>((set, get) => {
-    /** Writes the autosave; when the browser will not take it, says so once. */
-    const persist = (file: SaveFile) => {
-      if (deps.storage.save(file) || storageWarned) return
+    /** Writes the autosave and its note; when the browser will not take it, says so once. */
+    const persist = (state: GameState) => {
+      const file: SaveFile = toSave(state)
+      if (deps.storage.save(file)) {
+        noteSave(state)
+        return
+      }
+      if (storageWarned) return
       storageWarned = true
       set({ storageNotice: deps.storage.available() ? 'full' : 'unavailable' })
     }
@@ -378,7 +479,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       const state = createGame(getScenario(scenarioId, mode), seed)
       profiles.setLastScenario(scenarioId)
       profiles.setLastMode(mode)
-      persist(toSave(state))
+      persist(state)
       const slot = slotOfGame(state)
       const profile = profiles.load(slot)
       keepRuns(slot, {
@@ -391,6 +492,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         scenarioId,
         mode,
         hasSave: true,
+        recent: played(scenarioId),
+        sheetOpen: false,
         introStep: getView(state).guidance.intro.length > 0 ? 0 : null,
       })
     }
@@ -441,6 +544,11 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       scenarios,
       scenarioId: firstId,
       mode: firstMode,
+      categories,
+      category: firstCategory,
+      sheetOpen: false,
+      saves: listSaves(),
+      recent: recentOf(),
 
       selectScenario(id) {
         if (game || !scenarios.some((x) => x.id === id)) return
@@ -456,6 +564,17 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           saveNotice: null,
         })
       },
+      selectCategory(id) {
+        if (game || (id !== null && !categories.some((c) => c.id === id))) return
+        if (id !== null) profiles.setLastCategory(id)
+        set({ category: id, sheetOpen: false })
+      },
+      openSheet(id) {
+        if (game || !scenarios.some((x) => x.id === id)) return
+        get().selectScenario(id)
+        set({ sheetOpen: true })
+      },
+      closeSheet: () => set({ sheetOpen: false }),
       selectMode(mode) {
         const id = get().scenarioId
         if (game || !modesOf(id).includes(mode)) return
@@ -482,17 +601,28 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       replaySeed(seed) {
         start(seed, true)
       },
-      continueRun() {
+      continueRun(scenarioId, mode) {
+        if (game) return
+        if (scenarioId) {
+          get().selectScenario(scenarioId)
+          if (mode) get().selectMode(mode)
+        }
         const id = get().scenarioId
-        const mode = get().mode
-        const slot = slotOf(id, mode)
+        const slot = slotOf(id, get().mode)
+        mode = get().mode
+        /** The save could not be continued: it is gone from the Continue card too. */
+        const drop = () => {
+          deps.storage.clear(slot)
+          noteSave(null, slot)
+          set({ saves: listSaves() })
+        }
         const file = deps.storage.load(slot)
         if (!file) {
-          set({ hasSave: false })
+          set({ hasSave: false, saves: listSaves() })
           return
         }
         if (file === UNREADABLE) {
-          deps.storage.clear(slot)
+          drop()
           set({ hasSave: false, saveNotice: 'broken' })
           return
         }
@@ -506,7 +636,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         }
         if (problem) {
           // Plan section 4.14: warn and start fresh instead of replaying a different game.
-          deps.storage.clear(slot)
+          drop()
           set({
             hasSave: false,
             saveNotice: problem === 'scenario_changed' ? 'scenario_changed' : 'incompatible',
@@ -514,9 +644,12 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           return
         }
         try {
-          begin(replay(scenario, file))
+          const state = replay(scenario, file)
+          begin(state)
+          noteSave(state)
+          set({ recent: played(id), sheetOpen: false })
         } catch {
-          deps.storage.clear(slot)
+          drop()
           set({ hasSave: false, saveNotice: 'broken' })
         }
       },
@@ -526,12 +659,25 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         if (game?.status === 'ended') {
           const slot = slotOfGame(game)
           deps.storage.clear(slot)
+          noteSave(null, slot)
           set({ hasSave: false })
           const profile = profiles.load(slot)
           keepRuns(slot, { ...profile, current: null })
         }
+        // Back on the Start screen in the category of the company just played.
+        const category = game ? categoryOf(game.scenarioId as ScenarioId) : get().category
+        if (category) profiles.setLastCategory(category)
         game = null
-        refresh({ report: null, tab: 'plan', introStep: null, helpOpen: false, explain: null })
+        refresh({
+          report: null,
+          tab: 'plan',
+          introStep: null,
+          helpOpen: false,
+          explain: null,
+          category,
+          sheetOpen: false,
+          saves: listSaves(),
+        })
       },
 
       recover() {
@@ -548,6 +694,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           postMortem: null,
           suggestion: null,
           hasSave: deps.storage.load(slot) !== null,
+          sheetOpen: false,
+          saves: listSaves(),
         })
       },
 
@@ -640,7 +788,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         } catch {
           return
         }
-        persist(toSave(game))
+        persist(game)
         refresh()
       },
       askShutDown: () => set({ shutDownAsked: true }),
@@ -648,7 +796,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       shutDown() {
         if (!game || game.status !== 'running' || !get().shutDownAsked) return
         game = shutDown(game)
-        persist(toSave(game))
+        persist(game)
         refresh({ report: null, helpOpen: false, explain: null, shutDownAsked: false })
       },
 
@@ -658,7 +806,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         if (checkPlan(game, plan).issues.length > 0) return
         const result = endWeek(game, plan)
         game = result.state
-        persist(toSave(game))
+        persist(game)
         const next = emptyPlan()
         if (game.status === 'running') next.freelance = carryFreelance(plan, getView(game))
         refresh({

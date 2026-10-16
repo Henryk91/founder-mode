@@ -24,15 +24,18 @@ describe('long mode in the web app', () => {
   it('offers the run length for Kantino only, and plays 104 weeks', () => {
     const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'long-ui' })
     expect(store.getState().mode).toBe('standard')
+    store.getState().openSheet('kantino')
     let page = text(store)
-    expect(page).toContain('How long?')
+    expect(page).toContain('How long? 60 weeks 104 weeks')
+    expect(page).toContain('Your best runs, 60 weeks')
+    store.getState().selectMode('long')
+    page = text(store)
     expect(page).toContain(
       '104 weeks A second year: rent goes up, markets run dry, and room for a team.',
     )
-    store.getState().selectMode('long')
-    expect(text(store)).toContain('Your best runs: Kantino, 104 weeks')
+    expect(page).toContain('Your best runs, 104 weeks')
     // Zollstock has no long mode yet: picking it falls back to 60 weeks and hides the choice.
-    store.getState().selectScenario('zollstock')
+    store.getState().openSheet('zollstock')
     expect(store.getState().mode).toBe('standard')
     expect(text(store)).not.toContain('How long?')
     store.getState().selectScenario('kantino')

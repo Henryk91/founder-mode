@@ -1,0 +1,8 @@
+# The kinds of business the Start screen groups its companies into, by `order`.
+# Each scenario names one of these ids as `category` in its about.yaml.
+- id: startups
+  name: Startups
+  order: 1
+- id: tourism
+  name: Tourism
+  order: 2

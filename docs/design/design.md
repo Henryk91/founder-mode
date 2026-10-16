@@ -131,6 +131,15 @@ All other panels keep the scrappy look.
 
 The third look, reached the week a move into office stage 4 completes (long mode only), is specified in `established.md`, with the mockups `established-desk-v2.html` and `established-phone.html`. White cards on a cool grey, a scenario accent, Bricolage Grotesque for headings, the notebook as a plain form with the same 44 px rows. The older drawing `desk-established.html` is **superseded** by `established-desk-v2.html`.
 
+## Start screen
+
+`start-screen.html` is the approved look. The title and a short line sit on the dark ground; a saved game is a sticky note on top ("Continue: <company>", week and cash, a Continue button), with an "Other saved games" link when there are more. Below, the categories, then one paper list with a compact row per company: name in handwriting, one short line, and tags (the run length first). Recently played companies come first, then the content order.
+
+- Categories by count: one shows no switch; two or three a segmented tab switch on the bar colour; four to six a row of chips that scrolls sideways on its own; seven or more a grid of paper cards, then the chosen list with a way back. Tabs and chips are a `tablist` (arrow keys, Home, End). The category shown last is remembered per browser.
+- A tag filter (pills, "All" first) appears only above six companies in a category. No "Coming later" rows.
+- Tapping a row opens the company sheet: from the bottom over a dimmed page on a phone (modal, the page behind is inert), as a sticky paper panel beside the list from 1200 px. It holds the two description lines, the length pills where there are two, the best runs of that length, "More options" with the seed (collapsed), and "Start a new run". Over an existing save of that company and length it asks first, on a sticky note: "Replace it and start" or "Keep the saved run". Focus moves to the sheet's heading on opening and back to the row on closing; Escape and the close button close it.
+- Every control is a 44 px target; nothing depends on hover.
+
 ## Component mapping
 
 | Mockup element | Component | Notes |
