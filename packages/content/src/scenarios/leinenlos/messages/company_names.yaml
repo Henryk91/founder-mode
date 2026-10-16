@@ -1,0 +1,118 @@
+# Fictional names for guests, families and organisers, by segment. No real firms or people.
+cabin_guests:
+  distinct: second
+  first:
+    - Couple
+    - Ehepaar
+    - Friends
+    - Freunde
+    - Guests
+  second:
+    - Aydın
+    - Baumgart
+    - Collins
+    - Demir
+    - Eggert
+    - Fischer
+    - Gray
+    - Hollis
+    - Ilgaz
+    - Junker
+    - Kaya
+    - Lindner
+    - Moran
+    - Nolte
+    - Öztürk
+    - Pfaff
+    - Quigley
+    - Rademacher
+    - Sahin
+    - Tremel
+    - Uhland
+    - Voss
+    - Walsh
+    - Yılmaz
+    - Zeh
+    - Arslan
+    - Brandt
+    - Carey
+    - Doğan
+    - Elbert
+private_charters:
+  distinct: second
+  first:
+    - Family
+    - Familie
+    - Party
+    - Gruppe
+    - Charter
+  second:
+    - Kaya
+    - Lindner
+    - Moran
+    - Nolte
+    - Öztürk
+    - Pfaff
+    - Quigley
+    - Rademacher
+    - Sahin
+    - Tremel
+    - Uhland
+    - Voss
+    - Walsh
+    - Yılmaz
+    - Zeh
+    - Arslan
+    - Brandt
+    - Carey
+    - Doğan
+    - Elbert
+    - Aydın
+    - Baumgart
+    - Collins
+    - Demir
+    - Eggert
+    - Fischer
+    - Gray
+    - Hollis
+    - Ilgaz
+    - Junker
+retreats:
+  distinct: second
+  first:
+    - Yoga with
+    - Retreat by
+    - Photo tour by
+    - Hiking with
+    - Wellness by
+  second:
+    - Uhland
+    - Voss
+    - Walsh
+    - Yılmaz
+    - Zeh
+    - Arslan
+    - Brandt
+    - Carey
+    - Doğan
+    - Elbert
+    - Aydın
+    - Baumgart
+    - Collins
+    - Demir
+    - Eggert
+    - Fischer
+    - Gray
+    - Hollis
+    - Ilgaz
+    - Junker
+    - Kaya
+    - Lindner
+    - Moran
+    - Nolte
+    - Öztürk
+    - Pfaff
+    - Quigley
+    - Rademacher
+    - Sahin
+    - Tremel

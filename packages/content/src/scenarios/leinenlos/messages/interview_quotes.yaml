@@ -1,0 +1,172 @@
+# segment -> interview bucket -> quotes. At least 10 per bucket. Tone: docs/scenario-gulet.md.
+
+cabin_guests:
+  not_a_problem:
+    - We go to the same hotel every year. The waiter knows our names.
+    - A boat with strangers for a week? I would rather share a lift for a week.
+    - We do city breaks. Boats are for getting to islands, briefly.
+    - I get seasick in the bath. I am out, but thank you.
+    - We have a camper van. It is a boat on wheels, without the water.
+    - Our holidays are walking holidays. The sea is what we look at from a hill.
+    - We booked an all-inclusive for August. The pool has a bar in it.
+    - My partner likes golf. There is no golf on a gulet, I assume.
+    - We visit family in Izmir every summer. That is the holiday, and the cooking.
+    - Honestly, a week without wifi sounds like a punishment, not a holiday.
+  mild:
+    - A boat sounds nice. Is there wifi? There is no wifi, is there.
+    - We might do a cruise one year, if the cabins are not tiny.
+    - If friends came with us, a week on a boat could be fun.
+    - Maybe for a big birthday. Which one, we have not decided.
+    - I like the idea of swimming off a boat every morning. I like ideas.
+    - If the food is good and the cabin has a window, possibly.
+    - A shorter trip would suit us better. A week is a lot of the same sea.
+    - We would book if a friend recommended it. Friends are our travel agents.
+    - It sounds romantic, until you mention sharing a bathroom.
+    - Perhaps in September, when it is quieter and cheaper.
+  noticeable:
+    - Last cruise, nobody could tell us where we were going or when lunch was.
+    - We booked a cabin and found a family of eight with a speaker on the deck.
+    - The booking site showed the boat, not the cabin. The cabin was not the boat.
+    - We wanted a German-speaking crew. We got hand signals and a lot of smiling.
+    - The transfer from Dalaman took longer than the flight.
+    - Every agent wanted a deposit by bank transfer to a name we had never heard.
+    - The cruise was cancelled six weeks before, and the refund took three months.
+    - It was so rough on the second day that half the boat stayed in bed.
+    - Nobody told us the boat went back to the same bay twice.
+    - We liked the boat and hated the party group. We would book again, without them.
+  painful:
+    - We booked a cabin twice and both cruises were cancelled for too few guests.
+    - The last boat mixed us with a stag party. We spent the week in the cabin.
+    - I want a cabin in June with people our age, and nobody can promise that.
+    - The host spoke only Turkish and the captain only shouted. I speak neither.
+    - We arrived at Dalaman and nobody came. The cruise left without us.
+    - My wife was seasick for four days on the open-sea route. Never again, unless it is sheltered.
+    - We paid in full, and then the company changed the boat to a smaller one.
+    - Every cruise in July is full by March. We decide in May. That is our problem, apparently.
+    - I need a cabin for one without paying for two. Nobody does single cabins.
+    - We want a quiet adults-only week. Every boat we find has children in it.
+  urgent:
+    - Our cruise was cancelled. We fly in three weeks and have nowhere to sleep.
+    - It is our silver wedding in June and I have promised my wife a boat.
+    - My mother's dying wish is to see Kekova from a boat. She is fine, but she says it often.
+    - We booked through an agent who went bust. Flights paid, cruise gone.
+    - I need two cabins in August for a family reunion and nothing is left anywhere.
+    - Our friends cancelled the shared charter and we are left with flights and no boat.
+    - We have a week in September before I start a new job, and I need it on the water.
+    - The honeymoon boat sank. Not literally. The company did.
+    - I promised the whole office pictures of me on a gulet. I fly on Saturday.
+    - My father is eighty and wants one more Blue Cruise this summer. This summer.
+
+private_charters:
+  not_a_problem:
+    - We charter a sailing yacht ourselves. My husband likes to be the captain.
+    - A whole boat for the family sounds like a whole argument for a week.
+    - Our family meets at the villa in Bodrum. The villa has a pool and no sea legs.
+    - We tried a charter once. Everybody wanted to go somewhere different.
+    - The children are too old for family holidays. They say so every year.
+    - We prefer hotels. Hotels have rooms with doors that close.
+    - I own a motor boat at home. I do not pay to sit on somebody else's.
+    - Our group never agrees on dates. A charter needs dates.
+    - A week on a boat with my in-laws? I would rather swim home.
+    - We spend the summer in our holiday flat. The beach is free.
+  mild:
+    - Chartering the whole boat would be fun for a big birthday.
+    - If the food were good, the family might enjoy it.
+    - We might consider it for my parents' anniversary, if the price is right.
+    - A boat for our friends and their children could work. Could.
+    - Possibly next year, when the youngest can swim properly.
+    - It sounds lovely, and expensive, and lovely.
+    - I would want to see the boat before booking. In person, or very good photos.
+    - If we could choose the route a bit, it would be more tempting.
+    - A charter in late June, before the crowds, maybe.
+    - My brother keeps suggesting it. My brother suggests many things.
+  noticeable:
+    - Charter brokers send the same photos for every boat. I know it is not the same boat.
+    - The menu on our last charter was the same lunch for seven days.
+    - We wanted a contract that says what happens if a storm comes. We got a handshake.
+    - The cabins were fine, but the crew treated the boat as theirs and us as guests in it.
+    - August charters are gone by January. We plan in March.
+    - Nobody could tell us whether the deposit came back if we cancelled.
+    - The boat was older than the photos, and the photos were older than me.
+    - We want a cook who can do vegetarian without making it a punishment.
+    - Last time the air conditioning was a fan and a promise.
+    - Brokers add fees at every step. The price grows like the waves.
+  painful:
+    - Our charter was cancelled. Fourteen people, three generations, August, and my mother has bought a hat.
+    - We want the whole boat for a week in August, a good cook, and a contract. Is that too much?
+    - The last charter company took our deposit and changed the boat without asking.
+    - My father's eightieth is on the boat or nowhere. We need a date in July.
+    - Two families, twelve people, and every broker says July is gone.
+    - The food last year was so bad we ate ashore every night and paid twice.
+    - We had a charter with a captain who left us anchored for two days. He was fishing.
+    - I want the whole boat so we do not share it with strangers again. Ever.
+    - Our group is booked for July; the boat failed its inspection. We need a new one.
+    - My company wants a charter for the board in June. The board is particular.
+  urgent:
+    - Our charter boat has been sold. We fly in four weeks, fourteen of us.
+    - The broker vanished with our deposit. The family is already packing.
+    - It is my parents' fiftieth anniversary in July and I have promised them the whole boat.
+    - We booked the wrong week. The right week is in three weeks. Help.
+    - Our yacht charter fell through; the gulet is now plan A and there is no plan B.
+    - My sister's wedding party wants the boat the day after. All week. Somehow.
+    - The firm's incentive trip is in June and the venue cancelled. Twelve top sellers, a boat, please.
+    - Our usual captain retired. We have come every August for eleven years.
+    - My grandfather wants to scatter my grandmother's ashes in Kekova, from a proper boat, in July.
+    - We are already in Fethiye and the boat we booked does not exist.
+
+retreats:
+  not_a_problem:
+    - My retreats are in a mountain hotel. Mountains do not move.
+    - A boat is too small for my group. They need space to breathe, professionally.
+    - I run photo tours on land. Boats wobble, cameras hate wobbling.
+    - My clients want spas. A gulet has a deck, not a spa.
+    - We have a long contract with a farm in Tuscany. The farm has goats and Wi-Fi.
+    - I only organise weekend retreats. A week is a lot of mindfulness.
+    - My hiking groups need trails. The sea has none.
+    - Retreats on boats are a fashion. I teach fundamentals.
+    - My group is mostly over seventy. Ladders are a concern.
+    - I take groups to India. Turkey is not on the poster.
+  mild:
+    - A yoga week on a boat would be beautiful, if the deck is big enough.
+    - Maybe a short photo tour, if the light is good in May.
+    - If you had shade and quiet mornings, I might consider it.
+    - A hiking and sailing week could work: walk by day, sail by night.
+    - My students keep asking about a retreat at sea. I keep saying "one day".
+    - If the price per head fits my budget, I would bring a group in autumn.
+    - It might suit a smaller group of eight or ten.
+    - I would want to try it myself first, as a guest.
+    - Possibly in October, after my summer programme.
+    - If the cook can do plant-based food, it is worth a conversation.
+  noticeable:
+    - Every boat I asked about had no shade on deck after ten in the morning.
+    - The captains want a fixed route; my retreats need a flexible day.
+    - I need an invoice for my students' payments. Captains give receipts on napkins.
+    - The music from the next boat ruined the evening meditation. Every evening.
+    - Agents want the full price months ahead. My students pay me in instalments.
+    - Nobody offers the boat for a group of ten at a group price.
+    - The deck was slippery for yoga and nobody had mats.
+    - My photographers want sunrise; the crew sleeps until eight.
+    - I booked a retreat on a boat once; the boat was booked twice.
+    - The menus are all meat and more meat.
+  painful:
+    - I need a boat for my retreat in May that takes twelve, and every agent wants a deposit I do not have.
+    - My retreat venue cancelled for May. Twelve students have paid me already.
+    - Every gulet I find is booked for families in summer and laid up in May.
+    - I need shade, mats, quiet and an invoice. Nobody has all four.
+    - My last retreat boat changed route without asking and we lost the sunrise spot.
+    - The organiser before me promised a boat and delivered a ferry.
+    - Students want a boat retreat; I can only find party cruises.
+    - I need to pay after the week, when my students have paid me.
+    - My group grew to twelve and the boat I had takes eight.
+    - The heat in July is impossible on deck. I need June or September, with shade.
+  urgent:
+    - My retreat starts in four weeks and the boat has been sold.
+    - Twelve students, May, and my venue just closed for renovation.
+    - I promised my students a sea retreat in the brochure. The brochure is printed.
+    - My business partner left with the booking. The students did not.
+    - The October photo tour is sold out and I have no boat.
+    - My retreat was on a boat that failed its safety check last week.
+    - We need a boat for a yoga week in June. The teacher is flying in from Bali.
+    - Our hiking and sailing week has hikers but no sailing.
+    - Fourteen people have paid deposits and the captain stopped answering in March.
+    - I need a boat by Friday or I refund twelve people and my reputation.

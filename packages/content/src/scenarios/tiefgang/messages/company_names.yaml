@@ -1,0 +1,118 @@
+# Fictional names for guests, divers and clubs, by segment. No real firms, clubs or people.
+resort_beginners:
+  distinct: second
+  first:
+    - Family
+    - Familie
+    - Couple
+    - Friends
+    - Guests
+  second:
+    - Ashworth
+    - Bergström
+    - Christodoulou
+    - Dahl
+    - Eberle
+    - Fleming
+    - Georgiou
+    - Hartley
+    - Ingram
+    - Jessen
+    - Kessler
+    - Lindgren
+    - Moser
+    - Nyström
+    - Oakley
+    - Petrou
+    - Quinn
+    - Reinholz
+    - Sandberg
+    - Thorne
+    - Unger
+    - Vass
+    - Whitfield
+    - Yiannou
+    - Zander
+    - Albrecht
+    - Byrne
+    - Carlsen
+    - Dimitriou
+    - Engström
+certified_divers:
+  distinct: second
+  first:
+    - Diver
+    - Taucher
+    - Buddy pair
+    - Dykare
+    - Divers
+  second:
+    - Kessler
+    - Lindgren
+    - Moser
+    - Nyström
+    - Oakley
+    - Petrou
+    - Quinn
+    - Reinholz
+    - Sandberg
+    - Thorne
+    - Unger
+    - Vass
+    - Whitfield
+    - Yiannou
+    - Zander
+    - Albrecht
+    - Byrne
+    - Carlsen
+    - Dimitriou
+    - Engström
+    - Ashworth
+    - Bergström
+    - Christodoulou
+    - Dahl
+    - Eberle
+    - Fleming
+    - Georgiou
+    - Hartley
+    - Ingram
+    - Jessen
+dive_clubs:
+  distinct: second
+  first:
+    - Tauchclub
+    - Dive club
+    - Dykklubb
+    - Sub-aqua club
+    - Dive group
+  second:
+    - Unger
+    - Vass
+    - Whitfield
+    - Yiannou
+    - Zander
+    - Albrecht
+    - Byrne
+    - Carlsen
+    - Dimitriou
+    - Engström
+    - Ashworth
+    - Bergström
+    - Christodoulou
+    - Dahl
+    - Eberle
+    - Fleming
+    - Georgiou
+    - Hartley
+    - Ingram
+    - Jessen
+    - Kessler
+    - Lindgren
+    - Moser
+    - Nyström
+    - Oakley
+    - Petrou
+    - Quinn
+    - Reinholz
+    - Sandberg
+    - Thorne

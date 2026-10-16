@@ -1,0 +1,11 @@
+# Shown on the Start screen before a run exists: the name, its category (categories.yaml), one
+# short line and two or three tags for its row, and exactly two lines for its sheet.
+name: Leinen los
+category: tourism
+short: Week-long gulet cruises from Fethiye
+tags:
+  - Abroad
+  - Boats
+lines:
+  - Blue Cruises on a wooden gulet from Fethiye towards Kekova, sold from a desk in the harbour office.
+  - Cabin guests, private charters, retreats. Manage someone's boat, lease one, or buy your own.

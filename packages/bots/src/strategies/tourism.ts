@@ -68,9 +68,16 @@ export type TourismRule = {
    * Plan 4, product mix extremes: only products for wind (good or strong), only calm-water
    * products (calm or light wind), or no courses. Missing: any product.
    */
-  mix?: 'wind' | 'calm' | 'no_courses'
+  mix?: 'wind' | 'calm' | 'no_courses' | 'no_ladder'
   /** Plan 4: builds the temptation (the eFoil fleet) in the first spring, with the bank's help. */
   temptationEarly?: string
+  /**
+   * Plan 4, assets: careful starts by sharing and leases once a season shows the shared units
+   * full; the others always take one option (buy: the purchase product, with the bank).
+   */
+  asset?: 'careful' | 'buy' | 'lease' | 'share'
+  /** Plan 4: sells only to this segment (the certified-only bot). */
+  segment?: string
 }
 
 /** Hours this week's guests take before anything is planned (plan 2 step 3). */
@@ -112,6 +119,8 @@ const MAX_PRICE_STEP = 0.3
 const STRICT_CANCEL_SHARE = 0.12
 const BUSY_SHARE = 0.7
 const BUG_LIMIT = 2
+/** Plan 4: a shared asset counts as full when its peak weeks used this share of its units. */
+const SEATS_FULL = 0.5
 /** A product costing this share of its price or more is not worth adding (step 6). */
 const THIN_MARGIN_SHARE = 0.5
 /** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
@@ -147,6 +156,14 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   /** Plan 2: paid and contract shifts used per role in recent weeks, newest last. */
   let shiftsUsed: Record<string, number>[] = []
 
+  /** Plan 4: shared units used against those offered over the last season's peak weeks. */
+  const assetUse: { used: number; offered: number }[] = []
+  const seatsFull = () => {
+    const recent = assetUse.slice(-26)
+    const offered = recent.reduce((t, x) => t + x.offered, 0)
+    return offered > 0 && recent.reduce((t, x) => t + x.used, 0) / offered >= SEATS_FULL
+  }
+
   /** Markets by the evidence on screen: interviews, then trials and vouchers (plan 2). */
   const rank = (view: PlayerView) =>
     rankMarkets(scenario, view)
@@ -168,6 +185,9 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const p = cfg.products[id]
     if (!p || !rule.mix) return true
     if (rule.mix === 'no_courses') return !p.course
+    // No ladder: no course whose level another product needs (a try dive is still sold).
+    if (rule.mix === 'no_ladder')
+      return !p.course || !Object.values(cfg.products).some((q) => q.needsLevel === p.course!.level)
     if (p.capacity === 0) return true
     const calm = !!p.runsIn && p.runsIn.every((x) => x === 'calm' || x === 'light')
     return rule.mix === 'calm' ? calm : !calm
@@ -633,9 +653,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         committedHours: input.committedHours + office.reduce((t, a) => t + a.hours, 0),
         inbox: input.inbox.filter((m) => !stageOffers.has(m.eventId)),
       }
+      // Plan 4: the asset's messages by the bot's asset rule.
+      const assetAnswers = answerAssets(view)
+      const assetIds = new Set(assetAnswers.map((a) => a.messageId))
       const answers = [
         ...office.map(({ messageId, choiceId }) => ({ messageId, choiceId })),
-        ...answer(view),
+        ...assetAnswers,
+        ...answer(view).filter((a) => !assetIds.has(a.messageId)),
       ]
       if (!rule.forced) return answers
       // Every arrival of the forced event gets the forced answer; the rest as the bot reads them.
@@ -658,6 +682,42 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     observe(report) {
       observeWeek(report)
     },
+  }
+
+  /**
+   * Plan 4: messages that lease, share or repair an asset. The careful bot shares first, leases
+   * at the winter offer once the last season's shared units were mostly used in its peak, and
+   * repairs a breakdown while it can pay; the single-option bots always pick theirs.
+   */
+  function answerAssets(view: PlayerView): { messageId: string; choiceId: string }[] {
+    const mode = rule.asset ?? 'careful'
+    const out: { messageId: string; choiceId: string }[] = []
+    for (const m of view.inbox) {
+      if (m.answeredChoiceId !== null) continue
+      const event = scenario.events.find((e) => e.id === m.eventId)
+      if (!event) continue
+      const pick = (option: string) =>
+        event.choices.find((c) =>
+          c.effects.some((fx) => fx.type === 'asset' && fx.option === option),
+        )
+      const repair = event.choices.find((c) => c.effects.some((fx) => fx.type === 'assetRepair'))
+      if (repair) {
+        const cost = view.bookings?.assets[0]?.terms.buy?.repairCents ?? 0
+        if (view.company.cashCents > cost * 2) out.push({ messageId: m.id, choiceId: repair.id })
+        continue
+      }
+      if (!event.choices.some((c) => c.effects.some((fx) => fx.type === 'asset'))) continue
+      const now = view.bookings?.assets[0]?.option ?? 'none'
+      let want: string | null = null
+      if (mode === 'share' || mode === 'lease') want = mode
+      else if (mode === 'careful') {
+        if (now === 'none') want = 'share'
+        else if (now === 'share' && seatsFull()) want = 'lease'
+      }
+      const choice = want && want !== now ? pick(want) : undefined
+      if (choice) out.push({ messageId: m.id, choiceId: choice.id })
+    }
+    return out
   }
 
   function answer(view: PlayerView): { messageId: string; choiceId: string }[] {
@@ -770,6 +830,19 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       }
     }
     bookedAtPlanBy = Object.fromEntries(bv.thisWeek.map((x) => [x.productId, x.booked]))
+    // Plan 4: how much of a shared asset's units last week used, in peak weeks.
+    const shared = bv.assets.find((a) => a.option === 'share')
+    if (shared && bv.peak) {
+      let used = 0
+      let offered = 0
+      for (const id of shared.products) {
+        used += bv.lastWeek.find((x) => x.productId === id)?.served ?? 0
+        offered += bv.calendar.find((c) => c.productId === id)?.cells[0]?.capacity ?? 0
+      }
+      // Guests turned away count as used: they wanted the places the share did not have.
+      const away = bv.segments.reduce((t, x) => t + x.turnedAwayLast4, 0) / 4
+      assetUse.push({ used: used + away, offered })
+    }
     bookedAtPlan = bv.thisWeek.reduce(
       (t, x) => t + (bv.products.find((p) => p.id === x.productId)?.shipped ? x.booked : 0),
       0,
@@ -894,7 +967,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       for (const { id } of top.slice(0, 2)) b.interviews(id, MORE_INTERVIEWS)
     }
     if (view.week >= (rule.tests ? 3 : 1) && target === null) {
-      target = rule.tests ? (rank(view)[0]?.id ?? ids[0]!) : ids[0]!
+      target = rule.segment ?? (rule.tests ? (rank(view)[0]?.id ?? ids[0]!) : ids[0]!)
     }
 
     if (target !== null) {
@@ -903,7 +976,8 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       // guest: the next segment the evidence ranks, so quiet weeks still bring someone.
       const own = wanted(view, seg)
       const done = own.every((f) => view.product.features.find((x) => x.id === f)?.shipped)
-      const second = rule.tests ? rank(view).find((r) => r.id !== seg)?.id : undefined
+      const second =
+        rule.tests && !rule.segment ? rank(view).find((r) => r.id !== seg)?.id : undefined
       // More products for the same guests (other months, other days out), when one costs at
       // most a fifth of the money in hand.
       const money = view.company.cashCents + Math.max(0, view.founder.savingsCents)
@@ -944,8 +1018,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           : []),
       ]
       // Plan 4: the temptation in the first spring, for the bot that cannot resist it.
-      const early =
-        rule.temptationEarly && view.week <= 12 ? [rule.temptationEarly] : ([] as string[])
+      const early = [
+        ...(rule.temptationEarly && view.week <= 12 ? [rule.temptationEarly] : []),
+        // Plan 4: the always-buy bot buys every asset as soon as it can.
+        ...(rule.asset === 'buy'
+          ? Object.values(cfg.assets ?? {}).flatMap((a) => (a.buy ? [a.buy.product] : []))
+          : []),
+      ]
       const building = view.loan
         ? withRequired([...new Set([...toBuild, ...bought, ...early])])
         : toBuild
@@ -1266,6 +1345,38 @@ export const TOURISM_STRATEGIES: Strategy[] = [
   ].map(([id, text, rule]) =>
     tourism(id as string, text as string, { ...CAREFUL_TOURISM, ...(rule as TourismRule) }, [
       'rueckenwind',
+    ]),
+  ),
+  // Plan 4: Tiefgang's own targets (D1 to D4).
+  ...[
+    [
+      'tourism_certified_only',
+      'Plays like tourism_careful but sells only to certified divers: wreck and shore dives, no try dives or entry courses.',
+      { segment: 'certified_divers' },
+    ],
+    [
+      'tourism_no_ladder',
+      'Plays like tourism_careful but sells try dives and no course whose licence another product needs.',
+      { mix: 'no_ladder' },
+    ],
+    [
+      'tourism_always_buy',
+      'Plays like tourism_careful but buys the boat at once, with the bank, and never leases or shares.',
+      { asset: 'buy' },
+    ],
+    [
+      'tourism_always_lease',
+      'Plays like tourism_careful but always leases the boat.',
+      { asset: 'lease' },
+    ],
+    [
+      'tourism_always_share',
+      'Plays like tourism_careful but always buys seats on the partner boat.',
+      { asset: 'share' },
+    ],
+  ].map(([id, text, rule]) =>
+    tourism(id as string, text as string, { ...CAREFUL_TOURISM, ...(rule as TourismRule) }, [
+      'tiefgang',
     ]),
   ),
   tourism(

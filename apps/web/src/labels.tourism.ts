@@ -430,7 +430,58 @@ const RUECKENWIND: Overrides = {
     'You cancelled {company} places for wind, sea or a short roster; guests cancelled {guest}.',
 }
 
+const TIEFGANG: Overrides = {
+  'market.trials.title': 'Pool tasters, test listings and dive shows',
+  'bar.company': {
+    scrappy: '{name}',
+    organised: '{name}',
+    established: 'Tiefgang Dive Centre',
+  },
+  'results.entry.ui_established':
+    'Tiefgang pays its own way now, swell or no swell. The compressor still sounds like a sad tractor.',
+  ...shared({
+    test: {
+      one: 'Test listing',
+      other: 'Test listings',
+      lower: 'test listing',
+      lowerPlural: 'test listings',
+    },
+    pilot: {
+      one: 'Pool taster',
+      other: 'Pool tasters',
+      lower: 'pool taster',
+      lowerPlural: 'pool tasters',
+    },
+    formal: {
+      test: { one: 'Listing test', other: 'Listing tests' },
+      pilot: { one: 'Trial session', other: 'Trial sessions' },
+    },
+    fixFormal: 'Incidents',
+    snag: { one: 'incident', other: 'incidents' },
+    fix: 'Sort out incidents',
+    fixWhat: 'hours sorting out incidents',
+    build: 'Get courses and dives ready',
+    invoices: {
+      hint: 'Dive clubs get an invoice once their week is over, less the deposit they paid when they booked; everyone else pays at booking. Some pay on time, some only once asked, a few never will. Chasing an overdue invoice costs {hours} and may get it paid next week. Unpaid invoices are written off two months after they were due.',
+      none: "No invoices yet. They start once a club's week is over.",
+    },
+    fixedCosts: 'Company costs per month (shop, insurance, compressor, accountant)',
+  }),
+  'stat.guests': 'Divers, last 4 weeks',
+  'stat.guests.short': 'Divers',
+  'tour.heat.sub': 'Next {n} weeks, places booked of {capacity} a week',
+  'explain.test.text':
+    'A test listing costs {hours} and an ad budget: two weeks on the dive platform at a test price. It reports {weeks} later with how many saw it and how many asked for dates. A signal only: nobody books from it. A pool taster costs {presale} and gives {size} people from one group a free try in a hotel pool. Those who would come again buy a voucher and become repeat guests. It reports {presaleWeeks} later, and each group allows {max} pool tasters.',
+  'help.week.4':
+    'Every fourth week is a month end, when the shop, other fixed costs and loan payments go out. Divers pay at booking; clubs pay a deposit and the rest by invoice after their week.',
+  'help.week.1':
+    'Plan your hours. A normal week is 50 h, and up to 65 h is possible if you accept the energy cost. Your own dives count too. The sea decides what runs: check the forecast on My week, and the boat on Finance.',
+  'pm.guests.cancelled':
+    'You cancelled {company} places for the sea, the boat or a short roster; divers cancelled {guest}.',
+}
+
 export const SCENARIO_LABELS: Record<string, Overrides> = {
+  tiefgang: TIEFGANG,
   rueckenwind: RUECKENWIND,
   gratwanderung: GRATWANDERUNG,
   hinterhof: HINTERHOF,

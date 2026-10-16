@@ -1,0 +1,89 @@
+# Learning who pays: at the pool, at the harbour and on the phone home.
+events:
+  - id: pool_bar_chat
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2, week <= 14]
+    from: none
+    sender: The barman at Hotel Kalamaki Sands
+    look: note
+    text: >-
+      The pool barman says guests ask him about diving every afternoon, mostly after the second
+      cocktail. You could sit at the bar and listen, for the price of a coffee.
+    defaultChoice: later
+    choices:
+      - id: listen
+        label: Spend an afternoon at the bar
+        hours: 4
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.03 }
+          - { type: guests, segment: resort_beginners, count: 3 }
+      - id: later
+        label: Not this week
+        hours: 0
+
+  - id: harbour_divers
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: The harbour café
+    look: note
+    text: >-
+      Certified divers drink coffee at the harbour café before the boats leave. They complain about
+      every centre in Larnaca, in detail, for free.
+    defaultChoice: later
+    choices:
+      - id: listen
+        label: Have breakfast at the harbour for a week
+        hours: 4
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: later
+        label: Not this week
+        hours: 0
+
+  - id: club_newsletter
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 3, week <= 20]
+    from: none
+    sender: Tauchclub Isarperle
+    text: >-
+      Your old club at home offers a page in its newsletter about diving in Cyprus. Someone has to
+      write it, and someone will read it, possibly the treasurer.
+    defaultChoice: decline
+    choices:
+      - id: write
+        label: Write the page
+        hours: 3
+        effects:
+          - { type: guests, segment: dive_clubs, count: 30, when: [shipped.group_packages == 1] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: rival_open_morning
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 6, week <= 26]
+    from: none
+    sender: The centre next door
+    look: letter
+    text: >-
+      The centre next door holds an open morning with free coffee and a tour of the boat. You could
+      go, count their divers and look at their prices.
+    defaultChoice: skip
+    choices:
+      - id: visit
+        label: Go and count
+        hours: 3
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: skip
+        label: Stay in your own shop
+        hours: 0

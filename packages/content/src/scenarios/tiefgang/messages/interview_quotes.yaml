@@ -1,0 +1,172 @@
+# segment -> interview bucket -> quotes. At least 10 per bucket. Tone: docs/scenario-dive.md.
+
+resort_beginners:
+  not_a_problem:
+    - I can see fish from the pool bar. That is enough nature.
+    - We came for the beach clubs. The sea is mostly a backdrop for photos.
+    - I do not put my face in water on purpose. It is a personal policy.
+    - The children want the water park. The water park has slides, not sharks.
+    - We have a boat trip booked with a buffet. That counts as the sea.
+    - My ears hurt on aeroplanes. I am not going to find out what they do underwater.
+    - We are here for the old churches in the hills. Very dry, the churches.
+    - Snorkelling from the beach is free and we are on a budget, sadly.
+    - I tried diving in Egypt and spent the hour clearing my mask. Never again.
+    - Honestly, we came to sleep. Diving sounds like the opposite of sleeping.
+  mild:
+    - My son wants to try it. I want to watch from the boat with a drink.
+    - A try dive might be fun, if it is not too early in the morning.
+    - If the pool session is near the hotel, we might give it an afternoon.
+    - I have always wondered what it feels like to breathe underwater. Wondered, not planned.
+    - Maybe on the last day, if the weather is calm and we are bored of the pool.
+    - My wife would try it. I would hold the towels and the camera.
+    - If the hotel rep recommends it, we probably will. She recommends everything.
+    - Something gentle, in a pool first, sounds less frightening than the open sea.
+    - We might do it together, as a couple thing. Or a test of the couple.
+    - A short taster, yes. A whole course on holiday sounds like school.
+  noticeable:
+    - Every centre wants us in Larnaca at eight. We are 45 minutes away and on holiday.
+    - We booked a try dive last year and spent three hours on a bus for twenty minutes underwater.
+    - Nobody explained what happens if my ears hurt. They just said "equalise" and jumped.
+    - The hotel pool is too shallow for anything, and the sea feels too big for a first time.
+    - I want to try it in a pool first. Nobody here does a pool.
+    - We asked about a course and were told to come back when it was less windy.
+    - The rep sold us a dive and then the boat was full. We were refunded in a week.
+    - Last time the instructor taught eight of us at once and watched one.
+    - We wanted a course with a licence but the centre only had try dives this week.
+    - My daughter is twelve and nobody could tell me whether that was old enough.
+  painful:
+    - We have a week, I want the licence, and nobody can fit four days in before we fly.
+    - Three centres, three different prices, and none of them would pick us up.
+    - My husband did a try dive, loved it, and the course was booked out until we left.
+    - I paid for a try dive in Protaras and they cancelled it twice for wind. In August.
+    - I want the licence this holiday. Next year we go to the Red Sea with friends who dive.
+    - The pool session was in a pool full of children. The instructor shouted at a lilo.
+    - We need someone to collect us from the hotel. We have no car and two hangovers.
+    - My friends all dive. I sit on the boat. I would like to stop sitting on the boat.
+    - Our tour rep promised diving. The diving turned out to be her cousin.
+    - I am terrified of deep water and I want to fix that this year. Gently.
+  urgent:
+    - I promised my girlfriend I would dive with her before her birthday on Thursday.
+    - We fly to the Maldives in a month and I am the only one without a licence. Please.
+    - Our liveaboard trip is booked for September. I have no licence and a deposit paid.
+    - My company booked us a diving team day in May. I have never been underwater.
+    - I need the open water licence by Friday or my wedding dive in Egypt is off.
+    - My boss is a diver and keeps inviting me. This holiday I either learn or quit.
+    - The kids want to dive with their grandad before he stops diving. He is 79.
+    - I told my whole office I would come back a diver. Every single one of them.
+    - Our dive trip in October is paid for. I have panicked in every pool so far.
+    - We leave on Saturday and the course I booked in Ayia Napa just closed. Help.
+
+certified_divers:
+  not_a_problem:
+    - I dive at home in a quarry. I am here for the halloumi.
+    - I bring my own gear and my own boat contacts. I need nothing from a centre.
+    - We only dive with our club. The club decides where. This year, not here.
+    - I have done the Zenobia ten times. I know the lorries by name.
+    - I am here for a wedding. My regulator is in the attic.
+    - My diving these days is mostly reading about diving.
+    - We dive on a liveaboard in Egypt every year. Cyprus is for the beach.
+    - I gave up diving when my ears gave up on me. I snorkel now, smugly.
+    - I am on a work trip. My fins are, sadly, in Hamburg.
+    - Our centre at home organises everything. We just turn up and float.
+  mild:
+    - The wreck sounds nice, if the boat is comfortable.
+    - I might do a couple of dives, if the price is right and the coffee strong.
+    - A guided shore dive or two would be nice between beach days.
+    - If you have nitrox, I might do the deeper part. If not, the shallow part is fine.
+    - I would book online if it were easy. Phoning a centre feels like 1998.
+    - My buddy wants the advanced course. I want lunch.
+    - We could fit in a wreck dive on Tuesday. Tuesday is flexible. Most days are.
+    - If the reviews are good, I would book a package. Reviews or a recommendation.
+    - Maybe two dives a day, if the boat leaves after breakfast, not before it.
+    - I would come for a week next spring, if you are still there next spring.
+  noticeable:
+    - Last centre packed 20 of us on one boat. I saw the wreck through someone's fins.
+    - Nobody fills nitrox on a Sunday. The wreck is open on Sundays.
+    - I want to book online with a confirmed seat, not "come by and we will see".
+    - The centre I used cancelled for swell three days in a row and never rebooked us.
+    - I need the advanced course for the deep part, and nobody has a place this week.
+    - The boats leave from Larnaca harbour at seven and the coffee shop opens at eight.
+    - Rental gear here is older than my children. One regulator sounded like a kettle.
+    - I want a guide who has done the wreck more than twice.
+    - Every centre wants cash on the boat. I have a card and a holiday mood.
+    - We wanted two wreck dives a day and could only get one, and only on Wednesday.
+  painful:
+    - I need nitrox for the deep part, and nobody here fills it on a Sunday.
+    - We booked a week of wreck dives and the boat broke down on day two. No refund for days.
+    - I have flown in for the Zenobia three times and seen it once. The weather, they said.
+    - Nobody could tell me online whether there was a seat on Saturday's boat.
+    - I want ten dives in seven days and every centre offers five and a sunset cruise.
+    - Our centre went bust in March with our deposit. We have flights in May.
+    - The boat I booked was overbooked, so I spent the day on the pier with a sandwich.
+    - My advanced card is from 2009. Nobody accepts it without a refresher I cannot book.
+    - The wreck dive was cancelled for swell and moved to the shore, at the wreck price.
+    - I dive a lot, I pay a lot, and nobody remembers my name or my weight belt.
+  urgent:
+    - We fly in on Friday, 14 divers, our centre just closed, and the club chairman is my father-in-law.
+    - I have a photography assignment on the Zenobia next week and no boat.
+    - My nitrox certification expires this year and the wreck dive is my birthday present.
+    - The forecast is calm for three days. After that, nobody knows. I need a boat tomorrow.
+    - I promised my buddy the wreck for his fiftieth. It is next Tuesday.
+    - Our liveaboard was cancelled. Twelve of us are in Larnaca with nothing to do.
+    - I need two deep dives this week for my next course at home. The course starts Monday.
+    - The magazine wants pictures of the lorries in the hold by the end of the month.
+    - My centre lost my booking. I am at the harbour, in a wetsuit, at seven.
+    - I have one day left and forty euros of nitrox credit at a centre that just sank. Not literally.
+
+dive_clubs:
+  not_a_problem:
+    - Our club goes to the same place in Croatia every year. Nobody remembers why.
+    - We dive in the lakes at home. Travel is for the young members, and they have no money.
+    - The club trip is decided by a vote, and the vote always picks Egypt.
+    - We organise our own boat and guides. A centre is mostly a tank station.
+    - Our members are mostly retired now. Retired from diving too, some of them.
+    - We have a long contract with a centre in Malta. The contract is older than the boat.
+    - The club budget went on a new compressor this year. No trips.
+    - Our organiser books everything. I just pay the bill and complain.
+    - We used to travel, then the treasurer resigned. Now we have meetings.
+    - The club does one trip every two years, and last year was the year.
+  mild:
+    - A week on the Zenobia might interest some members. Some members are interested in lunch.
+    - If you send a proposal with prices, the committee will look at it in the autumn.
+    - Maybe spring next year. Spring is when the committee wakes up.
+    - We might consider Cyprus, if the flights are cheap and the boat is big.
+    - Some of the younger members have been asking about wrecks.
+    - If there were a club rate, we would at least read the brochure.
+    - Our organiser likes to try a new place every few years. It might be your turn.
+    - A group week could work, if someone sorts out the invoices properly.
+    - We could bring ten or twelve, if the leaders go free. The leaders always go free.
+    - If the water is warm in October, the members might come. They are fussy about warmth.
+  noticeable:
+    - Our last centre could only take eight of us on the boat. We are sixteen.
+    - Nobody gives proper invoices. The treasurer needs an invoice for everything, even coffee.
+    - We booked a group week and half the dives were cancelled for swell without a plan B.
+    - Club rates on the website are never the rates on the invoice.
+    - The centre wanted the full payment six months ahead. Our members pay in instalments.
+    - We need two boats or two trips. The last centre had one boat and one excuse.
+    - Free places for leaders are standard. Some centres act like we asked for a kidney.
+    - Our organiser wants one contact who answers emails within the week.
+    - The wreck is the reason. If we cannot dive it twice, the trip does not sell.
+    - Our members are experienced. The last centre treated them like beginners on a school trip.
+  painful:
+    - Our autumn trip is in six weeks and our usual centre has just closed.
+    - We pay deposits every year and every year something goes wrong with the boat.
+    - Sixteen divers, ten dives each, and nobody can guarantee the boat in October.
+    - Our travel organiser went bust with the flights paid. We still need the diving.
+    - The committee wants a written offer with leader places by the end of the month.
+    - Two members were hurt on a badly run trip last year. The insurance wants a proper centre.
+    - We have the flights and no centre that will take all of us at once.
+    - Every centre wants us in August, when it is hot and full. We want May.
+    - The treasurer will not pay without an invoice, and the last centre sent a photo of a napkin.
+    - Our members are leaving for clubs that organise better trips. We need a good one.
+  urgent:
+    - We fly in on Friday with fourteen divers and no centre. Please.
+    - Our booked centre gave our week to a stag party. Sixteen of us, October.
+    - The club's fiftieth anniversary trip is in March. Everyone is coming. Everyone.
+    - Our leader is ill and I am organising the trip. I have never organised anything.
+    - The flights cannot be changed, and the boat we booked has sunk. Properly sunk.
+    - We need a quote by Monday or the committee picks Malta again.
+    - The president wants the Zenobia for her retirement trip, and she retires in May.
+    - Our centre has double-booked us. We need a boat for twelve, any boat, next week.
+    - The insurance requires a licensed centre and ours has lost its licence.
+    - Twenty divers, ten days, and the organiser has just stopped answering his phone.

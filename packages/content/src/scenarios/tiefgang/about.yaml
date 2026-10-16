@@ -1,0 +1,11 @@
+# Shown on the Start screen before a run exists: the name, its category (categories.yaml), one
+# short line and two or three tags for its row, and exactly two lines for its sheet.
+name: Tiefgang
+category: tourism
+short: A dive centre in Larnaca, next to a famous wreck
+tags:
+  - Abroad
+  - Boats
+lines:
+  - A shop with a classroom on the seafront at Larnaca, a compressor, twelve rental sets, and the Zenobia wreck offshore.
+  - Holiday beginners, certified divers, dive clubs. Own a boat, lease one, or buy seats on someone else's.

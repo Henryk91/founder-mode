@@ -74,6 +74,9 @@ export function Calendar() {
       {b.abroad && b.products.some((p) => p.course) && (
         <section className={styles.card} aria-label={label('tour.ladder.title', stage)}>
           <h2 className={styles.title}>{label('tour.ladder.title', stage)}</h2>
+          {ladderSteps(view).length > 2 && (
+            <p>{label('tour.ladderLine', stage, { steps: ladderSteps(view).join(', then ') })}</p>
+          )}
           <p>
             {b.abroad.ladderThisYear.students === 0 &&
             b.abroad.ladderThisYear.returnedDirect + b.abroad.ladderThisYear.returnedPlatform === 0
@@ -193,4 +196,32 @@ function shade(cell: { booked: number; capacity: number }): string {
 export function PipelineOrCalendar() {
   const tourism = useGame((s) => s.view?.bookings != null)
   return tourism ? <Calendar /> : <Pipeline />
+}
+
+/**
+ * Plan 4: the ladder of courses, in order: the courses anyone can book (cheapest first), then
+ * what the last one's level opens, and so on. Empty where no product needs a level a course
+ * reaches (no ladder to speak of).
+ */
+function ladderSteps(view: PlayerView): string[] {
+  const products = view.bookings?.products ?? []
+  const base = products
+    .filter((p) => p.course && p.needsLevel === null)
+    .sort((a, b) => a.priceFactor - b.priceFactor)
+  const out = base.map((p) => p.name)
+  let level = base.at(-1)?.course ?? null
+  let climbed = false
+  for (let i = 0; level !== null && i < 6; i++) {
+    const opens = products.filter((p) => p.needsLevel === level)
+    const course = opens.find((p) => p.course)
+    if (!course) {
+      out.push(...opens.map((p) => p.name))
+      climbed ||= opens.length > 0
+      break
+    }
+    out.push(course.name)
+    climbed = true
+    level = course.course
+  }
+  return climbed ? out : []
 }

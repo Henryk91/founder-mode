@@ -1,0 +1,119 @@
+# Your life in Fethiye.
+events:
+  - id: turkish_course
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 3]
+    from: none
+    sender: A language school in Fethiye
+    text: >-
+      An evening course in Turkish starts next month. The harbour master, the cooks and the bank
+      would all like you better in Turkish, the teacher says, and so would the fishmonger.
+    defaultChoice: decline
+    choices:
+      - id: enrol
+        label: Take the evening course
+        hours: 3
+        effects:
+          - { type: skill, skill: selling, delta: 0.03 }
+          - { type: energy, delta: -2 }
+      - id: decline
+        label: Not this year
+        hours: 0
+
+  - id: hosting_exhaustion
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [tour.peak == 1]
+    from: none
+    sender: Your body
+    look: note
+    text: >-
+      A week of hosting sixteen strangers, smiling at breakfast and solving cabins at midnight, has
+      left you hoarse and grey. The next departure is on Saturday.
+    defaultChoice: push
+    choices:
+      - id: rest
+        label: Take two days ashore
+        hours: 0
+        effects:
+          - { type: energy, delta: 10 }
+          - { type: lostHours, hours: 10 }
+      - id: push
+        label: Carry on
+        hours: 0
+        effects:
+          - { type: energy, delta: -8 }
+
+  - id: residence_permit
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 4, week <= 30]
+    from: none
+    sender: The migration office
+    look: official
+    text: >-
+      Your residence permit needs renewing, with forms, photos, a health insurance letter and a
+      morning in a queue. Doing it late costs a fine and two mornings.
+    defaultChoice: later
+    choices:
+      - id: now
+        label: Do it this week
+        hours: 5
+      - id: later
+        label: Later
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: lostHours, hours: 8 }
+
+  - id: friends_cabin
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: Friends from Munich
+    look: note
+    text: >-
+      Friends from Munich would love a cabin in August, at a friends' price. They are excellent
+      company and will review you either way.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Give them a cabin at cost
+        hours: 0
+        effects:
+          - { type: energy, delta: 6 }
+          - { type: review, rating: 5, count: 2 }
+      - id: decline
+        label: Say August is full
+        hours: 0
+
+  - id: winter_home
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.month == 12]
+    from: none
+    sender: Your parents
+    look: letter
+    text: >-
+      Your parents would like you home for Christmas. The harbour is asleep and the inbox is not.
+    defaultChoice: go
+    choices:
+      - id: go
+        label: Fly home for a week
+        hours: 0
+        effects:
+          - { type: energy, delta: 12 }
+          - { type: lostHours, hours: 20 }
+      - id: stay
+        label: Stay and sell next season
+        hours: 0
+        effects:
+          - { type: energy, delta: -5 }

@@ -662,6 +662,84 @@ export const TenderSchema = z.object({
 })
 export type TenderConfig = z.infer<typeof TenderSchema>
 
+/**
+ * Plan 4 (docs/abroad-mechanics.md section 4): an asset that gives its products their capacity
+ * (a dive boat, a gulet), owned, leased or shared. Without one of them its products do not sell.
+ */
+export const AssetSchema = z.object({
+  name: z.string().min(1),
+  // Products that run on it.
+  products: z.array(Id).min(1),
+  // Owning: the purchase is this product (its prep hours the paperwork, its one-off the price, a
+  // loan item where the bank lists it, `requires` a local company where one is needed).
+  buy: z
+    .object({
+      product: Id,
+      // Maintenance, insurance and mooring, a month.
+      upkeepMonthlyCents: Cents.nonnegative(),
+      // The crew in a week the asset is used (a skipper's days, a gulet's crew).
+      crewWeekCents: Cents.nonnegative(),
+      // A haul-out in the first `weeks` weeks of this month every year, closed, at this cost.
+      haulOut: z
+        .object({
+          month: z.number().int().min(1).max(12),
+          weeks: z.number().int().positive(),
+          cents: Cents.nonnegative(),
+        })
+        .optional(),
+      // Breakdowns: a weekly chance of `weekly` plus `perYear` per year of age, closing the
+      // asset for some weeks unless repaired at `repairCents` (an inbox message).
+      breakdown: z.object({
+        weekly: Share,
+        perYear: Share,
+        weeks: IntRange,
+        repairCents: Cents.nonnegative(),
+      }),
+      // Its age when bought, and the share of the price it loses a year (resale value).
+      ageYears: z.number().nonnegative(),
+      valueLossPerYear: Share,
+    })
+    .optional(),
+  // Leasing: a fee for the season in these months (a share up front, the rest monthly), at least
+  // `minMonths` months (ending early pays the rest), the crew in weeks used.
+  lease: z
+    .object({
+      seasonCents: Cents.nonnegative(),
+      upfrontShare: Share,
+      months: z.array(z.number().int().min(1).max(12)).min(1),
+      minMonths: z.number().int().positive(),
+      crewWeekCents: Cents.nonnegative(),
+    })
+    .optional(),
+  // Sharing (seats on a partner's boat, managing an owner's gulet): this share of the capacity,
+  // a fee per unit used and a share of the revenue to the owner; in `takeBack.months` the owner
+  // keeps `takeBack.share` of the units with a weekly chance; with `peakRule`, the owner keeps
+  // those months unless the shoulder months had `needWeeks` weeks sold by week of year `byWeek`.
+  share: z
+    .object({
+      capacity: Share,
+      unitCents: Cents.nonnegative(),
+      revenueShare: Share,
+      takeBack: z
+        .object({
+          chance: Share,
+          share: Share,
+          months: z.array(z.number().int().min(1).max(12)).min(1),
+        })
+        .optional(),
+      peakRule: z
+        .object({
+          months: z.array(z.number().int().min(1).max(12)).min(1),
+          shoulderMonths: z.array(z.number().int().min(1).max(12)).min(1),
+          needWeeks: z.number().int().positive(),
+          byWeek: z.number().int().min(1).max(52),
+        })
+        .optional(),
+    })
+    .optional(),
+})
+export type AssetConfig = z.infer<typeof AssetSchema>
+
 export const BookingsConfigSchema = z.object({
   startWeekOfYear: z.number().int().min(1).max(52),
   seasonNoise: Share,
@@ -689,6 +767,8 @@ export const BookingsConfigSchema = z.object({
     })
     .optional(),
   tender: TenderSchema.optional(),
+  // Plan 4 (section 4): assets with buy, lease and share options.
+  assets: z.record(Id, AssetSchema).optional(),
   // Plan 4 (section 7): local costs that rise from a week on, by a factor: these fixed costs,
   // staff pay (shifts and contracts) and products' unit costs.
   costSteps: z
@@ -820,6 +900,13 @@ export const CONDITION_PATHS = [
   'tour.turnedAwayWeeks',
   'tour.peakTurnedAwayWeeks',
   'tour.occupancy',
+  // Plan 4: the scenario's first asset: 1 when it is owned, leased, shared, none of them, or
+  // broken down this week; 0 otherwise or without assets.
+  'asset.owned',
+  'asset.leased',
+  'asset.shared',
+  'asset.none',
+  'asset.broken',
 ] as const
 
 /** Paths about a message's sender: they make sense only once a message has a sender. */
@@ -916,6 +1003,16 @@ export const EffectSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('investorConfidence'), delta: z.number(), ...fx }),
   // Plan 4: the answer to a concession's tender (docs/abroad-mechanics.md section 6).
   z.object({ type: z.literal('tender'), bid: z.enum(['higher', 'same', 'hotel']), ...fx }),
+  // Plan 4: an asset leased, shared or given up (buying is its purchase product). Ending a lease
+  // before its minimum pays the rest of the minimum.
+  z.object({
+    type: z.literal('asset'),
+    id: Id,
+    option: z.enum(['lease', 'share', 'none']),
+    ...fx,
+  }),
+  // Plan 4: a broken asset repaired at its repair cost, open again from next week.
+  z.object({ type: z.literal('assetRepair'), id: Id, ...fx }),
   z.object({
     type: z.literal('fixedCost'),
     id: Id,
@@ -1406,7 +1503,23 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         if (!costIds.has(id)) issue(`unknown fixed cost ${id}`, ['bookings', 'costSteps'])
       }
     }
+    for (const [id, a] of Object.entries(bk.assets ?? {})) {
+      const at = ['bookings', 'assets', id]
+      for (const p of a.products) if (!bk.products[p]) issue(`unknown product ${p}`, at)
+      if (a.buy && !bk.products[a.buy.product]) issue(`unknown product ${a.buy.product}`, at)
+      if (!a.buy && !a.lease && !a.share) issue('an asset needs an option', at)
+    }
     s.events.forEach((e, i) => {
+      for (const ch of e.choices) {
+        for (const fx of ch.effects) {
+          if ((fx.type === 'asset' || fx.type === 'assetRepair') && !bk.assets?.[fx.id]) {
+            issue(`unknown asset ${fx.id}`, ['events', i])
+          }
+          if (fx.type === 'asset' && fx.option !== 'none' && !bk.assets?.[fx.id]?.[fx.option]) {
+            issue(`asset ${fx.id} has no ${fx.option} option`, ['events', i])
+          }
+        }
+      }
       if (e.choices.some((ch) => ch.effects.some((fx) => fx.type === 'tender')) && !bk.tender) {
         issue('a tender answer needs the tender block', ['events', i])
       }

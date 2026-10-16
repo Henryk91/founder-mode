@@ -953,3 +953,10 @@ See `docs/abroad-mechanics.md`. Every new content field is optional with no defa
 - View: `BookingsView.products[].priceFactor`.
 - Reviews: guests cancelled for the conditions count with `reviews.cancelPenalty` instead of `understaffPenalty`.
 - Bots: `Strategy.scenarios?` (plays only there); `RunResult.tourism.abroad?` (year 2 returners by channel, trips, the tender). Report targets may be named (`W1`): `Target.id` is a number or a string.
+
+### Plan 4 step 3: assets and Tiefgang (engine 0.14.0, off unless a scenario has `assets`)
+
+- Content: `BookingsConfig.assets?: Record<id, AssetConfig>` (`name`, `products`, optional `buy { product, upkeepMonthlyCents, crewWeekCents, haulOut? { month, weeks, cents }, breakdown { weekly, perYear, weeks, repairCents }, ageYears, valueLossPerYear }`, `lease { seasonCents, upfrontShare, months, minMonths, crewWeekCents }`, `share { capacity, unitCents, revenueShare, takeBack? { chance, share, months }, peakRule? { months, shoulderMonths, needWeeks, byWeek } }`). Effects `asset { id, option: lease | share | none }` and `assetRepair { id }`. Condition paths `asset.owned`, `asset.leased`, `asset.shared`, `asset.none`, `asset.broken`. New scenario `tiefgang`.
+- State: `BookingsState.assets?: Record<id, AssetState>` (`option`, `sinceWeek`, `leaseFromWeek`, `boughtWeek`, `brokenUntil`, `breakdowns`, `takenBack`, `peakReleased` calendar years, `weeksUsed`, `costCents`).
+- View: `BookingsView.assets: AssetView[]` (option, products, the purchase product, broken until, next haul-out, value, breakdowns, weeks used, spent, the lease's minimum, the peak rule, and the terms of every option).
+- Report entries `asset_option`, `asset_broke`, `asset_repaired`, `asset_haul_out`, `asset_taken_back`; `company_cancelled` reason `asset`. Post-mortem `GuestsEconomics.assets?: AssetEconomics[]`.

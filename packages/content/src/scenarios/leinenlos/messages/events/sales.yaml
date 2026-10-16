@@ -1,0 +1,250 @@
+# Getting guests: brokers, agents, platforms and the founder's list.
+events:
+  - id: owner_july_swap
+    area: sales
+    weight: 2
+    once: true
+    when: [asset.shared == 1, week <= 20]
+    from: none
+    sender: Kaptan Murat
+    look: note
+    text: >-
+      Kaptan Murat offers you two July weeks if you also take a third week in early May, the
+      quietest week of the season. Peak weeks at the price of a weak one.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the deal
+        hours: 2
+        effects:
+          - { type: guests, segment: cabin_guests, count: 24 }
+          - {
+              type: guests,
+              segment: private_charters,
+              count: 16,
+              when: [shipped.charter_contracts == 1],
+            }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: family_wants_august
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 12, week <= 30]
+    from: none
+    sender: Familie Brandt
+    text: >-
+      A family wants the whole boat for a week in August, the week you have sold four cabins. You
+      could move the cabin guests to a partner's boat, or decline the family.
+    defaultChoice: decline
+    choices:
+      - id: move
+        label: Move the cabin guests and take the family
+        hours: 4
+        effects:
+          - {
+              type: guests,
+              segment: private_charters,
+              count: 16,
+              when: [shipped.charter_contracts == 1],
+            }
+          - { type: cash, amountCents: -60000 }
+          - { type: review, rating: 2, count: 3 }
+      - id: decline
+        label: Keep the cabin guests
+        hours: 0
+
+  - id: broker_exclusive
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: A yacht charter broker in Bodrum
+    look: letter
+    text: >-
+      A charter broker wants exclusivity for July and August at 15%. He has families on his list who
+      pay well and early, and a contract that runs three pages on what you may not do.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Sign the exclusivity
+        hours: 3
+        effects:
+          - {
+              type: guests,
+              segment: private_charters,
+              count: 32,
+              when: [shipped.charter_contracts == 1],
+            }
+          - { type: fixedCost, id: broker_cut, name: Broker commission, monthlyCents: 60000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: yoga_low_price
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 6, week <= 20]
+    from: none
+    sender: A yoga teacher from Freiburg
+    text: >-
+      A yoga teacher wants a week in May at a price below your costs. It would fill a weak week, and
+      her students post a lot of photos.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the week at her price
+        hours: 2
+        effects:
+          - { type: guests, segment: retreats, count: 16, when: [shipped.retreat_setup == 1] }
+          - { type: cash, amountCents: -100000 }
+      - id: decline
+        label: Hold out
+        hours: 0
+
+  - id: sunset_post
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: Your phone
+    look: note
+    text: >-
+      A guest posted the sunset from your deck and your inbox filled overnight. People want dates.
+      You may not have weeks to give them.
+    defaultChoice: ignore
+    choices:
+      - id: answer
+        label: Answer everyone and offer weeks
+        hours: 5
+        effects:
+          - { type: guests, segment: cabin_guests, count: 20 }
+      - id: ignore
+        label: Let it pass
+        hours: 0
+
+  - id: cruise_platform_promo
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.listed == 1, week >= 6]
+    from: none
+    sender: Mavitur
+    look: official
+    text: >-
+      The cruise platform offers a "featured boat" badge for the season: top of the list for five
+      points more commission. The badge is blue. Everything is blue.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the badge
+        hours: 1
+        effects:
+          - { type: guests, segment: cabin_guests, count: 20 }
+          - { type: fixedCost, id: platform_badge, name: Featured boat badge, monthlyCents: 40000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: travel_fair
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.month >= 1, tour.month <= 3]
+    from: none
+    sender: A travel fair in Stuttgart
+    text: >-
+      A travel fair at home has a stand left in its boat hall. It costs 2,000 EUR and a long weekend
+      of explaining what a gulet is.
+    defaultChoice: decline
+    choices:
+      - id: stand
+        label: Take the stand
+        hours: 12
+        effects:
+          - { type: cash, amountCents: -200000 }
+          - {
+              type: guests,
+              segment: private_charters,
+              count: 16,
+              when: [shipped.charter_contracts == 1],
+            }
+          - { type: guests, segment: retreats, count: 12, when: [shipped.retreat_setup == 1] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: past_customer_list
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 2, week <= 16]
+    from: none
+    sender: Your old address book
+    look: note
+    text: >-
+      You still have the list of guests you once sold tours to. A personal letter to each would take
+      a weekend, and some of them still like you.
+    defaultChoice: later
+    choices:
+      - id: write
+        label: Write to everyone
+        hours: 8
+        effects:
+          - { type: guests, segment: cabin_guests, count: 12, when: [shipped.cabin_sales == 1] }
+      - id: later
+        label: Later
+        hours: 0
+
+  - id: photo_tour_operator
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 8, week <= 36]
+    from: none
+    sender: A photo tour operator
+    text: >-
+      A photo tour operator wants an October week for twelve photographers who need the boat still
+      at sunrise and sunset. They pay well and complain about light.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the photo week
+        hours: 3
+        effects:
+          - { type: guests, segment: retreats, count: 12, when: [shipped.retreat_setup == 1] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: wedding_party_charter
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: A wedding planner in Ölüdeniz
+    text: >-
+      A wedding party wants the boat for the week after a wedding: sixteen guests, a lot of
+      champagne and a request to skip the quiet bays.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the wedding party
+        hours: 3
+        effects:
+          - {
+              type: guests,
+              segment: private_charters,
+              count: 16,
+              when: [shipped.charter_contracts == 1],
+            }
+          - { type: review, rating: 3, count: 3 }
+      - id: decline
+        label: Decline
+        hours: 0

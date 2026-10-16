@@ -1,0 +1,123 @@
+# Your life in Larnaca.
+events:
+  - id: greek_lessons
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: A language school in Larnaca
+    text: >-
+      An evening course in Greek starts next month. The harbour master, the authority and the
+      fishermen would all be easier in Greek, the teacher says, and so would the bakery.
+    defaultChoice: decline
+    choices:
+      - id: enrol
+        label: Take the evening course
+        hours: 3
+        effects:
+          - { type: skill, skill: selling, delta: 0.03 }
+          - { type: energy, delta: -2 }
+      - id: decline
+        label: Not this year
+        hours: 0
+
+  - id: decompression_weekend
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [week >= 10]
+    from: none
+    sender: Your body
+    look: note
+    text: >-
+      Too many dives, too little sleep, and a headache that will not leave. Divers call it a
+      surface interval; you would call it a weekend.
+    defaultChoice: push
+    choices:
+      - id: rest
+        label: Take the weekend off
+        hours: 0
+        effects:
+          - { type: energy, delta: 10 }
+          - { type: lostHours, hours: 8 }
+      - id: push
+        label: Carry on
+        hours: 0
+        effects:
+          - { type: energy, delta: -8 }
+
+  - id: friends_from_munich
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Friends from Munich
+    look: note
+    text: >-
+      Friends are visiting for a week and want to dive with you, for free, obviously. They are very
+      good company and very bad at buoyancy.
+    defaultChoice: busy
+    choices:
+      - id: host
+        label: Dive with them
+        hours: 6
+        effects:
+          - { type: energy, delta: 8 }
+      - id: busy
+        label: One dinner, then back to work
+        hours: 0
+        effects:
+          - { type: energy, delta: -2 }
+
+  - id: flat_summer_rent
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 6, week <= 20]
+    from: none
+    sender: Your landlord
+    look: note
+    text: >-
+      Your landlord wants the flat for summer tourists and offers a room in Aradippou, twenty
+      minutes inland. It is cheaper and has a goat next door.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Move inland for the summer
+        hours: 8
+        effects:
+          - { type: cash, amountCents: 40000 }
+          - { type: energy, delta: -5 }
+      - id: stay
+        label: Stay and pay more
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -40000 }
+
+  - id: christmas_home
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.month == 12]
+    from: none
+    sender: Your parents
+    look: letter
+    text: >-
+      Your parents have bought you a ticket home for Christmas. The shop is quiet, the inbox is
+      not, and your mother has opinions about Cyprus.
+    defaultChoice: go
+    choices:
+      - id: go
+        label: Fly home for a week
+        hours: 0
+        effects:
+          - { type: energy, delta: 12 }
+          - { type: lostHours, hours: 20 }
+      - id: stay
+        label: Stay and plan the season
+        hours: 0
+        effects:
+          - { type: energy, delta: -5 }

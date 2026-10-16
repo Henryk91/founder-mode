@@ -20,6 +20,8 @@ export async function loadSourcesLazy(id: ScenarioId): Promise<ScenarioSources> 
       return (await import('./sources/seeblick')).sources
     case 'rueckenwind':
       return (await import('./sources/rueckenwind')).sources
+    case 'tiefgang':
+      return (await import('./sources/tiefgang')).sources
   }
 }
 

@@ -59,6 +59,12 @@ const VIEW_METRICS: Record<FixedConditionPath, (v: PlayerView, m: MessageView | 
   'tour.turnedAwayWeeks': (v) => v.office.turnedAwayWeeks,
   'tour.peakTurnedAwayWeeks': (v) => v.office.peakTurnedAwayWeeks,
   'tour.occupancy': (v) => v.office.occupancyPct,
+  // Plan 4: the scenario's first asset.
+  'asset.owned': (v) => (v.bookings?.assets[0]?.option === 'buy' ? 1 : 0),
+  'asset.leased': (v) => (v.bookings?.assets[0]?.option === 'lease' ? 1 : 0),
+  'asset.shared': (v) => (v.bookings?.assets[0]?.option === 'share' ? 1 : 0),
+  'asset.none': (v) => (v.bookings?.assets[0]?.option === 'none' ? 1 : 0),
+  'asset.broken': (v) => (v.bookings?.assets[0]?.broken ? 1 : 0),
   'sender.overdue': (v, m) =>
     m && v.invoices.some((i) => i.customerName === m.fromName && i.status === 'overdue') ? 1 : 0,
   'sender.silent': (v, m) =>

@@ -18,6 +18,7 @@ import { qualityFor } from './product'
 import { acceptOffice, moveOffice } from './office'
 import { addLeads } from './sales'
 import { applyTender } from './abroad'
+import { chooseAsset, repairAsset } from './assets'
 
 /** What resolving messages adds to the week besides changes to the state. */
 export type MessageOutcome = {
@@ -242,6 +243,18 @@ function applyEffect(
       const t = applyTender(state, effect.bid, rng)
       out.entries.push(...t.entries)
       return t.state
+    }
+    case 'asset': {
+      const done = chooseAsset(state, effect.id, effect.option)
+      out.costsCents += done.costCents
+      out.entries.push(...done.entries)
+      return done.state
+    }
+    case 'assetRepair': {
+      const done = repairAsset(state, effect.id)
+      out.costsCents += done.costCents
+      out.entries.push(...done.entries)
+      return done.state
     }
     case 'fixedCost': {
       if (state.company.fixedCosts.some((c) => c.id === effect.id)) return state

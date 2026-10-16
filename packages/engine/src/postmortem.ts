@@ -1,5 +1,6 @@
 import { stageNumber } from './systems/office'
 import { bookingTotals, bookingsRevenueOrSubscriptions } from './systems/bookings'
+import { assetsEconomics } from './systems/assets'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
 import { companyValueCents, founderShareBp, fundingHours } from './systems/funding'
@@ -302,6 +303,7 @@ export function guestsEconomics(state: GameState): GuestsEconomics | null {
           },
         }
       : {}),
+    ...(cfg.assets ? { assets: assetsEconomics(state)! } : {}),
     ...(Object.values(cfg.roles).some((r) => r.contracts)
       ? {
           contracts: {

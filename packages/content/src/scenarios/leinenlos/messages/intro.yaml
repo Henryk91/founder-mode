@@ -1,0 +1,40 @@
+# Onboarding text shown before week 1, and the founder's notes shown in weeks 1 to 4.
+# Nothing here may reveal which kind of customer is the real market.
+intro:
+  cards:
+    - id: you
+      title: You
+      body: >-
+        You sold tours for a Munich operator for years and spent every summer on a gulet. Now you
+        live in Fethiye. The company account holds {cash:eur} of your own money, your savings hold
+        {savings:eur}, and life here costs {living:eur} a week, about {livingMonth:eur} a month.
+    - id: idea
+      title: Fethiye and the gulets
+      body: >-
+        A gulet is a wooden motor sailer with cabins, a crew and a long deck. The Blue Cruise runs
+        a week along the coast towards Kekova and back, a different bay every night. You have a
+        desk in a harbour office, a list of past customers, and German that the guests like.
+    - id: problem
+      title: Three kinds of customer
+      body: >-
+        Couples and friends booking a cabin, families wanting the whole boat for a week, and
+        retreat organisers bringing their own group might all book. Not all of them will. A week
+        sold to a charter cannot also sell cabins, and a half-sold cruise still has to sail.
+    - id: goal
+      title: Three offers from the harbour
+      body: >-
+        It is January; the boats sail from May to October. You can manage an owner's gulet, lease
+        one for the season, or buy your own. Last {maxWeeks} weeks: your last thirteen months of
+        guests must pay for the boat, any loan and you.
+
+founderNotes:
+  first_week: >-
+    Week 1. The harbour is full of boats under covers and the office kettle has seen things.
+  no_evidence: >-
+    Week {week}. Still no idea who will book. Fethiye charges {living:eur} a week either way.
+  only_interviews: >-
+    {n} conversations so far. Everybody loves the idea of a boat. Ideas do not pay deposits.
+  built_unseen: >-
+    Something is ready, and nobody knows. A photo of a sunset is not a booking page.
+  leads_only: >-
+    {n} people have asked. Asking is not sailing.
