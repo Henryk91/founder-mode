@@ -6,13 +6,16 @@ Demand is hidden. You cannot read it off a dial; you infer it from noisy experim
 
 **Play it:** https://henryk91.github.io/founder-mode/
 
-Five scenarios, picked on the Start screen:
+Eight scenarios, picked on the Start screen:
 
 - **Kantino**: lunch ordering software for offices, coworking spaces and medical practices.
 - **Zollstock**: job plans and quotes for trade businesses that run on paper and phone calls.
 - **Gratwanderung** (104 weeks only): guided days in the Bavarian Alps for tourists, Munich team days and school groups; weather, seasons, platforms and a staff roster.
 - **Hinterhof** (104 weeks only): a neighbourhood restaurant in Munich that needs a bank loan to open; covers, food cost, crews per service, deposits and the delivery temptation.
 - **Seeblick** (104 weeks only): a twelve room guesthouse on a Bavarian lake; room nights, renovation, weddings booking the whole house, and a loan for the first winter.
+- **Rückenwind** (104 weeks only, abroad): a watersports centre on a beach in Mallorca; wind and sea by the half day, courses that make next season's guests, kite trips decided on the forecast, and the beach licence tender.
+- **Tiefgang** (104 weeks only, abroad): a dive centre in Larnaca near the Zenobia wreck; a licence before anyone dives, the ladder from a try dive to the wreck, and a boat to buy, lease or share by the seat.
+- **Leinen los** (104 weeks only, abroad): week-long gulet cruises from Fethiye; manage an owner's boat, lease one or buy your own, hold weeks for charters, a minimum to sail, and local costs that rise.
 
 The three tourism scenarios replace subscriptions with bookings of capacity that expires: an occupancy calendar instead of the pipeline, a roster instead of hiring, reviews, seasons and weather. Each has its own experiments (a pilot day and a test listing, a pop-up dinner and a lunch test, test rates and an open house) and vouchers, which bring cash now and are owed until redeemed. Staff come by the shift or on permanent, part time or seasonal contracts. Hinterhof plans food per service, with cooks and servers apart; Seeblick renovates room by room and can set a minimum stay on summer weekends. Guests take some of the founder's week. Hinterhof and Seeblick offer a bank loan that lends against a business plan (fit-out, renovation, equipment and at most three months of working capital, nothing else), buys the listed items when the money arrives, takes repayments whether guests come or not, and can end the run with "Bank called the loan".
 
@@ -45,7 +48,7 @@ pnpm bots --runs 1000 --wide-runs 10000 --seed-prefix test --scenario hinterhof 
 pnpm seeds                                   # rewrite docs/seeds.md: seeds that reach each ending
 ```
 
-The targets the report checks are in `docs/IMPLEMENTATION_PLAN.md`, section 7 (60 weeks), `docs/phase9-proposal.md` (long mode, 20 to 37), `docs/tourism-proposal.md` (tourism, T1 to T12), `docs/AUTONOMOUS_PLAN_2.md` (T13, a player without hidden knowledge can win, and T14, every staff contract kind wins somewhere), `docs/loan-proposal.md` (the bank loan, L1 to L4, reported as T15 to T18) and `docs/office-stages.md` (office stages, O1 to O5: Kantino long 38 to 40, tourism T19 to T21). The tourism scenarios run with `pnpm bots --runs 1000 --scenario gratwanderung --mode long` (likewise `hinterhof`, `seeblick`). After any change to formulas, scenario values, engine types or bot logic, rerun the report and commit `docs/balancing.md` with the change. `packages/bots/test/seeds.test.ts` replays every seed in `docs/seeds.md` and fails when one no longer reaches its ending; `pnpm seeds` then finds new ones.
+The targets the report checks are in `docs/IMPLEMENTATION_PLAN.md`, section 7 (60 weeks), `docs/phase9-proposal.md` (long mode, 20 to 37), `docs/tourism-proposal.md` (tourism, T1 to T12), `docs/AUTONOMOUS_PLAN_2.md` (T13, a player without hidden knowledge can win, and T14, every staff contract kind wins somewhere), `docs/loan-proposal.md` (the bank loan, L1 to L4, reported as T15 to T18) and `docs/office-stages.md` (office stages, O1 to O5: Kantino long 38 to 40, tourism T19 to T21). The abroad scenarios add their own: W1 to W5 (Rückenwind), D1 to D4 (Tiefgang) and G1 to G4 (Leinen los), in their specs. The tourism scenarios run with `pnpm bots --runs 1000 --scenario gratwanderung --mode long` (likewise `hinterhof`, `seeblick`). After any change to formulas, scenario values, engine types or bot logic, rerun the report and commit `docs/balancing.md` with the change. `packages/bots/test/seeds.test.ts` replays every seed in `docs/seeds.md` and fails when one no longer reaches its ending; `pnpm seeds` then finds new ones.
 
 ## How it is organised
 
@@ -76,6 +79,7 @@ A few rules shape the code:
 - [`docs/phase9-proposal.md`](docs/phase9-proposal.md): the freelancer, long mode and funding
 - [`docs/tourism-proposal.md`](docs/tourism-proposal.md) and [`docs/loan-proposal.md`](docs/loan-proposal.md): the bookings model and the bank loan
 - [`docs/office-stages.md`](docs/office-stages.md) and [`docs/design/established.md`](docs/design/established.md): office stages 3 to 5 and the established UI stage
+- [`docs/abroad-mechanics.md`](docs/abroad-mechanics.md) and [`docs/scenario-watersports.md`](docs/scenario-watersports.md), [`docs/scenario-dive.md`](docs/scenario-dive.md), [`docs/scenario-gulet.md`](docs/scenario-gulet.md): the abroad scenarios and their engine additions, with sources
 - [`docs/scenario-outdoor.md`](docs/scenario-outdoor.md), [`docs/scenario-restaurant.md`](docs/scenario-restaurant.md), [`docs/scenario-hotel.md`](docs/scenario-hotel.md): the tourism scenarios, with sources
 - [`docs/autonomous/STATUS.md`](docs/autonomous/STATUS.md), [`docs/autonomous2/STATUS.md`](docs/autonomous2/STATUS.md) and [`docs/autonomous3/STATUS.md`](docs/autonomous3/STATUS.md): progress of the autonomous runs and the open issues; reports per step in their `reports/` folders
 - [`CLAUDE.md`](CLAUDE.md): working rules for Claude Code
@@ -88,4 +92,4 @@ The build parses the content YAML into JSON ahead of time, loads each scenario's
 
 ## Status
 
-Early MVP complete (local tag `mvp-early`); Phase 9 (freelancer, long mode, funding) complete (local tag `phase9-done`); situational events, the tourism engine, three tourism scenarios and the bank loan complete (local tag `tourism-complete`); the tourism spec features, the loan against a plan, situational tourism inbox choices and Kantino long funding terms complete (local tag `plan2-complete`, audited and finished as `plan2-audited`); office stages and the established UI stage complete (local tag `plan3-complete`). Open balancing issues are listed in `docs/autonomous3/STATUS.md` and `docs/autonomous3/reports/final.md` (plan 2's in `docs/autonomous2/`). Values are invented starting points tuned by bots and playtests, not researched benchmarks, and the game is not startup advice.
+Early MVP complete (local tag `mvp-early`); Phase 9 (freelancer, long mode, funding) complete (local tag `phase9-done`); situational events, the tourism engine, three tourism scenarios and the bank loan complete (local tag `tourism-complete`); the tourism spec features, the loan against a plan, situational tourism inbox choices and Kantino long funding terms complete (local tag `plan2-complete`, audited and finished as `plan2-audited`); office stages and the established UI stage complete (local tag `plan3-complete`). The three abroad scenarios were added by plan 4 (local tags `plan4-watersports`, `plan4-dive`, `plan4-gulet`, `plan4-complete`; summary in `docs/autonomous4/reports/final.md`). Open balancing issues are listed in `docs/autonomous4/STATUS.md`, `docs/autonomous3/STATUS.md` and `docs/autonomous3/reports/final.md` (plan 2's in `docs/autonomous2/`). Values are invented starting points tuned by bots and playtests, not researched benchmarks, and the game is not startup advice.

@@ -22,6 +22,8 @@ export async function loadSourcesLazy(id: ScenarioId): Promise<ScenarioSources> 
       return (await import('./sources/rueckenwind')).sources
     case 'tiefgang':
       return (await import('./sources/tiefgang')).sources
+    case 'leinenlos':
+      return (await import('./sources/leinenlos')).sources
   }
 }
 

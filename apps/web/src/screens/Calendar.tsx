@@ -1,7 +1,7 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { label, stageOf, voiceOf } from '../labels'
 import { Pipeline } from './Pipeline'
-import { forecastLine } from '../components/TourismPlan'
+import { cruiseWeekText, forecastLine } from '../components/TourismPlan'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 
@@ -71,6 +71,16 @@ export function Calendar() {
             )
           })}
       </section>
+      {b.cruise && (
+        <section className={styles.card} aria-label={label('cruise.calendar', stage)}>
+          <h2 className={styles.title}>{label('cruise.calendar', stage)}</h2>
+          <ul className={styles.list}>
+            {b.cruise.weeks.map((w) => (
+              <li key={w.week}>{cruiseWeekText(w, stage)}</li>
+            ))}
+          </ul>
+        </section>
+      )}
       {b.abroad && b.products.some((p) => p.course) && (
         <section className={styles.card} aria-label={label('tour.ladder.title', stage)}>
           <h2 className={styles.title}>{label('tour.ladder.title', stage)}</h2>

@@ -14,7 +14,7 @@ import {
   type Target,
 } from './report'
 import { fmtMargin, rateMargin } from './margin'
-import { diveTargets, watersportsTargets } from './abroadTargets'
+import { diveTargets, guletTargets, watersportsTargets } from './abroadTargets'
 import type { RunResult } from './simulate'
 import { PACING_WEEKS, YEAR2_WEEK } from './simulate'
 
@@ -255,6 +255,7 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     // Plan 4: the abroad scenarios' own targets.
     ...watersportsTargets(careful, s, all),
     ...diveTargets(careful, s, all),
+    ...guletTargets(careful, s, all),
   ]
 }
 

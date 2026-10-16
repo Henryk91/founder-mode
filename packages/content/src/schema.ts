@@ -446,6 +446,10 @@ export const BookingProductSchema = z.object({
   // How readily a guest picks this product among those with room, against 1 for the others.
   // With any product naming it, guests pick by these weights instead of by the most room.
   appeal: z.number().positive().optional(),
+  // Plan 4 (the refit): shipping it closes an asset for some weeks, and once shipped these
+  // segments would pay this much more (their willingness to pay times the factor).
+  closesAsset: z.object({ asset: Id, weeks: z.number().int().positive() }).optional(),
+  wtpFactor: z.record(Id, z.number().positive()).optional(),
 })
 
 // Plan 2 step 1b: a contract instead of shifts booked week by week. Permanent and part time staff
@@ -769,6 +773,35 @@ export const BookingsConfigSchema = z.object({
   tender: TenderSchema.optional(),
   // Plan 4 (section 4): assets with buy, lease and share options.
   assets: z.record(Id, AssetSchema).optional(),
+  // Plan 4 (the gulet, docs/scenario-gulet.md section 6). Weeks the player holds for whole-boat
+  // bookings: these products sell nothing in a held week.
+  hold: z.object({ products: z.array(Id).min(1) }).optional(),
+  // The minimum to sail: a week of `product` with fewer than the minimum (in `perUnit` units, a
+  // cabin of two) sold `weeksBefore` weeks ahead is cancelled; the guests are refunded or moved
+  // to a partner's boat at `moveCents` each. The setting changes at most every `policyWeeks`.
+  minSail: z
+    .object({
+      product: Id,
+      perUnit: z.number().int().positive(),
+      options: z.array(z.number().int().nonnegative()).min(2),
+      weeksBefore: z.number().int().positive(),
+      moveCents: Cents.nonnegative(),
+      policyWeeks: z.number().int().positive(),
+    })
+    .optional(),
+  // Strangers on one boat: a week of `product` sold to more than one group has friction with a
+  // chance of `chance` per extra group, which costs `penalty` review quality. With `themed`
+  // shipped the chance is `themedFactor` of that, and `themedConversion` of the requests book.
+  friction: z
+    .object({
+      product: Id,
+      chance: Share,
+      penalty: z.number().nonnegative(),
+      themed: Id.optional(),
+      themedFactor: Share.optional(),
+      themedConversion: Share.optional(),
+    })
+    .optional(),
   // Plan 4 (section 7): local costs that rise from a week on, by a factor: these fixed costs,
   // staff pay (shifts and contracts) and products' unit costs.
   costSteps: z

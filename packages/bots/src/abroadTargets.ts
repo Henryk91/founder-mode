@@ -207,3 +207,52 @@ function assetTargets(
 }
 
 export { assetTargets }
+
+/** Plan 4: Leinen los's targets G1 to G4 (`docs/scenario-gulet.md` section 16). */
+export function guletTargets(
+  careful: StrategyRuns,
+  s: (id: string) => StrategyRuns | undefined,
+  all: number[],
+): Target[] {
+  if (!s('tourism_always_manage')) return []
+  const out = assetTargets('G', careful, s, all, {
+    options: ['tourism_gulet_buy', 'tourism_gulet_lease', 'tourism_always_manage'],
+  })
+  const vs = (id: string) => {
+    const o = s(id)
+    return o ? pairedOn(careful, o, all) : null
+  }
+  const loses = (p: { change: number; margin: number } | null, by: number) =>
+    p !== null && p.change - p.margin <= -by
+  const v = (p: { change: number } | null) => (p ? signed(p.change) : '-')
+  const m = (p: { margin: number } | null) => (p ? fmtMargin(p.margin) : '')
+  const allPeak = vs('tourism_hold_all_peak')
+  const never = vs('tourism_hold_never')
+  out.push({
+    id: 'G3',
+    text: 'Holding weeks is a decision: a bot that holds every peak week for charters and a bot that never holds each lose to the careful bot by at least 2 points',
+    value: `hold every peak week ${v(allPeak)}, never hold ${v(never)}`,
+    margin: `${m(allPeak)}, ${m(never)}`,
+    pass: loses(allPeak, 2) && loses(never, 2),
+  })
+  const always = s('tourism_sail_always')
+  const six = s('tourism_sail_six')
+  if (always && six) {
+    const overall = pairedOn(always, six, all)
+    const markets = [...new Set(careful.results.map((x) => x.viableSegment))].sort()
+    const splits = markets.map((mk) => {
+      const seeds = all.filter((i) => careful.results[i]!.viableSegment === mk)
+      return { mk, p: pairedOn(always, six, seeds) }
+    })
+    const sixAhead = splits.some((x) => x.p.change - x.p.margin > 0)
+    const alwaysAhead = splits.some((x) => x.p.change + x.p.margin < 0)
+    out.push({
+      id: 'G4',
+      text: 'The minimum to sail is a decision: always sailing and sailing only with 6 or more each lead in some segment split, and neither is ahead by more than 5 points overall',
+      value: `six ahead by ${signed(overall.change)} overall; ${splits.map((x) => `${x.mk} ${signed(x.p.change)}`).join(', ')}`,
+      margin: fmtMargin(overall.margin),
+      pass: sixAhead && alwaysAhead && Math.abs(overall.change) - overall.margin <= 5,
+    })
+  }
+  return out
+}

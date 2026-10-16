@@ -1,5 +1,6 @@
 import type { AssetConfig, BookingsConfig, Scenario } from '@founder-mode/content'
 import type { Rng } from '../rng'
+import { costFactor } from './abroad'
 import type {
   AssetEconomics,
   AssetOption,
@@ -15,6 +16,10 @@ import type {
 
 const WEEKS_PER_YEAR = 52
 const WEEKS_PER_MONTH = 4
+
+/** Plan 4: local costs risen by the scenario's cost steps (1 without them). */
+const localF = (state: GameState, kind: 'roles' | 'unitCosts') =>
+  state.scenario.bookings?.costSteps ? costFactor(state.scenario, state.week, kind) : 1
 
 /** A run week's month (1 to 12), as the bookings calendar counts it. */
 function monthAt(scenario: Scenario, week: number): number {
@@ -249,7 +254,7 @@ export function assetsWeek(
       if (sold >= rule.needWeeks) s.peakReleased = [...s.peakReleased, year]
     }
     if (s.option === 'buy' && a.buy) {
-      cost += Math.round(a.buy.upkeepMonthlyCents / WEEKS_PER_MONTH)
+      cost += Math.round((a.buy.upkeepMonthlyCents / WEEKS_PER_MONTH) * localF(state, 'unitCosts'))
       const h = a.buy.haulOut
       if (h && hauledOut(state.scenario, a, week) && weekInMonth(state.scenario, week) === 0) {
         cost += h.cents
@@ -307,8 +312,9 @@ export function assetsUsed(
     }
     if (units === 0) continue
     let cost = 0
-    if (s.option === 'buy') cost += a.buy?.crewWeekCents ?? 0
-    if (s.option === 'lease') cost += a.lease?.crewWeekCents ?? 0
+    if (s.option === 'buy') cost += Math.round((a.buy?.crewWeekCents ?? 0) * localF(state, 'roles'))
+    if (s.option === 'lease')
+      cost += Math.round((a.lease?.crewWeekCents ?? 0) * localF(state, 'roles'))
     if (s.option === 'share' && a.share) {
       cost += units * a.share.unitCents + Math.round(gross * a.share.revenueShare)
     }
@@ -418,4 +424,18 @@ export function assetsEconomics(state: GameState): AssetEconomics[] | undefined 
       breakdowns: s.breakdowns,
     }
   })
+}
+
+/**
+ * Plan 4: an asset's purchase (or a product that needs the asset bought, such as a refit) whose
+ * `requires` has not shipped yet: a local company still missing. False everywhere else.
+ */
+export function waitsForCompany(state: GameState, product: FeatureId): boolean {
+  const cfg = state.scenario.bookings
+  if (!cfg?.assets) return false
+  const buys = Object.values(cfg.assets).flatMap((a) => (a.buy ? [a.buy.product] : []))
+  const p = cfg.products[product]
+  if (!p?.requires) return false
+  if (!buys.includes(product) && !buys.includes(p.requires)) return false
+  return !state.product.features.some((f) => f.id === p.requires && f.shippedWeek !== null)
 }

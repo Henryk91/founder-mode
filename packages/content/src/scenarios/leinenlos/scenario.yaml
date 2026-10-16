@@ -326,6 +326,7 @@ officeStages:
     monthlyCents: 0
 
 organisedAt: [covers_all_costs]
+# Spec 8 (6 was tried for E1 and brought the look in year 1).
 establishedAt: { monthsCoveringAll: 8 }
 
 # The bank loan: only for owning, and only once the Turkish company exists (the purchase needs it).
@@ -336,8 +337,8 @@ loan:
   meetingHours: 4
   decisionWeeks: 2
   retryWeeks: 4
-  # The bank lends up to 70% of the price.
-  ownShare: 0.3
+  # The bank lends up to 80% of the price (spec 70%; 75% in round 1, 80% in G1 round 1).
+  ownShare: 0.2
   unprovenMaxCents: 32000000
   revenueMultiple: 2
   minCents: 1000000
@@ -412,20 +413,44 @@ bookings:
         ageYears: 20
         valueLossPerYear: 0.05
       lease:
-        # Deniz Yıldızı with its crew, May to October: 110,000, 30% on signing.
-        seasonCents: 11000000
-        upfrontShare: 0.3
+        # Deniz Yıldızı with its crew, May to October: spec 110,000 with 30% on signing; 80,000
+        # (round 1) with 15% on signing (round 2; decisions, plan 4 step 4).
+        seasonCents: 8000000
+        upfrontShare: 0.15
         months: [5, 6, 7, 8, 9, 10]
         minMonths: 6
-        # Food and fuel for a cruising week.
+        # Food and fuel for a cruising week (2,600 with port fees was tried for G4 and lowered
+        # the careful bot's wins without helping G4).
         crewWeekCents: 180000
       share:
         # Managing Mavi Rüya: the owner keeps 75% and pays crew, food and fuel; he keeps July and
-        # August for his agents unless six shoulder weeks are sold by the end of March.
+        # August for his agents unless shoulder weeks are sold by the end of March (spec six;
+        # three after rounds 1 and 2).
         capacity: 1
         unitCents: 0
-        revenueShare: 0.75
-        peakRule: { months: [7, 8], shoulderMonths: [5, 6, 9, 10], needWeeks: 6, byWeek: 13 }
+        # Spec 75%; 70% after round 2.
+        revenueShare: 0.7
+        peakRule: { months: [7, 8], shoulderMonths: [5, 6, 9, 10], needWeeks: 3, byWeek: 13 }
+  # Selling a week (docs/scenario-gulet.md section 6). Held weeks sell no cabins, only the whole
+  # boat. Below the minimum (in cabins of two) three weeks out, a week is cancelled: guests get a
+  # refund, or a move to a partner's boat at 150 a cabin (est.). A week of mixed groups goes
+  # wrong with a chance of a fifth (est.); themed weeks halve it, and a tenth of cabin guests look
+  # elsewhere.
+  hold: { products: [blue_cruise] }
+  minSail:
+    product: blue_cruise
+    perUnit: 2
+    options: [0, 4, 5, 6]
+    weeksBefore: 3
+    moveCents: 15000
+    policyWeeks: 4
+  friction:
+    product: blue_cruise
+    chance: 0.2
+    penalty: 0.5
+    themed: themed_weeks
+    themedFactor: 0.5
+    themedConversion: 0.9
   # Cruise platforms take 15 to 20% (est.); 18% here.
   platform: { name: Mavitur, commission: 0.18 }
   website: { product: online_booking, repeatsFull: 120 }
@@ -437,7 +462,8 @@ bookings:
   fitBase: 0.4
   segments:
     cabin_guests:
-      base: { min: 8, max: 30 }
+      # Spec 8 to 30 a week; 12 to 36 after round 1.
+      base: { min: 12, max: 36 }
       unit: person
       price: { peak: 95000, off: 75000 }
       size: { min: 1, max: 4 }
@@ -453,7 +479,7 @@ bookings:
       reviewWeight: 0.7
     private_charters:
       # 0.2 to 1.0 boats a week at peak, sixteen places each.
-      base: { min: 3, max: 16 }
+      base: { min: 5, max: 20 }
       unit: person
       price: { peak: 85000, off: 60000 }
       size: { min: 16, max: 16 }
@@ -501,13 +527,13 @@ bookings:
       serves: [private_charters, retreats]
       wholeWeek: true
       months: [5, 6, 7, 8, 9, 10]
-      unitCostCents: 1500
+      # Transfers, and the chef's menu at about 250 a week (est.).
+      unitCostCents: 3100
     german_host:
       capacity: 0
     chef_menu:
-      # About 250 a week more in food, all year round as a cost (est.).
+      # About 250 a week more in food, on charter weeks (in the charter's unit cost).
       capacity: 0
-      monthlyCents: 70000
     retreat_setup:
       capacity: 0
       oneOffCents: 250000
@@ -528,15 +554,19 @@ bookings:
       oneOffCents: 400000
       waitWeeks: 8
     gulet_purchase:
-      # A used 24 m gulet with eight cabins (est.).
+      # A used gulet with eight cabins (est.; spec 450,000 for 24 m; an older, smaller one at
+      # 300,000 in round 1 and 200,000 in G1 round 1: the bank's own-money rule left no way to buy).
       capacity: 0
-      oneOffCents: 45000000
+      oneOffCents: 20000000
       requires: local_company
     luxury_refit:
       # Air conditioning, a new teak deck and a jacuzzi: 120,000 and eight weeks out (est.).
       capacity: 0
       oneOffCents: 12000000
       requires: gulet_purchase
+      closesAsset: { asset: gulet, weeks: 8 }
+      # A little more from private charters (est.).
+      wtpFactor: { private_charters: 1.1 }
   roles:
     host:
       name: Host on board

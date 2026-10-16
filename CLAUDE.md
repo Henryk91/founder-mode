@@ -11,6 +11,8 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 - `docs/IMPLEMENTATION_PLAN.md`: scope, architecture, formulas, phases
 - `docs/scenario-kantino.md`: segments, features, and starting values for the first scenario. Source of truth for the content YAML.
 - `docs/scenario-zollstock.md`: the second scenario (trade businesses), written as differences from Kantino.
+- `docs/abroad-mechanics.md`: the engine additions of the abroad scenarios (day conditions, courses, day trips, assets with buy, lease and share, licences, the tender, local cost steps).
+- `docs/scenario-watersports.md`, `docs/scenario-dive.md`, `docs/scenario-gulet.md`: the abroad scenarios Rückenwind, Tiefgang and Leinen los, with sources and values as built.
 - `docs/design/design.md`: layout, colour and font tokens, component mapping, and three HTML mockups. Read before any UI work.
 - `docs/schema.md`: game state, player view, save file, content schemas. Update it in the same change as any type change.
 - `docs/balancing.md`: latest bot report

@@ -222,4 +222,30 @@ On top of T1 to T18 and E1 (`docs/balancing.md`). T9 (staffing) applies only to 
 
 ## 17. Sources and values as built
 
-The agent fills this in: checked figures with sources and dates, and every value changed while tuning with a pointer to `docs/decisions.md`.
+Filled in by plan 4, step 4 (October 2026). Decisions: `docs/decisions.md`, "Plan 4, step 4".
+
+### Checked figures (searched October 2026)
+
+| Figure | Source | Use |
+|---|---|---|
+| Whole-boat charters of 8-cabin gulets from Fethiye: 12,000 to 15,600 EUR a week (fuel included), about 16,500 USD for a 27 m boat; a premium menu about 480 USD a person a week | Limancepte (25 m, 16 guests), Sailo (26 m), 12knots and SamBoat (Bluefest) listings | Charters at 850 a place (13,600 a week) kept |
+| A place on a shared cruise: about 750 to 975 EUR a person a week (the charter divided by 16) | Our arithmetic from the listings above | Cabins at 950 peak, 750 off season kept |
+| Turkish cabotage: foreign-owned private yachts may not carry paying guests; commercial yachts need Turkish licences and an owner company's registration | Ministry of Culture and Tourism, "Cabotage Laws" and "Leaving Yachts in Turkish Marinas"; Mondaq (2024); yacht.de | The local company before buying kept (8 weeks, 4,000: estimates) |
+| Cruise platform commissions | Not found; activity platforms take 20 to 30% (step 2) | 18%, estimate |
+
+Not found from a current source, so still estimates: the lease and management terms, gulet purchase prices, crew wages, food and fuel, the harbour office, Turkish costs in euros, and the coast's sea states.
+
+### Values as built that differ from the spec
+
+| Value | Spec | As built | Why |
+|---|---|---|---|
+| Lease | 110,000, 30% on signing | 80,000, 15% on signing | Rounds 1 and 2: a lease could never pay; the deposit in November left no money |
+| Managing | the owner keeps 75%; July and August his unless six shoulder weeks are sold by March | 70%, three weeks | Round 2; the owner's share comes off revenue net of the platform's cut (decisions) |
+| Buying | 450,000 for 24 m, the bank lends 70% | 200,000 for an older, smaller gulet, the bank lends 80% | The own-money rule left no way to buy (G1 round 1) |
+| Cabin guests | 8 to 30 a week | 12 to 36 | Round 1 |
+| Private charters | 0.2 to 1.0 boats a week | 5 to 20 places (0.3 to 1.25 boats) | Round 1 |
+| Friction | 0.2 per mixed week | 0.2 per mixed week, 0.5 of review quality | As spec; the first version compounded it per group |
+| The chef's menu | +250 a week in food | in the charter's cost per place | Not a cost in weeks without charters |
+| Crew when owning | four roles on seasonal contracts | a crew cost per week sailed (3,550 with food and fuel) | The roster cannot require several roles together (decisions, step 3) |
+| Peak months | July and August, shoulder May, June, September, October | peak July and August | As spec |
+

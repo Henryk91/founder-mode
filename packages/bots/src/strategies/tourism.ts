@@ -78,6 +78,16 @@ export type TourismRule = {
   asset?: 'careful' | 'buy' | 'lease' | 'share'
   /** Plan 4: sells only to this segment (the certified-only bot). */
   segment?: string
+  /**
+   * Plan 4, gulet weeks: careful holds the peak weeks for charters while charter requests are
+   * coming in; `all_peak` holds every peak week; `never` holds none. Missing: careful.
+   */
+  hold?: 'careful' | 'all_peak' | 'never'
+  /**
+   * Plan 4: the minimum to sail, in cabins; missing: careful (any number on a managed boat,
+   * four on a leased or owned one, guests moved).
+   */
+  minSail?: number
 }
 
 /** Hours this week's guests take before anything is planned (plan 2 step 3). */
@@ -121,6 +131,8 @@ const BUSY_SHARE = 0.7
 const BUG_LIMIT = 2
 /** Plan 4: a shared asset counts as full when its peak weeks used this share of its units. */
 const SEATS_FULL = 0.5
+/** Plan 4: a segment whose smallest booking is this many units books the whole boat. */
+const WHOLE_BOAT = 12
 /** A product costing this share of its price or more is not worth adding (step 6). */
 const THIN_MARGIN_SHARE = 0.5
 /** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
@@ -156,12 +168,28 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   /** Plan 2: paid and contract shifts used per role in recent weeks, newest last. */
   let shiftsUsed: Record<string, number>[] = []
 
+  /** Plan 4: cash covers a lease's deposit, its first month and three months of costs. */
+  const leaseAffordable = (view: PlayerView) => {
+    const t = view.bookings?.assets[0]?.terms.lease
+    if (!t) return false
+    const monthly = (t.seasonCents * (1 - t.upfrontShare)) / t.months.length
+    return (
+      view.company.cashCents >=
+      t.seasonCents * t.upfrontShare + monthly + 3 * view.company.monthlyFixedCostsCents
+    )
+  }
+
   /** Plan 4: shared units used against those offered over the last season's peak weeks. */
   const assetUse: { used: number; offered: number }[] = []
   const seatsFull = () => {
     const recent = assetUse.slice(-26)
     const offered = recent.reduce((t, x) => t + x.offered, 0)
-    return offered > 0 && recent.reduce((t, x) => t + x.used, 0) / offered >= SEATS_FULL
+    const used = recent.reduce((t, x) => t + x.used, 0)
+    // Peak weeks the owner kept (nothing offered) with guests turned away count as full.
+    // A gulet's peak weeks the owner kept (nothing offered) with guests turned away count as
+    // full; elsewhere only a share of the units offered does (Tiefgang as in step 3).
+    if (cfg.hold) return used > 0 && (offered === 0 || used / offered >= SEATS_FULL)
+    return offered > 0 && used / offered >= SEATS_FULL
   }
 
   /** Markets by the evidence on screen: interviews, then trials and vouchers (plan 2). */
@@ -626,6 +654,55 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     if (want !== t.min) plan.trips = { min: want }
   }
 
+  /**
+   * Plan 4: the gulet's weeks. Hold the peak weeks ahead for whole-boat bookings (careful: only
+   * while charters or retreats have booked or been turned away lately), release a held week six
+   * weeks out if nobody took the boat, and set the minimum to sail (careful: four cabins, guests
+   * moved to a partner boat rather than refunded).
+   */
+  function planCruise(view: PlayerView, plan: BookingsPlan): void {
+    const c = view.bookings!.cruise
+    if (!c) return
+    const mode = rule.hold ?? 'careful'
+    const whole = scenario.segments
+      .filter((g) => (cfg.segments[g.id]?.size.min ?? 0) >= WHOLE_BOAT)
+      .map((g) => g.id)
+    // Holding pays only while whole-boat groups are being turned away, and only where the peak
+    // weeks are the company's to sell (not a managed boat whose owner keeps them).
+    const asset = view.bookings!.assets[0]
+    const peakOurs =
+      !asset || asset.option === 'lease' || asset.option === 'buy' || asset.peakReleased === true
+    const demand =
+      peakOurs &&
+      view.bookings!.segments.filter((x) => whole.includes(x.id)).some((x) => x.turnedAwayLast4 > 0)
+    const hold: { week: number; on: boolean }[] = []
+    const peakWeek = (w: number) => {
+      const woy = ((cfg.startWeekOfYear - 1 + w - 1) % 52) + 1
+      return cfg.peakMonths.includes(Math.min(12, Math.floor(((woy - 1) * 12) / 52) + 1))
+    }
+    for (const w of c.weeks) {
+      const want =
+        mode === 'all_peak'
+          ? peakWeek(w.week) && !w.chartered && w.sold === 0
+          : mode === 'careful'
+            ? demand && peakWeek(w.week) && !w.chartered && w.sold === 0 && w.week > view.week + 6
+            : false
+      if (want !== w.held && !(w.held && !want && w.chartered))
+        hold.push({ week: w.week, on: want })
+    }
+    if (hold.length) plan.hold = hold
+    const m = c.minSail
+    if (m && !m.locked) {
+      // Careful: on a managed boat an empty cabin costs nothing (the owner feeds and crews it),
+      // so it sails with any number; on its own or a leased boat, four cabins at least.
+      const managed = view.bookings!.assets[0]?.option === 'share'
+      const min = rule.minSail ?? (managed ? 0 : 4)
+      const move = rule.minSail === undefined
+      if (m.options.includes(min) && (min !== m.min || move !== m.move))
+        plan.minSail = { min, move }
+    }
+  }
+
   /** A minimum stay while the target's weekends fill up (plan 2 step 1d). */
   function planMinStay(view: PlayerView, plan: BookingsPlan): void {
     const m = view.bookings!.minStay
@@ -711,8 +788,15 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       let want: string | null = null
       if (mode === 'share' || mode === 'lease') want = mode
       else if (mode === 'careful') {
-        if (now === 'none') want = 'share'
-        else if (now === 'share' && seatsFull()) want = 'lease'
+        // Plan 4: where whole-boat groups are the guests (a gulet's charters, who want the peak
+        // weeks a managed boat's owner keeps), a lease from the start if it can be paid; else
+        // share first. Before it knows its guests it waits, while the offer is open.
+        const wholeBoat =
+          !!cfg.hold && target !== null && (cfg.segments[target]?.size.min ?? 0) >= WHOLE_BOAT
+        if (now === 'none' && target === null && view.week < 4 && cfg.hold) continue
+        if (now === 'none') want = wholeBoat && leaseAffordable(view) ? 'lease' : 'share'
+        else if (now === 'share' && seatsFull() && (!cfg.hold || leaseAffordable(view)))
+          want = 'lease'
       }
       const choice = want && want !== now ? pick(want) : undefined
       if (choice) out.push({ messageId: m.id, choiceId: choice.id })
@@ -832,7 +916,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     bookedAtPlanBy = Object.fromEntries(bv.thisWeek.map((x) => [x.productId, x.booked]))
     // Plan 4: how much of a shared asset's units last week used, in peak weeks.
     const shared = bv.assets.find((a) => a.option === 'share')
-    if (shared && bv.peak) {
+    if (shared && bv.peak && (shared.peakReleased !== false || bv.cruise)) {
       let used = 0
       let offered = 0
       for (const id of shared.products) {
@@ -1056,6 +1140,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       planRenovation(view, plan, building)
       planMinStay(view, plan)
       planTrips(view, plan)
+      planCruise(view, plan)
       if (done && second && rule.channels === 'mix') {
         if (
           reaches(second, 'partnership') &&
@@ -1377,6 +1462,44 @@ export const TOURISM_STRATEGIES: Strategy[] = [
   ].map(([id, text, rule]) =>
     tourism(id as string, text as string, { ...CAREFUL_TOURISM, ...(rule as TourismRule) }, [
       'tiefgang',
+    ]),
+  ),
+  // Plan 4: Leinen los's own targets (G1 to G4).
+  ...[
+    [
+      'tourism_always_manage',
+      "Plays like tourism_careful but always manages the owner's gulet.",
+      { asset: 'share' },
+    ],
+    [
+      'tourism_gulet_lease',
+      'Plays like tourism_careful but always leases the gulet.',
+      { asset: 'lease' },
+    ],
+    [
+      'tourism_gulet_buy',
+      'Plays like tourism_careful but buys a gulet as soon as it can (the company first), with the bank.',
+      { asset: 'buy' },
+    ],
+    [
+      'tourism_hold_all_peak',
+      'Plays like tourism_careful but holds every peak week for charters.',
+      { hold: 'all_peak' },
+    ],
+    ['tourism_hold_never', 'Plays like tourism_careful but never holds a week.', { hold: 'never' }],
+    [
+      'tourism_sail_always',
+      'Plays like tourism_careful but sails with any number of cabins.',
+      { minSail: 0 },
+    ],
+    [
+      'tourism_sail_six',
+      'Plays like tourism_careful but sails only with six cabins or more.',
+      { minSail: 6 },
+    ],
+  ].map(([id, text, rule]) =>
+    tourism(id as string, text as string, { ...CAREFUL_TOURISM, ...(rule as TourismRule) }, [
+      'leinenlos',
     ]),
   ),
   tourism(

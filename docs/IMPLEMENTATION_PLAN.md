@@ -768,6 +768,14 @@ Open issues are in `docs/autonomous2/STATUS.md`.
 - The established UI stage (section 4.12), on phone and desktop, for every long mode scenario.
 - Targets O1 to O5. Offices rarely pay at these businesses' size, so O1 (moving at the right time pays) and O3 (no stage always right) are open issues; see `docs/autonomous3/STATUS.md`.
 
+### After plan 3: plan 4
+
+`docs/AUTONOMOUS_PLAN_4.md` added three tourism scenarios abroad, on top of the bookings engine (reports in `docs/autonomous4/reports/`, summary in `docs/autonomous4/reports/final.md`):
+
+- Engine additions in `docs/abroad-mechanics.md`, each off unless a scenario's YAML names it: day conditions by the half day with a forecast; courses and progression (graduates booking their next step, and coming back a year later through the channel they first used); day trips decided on the forecast; licences with a wait; a concession's tender; local cost steps; assets owned, leased or shared, with breakdowns and haul-outs; products priced as a multiple of a segment's price; and the gulet's held weeks, minimum to sail and friction among strangers.
+- Rückenwind (Mallorca), Tiefgang (Cyprus) and Leinen los (Fethiye), each with its own bots and targets (W1 to W5, D1 to D4, G1 to G4), UI parts (the forecast strip, the trip policy, the students card, the boat card, the season calendar) and scene drawings. The protected games (both 60-week games and the four earlier long modes) were proven unchanged after every engine step.
+- Open issues are in `docs/autonomous4/STATUS.md` and `docs/BACKLOG.md`.
+
 ## 10. How to start with Claude Code
 
 1. Create an empty repo, add this file as `docs/IMPLEMENTATION_PLAN.md` and the provided `CLAUDE.md` at the root.

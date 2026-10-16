@@ -960,3 +960,10 @@ See `docs/abroad-mechanics.md`. Every new content field is optional with no defa
 - State: `BookingsState.assets?: Record<id, AssetState>` (`option`, `sinceWeek`, `leaseFromWeek`, `boughtWeek`, `brokenUntil`, `breakdowns`, `takenBack`, `peakReleased` calendar years, `weeksUsed`, `costCents`).
 - View: `BookingsView.assets: AssetView[]` (option, products, the purchase product, broken until, next haul-out, value, breakdowns, weeks used, spent, the lease's minimum, the peak rule, and the terms of every option).
 - Report entries `asset_option`, `asset_broke`, `asset_repaired`, `asset_haul_out`, `asset_taken_back`; `company_cancelled` reason `asset`. Post-mortem `GuestsEconomics.assets?: AssetEconomics[]`.
+
+### Plan 4 step 4: Leinen los (engine 0.14.0, off unless a scenario names them)
+
+- Content, `BookingsConfig`: `hold?: { products }`, `minSail?: { product, perUnit, options, weeksBefore, moveCents, policyWeeks }`, `friction?: { product, chance, penalty, themed?, themedFactor?, themedConversion? }`; `BookingProduct.closesAsset?: { asset, weeks }`, `wtpFactor?: Record<segment, number>`. New scenario `leinenlos`.
+- State: `BookingsState.held?: number[]`, `minSail?: { min, move, sinceWeek }`. Plan: `BookingsPlan.hold?: { week, on }[]`, `minSail?: { min, move }`.
+- View: `BookingsView.cruise: CruiseView | null` (the season's weeks with held, chartered, cabins sold, closed; the minimum to sail and its options; themed weeks).
+- Report entries `cruise_cancelled`, `friction`.

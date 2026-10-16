@@ -480,7 +480,58 @@ const TIEFGANG: Overrides = {
     'You cancelled {company} places for the sea, the boat or a short roster; divers cancelled {guest}.',
 }
 
+const LEINENLOS: Overrides = {
+  'market.trials.title': 'Taster days, test listings and travel fairs',
+  'bar.company': {
+    scrappy: '{name}',
+    organised: '{name}',
+    established: 'Leinen los Blue Cruises',
+  },
+  'results.entry.ui_established':
+    'Leinen los pays its own way now, westerly or no westerly. The office kettle has retired.',
+  ...shared({
+    test: {
+      one: 'Test listing',
+      other: 'Test listings',
+      lower: 'test listing',
+      lowerPlural: 'test listings',
+    },
+    pilot: {
+      one: 'Taster day',
+      other: 'Taster days',
+      lower: 'taster day',
+      lowerPlural: 'taster days',
+    },
+    formal: {
+      test: { one: 'Listing test', other: 'Listing tests' },
+      pilot: { one: 'Trial day', other: 'Trial days' },
+    },
+    fixFormal: 'Incidents',
+    snag: { one: 'incident', other: 'incidents' },
+    fix: 'Sort out incidents',
+    fixWhat: 'hours sorting out incidents',
+    build: 'Get cruises and contracts ready',
+    invoices: {
+      hint: 'Retreat organisers get an invoice once their week is over, less the deposit they paid when they booked; everyone else pays a deposit and the rest before sailing. Some pay on time, some only once asked, a few never will. Chasing an overdue invoice costs {hours} and may get it paid next week. Unpaid invoices are written off two months after they were due.',
+      none: "No invoices yet. They start once a retreat's week is over.",
+    },
+    fixedCosts: 'Company costs per month (harbour desk, insurance, accountant, website)',
+  }),
+  'stat.guests': 'Guests, last 4 weeks',
+  'stat.guests.short': 'Guests',
+  'tour.heat.sub': 'Next {n} weeks, places booked of {capacity} a week',
+  'explain.test.text':
+    'A test listing costs {hours} and an ad budget: two weeks of cabins on the cruise platform at a test price. It reports {weeks} later with how many saw it and how many asked for dates. A signal only: nobody books from it. A taster day costs {presale} and takes {size} people from one group out on a boat for a day. Those who would come again buy a voucher and become repeat guests. It reports {presaleWeeks} later, and each group allows {max} taster days.',
+  'help.week.4':
+    'Every fourth week is a month end, when the desk, other fixed costs and any lease or loan payments go out. Prices are in euros; costs here are really paid in lira and rise in the second season.',
+  'help.week.1':
+    'Plan your hours. A normal week is 50 h, and up to 65 h is possible if you accept the energy cost. Hosting a cruise yourself takes the whole week. The boat is on Finance; the season, week by week, on My week.',
+  'pm.guests.cancelled':
+    'You cancelled {company} places for the boat, the minimum to sail or a short roster; guests cancelled {guest}.',
+}
+
 export const SCENARIO_LABELS: Record<string, Overrides> = {
+  leinenlos: LEINENLOS,
   tiefgang: TIEFGANG,
   rueckenwind: RUECKENWIND,
   gratwanderung: GRATWANDERUNG,

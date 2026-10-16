@@ -230,7 +230,7 @@ events:
     from: none
     sender: A wedding planner in Ölüdeniz
     text: >-
-      A wedding party wants the boat for the week after a wedding: sixteen guests, a lot of
+      A wedding party wants the boat for the week after a wedding. Sixteen guests, a lot of
       champagne and a request to skip the quiet bays.
     defaultChoice: decline
     choices:
