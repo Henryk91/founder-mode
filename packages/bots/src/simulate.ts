@@ -69,6 +69,8 @@ export function isNoteworthy(e: WeekReport['entries'][number]): boolean {
 export type RunResult = {
   /** Plan 3: office stages offered and taken over the run, by stage number (3 to 5). */
   office: { offered: number[]; taken: number[] }
+  /** Plan 3: the week the screens turned established, or null. */
+  establishedWeek: number | null
   strategy: string
   seed: string
   ending: EndingId
@@ -317,6 +319,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
   let year2DecisionWeeks = 0
   let at60: RunResult['at60'] = scenario.maxWeeks > STANDARD_WEEKS ? 'over' : null
 
+  let establishedWeek: number | null = null
   while (state.status === 'running') {
     for (const answer of player.respond?.(getView(state)) ?? []) {
       state = respond(state, answer.messageId, answer.choiceId)
@@ -396,6 +399,9 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
       revenueAtCheck = monthlyRevenue(state)
     }
     player.observe?.(result.report, getView(state))
+    if (result.report.entries.some((e) => e.kind === 'ui_established')) {
+      establishedWeek = result.report.week
+    }
     if (result.report.week <= EVIDENCE_WEEK) focus.push(player.focus ? player.focus() : null)
   }
 
@@ -438,6 +444,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     seed,
     ending: state.ending ?? 'still_searching',
     office: { offered: officeOffered, taken: [...new Set(officeTaken)].sort() },
+    establishedWeek,
     weeks: state.week,
     viableSegment: viable?.[0] ?? '',
     roles: Object.fromEntries(
