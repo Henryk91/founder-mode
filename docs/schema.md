@@ -449,7 +449,8 @@ zod schema `ScenarioSchema` in `packages/content/src/schema.ts`; `Scenario = z.i
 | `scenarios/<id>/messages/intro.yaml` | `intro` and `founderNotes` |
 | `scenarios/<id>/messages/events/<area>.yaml` | `events`, one file per event area, concatenated in `EVENT_AREAS` order. An entry `- shared: <id>` places a shared event there |
 | `shared/events/<area>.yaml` | events every scenario gets; those a scenario does not place follow its own events of that area, in file order |
-| `scenarios/<id>/about.yaml` | not part of `Scenario`: `name` and exactly two `lines` for the Start screen, read by `scenarioCatalogue()` |
+| `scenarios/<id>/about.yaml` | not part of `Scenario`: `name`, `category` (an id from `categories.yaml`), `short` (one line for its row), two or three `tags`, and exactly two `lines` for its sheet on the Start screen, read by `scenarioCatalogue()` |
+| `categories.yaml` | not part of `Scenario`: the Start screen's categories, each `id`, `name` and `order`, read by `scenarioCategories()` in `order` |
 
 ```ts
 type Range = { min: number; max: number }   // min <= max; IntRange requires integers
@@ -926,3 +927,10 @@ The 60 week games keep their fingerprints: every new content field is optional w
 - Content: `ScenarioFile.establishedAt?: { monthsCoveringAll, officeStage?, funded? }` (long modes: Kantino long 8 months, stage 4, funded; Gratwanderung 7, Hinterhof 8 and Seeblick 8 months, stage 4). `OfficeStage.established?` removed. (A first version had `people` instead of `officeStage` and `funded`; dropped after review.)
 - Turn: after milestones and the organised switch, the UI turns `established` once `monthsCovering(all)` reaches `monthsCoveringAll`, or the current office stage's number reaches `officeStage`, or with `funded` once a round has closed (a stake exists); never back. Report entry `ui_established` loses `place`. The game itself is unchanged; the long mode content fingerprints change, so their old saves get the usual notice.
 - Bots: `RunResult.establishedWeek: number | null`; target E1 (Kantino long 41, tourism T22) and the report's "The established look" section.
+
+### Start screen redesign (web and content only, no engine change)
+
+- Content: `about.yaml` gains `category`, `short` and `tags` (two or three); `categories.yaml` lists the categories (`id`, `name`, `order`). `ScenarioAbout` is `{ id, name, category, short, tags, lines, modes }`; `ScenarioCategory` is `{ id, name, order }`, from `scenarioCategories()`. Not part of `Scenario`, so no save fingerprint changes. The run length tag on a row comes from `modes`, not from the file.
+- UI store: `UiState.categories`, `category` (the category shown; null for the category grid of seven or more), `sheetOpen`, `saves: SavedGame[]` (`{ scenarioId, mode, week, maxWeeks, cashCents }`, the most recently played first; `maxWeeks` and `cashCents` null for a save from before the notes) and `recent: ScenarioId[]`. Actions `selectCategory(id | null)`, `openSheet(id)`, `closeSheet()`; `continueRun(scenarioId?, mode?)` continues any saved slot. `leaveRun` shows the played company's category. `StoreDeps.categories?` for fixtures.
+- Storage: `SaveStorage.slots()` lists the slots with a save. `ProfileStorage` gains `lastCategory`, `recentScenarios` and `saveNotes` (`SaveNote = { slot, week, maxWeeks, cashCents }`, written with every autosave and on Continue) with their setters, under `founder-mode.category.v1`, `founder-mode.recent.v1` and `founder-mode.saveNotes.v1`. Every access is wrapped; without storage the Start screen opens on the picked company's category and lists in content order.
+

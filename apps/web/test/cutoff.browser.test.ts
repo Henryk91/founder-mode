@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { Browser, Page } from 'playwright-core'
 import { createServer, type ViteDevServer } from 'vite'
 import { CHROMIUM, WEBKIT, type Engine } from './browsers'
+import { newRun } from './screen'
 
 /**
  * Nothing cut short: text wraps onto whole ruled lines and never ends in an ellipsis or a clip.
@@ -61,10 +62,7 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('nothing cut short', () => {
             await page.goto(url)
             await page.evaluate(() => localStorage.clear())
             await page.reload()
-            await page.getByRole('button', { name: new RegExp(`^${run.scenario}`) }).click()
-            if (run.mode)
-              await page.getByRole('button', { name: new RegExp(`^${run.mode}`) }).click()
-            await page.getByRole('button', { name: 'New run' }).click()
+            await newRun(page, run.scenario, run.mode ?? undefined)
             for (let i = 0; i < 6; i++) {
               const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
               if (await next.count()) await next.first().click()

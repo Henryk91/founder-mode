@@ -38,7 +38,8 @@ function begin(store: Store, seed?: string) {
 describe('app smoke test', () => {
   it('starts a run, ends 3 weeks, and reaches the results screen', () => {
     const store = createGameStore({ storage: memoryStorage(), makeSeed: () => 'smoke' })
-    expect(html(store)).toContain('New run')
+    store.getState().openSheet('kantino')
+    expect(html(store)).toContain('Start a new run')
     expect(html(store)).not.toContain('Continue')
 
     begin(store)

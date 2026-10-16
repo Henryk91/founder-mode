@@ -5,6 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { Browser, Page } from 'playwright-core'
 import { createServer, type ViteDevServer } from 'vite'
 import { CHROMIUM, WEBKIT, type Engine } from './browsers'
+import { newRun, openCompany } from './screen'
 
 /**
  * Accessibility in a real browser: axe on the main screens at phone and desk width, keyboard
@@ -86,14 +87,14 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
         `finds nothing to fix with axe on the main screens of ${scenario} at ${width} px in ${engine?.name}`,
         async () => {
           const page = await open(width, engine === WEBKIT ? webkit! : browser)
-          await page.getByRole('button', { name: new RegExp(`^${scenario}`) }).click()
+          await openCompany(page, scenario)
           const found: Record<string, Violation[]> = {}
           const check = async (name: string) => {
             const v = await axe(page)
             if (v.length > 0) found[name] = v
           }
           await check('start')
-          await page.getByRole('button', { name: 'New run' }).click()
+          await page.getByRole('button', { name: 'Start a new run' }).click()
           await check('intro')
           for (let i = 0; i < 6; i++) {
             const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
@@ -151,9 +152,10 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
           const v = await axe(page)
           if (v.length > 0) found[name] = v
         }
+        await openCompany(page, 'Kantino')
         await page.getByRole('button', { name: /^104 weeks/ }).click()
         await check('start, long')
-        await page.getByRole('button', { name: 'New run' }).click()
+        await page.getByRole('button', { name: 'Start a new run' }).click()
         for (let i = 0; i < 6; i++) {
           const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
           if (await next.count()) await next.first().click()
@@ -220,9 +222,9 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
           )
           if (over) wide.push(name)
         }
-        await page.getByRole('button', { name: /^Gratwanderung/ }).click()
+        await openCompany(page, 'Gratwanderung')
         await check('start, outdoor')
-        await page.getByRole('button', { name: 'New run' }).click()
+        await page.getByRole('button', { name: 'Start a new run' }).click()
         for (let i = 0; i < 6; i++) {
           const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
           if (await next.count()) await next.first().click()
@@ -278,9 +280,9 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
           )
           if (over) wide.push(name)
         }
-        await page.getByRole('button', { name: /^Hinterhof/ }).click()
+        await openCompany(page, 'Hinterhof')
         await check('start, restaurant')
-        await page.getByRole('button', { name: 'New run' }).click()
+        await page.getByRole('button', { name: 'Start a new run' }).click()
         for (let i = 0; i < 6; i++) {
           const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
           if (await next.count()) await next.first().click()
@@ -334,9 +336,9 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
           )
           if (over) wide.push(name)
         }
-        await page.getByRole('button', { name: /^Seeblick/ }).click()
+        await openCompany(page, 'Seeblick')
         await check('start, guesthouse')
-        await page.getByRole('button', { name: 'New run' }).click()
+        await page.getByRole('button', { name: 'Start a new run' }).click()
         for (let i = 0; i < 6; i++) {
           const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
           if (await next.count()) await next.first().click()
@@ -369,14 +371,20 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
     'moves focus to the new screen and shows a ring on every surface',
     async () => {
       const page = await open(1440)
-      // The Start screen offers a run once the scenarios have loaded (step 8).
-      await page.waitForSelector('button:has-text("New run"):not([disabled])')
-      // Keyboard only: Tab to New run and press Enter.
-      for (let i = 0; i < 20; i++) {
-        await page.keyboard.press('Tab')
-        const name = await page.evaluate(() => document.activeElement?.textContent ?? '')
-        if (name === 'New run') break
+      // Keyboard only: Tab to Kantino, open its sheet, Tab to Start a new run and press Enter.
+      const tabTo = async (start: string) => {
+        for (let i = 0; i < 30; i++) {
+          await page.keyboard.press('Tab')
+          const name = await page.evaluate(() => document.activeElement?.textContent ?? '')
+          if (name.startsWith(start)) return
+        }
+        throw new Error(`no ${start} by keyboard`)
       }
+      await tabTo('Kantino')
+      await page.keyboard.press('Enter')
+      // The Start screen offers a run once the scenarios have loaded (step 8).
+      await page.waitForSelector('button:has-text("Start a new run"):not([disabled])')
+      await tabTo('Start a new run')
       await page.keyboard.press('Enter')
       const focused = () =>
         page.evaluate(() => {
@@ -423,7 +431,7 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
     'closes an explanation with Escape and gives focus back to what opened it',
     async () => {
       const page = await open(1440)
-      await page.getByRole('button', { name: 'New run' }).click()
+      await newRun(page)
       for (let i = 0; i < 6; i++) {
         const next = page.getByRole('button', { name: /^(Next|Start week 1)/ })
         if (await next.count()) await next.first().click()

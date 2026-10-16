@@ -1,5 +1,11 @@
-# Shown on the Start screen before a run exists: the name and exactly two short lines.
+# Shown on the Start screen before a run exists: the name, its category (categories.yaml), one
+# short line and two or three tags for its row, and exactly two lines for its sheet.
 name: Gratwanderung
+category: tourism
+short: Guided mountain days, an hour south of Munich
+tags:
+  - Weather
+  - Seasonal
 lines:
   - Guided days in the mountains an hour south of Munich, from a van, a garage and a certificate.
   - Tourists, team days, school trips. The weather decides half of it, and you decide the rest.

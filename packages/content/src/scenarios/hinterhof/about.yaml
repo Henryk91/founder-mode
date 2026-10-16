@@ -1,5 +1,11 @@
-# Shown on the Start screen before a run exists: the name and exactly two short lines.
+# Shown on the Start screen before a run exists: the name, its category (categories.yaml), one
+# short line and two or three tags for its row, and exactly two lines for its sheet.
 name: Hinterhof
+category: tourism
+short: A tired restaurant in a Munich side street
+tags:
+  - Needs a loan
+  - Rent every month
 lines:
   - A tired little restaurant in a Munich side street, a courtyard, and a loan you have not got yet.
   - Office lunches, neighbours, tourists. Rent is due every month, whoever comes to eat.
