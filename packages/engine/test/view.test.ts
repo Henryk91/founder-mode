@@ -124,6 +124,9 @@ describe('hidden boundary', () => {
         investmentCents: 0,
         customers: 0,
         runwayWeeks: v.company.runwayWeeks,
+        // Week 1's interviews and the month's costs as the runway counts them; nothing came in.
+        inCents: 0,
+        outCents: 67_500,
       },
     ])
   })
