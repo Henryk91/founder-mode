@@ -358,11 +358,13 @@ export function PostMortem({ desk }: { desk: boolean }) {
               ? label('pm.office.changeGuests', stage, {
                   before: formatEuro(o.revenueBeforeCents),
                   after: formatEuro(o.revenueAfterCents),
+                  difference: officeDifference(o, stage),
                   guests: o.guests,
                 })
               : label('pm.office.change', stage, {
                   before: formatEuro(o.revenueBeforeCents),
                   after: formatEuro(o.revenueAfterCents),
+                  difference: officeDifference(o, stage),
                   teamBefore: o.teamBefore,
                   teamAfter: o.teamAfter,
                 })}
@@ -486,6 +488,18 @@ export function PostMortem({ desk }: { desk: boolean }) {
 }
 
 /** The name of a post-mortem source key: `outreach:<channel>`, `team:<channel>`, or a source. */
+/** How money in changed over an office stay, in words: up, down or no change. */
+function officeDifference(
+  o: { revenueBeforeCents: number; revenueAfterCents: number },
+  stage: Voice,
+): string {
+  const d = o.revenueAfterCents - o.revenueBeforeCents
+  if (d === 0) return label('pm.office.same', stage)
+  return label(d > 0 ? 'pm.office.up' : 'pm.office.down', stage, {
+    amount: formatEuro(Math.abs(d)),
+  })
+}
+
 export function sourceName(key: string, stage: Voice): string {
   const [source, channel] = key.split(':')
   const ch = channel ? label(`channel.${channel as ChannelId}`, stage) : ''
