@@ -1,6 +1,6 @@
 # Autonomous plan 3: final report
 
-Plan 3 (`docs/AUTONOMOUS_PLAN_3.md`) added office stages 3 to 5 to every long mode scenario and the established UI stage. It started with an audit of plan 2 (`audit.md`). Step reports: `step0-baseline.md`, `step1-stages.md`, `step2-tuned.md`, `step3-established.md`; this report is step 4's. Tags: `plan2-audited`, `plan3-baseline`, `plan3-stages`, `plan3-tuned`, `plan3-established`, `plan3-complete`.
+Plan 3 (`docs/AUTONOMOUS_PLAN_3.md`) added office stages 3 to 5 to every long mode scenario and the established UI stage. It started with an audit of plan 2 (`audit.md`). Step reports: `step0-baseline.md`, `step1-stages.md`, `step2-tuned.md`, `step3-established.md`; this report is step 4's. Tags: `plan2-audited`, `plan3-baseline`, `plan3-stages`, `plan3-tuned`, `plan3-established`, `plan3-complete`, and after Henry's review `plan3-final` (section "After the review").
 
 ## What was built
 
@@ -36,7 +36,7 @@ All targets 1 to 11 and 13 to 19 pass in both, identical to plan 1 and the plan 
 | 33 raising early punished | +1.4 | +2.4 | fail (open, from plan 2; change within its margin) |
 | 34, 35, 37 | pass | pass | pass |
 | 36 updates | -0.5 | -0.2 | at the limit |
-| O1 (38) careful beats never moving by 2 | | +0.0 | fail (open) |
+| O1 (38) restated: moving costs at most 1 point | | +0.0 | pass |
 | O2 (39) always moving loses 3 | | -42.8 | pass |
 | O3 (40) no stage always right | | stage 3 taken in 0.3% of 4,295 wins, stage 4 in 0 of 11, stage 5 never offered | fail (open) |
 
@@ -53,7 +53,7 @@ All targets 1 to 11 and 13 to 19 pass in both, identical to plan 1 and the plan 
 | T8 to T12 | pass | pass | pass |
 | T13 naive | 33.9%, gap -11.0 | 33.9%, gap -10.9 | at the limit |
 | T14 contracts | open | permanent -17.0, seasonal -0.3, part time -15.4 | fail (open, from plan 2) |
-| O1 (T19) | | -0.1 | fail (open) |
+| O1 (T19), restated | | -0.1 | pass |
 | O2 (T20) | | -39.0 | pass |
 | O3 (T21) | | stage 3 taken in 29.2% of 448, stage 4 in 41.2% of 51, stage 5 never offered | fail (open) |
 
@@ -68,7 +68,7 @@ All targets 1 to 11 and 13 to 19 pass in both, identical to plan 1 and the plan 
 | T7 seasonal pricing | +0.0 | -0.2 ±1.8 | fail within noise (open, from plan 2) |
 | T14 | open | +0.0, +0.0, part time +1.6 | fail (open, from plan 2) |
 | T15 to T18 (L1 to L4) | pass | +3.7; -19.9; gap +24.9, misses 0.8%; named | pass |
-| O1 (T19) | | +0.1 | fail (open) |
+| O1 (T19), restated | | +0.1 | pass |
 | O2 (T20) | | -26.4 | pass |
 | O3 (T21) | | stage 3 taken in 28.8% of 264, stage 4 in 3.7% of 54, stage 5 never offered | fail (open) |
 
@@ -83,7 +83,7 @@ All targets 1 to 11 and 13 to 19 pass in both, identical to plan 1 and the plan 
 | T11 cancellation | +1.8, project guests -2.5 | +1.7, project guests -2.8 ±2.2 | fail within noise (open, from plan 2) |
 | T14 | open | permanent and seasonal never signed, part time +3.4 | fail (open, from plan 2) |
 | T15 to T18 (L1 to L4) | pass | -0.5; -22.5; gap +29.1, misses 1.2%; named | pass |
-| O1 (T19) | | +0.1 | fail (open) |
+| O1 (T19), restated | | +0.1 | pass |
 | O2 (T20) | | -27.3 | pass |
 | O3 (T21) | | stage 3 taken in 4.8% of 273, stages 4 and 5 never offered | fail (open) |
 
@@ -95,7 +95,7 @@ O4 passes by its tests (offer texts name the condition, one-off and rent; the po
 
 New in plan 3:
 
-1. **O1 and O3, all four long modes.** Closest: Kantino +0.0, Gratwanderung -0.1, Hinterhof +0.1, Seeblick +0.1. The careful bot moves only in runs it already wins, so a move cannot change a win rate, and there the move costs money (median end wealth on moved seeds: Gratwanderung -15,400 EUR, Hinterhof -6,400, Seeblick -123,000). Even half the one-offs and two thirds of the rents leave O1 between -1.0 and +0.1. Options: demand that grows into capacity in year 2; stage effects that reach demand rather than capacity; or restate O1 as "the careful rule loses nothing" and keep O2 as the lesson.
+1. **O3, all four long modes** (O1 restated after the review and passing). The careful bot moves only in runs it already wins, and there the move costs money (median end wealth on moved seeds: Gratwanderung -15,400 EUR, Hinterhof -6,400, Seeblick -123,000), so few stages are taken and stage 5 is seldom offered. No demand formula changes, by decision.
 2. **Kantino long 32, a little worse.** The desks limit a funded team: -5.3 against -4.2. Four desks at the kitchen table restore it but are not believable.
 
 Carried from plan 2, no worse: tourism T14 (all three); Hinterhof T2 and T7; Seeblick T6, T7 and T11; Gratwanderung school demand above the spec; Kantino long T20, T27, T32, T33.
@@ -107,3 +107,28 @@ Carried from plan 2, no worse: tourism T14 (all three); Hinterhof T2 and T7; See
 3. The careful move rule: twice the added rent from last month's surplus, or from the last year's for tourism; a subscription business moves only for a blocked hire (decisions, plan 3 steps 2 and 4).
 4. The first-load change: every screen after the Start screen loads after its first paint (decisions, plan 3 step 3).
 5. Plan 2's items, still open: T14's measure, T32 and T33 restatements, the Hinterhof and Seeblick estimates, Gratwanderung's school day (`docs/autonomous2/reports/final.md`).
+
+## After the review (tag `plan3-final`)
+
+Henry's decisions (`docs/decisions.md`, "Plan 3 review"):
+
+1. **The established look follows growth, not office stage 4:** revenue covering all costs for six months running and three people working, the founder included (hires in Kantino, staff on contracts in tourism). Never back. Measured on the report's runs (section "The established look" in `docs/balancing.md`):
+
+   | Scenario | Careful bot: of all runs | Of winning runs | Median week (wins) |
+   |---|---|---|---|
+   | Kantino long | 2.0% | 4.5% | 71 |
+   | Gratwanderung | 3.0% | 5.8% | 89 |
+   | Hinterhof | 18.8% | 68.2% | 57 |
+   | Seeblick | 0% | 0% | - |
+
+   Only Hinterhof reaches it in a sensible share of winning runs. Kantino's careful bot makes one hire (the hiring targets show a second rarely pays), so three people are rare; its part time variant reaches it in 28.9% of wins (week 63). Gratwanderung and Seeblick seldom keep two staff on contracts (target T14: the careful bots sign contracts late, Seeblick almost never). Not changed: the trigger is Henry's. Options: two people instead of three in the tourism scenarios, counting weekly shift staff who worked in each of the last four weeks, or four months instead of six.
+2. **O1 restated** ("moving at the right time costs at most 1 point against never moving"), reason with the targets in `docs/office-stages.md`: two-year runs cannot pay back a fixed-cost move. It passes in all four long modes (+0.0, -0.1, +0.1, +0.1). O2 stays and passes. The post-mortem's office lines say "It cost ..." and "What changed: money in over four weeks went from ... to ... (up or down ...)".
+3. **Accepted:** the desks, the move rule and the first-load split. The browser check (production build, slow 4G, 4x CPU, 390 and 1440 px) found no flash on switching tabs, but a blank page for about a second when New run was tapped before the screens had arrived; New run now waits for them as it waits for the scenarios. No blank frame since; Start screen LCP 2.28 s.
+4. No demand formula changes.
+
+Gate after the review: every scenario and mode identical to `plan3-complete` apart from timings, O1's wording and status, and the new section. Kantino and Zollstock 60 weeks unchanged (fingerprints locked); the tourism fingerprints changed with the `establishedAt` content, so their old saves get the save notice. Tests: 1,068 passed; lint clean.
+
+### For Henry to review after the review
+
+1. The established trigger reaches only Hinterhof's winners often (table above); options listed there.
+2. O3 stays open (offices rarely taken).

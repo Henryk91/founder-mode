@@ -1,9 +1,9 @@
 # Autonomous run 3 status
 
 ## Current
-Plan 3 complete (tag `plan3-complete`). Summary, every target and the review list: `reports/final.md`.
-Last commit: step 4 (open issues revisited, gate, docs, final report).
-Next action: none; waiting for Henry's review.
+Plan 3 final after Henry's review (tag `plan3-final`). Summary: `reports/final.md`, section "After the review".
+Last commit: review decisions, gate, final report.
+Next action: none; stopped as asked.
 
 ## Checklist
 - [x] Plan 2 complete (tag plan2-complete); audited, see `reports/audit.md` (tag plan2-audited)
@@ -15,10 +15,12 @@ Next action: none; waiting for Henry's review.
 
 ## Open issues
 - Carried from plan 2 (see `docs/autonomous2/STATUS.md`): tourism T14; Hinterhof T2 and T7; Seeblick T6, T7 and T11; Gratwanderung school demand above the spec; Kantino long T20, T27, T32, T33.
-- Plan 3 O1 and O3 in all four long modes: the careful bot moves only in runs it already wins, and there a move costs money (closest O1: Kantino +0.0, Gratwanderung -0.1, Hinterhof +0.1, Seeblick +0.1). Options in `reports/final.md`.
+- Plan 3 O3 in all four long modes (offices rarely taken). O1 restated after review and passing.
+- The established trigger (six months covering all costs, three people) is reached in 4.5% of Kantino long's careful wins, 5.8% of Gratwanderung's, 68.2% of Hinterhof's and none of Seeblick's; options in `reports/final.md`.
 - Kantino long 32 about 1 point worse than before office stages (-5.3 against -4.2; the desks limit a funded team).
 
 ## For Henry to review (non-blocking)
+- Review: the established trigger reaches few winning runs outside Hinterhof (Seeblick none); options in `reports/final.md`.
 - Plan 2 audit: T14 compares win rates, but contract bots sign only once a run is already won, so it cannot show a contract paying (decisions, plan 2 audit).
 - Plan 2 audit: Kantino long T32 and T33 options include restating (founder salary in founder value; T33 against bootstrap) (decisions, plan 2 audit).
 - Plan 3 step 2: AUTONOMOUS three desks at Kantino's kitchen table and coworking desk (spec: two); four would restore 32 and 33 fully (decisions, plan 3 step 2).

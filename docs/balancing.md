@@ -16,7 +16,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 2 | validate_then_build reaches it in 25 to 45% of runs | 27.9% | ±2.8 | yes | 0.7% | no | 9.2% | no |
 | 3 | No strategy exceeds 60% | price_aware 37.2% | ±3.0 | yes | | | | |
 | 4 | Median run length of losing runs (all strategies) is between week 20 and week 40 | week 29.0 | ±0.0 | yes | | | | |
-| 5 | 1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run) | 28.8 s per 1000 runs |  | yes | | | | |
+| 5 | 1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run) | 30.2 s per 1000 runs |  | yes | | | | |
 | 6 | validate_then_build win rates across the three viable markets lie within 15 points (on 10000 seeds) | 1.4 points | ±2.2 | yes | 1.2 points | yes | 8.9 points | yes |
 | 7 | validate_then_build gets its first paying customer between week 4 and 10 in the median winning run | week 6.0 (mean 5.84) | ±0.5 (mean ±0.15) | yes | week 5.0 (mean 5.43) | yes | week 6.0 (mean 6.34) | yes |
 | 8 | By week 10, at least 70% of validate_then_build runs have a paying customer or have left a market that is not viable | 96.0% | ±1.2 | yes | 96.0% | yes | 96.0% | yes |
@@ -451,16 +451,16 @@ Runs where answering made the run last longer: 272, shorter: 575, same length: 1
 
 ## Strategies
 
-- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (10.5 s for 1000 runs)
-- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (4.4 s for 1000 runs)
+- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (10.6 s for 1000 runs)
+- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (4.7 s for 1000 runs)
 - `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (5.6 s for 1000 runs)
-- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (28.8 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (23.4 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (16.3 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (22.0 s for 1000 runs)
-- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (26.8 s for 1000 runs)
-- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.4 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.6 s for 1000 runs)
+- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (30.2 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (24.4 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (17.5 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (22.7 s for 1000 runs)
+- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (28.9 s for 1000 runs)
+- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.5 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.7 s for 1000 runs)
 
 # Kantino, long mode
 
@@ -482,8 +482,8 @@ Targets 20 to 30 (`docs/phase9-proposal.md` 2.9 and Part C2), judged on `validat
 | 27 | Target 11 holds (blind inbox policies gain at most a third of reading's gain, reading beats each by 4 points), no event arrives twice unless it recurs on purpose, and under 1% of validate_then_build runs have a week when the inbox ran dry (on 10000 seeds) | effort +7.1 (37% of reading), cheapest -1.2, reading +19.4; 0 repeats; dry in 0.2% of runs | ±1.0, ±0.9, ±1.0 over the best blind; ±0.1 | no |
 | 28 | Year 2 matters: of validate_then_build runs profitable in each of the two months to week 60, at most 85% end Sustainable; of runs alive but not profitable at week 60, at least 15% end Sustainable (on 10000 seeds) | 74.9% of 2871; 55.4% of 3872 | ±1.6; ±1.6 | yes |
 | 29 | Hiring pays only when the business can carry it: validate_then_build's hiring is not worse than validate_then_build_solo overall (within its margin); validate_then_build_savings_hire (first hire in week 3, paid from savings) loses to solo by more than its margin; and in at least one situation hiring beats its solo counterpart by at least 2 points: (a) pricing from the hints (validate_then_build against validate_then_build_solo) or (b) opening a second market once the first runs dry (validate_then_build_expand against validate_then_build_expand_solo) (on 10000 seeds) | overall (a) +2.6; on savings -29.9; (b) +2.4 | ±0.6; ±1.1; ±0.6 | yes |
-| 30 | 1000 long runs complete in under 120 seconds (slowest strategy, timed while the other bot processes run) | 60.0 s per 1000 runs |  | yes |
-| 38 | O1. Moving at the right time pays: the careful bot with its stage rules beats never moving by at least 2 points (on 10000 seeds) | +0.0 | ±0.0 | no |
+| 30 | 1000 long runs complete in under 120 seconds (slowest strategy, timed while the other bot processes run) | 65.7 s per 1000 runs |  | yes |
+| 38 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving (on 10000 seeds) | +0.0 | ±0.0 | yes |
 | 39 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points (on 10000 seeds) | -42.8 | ±1.0 | yes |
 | 40 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 0.3% of 4295; stage 4 taken in 0.0% of 11; stage 5 never offered |  | no |
 | 31 | Both paths are viable: the careful bot that never raises (bootstrap, validate_then_build) and raise_on_traction each win (Sustainable or Growing) 25 to 45%, within 8 points of each other | bootstrap 43.0%, raise_on_traction 37.7% | ±1.0, ±0.9 | yes |
@@ -492,7 +492,7 @@ Targets 20 to 30 (`docs/phase9-proposal.md` 2.9 and Part C2), judged on `validat
 | 34 | Raising when you do not need to costs you: on the seeds bootstrap wins, raise_always ends with a lower median founder share value than bootstrap and wins no more often | value 660,049 EUR against 725,910 EUR (in its wins 860,613 EUR against 725,910 EUR); wins -37.9 | ±1.5 | yes |
 | 35 | Running out while raising is real: raise_late goes bankrupt with a round still open or closing in at least 25% of its runs; raise_on_traction in under 5% | raise_late 38.2%, raise_on_traction 0.3% |  | yes |
 | 36 | Updates are worth a little, not a lot: on the seeds where raise_on_traction raised money (3230), proper monthly updates beat none by 1 to 5 points | -0.2 (all seeds -0.1) | ±2.0 (±0.6) | yes |
-| 37 | No raising strategy wins over 60%; 1000 funded runs complete in under 150 seconds | top raise_early 41.6%; 62.3 s per 1000 runs | ±3.1 | yes |
+| 37 | No raising strategy wins over 60%; 1000 funded runs complete in under 150 seconds | top raise_early 41.6%; 64.6 s per 1000 runs | ±3.1 | yes |
 
 For information only, as the 60 week report words them:
 
@@ -720,6 +720,26 @@ The careful bot that never raises (bootstrap) and the raising bots on the same 1
 | raise_late | 10000 | 39.0% | 34.9% | 4.2% | 38.8% | 28.9% | 0.0% | 65 | 130,000 | 100.0% | 768,473 | 38.2% |
 | raise_on_traction_short_updates | 10000 | 37.8% | 35.5% | 2.4% | 38.6% | 32.3% | 19.5% | 23 | 1,320,000 | 95.2% | 879,904 | 0.3% |
 | raise_on_traction_no_updates | 10000 | 37.8% | 35.2% | 2.6% | 38.6% | 32.3% | 16.7% | 23 | 1,120,000 | 96.5% | 825,505 | 0.3% |
+
+## The established look
+
+Runs that turned established (revenue covering all costs for six months running and three people working), and the median week it happened in the winning runs that reached it.
+
+| Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |
+|---|---|---|---|---|
+| validate_then_build | 1000 | 2.0% | 4.5% | 71 |
+| presale_max | 1000 | 1.0% | 2.7% | 63 |
+| price_aware | 1000 | 2.0% | 4.5% | 71 |
+| validate_then_build_savings_hire | 1000 | 0.3% | 3.2% | 73 |
+| validate_then_build_part_time | 1000 | 14.0% | 28.9% | 63 |
+| validate_then_build_freelance_first | 1000 | 1.2% | 3.6% | 66 |
+| validate_then_build_expand | 1000 | 2.2% | 5.0% | 71 |
+| validate_then_build_never_move | 1000 | 2.0% | 4.5% | 71 |
+| validate_then_build_founder_chases | 1000 | 1.9% | 4.0% | 63 |
+| raise_on_traction | 1000 | 0.9% | 2.0% | 87 |
+| raise_early | 1000 | 1.8% | 3.8% | 64 |
+| raise_always | 1000 | 1.0% | 2.0% | 70 |
+| raise_late | 1000 | 2.1% | 5.3% | 69 |
 
 ## Week the run ended
 
@@ -1227,29 +1247,29 @@ Runs where answering made the run last longer: 275, shorter: 592, same length: 1
 
 ## Strategies
 
-- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (10.8 s for 1000 runs)
-- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (5.3 s for 1000 runs)
-- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (6.8 s for 1000 runs)
-- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for 6 months, and at least 26 weeks would be left once the hire starts: a developer while the features its market asks for need 40 h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked 8 weeks. The newest hire is let go once the runway shown falls below 3 months, and a developer once every feature has shipped. It takes a bigger office when its offer arrives and the reason is real: its hiring rule wants someone and every desk or place is taken, or, for the first office, three months that paid all costs; and cash and savings cover the move, six months of the added rent and two months of today's costs. (60.0 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (51.5 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (12.1 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (43.9 s for 1000 runs)
-- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (52.9 s for 1000 runs)
-- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.6 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.9 s for 1000 runs)
-- `validate_then_build_solo`: Plays like validate_then_build and never hires or rents anyone: the bootstrapped solo founder. (50.3 s for 1000 runs)
-- `validate_then_build_savings_hire`: Plays like validate_then_build, and makes its first hire on savings: it looks for one as soon as building starts (week 3), while cash and savings hold 3 months of the salary, and keeps that hire until the runway shown falls below 1 month. Later hires follow the reference rule. (21.3 s for 1000 runs)
-- `validate_then_build_part_time`: Plays like validate_then_build, with the same team rule, but hires only part time (20 h at half the salary). (53.5 s for 1000 runs)
-- `validate_then_build_freelance_first`: Plays like validate_then_build, and until its first hire is on the way rents a 20 h freelancer in the role that limits it. A developer for the build, as a burst: from week 3, while the features its market asks for need 40 h or more and cash and savings cover the whole build left at the freelancer's rate plus 3 months of the current loss. A salesperson for the pipeline, steady: from the first paying customer, while cash and savings would pay the added loss for 3 months. Gives notice when the role needed changes, the runway shown falls below 3 months, or the reference rule starts a search for a hire. (45.8 s for 1000 runs)
-- `validate_then_build_expand`: Plays like validate_then_build, and from week 53, once its leads per outreach hour in its market over the last 8 weeks of selling fall below 60% of its best 8 weeks so far, opens the best ranked other market: interviews there until it has heard 12, builds what they ask for (up to 20 h a week itself), then sells there with half its outreach, and gives it up after 16 weeks of selling there without a customer. Its team rule serves the second market: a developer while its features need 40 h, building them first, then a salesperson selling there. (52.8 s for 1000 runs)
-- `validate_then_build_never_move`: Plays like validate_then_build but declines every office offer (plan 3, target O1): it stays where it started, desks or not. (52.0 s for 1000 runs)
-- `validate_then_build_always_move`: Plays like validate_then_build but accepts every office offer at once (plan 3, target O2), whether or not it needs the room or has the money. (22.5 s for 1000 runs)
-- `validate_then_build_expand_solo`: Plays like validate_then_build_expand, but never hires or rents anyone: the founder opens the second market alone. (49.5 s for 1000 runs)
-- `validate_then_build_founder_chases`: Plays like validate_then_build, but the founder keeps chasing late invoices when someone is on the team, instead of handing it to them. (53.3 s for 1000 runs)
-- `raise_on_traction`: Plays like validate_then_build, and raises once it has traction: an angel round once monthly revenue covers the company's costs and grew in each of the last two months, with at least 20 weeks of runway; a seed round once monthly revenue reaches the seed bar and grew in each of the last two months. While a round is open it pitches 10 h a week, books a second look with every interested investor and accepts the first term sheet; a round that runs out of investors is stopped and tried again after 12 weeks. With investors' money it hires while the money would last 9 months after the hire. Sends a proper update every month. (59.6 s for 1000 runs)
-- `raise_early`: Plays like raise_on_traction, but starts an angel round in week 3, on interviews and sign ups, starts again at once when a round runs out of investors, and starts a seed round as soon as the angel money is in. (52.3 s for 1000 runs)
-- `raise_always`: Plays like raise_on_traction, but starts an angel round at its first paying customer, whether or not it needs the money. (50.4 s for 1000 runs)
-- `raise_late`: Plays like validate_then_build, and starts an angel round only once the runway shown falls below 12 weeks; it keeps that round open to the end, as a founder who needs the money does. (42.5 s for 1000 runs)
+- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (12.7 s for 1000 runs)
+- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (5.7 s for 1000 runs)
+- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (7.6 s for 1000 runs)
+- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for 6 months, and at least 26 weeks would be left once the hire starts: a developer while the features its market asks for need 40 h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked 8 weeks. The newest hire is let go once the runway shown falls below 3 months, and a developer once every feature has shipped. It takes a bigger office when its offer arrives and the reason is real: its hiring rule wants someone and every desk or place is taken, or, for the first office, three months that paid all costs; and cash and savings cover the move, six months of the added rent and two months of today's costs. (65.7 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (57.5 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (13.2 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (48.2 s for 1000 runs)
+- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (57.8 s for 1000 runs)
+- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.9 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three coworking features in weeks 2 to 4, 45 h of in person outreach to coworking in weeks 5 to 7, then every demo plus 15 h of outreach a week. (3.1 s for 1000 runs)
+- `validate_then_build_solo`: Plays like validate_then_build and never hires or rents anyone: the bootstrapped solo founder. (55.2 s for 1000 runs)
+- `validate_then_build_savings_hire`: Plays like validate_then_build, and makes its first hire on savings: it looks for one as soon as building starts (week 3), while cash and savings hold 3 months of the salary, and keeps that hire until the runway shown falls below 1 month. Later hires follow the reference rule. (23.8 s for 1000 runs)
+- `validate_then_build_part_time`: Plays like validate_then_build, with the same team rule, but hires only part time (20 h at half the salary). (58.6 s for 1000 runs)
+- `validate_then_build_freelance_first`: Plays like validate_then_build, and until its first hire is on the way rents a 20 h freelancer in the role that limits it. A developer for the build, as a burst: from week 3, while the features its market asks for need 40 h or more and cash and savings cover the whole build left at the freelancer's rate plus 3 months of the current loss. A salesperson for the pipeline, steady: from the first paying customer, while cash and savings would pay the added loss for 3 months. Gives notice when the role needed changes, the runway shown falls below 3 months, or the reference rule starts a search for a hire. (49.6 s for 1000 runs)
+- `validate_then_build_expand`: Plays like validate_then_build, and from week 53, once its leads per outreach hour in its market over the last 8 weeks of selling fall below 60% of its best 8 weeks so far, opens the best ranked other market: interviews there until it has heard 12, builds what they ask for (up to 20 h a week itself), then sells there with half its outreach, and gives it up after 16 weeks of selling there without a customer. Its team rule serves the second market: a developer while its features need 40 h, building them first, then a salesperson selling there. (57.4 s for 1000 runs)
+- `validate_then_build_never_move`: Plays like validate_then_build but declines every office offer (plan 3, target O1): it stays where it started, desks or not. (56.4 s for 1000 runs)
+- `validate_then_build_always_move`: Plays like validate_then_build but accepts every office offer at once (plan 3, target O2), whether or not it needs the room or has the money. (24.6 s for 1000 runs)
+- `validate_then_build_expand_solo`: Plays like validate_then_build_expand, but never hires or rents anyone: the founder opens the second market alone. (53.6 s for 1000 runs)
+- `validate_then_build_founder_chases`: Plays like validate_then_build, but the founder keeps chasing late invoices when someone is on the team, instead of handing it to them. (56.7 s for 1000 runs)
+- `raise_on_traction`: Plays like validate_then_build, and raises once it has traction: an angel round once monthly revenue covers the company's costs and grew in each of the last two months, with at least 20 weeks of runway; a seed round once monthly revenue reaches the seed bar and grew in each of the last two months. While a round is open it pitches 10 h a week, books a second look with every interested investor and accepts the first term sheet; a round that runs out of investors is stopped and tried again after 12 weeks. With investors' money it hires while the money would last 9 months after the hire. Sends a proper update every month. (64.6 s for 1000 runs)
+- `raise_early`: Plays like raise_on_traction, but starts an angel round in week 3, on interviews and sign ups, starts again at once when a round runs out of investors, and starts a seed round as soon as the angel money is in. (56.4 s for 1000 runs)
+- `raise_always`: Plays like raise_on_traction, but starts an angel round at its first paying customer, whether or not it needs the money. (55.0 s for 1000 runs)
+- `raise_late`: Plays like validate_then_build, and starts an angel round only once the runway shown falls below 12 weeks; it keeps that round open to the end, as a founder who needs the money does. (46.3 s for 1000 runs)
 
 # Zollstock
 
@@ -1265,7 +1285,7 @@ Targets are judged on `validate_then_build`. Targets 2, 6, 7 and 8 are also show
 | 2 | validate_then_build reaches it in 25 to 45% of runs | 27.0% | ±2.8 | yes | 0.6% | no | 4.7% | no |
 | 3 | No strategy exceeds 60% | price_aware 35.7% | ±3.0 | yes | | | | |
 | 4 | Median run length of losing runs (all strategies) is between week 20 and week 40 | week 29.0 | ±0.0 | yes | | | | |
-| 5 | 1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run) | 23.8 s per 1000 runs |  | yes | | | | |
+| 5 | 1000 runs complete in under 60 seconds (slowest strategy, timed while the other bot processes run) | 25.7 s per 1000 runs |  | yes | | | | |
 | 6 | validate_then_build win rates across the three viable markets lie within 15 points (on 10000 seeds) | 14.1 points | ±2.1 | yes | 1.5 points | yes | 3.6 points | yes |
 | 7 | validate_then_build gets its first paying customer between week 4 and 10 in the median winning run | week 5.0 (mean 5.68) | ±0.0 (mean ±0.18) | yes | week 4.5 (mean 4.83) | yes | week 6.0 (mean 6.85) | yes |
 | 8 | By week 10, at least 70% of validate_then_build runs have a paying customer or have left a market that is not viable | 96.2% | ±1.2 | yes | 96.2% | yes | 96.2% | yes |
@@ -1700,16 +1720,16 @@ Runs where answering made the run last longer: 288, shorter: 568, same length: 1
 
 ## Strategies
 
-- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (5.5 s for 1000 runs)
-- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (2.2 s for 1000 runs)
-- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (2.8 s for 1000 runs)
-- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (23.8 s for 1000 runs)
-- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (20.0 s for 1000 runs)
-- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (13.4 s for 1000 runs)
-- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (21.3 s for 1000 runs)
-- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (22.2 s for 1000 runs)
-- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.0 s for 1000 runs)
-- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three contractors features in weeks 2 to 4, 45 h of in person outreach to contractors in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.3 s for 1000 runs)
+- `random`: Spends a random 30 to 65 h on random actions in random markets, including tests, pre-sales and invoice chasing, and answers about half of the messages with a random choice. (5.9 s for 1000 runs)
+- `build_only`: Builds every feature in list order and fixes bugs. Never talks to anyone. (2.6 s for 1000 runs)
+- `sell_first`: Does outreach from week 1 without interviews, by phone in every market, then focuses on the market that asked for most demos. Builds the core feature, then the others in a random order. Chases three late invoices a week. (3.1 s for 1000 runs)
+- `validate_then_build`: Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`). (25.7 s for 1000 runs)
+- `validate_then_build_hire`: Plays like validate_then_build, and makes the one hire (a developer while wanted features are unbuilt, else a salesperson) once monthly revenue covers that salary, choosing the best impression. (21.2 s for 1000 runs)
+- `validate_then_build_early_hire`: Plays like validate_then_build, and searches for the one hire as soon as its own funnel (leads per hour on the best channel, share of closed leads won, current price) says a developer or salesperson would bring in more than their salary before the last week, assuming no churn and 8 weeks from extra outreach to payment, while cash and savings hold two months of that salary. Takes the role that pays back more, and hires the best impression if it still pays back at that skill. (13.8 s for 1000 runs)
+- `presale_max`: Plays like validate_then_build, but pitches every pre-sale batch allowed: three in every market it has not dropped, from week 2, as hours allow. Ranks markets by deposits as well as interviews. (22.4 s for 1000 runs)
+- `price_aware`: Plays like validate_then_build and searches for its price from what it sees in its own market. With two or more budget quotes from interviews there, it starts at 0.9 times their average and stays between 0.75 and 1.05 times it. After 2 trials there that said yes or no over the price, it raises the price by a fifth if nobody said no over the price, keeps it if a few did, and lowers it by a step if half did or a customer there left over the price. A price it lowered from is tried again only after two clean windows below it. (23.1 s for 1000 runs)
+- `overworker`: Plays like validate_then_build, but plans 65 h every week. (4.4 s for 1000 runs)
+- `playtest`: The hand playtest: 5 interviews per market in week 1, builds the three contractors features in weeks 2 to 4, 45 h of in person outreach to contractors in weeks 5 to 7, then every demo plus 15 h of outreach a week. (2.4 s for 1000 runs)
 
 # Gratwanderung, long mode
 
@@ -1732,10 +1752,10 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -44.8, under -13.0 | ±3.1, ±2.7 | yes |
 | T10 | Reviews matter: tourism_review_blind loses at least 2 points | -13.2 | ±2.8 | yes |
 | T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +0.1 overall; school_groups -5.8, team_events -11.3, tourists +16.8 | ±2.7 | yes |
-| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 68.9 s per 1000 runs |  | yes |
+| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 68.7 s per 1000 runs |  | yes |
 | T13 | A player without scenario-specific bot knowledge can win: tourism_naive_careful wins at least 20% and no more than 10 points less than tourism_careful | 33.9%; gap -10.9 | ±2.9; ±2.5 | yes |
 | T14 | Every staff contract kind wins somewhere: on the seeds where its single-kind bot signs it, permanent, seasonal and part time each beat weekly shifts by their paired margin | permanent -17.0 (signed in 14.1%); seasonal -0.3 (signed in 39.6%); part time -15.4 (signed in 29.9%) | ±6.8; ±1.6; ±4.1 | no |
-| T19 | O1. Moving at the right time pays: the careful bot with its stage rules beats never moving by at least 2 points | -0.1 | ±0.2 | no |
+| T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | -0.1 | ±0.2 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -39.0 | ±3.0 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 29.2% of 448; stage 4 taken in 41.2% of 51; stage 5 never offered |  | no |
 
@@ -1814,6 +1834,27 @@ Per strategy, medians over its runs: guests served, what they paid (net of commi
 | tourism_never_move | 44.9% | 355 | 19,165 | 4.14 | 46.6% | 0 | 11 |
 | tourism_always_move | 5.8% | 151 | 9,699 | 4.25 | 45.7% | 11 | 7 |
 | tourism_always_strict | 44.9% | 298 | 21,897 | 4.14 | 46.7% | 1 | 12 |
+
+## The established look
+
+Runs that turned established (revenue covering all costs for six months running and three people working), and the median week it happened in the winning runs that reached it.
+
+| Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |
+|---|---|---|---|---|
+| tourism_careful | 1000 | 3.0% | 5.8% | 89 |
+| tourism_understaffing | 1000 | 0.1% | 0.0% | - |
+| tourism_price_blind | 1000 | 3.2% | 6.2% | 88 |
+| tourism_review_blind | 1000 | 0.9% | 2.2% | 87 |
+| tourism_always_flexible | 1000 | 3.0% | 5.8% | 89 |
+| tourism_inbox_none | 1000 | 0.8% | 2.1% | 91 |
+| tourism_inbox_effort | 1000 | 1.9% | 4.4% | 88 |
+| tourism_naive_careful | 1000 | 1.4% | 3.2% | 81 |
+| tourism_permanent | 1000 | 0.6% | 1.2% | 91 |
+| tourism_seasonal | 1000 | 0.1% | 0.2% | 80 |
+| tourism_part_time | 1000 | 4.6% | 9.1% | 87 |
+| tourism_never_move | 1000 | 3.1% | 6.0% | 87 |
+| tourism_always_move | 1000 | 0.2% | 3.4% | 81 |
+| tourism_always_strict | 1000 | 1.5% | 2.7% | 85 |
 
 ## Week the run ended
 
@@ -2118,25 +2159,25 @@ Share of weeks with at least one noteworthy thing: a new message, new leads, a l
 
 ## Strategies
 
-- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. It takes a bigger place when guests were turned away in 3 of the last 8 weeks (at the last stage, in peak weeks or above four fifths full, and only with someone on contract where the place needs it) and cash and savings cover the move, six months of the added rent and two months of costs; else it lists the place in the bank's plan. (68.9 s for 1000 runs)
-- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (42.1 s for 1000 runs)
-- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (5.9 s for 1000 runs)
-- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (44.1 s for 1000 runs)
-- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (2.1 s for 1000 runs)
-- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (46.4 s for 1000 runs)
-- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (36.8 s for 1000 runs)
+- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. It takes a bigger place when guests were turned away in 3 of the last 8 weeks (at the last stage, in peak weeks or above four fifths full, and only with someone on contract where the place needs it) and cash and savings cover the move, six months of the added rent and two months of costs; else it lists the place in the bank's plan. (68.7 s for 1000 runs)
+- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (42.3 s for 1000 runs)
+- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (5.8 s for 1000 runs)
+- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (44.9 s for 1000 runs)
+- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (2.0 s for 1000 runs)
+- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (45.7 s for 1000 runs)
+- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (36.5 s for 1000 runs)
 - `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (46.8 s for 1000 runs)
-- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (4.9 s for 1000 runs)
+- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (5.2 s for 1000 runs)
 - `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (34.5 s for 1000 runs)
-- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (40.0 s for 1000 runs)
+- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (40.5 s for 1000 runs)
 - `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (40.1 s for 1000 runs)
-- `tourism_contracts_none`: Plays like tourism_careful but books every staff shift by the week and signs no contracts. (45.3 s for 1000 runs)
-- `tourism_permanent`: Plays like tourism_careful but signs only permanent staff contracts where steady work supports them. (44.9 s for 1000 runs)
-- `tourism_seasonal`: Plays like tourism_careful but signs only seasonal staff contracts where the current season supports them. (45.1 s for 1000 runs)
+- `tourism_contracts_none`: Plays like tourism_careful but books every staff shift by the week and signs no contracts. (45.1 s for 1000 runs)
+- `tourism_permanent`: Plays like tourism_careful but signs only permanent staff contracts where steady work supports them. (44.2 s for 1000 runs)
+- `tourism_seasonal`: Plays like tourism_careful but signs only seasonal staff contracts where the current season supports them. (45.0 s for 1000 runs)
 - `tourism_part_time`: Plays like tourism_careful but signs only part time staff contracts where steady work supports them. (44.2 s for 1000 runs)
-- `tourism_never_move`: Plays like tourism_careful but declines every offer of a bigger place (plan 3, target O1). (45.1 s for 1000 runs)
-- `tourism_always_move`: Plays like tourism_careful but accepts every offer of a bigger place at once, and lists it in the bank plan where there is one (plan 3, target O2). (17.5 s for 1000 runs)
-- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (31.6 s for 1000 runs)
+- `tourism_never_move`: Plays like tourism_careful but declines every offer of a bigger place (plan 3, target O1). (45.2 s for 1000 runs)
+- `tourism_always_move`: Plays like tourism_careful but accepts every offer of a bigger place at once, and lists it in the bank plan where there is one (plan 3, target O2). (17.6 s for 1000 runs)
+- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (31.7 s for 1000 runs)
 
 # Hinterhof, long mode
 
@@ -2159,14 +2200,14 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -23.5, under -26.4 | ±2.6, ±2.7 | yes |
 | T10 | Reviews matter: tourism_review_blind loses at least 2 points | -12.3 | ±2.2 | yes |
 | T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +3.3 overall; evening_locals +16.0, office_lunch -1.5, tourists -3.8 | ±1.9 | yes |
-| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 127.7 s per 1000 runs |  | yes |
+| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 124.3 s per 1000 runs |  | yes |
 | T13 | A player without scenario-specific bot knowledge can win: tourism_naive_careful wins at least 20% and no more than 10 points less than tourism_careful | 24.6%; gap -1.8 | ±2.7; ±1.4 | yes |
 | T14 | Every staff contract kind wins somewhere: on the seeds where its single-kind bot signs it, permanent, seasonal and part time each beat weekly shifts by their paired margin | permanent +0.0 (signed in 10.5%); seasonal +0.0 (signed in 11.6%); part time +1.6 (signed in 24.7%) | ±0.0; ±0.0; ±2.2 | no |
 | T15 | L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other | second loan +3.7 against none (second loan taken in 50.8% of runs) | ±1.4 | yes |
 | T16 | L2. Borrowing for a temptation no segment requires (tourism_overborrow: every item the bank lists and the most working capital, early) loses clearly against borrowing only what the business needs: at least 3 points | -19.9 | ±2.6 | yes |
 | T17 | L3. Debt is dangerous: tourism_reckless (the most the bank lends, a temptation included, no repayment-free start) ends with the loan called or bankrupt owing the bank at least 15 points more often than tourism_careful, and tourism_careful misses a payment the business itself could carry in under 3% of runs | ending owing: reckless 95.6%, careful 70.7% (gap +24.9); careful loan-caused misses 0.8% | ±3.1; ±0.6 | yes |
 | T18 | L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers) | 100.0% borrowed; median interest and fees 1667 EUR |  | yes |
-| T19 | O1. Moving at the right time pays: the careful bot with its stage rules beats never moving by at least 2 points | +0.1 | ±0.4 | no |
+| T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | +0.1 | ±0.4 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -26.4 | ±2.7 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 28.8% of 264; stage 4 taken in 3.7% of 54; stage 5 never offered |  | no |
 
@@ -2254,6 +2295,31 @@ Per strategy, medians over its runs: guests served, what they paid (net of commi
 | tourism_overborrow | 6.5% | 2856 | 55,382 | 4.03 | 17.9% | 0 | 236 |
 | tourism_reckless | 4.1% | 1963 | 36,214 | 4.02 | 17.9% | 0 | 211 |
 | tourism_refit_loan | 30.1% | 4701 | 85,739 | 4.16 | 19.4% | 0 | 281 |
+
+## The established look
+
+Runs that turned established (revenue covering all costs for six months running and three people working), and the median week it happened in the winning runs that reached it.
+
+| Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |
+|---|---|---|---|---|
+| tourism_careful | 1000 | 18.8% | 68.2% | 57 |
+| tourism_platform_only | 1000 | 6.9% | 58.3% | 56 |
+| tourism_overstaffing | 1000 | 3.5% | 89.7% | 57 |
+| tourism_no_tests | 1000 | 5.1% | 30.7% | 76 |
+| tourism_price_blind | 1000 | 19.1% | 68.8% | 57 |
+| tourism_review_blind | 1000 | 6.9% | 47.5% | 71 |
+| tourism_always_flexible | 1000 | 18.8% | 68.2% | 57 |
+| tourism_inbox_none | 1000 | 15.9% | 66.4% | 57 |
+| tourism_inbox_effort | 1000 | 15.7% | 64.3% | 57 |
+| tourism_naive_careful | 1000 | 16.8% | 65.0% | 52 |
+| tourism_permanent | 1000 | 0.2% | 0.8% | 40 |
+| tourism_seasonal | 1000 | 0.3% | 1.1% | 85 |
+| tourism_part_time | 1000 | 19.8% | 72.2% | 55 |
+| tourism_never_move | 1000 | 16.6% | 62.0% | 56 |
+| tourism_always_strict | 1000 | 17.1% | 56.9% | 57 |
+| tourism_overborrow | 1000 | 3.7% | 55.4% | 63 |
+| tourism_reckless | 1000 | 2.4% | 58.5% | 48 |
+| tourism_refit_loan | 1000 | 22.0% | 72.1% | 56 |
 
 ## Week the run ended
 
@@ -2587,28 +2653,28 @@ Share of weeks with at least one noteworthy thing: a new message, new leads, a l
 
 ## Strategies
 
-- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. It takes a bigger place when guests were turned away in 3 of the last 8 weeks (at the last stage, in peak weeks or above four fifths full, and only with someone on contract where the place needs it) and cash and savings cover the move, six months of the added rent and two months of costs; else it lists the place in the bank's plan. (127.7 s for 1000 runs)
-- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (68.8 s for 1000 runs)
-- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (36.8 s for 1000 runs)
+- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. It takes a bigger place when guests were turned away in 3 of the last 8 weeks (at the last stage, in peak weeks or above four fifths full, and only with someone on contract where the place needs it) and cash and savings cover the move, six months of the added rent and two months of costs; else it lists the place in the bank's plan. (124.3 s for 1000 runs)
+- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (66.8 s for 1000 runs)
+- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (35.8 s for 1000 runs)
 - `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (8.3 s for 1000 runs)
-- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (115.0 s for 1000 runs)
-- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (96.7 s for 1000 runs)
+- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (115.5 s for 1000 runs)
+- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (98.1 s for 1000 runs)
 - `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (59.7 s for 1000 runs)
-- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (95.7 s for 1000 runs)
-- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (3.6 s for 1000 runs)
-- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (87.4 s for 1000 runs)
-- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (86.0 s for 1000 runs)
-- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (93.5 s for 1000 runs)
-- `tourism_contracts_none`: Plays like tourism_careful but books every staff shift by the week and signs no contracts. (92.9 s for 1000 runs)
-- `tourism_permanent`: Plays like tourism_careful but signs only permanent staff contracts where steady work supports them. (92.3 s for 1000 runs)
-- `tourism_seasonal`: Plays like tourism_careful but signs only seasonal staff contracts where the current season supports them. (97.4 s for 1000 runs)
-- `tourism_part_time`: Plays like tourism_careful but signs only part time staff contracts where steady work supports them. (100.7 s for 1000 runs)
-- `tourism_never_move`: Plays like tourism_careful but declines every offer of a bigger place (plan 3, target O1). (99.5 s for 1000 runs)
-- `tourism_always_move`: Plays like tourism_careful but accepts every offer of a bigger place at once, and lists it in the bank plan where there is one (plan 3, target O2). (15.4 s for 1000 runs)
-- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (100.8 s for 1000 runs)
-- `tourism_overborrow`: Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written. (46.6 s for 1000 runs)
-- `tourism_reckless`: Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term. (29.4 s for 1000 runs)
-- `tourism_refit_loan`: Plays like tourism_careful and takes a second loan for the own fit-out once guests pay about 20,000 EUR a month. (68.5 s for 1000 runs)
+- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (95.5 s for 1000 runs)
+- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (3.7 s for 1000 runs)
+- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (86.0 s for 1000 runs)
+- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (85.6 s for 1000 runs)
+- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (93.6 s for 1000 runs)
+- `tourism_contracts_none`: Plays like tourism_careful but books every staff shift by the week and signs no contracts. (91.9 s for 1000 runs)
+- `tourism_permanent`: Plays like tourism_careful but signs only permanent staff contracts where steady work supports them. (92.6 s for 1000 runs)
+- `tourism_seasonal`: Plays like tourism_careful but signs only seasonal staff contracts where the current season supports them. (91.9 s for 1000 runs)
+- `tourism_part_time`: Plays like tourism_careful but signs only part time staff contracts where steady work supports them. (92.9 s for 1000 runs)
+- `tourism_never_move`: Plays like tourism_careful but declines every offer of a bigger place (plan 3, target O1). (92.2 s for 1000 runs)
+- `tourism_always_move`: Plays like tourism_careful but accepts every offer of a bigger place at once, and lists it in the bank plan where there is one (plan 3, target O2). (14.3 s for 1000 runs)
+- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (93.1 s for 1000 runs)
+- `tourism_overborrow`: Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written. (43.4 s for 1000 runs)
+- `tourism_reckless`: Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term. (28.7 s for 1000 runs)
+- `tourism_refit_loan`: Plays like tourism_careful and takes a second loan for the own fit-out once guests pay about 20,000 EUR a month. (66.4 s for 1000 runs)
 
 # Seeblick, long mode
 
@@ -2631,14 +2697,14 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -2.7, under -20.3 | ±2.1, ±2.6 | yes |
 | T10 | Reviews matter: tourism_review_blind loses at least 2 points | -2.8 | ±1.8 | yes |
 | T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +1.7 overall; groups +4.1, leisure +3.5, project_guests -2.8 | ±2.2 | no |
-| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 77.2 s per 1000 runs |  | yes |
+| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 75.0 s per 1000 runs |  | yes |
 | T13 | A player without scenario-specific bot knowledge can win: tourism_naive_careful wins at least 20% and no more than 10 points less than tourism_careful | 27.9%; gap +0.6 | ±2.8; ±2.3 | yes |
 | T14 | Every staff contract kind wins somewhere: on the seeds where its single-kind bot signs it, permanent, seasonal and part time each beat weekly shifts by their paired margin | permanent -; seasonal -; part time +3.4 (signed in 5.9%) | ; ; ±4.6 | no |
 | T15 | L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other | second loan -0.5 against none (second loan taken in 18.2% of runs) | ±0.8 | yes |
 | T16 | L2. Borrowing for a temptation no segment requires (tourism_overborrow: every item the bank lists and the most working capital, early) loses clearly against borrowing only what the business needs: at least 3 points | -22.5 | ±2.6 | yes |
 | T17 | L3. Debt is dangerous: tourism_reckless (the most the bank lends, a temptation included, no repayment-free start) ends with the loan called or bankrupt owing the bank at least 15 points more often than tourism_careful, and tourism_careful misses a payment the business itself could carry in under 3% of runs | ending owing: reckless 96.3%, careful 67.2% (gap +29.1); careful loan-caused misses 1.2% | ±3.1; ±0.7 | yes |
 | T18 | L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers) | 100.0% borrowed; median interest and fees 1157 EUR |  | yes |
-| T19 | O1. Moving at the right time pays: the careful bot with its stage rules beats never moving by at least 2 points | +0.1 | ±0.2 | no |
+| T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | +0.1 | ±0.2 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -27.3 | ±2.8 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 4.8% of 273; stage 4 never offered; stage 5 never offered |  | no |
 
@@ -3060,27 +3126,27 @@ Share of weeks with at least one noteworthy thing: a new message, new leads, a l
 
 ## Strategies
 
-- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. It takes a bigger place when guests were turned away in 3 of the last 8 weeks (at the last stage, in peak weeks or above four fifths full, and only with someone on contract where the place needs it) and cash and savings cover the move, six months of the added rent and two months of costs; else it lists the place in the bank's plan. (77.2 s for 1000 runs)
-- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (30.0 s for 1000 runs)
-- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (60.7 s for 1000 runs)
-- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (33.5 s for 1000 runs)
-- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (9.1 s for 1000 runs)
-- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (54.2 s for 1000 runs)
-- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (47.3 s for 1000 runs)
-- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (51.1 s for 1000 runs)
-- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (5.5 s for 1000 runs)
-- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (40.9 s for 1000 runs)
-- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (48.1 s for 1000 runs)
-- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (52.2 s for 1000 runs)
-- `tourism_contracts_none`: Plays like tourism_careful but books every staff shift by the week and signs no contracts. (49.1 s for 1000 runs)
-- `tourism_permanent`: Plays like tourism_careful but signs only permanent staff contracts where steady work supports them. (48.3 s for 1000 runs)
-- `tourism_seasonal`: Plays like tourism_careful but signs only seasonal staff contracts where the current season supports them. (49.7 s for 1000 runs)
-- `tourism_part_time`: Plays like tourism_careful but signs only part time staff contracts where steady work supports them. (53.0 s for 1000 runs)
-- `tourism_never_move`: Plays like tourism_careful but declines every offer of a bigger place (plan 3, target O1). (53.1 s for 1000 runs)
-- `tourism_always_move`: Plays like tourism_careful but accepts every offer of a bigger place at once, and lists it in the bank plan where there is one (plan 3, target O2). (13.9 s for 1000 runs)
-- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (46.3 s for 1000 runs)
-- `tourism_overborrow`: Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written. (20.7 s for 1000 runs)
-- `tourism_reckless`: Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term. (15.8 s for 1000 runs)
+- `tourism_careful`: Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. It takes a bigger place when guests were turned away in 3 of the last 8 weeks (at the last stage, in peak weeks or above four fifths full, and only with someone on contract where the place needs it) and cash and savings cover the move, six months of the added rent and two months of costs; else it lists the place in the bank's plan. (75.0 s for 1000 runs)
+- `tourism_platform_only`: Plays like tourism_careful but sells only through the platform: no partnerships, website or outreach. (27.2 s for 1000 runs)
+- `tourism_overstaffing`: Plays like tourism_careful but rosters for every product's full capacity, booked or not. (60.0 s for 1000 runs)
+- `tourism_understaffing`: Plays like tourism_careful but rosters for 60% of what is booked. (32.4 s for 1000 runs)
+- `tourism_no_tests`: No interviews or tests: builds every product, the temptation included, and sells to the first segment. (8.6 s for 1000 runs)
+- `tourism_price_blind`: Plays like tourism_careful but keeps the starting price all year. (50.9 s for 1000 runs)
+- `tourism_review_blind`: Plays like tourism_careful but never fixes snags and rosters exactly to bookings, without a margin. (46.2 s for 1000 runs)
+- `tourism_always_flexible`: Plays like tourism_careful with a flexible policy all run. (50.8 s for 1000 runs)
+- `tourism_overworker`: Plays like tourism_careful but plans 65 h every week. (6.7 s for 1000 runs)
+- `tourism_inbox_none`: Plays like tourism_careful but leaves every message to its default. (38.3 s for 1000 runs)
+- `tourism_inbox_effort`: Plays like tourism_careful but answers messages with blind effort: the choice with the most hours it can afford. (45.0 s for 1000 runs)
+- `tourism_naive_careful`: Plays like tourism_careful without scenario knowledge beyond the screen: messages answered by their declared conditions only, no bridge months or lead times for the loan, and every channel tried for its groups instead of the channel table (tourism fixes, item 17). (47.6 s for 1000 runs)
+- `tourism_contracts_none`: Plays like tourism_careful but books every staff shift by the week and signs no contracts. (45.2 s for 1000 runs)
+- `tourism_permanent`: Plays like tourism_careful but signs only permanent staff contracts where steady work supports them. (45.1 s for 1000 runs)
+- `tourism_seasonal`: Plays like tourism_careful but signs only seasonal staff contracts where the current season supports them. (45.1 s for 1000 runs)
+- `tourism_part_time`: Plays like tourism_careful but signs only part time staff contracts where steady work supports them. (44.3 s for 1000 runs)
+- `tourism_never_move`: Plays like tourism_careful but declines every offer of a bigger place (plan 3, target O1). (44.9 s for 1000 runs)
+- `tourism_always_move`: Plays like tourism_careful but accepts every offer of a bigger place at once, and lists it in the bank plan where there is one (plan 3, target O2). (12.4 s for 1000 runs)
+- `tourism_always_strict`: Plays like tourism_careful with a strict policy all run. (43.1 s for 1000 runs)
+- `tourism_overborrow`: Plays like tourism_careful but asks the bank for the most it lends, as soon as the plan is written. (18.9 s for 1000 runs)
+- `tourism_reckless`: Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term. (14.3 s for 1000 runs)
 - `tourism_refit_loan`: Plays like tourism_careful and takes a second loan for the own fit-out once guests pay about 20,000 EUR a month. (32.4 s for 1000 runs)
 
 # Tuning notes
