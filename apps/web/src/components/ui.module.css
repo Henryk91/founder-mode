@@ -52,6 +52,22 @@
   font-weight: 600;
 }
 
+/* A row of two lines: a name, then its figures (the Occupancy tab's demand you missed). */
+.twoLine {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 0;
+}
+
+.twoLine + .twoLine {
+  border-top: 1px solid var(--rule);
+}
+
+.twoLineName {
+  font-weight: 600;
+}
+
 .mono {
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-weight: 600;
@@ -397,13 +413,14 @@
   line-height: 1.05;
 }
 
-/* Plan 3, the established stage: card titles as small caps labels, as in the mockups. */
+/* Plan 3, the established stage: card titles in the heading face (Henry's review). */
 :global([data-stage='established']) .title {
-  color: var(--ink-muted);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  color: var(--ink);
+  font-family: var(--font-head);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 /* Plan 3: the established cap table's stacked bar. */
@@ -423,33 +440,66 @@
   background: #b9bfc8;
 }
 
-/* Plan 3: the established Occupancy heat grid. */
-.heat {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 3px;
+/* Plan 3: the established Occupancy heat grid, a cell per week, one grid per product. */
+.heatProduct + .heatProduct {
+  margin-top: 16px;
+}
+
+.heatName {
+  margin: 12px 0 2px;
+  font-size: 16px;
+}
+
+.heatWeeks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 4px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.heatCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: 6px;
+}
+
+.heatWeek {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.heatNumber {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.heatLegend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 12px 0 0;
+  color: var(--ink-muted);
   font-size: 12px;
 }
 
-.heat th {
-  padding: 4px;
-  color: var(--ink-muted);
-  font-weight: 600;
-  text-align: center;
+.heatKey {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.heat th[scope='row'] {
-  white-space: nowrap;
-  font-family: var(--font-mono);
-}
-
-.heat td {
-  height: 36px;
-  padding: 2px;
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  text-align: center;
+.heatSwatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
 }
 
 .heatClosed {
@@ -458,7 +508,7 @@
 }
 
 .heatLow {
-  background: color-mix(in srgb, var(--accent) 18%, white);
+  background: color-mix(in srgb, var(--accent) 12%, white);
   color: var(--ink);
 }
 

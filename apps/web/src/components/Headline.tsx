@@ -15,7 +15,7 @@ export const CHANGE_WEEKS = 1
 type Change = { text: string; spoken: string; good: boolean | null }
 
 type Stat = {
-  id: 'cash' | 'runway' | 'revenue' | 'customers' | 'guests' | 'team'
+  id: 'cash' | 'runway' | 'revenue' | 'customers' | 'guests' | 'price' | 'team'
   title: LabelKey
   /** A shorter title for the narrow phone band. */
   short: LabelKey
@@ -76,6 +76,32 @@ export function headlineStats(view: PlayerView): Stat[] {
           change: before && delta(stage, view.customers.length - before.customers, String),
           explain: null,
         },
+  ]
+}
+
+/**
+ * Plan 3, established tourism: the average price next to occupancy (spec section 3): the mean of
+ * the player's own prices this season, where every group pays by the same unit (Seeblick per room
+ * night, Hinterhof per cover). Gratwanderung prices people and groups apart, so it has none.
+ * Money in per unit served would mislead: invoiced guests pay weeks later.
+ */
+function priceStat(view: PlayerView): Stat[] {
+  const stage = voiceOf(view)
+  const b = view.bookings
+  if (stageOf(stage) !== 'established' || !b || b.segments.length === 0) return []
+  const unit = b.segments[0]!.unit
+  if (unit === 'group' || b.segments.some((s) => s.unit !== unit)) return []
+  const prices = b.segments.map((s) => b.prices[s.id]![b.peak ? 'peak' : 'off'])
+  return [
+    {
+      id: 'price',
+      title: 'stat.price',
+      short: 'stat.price.short',
+      value: formatEuro(Math.round(prices.reduce((t, x) => t + x, 0) / prices.length)),
+      note: null,
+      change: null,
+      explain: null,
+    },
   ]
 }
 
@@ -167,6 +193,18 @@ function runwayChange(stage: Voice, was: number | null, now: number | null): Cha
   return delta(stage, now - was, (n) => count('unit.weeks', stage, n))
 }
 
+/**
+ * The numbers a bar shows. The desk adds the team (Kantino) or the average price (tourism); the
+ * phone band has room for four, so there the average price takes revenue's place, as in the
+ * established mockup.
+ */
+function bandStats(view: PlayerView, size: 'band' | 'bar'): Stat[] {
+  const price = priceStat(view)
+  if (size === 'bar') return [...headlineStats(view), ...teamStat(view), ...price]
+  const stats = headlineStats(view)
+  return price.length ? [...stats.filter((s) => s.id !== 'revenue'), ...price] : stats
+}
+
 /** The numbers in a row: compact on the phone band, full size in the desk headline bar. */
 export function Headline(props: { size: 'band' | 'bar' }) {
   const view = useGame((s) => s.view)
@@ -176,7 +214,7 @@ export function Headline(props: { size: 'band' | 'bar' }) {
   const period = label('stat.period', stage)
   return (
     <div className={props.size === 'bar' ? styles.bar : styles.band}>
-      {[...headlineStats(view), ...(props.size === 'bar' ? teamStat(view) : [])].map((stat) => {
+      {bandStats(view, props.size).map((stat) => {
         const body = (
           <>
             <span className={styles.title}>

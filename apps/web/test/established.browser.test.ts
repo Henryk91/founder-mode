@@ -131,12 +131,26 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 established screens', () => {
             )
             const tourism = run.id !== 'kantino'
             const found: string[] = []
+            // The company's name on one line, never below 12 px (Henry's review of plan 3).
+            const name = await page.evaluate(() => {
+              const h = document.querySelector('header h1') as HTMLElement
+              const size = parseFloat(getComputedStyle(h).fontSize)
+              return { size, lines: h.getBoundingClientRect().height / (size * 1.25) }
+            })
+            if (name.lines > 1.5) found.push(`company name wraps at ${name.size} px`)
+            if (name.size < 12) found.push(`company name at ${name.size} px`)
             let text = ''
             const tabs =
               width < 1200 ? await page.locator('nav button').allTextContents() : ['the desk']
             for (const [i, tab] of tabs.entries()) {
               if (width < 1200) await page.locator('nav button').nth(i).click()
               if (engine?.name === 'chromium' && (width === 390 || width === 1440)) {
+                // Each tab from its top, not where the last one was scrolled to.
+                await page.evaluate(() => {
+                  for (const el of document.querySelectorAll('main, [class*="_column"]')) {
+                    el.scrollTop = 0
+                  }
+                })
                 await page.screenshot({
                   path: join(SHOTS, `${run.id}-${width}-${i}.png`),
                 })
@@ -146,6 +160,14 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 established screens', () => {
                 if (!(await closed.count())) break
                 await closed.first().click()
               }
+              // The Office card's small drawing shows no captions as text (Henry's review).
+              const captions = await page.evaluate(
+                () =>
+                  [...document.querySelectorAll('[class*="_compact_"] text')].filter(
+                    (t) => (t as SVGGraphicsElement).getBBox().width > 0,
+                  ).length,
+              )
+              if (captions > 0) found.push(`${tab}: ${captions} captions in the office card`)
               found.push(...(await cut(page, tab)))
               found.push(...(await formProblems(page, tab)))
               for (const v of await axe(page)) found.push(`axe ${tab}: ${v.id} ${v.nodes[0]}`)
@@ -159,6 +181,13 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 established screens', () => {
               }
             }
             expect(text).toMatch(/This week/)
+            // The Finance tab does not hold a card called Money (Henry's review).
+            expect(text).toMatch(/^Running costs$/m)
+            if (tourism) {
+              // The occupancy heat grid: week cells and the legend, no "25/84" rows.
+              expect(text).toMatch(/How full/)
+              expect(text).not.toMatch(/^\d+\/\d+$/m)
+            }
             expect(found).toEqual([])
             await page.close()
           }, 180_000)

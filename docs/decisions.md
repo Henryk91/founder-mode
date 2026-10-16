@@ -654,3 +654,11 @@ Fresh budget of 3 rounds for each plan 3 open issue. Measured first on 1,000 see
 
 - E1's band (40 to 80% of winning runs, median week 60 to 90) was a rough guess, not the intent. Restated: the careful bot reaches the established look in at least 40% of its winning runs, in clearly fewer of its losing runs (the losing share plus its margin below the winning share less its margin), with the median week in year 2 (after week 52). Reason: the old band was arbitrary; Hinterhof's high share comes almost entirely from winning runs.
 - Months kept (Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8). No bot runs: the losing share follows from the measured shares of all runs and of winning runs on the same 1,000 seeds. Wins, losses, median week: Kantino long 78.7%, 13.4%, 76; Gratwanderung 43.3%, 3.6%, 84; Hinterhof 93.6%, 2.7%, 62; Seeblick 49.8%, 1.2%, 57. E1 passes in all four.
+
+## Established UI fixes after Henry's review
+
+- Occupancy heat grid: Henry asked for weeks by days as in the mockup. The bookings model counts weeks, not days, so a day split would be invented; the grid has a cell per week (12, four to a row on a phone), one grid per product, numbers in the cells, three accent shades and a legend.
+- The average price next to occupancy is the mean of the player's own prices this season (Seeblick per room night, Hinterhof per cover). Money in per unit served was tried first and showed Seeblick at 12 EUR a night, because firms and groups pay their invoices weeks later. Gratwanderung prices people and groups apart, so it shows none, and its phone band keeps revenue.
+- The company's name fits its line by stepping down to 12 px, then dropping the logo square ("Gratwanderung Bergtouren" at 375 px needs both); Help on the established phone is a round "?" named Help.
+- "Demand you missed" two-line rows apply in every stage, as the squeezed monospace columns were the same bug there.
+

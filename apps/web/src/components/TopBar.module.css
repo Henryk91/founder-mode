@@ -51,9 +51,35 @@
 }
 
 :global([data-stage='established']) .name {
+  overflow: hidden;
   font-family: var(--font-head);
   font-weight: 700;
   font-size: 18px;
+  white-space: nowrap;
+}
+
+/* The name's column takes the room the buttons leave, so a long name can be measured in it. */
+:global([data-stage='established']) .who {
+  flex: 1 1 auto;
+}
+
+:global([data-stage='established']) .who > div {
+  min-width: 0;
+}
+
+/* A name too long for its line even at 12 px gives up the logo square first. */
+.who[data-tight] .logo {
+  display: none;
+}
+
+/* Plan 3, the established phone bar: Help as a round "?" so the name keeps its line. */
+.helpIcon {
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+  border-radius: 22px;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 :global([data-stage='established']) .wide .name {

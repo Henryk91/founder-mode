@@ -134,6 +134,19 @@
   line-height: 1.15;
 }
 
+/* Plan 3, the established stage: the worry is a plain warning line, not a sticky note. */
+:global([data-stage='established']) .worry {
+  padding: 0 2px;
+  background: none;
+  color: var(--warn);
+  box-shadow: none;
+  transform: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 /* Plan 3, the established stage: Cash flow and Calendar cards. */
 .flow,
 .calendar {
@@ -146,11 +159,10 @@
 
 .flowTitle {
   margin: 0 0 6px;
-  color: var(--ink-muted);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  color: var(--ink);
+  font-family: var(--font-head);
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .flowBars {
