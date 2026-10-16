@@ -1,22 +1,17 @@
 import type { GameState } from '../types'
-import { contractWorks } from './contracts'
 import { monthsCovering } from './finance'
-import { workingMembers } from './team'
-
-/** People working here this week: the founder, hires who have started, staff on contracts. */
-export function peopleWorking(state: GameState): number {
-  const contracts = (state.bookings?.contracts ?? []).filter((c) =>
-    contractWorks(state, c, state.week),
-  ).length
-  return 1 + workingMembers(state).length + contracts
-}
+import { stageNumber } from './office'
 
 /**
- * Plan 3: whether the screens turn established this week. Once revenue has covered all costs for
- * the scenario's months running and enough people work here (`establishedAt`); never back.
+ * Plan 3: whether the screens turn established this week (`establishedAt`): money coming in has
+ * covered all costs, the founder's living costs included, for the scenario's months in a row; or
+ * a move into its office stage has completed; or (where it says so) a funding round has closed.
+ * Never back.
  */
 export function reachesEstablished(state: GameState): boolean {
   const at = state.scenario.establishedAt
   if (!at || state.company.uiStage === 'established') return false
-  return monthsCovering(state, true) >= at.monthsCoveringAll && peopleWorking(state) >= at.people
+  if (monthsCovering(state, true) >= at.monthsCoveringAll) return true
+  if (at.officeStage && stageNumber(state, state.company.officeStage) >= at.officeStage) return true
+  return at.funded === true && state.funding.stakes.length > 0
 }

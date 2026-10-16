@@ -651,7 +651,7 @@ const labels = {
   'results.entry.office_notice': 'Notice given on {place}. You are out in week {week}.',
   'results.entry.office_left': 'You left {place} for {back}. {deposit} of deposit came back.',
   'results.entry.ui_established':
-    'Six months of covering every cost, and three of you to show for it. Kantino has stopped being a side project.',
+    'Kantino has stopped being a side project. Money comes in, costs go out, and for once the first is the bigger number.',
   'loan.stage': 'A bigger place on offer: {name}',
   'loan.stage.list': 'List it',
   'loan.stage.listed': 'Listed',

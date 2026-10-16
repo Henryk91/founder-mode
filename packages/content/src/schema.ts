@@ -1058,13 +1058,15 @@ export const ScenarioFileSchema = z.object({
   office: OfficeConfigSchema.optional(),
   // The UI turns organised at the first of these milestones.
   organisedAt: z.array(Id).min(1),
-  // Plan 3, long modes: the UI turns established once revenue has covered all costs (the
-  // founder's living costs included) for this many months running and this many people work
-  // here, the founder included (hires, or staff on contracts). Absent: never.
+  // Plan 3, long modes: the UI turns established once money coming in has covered all costs (the
+  // founder's living costs included) for this many months in a row, or once a move into this
+  // office stage (by number) completes, or (`funded`) once a funding round has closed.
+  // Absent: never.
   establishedAt: z
     .object({
       monthsCoveringAll: z.number().int().positive(),
-      people: z.number().int().min(2),
+      officeStage: z.number().int().min(2).optional(),
+      funded: z.boolean().optional(),
     })
     .optional(),
   // Long mode: raising money from angels and a seed fund (Part D). Absent: no funding.
