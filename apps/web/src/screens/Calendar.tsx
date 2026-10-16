@@ -1,6 +1,7 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { label, stageOf, voiceOf } from '../labels'
 import { Pipeline } from './Pipeline'
+import { forecastLine } from '../components/TourismPlan'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 
@@ -19,7 +20,17 @@ export function Calendar() {
       <section className={styles.card} aria-label={label('tour.calendar', stage)}>
         <h2 className={styles.title}>{label('tour.calendar', stage)}</h2>
         <p>
-          {label(`tour.forecast.${b.forecast}`, stage)}{' '}
+          {/* Plan 4: wind and sea by the half day instead of one weather. */}
+          {b.abroad
+            ? b.abroad.slots
+                .map((slot) =>
+                  label('tour.forecast.slot', stage, {
+                    slot: slot.name,
+                    states: forecastLine(b.abroad!.states, b.abroad!.forecastCounts[slot.id] ?? {}),
+                  }),
+                )
+                .join('. ') + '.'
+            : label(`tour.forecast.${b.forecast}`, stage)}{' '}
           {b.rating === null
             ? label('tour.rating.none', stage)
             : label('tour.rating', stage, { rating: b.rating.toFixed(1), reviews: b.reviews })}
@@ -60,6 +71,24 @@ export function Calendar() {
             )
           })}
       </section>
+      {b.abroad && b.products.some((p) => p.course) && (
+        <section className={styles.card} aria-label={label('tour.ladder.title', stage)}>
+          <h2 className={styles.title}>{label('tour.ladder.title', stage)}</h2>
+          <p>
+            {b.abroad.ladderThisYear.students === 0 &&
+            b.abroad.ladderThisYear.returnedDirect + b.abroad.ladderThisYear.returnedPlatform === 0
+              ? label('tour.ladder.none', stage)
+              : label('tour.ladder', stage, {
+                  students: b.abroad.ladderThisYear.students,
+                  same: b.abroad.ladderThisYear.sameStay,
+                  back:
+                    b.abroad.ladderThisYear.returnedDirect +
+                    b.abroad.ladderThisYear.returnedPlatform,
+                  direct: b.abroad.ladderThisYear.returnedDirect,
+                })}
+          </p>
+        </section>
+      )}
       <section className={styles.card} aria-label={label('tour.demand', stage)}>
         <h2 className={styles.title}>{label('tour.demand', stage)}</h2>
         {/* A two-line row, the group's name then its figures, so a phone never squeezes them. */}

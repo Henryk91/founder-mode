@@ -95,3 +95,7 @@
 [data-scenario='seeblick'] {
   --scenario-accent: #2b5f8a;
 }
+/* Plan 4: white on #1f6a86 is 6.1:1. */
+[data-scenario='rueckenwind'] {
+  --scenario-accent: #1f6a86;
+}

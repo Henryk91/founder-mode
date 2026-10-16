@@ -68,7 +68,14 @@ export const isLoss = (r: RunResult) => !isWin(r)
  * A target of plan section 7. `value` is '-' when the runs it needs were not part of the input.
  * `margin` is the 95% margin of error of the value ('' where it has none, such as a count).
  */
-export type Target = { id: number; text: string; value: string; margin: string; pass: boolean }
+/** A target's number, or (plan 4) a scenario target's own name such as `W1`. */
+export type Target = {
+  id: number | string
+  text: string
+  value: string
+  margin: string
+  pass: boolean
+}
 
 export const wins = (rs: readonly RunResult[]) => rs.filter(isWin)
 
@@ -730,7 +737,7 @@ function targetRows(input: ReportInput): string[] {
   if (!first) return []
   const met = (t: Target) => (t.value === '-' ? 'not measured' : t.pass ? 'yes' : 'no')
   return first.map((t, i) => {
-    if (!PER_VARIANT.has(t.id))
+    if (!PER_VARIANT.has(t.id as number))
       return `| ${t.id} | ${t.text} | ${t.value} | ${t.margin} | ${met(t)} | | | | |`
     const cells = columns.map((c, j) => {
       const u = c[i] as Target

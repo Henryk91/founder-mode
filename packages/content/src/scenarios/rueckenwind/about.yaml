@@ -1,0 +1,11 @@
+# Shown on the Start screen before a run exists: the name, its category (categories.yaml), one
+# short line and two or three tags for its row, and exactly two lines for its sheet.
+name: Rückenwind
+category: tourism
+short: A windsurf school on a beach in Mallorca
+tags:
+  - Abroad
+  - Wind
+lines:
+  - A container, a van and some tired boards on a beach in the Bay of Alcúdia, rented from the town by the season.
+  - Hotel families, learners, wind regulars. Calm mornings sell paddling, windy afternoons sell sails, and the wind decides which.

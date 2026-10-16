@@ -14,6 +14,7 @@ import {
   type Target,
 } from './report'
 import { fmtMargin, rateMargin } from './margin'
+import { watersportsTargets } from './abroadTargets'
 import type { RunResult } from './simulate'
 import { PACING_WEEKS, YEAR2_WEEK } from './simulate'
 
@@ -251,6 +252,8 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     // Plan 3: office stages, on the main part's seeds.
     ...evaluateOfficeTargets(19, careful, s('tourism_never_move'), s('tourism_always_move')),
     evaluateEstablishedTarget(22, careful),
+    // Plan 4: the abroad scenarios' own targets.
+    ...watersportsTargets(careful, s, all),
   ]
 }
 
@@ -348,7 +351,8 @@ export function tourismTargetRows(input: ReportInput): string[] {
     '| # | Target | Value | Margin | Met |',
     '|---|---|---|---|---|',
     ...evaluateTourismTargets(input).map(
-      (t) => `| T${t.id} | ${t.text} | ${t.value} | ${t.margin} | ${met(t)} |`,
+      (t) =>
+        `| ${typeof t.id === 'number' ? `T${t.id}` : t.id} | ${t.text} | ${t.value} | ${t.margin} | ${met(t)} |`,
     ),
   ]
 }

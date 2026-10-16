@@ -1,0 +1,124 @@
+# Your life on the island.
+events:
+  - id: flat_hunt
+    area: founder
+    weight: 2
+    once: true
+    when: [week >= 4, week <= 20]
+    from: none
+    sender: Your landlord
+    look: note
+    text: >-
+      Your landlord wants the flat back for the summer: tourists pay him four times your rent. He
+      offers a cheaper room above a bakery in Muro, twenty minutes inland.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Move above the bakery
+        hours: 8
+        effects:
+          - { type: energy, delta: -6 }
+          - { type: cash, amountCents: 40000 }
+      - id: stay
+        label: Argue and stay, at a higher rent
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -50000 }
+
+  - id: catalan_course
+    area: founder
+    weight: 1
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: The town's adult school
+    text: >-
+      The town offers an evening course in Catalan. The town hall, the beach office and the
+      fishermen would all like you better, they say, in Catalan.
+    defaultChoice: decline
+    choices:
+      - id: enrol
+        label: Take the evening course
+        hours: 3
+        effects:
+          - { type: skill, skill: selling, delta: 0.03 }
+          - { type: energy, delta: -2 }
+      - id: decline
+        label: Not this year
+        hours: 0
+
+  - id: friends_visit
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [week >= 8]
+    from: none
+    sender: Friends from Munich
+    look: note
+    text: >-
+      Friends from Munich are on the island for a week and want to see you. Every evening,
+      ideally. They have brought a bottle and a lot of questions about your plan.
+    defaultChoice: busy
+    choices:
+      - id: see_them
+        label: Take two evenings off
+        hours: 0
+        effects:
+          - { type: energy, delta: 8 }
+          - { type: lostHours, hours: 6 }
+      - id: busy
+        label: One coffee, then back to work
+        hours: 0
+        effects:
+          - { type: energy, delta: -2 }
+
+  - id: sunstroke
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: Your body
+    look: note
+    text: >-
+      Twelve hours on the beach in August have given you a headache that walks around by itself.
+      The doctor says shade and water. The roster says otherwise.
+    defaultChoice: push
+    choices:
+      - id: rest
+        label: Two days in the shade
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 12 }
+          - { type: energy, delta: 10 }
+      - id: push
+        label: Carry on with a hat
+        hours: 0
+        effects:
+          - { type: energy, delta: -10 }
+
+  - id: home_visit
+    area: founder
+    weight: 1
+    once: true
+    when: [tour.month >= 11]
+    from: none
+    sender: Your parents
+    look: letter
+    text: >-
+      Your parents would like you home for Christmas, and they have bought the ticket already.
+      The beach is closed and the inbox is not.
+    defaultChoice: go
+    choices:
+      - id: go
+        label: Fly home for a week
+        hours: 0
+        effects:
+          - { type: energy, delta: 12 }
+          - { type: lostHours, hours: 20 }
+      - id: stay
+        label: Stay and plan the season
+        hours: 0
+        effects:
+          - { type: energy, delta: -5 }

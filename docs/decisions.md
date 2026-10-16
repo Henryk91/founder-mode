@@ -681,3 +681,23 @@ Fresh budget of 3 rounds for each plan 3 open issue. Measured first on 1,000 see
 - AUTONOMOUS: local cost steps are one scenario list (week, factor, which fixed costs, staff pay, unit costs) instead of a field on each cost.
 - AUTONOMOUS: the bookings step changes this week's booking objects in place (since step 4, so a previous state's bookings change too). Copying them first made Hinterhof's runs 40% slower (T12 fails), so the new moves (to an alternative or next week) follow the same pattern. Saves replay from the seed, so nothing visible depends on it.
 - Tooling: vitest runs on half the cores; with all ten busy its worker calls timed out and failed a run whose tests all passed.
+
+## Plan 4, step 2: Rückenwind
+
+Engine and bots (all off in the earlier scenarios; their games are unchanged):
+
+- AUTONOMOUS: products may set `priceFactor` (a unit costs the segment's price times it) and `appeal` (how readily a guest picks it among products with room). The engine prices by segment, and Rückenwind's products run from a 20 EUR hire to a 450 EUR kite course. A factor is per segment's price, so a product sold to two segments must suit both (the eFoil sells to hotel guests only: at three times a wind regular's week it sold for 780 EUR an hour). Reviews judge value at the base price.
+- AUTONOMOUS: guests sent home by the wind lower reviews by `cancelPenalty`, not `understaffPenalty`: a cancellation for 7 Bft is not a failure of the roster.
+- AUTONOMOUS: a day trip starts a group only when the forecast days and the staff give it every trip day; a group that cannot finish, or a week booked below the policy's group, waits a week once, then is refunded. The first version ran partial courses and refunded everyone, which made every kite course a loss.
+- The careful bot: rosters each conditions product to its forecast slots; counts the cost of everything it starts in a week against the money; builds a course's next step for its graduates when cheap; sets the trip policy to a group of two once trips exist; bids higher in the tender only when hotel guests are its business (they walk past the spot and come from the hotels). New bots `tourism_wind_only`, `tourism_calm_only`, `tourism_no_courses`, `tourism_trips_always`, `tourism_trips_never`, `tourism_tender_higher`, `tourism_tender_same`, `tourism_efoil_spring` play only in Rückenwind (`Strategy.scenarios`).
+- Report: W1 to W5 in the tourism targets table (`abroadTargets.ts`).
+
+Content (values as built are in the spec's section 17):
+
+- AUTONOMOUS: the beach licence (9,000 a season) is a fixed cost of 750 a month; the rescue boat is leased in season (spread to 600 a month with fuel) rather than bought, since buying is the asset mechanic of step 3.
+- AUTONOMOUS: a course takes a role's units per shift for its places (windsurf 3, catamaran 2.6, wing 1.5 places a day per instructor: groups of six, four or three over two slots and three or four sessions). The spec's per-slot capacities first gave 1.5 and 1, and every course lost money to its instructor.
+- AUTONOMOUS: peak months are June to September. The engine has two seasons; with July and August alone, the bot's off-season discount fell on the busy June and September.
+- AUTONOMOUS: starting prices are the same all year and a little under what guests pay (an inherited price list), so seasonal prices have something to find (T7 rounds 1 and 2).
+- AUTONOMOUS: fourteen modern gear sets at about 1,450 each (spec ten at 2,500): with eight, wind regulars could never carry the centre.
+- Tuning, in order (500 seeds unless stated): hotel demand 45 to 140 raised to 80 to 220 (hotel guests could not carry a summer business), then all three trimmed by about a tenth (careful 52.4% to 40.6%); kite trip units 3 to 1 and the wing and kite instructors' summer availability 3, 2, 2, 3 raised to 5, 4, 4, 5 (W2 round 1); kite price factor 1.75 to 1.9 and appeal 0.25 (W2 round 2: kite fills in when the bay's courses are full); eFoil 2.7 times an activity, appeal 0.05, unit cost 40 (W5); learners' and regulars' strict conversion 0.85 and 0.8, to 0.75 and 0.7 (T11 round 1, strict then lost 17 points with regulars), then 0.82 and 0.78 (round 2). At 1,000 seeds T3 failed (hotel 29%, regulars 46%): hotel demand 80 to 210, regulars 4.5 to 17 (T3 round 1, 3.6 points).
+- Open after their budgets (STATUS.md): T7 seasonal pricing (-2.1, two value rounds), T14 permanent and part time contracts in a winter-dead business, W2 trips_never ahead (+4.7, two value rounds and the group formula). T15 and T19 to T21 do not apply in this pass (no refit loan, stages 1 and 2 only).

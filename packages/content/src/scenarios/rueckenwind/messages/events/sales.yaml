@@ -1,0 +1,260 @@
+# Getting guests: hotels, clubs, platforms and the beach itself.
+events:
+  - id: hotel_exclusive
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Hotel Platja Blava
+    look: letter
+    text: >-
+      Hotel Platja Blava wants an exclusive deal: its guests only at your beach, its logo on your
+      flag, and 20% of every booking it sends. The hotel has 400 beds. Many of them are children.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Sign the exclusive deal
+        hours: 2
+        effects:
+          - { type: guests, segment: hotel_guests, count: 30, when: [tour.peak == 1] }
+          - { type: fixedCost, id: hotel_cut, name: Hotel commission, monthlyCents: 45000 }
+      - id: decline
+        label: Stay open to everyone
+        hours: 0
+
+  - id: efoil_video
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: Your phone
+    look: note
+    text: >-
+      A guest's video of someone flying above the bay on an electric board has a million views.
+      Your phone has opinions about it. Your fleet has no electric boards, unless it does.
+    defaultChoice: ignore
+    choices:
+      - id: ride
+        label: Post that you have them, if you do
+        hours: 2
+        effects:
+          - { type: guests, segment: hotel_guests, count: 12, when: [shipped.efoil_fleet == 1] }
+          - { type: review, rating: 2, count: 2, when: [shipped.efoil_fleet == 0] }
+      - id: ignore
+        label: Let it pass
+        hours: 0
+
+  - id: club_october_week
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 20, week <= 34]
+    from: none
+    sender: Surfclub Isarwelle
+    text: >-
+      A windsurf club from home wants twelve places for a week in October, with gear and a rescue
+      boat. It is big money in the shoulder season, if you have the gear and the boat.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the club week
+        hours: 3
+        effects:
+          - {
+              type: guests,
+              segment: wind_regulars,
+              count: 12,
+              when: [shipped.modern_gear == 1, shipped.rescue_boat == 1],
+            }
+          - { type: review, rating: 2, count: 3, when: [shipped.modern_gear == 0] }
+      - id: decline
+        label: Say you are full
+        hours: 0
+
+  - id: blogger_kite
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 10, shipped.kite_trips == 1]
+    from: none
+    sender: A travel blogger
+    text: >-
+      A travel blogger with a large following wants a free kite course in return for a post. It
+      costs a trip day with a van, an instructor and a camera that needs charging.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Give the free course
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -20000 }
+          - { type: guests, segment: learners, count: 6 }
+      - id: decline
+        label: Politely decline
+        hours: 0
+
+  - id: undercut_hire
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 14, shipped.paddle_kayak_hire == 1]
+    from: none
+    sender: The kiosk next door
+    look: note
+    text: >-
+      The kiosk next door now hires paddle boards for a third less than you. Its boards are
+      older than its owner. Guests notice the price first.
+    defaultChoice: hold
+    choices:
+      - id: talk
+        label: Talk to the hotel desks about your guided extras
+        hours: 4
+        effects:
+          - { type: guests, segment: hotel_guests, count: 8 }
+      - id: hold
+        label: Hold your price and say nothing
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }
+
+  - id: travel_agent_brochure
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 6, week <= 40]
+    from: none
+    sender: Reisebüro Sonnenland
+    text: >-
+      A travel agency in Augsburg offers to put your courses in its Mallorca brochure, for 600
+      EUR and a photo of someone smiling on a board. The brochure goes out in spring.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Pay for the brochure
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: guests, segment: learners, count: 8, when: [shipped.windsurf_courses == 1] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: wedding_party_boats
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: A wedding planner in Pollença
+    text: >-
+      A wedding planner wants paddle boards and kayaks for forty guests the morning after a
+      wedding. Some of them will still be dancing. All of them will want photos.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the wedding morning
+        hours: 4
+        effects:
+          - { type: cash, amountCents: 80000, when: [shipped.paddle_kayak_hire == 1] }
+          - { type: energy, delta: -4 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: strandklick_promo
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.listed == 1, week >= 10]
+    from: none
+    sender: Strandklick
+    look: official
+    text: >-
+      Strandklick offers a summer promotion: top of the search for July and August, for five
+      points more commission on everything. The banner is very orange.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the promotion
+        hours: 1
+        effects:
+          - { type: guests, segment: hotel_guests, count: 20 }
+          - {
+              type: fixedCost,
+              id: strandklick_promo,
+              name: Strandklick promotion,
+              monthlyCents: 35000,
+            }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: school_exchange
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 12, week <= 40]
+    from: none
+    sender: A German school in Palma
+    text: >-
+      A German school in Palma wants a week of afternoon sailing for twelve pupils in June, at a
+      school price. Twelve teenagers on the water need two instructors and nerves.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the school week
+        hours: 4
+        effects:
+          - { type: guests, segment: learners, count: 10, when: [shipped.windsurf_courses == 1] }
+          - { type: energy, delta: -3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: forum_review_war
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.reviews >= 10]
+    from: none
+    sender: A windsurf forum
+    look: note
+    text: >-
+      Someone on a forum says your rigs are older than the Euro. Two of your guests have already
+      defended you, at length, in capital letters.
+    defaultChoice: ignore
+    choices:
+      - id: reply
+        label: Reply calmly with photos of the gear
+        hours: 2
+        effects:
+          - { type: review, rating: 4, count: 3, when: [shipped.modern_gear == 1] }
+          - { type: review, rating: 2, count: 2, when: [shipped.modern_gear == 0] }
+      - id: ignore
+        label: Stay out of it
+        hours: 0
+
+  - id: cruise_ship_day
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 16
+    when: [tour.peak == 1]
+    from: none
+    sender: A shore excursion agent
+    text: >-
+      A cruise ship docks in Alcúdia on Thursday with two thousand passengers and six hours to
+      fill. The agent wants a beach morning for sixty of them, at an agent's price.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the sixty
+        hours: 4
+        effects:
+          - { type: cash, amountCents: 90000, when: [shipped.paddle_kayak_hire == 1] }
+          - { type: review, rating: 3, count: 4 }
+      - id: decline
+        label: Decline
+        hours: 0

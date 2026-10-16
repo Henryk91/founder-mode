@@ -1,0 +1,204 @@
+# The gear, the water and what goes wrong on it.
+events:
+  - id: north_wind_learners
+    area: product
+    weight: 2
+    once: true
+    when: [tour.month == 5, tour.bookedWeek >= 4]
+    from: none
+    sender: The forecast
+    look: note
+    text: >-
+      A strong north wind is coming for three days, and fourteen learners are booked. In the lee
+      of the cape the water is flat enough for kayaks. Nobody booked kayaks.
+    defaultChoice: wait
+    choices:
+      - id: kayaks
+        label: Offer them a kayak tour in the lee instead
+        hours: 4
+        effects:
+          - { type: review, rating: 5, count: 3, when: [shipped.kayak_tours == 1] }
+          - { type: review, rating: 2, count: 3, when: [shipped.kayak_tours == 0] }
+      - id: refund
+        label: Refund the lost afternoons at once
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: review, rating: 4, count: 2 }
+      - id: wait
+        label: Wait and see
+        hours: 0
+
+  - id: catamaran_capsize
+    area: product
+    weight: 2
+    once: true
+    when: [shipped.catamaran == 1]
+    from: none
+    sender: The coast guard
+    look: official
+    text: >-
+      One of your catamarans capsized in the shipping lane and the coast guard fished out two
+      cheerful Belgians. The officer would like a word, and a form, and possibly a fine.
+    defaultChoice: wait
+    choices:
+      - id: paperwork
+        label: Do the paperwork and the apology properly
+        hours: 5
+        effects:
+          - { type: cash, amountCents: -30000, when: [shipped.rescue_boat == 1] }
+          - { type: cash, amountCents: -150000, when: [shipped.rescue_boat == 0] }
+      - id: wait
+        label: Wait for the letter
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -250000 }
+          - { type: review, rating: 2, count: 2 }
+
+  - id: jellyfish
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [tour.month >= 6, tour.month <= 9]
+    from: none
+    sender: The lifeguards
+    look: note
+    text: >-
+      Jellyfish have arrived in the bay. The lifeguards hoisted the purple flag and the snorkel
+      guests want their money back. Paddle boards are fine, if nobody falls off.
+    defaultChoice: carry_on
+    choices:
+      - id: switch
+        label: Turn snorkel trips into paddle tours this week
+        hours: 3
+        effects:
+          - { type: review, rating: 4, count: 2, when: [shipped.paddle_lessons == 1] }
+      - id: carry_on
+        label: Carry on and hand out vinegar
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 2, when: [shipped.snorkel_trips == 1] }
+
+  - id: van_inspection
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 15]
+    from: none
+    sender: The ITV inspection station
+    look: official
+    text: >-
+      The van failed its inspection: brakes, a light and a mysterious rattle. Until it is fixed,
+      no trips leave the beach.
+    defaultChoice: later
+    choices:
+      - id: fix
+        label: Fix it now at the garage's price
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -90000 }
+      - id: later
+        label: Fix it when there is time
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 6 }
+          - { type: review, rating: 2, count: 2, when: [shipped.kite_trips == 1] }
+
+  - id: rig_breakage
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [shipped.windsurf_courses == 1]
+    from: none
+    sender: Your beach hand
+    look: note
+    text: >-
+      Two masts snapped in one afternoon and a boom is held together with tape and hope. The
+      shop in Palma has new ones, at shop prices.
+    defaultChoice: tape
+    choices:
+      - id: replace
+        label: Buy new masts and a boom
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -70000 }
+      - id: tape
+        label: More tape
+        hours: 0
+        effects:
+          - { type: bugs, delta: 1 }
+
+  - id: efoil_battery
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when: [shipped.efoil_fleet == 1]
+    from: none
+    sender: Your beach hand
+    look: note
+    text: >-
+      An eFoil battery died with a guest above it, about 300 metres out. The guest swam back,
+      filming. The battery costs more than the guest's holiday.
+    defaultChoice: wait
+    choices:
+      - id: replace
+        label: Replace the battery
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -180000 }
+      - id: wait
+        label: Run three boards instead of four
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3 }
+
+  - id: rescue_boat_engine
+    area: product
+    weight: 1
+    once: true
+    when: [shipped.rescue_boat == 1]
+    from: none
+    sender: The marina mechanic
+    text: >-
+      The rescue boat's engine coughs on cold mornings and stops on warm ones. The mechanic can
+      service it next week, for a price and a coffee.
+    defaultChoice: later
+    choices:
+      - id: service
+        label: Have it serviced
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -60000 }
+      - id: later
+        label: Keep pulling the cord
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 2 }
+
+  - id: sunburnt_child
+    area: product
+    weight: 1
+    once: true
+    when: [shipped.kids_club == 1]
+    from: none
+    sender: A parent
+    look: note
+    text: >-
+      A child came back from the kids' club the colour of a lobster. The parent is calm, for now,
+      and wants to know your sun cream policy. You did not have one until today.
+    defaultChoice: apologise
+    choices:
+      - id: policy
+        label: Write a sun policy and buy a shade sail
+        hours: 4
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: review, rating: 5, count: 2 }
+      - id: apologise
+        label: Apologise and move on
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 2 }

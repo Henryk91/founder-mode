@@ -275,4 +275,34 @@ Judged on 1,000 seeds, or 10,000 where the effect is smaller than its margin. Th
 
 ## 17. Sources and values as built
 
-The agent fills this in: checked figures with sources and dates, and every value changed while tuning with a pointer to `docs/decisions.md`.
+Filled in by plan 4, step 2 (October 2026). Decisions: `docs/decisions.md`, "Plan 4, step 2: Rückenwind".
+
+### Checked figures (searched October 2026)
+
+| Figure | Source | Use |
+|---|---|---|
+| Windsurf lessons and courses in the Bay of Alcúdia: a 2 hour introduction from 55 EUR, a five day course from 260 EUR, beginner courses from 190 EUR | Yumping listings for Mallorca and Alcúdia; Manawa (Puerto de Alcúdia, 1.5 h from 55 EUR); Expedia (2 h course about 93 USD) | A course place of 220 EUR is in the range; kept |
+| Activity platforms take 20 to 30% from operators (GetYourGuide raised some from 20 to 30% in July 2025) | Arival, "GetYourGuide Commission Increasing for Some Operators" (2025); Magpie reseller guide (20 to 35%) | Strandklick at 22% kept |
+| Spanish self-employed contributions in 2025: 200 to 590 EUR a month by income band | Wolters Kluwer, "Cuotas autónomos 2025"; Emprendedores, 2025 tables | 300 EUR a month kept (a middle band); the 2026 table was not found |
+| eFoil in Mallorca: hire 250 EUR an hour, lessons from 75 EUR (30 to 60 minutes) | El Niño Mallorca price list; Manawa (Puerto de Alcúdia) | The fleet sells at about 108 EUR an hour, a lesson's price, not a hire's: hire at 250 would need gear the centre never owns. Estimate |
+
+Not found from a current source, so still estimates: the beach licence fee and how the town tenders the spots, instructor day rates (140 to 180 EUR), the container, van and insurance costs, gear prices, the wind statistics of the bay, and the "fijo discontinuo" detail. Kite course prices in Mallorca were not found; 450 EUR for three trip days is an estimate.
+
+### Values as built that differ from the spec
+
+| Value | Spec | As built | Why |
+|---|---|---|---|
+| Beach licence | 9,000 a season, paid in March | 750 a month | The engine has no yearly cost |
+| Rescue boat | 18,000 to buy, or 900 a month in season | Leased, 600 a month all year | Buying is step 3's asset mechanic |
+| Modern gear | 10 sets at 2,500 | 14 sets for 20,000 | With fewer, wind regulars could not carry the centre |
+| Course groups per instructor shift | per slot (6, 4, 3) | windsurf 3, catamaran 2.6, wing 1.5 places a day; kite one place a trip day | A course takes three or four sessions over two slots a day |
+| Prices | per product | per segment (an activity, a course place, a week's hire), with a factor per product | The engine prices by segment |
+| Starting prices | per season | the same all year: activity 40, course 220, week's hire 260 | An inherited price list; seasonal prices are for the player to find |
+| Peak months | July and August | June to September | The engine has two seasons |
+| Requests at peak, before reach and fit | hotel 60 to 200, learners 15 to 50, regulars 8 to 30 | hotel 80 to 210, learners 9 to 31, regulars 4.5 to 17 | Tuned (T1 and T3) |
+| Wing and kite instructors, June to September | scarce | 5, 4, 4, 5 shifts a week available | W2 round 1 |
+| Kite course | 420 | 1.9 times a course place (about 418 at the start), appeal 0.25 | W2 round 2 |
+| eFoil | 120 an hour | 2.7 times an activity (108 at the start), appeal 0.05, 40 a unit in wear, hotel guests only | W5 |
+| Strict cancellation policy | | learners convert 0.82, wind regulars 0.78 | T11 rounds 1 and 2 |
+| Permanent and part time contracts | | 525 and 320 a week | 1,500 a month gross in 14 payments with employer costs (est.) |
+

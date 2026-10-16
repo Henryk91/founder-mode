@@ -174,6 +174,17 @@ export type RunResult = {
     firstViableWeek: number | null
     /** Staff contracts signed over the run, by kind (plan 2 target T14). */
     contracts: { permanent: number; seasonal: number; partTime: number }
+    /**
+     * Plan 4: graduates who came back in year 2 by channel, trips run and wasted, and the
+     * tender's answer. Absent without day conditions.
+     */
+    abroad?: {
+      returnedDirect2: number
+      returnedPlatform2: number
+      trips: number
+      wastedTrips: number
+      tender: { bid: string; kept: boolean } | null
+    }
   } | null
   /**
    * The bank loan (step 6): what was borrowed over the run, interest and fees paid, how many
@@ -625,5 +636,18 @@ function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
       seasonal: (b.contracts ?? []).filter((x) => x.kind === 'seasonal').length,
       partTime: (b.contracts ?? []).filter((x) => x.kind === 'part_time').length,
     },
+    ...(b.abroad
+      ? {
+          abroad: {
+            returnedDirect2: b.abroad.ladder[1]?.returnedDirect ?? 0,
+            returnedPlatform2: b.abroad.ladder[1]?.returnedPlatform ?? 0,
+            trips: b.abroad.trips?.run ?? 0,
+            wastedTrips: b.abroad.trips?.wasted ?? 0,
+            tender: b.abroad.tender
+              ? { bid: b.abroad.tender.bid, kept: b.abroad.tender.kept }
+              : null,
+          },
+        }
+      : {}),
   }
 }

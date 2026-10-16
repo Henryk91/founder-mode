@@ -9,6 +9,7 @@ import zollstockAbout from './scenarios/zollstock/about.yaml?raw'
 import gratwanderungAbout from './scenarios/gratwanderung/about.yaml?raw'
 import hinterhofAbout from './scenarios/hinterhof/about.yaml?raw'
 import seeblickAbout from './scenarios/seeblick/about.yaml?raw'
+import rueckenwindAbout from './scenarios/rueckenwind/about.yaml?raw'
 import categoriesYaml from './categories.yaml?raw'
 
 export { SCENARIO_IDS, SCENARIO_MODES, isScenarioId, type ScenarioId } from './ids'
@@ -54,6 +55,7 @@ const ABOUT: Record<ScenarioId, string> = {
   gratwanderung: gratwanderungAbout,
   hinterhof: hinterhofAbout,
   seeblick: seeblickAbout,
+  rueckenwind: rueckenwindAbout,
 }
 
 /** Name, category, tags and description of every built in scenario, in `SCENARIO_IDS` order. */

@@ -35,6 +35,8 @@ export type Strategy = {
   model?: 'subscription' | 'bookings'
   /** Plays only where a scenario offers a bank loan (step 6). */
   needsLoan?: boolean
+  /** Plan 4: plays only in these scenarios (bots for one scenario's own targets). */
+  scenarios?: string[]
   /** For report diagnostics only: the scenario this strategy is played on, from the real one. */
   adapt?(scenario: Scenario): Scenario
 }
@@ -333,4 +335,5 @@ export class ChannelLog {
 export const playsIn = (strategy: Strategy, scenario: Scenario): boolean =>
   (strategy.model ?? 'subscription') === (scenario.bookings ? 'bookings' : 'subscription') &&
   (strategy.modes?.includes(scenario.mode ?? 'standard') ?? true) &&
-  (!strategy.needsLoan || !!scenario.loan)
+  (!strategy.needsLoan || !!scenario.loan) &&
+  (!strategy.scenarios || strategy.scenarios.includes(scenario.id))

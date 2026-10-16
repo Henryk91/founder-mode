@@ -115,8 +115,25 @@ export function suitableSlots(
   return { suitable, total: DAYS * slots.length }
 }
 
+/** Expected shares per scenario's bookings block: they depend on content only. */
+const shares = new WeakMap<BookingsConfig, Map<string, number>>()
+
 /** The share of a month's slots that suit a product, from the monthly chances. */
 export function expectedShare(cfg: BookingsConfig, id: FeatureId, month: number): number {
+  let known = shares.get(cfg)
+  if (!known) {
+    known = new Map()
+    shares.set(cfg, known)
+  }
+  const key = `${id}|${month}`
+  const hit = known.get(key)
+  if (hit !== undefined) return hit
+  const share = computeShare(cfg, id, month)
+  known.set(key, share)
+  return share
+}
+
+function computeShare(cfg: BookingsConfig, id: FeatureId, month: number): number {
   const c = cfg.conditions
   const p = cfg.products[id]
   if (!c || !p?.runsIn) return 1

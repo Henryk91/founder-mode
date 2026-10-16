@@ -1,0 +1,199 @@
+# Money: the town, the bank, the storms and the beach licence.
+events:
+  - id: beach_station_offer
+    area: finance
+    weight: 1
+    once: true
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: The town's beach office
+    look: official
+    text: >-
+      The town will let you replace the container with a timber beach station: a small shop,
+      changing rooms and lockers. It costs 12,000 EUR to build and 900 EUR a month more, and
+      walk-ins like a building more than a box.
+    defaultChoice: not_now
+    choices:
+      - id: build
+        label: Build the beach station
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -1200000 }
+          - { type: moveOffice, stage: beach_station }
+      - id: not_now
+        label: The container will do
+        hours: 0
+
+  - id: beach_tender
+    area: finance
+    weight: 1
+    once: true
+    trigger: [week >= 40]
+    when: [week <= 48]
+    openWeeks: 4
+    from: none
+    sender: The town hall
+    look: official
+    text: >-
+      The town is tendering the beach spots for the next seasons, and four other operators have
+      bid for yours. You can bid more, bid as before and trust your reviews, or move to a
+      hotel's own beach for a lower fee and a share of your takings.
+    defaultChoice: same
+    choices:
+      - id: higher
+        label: Bid 40% more and keep the spot
+        hours: 4
+        effects:
+          - { type: tender, bid: higher }
+      - id: same
+        label: Bid as before
+        hours: 0
+        effects:
+          - { type: tender, bid: same }
+      - id: hotel
+        label: Move to a hotel's beach
+        hours: 3
+        effects:
+          - { type: tender, bid: hotel }
+
+  - id: licence_inspection
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: The town's beach inspector
+    look: official
+    text: >-
+      The town's inspector is counting your boards against the licence. The licence says twelve.
+      The beach says more, depending on how you count paddles.
+    defaultChoice: wing_it
+    choices:
+      - id: paperwork
+        label: Spend the hours on the paperwork
+        hours: 5
+      - id: wing_it
+        label: Hope the count is generous
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -80000, chance: 0.6 }
+
+  - id: october_storm
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 40
+    when: [tour.month >= 10]
+    from: none
+    sender: The storm
+    look: note
+    text: >-
+      An autumn storm took the container's roof halfway to Menorca and the rigs with it. A
+      builder can fix it this week at storm prices, or next month at normal ones.
+    defaultChoice: wait
+    choices:
+      - id: fix_now
+        label: Fix it now
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -150000 }
+      - id: wait
+        label: Wait a month
+        hours: 0
+        effects:
+          - { type: lostHours, hours: 8 }
+          - { type: cash, amountCents: -90000 }
+
+  - id: gestor_mistake
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: Your gestor
+    text: >-
+      Your gestor found a mistake in last quarter's tax return. It is in your favour, slightly,
+      and fixing it means a form in triplicate and a morning at the tax office.
+    defaultChoice: leave
+    choices:
+      - id: fix
+        label: Spend the morning at the tax office
+        hours: 4
+        effects:
+          - { type: cash, amountCents: 40000 }
+      - id: leave
+        label: Leave it
+        hours: 0
+
+  - id: winter_storage
+    area: finance
+    weight: 1
+    once: true
+    when: [tour.month >= 11]
+    from: none
+    sender: A farmer near Muro
+    text: >-
+      A farmer near Muro offers his barn for your boards over the winter, cheaper than the
+      container's storage fee. The barn also stores goats.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Move the boards to the barn
+        hours: 6
+        effects:
+          - { type: cash, amountCents: 60000 }
+          - { type: bugs, delta: 1 }
+      - id: decline
+        label: Keep them by the beach
+        hours: 0
+
+  - id: social_security_letter
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 30]
+    from: none
+    sender: The social security office
+    look: official
+    text: >-
+      A letter says your self-employed contributions were set on last year's estimate, and this
+      year looks better. You can declare it now and pay more monthly, or wait and pay later.
+    defaultChoice: wait
+    choices:
+      - id: declare
+        label: Declare it now
+        hours: 2
+        effects:
+          - {
+              type: fixedCost,
+              id: contribution_rise,
+              name: Higher social security,
+              monthlyCents: 10000,
+            }
+      - id: wait
+        label: Wait for the adjustment
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -180000, when: [monthlyRevenueEur >= 8000] }
+
+  - id: second_hand_rigs
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 8, week <= 40]
+    from: none
+    sender: A closing school in Can Picafort
+    text: >-
+      A school up the coast is closing and selling its rigs, cheap and slightly salty. They would
+      replace your worst ones, if you can carry them.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Buy the rigs
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -150000 }
+          - { type: review, rating: 5, count: 2, when: [shipped.windsurf_courses == 1] }
+      - id: decline
+        label: Decline
+        hours: 0

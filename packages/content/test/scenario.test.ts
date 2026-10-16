@@ -267,7 +267,7 @@ describe('content', () => {
         .filter((c) => c.category === id)
         .map((c) => c.id)
     expect(byCategory('startups')).toEqual(['kantino', 'zollstock'])
-    expect(byCategory('tourism')).toEqual(['gratwanderung', 'hinterhof', 'seeblick'])
+    expect(byCategory('tourism')).toEqual(['gratwanderung', 'hinterhof', 'seeblick', 'rueckenwind'])
     for (const c of scenarioCatalogue()) {
       expect(c.tags.length).toBeGreaterThanOrEqual(2)
       expect(c.tags.length).toBeLessThanOrEqual(3)
@@ -392,7 +392,8 @@ describe('content', () => {
       const offers = ls.events.filter((e) =>
         e.choices.some((c) => c.effects.some((fx) => fx.type === 'officeMove')),
       )
-      expect(offers).toHaveLength(ls.mode === 'long' ? 3 : 0)
+      // Plan 4: the abroad scenarios have stages 1 and 2 only, so no such offers.
+      expect(offers).toHaveLength(ls.mode === 'long' && ls.officeStages.length > 2 ? 3 : 0)
       for (const e of offers) {
         const fx = e.choices.flatMap((c) => c.effects).find((x) => x.type === 'officeMove')!
         if (fx.type !== 'officeMove') continue
