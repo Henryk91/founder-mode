@@ -1,16 +1,16 @@
 # Autonomous run 3 status
 
 ## Current
-Step: 3, the established UI stage.
-Last commit: step 2 report (tag `plan3-tuned`). All long modes are protected from here.
-Next action: merge branch `plan3-wip` (step 3 work, worktree `../founder-mode-plan3`) into main, prove the gate unchanged, measure the Start screen's LCP, write the step 3 report.
+Step: 4, wrap up.
+Last commit: step 3 report (tag `plan3-established`).
+Next action: revisit plan 3's open issues (O1 and O3 in all four long modes; Kantino long 32 and 33) with 3 fresh rounds each, starting with what moving does on the seeds where the careful bot moves; then the gate, seeds, docs and the final report.
 
 ## Checklist
 - [x] Plan 2 complete (tag plan2-complete); audited, see `reports/audit.md` (tag plan2-audited)
 - [x] Step 0: set up and baseline (tag plan3-baseline)
 - [x] Step 1: office stages (tag plan3-stages)
 - [x] Step 2: retune long mode (tag plan3-tuned)
-- [ ] Step 3: established UI (tag plan3-established)
+- [x] Step 3: established UI (tag plan3-established)
 - [ ] Step 4: wrap up (tag plan3-complete)
 
 ## Open issues
@@ -24,6 +24,7 @@ Next action: merge branch `plan3-wip` (step 3 work, worktree `../founder-mode-pl
 - Plan 3 step 2: AUTONOMOUS three desks at Kantino's kitchen table and coworking desk (spec: two); four would restore 32 and 33 fully (decisions, plan 3 step 2).
 - Plan 3 step 2: AUTONOMOUS careful move rule wants the surplus to carry twice the added rent, and a subscription company moves only for a blocked hire.
 - Plan 3 step 2: AUTONOMOUS O1 and O3 left open with spec values; one option is restating O1 (decisions, plan 3 step 2).
+- Plan 3 step 3: AUTONOMOUS every screen after the Start screen loads as one chunk after the first paint (Start screen 2.28 s; it was 2.55 s, over the limit since step 1's office screens).
 - Plan 3 starts from the completed plan 2 checkpoint `plan2-complete`.
 
 ## Stopped
