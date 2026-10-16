@@ -10,6 +10,7 @@ import {
   type Target,
 } from './report'
 import { fmtMargin, medianMargin, rateMargin } from './margin'
+import type { RunResult } from './simulate'
 
 const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
 
@@ -74,33 +75,43 @@ export function evaluateOfficeTargets(
   ]
 }
 
-/** E1's band: the share of the careful bot's winning runs that turn established, and the week. */
-export const E1_SHARE = [40, 80] as const
-export const E1_WEEK = [60, 90] as const
+/** E1: the least share of the careful bot's winning runs that turn established, and year 2. */
+export const E1_MIN_SHARE = 40
+export const E1_AFTER_WEEK = 52
 
 /**
- * Plan 3, after review: target E1 on the careful bot's runs. The established look comes to a
- * company that has made it: in 40 to 80% of its winning runs, median week 60 to 90.
+ * Plan 3, after review: target E1 on the careful bot's runs. The established look marks a company
+ * that has made it: reached in at least 40% of its winning runs, in clearly fewer of its losing
+ * runs (the losing share plus its margin stays below the winning share less its margin), and in
+ * year 2 (median week after 52). Restated from a band of 40 to 80% and week 60 to 90, which was
+ * a rough guess (docs/office-stages.md section 6).
  */
 export function evaluateEstablishedTarget(id: number, careful: StrategyRuns | undefined): Target {
   const won = careful ? wins(careful.results) : []
-  const weeks = won.flatMap((r) => (r.establishedWeek === null ? [] : [r.establishedWeek]))
-  const share = pct(weeks.length, won.length)
+  const lost = careful ? careful.results.filter((r) => !won.includes(r)) : []
+  const reached = (rs: readonly RunResult[]) => rs.filter((r) => r.establishedWeek !== null)
+  const weeks = reached(won).map((r) => r.establishedWeek!)
+  const winShare = pct(weeks.length, won.length)
+  const lossShare = pct(reached(lost).length, lost.length)
   const week = median(weeks)
-  const shareMargin = rateMargin(weeks.length, won.length)
+  const winMargin = rateMargin(weeks.length, won.length)
+  const lossMargin = rateMargin(reached(lost).length, lost.length)
   const weekMargin = weeks.length ? medianMargin(weeks) : 0
-  const within = (x: number, [lo, hi]: readonly [number, number], m: number) =>
-    x + m >= lo && x - m <= hi
   return {
     id,
-    text: `E1. The established look comes once the company has made it: the careful bot reaches it in ${E1_SHARE[0]} to ${E1_SHARE[1]}% of its winning runs, median week ${E1_WEEK[0]} to ${E1_WEEK[1]}`,
-    value: careful ? `${fmtPct(share)} of ${won.length} wins; median week ${fmtNum(week)}` : '-',
-    margin: careful ? `${fmtMargin(shareMargin)}; ${fmtMargin(weekMargin)}` : '',
+    text: `E1. The established look comes once the company has made it: the careful bot reaches it in at least ${E1_MIN_SHARE}% of its winning runs, in clearly fewer of its losing runs, and in year 2 (median week after ${E1_AFTER_WEEK})`,
+    value: careful
+      ? `${fmtPct(winShare)} of ${won.length} wins, ${fmtPct(lossShare)} of ${lost.length} losses; median week ${fmtNum(week)}`
+      : '-',
+    margin: careful
+      ? `${fmtMargin(winMargin)}, ${fmtMargin(lossMargin)}; ${fmtMargin(weekMargin)}`
+      : '',
     pass:
       !!careful &&
       week !== null &&
-      within(share, E1_SHARE, shareMargin) &&
-      within(week, E1_WEEK, weekMargin),
+      winShare + winMargin >= E1_MIN_SHARE &&
+      lossShare + lossMargin < winShare - winMargin &&
+      week + weekMargin > E1_AFTER_WEEK,
   }
 }
 

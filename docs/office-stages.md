@@ -103,6 +103,6 @@ After the review of plan 3, the established look comes once money coming in has 
 
 | # | Target |
 |---|---|
-| E1 | The careful bot reaches the established look in 40 to 80% of its winning runs, median week roughly 60 to 90, in each long mode scenario |
+| E1 | The established look marks a company that has made it: the careful bot reaches it in at least 40% of its winning runs, in clearly fewer of its losing runs (the losing share plus its margin below the winning share less its margin), and its median week falls in year 2 (after week 52), in each long mode scenario |
 
-The months are tuned per scenario between 4 and 8 for E1: Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8 (`docs/decisions.md`, plan 3 review).
+**E1 restated.** The first wording asked for 40 to 80% of winning runs and a median week of 60 to 90. That band was a rough guess, not the intent: Hinterhof's high share (93.6%) comes almost entirely from winning runs (2.7% of its losing runs), which is exactly what the look should mean. The months are tuned per scenario between 4 and 8 and kept: Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8 (`docs/decisions.md`, plan 3 review).

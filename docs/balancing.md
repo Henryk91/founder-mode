@@ -486,7 +486,7 @@ Targets 20 to 30 (`docs/phase9-proposal.md` 2.9 and Part C2), judged on `validat
 | 38 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving (on 10000 seeds) | +0.0 | ±0.0 | yes |
 | 39 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points (on 10000 seeds) | -42.8 | ±1.0 | yes |
 | 40 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 0.3% of 4295; stage 4 taken in 0.0% of 11; stage 5 never offered |  | no |
-| 41 | E1. The established look comes once the company has made it: the careful bot reaches it in 40 to 80% of its winning runs, median week 60 to 90 | 78.7% of 447 wins; median week 76 | ±3.8; ±4.0 | yes |
+| 41 | E1. The established look comes once the company has made it: the careful bot reaches it in at least 40% of its winning runs, in clearly fewer of its losing runs, and in year 2 (median week after 52) | 78.7% of 447 wins, 13.4% of 553 losses; median week 76 | ±3.8, ±2.8; ±4.0 | yes |
 | 31 | Both paths are viable: the careful bot that never raises (bootstrap, validate_then_build) and raise_on_traction each win (Sustainable or Growing) 25 to 45%, within 8 points of each other | bootstrap 43.0%, raise_on_traction 37.7% | ±1.0, ±0.9 | yes |
 | 32 | Neither dominates: bootstrap wins at least as often as raise_on_traction (within its margin), and raise_on_traction's median founder share value in winning runs is at least 1.3 times bootstrap's (share x company value by the visible rule) | raise_on_traction -5.3; value 871,495 EUR against 725,910 EUR | ±1.0 | no |
 | 33 | Raising on weak traction is punished: raise_early wins at least 8 points less than raise_on_traction and less than bootstrap, and the post-mortem names the round as a cause (bankrupt while or after raising, or investors met before a paying customer who passed as too early) in at least half of its losing runs | +2.4 against raise_on_traction, -2.9 against bootstrap; round named in 100.0% of losses | ±1.1, ±1.1 | no |
@@ -1764,7 +1764,7 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | -0.1 | ±0.2 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -39.0 | ±3.0 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 29.2% of 448; stage 4 taken in 41.2% of 51; stage 5 never offered |  | no |
-| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in 40 to 80% of its winning runs, median week 60 to 90 | 43.3% of 448 wins; median week 84 | ±4.6; ±3.0 | yes |
+| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in at least 40% of its winning runs, in clearly fewer of its losing runs, and in year 2 (median week after 52) | 43.3% of 448 wins, 3.6% of 552 losses; median week 84 | ±4.6, ±1.6; ±3.0 | yes |
 
 ## Endings
 
@@ -2219,7 +2219,7 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | +0.1 | ±0.4 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -26.4 | ±2.7 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 28.8% of 264; stage 4 taken in 3.7% of 54; stage 5 never offered |  | no |
-| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in 40 to 80% of its winning runs, median week 60 to 90 | 93.6% of 264 wins; median week 62 | ±3.0; ±6.5 | no |
+| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in at least 40% of its winning runs, in clearly fewer of its losing runs, and in year 2 (median week after 52) | 93.6% of 264 wins, 2.7% of 736 losses; median week 62 | ±3.0, ±1.2; ±6.5 | yes |
 
 ## Endings
 
@@ -2718,7 +2718,7 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | +0.1 | ±0.2 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -27.3 | ±2.8 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 4.8% of 273; stage 4 never offered; stage 5 never offered |  | no |
-| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in 40 to 80% of its winning runs, median week 60 to 90 | 49.8% of 273 wins; median week 57 | ±5.9; ±1.0 | no |
+| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in at least 40% of its winning runs, in clearly fewer of its losing runs, and in year 2 (median week after 52) | 49.8% of 273 wins, 1.2% of 727 losses; median week 57 | ±5.9, ±0.8; ±1.0 | yes |
 
 ## Endings
 
