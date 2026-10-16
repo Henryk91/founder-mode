@@ -195,7 +195,7 @@ const GRATWANDERUNG: Overrides = {
     established: 'Gratwanderung Bergtouren',
   },
   'results.entry.ui_established':
-    'Six months in the black and three guides on the books. Gratwanderung is a proper outfit now, and the van still smells of wet rope.',
+    'Gratwanderung is a proper outfit now, with books that balance. The van still smells of wet rope.',
   ...shared({
     test: {
       one: 'Test listing',
@@ -231,7 +231,7 @@ const HINTERHOF: Overrides = {
   // Plan 3, the established stage: the company's full name and the line that marks the switch.
   'bar.company': { scrappy: '{name}', organised: '{name}', established: 'Wirtshaus Hinterhof' },
   'results.entry.ui_established':
-    'Six months of covering every bill, and a team of three on the rota. The Hinterhof is a proper restaurant now; the chef still counts the covers twice.',
+    'The Hinterhof is a proper restaurant now, and it pays its own way. The chef still counts the covers twice.',
   ...shared({
     test: {
       one: 'Opening list',
@@ -284,7 +284,7 @@ const SEEBLICK: Overrides = {
   // Plan 3, the established stage: the company's full name and the line that marks the switch.
   'bar.company': { scrappy: '{name}', organised: '{name}', established: 'Gasthaus Seeblick' },
   'results.entry.ui_established':
-    'Six months of paying every bill, and three of you running the house. The Seeblick has stopped being a project and started being a guesthouse.',
+    'The Seeblick has stopped being a project and started being a guesthouse. The bills get paid before anyone frowns at them.',
   ...shared({
     test: { one: 'Test rates', other: 'Test rates', lower: 'test rate', lowerPlural: 'test rates' },
     pilot: {

@@ -34,11 +34,11 @@ describe('long mode in the content', () => {
     expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
     // The tourism scenarios change in plan 2 steps 1 to 4 and the plan 2 audit's open-issue
     // rounds, and in plan 3 steps 1 and 2 (office stages); protected again from `plan3-tuned`.
-    // After review, the established look moved from a stage flag to `establishedAt`: content
-    // only, the games are the same (the gate shows them unchanged).
-    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('9ad444a5805953f3')
-    expect(scenarioHash(loadScenario('hinterhof'))).toBe('12e3976ce8a7b47e')
-    expect(scenarioHash(loadScenario('seeblick'))).toBe('e90ff95a84f6c390')
+    // After review, the established look moved from a stage flag to `establishedAt` (months
+    // covering all costs, tuned for target E1): content only, the games are the same.
+    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('e3da9598d7b4bce2')
+    expect(scenarioHash(loadScenario('hinterhof'))).toBe('e0f48178457118b2')
+    expect(scenarioHash(loadScenario('seeblick'))).toBe('b70b22d44d6224ea')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })

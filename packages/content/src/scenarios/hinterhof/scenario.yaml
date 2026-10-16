@@ -387,9 +387,9 @@ officeStages:
 office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
-# Plan 3: the established look once all costs have been covered for six months running and three
-# people work here (the founder and two on contracts).
-establishedAt: { monthsCoveringAll: 6, people: 3 }
+# Plan 3: the established look once money in has covered all costs for these months in a row, or
+# on moving into stage 4 (target E1).
+establishedAt: { monthsCoveringAll: 8, officeStage: 4 }
 
 # The bank loan (docs/loan-proposal.md): needed to open.
 loan:

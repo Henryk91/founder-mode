@@ -1,4 +1,4 @@
-import { evaluateOfficeTargets } from './officeTargets'
+import { evaluateEstablishedTarget, evaluateOfficeTargets } from './officeTargets'
 import {
   evaluateTargets,
   find,
@@ -279,6 +279,7 @@ export function evaluateLongTargets(input: ReportInput): Target[] {
           find(input, 'validate_then_build_never_move'),
           find(input, 'validate_then_build_always_move'),
         )),
+    evaluateEstablishedTarget(41, find(input, 'validate_then_build')),
   ]
 }
 

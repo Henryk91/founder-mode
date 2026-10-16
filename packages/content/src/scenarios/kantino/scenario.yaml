@@ -321,9 +321,9 @@ organisedAt: [first_hire, covers_all_costs]
 modes:
   long:
     maxWeeks: 104
-    # Plan 3: the established look once all costs have been covered for six months running and
-    # three people work here (the founder and two hires).
-    establishedAt: { monthsCoveringAll: 6, people: 3 }
+    # Plan 3: the established look once money in has covered all costs for these months in a row,
+    # on moving into office stage 4, or once a funding round has closed (target E1).
+    establishedAt: { monthsCoveringAll: 8, officeStage: 4, funded: true }
     # A long game should prove it lasts: profitable in each of the last three months.
     win: { profitableMonths: 3 }
     founder:

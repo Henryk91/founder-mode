@@ -9,7 +9,7 @@ import {
   type StrategyRuns,
   type Target,
 } from './report'
-import { fmtMargin } from './margin'
+import { fmtMargin, medianMargin, rateMargin } from './margin'
 
 const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
 
@@ -74,9 +74,39 @@ export function evaluateOfficeTargets(
   ]
 }
 
+/** E1's band: the share of the careful bot's winning runs that turn established, and the week. */
+export const E1_SHARE = [40, 80] as const
+export const E1_WEEK = [60, 90] as const
+
 /**
- * Plan 3: how often and when runs turn established (months covering all costs and a team of
- * three), per long mode strategy that reached it at least once.
+ * Plan 3, after review: target E1 on the careful bot's runs. The established look comes to a
+ * company that has made it: in 40 to 80% of its winning runs, median week 60 to 90.
+ */
+export function evaluateEstablishedTarget(id: number, careful: StrategyRuns | undefined): Target {
+  const won = careful ? wins(careful.results) : []
+  const weeks = won.flatMap((r) => (r.establishedWeek === null ? [] : [r.establishedWeek]))
+  const share = pct(weeks.length, won.length)
+  const week = median(weeks)
+  const shareMargin = rateMargin(weeks.length, won.length)
+  const weekMargin = weeks.length ? medianMargin(weeks) : 0
+  const within = (x: number, [lo, hi]: readonly [number, number], m: number) =>
+    x + m >= lo && x - m <= hi
+  return {
+    id,
+    text: `E1. The established look comes once the company has made it: the careful bot reaches it in ${E1_SHARE[0]} to ${E1_SHARE[1]}% of its winning runs, median week ${E1_WEEK[0]} to ${E1_WEEK[1]}`,
+    value: careful ? `${fmtPct(share)} of ${won.length} wins; median week ${fmtNum(week)}` : '-',
+    margin: careful ? `${fmtMargin(shareMargin)}; ${fmtMargin(weekMargin)}` : '',
+    pass:
+      !!careful &&
+      week !== null &&
+      within(share, E1_SHARE, shareMargin) &&
+      within(week, E1_WEEK, weekMargin),
+  }
+}
+
+/**
+ * Plan 3: how often and when runs turn established (months covering all costs in a row, office
+ * stage 4, or a closed round in Kantino long), per long mode strategy that reached it at least once.
  */
 export function establishedRows(input: ReportInput): string[] {
   const rows = input.strategies.filter((x) => x.results.some((r) => r.establishedWeek !== null))
@@ -85,7 +115,7 @@ export function establishedRows(input: ReportInput): string[] {
     '',
     '## The established look',
     '',
-    "Runs that turned established (revenue covering all costs for six months running and three people working), and the median week it happened in the winning runs that reached it.",
+    "Runs that turned established (money in covering all costs for the scenario's months in a row, a move into office stage 4, or in Kantino long a closed funding round), and the median week it happened in the winning runs that reached it.",
     '',
     '| Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |',
     '|---|---|---|---|---|',

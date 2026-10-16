@@ -78,7 +78,7 @@ describe('the tourism report (step 4)', () => {
       tourism: true,
     }
     expect(evaluateTourismTargets(input).map((t) => t.id)).toEqual([
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 19, 20, 21,
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 19, 20, 21, 22,
     ])
     const md = buildReport(input)
     expect(md).toContain('## Targets (tourism)')
