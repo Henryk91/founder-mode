@@ -37,7 +37,10 @@ describe('the established UI stage (plan 3)', () => {
     expect(next.report.uiStageChanged).toBe(true)
     expect(next.report.entries).toContainEqual({ kind: 'ui_established' })
     // Never back, even after a month that did not cover the costs.
-    const poor = { ...next.state, ledger: next.state.ledger.map((l) => ({ ...l, revenueCents: 0 })) }
+    const poor = {
+      ...next.state,
+      ledger: next.state.ledger.map((l) => ({ ...l, revenueCents: 0 })),
+    }
     const after = endWeek(poor, plan())
     expect(after.state.company.uiStage).toBe('established')
     expect(after.report.uiStageChanged).toBe(false)
@@ -46,9 +49,15 @@ describe('the established UI stage (plan 3)', () => {
   it('also counts a move into stage 4, and a closed funding round in Kantino long', () => {
     const s = run(2, false)
     expect(reachesEstablished(s)).toBe(false)
-    expect(reachesEstablished({ ...s, company: { ...s.company, officeStage: 'courtyard_office' } })).toBe(false)
-    expect(reachesEstablished({ ...s, company: { ...s.company, officeStage: 'office_floor' } })).toBe(true)
-    expect(reachesEstablished({ ...s, company: { ...s.company, officeStage: 'front_desk' } })).toBe(true)
+    expect(
+      reachesEstablished({ ...s, company: { ...s.company, officeStage: 'courtyard_office' } }),
+    ).toBe(false)
+    expect(
+      reachesEstablished({ ...s, company: { ...s.company, officeStage: 'office_floor' } }),
+    ).toBe(true)
+    expect(reachesEstablished({ ...s, company: { ...s.company, officeStage: 'front_desk' } })).toBe(
+      true,
+    )
     const stake = { name: 'Angel', round: 'angel', amountCents: 10_000_000, shareBp: 1000, week: 2 }
     const funded = { ...s, funding: { ...s.funding, stakes: [stake] } } as unknown as GameState
     expect(reachesEstablished(funded)).toBe(true)
