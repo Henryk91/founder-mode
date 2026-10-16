@@ -67,6 +67,5 @@ These are better as their own small tuning plan than mixed into a content plan.
 
 | Item | Notes |
 |---|---|
-| Old worktrees | `../founder-mode-plan2`, `../founder-mode-plan3` |
-| Old branches | `plan2-work`, `plan3-wip` |
-| Debug scripts | `packages/bots/scratch/` |
+| Stale worktree records | Four agent scratch worktrees under `/private/tmp` whose folders are gone. `git worktree prune` clears them when no agent is running |
+| `packages/bots/scratch/` | Six local debug scripts, excluded in `.git/info/exclude`, so never committed. Delete when no longer useful |

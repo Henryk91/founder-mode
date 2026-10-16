@@ -8,6 +8,10 @@ import styles from '../components/ui.module.css'
 export function entryText(entry: ReportEntry, view: PlayerView): string {
   const stage = voiceOf(view)
   const segment = (id: string) => view.segments.find((s) => s.id === id)?.name ?? id
+  const product = (id: string) =>
+    view.bookings?.products.find((p) => p.id === id)?.name ??
+    view.product.features.find((f) => f.id === id)?.name ??
+    id
   switch (entry.kind) {
     case 'savings_transfer':
     case 'founder_draw':
@@ -112,6 +116,64 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       return count('results.entry.team_chased', stage, entry.count)
     case 'weather':
       return label(`results.entry.weather.${entry.weather}`, stage)
+    case 'conditions': {
+      // Plan 4: the week's wind and sea, counted per state for each slot of the day.
+      const a = view.bookings?.abroad
+      if (!a) return ''
+      return a.slots
+        .map((slot) => {
+          const days = entry.days[slot.id] ?? []
+          const states = a.states
+            .map((st) => [st.name, days.filter((d) => d === st.id).length] as const)
+            .filter(([, n]) => n > 0)
+            .map(([name, n]) => `${n} ${name}`)
+            .join(', ')
+          return label('results.entry.conditions', stage, { slot: slot.name, states })
+        })
+        .join(' ')
+    }
+    case 'conditions_moved':
+      return count(`results.entry.conditions_moved.${entry.to}`, stage, entry.units, {
+        product: product(entry.productId),
+      })
+    case 'conditions_cancelled':
+      return count('results.entry.conditions_cancelled', stage, entry.units, {
+        product: product(entry.productId),
+      })
+    case 'trips':
+      return label('results.entry.trips', stage, {
+        product: product(entry.productId),
+        run: entry.run,
+        wasted: entry.wasted,
+        guests: entry.guests,
+        amount: formatEuro(entry.costCents),
+      })
+    case 'trips_cancelled':
+      return count('results.entry.trips_cancelled', stage, entry.units, {
+        product: product(entry.productId),
+      })
+    case 'graduates':
+      return count('results.entry.graduates', stage, entry.units, { same: entry.sameStay })
+    case 'graduates_returned':
+      return count('results.entry.graduates_returned', stage, entry.units, {
+        direct: entry.direct,
+      })
+    case 'licence_applied':
+      return label('results.entry.licence_applied', stage, {
+        name: entry.name,
+        week: entry.readyWeek,
+      })
+    case 'costs_rose':
+      return label('results.entry.costs_rose', stage, {
+        pct: Math.round((entry.factor - 1) * 100),
+      })
+    case 'tender':
+      return label(
+        entry.bid === 'same'
+          ? `results.entry.tender.same.${entry.kept ? 'kept' : 'lost'}`
+          : `results.entry.tender.${entry.bid}`,
+        stage,
+      )
     case 'bookings_new':
       return count('results.entry.bookings_new', stage, entry.units, {
         segment: segment(entry.segmentId),
@@ -420,6 +482,21 @@ function place(entry: ReportEntry): [Group, number] {
       return ['sales', 4]
     case 'weather':
       return ['founder', 2]
+    case 'conditions':
+      return ['sales', 6]
+    case 'conditions_moved':
+    case 'graduates':
+    case 'graduates_returned':
+      return ['sales', 4]
+    case 'conditions_cancelled':
+    case 'trips_cancelled':
+    case 'trips':
+      return ['sales', 7]
+    case 'licence_applied':
+      return ['product', 6]
+    case 'costs_rose':
+    case 'tender':
+      return ['money', 8]
     case 'term_sheet':
     case 'funding_milestone':
       return ['money', 5]

@@ -54,12 +54,32 @@ export function applyProduct(
   for (const id of Object.keys(freelance?.build ?? {})) touched.add(id)
   let freelanceBugs = state.team.freelanceBugs
   const features = state.product.features.map((f) => {
+    const def = scenario.features.find((x) => x.id === f.id)
+    // Plan 4: a licence applied for ships once the authority's wait is over.
+    const waitWeeks = scenario.bookings?.products[f.id]?.waitWeeks
+    if (f.readyWeek !== undefined && f.shippedWeek === null) {
+      if (f.readyWeek > state.week || !def) return f
+      const bugsAdded = rng.int(def.bugsOnShip.min, def.bugsOnShip.max)
+      bugs += bugsAdded
+      entries.push({
+        kind: 'feature_shipped',
+        featureId: f.id,
+        name: def.name,
+        bugsAdded,
+        freelanceBugs: 0,
+      })
+      return { id: f.id, progressHours: f.progressHours, shippedWeek: state.week }
+    }
     const hours = (plan.build[f.id] ?? 0) + teamBuildOn(team, f.id) + (freelance?.build[f.id] ?? 0)
     if (hours === 0 || f.shippedWeek !== null) return f
-    const def = scenario.features.find((x) => x.id === f.id)
     if (!def) throw new Error(`Unknown feature ${f.id}`)
     const progressHours = f.progressHours + hours
     if (progressHours < def.buildHours) return { ...f, progressHours }
+    if (waitWeeks) {
+      const readyWeek = state.week + waitWeeks
+      entries.push({ kind: 'licence_applied', featureId: f.id, name: def.name, readyWeek })
+      return { ...f, progressHours: def.buildHours, readyWeek }
+    }
     const extra = touched.has(f.id) ? scenario.team.freelance.extraBugsPerFeature : 0
     const bugsAdded = rng.int(def.bugsOnShip.min, def.bugsOnShip.max) + extra
     bugs += bugsAdded

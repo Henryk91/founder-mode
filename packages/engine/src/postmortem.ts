@@ -278,6 +278,30 @@ export function guestsEconomics(state: GameState): GuestsEconomics | null {
           wasteCents: b.wasteCents ?? 0,
         }
       : {}),
+    ...(b.abroad
+      ? {
+          abroad: {
+            months: Object.entries(b.abroad.byMonth)
+              .map(([m, slots]) => ({ month: Number(m), slots: { ...slots } }))
+              .sort((x, y) => x.month - y.month),
+            lost: Object.entries(b.abroad.lost)
+              .map(([productId, units]) => ({ productId, units }))
+              .filter((x) => x.units > 0)
+              .sort((x, y) => y.units - x.units),
+            moved: b.abroad.moved,
+            ladder: b.abroad.ladder.map((y) => ({ ...y })),
+            trips: b.abroad.trips
+              ? {
+                  run: b.abroad.trips.run,
+                  wasted: b.abroad.trips.wasted,
+                  guests: b.abroad.trips.guests,
+                  costCents: b.abroad.trips.costCents,
+                }
+              : null,
+            tender: b.abroad.tender ? { ...b.abroad.tender } : null,
+          },
+        }
+      : {}),
     ...(Object.values(cfg.roles).some((r) => r.contracts)
       ? {
           contracts: {
