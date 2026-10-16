@@ -5,13 +5,16 @@ import type { MessageView, PlayerView } from '@founder-mode/engine'
  * Plan 3 (docs/office-stages.md): how bots answer the offers of office stages 3 to 5.
  * `careful` moves when the condition the offer names is real for this company (desks full and a
  * hire wanted, guests turned away for lack of room, a sustained profit) and the money covers the
- * one-off plus half a year of the added rent and two months of today's costs. `never` declines
+ * one-off plus half a year of the added rent and two months of today's costs, and last month's
+ * surplus carries the added rent twice over. `never` declines
  * every offer (target O1), `always` accepts each at once (target O2).
  */
 export type OfficeRule = 'careful' | 'never' | 'always'
 
 /** Months of added rent, and of today's fixed costs, a careful move keeps in hand. */
 const RENT_MONTHS = 6
+/** A careful move wants last month's surplus to cover the added rent this many times over. */
+const SURPLUS_RENTS = 2
 const COST_MONTHS = 2
 /** Weeks of the last 8 with guests turned away that make a tourism move worth it. */
 const TURNED_AWAY_WEEKS = 3
@@ -41,6 +44,15 @@ export function officeOffers(scenario: Scenario): Map<string, Offer> {
 /** The money a careful founder can count on: company cash and personal savings. */
 const money = (view: PlayerView) => view.company.cashCents + Math.max(0, view.founder.savingsCents)
 
+/**
+ * Last month's surplus as the screen shows it: monthly revenue less the company's fixed costs and
+ * the founder's living costs. A sustained profit is one that carries the new rent.
+ */
+export const surplusCents = (view: PlayerView): number =>
+  view.monthlyRevenueCents -
+  view.company.monthlyFixedCostsCents -
+  view.founder.livingCostCentsPerMonth
+
 /** What a careful move must have in hand for this offer's choice. */
 export function moveNeedsCents(view: PlayerView, m: MessageView, offer: Offer): number {
   const c = m.choices.find((x) => x.id === offer.choiceId)!
@@ -60,8 +72,9 @@ export function moveNeedsCents(view: PlayerView, m: MessageView, offer: Offer): 
 export function moveIsReal(view: PlayerView, offer: Offer, wantsHire: boolean): boolean {
   const o = view.office
   if (!view.bookings) {
-    // The desks (or, at the office floor, the team's size) are what stop a wanted hire.
-    if (offer.number <= 3) return wantsHire || o.monthsCoveringAll >= 3
+    // Only the desks (or, at the office floor, the team's size) stopping a wanted hire. A solo
+    // founder's profit is better kept: measured, every office lost against staying (plan 3
+    // step 2, decisions).
     return wantsHire
   }
   if (offer.needsContract) {
@@ -97,6 +110,7 @@ export function answerOffers(
     if (rule === 'careful') {
       if (!moveIsReal(view, offer, wantsHire)) continue
       if (money(view) < moveNeedsCents(view, m, offer)) continue
+      if (surplusCents(view) < SURPLUS_RENTS * c.monthlyCostCents) continue
     }
     out.push({ messageId: m.id, choiceId: c.id, hours: c.hours })
     left -= c.hours
