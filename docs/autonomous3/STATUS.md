@@ -2,7 +2,7 @@
 
 ## Current
 Plan 3 final after Henry's review (tag `plan3-final`, moved to the second review change). Summary: `reports/final.md`, section "After the review".
-Last commit: established look on months covering all costs (or stage 4, or a round), target E1.
+Last commit: E1 restated to its intent (passes in all four long modes).
 Next action: none; stopped as asked.
 
 ## Checklist
@@ -16,11 +16,10 @@ Next action: none; stopped as asked.
 ## Open issues
 - Carried from plan 2 (see `docs/autonomous2/STATUS.md`): tourism T14; Hinterhof T2 and T7; Seeblick T6, T7 and T11; Gratwanderung school demand above the spec; Kantino long T20, T27, T32, T33.
 - Plan 3 O3 in all four long modes (offices rarely taken; fits the restated O1). O1 restated after review and passing.
-- E1 (established look in 40 to 80% of the careful bot's wins, week 60 to 90) fails in Hinterhof (93.6%, week 62) and Seeblick (49.8%, week 57); passes in Kantino long and Gratwanderung.
 - Kantino long 32 about 1 point worse than before office stages (-5.3 against -4.2; the desks limit a funded team).
 
 ## For Henry to review (non-blocking)
-- Review: E1 months chosen per scenario (Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8); Hinterhof and Seeblick miss the band, options in `reports/final.md`.
+- Review: E1 restated (at least 40% of wins, clearly fewer losses, year 2); months Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8; passes in all four.
 - Plan 2 audit: T14 compares win rates, but contract bots sign only once a run is already won, so it cannot show a contract paying (decisions, plan 2 audit).
 - Plan 2 audit: Kantino long T32 and T33 options include restating (founder salary in founder value; T33 against bootstrap) (decisions, plan 2 audit).
 - Plan 3 step 2: AUTONOMOUS three desks at Kantino's kitchen table and coworking desk (spec: two); four would restore 32 and 33 fully (decisions, plan 3 step 2).

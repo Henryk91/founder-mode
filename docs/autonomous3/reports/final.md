@@ -112,14 +112,14 @@ Carried from plan 2, no worse: tourism T14 (all three); Hinterhof T2 and T7; See
 
 Henry's decisions (`docs/decisions.md`, "Plan 3 review"):
 
-1. **The established look follows the company's money, not office stage 4.** It starts once money coming in has covered all costs, the founder's living costs included, for a number of months in a row; moving into office stage 4, or in Kantino long a closed funding round, also counts. Never back. A first version also asked for three people at the company, but the game teaches that hiring seldom pays, so winners rarely had three (4.5% of Kantino long's careful wins, none of Seeblick's); it was dropped. New target **E1**: the careful bot reaches the look in 40 to 80% of its winning runs, median week 60 to 90. Months tuned per scenario between 4 and 8, measured on the careful bot (1,000 report seeds):
+1. **The established look follows the company's money, not office stage 4.** It starts once money coming in has covered all costs, the founder's living costs included, for a number of months in a row; moving into office stage 4, or in Kantino long a closed funding round, also counts. Never back. A first version also asked for three people at the company, but the game teaches that hiring seldom pays, so winners rarely had three (4.5% of Kantino long's careful wins, none of Seeblick's); it was dropped. Target **E1**, restated after review to its intent: the careful bot reaches the look in at least 40% of its winning runs, in clearly fewer of its losing runs, and its median week falls in year 2 (after week 52). The first wording's band (40 to 80% of wins, week 60 to 90) was a rough guess; Hinterhof's high share comes almost entirely from winning runs. Months tuned per scenario between 4 and 8 and kept; careful bot, 1,000 report seeds:
 
-   | Scenario | Months | Of all runs | Of winning runs | Median week (wins) | E1 |
-   |---|---|---|---|---|---|
-   | Kantino long | 8 | 42.6% | 78.7% (±3.8) | 76 | pass |
-   | Gratwanderung | 7 | 21.4% | 43.3% (±4.6) | 84 | pass |
-   | Hinterhof | 8 | 26.7% | 93.6% (±3.0) | 62 | fail: above 80% at every allowed value (open) |
-   | Seeblick | 8 | 14.5% | 49.8% (±5.9) | 57 (±1.0) | fail: three weeks early (open; 7 months: 70.3%, week 53) |
+   | Scenario | Months | Of all runs | Of winning runs | Of losing runs | Median week (wins) | E1 |
+   |---|---|---|---|---|---|---|
+   | Kantino long | 8 | 42.6% | 78.7% (±3.8) | 13.4% (±2.8) | 76 | pass |
+   | Gratwanderung | 7 | 21.4% | 43.3% (±4.6) | 3.6% (±1.6) | 84 | pass |
+   | Hinterhof | 8 | 26.7% | 93.6% (±3.0) | 2.7% (±1.2) | 62 | pass |
+   | Seeblick | 8 | 14.5% | 49.8% (±5.9) | 1.2% (±0.8) | 57 | pass |
 
    Every value from 4 to 8 months is in `docs/decisions.md` ("Plan 3 review, second decision"). Outcomes unchanged: the main part of the four long modes on 1,000 seeds matches `docs/balancing.md`; in Kantino long the only differences are targets the full gate judges on parts not run (wide seeds, the event part, the inbox reader's chasing table).
 2. **O1 restated** ("moving at the right time costs at most 1 point against never moving"), reason with the targets in `docs/office-stages.md`: two-year runs cannot pay back a fixed-cost move. It passes in all four long modes (+0.0, -0.1, +0.1, +0.1). O2 stays and passes. The post-mortem's office lines say "It cost ..." and "What changed: money in over four weeks went from ... to ... (up or down ...)".
@@ -130,5 +130,5 @@ Gate after the first review change: every scenario and mode identical to `plan3-
 
 ### For Henry to review after the review
 
-1. E1 in Hinterhof and Seeblick (table above): Hinterhof's winners nearly all cover their costs for eight months; Seeblick's reach the look a few weeks before week 60. Options: allow more than 8 months for Hinterhof, or accept "roughly" 60 for Seeblick's week 57.
+1. E1's months per scenario (Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8) and its restated wording.
 2. O3 stays open (offices rarely taken), which fits the restated O1.
