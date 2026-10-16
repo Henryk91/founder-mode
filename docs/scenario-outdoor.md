@@ -199,3 +199,11 @@ Reasons in `docs/decisions.md`, plan 2 steps 1 to 4 and the plan 2 audit.
 - **Events:** guests sent by events come only in the situation the text names (in season, with a good rating), and ten shared events reward effort only where their text says so.
 - **School groups:** demand stays above the spec. After plan 2 step 4 kept 9 to 12 groups a week at peak, the plan 2 audit priced a school day at 750 EUR a class (30 EUR a pupil, est.; willingness to pay 500 to 1,100 a class) and lowered demand to 5 to 8 groups; 4 to 7 left schools 17 points behind the other groups. The spec's 0.3 to 1.2 cannot carry a school-focused company.
 - **Team events:** a strict policy converts 70% of requests (was 80%, est.), so flexible terms are right for teams and strict terms for tourists.
+
+## 16. What changed in plan 3, and why
+
+Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/office-stages.md`.
+
+- **Office stages 3 to 5:** a gear store and meeting point (1,400 EUR a month, 8,000 to move in; gear for twelve more on the via ferrata, a third more walk-ins), a guiding centre with changing rooms (3,200 a month, 25,000; canyoning half as big again, a weather plan for both mountain products, room for four permanent guides; moving in switches to the established look) and a second base in the next valley (5,000 a month, 15,000; snowshoe groups of 30). Stage 3 is offered once the money has covered two months or guests were turned away for lack of room in 3 of the last 8 weeks; stage 4 when they keep being turned away; stage 5 when they are turned away at the peak. Estimates.
+- **Bots:** a careful company moves only when guests are turned away and its surplus over the last year (not a peak month) carries twice the added rent. Judged on a summer month, it moved into a winter's rent and won 19% of those runs against 56% for staying.
+- **Open:** moves happen only in runs already won and cost money there (targets T19 and T21, O1 and O3).

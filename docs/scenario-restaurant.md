@@ -215,3 +215,11 @@ Reasons in `docs/decisions.md`, plan 2 steps 1 to 4 and the plan 2 audit.
 - **Guests take the founder's time:** 0.04 h a cover served last week, up to 15 h.
 - **Demand:** evening locals 45 to 170 covers a week at peak (was 35 to 140; spec 40 to 160) and tourists 40 to 200 (est.), so dinner can carry the restaurant in its own runs.
 - **Open issue:** a player who never tests and builds everything still wins about one run in six (target 2 wants under 5%), because one dining room serves every segment. See `docs/autonomous2/STATUS.md`.
+
+## E. What changed in plan 3, and why
+
+Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/office-stages.md`.
+
+- **Office stages 3 to 5:** a bigger kitchen (35,000 EUR, no rent; about two fifths more covers per kitchen shift, a quarter less waste; the bank can finance it), the shop next door knocked through (2,800 a month, 45,000; 40 seats become 70; moving in switches to the established look) and a deli and catering kitchen across the street (5,000 a month, 30,000; catering doubled and a takeaway lunch counter, which need a cook on every lunch shift). Stage 3 is offered once the money has covered two months or guests were turned away for lack of room in 3 of the last 8 weeks; stage 4 when they keep being turned away; stage 5 when they are turned away at the peak. Estimates.
+- **Bots:** a careful restaurant moves only when guests are turned away and a year's surplus carries twice the added rent; it lists the stage in the bank's plan when its money falls short.
+- **Open:** the moves come in runs already won and cost money there (T19 and T21, O1 and O3).

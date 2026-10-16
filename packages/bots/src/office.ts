@@ -5,8 +5,8 @@ import type { MessageView, PlayerView } from '@founder-mode/engine'
  * Plan 3 (docs/office-stages.md): how bots answer the offers of office stages 3 to 5.
  * `careful` moves when the condition the offer names is real for this company (desks full and a
  * hire wanted, guests turned away for lack of room, a sustained profit) and the money covers the
- * one-off plus half a year of the added rent and two months of today's costs, and last month's
- * surplus carries the added rent twice over. `never` declines
+ * one-off plus half a year of the added rent and two months of today's costs, and the surplus
+ * (last month's; a seasonal business's over the last year) carries the added rent twice over. `never` declines
  * every offer (target O1), `always` accepts each at once (target O2).
  */
 export type OfficeRule = 'careful' | 'never' | 'always'
@@ -52,6 +52,20 @@ export const surplusCents = (view: PlayerView): number =>
   view.monthlyRevenueCents -
   view.company.monthlyFixedCostsCents -
   view.founder.livingCostCentsPerMonth
+
+/** Weeks of history a seasonal business looks back over: a whole year, every season once. */
+const YEAR_WEEKS = 52
+
+/**
+ * A seasonal business's monthly surplus over the last year, from the weekly money in and out the
+ * screen shows (living costs and loan payments included), or null before a whole year has passed.
+ * One peak month says nothing about the winter's rent.
+ */
+export function yearSurplusCents(view: PlayerView): number | null {
+  if (view.history.length < YEAR_WEEKS) return null
+  const year = view.history.slice(-YEAR_WEEKS)
+  return Math.round(year.reduce((t, w) => t + w.inCents - w.outCents, 0) / 12)
+}
 
 /** What a careful move must have in hand for this offer's choice. */
 export function moveNeedsCents(view: PlayerView, m: MessageView, offer: Offer): number {
@@ -110,7 +124,8 @@ export function answerOffers(
     if (rule === 'careful') {
       if (!moveIsReal(view, offer, wantsHire)) continue
       if (money(view) < moveNeedsCents(view, m, offer)) continue
-      if (surplusCents(view) < SURPLUS_RENTS * c.monthlyCostCents) continue
+      const surplus = view.bookings ? yearSurplusCents(view) : surplusCents(view)
+      if (surplus === null || surplus < SURPLUS_RENTS * c.monthlyCostCents) continue
     }
     out.push({ messageId: m.id, choiceId: c.id, hours: c.hours })
     left -= c.hours

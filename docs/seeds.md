@@ -51,7 +51,7 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | kantino (long) | shut_down | `shut_down@10` | `ending-3` | 10 |
 | kantino (long) | growing | `raise_late` | `ending-8` | 104 |
 | kantino (long) | growing | `raise_late` | `ending-74` | 104 |
-| kantino (long) | growing | `raise_late` | `ending-88` | 104 |
+| kantino (long) | growing | `raise_late` | `ending-92` | 104 |
 | zollstock | sustainable | `validate_then_build` | `ending-3` | 60 |
 | zollstock | sustainable | `validate_then_build` | `ending-5` | 60 |
 | zollstock | sustainable | `validate_then_build` | `ending-7` | 60 |
@@ -70,9 +70,9 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | gratwanderung (long) | sustainable | `tourism_careful` | `ending-3` | 104 |
 | gratwanderung (long) | sustainable | `tourism_careful` | `ending-5` | 104 |
 | gratwanderung (long) | sustainable | `tourism_careful` | `ending-7` | 104 |
+| gratwanderung (long) | still_searching | `tourism_careful` | `ending-10` | 104 |
 | gratwanderung (long) | still_searching | `tourism_careful` | `ending-37` | 104 |
 | gratwanderung (long) | still_searching | `tourism_careful` | `ending-45` | 104 |
-| gratwanderung (long) | still_searching | `tourism_careful` | `ending-57` | 104 |
 | gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-1` | 6 |
 | gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-2` | 6 |
 | gratwanderung (long) | bankrupt | `tourism_no_tests` | `ending-3` | 5 |

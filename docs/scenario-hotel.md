@@ -181,3 +181,11 @@ Reasons in `docs/decisions.md`, plan 2 steps 1 to 4 and the plan 2 audit.
 - **The bank lends against a plan:** workspace, event room, the wellness area (the temptation) and rooms, plus at most three months of working capital, and says how many months a guesthouse that opens in November should bridge (six). Guests take 0.15 h a room night of the founder's week, up to 15 h.
 - **Demand and terms:** leisure 16 to 48 room nights a week at peak, groups 34 to 60, project guests 15 to 52; a group cancels with 12% (was 8%), so a strict policy can protect the house; from the plan 2 audit, laundry, amenities and breakfast cost 25 EUR a room night (was 30, est.).
 - **Events:** the wedding planner and the wedding fair send couples only once there is an event room, and the plant's office manager sends fitters only once you can invoice them, as their texts say.
+
+## 16. What changed in plan 3, and why
+
+Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/office-stages.md`.
+
+- **Office stages 3 to 5:** an annex with four more rooms (120,000 EUR, 900 a month for its share of the lease and heating, twelve weeks of building with the old rooms open), a garden pavilion and a proper reception (40,000; weddings and groups book more readily, the reception takes 5 h a week off the founder; moving in switches to the established look) and a second house in the village (4,900 a month, 30,000; eight more rooms without a lake view and their own housekeeping shifts). Stage 3 is offered once the money has covered two months or guests were turned away for lack of room in 3 of the last 8 weeks; stage 4 when they keep being turned away; stage 5 when they are turned away at the peak. Estimates.
+- **Bots:** a careful guesthouse moves only when guests are turned away and a year's surplus carries twice the added rent.
+- **Open:** the annex is a large debt for a few peak weekends; moves come in runs already won and cost money there (T19 and T21, O1 and O3).
