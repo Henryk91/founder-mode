@@ -145,6 +145,7 @@ describe('product', () => {
       progressHours: 12,
       remainingHours: 28,
       shipped: false,
+      readyWeek: null,
     })
   })
 })

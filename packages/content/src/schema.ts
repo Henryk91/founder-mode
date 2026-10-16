@@ -373,6 +373,8 @@ export const BookingSegmentSchema = z.object({
   invoiced: z.boolean().default(false),
   // How much reviews move its demand (section 5).
   reviewWeight: z.number().nonnegative(),
+  // Plan 4: levels its guests already hold (certified divers), for products with `needsLevel`.
+  levels: z.array(Id).optional(),
 })
 
 export const BookingProductSchema = z.object({
@@ -401,6 +403,43 @@ export const BookingProductSchema = z.object({
   // Plan 2 step 2: shipping it moves the business to this office stage (a restaurant's own
   // fit-out).
   stage: Id.optional(),
+  // Plan 4 (docs/abroad-mechanics.md). Every field below is optional without a default, so the
+  // scenarios before plan 4 keep their fingerprints.
+  // Day conditions (section 2): the states it runs in, and the slots of the day it uses (all the
+  // scenario's slots when absent). Its capacity is for a week whose every slot suits it.
+  runsIn: z.array(Id).optional(),
+  slots: z.array(Id).optional(),
+  // Sold by the whole week (a cruise): never cancelled for conditions; bad slots cost reviews.
+  wholeWeek: z.boolean().optional(),
+  // Courses (section 3): the level a guest reaches, and who books what next.
+  course: z
+    .object({
+      level: Id,
+      // Share of graduates who book one of these products the week after (still on holiday).
+      sameStay: z.object({ share: Share, products: z.array(Id).min(1) }).optional(),
+      // Share of graduates per channel who come back a year later for one of these products.
+      nextSeason: z
+        .object({ direct: Share, platform: Share, products: z.array(Id).min(1) })
+        .optional(),
+    })
+    .optional(),
+  // Sold only to guests holding this level: graduates, or a segment whose guests hold it.
+  needsLevel: Id.optional(),
+  // Day trips (section 5): a group of at most `perTrip` guests needs `days` trip days, each a
+  // whole day of one staff shift, one trip a day per asset, at `costCents` a trip (fuel). It runs
+  // in `runsIn` states at the trip spot, and only while the player's trip policy allows it.
+  dayTrip: z
+    .object({
+      perTrip: z.number().int().positive(),
+      days: z.number().int().positive(),
+      costCents: Cents.nonnegative(),
+      // A product that must have shipped (the van); absent: none needed.
+      asset: Id.optional(),
+    })
+    .optional(),
+  // Licences (section 6): weeks between the prep hours being done and the product counting as
+  // shipped (the authority's answer).
+  waitWeeks: z.number().int().positive().optional(),
 })
 
 // Plan 2 step 1b: a contract instead of shifts booked week by week. Permanent and part time staff
@@ -561,6 +600,62 @@ export const MinStaySchema = z.object({
 })
 export type MinStayConfig = z.infer<typeof MinStaySchema>
 
+/**
+ * Plan 4 (docs/abroad-mechanics.md section 2): wind and sea by the half day, instead of one
+ * weather per week. Ordered states (calm to storm), one or two slots a day, monthly chances per
+ * slot, spells (persistence) and a forecast per slot that is right with `forecastAccuracy` and
+ * otherwise one state off.
+ */
+export const ConditionsSchema = z.object({
+  states: z.array(z.object({ id: Id, name: z.string().min(1) })).min(2),
+  slots: z
+    .array(z.object({ id: Id, name: z.string().min(1) }))
+    .min(1)
+    .max(2),
+  // Twelve months, January first: per slot id, the chance of each state in `states` order.
+  monthly: z.array(z.record(Id, z.array(z.number().nonnegative()))).length(12),
+  // Chance a day repeats the day before in the same slot.
+  persistence: Share,
+  forecastAccuracy: Share,
+  // Day trips' spot: a slot's state at home moved `shift` states up (windier), capped at the top.
+  spot: z.object({ name: z.string().min(1), slot: Id, shift: z.number().int() }).optional(),
+  // Whole-week products: review quality lost per slot in a `bad` state (gained per `good` one);
+  // with the `shelter` product shipped, a bad slot costs `shelterFactor` of that.
+  review: z
+    .object({
+      bad: z.array(Id),
+      perBadSlot: z.number().nonnegative(),
+      good: z.array(Id).optional(),
+      perGoodSlot: z.number().nonnegative().optional(),
+      shelter: Id.optional(),
+      shelterFactor: Share.optional(),
+    })
+    .optional(),
+})
+export type ConditionsConfig = z.infer<typeof ConditionsSchema>
+
+/** Plan 4 (section 6): the tender for a concession (a beach licence), answered by an inbox event. */
+export const TenderSchema = z.object({
+  // The fixed cost the concession is.
+  costId: Id,
+  // Bidding higher: the cost times this, the spot kept.
+  higherFactor: z.number().positive(),
+  // Bidding as before: kept with a chance from `keep.min` (a rating of 3 or less) to `keep.max`
+  // (a rating of 5), plus `perContract` per running staff contract (local hires), at most max.
+  keep: z.object({ min: Share, max: Share, perContract: Share }),
+  // A lost spot: walk-ins and partnerships reach this share of before.
+  lost: z.object({ walkIn: Share, partnership: Share }),
+  // A hotel's own beach: the cost times `factor`, `revenueShare` of guests' payments to the
+  // hotel, and reach as for a lost spot.
+  hotel: z.object({
+    factor: z.number().positive(),
+    revenueShare: Share,
+    walkIn: Share,
+    partnership: Share,
+  }),
+})
+export type TenderConfig = z.infer<typeof TenderSchema>
+
 export const BookingsConfigSchema = z.object({
   startWeekOfYear: z.number().int().min(1).max(52),
   seasonNoise: Share,
@@ -568,13 +663,39 @@ export const BookingsConfigSchema = z.object({
   peakMonths: z.array(z.number().int().min(1).max(12)),
   // Weeks a cancellation policy must stay before it can change.
   policyWeeks: z.number().int().positive(),
-  weather: z.object({
-    // Chance of good, mixed, bad and dangerous weather per month.
-    monthly: z.array(PerWeather).length(12),
-    forecastAccuracy: Share,
-    demand: PerWeather,
-    cancel: PerWeather,
-  }),
+  // One weather per week, or (plan 4) `conditions` by the half day: exactly one of the two.
+  weather: z
+    .object({
+      // Chance of good, mixed, bad and dangerous weather per month.
+      monthly: z.array(PerWeather).length(12),
+      forecastAccuracy: Share,
+      demand: PerWeather,
+      cancel: PerWeather,
+    })
+    .optional(),
+  conditions: ConditionsSchema.optional(),
+  // Plan 4 (section 5): the trip policy, which must stay `policyWeeks` before it changes, and the
+  // smallest group a run starts with (absent: no trips until the player sets a policy).
+  trips: z
+    .object({
+      policyWeeks: z.number().int().positive(),
+      start: z.number().int().positive().optional(),
+    })
+    .optional(),
+  tender: TenderSchema.optional(),
+  // Plan 4 (section 7): local costs that rise from a week on, by a factor: these fixed costs,
+  // staff pay (shifts and contracts) and products' unit costs.
+  costSteps: z
+    .array(
+      z.object({
+        week: z.number().int().positive(),
+        factor: z.number().positive(),
+        fixedCosts: z.array(Id),
+        roles: z.boolean(),
+        unitCosts: z.boolean(),
+      }),
+    )
+    .optional(),
   platform: z.object({ name: z.string().min(1), commission: Share }),
   // The product that is the own website, and repeat guests at which it reaches full strength.
   website: z.object({ product: Id, repeatsFull: z.number().positive() }),
@@ -787,6 +908,8 @@ export const EffectSchema = z.discriminatedUnion('type', [
   }),
   // The investors' confidence moves by this much (0 to 1). Nothing happens without investors.
   z.object({ type: z.literal('investorConfidence'), delta: z.number(), ...fx }),
+  // Plan 4: the answer to a concession's tender (docs/abroad-mechanics.md section 6).
+  z.object({ type: z.literal('tender'), bid: z.enum(['higher', 'same', 'hotel']), ...fx }),
   z.object({
     type: z.literal('fixedCost'),
     id: Id,
@@ -1225,6 +1348,63 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     if (!featureIds.has(s.bookings.website.product)) {
       issue('unknown website product', ['bookings', 'website', 'product'])
     }
+    // Plan 4: weather or conditions, and the abroad mechanics name real things.
+    if (!bk.weather === !bk.conditions) {
+      issue('exactly one of weather and conditions', ['bookings'])
+    }
+    const c = bk.conditions
+    const stateIds = new Set((c?.states ?? []).map((x) => x.id))
+    const slotIds = new Set((c?.slots ?? []).map((x) => x.id))
+    c?.monthly.forEach((m, i) => {
+      for (const slot of slotIds) {
+        if (m[slot]?.length !== stateIds.size) {
+          issue(`month ${i + 1} needs a chance per state for ${slot}`, ['bookings', 'conditions'])
+        }
+      }
+    })
+    if (c?.spot && !slotIds.has(c.spot.slot)) issue('unknown slot', ['bookings', 'conditions'])
+    for (const st of [...(c?.review?.bad ?? []), ...(c?.review?.good ?? [])]) {
+      if (!stateIds.has(st)) issue(`unknown state ${st}`, ['bookings', 'conditions', 'review'])
+    }
+    if (c?.review?.shelter && !bk.products[c.review.shelter]) {
+      issue('unknown shelter product', ['bookings', 'conditions', 'review'])
+    }
+    const levels = new Set(
+      Object.values(bk.products).flatMap((p) => (p.course ? [p.course.level] : [])),
+    )
+    for (const seg of Object.values(bk.segments)) for (const l of seg.levels ?? []) levels.add(l)
+    for (const [id, p] of Object.entries(bk.products)) {
+      const at = ['bookings', 'products', id]
+      if ((p.runsIn || p.slots || p.wholeWeek || p.dayTrip) && !c) {
+        issue('conditions products need a conditions block', at)
+      }
+      for (const st of p.runsIn ?? []) if (!stateIds.has(st)) issue(`unknown state ${st}`, at)
+      for (const sl of p.slots ?? []) if (!slotIds.has(sl)) issue(`unknown slot ${sl}`, at)
+      if (p.dayTrip && !c?.spot) issue('a day trip needs the conditions spot', at)
+      if (p.dayTrip && !bk.trips) issue('a day trip needs the trips block', at)
+      if (p.dayTrip?.asset && !bk.products[p.dayTrip.asset]) issue('unknown asset', at)
+      if (p.needsLevel && !levels.has(p.needsLevel)) issue(`unknown level ${p.needsLevel}`, at)
+      for (const next of [
+        ...(p.course?.sameStay?.products ?? []),
+        ...(p.course?.nextSeason?.products ?? []),
+      ]) {
+        if (!bk.products[next]) issue(`unknown product ${next}`, at)
+      }
+    }
+    const costIds = new Set(s.start.fixedCosts.map((x) => x.id))
+    if (bk.tender && !costIds.has(bk.tender.costId)) {
+      issue('unknown fixed cost', ['bookings', 'tender', 'costId'])
+    }
+    for (const step of bk.costSteps ?? []) {
+      for (const id of step.fixedCosts) {
+        if (!costIds.has(id)) issue(`unknown fixed cost ${id}`, ['bookings', 'costSteps'])
+      }
+    }
+    s.events.forEach((e, i) => {
+      if (e.choices.some((ch) => ch.effects.some((fx) => fx.type === 'tender')) && !bk.tender) {
+        issue('a tender answer needs the tender block', ['events', i])
+      }
+    })
   }
 
   if (s.roles.length !== s.segments.length) {

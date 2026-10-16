@@ -17,6 +17,7 @@ import { OddsTally } from './odds'
 import { qualityFor } from './product'
 import { acceptOffice, moveOffice } from './office'
 import { addLeads } from './sales'
+import { applyTender } from './abroad'
 
 /** What resolving messages adds to the week besides changes to the state. */
 export type MessageOutcome = {
@@ -236,6 +237,11 @@ function applyEffect(
         ...state,
         hidden: { ...state.hidden, funding: { ...state.hidden.funding, confidence } },
       }
+    }
+    case 'tender': {
+      const t = applyTender(state, effect.bid, rng)
+      out.entries.push(...t.entries)
+      return t.state
     }
     case 'fixedCost': {
       if (state.company.fixedCosts.some((c) => c.id === effect.id)) return state

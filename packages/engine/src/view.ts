@@ -213,6 +213,7 @@ export function getView(state: GameState): PlayerView {
           progressHours: done,
           remainingHours: def.buildHours - done,
           shipped,
+          readyWeek: shipped ? null : (progress?.readyWeek ?? null),
         }
       }),
     },

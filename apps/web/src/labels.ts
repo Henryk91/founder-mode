@@ -623,6 +623,42 @@ const labels = {
     'You had to cancel {n} booking: its room was under works.',
   'results.entry.company_cancelled.works.other':
     'You had to cancel {n} bookings: their rooms were under works.',
+  'results.entry.company_cancelled.conditions.one':
+    'You had to cancel {n} guest because of the wind and sea.',
+  'results.entry.company_cancelled.conditions.other':
+    'You had to cancel {n} guests because of the wind and sea.',
+  'results.entry.conditions': '{slot}: {states}.',
+  'results.entry.conditions_moved.slot.one': '{product}: {n} guest moved to a better slot.',
+  'results.entry.conditions_moved.slot.other': '{product}: {n} guests moved to better slots.',
+  'results.entry.conditions_moved.alternative.one':
+    '{product}: {n} guest took the alternative instead.',
+  'results.entry.conditions_moved.alternative.other':
+    '{product}: {n} guests took the alternative instead.',
+  'results.entry.conditions_moved.next_week.one':
+    '{product}: {n} guest moved to next week, as your policy says.',
+  'results.entry.conditions_moved.next_week.other':
+    '{product}: {n} guests moved to next week, as your policy says.',
+  'results.entry.conditions_cancelled.one': '{product}: no suitable slot for {n} guest. Refunded.',
+  'results.entry.conditions_cancelled.other':
+    '{product}: no suitable slot for {n} guests. Refunded.',
+  'results.entry.trips':
+    '{product}: {run} trips run, {wasted} wasted on a wrong forecast, {guests} guests taught. Fuel {amount}.',
+  'results.entry.trips_cancelled.one': '{product}: no trip for {n} guest. Refunded.',
+  'results.entry.trips_cancelled.other': '{product}: no trip for {n} guests. Refunded.',
+  'results.entry.graduates.one': '{n} guest finished a course. {same} booked the next step.',
+  'results.entry.graduates.other': '{n} guests finished a course. {same} booked the next step.',
+  'results.entry.graduates_returned.one':
+    '{n} former student came back for more, {direct} of them directly.',
+  'results.entry.graduates_returned.other':
+    '{n} former students came back for more, {direct} of them directly.',
+  'results.entry.licence_applied': '{name}: applied. The answer comes in week {week}.',
+  'results.entry.costs_rose': 'Local costs rose by {pct}%: wages, food, fuel and fees.',
+  'results.entry.tender.higher': 'You bid higher and kept the spot. It costs more from now on.',
+  'results.entry.tender.same.kept': 'You bid as before, and the town kept you on the spot.',
+  'results.entry.tender.same.lost':
+    'You bid as before, and someone else got the spot. You are at the end of the bay now.',
+  'results.entry.tender.hotel':
+    "You moved to the hotel's beach: a lower fee, a share of takings, fewer passers-by.",
   'results.entry.trial_result': '{trial}, {segment}: {responses} of {people} want to come back.',
   'results.entry.voucher_result':
     '{segment}: {sold} of {prospects} people bought a voucher, {amount} in all. You owe them a visit.',

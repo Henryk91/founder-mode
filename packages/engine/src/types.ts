@@ -371,6 +371,59 @@ export type BookingsState = {
   works?: RoomWorks[]
   /** Plan 2 step 1d: a minimum stay of two nights in the minimum stay months. */
   minStay?: boolean
+  /** Plan 4: the abroad mechanics, where the scenario has day conditions. */
+  abroad?: AbroadState
+}
+
+/** Plan 4: a week of day conditions: per slot id, the state of each day, Monday first. */
+export type ConditionsWeek = Record<string, string[]>
+
+/** Plan 4: courses finished and graduates who booked again, in one year of the run. */
+export type LadderYear = {
+  /** Guests who finished a course. */
+  students: number
+  /** Graduates who booked their next step the week after, still on holiday. */
+  sameStay: number
+  /** Graduates who came back a year later, booking directly or through the platform. */
+  returnedDirect: number
+  returnedPlatform: number
+}
+
+/** Plan 4 (docs/abroad-mechanics.md): day conditions, courses, trips and the tender. */
+export type AbroadState = {
+  /** The forecast shown for the week being planned, day by day. */
+  forecast: ConditionsWeek
+  /** The conditions of the last week played; null before the first. */
+  lastWeek: ConditionsWeek | null
+  /** Slots per state per month of the year (key `1` to `12`), over the run. */
+  byMonth: Record<string, Record<string, number>>
+  /** Units each product lost to conditions over the run (refunded, or the trip did not run). */
+  lost: Record<FeatureId, number>
+  /** Units moved to another slot of the same week, to an alternative, or to next week. */
+  moved: number
+  /** Per run year (index 0 for weeks 1 to 52). */
+  ladder: LadderYear[]
+  /** Day trips: the policy (the smallest group a trip runs with; null: never). */
+  trips?: {
+    min: number | null
+    sinceWeek: number
+    run: number
+    wasted: number
+    guests: number
+    costCents: number
+  }
+  /** The concession's tender: the answer given and whether the spot was kept. */
+  tender?: { bid: 'higher' | 'same' | 'hotel'; kept: boolean; week: number }
+}
+
+/** Plan 4: graduates who will ask again a year later (hidden: the shares are). */
+export type ReturnRequest = {
+  askWeek: number
+  targetWeek: number
+  segmentId: SegmentId
+  channel: BookingChannel
+  units: number
+  products: FeatureId[]
 }
 
 export type HiddenBookings = {
@@ -381,6 +434,9 @@ export type HiddenBookings = {
   nextWeather: WeatherState
   /** Plan 2 step 1a: the week each voucher's guests ask for a date, or null for never. */
   voucherWeeks?: Record<string, number | null>
+  /** Plan 4: next week's true conditions, and graduates who will come back. */
+  nextConditions?: ConditionsWeek
+  returns?: ReturnRequest[]
 }
 
 /**
@@ -407,6 +463,8 @@ export type BookingsPlan = {
   /** Plan 2 step 1d: rooms whose works start this week; a minimum stay on or off. */
   renovate?: number
   minStay?: boolean | null
+  /** Plan 4: a new trip policy: the smallest group a trip runs with, or null for never. */
+  trips?: { min: number | null }
 }
 
 export type HiddenFunding = {
@@ -492,6 +550,8 @@ export type FeatureProgress = {
   progressHours: number
   /** Week in which the feature shipped, or null while it is still being built. */
   shippedWeek: number | null
+  /** Plan 4: a licence applied for, which ships in this week (absent otherwise). */
+  readyWeek?: number
 }
 
 export type ProductState = {
@@ -1185,6 +1245,8 @@ export type FeatureView = {
   progressHours: number
   remainingHours: number
   shipped: boolean
+  /** Plan 4: a licence applied for and not yet granted: the week it arrives; null otherwise. */
+  readyWeek: number | null
 }
 
 export type LeadView = {
@@ -1392,7 +1454,14 @@ export type BookingsView = {
     unitCostShare: number
     oneOffCents: number
     monthlyCents: number
+    /** Plan 4: the level a course reaches, the level a guest needs, a trip's group and days. */
+    course: string | null
+    needsLevel: string | null
+    dayTrip: { perTrip: number; days: number; costCents: number } | null
+    wholeWeek: boolean
   }[]
+  /** Plan 4: day conditions, courses, trips and the tender; null without day conditions. */
+  abroad: AbroadView | null
   roles: {
     id: string
     name: string
@@ -1436,6 +1505,39 @@ export type BookingsView = {
    * covers or room nights, for the headline (tourism fixes).
    */
   servedByWeek: number[]
+}
+
+/** Plan 4: the abroad mechanics as the player sees them. */
+export type AbroadView = {
+  states: { id: string; name: string }[]
+  slots: { id: string; name: string }[]
+  /** The forecast for this week, day by day per slot, and counted per state. */
+  forecast: ConditionsWeek
+  forecastCounts: Record<string, Record<string, number>>
+  /** Last week as it was, day by day per slot; null before the first week. */
+  lastWeek: ConditionsWeek | null
+  /** The trip spot: its forecast and last week, day by day. */
+  spot: { name: string; forecast: string[]; lastWeek: string[] | null } | null
+  /** Per product that follows the conditions: the slots (days at the spot) it runs on this week. */
+  runsOn: { productId: FeatureId; suitable: number; total: number; slot: string | null }[]
+  /** Courses: this year of the run and the whole run. */
+  ladderThisYear: LadderYear
+  ladderTotal: LadderYear
+  /** Guests moved and guests lost to the conditions over the run. */
+  moved: number
+  lost: number
+  trips: {
+    min: number | null
+    locked: boolean
+    most: number
+    run: number
+    wasted: number
+    guests: number
+    costCents: number
+  } | null
+  tender: { bid: 'higher' | 'same' | 'hotel'; kept: boolean } | null
+  /** Plan 4: local costs rise by these factors from these weeks (shown ahead). */
+  costSteps: { week: number; factor: number }[]
 }
 
 /** A funding round type as the Raise section describes it: rules and the public bar. */
@@ -1749,8 +1851,37 @@ export type ReportEntry =
       kind: 'company_cancelled'
       units: number
       /** Plan 2: `sold_out` when the kitchen prepared too little, `works` for rooms under works. */
-      reason: 'staff' | 'weather' | 'sold_out' | 'works'
+      reason: 'staff' | 'weather' | 'sold_out' | 'works' | 'conditions'
     }
+  /** Plan 4: the week's day conditions, and bookings moved or cancelled for them. */
+  | { kind: 'conditions'; days: ConditionsWeek }
+  | {
+      kind: 'conditions_moved'
+      productId: FeatureId
+      units: number
+      to: 'slot' | 'alternative' | 'next_week'
+    }
+  | { kind: 'conditions_cancelled'; productId: FeatureId; units: number }
+  /** Plan 4: day trips run this week, those the conditions wasted, and the guests served. */
+  | {
+      kind: 'trips'
+      productId: FeatureId
+      run: number
+      wasted: number
+      guests: number
+      costCents: number
+    }
+  /** Plan 4: trips not run (below the policy's group, or never), the guests refunded. */
+  | { kind: 'trips_cancelled'; productId: FeatureId; units: number }
+  /** Plan 4: graduates of the week's courses, and those booking their next step. */
+  | { kind: 'graduates'; units: number; sameStay: number }
+  | { kind: 'graduates_returned'; units: number; direct: number }
+  /** Plan 4: a licence applied for; it arrives in `readyWeek`. */
+  | { kind: 'licence_applied'; featureId: FeatureId; name: string; readyWeek: number }
+  /** Plan 4: local costs rose by a factor this week. */
+  | { kind: 'costs_rose'; factor: number }
+  /** Plan 4: the concession's tender decided. */
+  | { kind: 'tender'; bid: 'higher' | 'same' | 'hotel'; kept: boolean }
   | {
       kind: 'trial_result'
       trialId: string
@@ -2141,6 +2272,21 @@ export type GuestsEconomics = {
   wasteCents?: number
   /** Plan 2: contracts signed over the run, per kind. */
   contracts?: { permanent: number; part_time: number; seasonal: number }
+  /** Plan 4: day conditions, the course ladder, trips and the tender. */
+  abroad?: AbroadEconomics
+}
+
+/** Plan 4: the post-mortem's lines on the abroad mechanics. */
+export type AbroadEconomics = {
+  /** Slots per state in each month played, months in calendar order (1 to 12). */
+  months: { month: number; slots: Record<string, number> }[]
+  /** Units each product lost to the conditions, most first. */
+  lost: { productId: FeatureId; units: number }[]
+  moved: number
+  /** Per year of the run. */
+  ladder: LadderYear[]
+  trips: { run: number; wasted: number; guests: number; costCents: number } | null
+  tender: { bid: 'higher' | 'same' | 'hotel'; kept: boolean; week: number } | null
 }
 
 export type PostMortem = {
