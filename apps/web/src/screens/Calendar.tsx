@@ -62,10 +62,13 @@ export function Calendar() {
       </section>
       <section className={styles.card} aria-label={label('tour.demand', stage)}>
         <h2 className={styles.title}>{label('tour.demand', stage)}</h2>
+        {/* A two-line row, the group's name then its figures, so a phone never squeezes them. */}
         {b.segments.map((s) => (
-          <div key={s.id} className={styles.rowHead}>
-            <span>{view.segments.find((x) => x.id === s.id)?.name ?? s.id}</span>
-            <span className={styles.mono}>
+          <div key={s.id} className={styles.twoLine}>
+            <span className={styles.twoLineName}>
+              {view.segments.find((x) => x.id === s.id)?.name ?? s.id}
+            </span>
+            <span>
               {label('tour.demand.line', stage, {
                 away: s.turnedAwayLast4,
                 repeat: s.repeatGuests,
@@ -79,9 +82,10 @@ export function Calendar() {
 }
 
 /**
- * Plan 3, the established stage: occupancy as a heat grid, a row per week and a column per product,
- * the units booked in each cell and three shades of the accent by the share booked. The bookings
- * model counts weeks, not days, so the grid is by week and product (docs/decisions.md).
+ * Plan 3, the established stage: occupancy as a heat grid, as in the mockup, one per product: a
+ * cell per week with the units booked in it and three shades of the accent by the share booked,
+ * and a small legend. The bookings model counts weeks, not days, so the cells are weeks
+ * (docs/decisions.md).
  */
 function HeatGrid({ view }: { view: PlayerView }) {
   const stage = voiceOf(view)
@@ -90,52 +94,70 @@ function HeatGrid({ view }: { view: PlayerView }) {
   const pools = b.calendar.filter(
     (c) => (b.products.find((p) => p.id === c.productId)?.capacity ?? 0) > 0,
   )
-  const weeks = (pools[0] ?? b.calendar[0]!).cells.map((c) => c.week).slice(0, 8)
-  const shade = (booked: number, capacity: number) =>
-    capacity === 0
-      ? styles.heatClosed
-      : booked / capacity >= 0.85
-        ? styles.heatFull
-        : booked / capacity >= 0.4
-          ? styles.heatHalf
-          : styles.heatLow
+  const shown = pools.length > 0 ? pools : b.calendar
   return (
-    <table className={styles.heat}>
-      <caption className="visually-hidden">{label('tour.heat.caption', stage)}</caption>
-      <thead>
-        <tr>
-          <th scope="col">
-            <span className="visually-hidden">{label('tour.heat.week', stage)}</span>
-          </th>
-          {pools.map((c) => (
-            <th key={c.productId} scope="col">
+    <>
+      {shown.map((c) => {
+        const capacity = Math.max(0, ...c.cells.map((x) => x.capacity))
+        const closed = c.cells.some((x) => x.capacity === 0)
+        return (
+          <div key={c.productId} className={styles.heatProduct}>
+            <h3 className={styles.heatName}>
               {b.products.find((p) => p.id === c.productId)?.name ?? c.productId}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {weeks.map((week) => (
-          <tr key={week}>
-            <th scope="row">{label('coming.week', stage, { week })}</th>
-            {pools.map((c) => {
-              const cell = c.cells.find((x) => x.week === week)
-              return (
-                <td key={c.productId} className={shade(cell?.booked ?? 0, cell?.capacity ?? 0)}>
-                  {cell && cell.capacity > 0
-                    ? label('tour.heat.cell', stage, {
-                        booked: cell.booked,
-                        capacity: cell.capacity,
-                      })
-                    : label('tour.calendar.closed', stage)}
-                </td>
-              )
-            })}
-          </tr>
+            </h3>
+            <p className={styles.hint}>
+              {label(closed ? 'tour.heat.subClosed' : 'tour.heat.sub', stage, {
+                n: c.cells.length,
+                capacity,
+              })}
+            </p>
+            <ol className={styles.heatWeeks}>
+              {c.cells.map((cell) => (
+                <li key={cell.week} className={`${styles.heatCell} ${shade(cell)}`}>
+                  <span aria-hidden="true" className={styles.heatWeek}>
+                    {label('coming.week', stage, { week: cell.week })}
+                  </span>
+                  <span aria-hidden="true" className={styles.heatNumber}>
+                    {cell.capacity > 0 ? cell.booked : label('tour.heat.shut', stage)}
+                  </span>
+                  <span className="visually-hidden">
+                    {cell.capacity > 0
+                      ? label('tour.heat.cellSpoken', stage, {
+                          week: cell.week,
+                          booked: cell.booked,
+                          capacity: cell.capacity,
+                        })
+                      : label('tour.heat.closedSpoken', stage, { week: cell.week })}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )
+      })}
+      <p className={styles.heatLegend}>
+        <span>{label('tour.heat.legend', stage)}</span>
+        {(['low', 'half', 'full'] as const).map((k) => (
+          <span key={k} className={styles.heatKey}>
+            <span
+              aria-hidden="true"
+              className={`${styles.heatSwatch} ${
+                k === 'low' ? styles.heatLow : k === 'half' ? styles.heatHalf : styles.heatFull
+              }`}
+            />
+            {label(`tour.heat.${k}`, stage)}
+          </span>
         ))}
-      </tbody>
-    </table>
+      </p>
+    </>
   )
+}
+
+/** A week's shade: closed, under 40% booked, under 85%, or nearly full. */
+function shade(cell: { booked: number; capacity: number }): string {
+  if (cell.capacity === 0) return styles.heatClosed!
+  const share = cell.booked / cell.capacity
+  return share >= 0.85 ? styles.heatFull! : share >= 0.4 ? styles.heatHalf! : styles.heatLow!
 }
 
 /** The pipeline tab: the calendar in a tourism scenario, else the corkboard. */

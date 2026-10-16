@@ -67,6 +67,16 @@
 }
 
 /*
+ * Every panel and section title in the heading face; small upper-case labels stay Plex Sans
+ * (Henry's review of plan 3).
+ */
+[data-stage='established'] :is(h1, h2, h3) {
+  font-family: var(--font-head);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/*
  * Accent per scenario, set on <html> by the app (data-scenario) and inherited; white text on each
  * reaches 4.5:1 (5.2 to 7.6). Zollstock's is ready in case it ever gets a long mode.
  */

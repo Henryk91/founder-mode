@@ -1,3 +1,4 @@
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { label, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import { Headline } from './Headline'
@@ -14,6 +15,10 @@ import ui from './ui.module.css'
  */
 export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
   const view = useGame((s) => s.view)
+  const nameRef = useRef<HTMLHeadingElement>(null)
+  const company = view ? label('bar.company', voiceOf(view), { name: view.scenarioName }) : ''
+  const fits = view?.company.uiStage === 'established'
+  useFitOneLine(nameRef, fits ? company : null)
   const issues = useGame((s) => s.issues.length)
   const showingReport = useGame((s) => s.report !== null)
   const endWeek = useGame((s) => s.endWeek)
@@ -30,8 +35,8 @@ export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
         </span>
       )}
       <div>
-        <h1 className={styles.name} tabIndex={-1} data-autofocus>
-          {label('bar.company', stage, { name: view.scenarioName })}
+        <h1 ref={nameRef} className={styles.name} tabIndex={-1} data-autofocus>
+          {company}
         </h1>
         <div className={styles.week}>
           {label(established && props.wide ? 'bar.weekPlace' : 'bar.week', stage, {
@@ -45,9 +50,21 @@ export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
   )
   const actions = (
     <div className={styles.actions}>
-      <button type="button" className={`${ui.button} ${styles.help}`} onClick={openHelp}>
-        {label('bar.help', stage)}
-      </button>
+      {established && !props.wide ? (
+        // Plan 3: the established phone bar keeps the company's name on one line; Help is a "?".
+        <button
+          type="button"
+          className={`${ui.button} ${styles.help} ${styles.helpIcon}`}
+          aria-label={label('bar.help', stage)}
+          onClick={openHelp}
+        >
+          <span aria-hidden="true">?</span>
+        </button>
+      ) : (
+        <button type="button" className={`${ui.button} ${styles.help}`} onClick={openHelp}>
+          {label('bar.help', stage)}
+        </button>
+      )}
       {view.status === 'running' && !showingReport && (
         <button
           type="button"
@@ -91,4 +108,49 @@ export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
       )}
     </header>
   )
+}
+
+/** The smallest size a long company name may shrink to before it would have to wrap. */
+const MIN_NAME_PX = 12
+const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
+
+/**
+ * Plan 3, the established bar: the company's full name stays on one line. A long name steps its
+ * size down (to 12 px at the least) until it fits, again when the bar resizes or the heading font
+ * arrives. `text` null leaves the size alone.
+ */
+function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | null) {
+  useIsoLayoutEffect(() => {
+    const el = ref.current
+    if (!el || text === null) return
+    // The name's column; without the logo square a long name has 42 px more.
+    const who = el.parentElement?.parentElement ?? null
+    const shrink = () => {
+      el.style.fontSize = ''
+      let size = parseFloat(getComputedStyle(el).fontSize)
+      while (el.scrollWidth > el.clientWidth + 0.5 && size > MIN_NAME_PX) {
+        size = Math.max(MIN_NAME_PX, size - 0.5)
+        el.style.fontSize = `${size}px`
+      }
+      return el.scrollWidth <= el.clientWidth + 0.5
+    }
+    const fit = () => {
+      if (who) delete who.dataset['tight']
+      if (!shrink() && who) {
+        who.dataset['tight'] = 'true'
+        shrink()
+      }
+    }
+    fit()
+    let live = true
+    void document.fonts?.ready.then(() => live && fit())
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(fit)
+    observer?.observe(el.parentElement ?? el)
+    return () => {
+      live = false
+      observer?.disconnect()
+      el.style.fontSize = ''
+      if (who) delete who.dataset['tight']
+    }
+  }, [ref, text])
 }

@@ -13,6 +13,11 @@
   box-shadow: none;
 }
 
+/* The Office card's small drawing shows the place only: no figure or customer captions. */
+.compact text {
+  display: none;
+}
+
 .svg {
   position: absolute;
   inset: 0;

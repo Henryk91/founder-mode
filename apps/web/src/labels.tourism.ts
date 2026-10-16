@@ -11,6 +11,10 @@ type Overrides = Partial<Record<LabelKey, LabelEntry>>
 type Words = {
   /** The paid signal: ads in front of one group, counting who saw it and who signed up. */
   test: { one: string; other: string; lower: string; lowerPlural: string }
+  /** Plan 3: the established stage's names for the two tests, on the plan form. */
+  formal: { test: { one: string; other: string }; pilot: { one: string; other: string } }
+  /** Plan 3: the established stage's title for sorting out snags. */
+  fixFormal: string
   /** The small trial: a few people from one group try it, and keen ones buy a voucher. */
   pilot: { one: string; other: string; lower: string; lowerPlural: string }
   /** What a new product brings: incidents, teething problems, snags. */
@@ -50,10 +54,26 @@ const shared = (w: Words): Overrides => ({
 
   // Test the demand (item 8).
   'plan.hint.test': 'See who books before you spend.',
-  'plan.test.landing': w.test.other,
-  'plan.test.presale': w.pilot.other,
-  'plan.landing': `${w.test.one}: {segment}`,
-  'plan.presale': `${w.pilot.one}: {segment}`,
+  'plan.test.landing': {
+    scrappy: w.test.other,
+    organised: w.test.other,
+    established: w.formal.test.other,
+  },
+  'plan.test.presale': {
+    scrappy: w.pilot.other,
+    organised: w.pilot.other,
+    established: w.formal.pilot.other,
+  },
+  'plan.landing': {
+    scrappy: `${w.test.one}: {segment}`,
+    organised: `${w.test.one}: {segment}`,
+    established: `${w.formal.test.one}: {segment}`,
+  },
+  'plan.presale': {
+    scrappy: `${w.pilot.one}: {segment}`,
+    organised: `${w.pilot.one}: {segment}`,
+    established: `${w.formal.pilot.one}: {segment}`,
+  },
   'plan.sum.landing.one': `{n} ${w.test.lower}`,
   'plan.sum.landing.other': `{n} ${w.test.lowerPlural}`,
   'plan.presale.batches.one': `{n} ${w.pilot.lower}`,
@@ -83,7 +103,7 @@ const shared = (w: Words): Overrides => ({
     established: 'Products and upkeep',
   },
   'explain.build.title': w.build,
-  'plan.section.fix': w.fix,
+  'plan.section.fix': { scrappy: w.fix, organised: w.fix, established: w.fixFormal },
   'stepper.what.fix': w.fixWhat,
   'plan.hint.build': 'Ready once all its hours are in.',
   'plan.featureShipped': 'Ready',
@@ -188,6 +208,7 @@ const shared = (w: Words): Overrides => ({
 
 const GRATWANDERUNG: Overrides = {
   'market.trials.title': 'Pilot days, test listings and vouchers',
+  'tour.heat.sub': 'Next {n} weeks, places booked of {capacity} a week',
   // Plan 3, the established stage: the company's full name and the line that marks the switch.
   'bar.company': {
     scrappy: '{name}',
@@ -204,6 +225,11 @@ const GRATWANDERUNG: Overrides = {
       lowerPlural: 'test listings',
     },
     pilot: { one: 'Pilot day', other: 'Pilot days', lower: 'pilot day', lowerPlural: 'pilot days' },
+    formal: {
+      test: { one: 'Listing test', other: 'Listing tests' },
+      pilot: { one: 'Trial day', other: 'Trial days' },
+    },
+    fixFormal: 'Incidents',
     snag: { one: 'incident', other: 'incidents' },
     fix: 'Sort out incidents',
     fixWhat: 'hours sorting out incidents',
@@ -245,6 +271,11 @@ const HINTERHOF: Overrides = {
       lower: 'pop-up dinner',
       lowerPlural: 'pop-up dinners',
     },
+    formal: {
+      test: { one: 'Pre-opening list', other: 'Pre-opening lists' },
+      pilot: { one: 'Tasting dinner', other: 'Tasting dinners' },
+    },
+    fixFormal: 'Teething problems',
     snag: { one: 'teething problem', other: 'teething problems' },
     fix: 'Iron out teething problems',
     fixWhat: 'hours on teething problems',
@@ -254,6 +285,9 @@ const HINTERHOF: Overrides = {
   }),
   'stat.guests': 'Covers, last 4 weeks',
   'stat.guests.short': 'Covers',
+  'stat.price': 'Avg price per cover',
+  'stat.price.short': 'Avg cover',
+  'tour.heat.sub': 'Next {n} weeks, covers booked of {capacity} a week',
   'explain.test.text':
     'An opening list costs {hours} and an ad budget: adverts for the restaurant that ask people to join a list for the opening. It reports {weeks} later with how many saw it and how many joined. It is a signal only: nobody books from it. A pop-up dinner costs {presale} and feeds {size} people from one group. Those who would come again buy a voucher and become repeat guests. It reports {presaleWeeks} later, and each group allows {max} dinners.',
   'help.week.4':
@@ -293,6 +327,11 @@ const SEEBLICK: Overrides = {
       lower: 'open house',
       lowerPlural: 'open houses',
     },
+    formal: {
+      test: { one: 'Rate test', other: 'Rate tests' },
+      pilot: { one: 'Viewing day', other: 'Viewing days' },
+    },
+    fixFormal: 'Snags',
     snag: { one: 'snag', other: 'snags' },
     fix: 'Fix snags',
     fixWhat: 'hours fixing snags',
@@ -305,6 +344,9 @@ const SEEBLICK: Overrides = {
   }),
   'stat.guests': 'Occupancy, last 4 weeks',
   'stat.guests.short': 'Occupancy',
+  'stat.price': 'Avg room rate this season',
+  'stat.price.short': 'Avg rate',
+  'tour.heat.sub': 'Next {n} weeks, room nights booked of {capacity} a week',
   'explain.test.text':
     'Test rates cost {hours} and an ad budget: a few rooms on the platform at a test price, for one group. They report {weeks} later with how many people saw them and how many asked for dates. A signal only: nobody books from it. An open house costs {presale} and shows the house to {size} people from one group. Those who would come again buy a voucher and become repeat guests. It reports {presaleWeeks} later, and each group allows {max} open houses.',
   'help.week.4':

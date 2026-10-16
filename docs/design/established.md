@@ -1,6 +1,12 @@
 # Established UI stage: design spec
 
-As built (plan 3 step 3): the bookings model counts weeks, not days, so Occupancy is a heat grid by week and product. The phone keeps Help in its top bar. Card titles are small caps labels, as in the mockups.
+As built (plan 3 step 3, revised after Henry's review):
+
+- Occupancy is a heat grid per product with a cell per week (the bookings model counts weeks, not days, so there is no day to show): the number booked in each cell, three shades of the accent (under 40%, under 85%, nearly full) and a small legend.
+- The company's name stays on one line: a long name steps down to 12 px at the least, and gives up the logo square before it would wrap. On the phone Help is a round "?" button (named "Help" for screen readers).
+- Panel and section titles are Bricolage Grotesque; small upper-case labels (the headline's) stay Plex Sans.
+- Seeblick and Hinterhof show the average of the player's own prices this season next to occupancy or covers (per room night, per cover); on the phone it takes revenue's place. Gratwanderung prices people and groups apart, so it has none. Money in per unit served would mislead, as invoiced guests pay weeks later.
+- The worry line is a plain warning, not a sticky note; handwriting stays only on notes from people. The Finance tab's money card is "Running costs". The Office card's small drawing shows no captions. "Demand you missed" rows have two lines (name, then figures), in every stage.
 
 The third and last look of the game screen. It replaces the paper desk when the company has grown up. Read `docs/design/design.md` first: everything there still applies unless this file says otherwise.
 
@@ -111,6 +117,11 @@ Add `established` to the labels table for every scenario. Starting wording (keep
 | Money tab | Money | Finance | Finance |
 | Bookings tab | Bookings | (none) | Occupancy |
 | Desk column | On your desk | Inbox | Inbox |
+| Tests section | Test the demand | Market tests | Market tests |
+| Test names | Landing page tests, Pre-sales | Landing page tests, Pre-sale offers | Listing tests and Trial days; Pre-opening lists and Tasting dinners; Rate tests and Viewing days |
+| Fixing | Fix bugs | Bug fixes | Incidents; Teething problems; Snags |
+| Prices | Prices and rules | Pricing and policy | Pricing and policy |
+| Money card | Money | Running costs | Running costs |
 
 Game text in messages keeps the same dry humour. Only interface labels become more businesslike.
 
