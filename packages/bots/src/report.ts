@@ -3,6 +3,7 @@ import { CHECK_WEEK, EVIDENCE_WEEK, PACING_WEEKS, STANDARD_WEEKS } from './simul
 import { EARLY_HIRE_WIDE_ID, FREELANCE_TARGET_ID } from './specs'
 import { energyRows, fundingRows, longTargetRows, teamRows } from './longReport'
 import { tourismRows, tourismTargetRows } from './tourismReport'
+import { establishedRows } from './officeTargets'
 import { combined, fmtMargin, medianMargin, pairedMargin, rateMargin, ratioMargin } from './margin'
 
 export type StrategyRuns = {
@@ -906,6 +907,7 @@ export function buildReport(input: ReportInput): string {
   push(...chaseRows(input))
   if (input.tourism) push(...tourismRows(input))
   else if (long) push(...teamRows(input), ...fundingRows(input))
+  push(...establishedRows(input))
   push(...energyRows(input))
 
   // The 60 week report keeps its old bins (up to 78, the run length before engine 0.7.0); a

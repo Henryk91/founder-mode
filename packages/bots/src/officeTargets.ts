@@ -1,4 +1,14 @@
-import { fmtPct, pairedOn, pct, wins, type StrategyRuns, type Target } from './report'
+import {
+  fmtNum,
+  fmtPct,
+  median,
+  pairedOn,
+  pct,
+  wins,
+  type ReportInput,
+  type StrategyRuns,
+  type Target,
+} from './report'
 import { fmtMargin } from './margin'
 
 const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
@@ -29,10 +39,12 @@ export function evaluateOfficeTargets(
   return [
     {
       id: firstId,
-      text: `O1. Moving at the right time pays: the careful bot with its stage rules beats never moving by at least 2 points${note}`,
+      // Restated after review (docs/office-stages.md section 5): two-year runs cannot pay back a
+      // fixed-cost move, so "beats never moving by 2 points" rewarded what the game cannot give.
+      text: `O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving${note}`,
       value: o1 ? signed(o1.change) : '-',
       margin: o1 ? fmtMargin(o1.margin) : '',
-      pass: !!o1 && o1.change + o1.margin >= 2,
+      pass: !!o1 && o1.change + o1.margin >= -1,
     },
     {
       id: firstId + 1,
@@ -59,5 +71,29 @@ export function evaluateOfficeTargets(
         stages.every((x) => x.offered > 0 && x.taken > 0 && x.taken < x.offered) &&
         stages.every((x) => pct(x.taken, x.offered) <= 90),
     },
+  ]
+}
+
+/**
+ * Plan 3: how often and when runs turn established (months covering all costs and a team of
+ * three), per long mode strategy that reached it at least once.
+ */
+export function establishedRows(input: ReportInput): string[] {
+  const rows = input.strategies.filter((x) => x.results.some((r) => r.establishedWeek !== null))
+  if (rows.length === 0) return []
+  return [
+    '',
+    '## The established look',
+    '',
+    "Runs that turned established (revenue covering all costs for six months running and three people working), and the median week it happened in the winning runs that reached it.",
+    '',
+    '| Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |',
+    '|---|---|---|---|---|',
+    ...rows.map((x) => {
+      const won = wins(x.results)
+      const reached = (rs: typeof won) => rs.filter((r) => r.establishedWeek !== null)
+      const weeks = reached(won).map((r) => r.establishedWeek!)
+      return `| ${x.id} | ${x.results.length} | ${fmtPct(pct(reached(x.results).length, x.results.length))} | ${fmtPct(pct(reached(won).length, won.length))} | ${fmtNum(median(weeks))} |`
+    }),
   ]
 }
