@@ -119,6 +119,7 @@ export function RosterPlan() {
   return (
     <>
       <ConditionsPlan />
+      <CruisePlan />
       {coverage(b, draft).map(({ product, booked, covers, kitchen, floor }) => (
         <Writing key={product.id} warn={covers < booked}>
           {floor === null
@@ -871,6 +872,88 @@ export function ConditionsPlan() {
           )}
         />
       )}
+    </>
+  )
+}
+
+/** "W22: 3 of 8 cabins", "W23: held for the whole boat", ... for one cruise week. */
+export function cruiseWeekText(
+  w: NonNullable<BookingsView['cruise']>['weeks'][number],
+  stage: Voice,
+): string {
+  if (w.closed) return label('cruise.week.closed', stage, { week: w.week })
+  if (w.chartered) return label('cruise.week.chartered', stage, { week: w.week })
+  if (w.held) return label('cruise.week.held', stage, { week: w.week })
+  return label('cruise.week.cabins', stage, { week: w.week, sold: w.sold, cabins: w.cabins })
+}
+
+/**
+ * Plan 4 (the gulet): the minimum to sail, and holding the next season weeks for whole-boat
+ * bookings. A held week sells no cabins.
+ */
+export function CruisePlan() {
+  const view = useGame((s) => s.view)
+  const draft = useGame((s) => s.plan.bookings) ?? noBookings()
+  const set = useGame((s) => s.setBookings)
+  const c = view?.bookings?.cruise
+  if (!view || !c) return null
+  const stage = voiceOf(view)
+  const m = c.minSail
+  const min = draft.minSail?.min ?? m?.min ?? 0
+  const move = draft.minSail?.move ?? m?.move ?? false
+  const holds = new Map((draft.hold ?? []).map((h) => [h.week, h.on]))
+  const heldNow = (w: (typeof c.weeks)[number]) => holds.get(w.week) ?? w.held
+  const toggle = (week: number, on: boolean) => {
+    const rest = (draft.hold ?? []).filter((h) => h.week !== week)
+    const original = c.weeks.find((w) => w.week === week)?.held
+    set({ hold: on === original ? rest : [...rest, { week, on }] })
+  }
+  return (
+    <>
+      <SubHeading>{label('cruise.title', stage)}</SubHeading>
+      {m && (
+        <Market
+          label={label('cruise.minSail', stage)}
+          note={label(m.locked ? 'cruise.minSail.locked' : 'cruise.minSail.note', stage, {
+            weeks: m.weeksBefore,
+          })}
+          choices={[
+            ...m.options.map((o) =>
+              chip(
+                min === o,
+                o === 0
+                  ? label('cruise.minSail.any', stage)
+                  : label('cruise.minSail.min', stage, { n: o }),
+                () => !m.locked && set({ minSail: { min: o, move } }),
+              ),
+            ),
+            chip(
+              move,
+              label('cruise.minSail.move', stage, { amount: formatEuro(m.moveCents) }),
+              () => !m.locked && set({ minSail: { min, move: !move } }),
+            ),
+          ]}
+        />
+      )}
+      {c.weeks.slice(0, 8).map((w) => {
+        const sellable = !w.closed && !w.chartered && w.sold === 0
+        return (
+          <Market
+            key={w.week}
+            label={cruiseWeekText({ ...w, held: heldNow(w) }, stage)}
+            choices={
+              sellable
+                ? chip(
+                    heldNow(w),
+                    heldNow(w) ? label('cruise.release', stage) : label('cruise.hold', stage),
+                    () => toggle(w.week, !heldNow(w)),
+                  )
+                : undefined
+            }
+          />
+        )
+      })}
+      <HintLine term="guests" hint={label('cruise.hint', stage)} />
     </>
   )
 }

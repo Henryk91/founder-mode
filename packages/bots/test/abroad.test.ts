@@ -93,3 +93,31 @@ describe('Tiefgang bots (plan 4 step 3)', () => {
     expect(['buy', 'none']).toContain(optionOf('tourism_always_buy', 'boat-1'))
   })
 })
+
+describe('Leinen los bots (plan 4 step 4)', () => {
+  const scenario = loadScenario('leinenlos', 'long')
+  const bots = TOURISM_STRATEGIES.filter((t) => playsIn(t, scenario))
+
+  it('plays its own target bots', () => {
+    const ids = bots.map((b) => b.id)
+    for (const id of [
+      'tourism_always_manage',
+      'tourism_gulet_lease',
+      'tourism_gulet_buy',
+      'tourism_hold_all_peak',
+      'tourism_hold_never',
+      'tourism_sail_always',
+      'tourism_sail_six',
+    ]) {
+      expect(ids).toContain(id)
+    }
+  })
+
+  it.each(bots.map((t) => [t.id, t] as const))(
+    '%s plays a complete run with valid plans',
+    (_id, bot) => {
+      const r = runGame(scenario, bot, 'gulet-0')
+      expect(r.weeks).toBeGreaterThan(0)
+    },
+  )
+})

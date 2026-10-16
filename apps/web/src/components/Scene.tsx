@@ -38,6 +38,8 @@ export type OfficeStage =
   // Plan 4: Tiefgang.
   | 'dive_shop'
   | 'pool_centre'
+  // Plan 4: Leinen los.
+  | 'harbour_desk'
 
 const DRAWINGS: readonly OfficeStage[] = [
   'kitchen_table',

@@ -54,7 +54,8 @@ export const ENDING_ROUTES: {
   { ending: 'shut_down', strategies: ['shut_down@10'], tourism: true },
   {
     ending: 'bank_called',
-    strategies: ['tourism_reckless', 'tourism_overborrow'],
+    // Plan 4: where the bank lends only for a boat, the bot that buys one.
+    strategies: ['tourism_reckless', 'tourism_overborrow', 'tourism_gulet_buy'],
     tourism: true,
     loan: true,
   },

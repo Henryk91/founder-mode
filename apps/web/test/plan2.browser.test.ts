@@ -39,6 +39,8 @@ const RUNS: { id: ScenarioId; seed: string; week: number; loanForm?: boolean }[]
   { id: 'rueckenwind', seed: 'shot-1', week: 24 },
   // Plan 4: the boat card on Finance.
   { id: 'tiefgang', seed: 'shot-1', week: 24 },
+  // Plan 4: the season and the minimum to sail.
+  { id: 'leinenlos', seed: 'shot-1', week: 26 },
 ]
 
 /** One week of writing the business plan, then the form to list items is on the page. */
@@ -200,12 +202,15 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 2 step 1 screens', () => {
               await page.close()
               return
             }
-            expect(text).toMatch(/Staff on contracts/)
+            // Plan 4: a gulet's crew comes with the boat; no staff contracts there.
+            if (run.id !== 'leinenlos') expect(text).toMatch(/Staff on contracts/)
             if (run.id === 'hinterhof') expect(text).toMatch(/Food prepared/)
             if (run.id === 'rueckenwind') expect(text).toMatch(/Wind and sea, as forecast/)
             if (run.id === 'rueckenwind') expect(text).toMatch(/ runs on \d+ of \d+ /)
             if (run.id === 'tiefgang') expect(text).toMatch(/How you have it/)
             if (run.id === 'tiefgang') expect(text).toMatch(/The options/)
+            if (run.id === 'leinenlos') expect(text).toMatch(/The season, week by week/)
+            if (run.id === 'leinenlos') expect(text).toMatch(/Minimum to sail/)
             if (run.id === 'seeblick') expect(text).toMatch(/Minimum stay/)
             if (run.id === 'seeblick') expect(text).toMatch(/Rooms, one at a time/)
             expect(found).toEqual([])

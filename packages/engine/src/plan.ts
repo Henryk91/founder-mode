@@ -1,4 +1,5 @@
 import { officePlanValid } from './systems/office'
+import { waitsForCompany } from './systems/assets'
 import { landingTestsUsed, presaleBatchesUsed } from './systems/experiments'
 import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
@@ -115,6 +116,9 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
       issues.push({ code: 'invalid_number', field: `build.${featureId}` })
     } else if (hours > 0 && feature.shippedWeek !== null) {
       issues.push({ code: 'feature_shipped', featureId })
+    } else if (hours > 0 && waitsForCompany(state, featureId)) {
+      // Plan 4: buying an asset where a local company is needed first.
+      issues.push({ code: 'invalid_bookings' })
     } else if (hours > def.buildHours - feature.progressHours) {
       issues.push({
         code: 'build_exceeds_remaining',

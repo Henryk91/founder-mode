@@ -1,3 +1,4 @@
+import { waitsForCompany } from './assets'
 import { prepayOffice } from './office'
 import type { LoanConfig } from '@founder-mode/content'
 import { Rng, seedRng } from '../rng'
@@ -124,6 +125,8 @@ export function canFinance(state: GameState, id: string): boolean {
   const cfg = loanConfig(state)
   if (!cfg?.items?.includes(id)) return false
   if (state.product.features.some((f) => f.id === id && f.shippedWeek !== null)) return false
+  // Plan 4: the bank lends for an asset only once the company it needs exists.
+  if (waitsForCompany(state, id)) return false
   return !(state.loan?.bought ?? []).includes(id)
 }
 

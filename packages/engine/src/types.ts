@@ -377,6 +377,10 @@ export type BookingsState = {
   abroad?: AbroadState
   /** Plan 4: assets and how the company has them, where the scenario has assets. */
   assets?: Record<string, AssetState>
+  /** Plan 4: weeks held for whole-boat bookings, where the scenario lets weeks be held. */
+  held?: number[]
+  /** Plan 4: the minimum to sail, in cabins (0 sails with any), and since when it holds. */
+  minSail?: { min: number; move: boolean; sinceWeek: number }
 }
 
 /** Plan 4: how the company has an asset. */
@@ -491,6 +495,10 @@ export type BookingsPlan = {
   minStay?: boolean | null
   /** Plan 4: a new trip policy: the smallest group a trip runs with, or null for never. */
   trips?: { min: number | null }
+  /** Plan 4: weeks to hold for whole-boat bookings (on) or to release (off). */
+  hold?: { week: number; on: boolean }[]
+  /** Plan 4: a new minimum to sail, and whether guests of a cancelled week are moved. */
+  minSail?: { min: number; move: boolean }
 }
 
 export type HiddenFunding = {
@@ -1492,6 +1500,8 @@ export type BookingsView = {
   abroad: AbroadView | null
   /** Plan 4: assets (a boat); empty without them. */
   assets: AssetView[]
+  /** Plan 4: the cruise season, week by week, where weeks can be held; null otherwise. */
+  cruise: CruiseView | null
   roles: {
     id: string
     name: string
@@ -1535,6 +1545,32 @@ export type BookingsView = {
    * covers or room nights, for the headline (tourism fixes).
    */
   servedByWeek: number[]
+}
+
+/** Plan 4: the cruise weeks of a gulet scenario. */
+export type CruiseView = {
+  /** Every week of the season ahead (up to 26), with what is sold in it. */
+  weeks: {
+    week: number
+    held: boolean
+    /** Sold to a whole-boat booking (a charter or a retreat). */
+    chartered: boolean
+    /** Cabins sold of `cabins` (cabin bookings only). */
+    sold: number
+    cabins: number
+    /** The asset closes it (the owner's peak, a haul-out, a breakdown, a refit). */
+    closed: boolean
+  }[]
+  minSail: {
+    min: number
+    move: boolean
+    options: number[]
+    locked: boolean
+    weeksBefore: number
+    moveCents: number
+  } | null
+  /** Themed weeks are on (friction halved). */
+  themed: boolean
 }
 
 /** Plan 4: an asset as the player sees it, with the terms of each option the scenario has. */
@@ -1970,6 +2006,10 @@ export type ReportEntry =
   | { kind: 'asset_repaired'; assetId: string; costCents: number }
   | { kind: 'asset_haul_out'; assetId: string; weeks: number; costCents: number }
   | { kind: 'asset_taken_back'; assetId: string }
+  /** Plan 4: a cruise week below the minimum to sail, cancelled three weeks out. */
+  | { kind: 'cruise_cancelled'; week: number; cabins: number; moved: boolean; costCents: number }
+  /** Plan 4: strangers on one boat did not get on this week. */
+  | { kind: 'friction'; groups: number }
   | {
       kind: 'trial_result'
       trialId: string

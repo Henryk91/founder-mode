@@ -30,6 +30,14 @@ import { moveOffice } from './office'
 import { priceCurve } from './market'
 import { openVouchers, trialOpen, trialsUsed, trialsValid, voucherBatchesUsed } from './trials'
 import {
+  applyMinSail,
+  cruiseView,
+  frictionPenalty,
+  heldFor,
+  themedTurnsAway,
+  wtpWithFactors,
+} from './cruise'
+import {
   assetFactor,
   assetOf,
   assetsBought,
@@ -152,6 +160,16 @@ export function initBookings(
         turnedAway: [],
         abroad: initAbroad(scenario, forecast),
         ...(cfg.assets ? { assets: initAssets(cfg)! } : {}),
+        ...(cfg.hold ? { held: [] } : {}),
+        ...(cfg.minSail
+          ? {
+              minSail: {
+                min: cfg.minSail.options[0]!,
+                move: false,
+                sinceWeek: 1 - cfg.minSail.policyWeeks,
+              },
+            }
+          : {}),
       },
     }
   }
@@ -205,6 +223,8 @@ export const cloneBookingsPlan = (p: BookingsPlan): BookingsPlan => ({
   ...(p.renovate !== undefined ? { renovate: p.renovate } : {}),
   ...(p.minStay !== undefined ? { minStay: p.minStay } : {}),
   ...(p.trips ? { trips: { ...p.trips } } : {}),
+  ...(p.hold ? { hold: p.hold.map((h) => ({ ...h })) } : {}),
+  ...(p.minSail ? { minSail: { ...p.minSail } } : {}),
 })
 
 /**
@@ -371,6 +391,18 @@ export function bookingsValid(state: GameState, plan: WeekPlan): boolean {
     if (busy + p.renovate > r.atOnce || done + planned + p.renovate > r.rooms) return false
   }
   if (p.minStay !== undefined && p.minStay !== null && !cfg.minStay) return false
+  // Plan 4: holds on weeks ahead, and a minimum to sail from the scenario's options.
+  if (p.hold) {
+    if (!cfg.hold) return false
+    for (const h of p.hold) if (!Number.isInteger(h.week) || h.week < state.week) return false
+  }
+  if (p.minSail) {
+    const m = cfg.minSail
+    const now = state.bookings.minSail
+    if (!m || !now || !m.options.includes(p.minSail.min)) return false
+    const changed = p.minSail.min !== now.min || p.minSail.move !== now.move
+    if (changed && state.week - now.sinceWeek < m.policyWeeks) return false
+  }
   // Plan 4: a trip policy from one to the largest group a trip takes, or never.
   if (p.trips) {
     const t = state.bookings.abroad?.trips
@@ -495,6 +527,21 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   if (p.partnerships.length) b.partnerships = [...b.partnerships, ...p.partnerships]
   if (p.prep && Object.keys(p.prep).length) b.prep = { ...b.prep, ...p.prep }
   if (p.minStay !== undefined && p.minStay !== null) b.minStay = p.minStay
+  // Plan 4: weeks held or released, and a new minimum to sail.
+  if (p.hold && b.held) {
+    let held = [...b.held]
+    for (const h of p.hold) {
+      held = held.filter((w) => w !== h.week)
+      if (h.on) held.push(h.week)
+    }
+    b.held = held.sort((x, y) => x - y)
+  }
+  if (p.minSail && b.minSail) {
+    const m = p.minSail
+    if (m.min !== b.minSail.min || m.move !== b.minSail.move) {
+      b.minSail = { min: m.min, move: m.move, sinceWeek: week }
+    }
+  }
   // Plan 4: a new trip policy.
   if (p.trips && b.abroad?.trips && p.trips.min !== b.abroad.trips.min) {
     b.abroad = { ...b.abroad, trips: { ...b.abroad.trips, min: p.trips.min, sinceWeek: week } }
@@ -600,7 +647,24 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           (x) => x.productId === product && x.week === w && x.status === 'booked',
         )
         .reduce((t, x) => t + x.units, 0)
-    const weekly = assetsWeek(bought.state, rng, openUnits)
+    // A refit (or any product that closes its asset) shipped this week takes it out for weeks.
+    let refit = bought.state
+    for (const f of refit.product.features) {
+      const c = cfg.products[f.id]?.closesAsset
+      const a = c ? refit.bookings?.assets?.[c.asset] : undefined
+      if (!c || !a || f.shippedWeek !== week) continue
+      refit = {
+        ...refit,
+        bookings: {
+          ...refit.bookings!,
+          assets: {
+            ...refit.bookings!.assets!,
+            [c.asset]: { ...a, brokenUntil: Math.max(a.brokenUntil, week + c.weeks - 1) },
+          },
+        },
+      }
+    }
+    const weekly = assetsWeek(refit, rng, openUnits)
     state = weekly.state
     b = state.bookings!
     out.costsCents += weekly.costsCents
@@ -609,6 +673,15 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
 
   // 4. New requests.
   const bookings = [...b.bookings]
+  // Plan 4: a cruise week below the minimum to sail is cancelled three weeks out.
+  let minSailReviews = 0
+  if (cfg.minSail) {
+    const ms = applyMinSail({ ...state, bookings: b }, bookings)
+    b = { ...b, held: ms.held }
+    out.costsCents += ms.costsCents
+    out.entries.push(...ms.entries)
+    minSailReviews = ms.badReviews
+  }
   const repeatGuests = { ...b.repeatGuests }
   const turnedAway = b.turnedAway.filter((t) => t.week > week - TURNED_AWAY_WEEKS)
   const woy = weekOfYear(state.scenario, week)
@@ -660,12 +733,15 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     return Math.min(room(id, w), Math.floor(cap) - (heldBySeg.get(segKey(seg, id, w)) ?? 0))
   }
   let sentLost = 0
+  const wtpRaised = Object.values(cfg.products).some((x) => x.wtpFactor)
   const byAppeal = Object.values(cfg.products).some((x) => x.appeal !== undefined)
   for (const seg of state.scenario.segments) {
     const s = cfg.segments[seg.id]
     if (!s) continue
     const reach = reachOf(state, seg.id, p)
-    const wtp = state.hidden.segments[seg.id]?.wtpCents ?? 1
+    const baseWtp = state.hidden.segments[seg.id]?.wtpCents ?? 1
+    // Plan 4: a shipped refit raises what some guests would pay.
+    const wtp = wtpRaised ? wtpWithFactors(state, seg.id, baseWtp) : baseWtp
     const price = b.prices[seg.id]?.peak ?? 1
     const weatherF = s.weatherSensitive && cfg.weather ? cfg.weather.demand[weather] : 1
     const units =
@@ -690,11 +766,13 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     for (let i = 0; i < requests; i++) {
       let size = rng.int(s.size.min, s.size.max)
       const lead = rng.int(s.leadWeeks.min, s.leadWeeks.max)
-      const target = week + lead
+      let target = week + lead
       const platform = reach.total > 0 && rng.chance(reach.platform / reach.total)
       if (target > state.scenario.maxWeeks) continue
       // Guests a partner sent have agreed to your terms already.
       if (i < ownRequests && b.policy === 'strict' && !rng.chance(s.strictConversion)) continue
+      // Plan 4: themed weeks put some cabin guests off.
+      if (i < ownRequests && cfg.friction?.themed && themedTurnsAway(state, seg.id, rng)) continue
       // A minimum stay (plan 2 step 1d): fewer book, those who do stay longer.
       const ms = cfg.minStay
       if (
@@ -706,17 +784,38 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         if (i < ownRequests && !rng.chance(ms.conversion)) continue
         size += ms.extraUnits
       }
-      const options = Object.entries(cfg.products)
-        .filter(
-          ([id, prod]) =>
-            prod.serves.includes(seg.id) &&
-            sells(state, id, target) &&
-            // Plan 4: a product for a level only sells to guests who hold it.
-            (!prod.needsLevel || (s.levels ?? []).includes(prod.needsLevel)),
-        )
-        .map(([id]) => ({ id, free: roomFor(seg.id, id, target) }))
-        .filter((o) => o.free >= size)
-        .sort((x, y) => y.free - x.free)
+      const optionsAt = (w: number) =>
+        Object.entries(cfg.products)
+          .filter(
+            ([id, prod]) =>
+              prod.serves.includes(seg.id) &&
+              sells(state, id, w) &&
+              // Plan 4: a product for a level only sells to guests who hold it.
+              (!prod.needsLevel || (s.levels ?? []).includes(prod.needsLevel)) &&
+              // Plan 4: a week held for whole-boat bookings sells no cabins.
+              !(cfg.hold && heldFor(cfg, b.held, id, w)),
+          )
+          .map(([id]) => ({ id, free: roomFor(seg.id, id, w) }))
+          .filter((o) => o.free >= size)
+          .sort((x, y) => y.free - x.free)
+      let options = optionsAt(target)
+      // Plan 4 (a cruise season): guests whose week is out of season or full ask for the season's
+      // next weeks instead: the first in-season week from their date, then up to seven weeks on.
+      if (cfg.hold && options.length === 0) {
+        const inSeason = (w: number) =>
+          Object.entries(cfg.products).some(
+            ([id, prod]) => prod.serves.includes(seg.id) && sells(state, id, w),
+          )
+        let first = target
+        while (first < target + WEEKS_PER_YEAR && !inSeason(first)) first++
+        for (let w = first; w < first + 8 && w <= state.scenario.maxWeeks; w++) {
+          options = optionsAt(w)
+          if (options.length > 0) {
+            target = w
+            break
+          }
+        }
+      }
       // Plan 4: where products name their appeal, guests pick by it among those with room.
       const pick = byAppeal ? pickByAppeal(cfg, options, rng) : options[0]
       // A deposit on booking, where the segment pays one (step 7).
@@ -1322,10 +1421,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const used = new Map<FeatureId, { units: number; grossCents: number }>()
     for (const x of served) {
       const u = used.get(x.productId) ?? { units: 0, grossCents: 0 }
-      used.set(x.productId, {
-        units: u.units + x.units,
-        grossCents: u.grossCents + x.units * x.priceCents,
-      })
+      // Net of the platform's cut: an owner's share comes off what the guests paid you.
+      const gross = x.units * x.priceCents
+      const cut = x.channel === 'platform' ? Math.round(gross * cfg.platform.commission) : 0
+      used.set(x.productId, { units: u.units + x.units, grossCents: u.grossCents + gross - cut })
     }
     const assetCosts = assetsUsed({ ...state, bookings: b }, used)
     b = assetCosts.state.bookings!
@@ -1472,6 +1571,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const tired =
       energyFactor(state.founder, state.scenario) < 1 &&
       Object.values(p.founderShifts).some((n) => n > 0)
+    // Plan 4: strangers on one boat who did not get on.
+    const friction = cfg.friction
+      ? frictionPenalty(state, served, rng)
+      : { penalty: 0, entries: [] }
+    out.entries.push(...friction.entries)
     // Plan 4: a week sold whole (a cruise) never cancels for the sea; its bad slots cost reviews.
     let seaDays = 0
     const cr = cond?.review
@@ -1514,6 +1618,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           contractBonus +
           roomsBonus +
           seaDays -
+          friction.penalty -
           floorPenalty +
           rng.normal(r.noiseSd),
       ),
@@ -1526,6 +1631,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
   }
 
+  // Plan 4: guests of a cruise cancelled below the minimum, refunded, say so.
+  sentLost += minSailReviews
   if (sentLost > 0) {
     rating = ((rating ?? 0) * reviews + SENT_LOST_RATING * sentLost) / (reviews + sentLost)
     reviews += sentLost
@@ -1750,6 +1857,7 @@ export function bookingsView(state: GameState): BookingsView | null {
     })),
     abroad: abroadView(state),
     assets: assetsView(state),
+    cruise: cruiseView(state),
     roles: Object.entries(cfg.roles).map(([id, r]) => ({
       id,
       name: r.name,

@@ -273,6 +273,7 @@ describe('content', () => {
       'seeblick',
       'rueckenwind',
       'tiefgang',
+      'leinenlos',
     ])
     for (const c of scenarioCatalogue()) {
       expect(c.tags.length).toBeGreaterThanOrEqual(2)

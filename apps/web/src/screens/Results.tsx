@@ -193,6 +193,14 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'asset_taken_back':
       return label('results.entry.asset_taken_back', stage, { asset: asset(entry.assetId) })
+    case 'cruise_cancelled':
+      return label(`results.entry.cruise_cancelled.${entry.moved ? 'moved' : 'refunded'}`, stage, {
+        week: entry.week,
+        cabins: entry.cabins,
+        amount: formatEuro(entry.costCents),
+      })
+    case 'friction':
+      return label('results.entry.friction', stage, { groups: entry.groups })
     case 'tender':
       return label(
         entry.bid === 'same'
@@ -529,7 +537,10 @@ function place(entry: ReportEntry): [Group, number] {
       return ['money', 8]
     case 'asset_repaired':
     case 'asset_taken_back':
+    case 'friction':
       return ['sales', 5]
+    case 'cruise_cancelled':
+      return ['sales', 8]
     case 'term_sheet':
     case 'funding_milestone':
       return ['money', 5]

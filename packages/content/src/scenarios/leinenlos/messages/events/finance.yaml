@@ -11,9 +11,9 @@ events:
     look: letter
     text: >-
       Three offers are on your desk. Kaptan Murat will let you manage "Mavi Rüya" with his crew and
-      no fixed cost, keeping 75% of what you sell. "Deniz Yıldızı" leases for 110,000 EUR for May to
-      October with its crew, 30% on signing. Buying your own needs a Turkish company and about
-      450,000 EUR.
+      no fixed cost, keeping 70% of what you sell. "Deniz Yıldızı" leases for 80,000 EUR for May to
+      October with its crew, 15% on signing. Buying your own needs a Turkish company and about
+      200,000 EUR.
     defaultChoice: later
     choices:
       - id: manage
@@ -42,7 +42,7 @@ events:
     look: letter
     text: >-
       Winter is when boats change hands in Fethiye. Kaptan Murat would have you manage "Mavi Rüya"
-      again for 75% of the takings, and "Deniz Yıldızı" leases for next season at 110,000 EUR.
+      again for 70% of the takings, and "Deniz Yıldızı" leases for next season at 80,000 EUR.
       Leaving a lease early costs the rest of its season.
     defaultChoice: keep
     choices:
