@@ -923,6 +923,6 @@ The 60 week games keep their fingerprints: every new content field is optional w
 
 ### Plan 3 review: the established stage follows growth
 
-- Content: `ScenarioFile.establishedAt?: { monthsCoveringAll, people }` (long modes: Kantino long, Gratwanderung, Hinterhof, Seeblick: 6 months and 3 people). `OfficeStage.established?` removed.
-- Turn: after milestones and the organised switch, the UI turns `established` once `monthsCovering(all)` reaches `monthsCoveringAll` and the people working (the founder, hires who have started, contracts working this week) reach `people`; never back. Report entry `ui_established` loses `place`. The game itself is unchanged; the long mode content fingerprints change, so their old saves get the usual notice.
-- Bots: `RunResult.establishedWeek: number | null`; the report's "The established look" section.
+- Content: `ScenarioFile.establishedAt?: { monthsCoveringAll, officeStage?, funded? }` (long modes: Kantino long 8 months, stage 4, funded; Gratwanderung 7, Hinterhof 8 and Seeblick 8 months, stage 4). `OfficeStage.established?` removed. (A first version had `people` instead of `officeStage` and `funded`; dropped after review.)
+- Turn: after milestones and the organised switch, the UI turns `established` once `monthsCovering(all)` reaches `monthsCoveringAll`, or the current office stage's number reaches `officeStage`, or with `funded` once a round has closed (a stake exists); never back. Report entry `ui_established` loses `place`. The game itself is unchanged; the long mode content fingerprints change, so their old saves get the usual notice.
+- Bots: `RunResult.establishedWeek: number | null`; target E1 (Kantino long 41, tourism T22) and the report's "The established look" section.

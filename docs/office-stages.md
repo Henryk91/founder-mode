@@ -99,4 +99,10 @@ Conditions use only facts the player can see. The offer's text states the condit
 
 ## 6. The established UI stage
 
-After the review of plan 3, the established look no longer comes with office stage 4. It comes once revenue has covered all costs (the founder's living costs included) for six months running and three people work at the company, the founder included: hires in Kantino, staff on permanent, part time or seasonal contracts in the tourism scenarios (`establishedAt` in the scenario). It never goes back, and a results line marks the switch.
+After the review of plan 3, the established look comes once money coming in has covered all costs, the founder's living costs included, for a number of months in a row, or when a move into office stage 4 completes, or (Kantino long) once a funding round has closed (`establishedAt` in the scenario). It never goes back, and a results line marks the switch. A first version also asked for three people at the company; the game teaches that hiring seldom pays, so successful players rarely had three, and it was dropped.
+
+| # | Target |
+|---|---|
+| E1 | The careful bot reaches the established look in 40 to 80% of its winning runs, median week roughly 60 to 90, in each long mode scenario |
+
+The months are tuned per scenario between 4 and 8 for E1: Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8 (`docs/decisions.md`, plan 3 review).

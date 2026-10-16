@@ -112,23 +112,23 @@ Carried from plan 2, no worse: tourism T14 (all three); Hinterhof T2 and T7; See
 
 Henry's decisions (`docs/decisions.md`, "Plan 3 review"):
 
-1. **The established look follows growth, not office stage 4:** revenue covering all costs for six months running and three people working, the founder included (hires in Kantino, staff on contracts in tourism). Never back. Measured on the report's runs (section "The established look" in `docs/balancing.md`):
+1. **The established look follows the company's money, not office stage 4.** It starts once money coming in has covered all costs, the founder's living costs included, for a number of months in a row; moving into office stage 4, or in Kantino long a closed funding round, also counts. Never back. A first version also asked for three people at the company, but the game teaches that hiring seldom pays, so winners rarely had three (4.5% of Kantino long's careful wins, none of Seeblick's); it was dropped. New target **E1**: the careful bot reaches the look in 40 to 80% of its winning runs, median week 60 to 90. Months tuned per scenario between 4 and 8, measured on the careful bot (1,000 report seeds):
 
-   | Scenario | Careful bot: of all runs | Of winning runs | Median week (wins) |
-   |---|---|---|---|
-   | Kantino long | 2.0% | 4.5% | 71 |
-   | Gratwanderung | 3.0% | 5.8% | 89 |
-   | Hinterhof | 18.8% | 68.2% | 57 |
-   | Seeblick | 0% | 0% | - |
+   | Scenario | Months | Of all runs | Of winning runs | Median week (wins) | E1 |
+   |---|---|---|---|---|---|
+   | Kantino long | 8 | 42.6% | 78.7% (±3.8) | 76 | pass |
+   | Gratwanderung | 7 | 21.4% | 43.3% (±4.6) | 84 | pass |
+   | Hinterhof | 8 | 26.7% | 93.6% (±3.0) | 62 | fail: above 80% at every allowed value (open) |
+   | Seeblick | 8 | 14.5% | 49.8% (±5.9) | 57 (±1.0) | fail: three weeks early (open; 7 months: 70.3%, week 53) |
 
-   Only Hinterhof reaches it in a sensible share of winning runs. Kantino's careful bot makes one hire (the hiring targets show a second rarely pays), so three people are rare; its part time variant reaches it in 28.9% of wins (week 63). Gratwanderung and Seeblick seldom keep two staff on contracts (target T14: the careful bots sign contracts late, Seeblick almost never). Not changed: the trigger is Henry's. Options: two people instead of three in the tourism scenarios, counting weekly shift staff who worked in each of the last four weeks, or four months instead of six.
+   Every value from 4 to 8 months is in `docs/decisions.md` ("Plan 3 review, second decision"). Outcomes unchanged: the main part of the four long modes on 1,000 seeds matches `docs/balancing.md`; in Kantino long the only differences are targets the full gate judges on parts not run (wide seeds, the event part, the inbox reader's chasing table).
 2. **O1 restated** ("moving at the right time costs at most 1 point against never moving"), reason with the targets in `docs/office-stages.md`: two-year runs cannot pay back a fixed-cost move. It passes in all four long modes (+0.0, -0.1, +0.1, +0.1). O2 stays and passes. The post-mortem's office lines say "It cost ..." and "What changed: money in over four weeks went from ... to ... (up or down ...)".
 3. **Accepted:** the desks, the move rule and the first-load split. The browser check (production build, slow 4G, 4x CPU, 390 and 1440 px) found no flash on switching tabs, but a blank page for about a second when New run was tapped before the screens had arrived; New run now waits for them as it waits for the scenarios. No blank frame since; Start screen LCP 2.28 s.
 4. No demand formula changes.
 
-Gate after the review: every scenario and mode identical to `plan3-complete` apart from timings, O1's wording and status, and the new section. Kantino and Zollstock 60 weeks unchanged (fingerprints locked); the tourism fingerprints changed with the `establishedAt` content, so their old saves get the save notice. Tests: 1,068 passed; lint clean.
+Gate after the first review change: every scenario and mode identical to `plan3-complete` apart from timings, O1's wording and status, and the new section; the trigger change after it was proven on the main part (above), not a full gate, by decision. Kantino and Zollstock 60 weeks unchanged (fingerprints locked); the tourism fingerprints changed with the `establishedAt` content, so their old saves get the save notice. Tests: 1,069 passed; lint clean.
 
 ### For Henry to review after the review
 
-1. The established trigger reaches only Hinterhof's winners often (table above); options listed there.
-2. O3 stays open (offices rarely taken).
+1. E1 in Hinterhof and Seeblick (table above): Hinterhof's winners nearly all cover their costs for eight months; Seeblick's reach the look a few weeks before week 60. Options: allow more than 8 months for Hinterhof, or accept "roughly" 60 for Seeblick's week 57.
+2. O3 stays open (offices rarely taken), which fits the restated O1.
