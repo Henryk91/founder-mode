@@ -18,7 +18,7 @@ Mockups (static pictures, not code; ignore the inline styles' exact structure, c
 |---|---|---|
 | `scrappy` | Start | yes |
 | `organised` | Revenue covers all costs, or the first hire | yes (pipeline panel and a few labels only) |
-| `established` | Revenue has covered all costs for six months running and three people work at the company (after the plan 3 review; it was office stage 4), see `docs/office-stages.md` section 6 | **new** |
+| `established` | Money coming in has covered all costs, the founder's living costs included, for a number of months in a row (Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8), or a move into office stage 4 completes, or (Kantino long) a funding round closes. Never goes back. After the plan 3 review; target E1 in `docs/office-stages.md` sections 5 and 6 | **new** |
 
 - Only the long modes set `establishedAt`, so the 60 week game never reaches `established`. Kantino and Zollstock 60 week screens stay exactly as they are.
 - The stage never goes back down within a run, even if the company later moves out.

@@ -486,6 +486,7 @@ Targets 20 to 30 (`docs/phase9-proposal.md` 2.9 and Part C2), judged on `validat
 | 38 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving (on 10000 seeds) | +0.0 | ±0.0 | yes |
 | 39 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points (on 10000 seeds) | -42.8 | ±1.0 | yes |
 | 40 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 0.3% of 4295; stage 4 taken in 0.0% of 11; stage 5 never offered |  | no |
+| 41 | E1. The established look comes once the company has made it: the careful bot reaches it in 40 to 80% of its winning runs, median week 60 to 90 | 78.7% of 447 wins; median week 76 | ±3.8; ±4.0 | yes |
 | 31 | Both paths are viable: the careful bot that never raises (bootstrap, validate_then_build) and raise_on_traction each win (Sustainable or Growing) 25 to 45%, within 8 points of each other | bootstrap 43.0%, raise_on_traction 37.7% | ±1.0, ±0.9 | yes |
 | 32 | Neither dominates: bootstrap wins at least as often as raise_on_traction (within its margin), and raise_on_traction's median founder share value in winning runs is at least 1.3 times bootstrap's (share x company value by the visible rule) | raise_on_traction -5.3; value 871,495 EUR against 725,910 EUR | ±1.0 | no |
 | 33 | Raising on weak traction is punished: raise_early wins at least 8 points less than raise_on_traction and less than bootstrap, and the post-mortem names the round as a cause (bankrupt while or after raising, or investors met before a paying customer who passed as too early) in at least half of its losing runs | +2.4 against raise_on_traction, -2.9 against bootstrap; round named in 100.0% of losses | ±1.1, ±1.1 | no |
@@ -723,23 +724,28 @@ The careful bot that never raises (bootstrap) and the raising bots on the same 1
 
 ## The established look
 
-Runs that turned established (revenue covering all costs for six months running and three people working), and the median week it happened in the winning runs that reached it.
+Runs that turned established (money in covering all costs for the scenario's months in a row, a move into office stage 4, or in Kantino long a closed funding round), and the median week it happened in the winning runs that reached it.
 
 | Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |
 |---|---|---|---|---|
-| validate_then_build | 1000 | 2.0% | 4.5% | 71 |
-| presale_max | 1000 | 1.0% | 2.7% | 63 |
-| price_aware | 1000 | 2.0% | 4.5% | 71 |
-| validate_then_build_savings_hire | 1000 | 0.3% | 3.2% | 73 |
-| validate_then_build_part_time | 1000 | 14.0% | 28.9% | 63 |
-| validate_then_build_freelance_first | 1000 | 1.2% | 3.6% | 66 |
-| validate_then_build_expand | 1000 | 2.2% | 5.0% | 71 |
-| validate_then_build_never_move | 1000 | 2.0% | 4.5% | 71 |
-| validate_then_build_founder_chases | 1000 | 1.9% | 4.0% | 63 |
-| raise_on_traction | 1000 | 0.9% | 2.0% | 87 |
-| raise_early | 1000 | 1.8% | 3.8% | 64 |
-| raise_always | 1000 | 1.0% | 2.0% | 70 |
-| raise_late | 1000 | 2.1% | 5.3% | 69 |
+| validate_then_build | 1000 | 42.6% | 78.7% | 76 |
+| validate_then_build_hire | 1000 | 17.5% | 75.2% | 83 |
+| validate_then_build_early_hire | 1000 | 1.3% | 100.0% | 60 |
+| presale_max | 1000 | 32.4% | 78.2% | 80 |
+| price_aware | 1000 | 42.6% | 78.7% | 76 |
+| validate_then_build_solo | 1000 | 50.2% | 92.5% | 62 |
+| validate_then_build_savings_hire | 1000 | 10.4% | 67.4% | 85 |
+| validate_then_build_part_time | 1000 | 35.2% | 72.5% | 86 |
+| validate_then_build_freelance_first | 1000 | 16.0% | 40.2% | 95 |
+| validate_then_build_expand | 1000 | 40.6% | 75.2% | 78 |
+| validate_then_build_never_move | 1000 | 42.6% | 78.7% | 76 |
+| validate_then_build_always_move | 1000 | 0.9% | 100.0% | 54 |
+| validate_then_build_expand_solo | 1000 | 49.7% | 91.4% | 62 |
+| validate_then_build_founder_chases | 1000 | 40.9% | 76.7% | 80 |
+| raise_on_traction | 1000 | 50.9% | 89.3% | 61 |
+| raise_early | 1000 | 43.1% | 81.7% | 72 |
+| raise_always | 1000 | 45.6% | 85.0% | 67 |
+| raise_late | 1000 | 52.4% | 90.7% | 69 |
 
 ## Week the run ended
 
@@ -1758,6 +1764,7 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | -0.1 | ±0.2 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -39.0 | ±3.0 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 29.2% of 448; stage 4 taken in 41.2% of 51; stage 5 never offered |  | no |
+| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in 40 to 80% of its winning runs, median week 60 to 90 | 43.3% of 448 wins; median week 84 | ±4.6; ±3.0 | yes |
 
 ## Endings
 
@@ -1837,24 +1844,26 @@ Per strategy, medians over its runs: guests served, what they paid (net of commi
 
 ## The established look
 
-Runs that turned established (revenue covering all costs for six months running and three people working), and the median week it happened in the winning runs that reached it.
+Runs that turned established (money in covering all costs for the scenario's months in a row, a move into office stage 4, or in Kantino long a closed funding round), and the median week it happened in the winning runs that reached it.
 
 | Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |
 |---|---|---|---|---|
-| tourism_careful | 1000 | 3.0% | 5.8% | 89 |
-| tourism_understaffing | 1000 | 0.1% | 0.0% | - |
-| tourism_price_blind | 1000 | 3.2% | 6.2% | 88 |
-| tourism_review_blind | 1000 | 0.9% | 2.2% | 87 |
-| tourism_always_flexible | 1000 | 3.0% | 5.8% | 89 |
-| tourism_inbox_none | 1000 | 0.8% | 2.1% | 91 |
-| tourism_inbox_effort | 1000 | 1.9% | 4.4% | 88 |
-| tourism_naive_careful | 1000 | 1.4% | 3.2% | 81 |
-| tourism_permanent | 1000 | 0.6% | 1.2% | 91 |
-| tourism_seasonal | 1000 | 0.1% | 0.2% | 80 |
-| tourism_part_time | 1000 | 4.6% | 9.1% | 87 |
-| tourism_never_move | 1000 | 3.1% | 6.0% | 87 |
-| tourism_always_move | 1000 | 0.2% | 3.4% | 81 |
-| tourism_always_strict | 1000 | 1.5% | 2.7% | 85 |
+| tourism_careful | 1000 | 21.4% | 43.3% | 84 |
+| tourism_platform_only | 1000 | 4.4% | 40.0% | 87 |
+| tourism_understaffing | 1000 | 11.9% | 34.3% | 87 |
+| tourism_price_blind | 1000 | 19.4% | 40.4% | 86 |
+| tourism_review_blind | 1000 | 12.1% | 35.1% | 88 |
+| tourism_always_flexible | 1000 | 21.4% | 43.3% | 84 |
+| tourism_inbox_none | 1000 | 10.7% | 30.5% | 86 |
+| tourism_inbox_effort | 1000 | 14.8% | 36.7% | 87 |
+| tourism_naive_careful | 1000 | 15.8% | 40.7% | 79 |
+| tourism_contracts_none | 1000 | 24.8% | 46.4% | 82 |
+| tourism_permanent | 1000 | 24.5% | 47.7% | 83 |
+| tourism_seasonal | 1000 | 25.0% | 46.7% | 83 |
+| tourism_part_time | 1000 | 23.1% | 46.3% | 83 |
+| tourism_never_move | 1000 | 21.9% | 44.5% | 84 |
+| tourism_always_move | 1000 | 9.8% | 69.0% | 50 |
+| tourism_always_strict | 1000 | 25.8% | 53.7% | 84 |
 
 ## Week the run ended
 
@@ -2210,6 +2219,7 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | +0.1 | ±0.4 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -26.4 | ±2.7 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 28.8% of 264; stage 4 taken in 3.7% of 54; stage 5 never offered |  | no |
+| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in 40 to 80% of its winning runs, median week 60 to 90 | 93.6% of 264 wins; median week 62 | ±3.0; ±6.5 | no |
 
 ## Endings
 
@@ -2298,28 +2308,29 @@ Per strategy, medians over its runs: guests served, what they paid (net of commi
 
 ## The established look
 
-Runs that turned established (revenue covering all costs for six months running and three people working), and the median week it happened in the winning runs that reached it.
+Runs that turned established (money in covering all costs for the scenario's months in a row, a move into office stage 4, or in Kantino long a closed funding round), and the median week it happened in the winning runs that reached it.
 
 | Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |
 |---|---|---|---|---|
-| tourism_careful | 1000 | 18.8% | 68.2% | 57 |
-| tourism_platform_only | 1000 | 6.9% | 58.3% | 56 |
-| tourism_overstaffing | 1000 | 3.5% | 89.7% | 57 |
-| tourism_no_tests | 1000 | 5.1% | 30.7% | 76 |
-| tourism_price_blind | 1000 | 19.1% | 68.8% | 57 |
-| tourism_review_blind | 1000 | 6.9% | 47.5% | 71 |
-| tourism_always_flexible | 1000 | 18.8% | 68.2% | 57 |
-| tourism_inbox_none | 1000 | 15.9% | 66.4% | 57 |
-| tourism_inbox_effort | 1000 | 15.7% | 64.3% | 57 |
-| tourism_naive_careful | 1000 | 16.8% | 65.0% | 52 |
-| tourism_permanent | 1000 | 0.2% | 0.8% | 40 |
-| tourism_seasonal | 1000 | 0.3% | 1.1% | 85 |
-| tourism_part_time | 1000 | 19.8% | 72.2% | 55 |
-| tourism_never_move | 1000 | 16.6% | 62.0% | 56 |
-| tourism_always_strict | 1000 | 17.1% | 56.9% | 57 |
-| tourism_overborrow | 1000 | 3.7% | 55.4% | 63 |
-| tourism_reckless | 1000 | 2.4% | 58.5% | 48 |
-| tourism_refit_loan | 1000 | 22.0% | 72.1% | 56 |
+| tourism_careful | 1000 | 26.7% | 93.6% | 62 |
+| tourism_platform_only | 1000 | 11.0% | 90.7% | 61 |
+| tourism_overstaffing | 1000 | 2.9% | 82.8% | 65 |
+| tourism_no_tests | 1000 | 23.5% | 91.4% | 72 |
+| tourism_price_blind | 1000 | 26.0% | 91.4% | 62 |
+| tourism_review_blind | 1000 | 13.7% | 86.5% | 63 |
+| tourism_always_flexible | 1000 | 26.7% | 93.6% | 62 |
+| tourism_inbox_none | 1000 | 22.1% | 90.3% | 64 |
+| tourism_inbox_effort | 1000 | 23.0% | 92.8% | 58 |
+| tourism_naive_careful | 1000 | 25.4% | 92.3% | 52 |
+| tourism_contracts_none | 1000 | 26.9% | 94.3% | 64 |
+| tourism_permanent | 1000 | 26.9% | 94.3% | 63 |
+| tourism_seasonal | 1000 | 26.8% | 93.9% | 62 |
+| tourism_part_time | 1000 | 27.0% | 94.7% | 63 |
+| tourism_never_move | 1000 | 26.5% | 93.5% | 63 |
+| tourism_always_strict | 1000 | 29.9% | 95.3% | 54 |
+| tourism_overborrow | 1000 | 8.3% | 95.4% | 51 |
+| tourism_reckless | 1000 | 5.7% | 100.0% | 50 |
+| tourism_refit_loan | 1000 | 29.9% | 93.7% | 65 |
 
 ## Week the run ended
 
@@ -2707,6 +2718,7 @@ The tourism target template (`docs/tourism-proposal.md` section 13), judged on `
 | T19 | O1. Moving at the right time costs little: the careful bot with its stage rules loses at most 1 point against never moving | +0.1 | ±0.2 | yes |
 | T20 | O2. Moving early loses: accepting every offer at once loses to the careful bot by at least 3 points | -27.3 | ±2.8 | yes |
 | T21 | O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered) | stage 3 taken in 4.8% of 273; stage 4 never offered; stage 5 never offered |  | no |
+| T22 | E1. The established look comes once the company has made it: the careful bot reaches it in 40 to 80% of its winning runs, median week 60 to 90 | 49.8% of 273 wins; median week 57 | ±5.9; ±1.0 | no |
 
 ## Endings
 
@@ -2792,6 +2804,32 @@ Per strategy, medians over its runs: guests served, what they paid (net of commi
 | tourism_overborrow | 4.8% | 158 | 6,300 | 4.11 | 42.9% | 0 | 6 |
 | tourism_reckless | 3.2% | 149 | 6,102 | 4.12 | 42.5% | 0 | 6 |
 | tourism_refit_loan | 26.8% | 793 | 25,661 | 4.12 | 37.8% | 0 | 11 |
+
+## The established look
+
+Runs that turned established (money in covering all costs for the scenario's months in a row, a move into office stage 4, or in Kantino long a closed funding round), and the median week it happened in the winning runs that reached it.
+
+| Strategy | Runs | Of all runs | Of winning runs | Median week (wins) |
+|---|---|---|---|---|
+| tourism_careful | 1000 | 14.5% | 49.8% | 57 |
+| tourism_platform_only | 1000 | 0.4% | 36.4% | 78 |
+| tourism_overstaffing | 1000 | 13.7% | 52.8% | 57 |
+| tourism_understaffing | 1000 | 2.6% | 30.0% | 56 |
+| tourism_price_blind | 1000 | 12.6% | 42.2% | 58 |
+| tourism_review_blind | 1000 | 12.9% | 51.0% | 58 |
+| tourism_always_flexible | 1000 | 13.9% | 48.0% | 57 |
+| tourism_inbox_none | 1000 | 10.3% | 50.8% | 58 |
+| tourism_inbox_effort | 1000 | 12.3% | 46.0% | 57 |
+| tourism_naive_careful | 1000 | 14.5% | 47.7% | 56 |
+| tourism_contracts_none | 1000 | 14.5% | 50.0% | 57 |
+| tourism_permanent | 1000 | 14.5% | 50.0% | 57 |
+| tourism_seasonal | 1000 | 14.5% | 50.0% | 57 |
+| tourism_part_time | 1000 | 14.4% | 49.3% | 57 |
+| tourism_never_move | 1000 | 14.3% | 49.6% | 57 |
+| tourism_always_strict | 1000 | 16.3% | 55.2% | 57 |
+| tourism_overborrow | 1000 | 3.4% | 64.6% | 57 |
+| tourism_reckless | 1000 | 2.5% | 65.6% | 54 |
+| tourism_refit_loan | 1000 | 12.3% | 42.5% | 72 |
 
 ## Week the run ended
 
