@@ -1,5 +1,7 @@
 # Established UI stage: design spec
 
+As built (plan 3 step 3): the bookings model counts weeks, not days, so Occupancy is a heat grid by week and product. The phone keeps Help in its top bar. Card titles are small caps labels, as in the mockups.
+
 The third and last look of the game screen. It replaces the paper desk when the company has grown up. Read `docs/design/design.md` first: everything there still applies unless this file says otherwise.
 
 Mockups (static pictures, not code; ignore the inline styles' exact structure, copy sizes and spacing):

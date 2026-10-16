@@ -32,7 +32,7 @@ export function MessageCard(props: Props) {
   const stage = voiceOf(view)
   const named = m.fromName !== m.fromRole
   return (
-    <article className={styles.letter} style={tiltStyle(props)}>
+    <article className={`${styles.letter} ${open(props)}`} style={tiltStyle(props)}>
       <header className={styles.from}>
         <span className={styles.portrait} aria-hidden="true">
           {initials(m.fromName)}
@@ -72,7 +72,7 @@ export function OfficialLetter(props: Props) {
   const { message: m, view } = props
   const stage = voiceOf(view)
   return (
-    <article className={styles.official} style={tiltStyle(props)}>
+    <article className={`${styles.official} ${open(props)}`} style={tiltStyle(props)}>
       <header className={styles.officialHead}>
         <span>{m.fromName}</span>
         <span>{label('market.week', stage, { week: m.week })}</span>
@@ -122,6 +122,9 @@ function Answer({ message: m, view, freeHours, onAnswer }: Props) {
     </>
   )
 }
+
+/** A message still waiting for an answer (the established stage marks it with a stripe). */
+const open = (props: Props) => (props.message.answeredChoiceId === null ? styles.open : '')
 
 function tiltStyle(props: Props): React.CSSProperties | undefined {
   // Paper only tilts once it has no buttons left (docs/design/design.md, shape and effects).

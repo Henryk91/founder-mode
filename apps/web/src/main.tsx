@@ -12,7 +12,16 @@ if (!root) throw new Error('Missing #root element')
 // The seed only picks the market; the engine itself never reads the clock or Math.random.
 const makeSeed = () =>
   `${Date.now().toString(36)}-${Math.floor(Math.random() * 36 ** 4).toString(36)}`
-const store = createGameStore({ storage: browserStorage(), makeSeed, profiles: browserProfiles() })
+// Plan 3: a dev build can preview a UI stage, `?stage=established`. Never in production.
+const preview = import.meta.env.DEV
+  ? new URLSearchParams(window.location.search).get('stage')
+  : null
+const store = createGameStore({
+  storage: browserStorage(),
+  makeSeed,
+  profiles: browserProfiles(),
+  ...(preview === 'established' || preview === 'organised' ? { previewStage: preview } : {}),
+})
 
 createRoot(root).render(
   <StrictMode>

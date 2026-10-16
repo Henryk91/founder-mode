@@ -14,6 +14,22 @@ import { StoreProvider, useGame } from './useGame'
 
 export type LayoutChoice = 'desk' | 'phone'
 
+/**
+ * Plan 3: the UI stage and scenario on <html>, so every screen (the post-mortem and Help too) takes
+ * the stage's tokens and the scenario's accent. The established stage's CSS and heading font load
+ * only when a run first reaches it, so the Start screen never waits for them.
+ */
+function useStageTheme(stage: string | null, scenarioId: string | null) {
+  useEffect(() => {
+    const html = document.documentElement
+    if (stage) html.dataset['stage'] = stage
+    else delete html.dataset['stage']
+    if (scenarioId) html.dataset['scenario'] = scenarioId
+    else delete html.dataset['scenario']
+    if (stage === 'established') void import('./theme/established.css')
+  }, [stage, scenarioId])
+}
+
 /** `layout` forces one layout, for tests; otherwise the window width decides. */
 export function App({ store, layout }: { store: StoreApi<GameStore>; layout?: LayoutChoice }) {
   return (
@@ -48,6 +64,7 @@ function Root(props: { layout?: LayoutChoice | undefined }) {
             ? `report-${momentsSeen}`
             : 'game'
   useFocusOnScreenChange(screen)
+  useStageTheme(view?.company.uiStage ?? null, view?.scenarioId ?? null)
 
   if (!view) return <Start />
   if (introStep !== null) return <Intro />

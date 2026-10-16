@@ -118,9 +118,17 @@
   border-radius: var(--panel-radius) var(--panel-radius) 0 0;
   background: var(--bar);
   color: var(--on-dark-muted);
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-size: 24px;
   font-weight: 700;
+}
+
+:global([data-stage='established']) .stripTab {
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .stripTabActive {

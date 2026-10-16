@@ -25,6 +25,8 @@ const FONTS = [
   ['caveat', [500, 700]],
   ['ibm-plex-sans', [400, 600, 700]],
   ['ibm-plex-mono', [400, 600]],
+  // Plan 3: the established stage's headings, loaded with theme/established.css only.
+  ['bricolage-grotesque', [700, 800]],
 ]
 
 mkdirSync(OUT, { recursive: true })

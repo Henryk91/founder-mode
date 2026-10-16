@@ -26,6 +26,24 @@ type Words = {
 }
 
 const shared = (w: Words): Overrides => ({
+  // Plan 3: the established stage's words in tourism (docs/design/established.md section 4).
+  'plan.section.talk': {
+    scrappy: 'Talk to people',
+    organised: 'Talk to people',
+    established: 'Guest research',
+  },
+  'plan.section.office': {
+    scrappy: 'Where you work',
+    organised: 'Office',
+    established: 'Premises',
+  },
+  'office.title': { scrappy: 'Where you work', organised: 'Office', established: 'Premises' },
+  'plan.section.guests': {
+    scrappy: 'Getting guests',
+    organised: 'Channels',
+    established: 'Distribution',
+  },
+
   // The headline (item 5): a tourism measure instead of customers.
   'stat.guests': 'Guests, last 4 weeks',
   'stat.guests.short': 'Guests',
@@ -59,7 +77,11 @@ const shared = (w: Words): Overrides => ({
   'results.entry.presale_result': `${w.pilot.one} for {segment}: {commits} of {prospects} would come again and bought a voucher.`,
 
   // Build and fix (item 7): ready, not shipped; incidents, teething problems or snags, not bugs.
-  'plan.section.build': w.build,
+  'plan.section.build': {
+    scrappy: w.build,
+    organised: w.build,
+    established: 'Products and upkeep',
+  },
   'explain.build.title': w.build,
   'plan.section.fix': w.fix,
   'stepper.what.fix': w.fixWhat,
@@ -165,6 +187,15 @@ const shared = (w: Words): Overrides => ({
 })
 
 const GRATWANDERUNG: Overrides = {
+  'market.trials.title': 'Pilot days, test listings and vouchers',
+  // Plan 3, the established stage: the company's full name and the line that marks the switch.
+  'bar.company': {
+    scrappy: '{name}',
+    organised: '{name}',
+    established: 'Gratwanderung Bergtouren',
+  },
+  'results.entry.ui_established':
+    'The guiding centre is open, changing rooms and all. The van has started to smell of nothing in particular.',
   ...shared({
     test: {
       one: 'Test listing',
@@ -196,6 +227,11 @@ const GRATWANDERUNG: Overrides = {
 }
 
 const HINTERHOF: Overrides = {
+  'market.trials.title': 'Pop-ups, lunch tests and vouchers',
+  // Plan 3, the established stage: the company's full name and the line that marks the switch.
+  'bar.company': { scrappy: '{name}', organised: '{name}', established: 'Wirtshaus Hinterhof' },
+  'results.entry.ui_established':
+    'The wall to the shop next door is gone. Seventy seats, and the chef counts them twice every evening.',
   ...shared({
     test: {
       one: 'Opening list',
@@ -244,6 +280,11 @@ const HINTERHOF: Overrides = {
 }
 
 const SEEBLICK: Overrides = {
+  'market.trials.title': 'Test rates, open houses and vouchers',
+  // Plan 3, the established stage: the company's full name and the line that marks the switch.
+  'bar.company': { scrappy: '{name}', organised: '{name}', established: 'Gasthaus Seeblick' },
+  'results.entry.ui_established':
+    'The pavilion is up and the reception desk has a bell. Guests have started ringing it.',
   ...shared({
     test: { one: 'Test rates', other: 'Test rates', lower: 'test rate', lowerPlural: 'test rates' },
     pilot: {

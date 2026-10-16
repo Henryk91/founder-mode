@@ -915,3 +915,8 @@ The 60 week games keep their fingerprints: every new content field is optional w
 - View: `PlayerView.office: OfficeView` (stage, rent, desks and people, move, notice, `canGiveNotice`, the month and turned-away counters, prepaid stages). `LoanView.plan.stages`. An offer whose stage a loan paid shows `costCents: 0`.
 - Report entries: `office_accepted`, `office_moved`, `ui_established`, `office_notice`, `office_left`. Post-mortem: `PostMortem.office: OfficeEconomics[]` (when, one-off, rent, deposit back, total, revenue before and at the end, team before and after, guests).
 - Bots: `RunResult.office { offered, taken }` (stage numbers); `Behaviours.office` and `TourismRule.office`: `careful` (default), `never`, `always`; strategies `validate_then_build_never_move`, `validate_then_build_always_move` (team part), `tourism_never_move`, `tourism_always_move`; targets O1 to O3 (Kantino long 38 to 40, tourism T19 to T21).
+
+### Plan 3 step 3: the established UI stage (engine 0.14.0, view only)
+
+- View: `PlayerView.history[]` gains `inCents` and `outCents`, money received and paid out that week as the runway counts them (the established Cash flow card). No game change.
+- Web: `uiStage` `established` (from the week a move into an `established` office stage completes); `data-stage` and `data-scenario` on `<html>`; `theme/established.css` and the Bricolage Grotesque font load on first reaching the stage. Labels take an optional `established` wording and fall back to the organised one. Dev builds preview a stage with `?stage=established` (`StoreDeps.previewStage`).
