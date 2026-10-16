@@ -8,6 +8,7 @@ import { sources as gratwanderung } from './sources/gratwanderung'
 import { sources as hinterhof } from './sources/hinterhof'
 import { sources as kantino } from './sources/kantino'
 import { sources as seeblick } from './sources/seeblick'
+import { sources as rueckenwind } from './sources/rueckenwind'
 import { sources as zollstock } from './sources/zollstock'
 
 export { SCENARIO_IDS, SCENARIO_MODES, isScenarioId, type ScenarioId } from './ids'
@@ -33,6 +34,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
   gratwanderung,
   hinterhof,
   seeblick,
+  rueckenwind,
 }
 
 /**

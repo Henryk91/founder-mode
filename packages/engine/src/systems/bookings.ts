@@ -629,6 +629,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     return Math.min(room(id, w), Math.floor(cap) - (heldBySeg.get(segKey(seg, id, w)) ?? 0))
   }
   let sentLost = 0
+  const byAppeal = Object.values(cfg.products).some((x) => x.appeal !== undefined)
   for (const seg of state.scenario.segments) {
     const s = cfg.segments[seg.id]
     if (!s) continue
@@ -685,10 +686,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         .map(([id]) => ({ id, free: roomFor(seg.id, id, target) }))
         .filter((o) => o.free >= size)
         .sort((x, y) => y.free - x.free)
-      const pick = options[0]
+      // Plan 4: where products name their appeal, guests pick by it among those with room.
+      const pick = byAppeal ? pickByAppeal(cfg, options, rng) : options[0]
       // A deposit on booking, where the segment pays one (step 7).
       const deposit = pick
-        ? Math.round(size * priceFor(state, seg.id, target) * (s.depositShare ?? 0))
+        ? Math.round(size * unitPrice(state, seg.id, pick.id, target) * (s.depositShare ?? 0))
         : 0
       if (!pick) {
         lost += size
@@ -702,7 +704,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         productId: pick.id,
         week: target,
         units: size,
-        priceCents: priceFor(state, seg.id, target),
+        priceCents: unitPrice(state, seg.id, pick.id, target),
         channel: platform ? 'platform' : 'direct',
         bookedWeek: week,
         status: 'booked',
@@ -752,7 +754,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         productId: pick.id,
         week: r.targetWeek,
         units: r.units,
-        priceCents: priceFor(state, r.segmentId, r.targetWeek),
+        priceCents: unitPrice(state, r.segmentId, pick.id, r.targetWeek),
         channel: r.channel,
         bookedWeek: week,
         status: 'booked',
@@ -989,27 +991,63 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       booked.delete(id)
       const min = trips.min
       if (min === null || units < min) {
-        staffed.set(id, 0)
-        why.set(id, 'conditions')
-        out.entries.push({ kind: 'trips_cancelled', productId: id, units })
+        // Too few for a trip: guests who have not waited yet wait a week for a group, if the
+        // trips run then and there is room; the rest are refunded.
+        let waiting = 0
+        for (const x of due) {
+          if (x.productId !== id || x.status !== 'booked' || x.waited) continue
+          if (min === null || week + 1 > state.scenario.maxWeeks || room(id, week + 1) < x.units)
+            continue
+          held.set(heldKey(id, week + 1), (held.get(heldKey(id, week + 1)) ?? 0) + x.units)
+          x.week = week + 1
+          x.waited = true
+          waiting += x.units
+        }
+        if (waiting > 0) {
+          out.entries.push({
+            kind: 'conditions_moved',
+            productId: id,
+            units: waiting,
+            to: 'next_week',
+          })
+        }
+        if (units > waiting) {
+          staffed.set(id, 0)
+          why.set(id, 'conditions')
+          out.entries.push({ kind: 'trips_cancelled', productId: id, units: units - waiting })
+        }
         continue
       }
       const runs = new Set(prod.runsIn ?? [])
-      const groups = Math.ceil(units / trip.perTrip)
-      const days = forecastSpot.map((d, i) => (runs.has(d) ? i : -1)).filter((i) => i >= 0)
+      const days = forecastSpot.map((d, k) => (runs.has(d) ? k : -1)).filter((k) => k >= 0)
+      const roles = Object.keys(cfg.roles).filter((r) => (cfg.roles[r]!.units[id] ?? 0) > 0)
+      const shiftsFree = () => roles.reduce((t, r) => t + (pool[r] ?? 0), 0)
+      // A group starts only if the forecast days and the staff give it every trip day it needs.
+      const groups = Math.min(
+        Math.ceil(units / trip.perTrip),
+        Math.floor(days.length / trip.days),
+        Math.floor(shiftsFree() / trip.days),
+      )
       let run = 0
       let good = 0
+      let done = 0
+      let current = 0
       for (const day of days) {
-        if (run >= groups * trip.days) break
-        const role = Object.keys(cfg.roles).find(
-          (r) => (cfg.roles[r]!.units[id] ?? 0) > 0 && (pool[r] ?? 0) > 0,
-        )
+        if (done >= groups) break
+        const role = roles.find((r) => (pool[r] ?? 0) > 0)
         if (!role) break
         pool[role]!--
         run++
-        if (runs.has(actualSpot[day]!)) good++
+        if (runs.has(actualSpot[day]!)) {
+          good++
+          current++
+          if (current === trip.days) {
+            done++
+            current = 0
+          }
+        }
       }
-      const served = Math.min(units, Math.floor(good / trip.days) * trip.perTrip)
+      const served = Math.min(units, done * trip.perTrip)
       const cost = run * trip.costCents
       tripCosts += cost
       trips = {
@@ -1019,9 +1057,30 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         guests: trips.guests + served,
         costCents: trips.costCents + cost,
       }
-      staffed.set(id, served)
-      why.set(id, 'conditions')
-      if (served < units) lost[id] = (lost[id] ?? 0) + units - served
+      // Guests whose group could not finish wait a week once, as a group too small would.
+      let waiting = 0
+      let left = served
+      for (const x of due) {
+        if (x.productId !== id || x.status !== 'booked') continue
+        if (left >= x.units) {
+          left -= x.units
+          continue
+        }
+        if (x.waited || week + 1 > state.scenario.maxWeeks || room(id, week + 1) < x.units) continue
+        held.set(heldKey(id, week + 1), (held.get(heldKey(id, week + 1)) ?? 0) + x.units)
+        x.week = week + 1
+        x.waited = true
+        waiting += x.units
+      }
+      if (waiting > 0) {
+        out.entries.push({
+          kind: 'conditions_moved',
+          productId: id,
+          units: waiting,
+          to: 'next_week',
+        })
+      }
+      if (served + waiting < units) lost[id] = (lost[id] ?? 0) + units - served - waiting
       out.entries.push({
         kind: 'trips',
         productId: id,
@@ -1030,6 +1089,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         guests: served,
         costCents: cost,
       })
+      staffed.set(id, served)
+      why.set(id, 'conditions')
     }
     b = { ...b, abroad: { ...b.abroad, trips, lost } }
   }
@@ -1087,7 +1148,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const served: Booking[] = []
   const left = new Map(staffed)
   for (const x of due
-    .filter((y) => y.status === 'booked')
+    // Trip guests waiting for a group moved to next week (plan 4).
+    .filter((y) => y.status === 'booked' && y.week === week)
     .sort((a, z) => a.bookedWeek - z.bookedWeek)) {
     const room2 = left.get(x.productId) ?? 0
     if (room2 >= x.units) {
@@ -1243,7 +1305,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
             productId: pick,
             week: w,
             units: n,
-            priceCents: priceFor(state, x.segmentId, w),
+            priceCents: unitPrice(state, x.segmentId, pick, w),
             channel: x.channel,
             bookedWeek: week,
             status: 'booked',
@@ -1335,10 +1397,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const guests = servedUnits + staffCancelled + weatherClosed + closedForWorks + conditionsCancelled
   if (servedUnits > 0) {
     const r = cfg.reviews
-    const shortfall =
-      guests > 0
-        ? (staffCancelled + weatherClosed + closedForWorks + conditionsCancelled) / guests
-        : 0
+    const shortfall = guests > 0 ? (staffCancelled + weatherClosed + closedForWorks) / guests : 0
+    // Plan 4: guests the wind sent home mind less than guests nobody could teach.
+    const windShare = guests > 0 ? conditionsCancelled / guests : 0
     // Plan 2: contract staff who know the place, renovated rooms, and a floor stretched thin.
     const contractBonus = allShifts > 0 ? contracts.qualityShifts / allShifts : 0
     const roomsBonus = (cfg.renovation?.qualityPerRoom ?? 0) * (b.renovated ?? 0)
@@ -1371,7 +1432,12 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
     const value =
       served.reduce(
-        (t, x) => t + x.priceCents / (state.hidden.segments[x.segmentId]?.wtpCents ?? x.priceCents),
+        (t, x) =>
+          t +
+          // Plan 4: a product priced at a multiple of the segment's price is judged at its base.
+          x.priceCents /
+            (cfg.products[x.productId]?.priceFactor ?? 1) /
+            (state.hidden.segments[x.segmentId]?.wtpCents ?? x.priceCents),
         0,
       ) / served.length
     const q = Math.min(
@@ -1382,6 +1448,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           (state.scenario.officeStages.find((o) => o.id === state.company.officeStage)
             ?.qualityBonus ?? 0) -
           r.understaffPenalty * shortfall -
+          r.cancelPenalty * windShare -
           (tired ? r.tiredPenalty : 0) -
           r.snagPenalty * state.product.bugs -
           r.valueWeight * Math.max(0, value - 1) +
@@ -1530,7 +1597,25 @@ export function bookingsView(state: GameState): BookingsView | null {
   const key = (id: FeatureId, w: number) => `${id}|${w}`
   const booked = new Map<string, number>()
   const past = new Map<string, number>()
+  // Plan 4: last week per product, units served per week and units booked ahead, in the same
+  // pass (each was a scan of every booking).
+  const cameLast = new Map<FeatureId, number>()
+  const servedLast = new Map<FeatureId, number>()
+  const servedIn = new Map<number, number>()
+  let ahead = 0
   for (const x of b.bookings) {
+    if (x.status === 'booked' && x.week > state.week && x.week <= state.week + 4) ahead += x.units
+    if (x.status === 'served' && x.week >= state.week - 5 && x.week < state.week) {
+      servedIn.set(x.week, (servedIn.get(x.week) ?? 0) + x.units)
+    }
+    if (x.week === state.week - 1) {
+      if (x.status === 'served') {
+        servedLast.set(x.productId, (servedLast.get(x.productId) ?? 0) + x.units)
+      }
+      if (x.status === 'served' || x.status === 'company_cancelled') {
+        cameLast.set(x.productId, (cameLast.get(x.productId) ?? 0) + x.units)
+      }
+    }
     if (x.status === 'booked' && x.week >= state.week && x.week < state.week + 12) {
       booked.set(key(x.productId, x.week), (booked.get(key(x.productId, x.week)) ?? 0) + x.units)
     }
@@ -1541,8 +1626,12 @@ export function bookingsView(state: GameState): BookingsView | null {
   }
   const bookedAt = (id: FeatureId, w: number) => booked.get(key(id, w)) ?? 0
   /** Booked in a product's capacity pool: itself and every product sharing it (step 7). */
-  const sharing = (id: FeatureId) =>
-    Object.keys(cfg.products).filter((p) => poolOf(cfg, p) === poolOf(cfg, id))
+  const members = new Map<FeatureId, FeatureId[]>()
+  for (const p of Object.keys(cfg.products)) {
+    const pool = poolOf(cfg, p)
+    members.set(pool, [...(members.get(pool) ?? []), p])
+  }
+  const sharing = (id: FeatureId) => members.get(poolOf(cfg, id)) ?? []
   const pooled = (id: FeatureId, w: number) => sharing(id).reduce((t, p) => t + bookedAt(p, w), 0)
   const lastYear = (id: FeatureId, w: number) =>
     w - WEEKS_PER_YEAR >= 1 ? (past.get(key(id, w)) ?? 0) : null
@@ -1598,6 +1687,7 @@ export function bookingsView(state: GameState): BookingsView | null {
           }
         : null,
       wholeWeek: prod.wholeWeek ?? false,
+      priceFactor: prod.priceFactor ?? 1,
     })),
     abroad: abroadView(state),
     roles: Object.entries(cfg.roles).map(([id, r]) => ({
@@ -1686,11 +1776,8 @@ export function bookingsView(state: GameState): BookingsView | null {
       : null,
     hostingHours: hostingHours(state),
     lastWeek: Object.keys(cfg.products).flatMap((id) => {
-      const mine = b.bookings.filter((x) => x.productId === id && x.week === state.week - 1)
-      const served = mine.filter((x) => x.status === 'served').reduce((t, x) => t + x.units, 0)
-      const came = mine
-        .filter((x) => x.status === 'served' || x.status === 'company_cancelled')
-        .reduce((t, x) => t + x.units, 0)
+      const served = servedLast.get(id) ?? 0
+      const came = cameLast.get(id) ?? 0
       return came > 0 ? [{ productId: id, came, served }] : []
     }),
     prep: Object.entries(cfg.products)
@@ -1745,16 +1832,10 @@ export function bookingsView(state: GameState): BookingsView | null {
       booked: bookedAt(id, state.week),
     })),
     revenueLast4Cents: bookingRevenueLast4(state),
-    bookedAhead: b.bookings
-      .filter((x) => x.status === 'booked' && x.week > state.week && x.week <= state.week + 4)
-      .reduce((t, x) => t + x.units, 0),
+    bookedAhead: ahead,
     servedByWeek: Array.from({ length: 5 }, (_, k) => state.week - 5 + k)
       .filter((w) => w >= 1)
-      .map((w) =>
-        b.bookings
-          .filter((x) => x.week === w && x.status === 'served')
-          .reduce((t, x) => t + x.units, 0),
-      ),
+      .map((w) => servedIn.get(w) ?? 0),
   }
 }
 
@@ -1782,16 +1863,21 @@ export function occupancyPct(state: GameState): number {
   if (!cfg || !b) return 0
   let used = 0
   let open = 0
-  for (let w = Math.max(1, state.week - 4); w < state.week; w++) {
+  const from = Math.max(1, state.week - 4)
+  const poolsIn = new Map<number, Set<FeatureId>>()
+  for (let w = from; w < state.week; w++) {
     const pools = new Set(
       Object.keys(cfg.products)
         .filter((id) => sells(state, id, w))
         .map((id) => poolOf(cfg, id)),
     )
+    poolsIn.set(w, pools)
     for (const pool of pools) open += sellableCapacity(state, pool, w)
-    used += b.bookings
-      .filter((x) => x.week === w && x.status === 'served' && pools.has(poolOf(cfg, x.productId)))
-      .reduce((t, x) => t + x.units, 0)
+  }
+  // One pass over the bookings for the four weeks.
+  for (const x of b.bookings) {
+    if (x.status !== 'served' || x.week < from || x.week >= state.week) continue
+    if (poolsIn.get(x.week)!.has(poolOf(cfg, x.productId))) used += x.units
   }
   return open > 0 ? Math.min(100, Math.round((100 * used) / open)) : 0
 }
@@ -1884,4 +1970,27 @@ function abroadView(state: GameState): AbroadView | null {
     tender: a.tender ? { bid: a.tender.bid, kept: a.tender.kept } : null,
     costSteps: (cfg.costSteps ?? []).map((x) => ({ week: x.week, factor: x.factor })),
   }
+}
+
+/** Plan 4: a segment's price for one unit of a product: the segment's price times its factor. */
+export function unitPrice(state: GameState, segmentId: SegmentId, id: FeatureId, week: number) {
+  const f = bookingsConfig(state)!.products[id]?.priceFactor
+  const p = priceFor(state, segmentId, week)
+  return f === undefined ? p : Math.round(p * f)
+}
+
+/** Plan 4: one of the products with room, weighted by their appeal (1 when not named). */
+function pickByAppeal(
+  cfg: BookingsConfig,
+  options: { id: FeatureId; free: number }[],
+  rng: Rng,
+): { id: FeatureId; free: number } | undefined {
+  if (options.length <= 1) return options[0]
+  const w = options.map((o) => cfg.products[o.id]?.appeal ?? 1)
+  let r = rng.next() * w.reduce((t, x) => t + x, 0)
+  for (let i = 0; i < options.length; i++) {
+    r -= w[i]!
+    if (r < 0) return options[i]
+  }
+  return options[options.length - 1]
 }

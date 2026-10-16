@@ -1,0 +1,113 @@
+# Learning who pays: questions on the beach, at receptions and from home.
+events:
+  - id: reception_chat
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2, week <= 12]
+    from: none
+    sender: The receptionist at Hotel Platja Blava
+    look: note
+    text: >-
+      The receptionist at Hotel Platja Blava says guests ask her about the water every morning.
+      She would let you sit at the desk for an afternoon if you bring coffee. Good coffee.
+    defaultChoice: later
+    choices:
+      - id: sit
+        label: Spend an afternoon at the desk
+        hours: 4
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.03 }
+          - { type: guests, segment: hotel_guests, count: 4 }
+      - id: later
+        label: Not this week
+        hours: 0
+
+  - id: club_survey
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2, week <= 16]
+    from: none
+    sender: Surfclub Ammersee West
+    text: >-
+      Your old club at home offers to send a survey to its members about an autumn trip to the
+      bay. Somebody has to write it, and somebody has to read eighty answers about sail sizes.
+    defaultChoice: decline
+    choices:
+      - id: survey
+        label: Write the survey and read the answers
+        hours: 5
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+          - { type: guests, segment: wind_regulars, count: 3 }
+      - id: decline
+        label: Thank them and leave it
+        hours: 0
+
+  - id: forum_thread
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 4]
+    from: none
+    sender: A windsurf forum
+    look: note
+    text: >-
+      A thread on a German windsurf forum asks whether anyone knows a decent centre in Alcúdia.
+      Forty replies, mostly about parking. You could answer, honestly and at length.
+    defaultChoice: lurk
+    choices:
+      - id: answer
+        label: Answer the thread properly
+        hours: 3
+        effects:
+          - { type: guests, segment: wind_regulars, count: 2, when: [shipped.modern_gear == 1] }
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: lurk
+        label: Read it and say nothing
+        hours: 0
+
+  - id: rival_open_day
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 6, week <= 30]
+    from: none
+    sender: Escola de Vela Sa Punta
+    look: letter
+    text: >-
+      The sailing school at the other end of the bay holds an open day. You could go and look,
+      and count their boats, their guests and their prices.
+    defaultChoice: skip
+    choices:
+      - id: visit
+        label: Go and count
+        hours: 4
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: skip
+        label: Stay on your own beach
+        hours: 0
+
+  - id: language_school_visit
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 3, week <= 20]
+    from: none
+    sender: A language school in Palma
+    text: >-
+      A language school in Palma wants an afternoon on the water for its German students, at a
+      group price. They will fill in a questionnaire afterwards, they promise, in Spanish.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Host them for an afternoon
+        hours: 5
+        effects:
+          - { type: cash, amountCents: 30000 }
+          - { type: guests, segment: learners, count: 2 }
+      - id: decline
+        label: Decline
+        hours: 0

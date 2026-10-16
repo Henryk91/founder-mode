@@ -440,6 +440,12 @@ export const BookingProductSchema = z.object({
   // Licences (section 6): weeks between the prep hours being done and the product counting as
   // shipped (the authority's answer).
   waitWeeks: z.number().int().positive().optional(),
+  // A unit of this product costs the segment's price times this (a course against an hour's
+  // hire). Absent: 1.
+  priceFactor: z.number().positive().optional(),
+  // How readily a guest picks this product among those with room, against 1 for the others.
+  // With any product naming it, guests pick by these weights instead of by the most room.
+  appeal: z.number().positive().optional(),
 })
 
 // Plan 2 step 1b: a contract instead of shifts booked week by week. Permanent and part time staff

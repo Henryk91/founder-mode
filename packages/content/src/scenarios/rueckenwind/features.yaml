@@ -1,0 +1,92 @@
+# Products and what they need (docs/scenario-watersports.md section 4). Which segment needs which
+# lives in scenario.yaml (segments[].mustHave) and stays hidden. Snags are teething trouble.
+
+- id: paddle_kayak_hire
+  name: Paddle board and kayak hire
+  buildHours: 4
+  bugsOnShip: { min: 0, max: 1 }
+  mention: An hour on a paddle board while the children build a sandcastle. That is my holiday.
+
+- id: paddle_lessons
+  name: Stand up paddle lessons and sunrise tours
+  buildHours: 6
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Somebody to show us how to stand up on those boards before breakfast.
+
+- id: snorkel_trips
+  name: Guided snorkel trips from the beach
+  buildHours: 8
+  bugsOnShip: { min: 0, max: 1 }
+  mention: A guide who knows where the fish are. We only ever find the other snorkellers.
+
+- id: kayak_tours
+  name: Guided coastal kayak tours
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: A morning in a kayak along the cliffs, with someone who knows the way back.
+
+- id: kids_club
+  name: "Kids' club: five mornings on the water"
+  buildHours: 20
+  bugsOnShip: { min: 0, max: 2 }
+  mention: Five mornings of something wet and supervised for the children. We would pay nearly anything.
+
+- id: windsurf_courses
+  name: Windsurf beginner courses
+  buildHours: 6
+  bugsOnShip: { min: 0, max: 1 }
+  mention: A proper beginner course, four afternoons, so I can stand on a board without falling off it.
+
+- id: licence_courses
+  name: Courses that end with an international licence card
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: I want a licence card at the end. Without it the next school makes me start again.
+
+- id: catamaran
+  name: Catamaran sailing courses and hire
+  buildHours: 20
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Sailing a catamaran across the bay with my partner, without a skipper shouting at us.
+
+- id: wing_foil
+  name: Wing foiling courses and hire
+  buildHours: 20
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Everyone at home is wing foiling now. I would like to learn it somewhere warm.
+
+- id: modern_gear
+  name: Current boards, sails and wings for experienced guests
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Decent gear from this decade, in my size, so I can leave my board bags at home.
+
+- id: rescue_boat
+  name: A rescue boat on the water
+  buildHours: 5
+  bugsOnShip: { min: 0, max: 1 }
+  mention: On a windy day I want to know somebody with an engine is watching.
+
+- id: online_booking
+  name: Online booking with instant confirmation
+  buildHours: 15
+  bugsOnShip: { min: 1, max: 2 }
+  mention: If I cannot book the course on my phone tonight, I will book the school next door.
+
+- id: kite_trips
+  name: Kitesurf courses at the kite spot
+  buildHours: 25
+  bugsOnShip: { min: 1, max: 2 }
+  mention: A kite course at a proper spot, with the drive there sorted. Kites are banned on the bay.
+
+- id: efoil_fleet
+  name: Electric hydrofoil boards
+  buildHours: 30
+  bugsOnShip: { min: 1, max: 3 }
+  mention: Have you got those flying electric boards? I saw one on my phone. I am not sure I would book one.
+
+- id: rig_hire
+  name: Hire for former students
+  buildHours: 4
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Now I have done the course, can I just take a board out for an hour?

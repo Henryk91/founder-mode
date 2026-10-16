@@ -382,7 +382,56 @@ const SEEBLICK: Overrides = {
   'pm.guests.summary.other': '{n} room nights sold, {rating}',
 }
 
+const RUECKENWIND: Overrides = {
+  'market.trials.title': 'Taster hours, test listings and vouchers',
+  // Plan 4: the established stage's company name and the line that marks the switch.
+  'bar.company': {
+    scrappy: '{name}',
+    organised: '{name}',
+    established: 'Rückenwind Watersports',
+  },
+  'results.entry.ui_established':
+    'Rückenwind pays its own way now, wind or no wind. The container still smells of neoprene.',
+  ...shared({
+    test: {
+      one: 'Test listing',
+      other: 'Test listings',
+      lower: 'test listing',
+      lowerPlural: 'test listings',
+    },
+    pilot: {
+      one: 'Taster hour',
+      other: 'Taster hours',
+      lower: 'taster hour',
+      lowerPlural: 'taster hours',
+    },
+    formal: {
+      test: { one: 'Listing test', other: 'Listing tests' },
+      pilot: { one: 'Trial session', other: 'Trial sessions' },
+    },
+    fixFormal: 'Incidents',
+    snag: { one: 'incident', other: 'incidents' },
+    fix: 'Sort out incidents',
+    fixWhat: 'hours sorting out incidents',
+    build: 'Get gear and courses ready',
+    invoices: null,
+    fixedCosts: 'Company costs per month (container, licence, van, insurance, gestor)',
+  }),
+  'stat.guests': 'Guests, last 4 weeks',
+  'stat.guests.short': 'Guests',
+  'tour.heat.sub': 'Next {n} weeks, places booked of {capacity} a week',
+  'explain.test.text':
+    'A test listing costs {hours} and an ad budget: two weeks on the activity platform at a test price. It reports {weeks} later with how many saw it and how many asked for dates. A signal only: nobody books from it. A taster hour costs {presale} and puts {size} people from one group on the water for free. Those who would come again buy a voucher and become repeat guests. It reports {presaleWeeks} later, and each group allows {max} taster hours.',
+  'help.week.4':
+    'Every fourth week is a month end, when the container, the beach licence and other fixed costs go out. Guests pay when they book or at the beach; wind regulars pay a deposit first.',
+  'help.week.1':
+    'Plan your hours. A normal week is 50 h, and up to 65 h is possible if you accept the energy cost. Your own lessons count too. The wind decides what runs: check the forecast on My week.',
+  'pm.guests.cancelled':
+    'You cancelled {company} places for wind, sea or a short roster; guests cancelled {guest}.',
+}
+
 export const SCENARIO_LABELS: Record<string, Overrides> = {
+  rueckenwind: RUECKENWIND,
   gratwanderung: GRATWANDERUNG,
   hinterhof: HINTERHOF,
   seeblick: SEEBLICK,

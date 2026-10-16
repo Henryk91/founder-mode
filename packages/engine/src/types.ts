@@ -212,6 +212,8 @@ export type Booking = {
   depositCents?: number
   /** Plan 2: a voucher redeemed for this booking; it was paid when the voucher was sold. */
   voucherId?: string
+  /** Plan 4: a trip guest who waited a week for a group already (absent otherwise). */
+  waited?: true
 }
 
 /** Plan 2 step 1a: a voucher sold; a liability until it is redeemed. */
@@ -1459,6 +1461,8 @@ export type BookingsView = {
     needsLevel: string | null
     dayTrip: { perTrip: number; days: number; costCents: number } | null
     wholeWeek: boolean
+    /** Plan 4: a unit costs the segment's price times this. */
+    priceFactor: number
   }[]
   /** Plan 4: day conditions, courses, trips and the tender; null without day conditions. */
   abroad: AbroadView | null

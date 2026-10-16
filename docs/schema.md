@@ -945,3 +945,11 @@ See `docs/abroad-mechanics.md`. Every new content field is optional with no defa
 - View: `FeatureView.readyWeek`, `BookingsView.abroad: AbroadView | null` (states, slots, forecast day by day and counted, last week, the spot, `runsOn` per product, the ladder this year and in all, moved, lost, trips with `locked` and `most`, tender, cost steps), and per product `course`, `needsLevel`, `dayTrip`, `wholeWeek`. A conditions product's calendar capacity is what it can sell: this week's forecast slots, later weeks the share its month usually suits (never the chances themselves).
 - Report entries: `conditions`, `conditions_moved` (to `slot`, `alternative`, `next_week`), `conditions_cancelled`, `trips`, `trips_cancelled`, `graduates`, `graduates_returned`, `licence_applied`, `costs_rose`, `tender`; `company_cancelled` gains the reason `conditions`.
 - Post-mortem: `GuestsEconomics.abroad?: AbroadEconomics` (months, lost per product, moved, ladder, trips, tender).
+
+### Plan 4 step 2: Rückenwind (engine 0.14.0, off unless a scenario's YAML has them)
+
+- Content, `BookingProduct`: `priceFactor?` (a unit costs the segment's price times it; reviews judge value at the base price), `appeal?` (with any product naming it, guests pick among products with room by these weights, 1 when absent). New scenario `rueckenwind` (category tourism, tags Abroad and Wind).
+- State: `Booking.waited?: true` (a trip guest who waited a week for a group).
+- View: `BookingsView.products[].priceFactor`.
+- Reviews: guests cancelled for the conditions count with `reviews.cancelPenalty` instead of `understaffPenalty`.
+- Bots: `Strategy.scenarios?` (plays only there); `RunResult.tourism.abroad?` (year 2 returners by channel, trips, the tender). Report targets may be named (`W1`): `Target.id` is a number or a string.

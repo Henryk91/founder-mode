@@ -1,0 +1,44 @@
+# Onboarding text shown before week 1, and the founder's notes shown in weeks 1 to 4.
+# Nothing here may reveal which kind of guest is the real market.
+intro:
+  cards:
+    - id: you
+      title: You
+      body: >-
+        You taught windsurfing on other people's beaches for ten summers, and spent the winters
+        in an office in Munich explaining spreadsheets. Now you have moved to Mallorca. The company
+        account holds {cash:eur} of your own money, your savings hold {savings:eur}, and life on
+        the island costs {living:eur} a week, about {livingMonth:eur} a month.
+    - id: idea
+      title: The bay
+      body: >-
+        You have taken over a beach spot at Sa Platgeta in the Bay of Alcúdia: a blue container,
+        a van, eight paddle boards, four kayaks, six tired rigs and a licence from the town for
+        the season. The bay is long and shallow. Your German is an asset here, and so is your
+        windsurf club at home.
+    - id: problem
+      title: Guests and wind
+      body: >-
+        Families from the hotels, adults who want to learn properly, and wind regulars with
+        opinions about sails might all pay. Not all of them will. The wind decides what you can
+        sell each half day: calm mornings for paddling, windy afternoons for sails.
+    - id: goal
+      title: The goal
+      body: >-
+        It is February. The first guests come around Easter, the money comes in summer, and the
+        container costs rent in December too. Last {maxWeeks} weeks: to win, the guests of your
+        last thirteen months together have to pay for the beach, any loan and you.
+
+founderNotes:
+  first_week: >-
+    Week 1. The beach is empty, the container smells of neoprene, and a dog has adopted the
+    paddle boards.
+  no_evidence: >-
+    Week {week}. Still no idea who will pay. The island charges you {living:eur} a week either
+    way.
+  only_interviews: >-
+    {n} conversations so far. Everyone loves the bay. The bay is free.
+  built_unseen: >-
+    Something is ready on the beach, and nobody knows. A flag is not a marketing plan.
+  leads_only: >-
+    {n} people have asked. Asking is not booking.

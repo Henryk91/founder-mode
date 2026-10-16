@@ -1,0 +1,172 @@
+# segment -> interview bucket -> quotes. At least 10 per bucket. Tone: docs/scenario-watersports.md.
+
+hotel_guests:
+  not_a_problem:
+    - We have a pool. It does not have waves.
+    - We came for the buffet and the sunbeds. The sea is scenery.
+    - The children have tablets. They do not notice which country they are in.
+    - We go on the bus tour to the monastery. Water is for drinking.
+    - My husband reads thrillers by the pool for ten days. It is his sport.
+    - The hotel has an aqua aerobics class at eleven. We have never missed it, or attended it.
+    - We are here for the old town and the restaurants. Wet clothes do not fit the plan.
+    - I burn in eight minutes. I stay under the umbrella and supervise.
+    - We hire a car and drive somewhere new every day. The beach is for the last afternoon.
+    - Honestly, we do nothing on holiday. That is the whole point of holiday.
+  mild:
+    - The kids get bored by Wednesday. Anything with a boat would do.
+    - Maybe a paddle board for an hour, if the water is flat and the queue is short.
+    - We might try kayaking once, if somebody else carries the kayak.
+    - A snorkel trip sounds nice. I would want to see an actual fish.
+    - If it is close to the hotel and not too early, we might come along.
+    - My daughter keeps asking about the boards. My daughter keeps asking about everything.
+    - We would do one thing on the water this week. Just one. Pick a good one.
+    - Something gentle in the morning, before it gets too hot to move.
+    - I tried paddle boarding in Croatia. I stood up twice. I would try again.
+    - If the hotel reception recommended it, we would probably book it.
+  noticeable:
+    - The children's club at the hotel is a room with a television. They want the sea.
+    - Last year the hire place had one board for twenty families. We watched.
+    - Nobody explains anything. They hand you a paddle and point at the horizon.
+    - We wanted a guided snorkel trip and found only boat trips with music.
+    - The kids want something every morning, and we want the mornings to ourselves.
+    - We asked about kayaks at three places. All three were closed when the wind came up.
+    - The hotel's activity desk sells only coach trips and flamenco evenings.
+    - We wanted to book for tomorrow and the only option was a website in Catalan.
+    - My son would love a proper course for the week, not an hour of splashing.
+    - Every activity here starts at ten and the children are awake at six.
+  painful:
+    - We have two weeks, three children and no plan after Tuesday. Help.
+    - Five mornings of supervised fun for the children would save our marriage, probably.
+    - The kids' club here is full until August. We arrived in July.
+    - We paid for a boat trip, it was cancelled for wind, and nobody refunded us for a week.
+    - I need the children wet, tired and supervised from nine to one. Every day.
+    - Our son is bored, loud and eleven. Those are three problems.
+    - We drove to three beaches looking for a kids' sailing club. There was a café at each.
+    - My wife wants a quiet morning, the children want the sea, and I am the referee.
+    - The hotel promised activities for children. It meant a quiz. In German, French and Dutch at once.
+    - We would book a week of mornings for the children today if anyone offered it.
+  urgent:
+    - I promised the children a boat. It is Thursday, we fly on Saturday.
+    - Our nanny quit on the first day. Please take the twins in the mornings. I will pay.
+    - Three children, one rainy day forecast, and a hotel that bans ball games. Please.
+    - My son has talked about sailing since January. If he does not sail this week, I will hear about it until Christmas.
+    - We have a family of eleven here for a reunion and nothing planned for the children. Nothing.
+    - The children's club closed for staff shortage. I have eight more mornings to fill.
+    - We booked this resort for the water sports in the brochure. There are none.
+    - My mother-in-law is staying with us. I need the children out of the room by nine.
+    - I said yes to a kids' club before checking there was one. There is not one.
+    - We will pay whatever it costs for the children to be busy every morning. Whatever.
+
+learners:
+  not_a_problem:
+    - I like watching windsurfers. From the bar.
+    - I learned once, twenty years ago. My knees still remember.
+    - We came to hike the mountains. The sea is for the view at dinner.
+    - I tried kitesurfing once and became a kite. Never again.
+    - My holiday sport is reading. I am very good at it.
+    - I get seasick on an air mattress. I will stay on the sand, thank you.
+    - We do a cooking course every holiday. This year it is paella.
+    - Sport on holiday is too much like the gym at home.
+    - My partner does the sports. I hold the towel and the opinions.
+    - I am here for a wedding. The only thing I am learning is the bride's family tree.
+  mild:
+    - It might be nice to try sailing, if it is not too technical.
+    - I have always fancied windsurfing. Fancied, not planned.
+    - A couple of lessons would be fun, if the weather is nice.
+    - I would maybe book a taster. A whole course sounds like commitment.
+    - My friend did a wing foiling course and posts nothing else now.
+    - Perhaps next year. This year I am mostly recovering from work.
+    - If the instructor is patient and the water warm, I might give it a go.
+    - I like the idea of a catamaran. I like the idea of most things.
+    - A course would be nice, if I can still go to the beach bar afterwards.
+    - We might do a beginners' afternoon together, as a couple activity. Or a test.
+  noticeable:
+    - Last year the school had no wind gear in my size and nobody spoke German.
+    - I did a course at home on a lake with no wind. I learned to swim very well.
+    - I wanted a proper course with a certificate, and got two hours and a hug.
+    - The schools here are all booked out by phone by people who know someone.
+    - The instructor taught six of us at once and spoke mainly to his phone.
+    - I want to finish a course with something I can show the next school.
+    - Every school wants me to come in person to book. I am on holiday, not on a pilgrimage.
+    - They cancelled my lesson for too much wind and offered no other time.
+    - I would like to learn catamaran sailing, and nobody here has a catamaran that floats.
+    - The course I booked last year started late every day, and finished early.
+  painful:
+    - I took a week off to learn windsurfing properly, and the school cancelled three afternoons.
+    - Without a licence card the next centre makes me start from the beginning. Again.
+    - I have tried to book a course online for two days. The website says "coming soon".
+    - I need a course that fits the four days I am here, and nobody can promise one.
+    - The wing foiling courses are booked out until September. I fly home in June.
+    - I came to the island for a sailing course. The school closed in May for a family wedding.
+    - The only course in German started on the day I left.
+    - I paid for a course, learned nothing, and the instructor blamed the wind. Every day.
+    - My goal this year was to learn to sail. It is August. The goal stands.
+    - I want to book tonight, pay tonight, and know it is confirmed. Is that so strange?
+  urgent:
+    - I promised my wife she would be windsurfing by the end of the week. It is Tuesday.
+    - My club exam is in September and I need the card from a beginners' course before then.
+    - I am here for six days. Six. I need a course that starts tomorrow, in German.
+    - My company paid for this sailing course as a reward. If I come back without a card, they will ask questions.
+    - We booked a sailing holiday in Croatia for next month and I have never sailed. Please.
+    - Our school cancelled everything for strong wind. I fly on Friday with nothing to show.
+    - I told everyone at work I would come back a windsurfer. Everyone.
+    - My brother learned last year and will not stop talking about it. This must end.
+    - I need a licence card by Sunday or the yacht charter in October is off.
+    - I have tried four schools this week. You are the fifth. Please have a place.
+
+wind_regulars:
+  not_a_problem:
+    - I bring all my own gear. The airline hates me, and I love them back.
+    - Our club rents a house with a garage full of boards. We need nothing from anyone.
+    - I only come when the forecast says 6 Bft. Then I need a spot, not a school.
+    - I sail from the free beach. Nobody to pay, nobody to blame.
+    - My gear is better than anything you could rent me. I checked.
+    - I am a kiter. Kiters have their own world, and it has its own vans.
+    - We stay at a surf hotel with its own centre. Everything is in the price.
+    - I come for the wind, and I take what comes. Mostly sunburn.
+    - I am mainly here for the cycling. The board stays in the car.
+    - Our club has a deal with a centre in Sardinia for twenty years. Nobody remembers why.
+  mild:
+    - It would be nice not to fly with two board bags. Nice, not necessary.
+    - If the gear were current, I might rent for a week instead of bringing mine.
+    - A centre with a rescue boat would be reassuring on the strong days.
+    - We might come in autumn, if the club agrees. The club agrees on nothing.
+    - Some lockers by the beach would help. My car is not a locker.
+    - I would try wing foiling on rented gear before buying any of it.
+    - A good gear package for a week, maybe. Depends on the boards.
+    - If you know when the north wind comes, I would come then.
+    - Our club is always looking for a new spot. We have been looking since 2009.
+    - I would pay for a decent rig rather than carry mine, if the price is right.
+  noticeable:
+    - I fly down with two board bags and pay the airline more than for my seat.
+    - Every rental centre here has sails from the last century and boards with history.
+    - On strong days nobody is watching. I like to know someone would come.
+    - The good spots have no gear to rent, and the gear spots have no wind.
+    - I want a centre that knows the forecast and opens on the windy days, not just the sunny ones.
+    - Rented gear never fits. I am not a medium; nobody is a medium.
+    - Our club wants a place that takes twelve of us for a week in October.
+    - I asked for a 5.3 sail and was given a 4.2 and a shrug.
+    - There is nowhere to leave wet gear overnight without it being stolen or smelling.
+    - The forums say this bay is great, and then you arrive and the schools only do beginners.
+  painful:
+    - I fly down with two board bags and pay 150 euros each way for them. Please just have decent gear.
+    - Our club has fourteen people for October and no centre that will take us all.
+    - I broke my boom on day two and nobody had a spare. A week of watching.
+    - On the windiest day of the year there was no rescue boat on the bay. I swam.
+    - Every centre wants us out by five, when the wind has just arrived.
+    - We booked a centre for October last year, and it had closed in September.
+    - I want to hire modern gear for a week, in my size, and nobody can promise it ahead.
+    - The airline lost my board. I had to buy a board here. Ask me about the price.
+    - Our club's old centre went bust. We need a new one before the autumn trip.
+    - The wing gear here is all beginners' kit. I left beginner in 2022.
+  urgent:
+    - We fly in on Friday, twelve of us, and our centre has just shut. Please.
+    - The north wind is coming on Thursday. I need a board and a rescue boat by Wednesday.
+    - My board is in Frankfurt and I am on a beach. A forecast like this comes twice a year.
+    - Our club trip is in three weeks and the centre cancelled. The chairman is on the phone daily.
+    - I need current gear for a competition next week. Mine is in pieces on the car roof.
+    - We have a club week booked and no rescue cover. The insurance will not have it.
+    - I came for the storm. The storm is tomorrow. I have nothing but a harness.
+    - Our usual centre gave our week to a stag party. We need twelve rigs in October.
+    - My sponsor wants pictures this week, on decent gear, in strong wind.
+    - The forecast says 6 Bft all weekend and I am the only one without a board.

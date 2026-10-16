@@ -370,6 +370,7 @@ const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
   gratwanderung: {},
   hinterhof: {},
   seeblick: {},
+  rueckenwind: {},
   kantino: {
     // validation
     survey_offer: 'pass',

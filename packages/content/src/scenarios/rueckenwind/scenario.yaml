@@ -1,0 +1,723 @@
+# Rückenwind: a watersports centre on a beach in the Bay of Alcúdia, Mallorca (plan 4, step 2).
+# Source: docs/scenario-watersports.md and docs/abroad-mechanics.md. Long mode only: 104 weeks
+# from the first week of February. Money in cents, time in hours. Figures marked (est.) are
+# estimates; sources in the spec's section 17.
+
+id: rueckenwind
+name: Rückenwind
+longOnly: true
+maxWeeks: 104
+# As for every tourism scenario, the last 13 months together must pay for everything.
+win: { profitableMonths: 3, overMonths: 13 }
+
+start:
+  # Own money put in (est.); the second-hand boards, rigs and snorkel sets are paid for.
+  cashCents: 4500000
+  savingsCents: 1425000
+  # Mallorca rents are high (est.).
+  livingCostCentsPerWeek: 70000
+  # The engine's single price is used only by tests and pilots; guests pay the bookings prices.
+  priceCentsPerMonth: 4500
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: container
+      name: Container and storage near the beach
+      monthlyCents: 80000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 35000
+    - id: van_lease
+      name: Van lease
+      monthlyCents: 60000
+    - id: gestor
+      name: Accountant (a gestor)
+      monthlyCents: 18000
+    - id: phone_software
+      name: Phone and booking software
+      monthlyCents: 10000
+    - id: social_security
+      name: Self-employed social security
+      monthlyCents: 30000
+    # The town's seasonal authorisation for the spot: 9,000 a season (est.), spread over twelve
+    # months (decisions, plan 4 step 2).
+    - id: beach_licence
+      name: Beach licence
+      monthlyCents: 75000
+
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  # Year 2 costs more: living costs rise by a tenth from week 53.
+  livingSteps:
+    - { week: 53, centsPerWeek: 77000 }
+
+finance:
+  weeksPerMonth: 4
+  # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
+  # late by a segment dependent number of days, only once chased, or never.
+  invoiceDueDays: 14
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    # Activity prices are quoted to the nearest 10 EUR.
+    budgetSmallStepCents: 1000
+    buckets:
+      - { id: not_a_problem, name: Not a problem, below: 0.2 }
+      - { id: mild, name: Mild, below: 0.4 }
+      - { id: noticeable, name: Noticeable, below: 0.6 }
+      - { id: painful, name: Painful, below: 0.9 }
+      - { id: urgent, name: Urgent }
+  # Not used: the scenario's own trials replace landing tests and pre-sales.
+  landing:
+    hours: 6
+    budgetsCents: [20000, 50000]
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+
+product:
+  startQuality: 85
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  # Price against willingness to pay (r = price / wtp): a yes stays nearly as likely up to about
+  # r 0.9, then gets rarer smoothly (0.97 at r 1, 0.82 at 1.2, a half at the midpoint, 0.24 at
+  # 1.5). Calibrated so the default price plays as before (Phase 8 gate).
+  price: { midpoint: 1.35, steepness: 10 }
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    # Customers paying more than what they would pay leave more often: +0.15 a month per 100%
+    # above it, on top of the rest.
+    priceFrom: 1.0
+    perPrice: 0.15
+    cap: 0.6
+  # Referrals belong to the subscription model; guests spread the word through repeat visits.
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - { id: weak, name: Weak, below: 0.7 }
+    - { id: solid, name: Solid, below: 0.95 }
+    - { id: strong, name: Strong, below: 1.1 }
+    - { id: outstanding, name: Outstanding }
+  roles:
+    # A junior or part time hire: cheaper, fewer hours.
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+
+  # Phase 9: a freelancer, rented by the week. Output is visible and fixed: outputShare of the
+  # booked hours become work, the first week at onboardingFactor of that. Billed weekly per hour.
+  freelance:
+    hoursOptions: [10, 20]
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    # A developer who does not know the code: extra bugs on every feature they worked on.
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+
+# A quieter inbox than the software scenarios: events come about every other week.
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.35
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+
+roles:
+  - id: viable
+    pain: { min: 0.6, max: 0.85 }
+    politeness: { min: 0.05, max: 0.15 }
+  - id: mediocre
+    pain: { min: 0.35, max: 0.55 }
+    politeness: { min: 0.25, max: 0.4 }
+  - id: trap
+    pain: { min: 0.1, max: 0.25 }
+    politeness: { min: 0.5, max: 0.65 }
+
+segments:
+  - id: hotel_guests
+    name: Hotel guests
+    description: Families and couples staying at the bay's hotels, looking for something to do on the water. They decide on the day, or the day before
+    size: { min: 6000, max: 12000 }
+    # Per activity of about 40 to 45 EUR (est., docs/scenario-watersports.md section 5: 0.7 to 1.1
+    # times the list price).
+    wtpCents: { min: 3200, max: 5000 }
+    mustHave: [kids_club]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.02 }
+      in_person: { min: 0.02, max: 0.04 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For an hour or two on the water we would pay about {amount} each. More if the children are taken off our hands.'
+      - 'The hotel sells a boat trip for {amount} a head. It has a bar, mind you.'
+      - 'Around {amount} a person sounds fair for a guided morning. We are on holiday, not on a budget.'
+      - 'We spent {amount} each on a jet ski ride last year and regretted it by lunch.'
+      - 'Something like {amount} each. The rest goes on ice cream, apparently.'
+
+  - id: learners
+    name: Learners
+    description: Adults on holiday who want to learn a wind sport properly, with a course and a card at the end. They book on their phones, days or weeks ahead
+    size: { min: 2500, max: 6000 }
+    # Per course place of about 220 to 240 EUR (est., 0.8 to 1.3 times the list price).
+    wtpCents: { min: 18000, max: 29000 }
+    mustHave: [licence_courses, online_booking]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.03 }
+      in_person: { min: 0.02, max: 0.04 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'A beginner course of four afternoons? I would pay about {amount}, card included.'
+      - 'At home a course costs {amount} and the lake has no wind. Here at least it is warm.'
+      - 'My budget for learning something new on holiday is about {amount}. Last year it was salsa.'
+      - 'The school in Tarifa wanted {amount}. They were very relaxed about everything, including safety.'
+      - 'Something near {amount} for a course, if the instructor speaks German or slowly.'
+
+  - id: wind_regulars
+    name: Wind regulars
+    description: Experienced windsurfers, wing foilers and kiters on a sports holiday. They plan months ahead with their clubs and forums, and judge a centre by its gear
+    size: { min: 1500, max: 4000 }
+    # Per week's hire package of about 260 EUR (est., 0.9 to 1.4 times the list price).
+    wtpCents: { min: 23000, max: 36000 }
+    mustHave: [modern_gear, rescue_boat]
+    channelResponse:
+      cold_email: { min: 0.02, max: 0.04 }
+      phone: { min: 0.02, max: 0.05 }
+      in_person: { min: 0.03, max: 0.06 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For a week of decent gear I pay about {amount}. Less than the airline charges for my board bag.'
+      - 'Our club paid {amount} a head for a week of hire in Sardinia. The sails were older than the members.'
+      - 'Around {amount} a week, if the boards are this decade and the rescue boat has fuel.'
+      - 'I would pay {amount} a week and bring my own harness. Nobody touches my harness.'
+      - 'In Greece it was {amount} for the week, and the wind never came. I still went back.'
+
+milestones:
+  - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+  - { id: first_deposit, name: First taster guest back, kind: count, of: deposits, target: 1 }
+  - { id: first_customer, name: First paying guest, kind: count, of: guests, target: 1 }
+  - id: covers_company_costs
+    name: 'A month of guests covers company costs'
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: 'A month of guests covers all costs, you included'
+    kind: revenue
+    covers: all
+  - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+  - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+  - { id: weeks_78, name: 78 weeks survived, kind: weeks, target: 78 }
+  - { id: weeks_104, name: 104 weeks survived, kind: weeks, target: 104 }
+
+# The container and a flag, then a beach station (offered by an inbox event, docs/scenario-
+# watersports.md section 13). Stages 3 to 5 are out of scope in this pass.
+officeStages:
+  - id: container_flag
+    name: Container and a flag on the beach
+    monthlyCents: 0
+  - id: beach_station
+    name: Beach station with a shop, changing rooms and lockers
+    # +900 a month (est.); the 12,000 fit-out is paid by the offer.
+    monthlyCents: 90000
+    energyPerWeek: 1
+    # Walk-ins about a third more, and lockers that wind regulars like.
+    walkIns: { segment: hotel_guests, leadsPerWeek: 0.15 }
+    segmentFactors: { wind_regulars: 1.1 }
+
+organisedAt: [covers_all_costs]
+# Plan 3: the established look once money in has covered all costs for these months in a row.
+establishedAt: { monthsCoveringAll: 8 }
+
+# The bank loan (docs/loan-proposal.md): for gear, the rescue boat and the first spring.
+loan:
+  bankName: Banc de la Badia
+  # Visible advice in the bank plan: February to the first busy weeks is about three months.
+  bridgeMonthsHint: 3
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  ownShare: 0.2
+  # Before any guest has paid (est.).
+  unprovenMaxCents: 8000000
+  revenueMultiple: 1
+  minCents: 1000000
+  maxCents: 12000000
+  stepCents: 500000
+  rateBp: { min: 450, max: 750 }
+  leverageSpreadBp: 100
+  termMonths: [36, 60, 84]
+  graceMonths: [0, 6, 12]
+  missedFeeCents: 5000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+  # The bank lends against the plan: gear, the rescue boat, the eFoil fleet (the temptation), and
+  # working capital of at most three months of fixed costs (est.).
+  items: [catamaran, wing_foil, kite_trips, modern_gear, efoil_fleet]
+  workingCapitalMonths: 3
+
+# Bookings (docs/tourism-proposal.md, docs/abroad-mechanics.md). Week 1 is the first week of
+# February. A unit is a person: an activity, a course place or a week's hire package; products
+# price it as a multiple of the segment's price (priceFactor).
+bookings:
+  startWeekOfYear: 6
+  seasonNoise: 0.2
+  # July and August and the busy shoulder months (the engine has two seasons; decisions).
+  peakMonths: [6, 7, 8, 9]
+  policyWeeks: 4
+  # Day conditions on the bay, two slots a day (docs/scenario-watersports.md section 3, est.):
+  # calm mornings, a sea breeze in summer afternoons, strong north wind in spring and autumn.
+  conditions:
+    states:
+      - { id: calm, name: 'calm (0 to 2 Bft)' }
+      - { id: light, name: 'light wind (3 Bft)' }
+      - { id: good, name: 'good wind (4 to 5 Bft)' }
+      - { id: strong, name: 'strong wind (6 Bft)' }
+      - { id: storm, name: 'storm (7 Bft and up)' }
+    slots:
+      - { id: morning, name: Mornings }
+      - { id: afternoon, name: Afternoons }
+    # Calm, light, good, strong, storm per month and slot; months between the spec's interpolated.
+    monthly:
+      - { morning: [0.4, 0.2, 0.15, 0.15, 0.1], afternoon: [0.4, 0.2, 0.15, 0.15, 0.1] }
+      - { morning: [0.4, 0.2, 0.15, 0.15, 0.1], afternoon: [0.4, 0.2, 0.15, 0.15, 0.1] }
+      - { morning: [0.42, 0.25, 0.15, 0.11, 0.07], afternoon: [0.3, 0.25, 0.22, 0.15, 0.08] }
+      - { morning: [0.45, 0.3, 0.15, 0.07, 0.03], afternoon: [0.2, 0.3, 0.3, 0.15, 0.05] }
+      - { morning: [0.52, 0.3, 0.12, 0.05, 0.01], afternoon: [0.15, 0.32, 0.38, 0.12, 0.03] }
+      - { morning: [0.6, 0.3, 0.08, 0.02, 0], afternoon: [0.1, 0.35, 0.45, 0.09, 0.01] }
+      - { morning: [0.62, 0.29, 0.07, 0.02, 0], afternoon: [0.12, 0.38, 0.42, 0.07, 0.01] }
+      - { morning: [0.65, 0.27, 0.06, 0.02, 0], afternoon: [0.15, 0.4, 0.38, 0.06, 0.01] }
+      - { morning: [0.55, 0.28, 0.11, 0.05, 0.01], afternoon: [0.18, 0.35, 0.33, 0.11, 0.03] }
+      - { morning: [0.45, 0.3, 0.15, 0.07, 0.03], afternoon: [0.2, 0.3, 0.28, 0.17, 0.05] }
+      - { morning: [0.4, 0.2, 0.15, 0.15, 0.1], afternoon: [0.4, 0.2, 0.15, 0.15, 0.1] }
+      - { morning: [0.4, 0.2, 0.15, 0.15, 0.1], afternoon: [0.4, 0.2, 0.15, 0.15, 0.1] }
+    persistence: 0.6
+    forecastAccuracy: 0.8
+    # Es Racó, the kite spot 50 minutes away: one state windier than the bay's afternoon (est.).
+    spot: { name: Es Racó, slot: afternoon, shift: 1 }
+  # The kite trip policy: changed at most every two weeks; no trips until the player sets one.
+  trips: { policyWeeks: 2 }
+  # The beach licence tender in the autumn of year 1 (section 12, est.).
+  tender:
+    costId: beach_licence
+    higherFactor: 1.4
+    keep: { min: 0.5, max: 0.85, perContract: 0.03 }
+    lost: { walkIn: 0.5, partnership: 0.7 }
+    hotel: { factor: 0.6, revenueShare: 0.15, walkIn: 0.5, partnership: 0.7 }
+  # Activity platforms take 20 to 25% (est., to verify); 22% here.
+  platform: { name: Strandklick, commission: 0.22 }
+  website: { product: online_booking, repeatsFull: 150 }
+  partnershipHours: 6
+  partnershipCut: 0
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor: { viable: 1, mediocre: 0.45, trap: 0.15 }
+  fitBase: 0.4
+  segments:
+    hotel_guests:
+      # 60 to 200 reachable requests a week at peak (spec), before reach and fit.
+      base: { min: 80, max: 210 }
+      unit: person
+      # One activity (est.): hire at half of it, a kids' club week at four and a half times.
+      # The previous tenant's price list, the same all year (decisions, plan 4 step 2).
+      price: { peak: 4000, off: 4000 }
+      size: { min: 1, max: 4 }
+      leadWeeks: { min: 0, max: 1 }
+      # High July and August (school holidays), some in June and September.
+      season: [0, 0, 0, 0.1, 0.35, 0.7, 1, 1, 0.7, 0.25, 0, 0]
+      response: { platform: 0.5, website: 0.2, partnership: 0.8, outreach: 0.1, walkIn: 0.5 }
+      cancel: 0.15
+      strictConversion: 0.8
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.6
+    learners:
+      base: { min: 9, max: 31 }
+      unit: person
+      # A course place (est. 220 a windsurf course), the same all year.
+      price: { peak: 22000, off: 22000 }
+      size: { min: 1, max: 2 }
+      leadWeeks: { min: 0, max: 6 }
+      # Easter to October, peaks in June and September.
+      season: [0, 0, 0.05, 0.4, 0.7, 1, 0.8, 0.7, 1, 0.6, 0.05, 0]
+      response: { platform: 0.8, website: 0.4, partnership: 0.4, outreach: 0.3, walkIn: 0.2 }
+      cancel: 0.08
+      # Learners on holiday shy away from a course they cannot cancel (est., T11 round 2).
+      strictConversion: 0.82
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.7
+    wind_regulars:
+      base: { min: 4.5, max: 17 }
+      unit: person
+      # A week's hire package (est. 260).
+      price: { peak: 26000, off: 26000 }
+      size: { min: 1, max: 2 }
+      leadWeeks: { min: 2, max: 16 }
+      # Spring and autumn, the windy months; less in August.
+      season: [0.05, 0.1, 0.4, 0.8, 1, 0.6, 0.3, 0.3, 0.8, 1, 0.5, 0.1]
+      response: { platform: 0.15, website: 0.6, partnership: 0.8, outreach: 0.6, walkIn: 0.05 }
+      cancel: 0.05
+      # Regulars book by the forecast and want to cancel a flat week (est., T11 round 2).
+      strictConversion: 0.78
+      # A deposit of 30% at booking, the balance on arrival.
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.5
+  products:
+    paddle_kayak_hire:
+      # Starting gear: 8 boards and 4 kayaks, rented by the hour, two slots a day.
+      capacity: 280
+      serves: [hotel_guests]
+      runsIn: [calm, light]
+      priceFactor: 0.5
+      unitCostCents: 100
+      appeal: 3
+    paddle_lessons:
+      capacity: 112
+      serves: [hotel_guests]
+      runsIn: [calm, light]
+      slots: [morning]
+      priceFactor: 1.1
+      unitCostCents: 200
+    snorkel_trips:
+      capacity: 140
+      serves: [hotel_guests]
+      runsIn: [calm]
+      unitCostCents: 200
+    kayak_tours:
+      capacity: 112
+      serves: [hotel_guests]
+      runsIn: [calm, light]
+      priceFactor: 1.3
+      unitCostCents: 200
+    kids_club:
+      # Five mornings a week for a child (180 EUR, est.): sixteen children.
+      capacity: 16
+      serves: [hotel_guests]
+      runsIn: [calm, light]
+      slots: [morning]
+      priceFactor: 4.5
+      # Small boards and life jackets (est.).
+      oneOffCents: 300000
+      unitCostCents: 1000
+      appeal: 0.3
+    windsurf_courses:
+      # Six rigs, seven afternoons, a course of four.
+      capacity: 42
+      serves: [learners]
+      runsIn: [light, good]
+      slots: [afternoon]
+      priceFactor: 0.92
+      unitCostCents: 1000
+      course:
+        level: windsurf_basic
+        sameStay: { share: 0.25, products: [rig_hire] }
+        nextSeason: { direct: 0.15, platform: 0.02, products: [rig_hire, modern_gear] }
+    licence_courses:
+      capacity: 0
+    catamaran:
+      # Two catamarans, two people each, a course of three afternoons.
+      capacity: 28
+      serves: [learners]
+      runsIn: [light, good]
+      slots: [afternoon]
+      requires: rescue_boat
+      priceFactor: 1.2
+      # Two catamarans at 11,000 each (est.).
+      oneOffCents: 2200000
+      unitCostCents: 1500
+      course:
+        level: catamaran_basic
+        sameStay: { share: 0.25, products: [rig_hire] }
+        nextSeason: { direct: 0.15, platform: 0.02, products: [catamaran, rig_hire] }
+    wing_foil:
+      capacity: 21
+      serves: [learners, wind_regulars]
+      runsIn: [good, strong]
+      slots: [afternoon]
+      priceFactor: 1.35
+      # Three sets at 2,800 each (est.).
+      oneOffCents: 840000
+      unitCostCents: 1500
+      course:
+        level: wing_basic
+        sameStay: { share: 0.25, products: [modern_gear] }
+        nextSeason: { direct: 0.15, platform: 0.02, products: [modern_gear, wing_foil] }
+    modern_gear:
+      # Fourteen sets for a week each, bought as a batch at about 1,450 a set (est.; spec ten at
+      # 2,500); a week's package is not cancelled by a day.
+      capacity: 14
+      serves: [wind_regulars]
+      wholeWeek: true
+      oneOffCents: 2000000
+      unitCostCents: 2000
+    rescue_boat:
+      capacity: 0
+      # Leased in season at 900 a month (est.), spread over the year with fuel: about 600 a
+      # month. Buying one (18,000) is left out of this pass (decisions, plan 4 step 2).
+      monthlyCents: 60000
+    online_booking:
+      capacity: 0
+      monthlyCents: 4000
+    kite_trips:
+      # One van, three students a trip, three trip days a course: two groups a week.
+      capacity: 6
+      serves: [learners, wind_regulars]
+      runsIn: [good, strong]
+      # About 450 for three trip days (est.). Few guests come for kiting alone: it fills up
+      # when the bay's own courses are full (decisions, plan 4 step 2).
+      priceFactor: 1.9
+      appeal: 0.25
+      # Three kite sets at 1,900 and radio helmets (est.).
+      oneOffCents: 600000
+      unitCostCents: 1000
+      dayTrip: { perTrip: 3, days: 3, costCents: 4000 }
+      course:
+        level: kite_basic
+        sameStay: { share: 0.2, products: [kite_trips] }
+        nextSeason: { direct: 0.15, platform: 0.02, products: [kite_trips, modern_gear] }
+    efoil_fleet:
+      # Four boards at about 10,000 each, batteries and a charger (est.): everyone films them.
+      # Hotel guests only: a price factor is per segment, and an hour is not a regular's week.
+      capacity: 56
+      serves: [hotel_guests]
+      runsIn: [calm, light]
+      # 120 an hour (est.).
+      priceFactor: 2.7
+      oneOffCents: 4000000
+      monthlyCents: 30000
+      # Batteries, wear and the odd repair (est.).
+      unitCostCents: 4000
+      appeal: 0.05
+    rig_hire:
+      capacity: 40
+      serves: [learners]
+      needsLevel: windsurf_basic
+      runsIn: [light, good]
+      slots: [afternoon]
+      priceFactor: 0.3
+      unitCostCents: 300
+  roles:
+    instructor:
+      name: Watersports instructor
+      # 140 a day freelance (est., to verify).
+      centsPerShift: 14000
+      units:
+        paddle_lessons: 8
+        snorkel_trips: 10
+        kayak_tours: 8
+        kids_club: 1.6
+        # Six students a slot, two slots a day, a course of four sessions.
+        windsurf_courses: 3
+      available: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+      founderHours: 9
+      contracts:
+        # About 1,500 a month gross in 14 payments with employer costs (est.): 525 a week.
+        permanent: { centsPerWeek: 52500, shifts: 5, noticeWeeks: 4, quality: 0.3, max: 2 }
+        part_time: { centsPerWeek: 32000, shifts: 3, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 62000, shifts: 5, months: [5, 6, 7, 8, 9, 10], quality: 0.25, max: 2 }
+    sailing_instructor:
+      name: Sailing instructor
+      centsPerShift: 15000
+      units:
+        catamaran: 2.6
+        paddle_lessons: 8
+      available: [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+    wing_kite_instructor:
+      name: Wing and kite instructor
+      # 180 a day; scarce from June to September.
+      centsPerShift: 18000
+      units:
+        wing_foil: 1.5
+        # A trip day for a group of three, three days a course: a course place a shift.
+        kite_trips: 1
+      available: [6, 6, 6, 6, 6, 5, 4, 4, 5, 6, 6, 6]
+      contracts:
+        seasonal:
+          { centsPerWeek: 80000, shifts: 5, months: [5, 6, 7, 8, 9, 10], quality: 0.25, max: 1 }
+    beach_hand:
+      name: Beach hand
+      centsPerShift: 10000
+      units:
+        paddle_kayak_hire: 40
+        modern_gear: 3
+        efoil_fleet: 8
+        rig_hire: 20
+      available: [14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
+      contracts:
+        permanent: { centsPerWeek: 45000, shifts: 5, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 47000, shifts: 5, months: [5, 6, 7, 8, 9, 10], quality: 0.2, max: 2 }
+  hosting: { hoursPerUnit: 0.04, maxHours: 15 }
+  trials:
+    taster_hour:
+      name: Taster hour
+      # A free hour on the water for six people from one group: a morning and some wear (est.).
+      hours: 5
+      cents: 5000
+      weeks: 1
+      people: 6
+      choose: true
+      reach: { hotel_guests: 1, learners: 1, wind_regulars: 1 }
+      rate: { base: 0, perPain: 0.4 }
+      reviewFrom: [hotel_guests]
+      repeat: true
+      max: 2
+    test_listing:
+      name: Test listing
+      # Two weeks on Strandklick at a test price, promoted (est.). Mostly hotel guests and
+      # learners see it.
+      hours: 3
+      cents: 25000
+      weeks: 2
+      people: 220
+      reach: { hotel_guests: 0.6, learners: 0.35, wind_regulars: 0.05 }
+      rate: { base: 0.01, perPain: 0.12 }
+      max: 3
+  # Gift vouchers for a course, sold through the home network for the summer.
+  vouchers:
+    hoursPerBatch: 4
+    batchSize: 20
+    rate: { base: 0, perPain: 0.12 }
+    segments: [learners]
+    units: 1
+    maxBatches: 4
+    redeemShare: 0.85
+    redeemWeeks: { min: 8, max: 30 }
+  reviews:
+    qualityBase: 4.4
+    noiseSd: 0.3
+    understaffPenalty: 2.5
+    tiredPenalty: 0.5
+    cancelPenalty: 1
+    snagPenalty: 0.15
+    valueWeight: 1.5
+    reviewsPerUnit: 0.1
+    reviewsFull: 50
+
+modes:
+  long: {}

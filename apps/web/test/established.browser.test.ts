@@ -24,6 +24,8 @@ const RUNS: { id: ScenarioId; week: number }[] = [
   { id: 'gratwanderung', week: 20 },
   { id: 'hinterhof', week: 24 },
   { id: 'seeblick', week: 36 },
+  // Plan 4.
+  { id: 'rueckenwind', week: 30 },
 ]
 const WIDTHS = [375, 390, 430, 1440]
 /** Where the screenshots go: a folder in the system's temporary directory. */

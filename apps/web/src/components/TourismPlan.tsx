@@ -118,6 +118,7 @@ export function RosterPlan() {
   const free = Math.max(0, view.founder.maxHoursPerWeek - planned)
   return (
     <>
+      <ConditionsPlan />
       {coverage(b, draft).map(({ product, booked, covers, kitchen, floor }) => (
         <Writing key={product.id} warn={covers < booked}>
           {floor === null
@@ -302,42 +303,62 @@ export function PricesPlan() {
       <Writing>{label(b.peak ? 'tour.prices.peakNow' : 'tour.prices.offNow', stage)}</Writing>
       {b.segments.flatMap((s) => {
         const now = draft.prices[s.id] ?? b.prices[s.id]!
-        return (['peak', 'off'] as const).map((season) => {
-          // Steps follow the price this week started with, so they hold still while tapping.
-          const { step, big } = priceSteps(b.prices[s.id]![season])
-          return (
-            <Market
-              key={`${s.id}-${season}`}
-              stack
-              label={label(`tour.prices.${season}`, stage, { segment: segName(view, s.id) })}
-              note={label(`tour.unit.${s.unit}`, stage)}
-              control={
-                <Stepper
-                  stage={stage}
-                  value={now[season]}
-                  onChange={(v) =>
-                    set({
-                      prices: {
-                        ...draft.prices,
-                        [s.id]: { ...now, [season]: Math.max(NICE_STEPS[0]!, v) },
-                      },
-                    })
-                  }
-                  what={label(`tour.prices.what.${season}`, stage, {
-                    segment: segName(view, s.id),
+        // Plan 4: products priced as a multiple of the group's price, at this season's price.
+        const priced = b.products.filter(
+          (p) => p.shipped && p.serves.includes(s.id) && p.priceFactor !== 1,
+        )
+        const price = b.peak ? now.peak : now.off
+        const products =
+          priced.length > 0
+            ? [
+                <Writing key={`${s.id}-products`}>
+                  {label('tour.prices.products', stage, {
+                    list: priced
+                      .map((p) => `${p.name} ${formatEuro(Math.round(price * p.priceFactor))}`)
+                      .join(', '),
                   })}
-                  names={{ minus: 'tour.prices.minus', plus: 'tour.prices.plus' }}
-                  step={step}
-                  bigStep={big}
-                  formatStep={(c) => formatEuro(c)}
-                  display={formatEuro(now[season])}
-                  min={NICE_STEPS[0]!}
-                  max={b.prices[s.id]![season] * 3}
-                />
-              }
-            />
-          )
-        })
+                </Writing>,
+              ]
+            : []
+        return [
+          ...products,
+          ...(['peak', 'off'] as const).map((season) => {
+            // Steps follow the price this week started with, so they hold still while tapping.
+            const { step, big } = priceSteps(b.prices[s.id]![season])
+            return (
+              <Market
+                key={`${s.id}-${season}`}
+                stack
+                label={label(`tour.prices.${season}`, stage, { segment: segName(view, s.id) })}
+                note={label(`tour.unit.${s.unit}`, stage)}
+                control={
+                  <Stepper
+                    stage={stage}
+                    value={now[season]}
+                    onChange={(v) =>
+                      set({
+                        prices: {
+                          ...draft.prices,
+                          [s.id]: { ...now, [season]: Math.max(NICE_STEPS[0]!, v) },
+                        },
+                      })
+                    }
+                    what={label(`tour.prices.what.${season}`, stage, {
+                      segment: segName(view, s.id),
+                    })}
+                    names={{ minus: 'tour.prices.minus', plus: 'tour.prices.plus' }}
+                    step={step}
+                    bigStep={big}
+                    formatStep={(c) => formatEuro(c)}
+                    display={formatEuro(now[season])}
+                    min={NICE_STEPS[0]!}
+                    max={b.prices[s.id]![season] * 3}
+                  />
+                }
+              />
+            )
+          }),
+        ]
       })}
       <SubHeading>{label('tour.policy', stage)}</SubHeading>
       {b.policyLocked ? (
@@ -754,6 +775,102 @@ function MinStayPlan() {
           set({ minStay: m.on === true ? null : true }),
         )}
       </Choices>
+    </>
+  )
+}
+
+// Plan 4 (docs/abroad-mechanics.md): the forecast strip, what each product can run on this week,
+// and the trip policy.
+
+/** The forecast's states counted per slot, in the scenario's words: "5 calm, 2 light wind". */
+export function forecastLine(
+  states: { id: string; name: string }[],
+  counts: Record<string, number>,
+): string {
+  return states
+    .filter((st) => (counts[st.id] ?? 0) > 0)
+    .map((st) => `${counts[st.id]} ${st.name}`)
+    .join(', ')
+}
+
+/** This week's wind and sea as forecast, and the slots each product can run on. */
+export function ConditionsPlan() {
+  const view = useGame((s) => s.view)
+  const draft = useGame((s) => s.plan.bookings) ?? noBookings()
+  const set = useGame((s) => s.setBookings)
+  const a = view?.bookings?.abroad
+  if (!view || !a) return null
+  const b = view.bookings!
+  const stage = voiceOf(view)
+  const slotName = (id: string | null) =>
+    id === 'spot'
+      ? label('tour.runsOn.spot', stage, { spot: a.spot?.name ?? '' })
+      : id === null
+        ? label('tour.runsOn.slots', stage)
+        : (a.slots.find((x) => x.id === id)?.name ?? id).toLowerCase()
+  const shipped = (id: string) => b.products.find((p) => p.id === id)?.shipped
+  const t = a.trips
+  const tripProduct = b.products.find((p) => p.dayTrip)
+  const min = draft.trips !== undefined ? draft.trips.min : (t?.min ?? null)
+  const options: (number | null)[] = t
+    ? [null, ...Array.from({ length: t.most }, (_, k) => k + 1)]
+    : []
+  return (
+    <>
+      <SubHeading>{label('tour.forecast.title', stage)}</SubHeading>
+      {a.slots.map((slot) => (
+        <Writing key={slot.id}>
+          {label('tour.forecast.slot', stage, {
+            slot: slot.name,
+            states: forecastLine(a.states, a.forecastCounts[slot.id] ?? {}),
+          })}
+        </Writing>
+      ))}
+      {a.spot && (
+        <Writing>
+          {label('tour.forecast.slot', stage, {
+            slot: a.spot.name,
+            states: forecastLine(
+              a.states,
+              Object.fromEntries(
+                a.states.map((st) => [st.id, a.spot!.forecast.filter((d) => d === st.id).length]),
+              ),
+            ),
+          })}
+        </Writing>
+      )}
+      {a.runsOn
+        .filter((r) => shipped(r.productId))
+        .map((r) => (
+          <Writing key={r.productId} warn={r.suitable === 0}>
+            {label('tour.runsOn', stage, {
+              product: b.products.find((p) => p.id === r.productId)?.name ?? r.productId,
+              n: r.suitable,
+              total: r.total,
+              slot: slotName(r.slot),
+            })}
+          </Writing>
+        ))}
+      {t && tripProduct?.shipped && tripProduct.dayTrip && (
+        <Market
+          label={label('tour.trips', stage, { product: tripProduct.name })}
+          note={label(t.locked ? 'tour.trips.locked' : 'tour.trips.note', stage, {
+            fuel: formatEuro(tripProduct.dayTrip.costCents),
+          })}
+          choices={options.map((o) =>
+            chip(
+              min === o,
+              o === null
+                ? label('tour.trips.never', stage)
+                : label('tour.trips.min', stage, { n: o }),
+              () => {
+                if (t.locked) return
+                set({ trips: { min: o } })
+              },
+            ),
+          )}
+        />
+      )}
     </>
   )
 }

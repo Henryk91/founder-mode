@@ -12,15 +12,16 @@ describe('tourism bots (step 4)', () => {
   it('play only the bookings model, and subscription bots never play it', () => {
     for (const t of TOURISM_STRATEGIES) {
       // The loan bots play only where a scenario offers a bank loan (step 6).
-      expect(playsIn(t, scenario)).toBe(!t.needsLoan)
-      expect(playsIn(t, loadScenario('hinterhof'))).toBe(true)
+      expect(playsIn(t, scenario)).toBe(!t.needsLoan && !t.scenarios)
+      // Plan 4: a scenario's own bots play only there.
+      expect(playsIn(t, loadScenario('hinterhof'))).toBe(!t.scenarios)
       expect(playsIn(t, loadScenario('kantino', 'long'))).toBe(false)
     }
     const validate = STRATEGIES.find((s) => s.id === 'validate_then_build')!
     expect(playsIn(validate, scenario)).toBe(false)
   })
 
-  it.each(TOURISM_STRATEGIES.map((t) => [t.id, t] as const))(
+  it.each(TOURISM_STRATEGIES.filter((t) => !t.scenarios).map((t) => [t.id, t] as const))(
     '%s plays complete runs with valid plans only',
     (_id, strategy) => {
       for (let i = 0; i < 3; i++) {
@@ -63,7 +64,7 @@ describe('the tourism report (step 4)', () => {
     const { buildReport } = await import('../src/report')
     const { evaluateTourismTargets } = await import('../src/tourismReport')
     const scenario = tourismScenario()
-    const strategies = TOURISM_STRATEGIES.map((s) => ({
+    const strategies = TOURISM_STRATEGIES.filter((s) => !s.scenarios).map((s) => ({
       id: s.id,
       description: s.description,
       results: [runGame(scenario, s, 'rep-1'), runGame(scenario, s, 'rep-2')],

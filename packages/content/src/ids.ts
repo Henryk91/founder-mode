@@ -7,6 +7,7 @@ export const SCENARIO_IDS = [
   'gratwanderung',
   'hinterhof',
   'seeblick',
+  'rueckenwind',
 ] as const
 export type ScenarioId = (typeof SCENARIO_IDS)[number]
 
@@ -23,4 +24,5 @@ export const SCENARIO_MODES: Record<ScenarioId, GameMode[]> = {
   gratwanderung: ['long'],
   hinterhof: ['long'],
   seeblick: ['long'],
+  rueckenwind: ['long'],
 }

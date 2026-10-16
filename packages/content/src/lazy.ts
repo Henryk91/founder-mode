@@ -18,6 +18,8 @@ export async function loadSourcesLazy(id: ScenarioId): Promise<ScenarioSources> 
       return (await import('./sources/hinterhof')).sources
     case 'seeblick':
       return (await import('./sources/seeblick')).sources
+    case 'rueckenwind':
+      return (await import('./sources/rueckenwind')).sources
   }
 }
 

@@ -59,6 +59,18 @@ export type TourismRule = {
   contracts?: 'careful' | 'none' | 'permanent' | 'seasonal' | 'part_time'
   /** Plan 3: office stage offers (`office.ts`). Missing: careful. */
   office?: OfficeRule
+  /**
+   * Plan 4, day trips: careful runs a trip for a group of two or more, `always` for one guest,
+   * `never` closes the trips. Missing: careful.
+   */
+  trips?: 'careful' | 'always' | 'never'
+  /**
+   * Plan 4, product mix extremes: only products for wind (good or strong), only calm-water
+   * products (calm or light wind), or no courses. Missing: any product.
+   */
+  mix?: 'wind' | 'calm' | 'no_courses'
+  /** Plan 4: builds the temptation (the eFoil fleet) in the first spring, with the bank's help. */
+  temptationEarly?: string
 }
 
 /** Hours this week's guests take before anything is planned (plan 2 step 3). */
@@ -141,10 +153,25 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       .map((r) => ({ ...r, score: r.score + trialScore(view, r.id) }))
       .sort((a, b) => b.score - a.score)
 
+  // Plan 4: a product for a level sells only to graduates, unless the segment holds the level.
   const productsFor = (seg: string) =>
     Object.entries(cfg.products)
-      .filter(([, p]) => p.serves.includes(seg))
+      .filter(
+        ([, p]) =>
+          p.serves.includes(seg) &&
+          (!p.needsLevel || (cfg.segments[seg]?.levels ?? []).includes(p.needsLevel)),
+      )
       .map(([id]) => id)
+
+  /** Plan 4: a product the rule's mix allows (support products always). */
+  const allowed = (id: string): boolean => {
+    const p = cfg.products[id]
+    if (!p || !rule.mix) return true
+    if (rule.mix === 'no_courses') return !p.course
+    if (p.capacity === 0) return true
+    const calm = !!p.runsIn && p.runsIn.every((x) => x === 'calm' || x === 'light')
+    return rule.mix === 'calm' ? calm : !calm
+  }
 
   /** A channel reaches a segment: from the scenario's table, or always for the naive bot. */
   const reaches = (seg: string, channel: 'platform' | 'website' | 'partnership' | 'outreach') =>
@@ -161,9 +188,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       )[0]
     // From step 6 (scenarios with a bank loan): a product the interviewees asked for first. The
     // earlier scenarios keep the quickest product, so their protected reports stay the same.
-    const asked = productsFor(seg).filter((id) => mentions.includes(id))
-    const base = scenario.loan && asked.length > 0 ? quickest(asked) : quickest(productsFor(seg))
-    return [...new Set([...(base ? [base] : []), ...mentions])]
+    const asked = productsFor(seg).filter((id) => mentions.includes(id) && allowed(id))
+    const base =
+      scenario.loan && asked.length > 0
+        ? quickest(asked)
+        : quickest(productsFor(seg).filter(allowed))
+    return [...new Set([...(base ? [base] : []), ...mentions.filter(allowed)])]
   }
 
   /**
@@ -561,6 +591,21 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     if (n > 0) plan.renovate = n
   }
 
+  /**
+   * Plan 4: the trip policy once a trip product has shipped: a group of two (careful), one guest
+   * (always) or never. The careful bot's two is the smallest group whose fuel and day of pay a
+   * course place carries.
+   */
+  function planTrips(view: PlayerView, plan: BookingsPlan): void {
+    const t = view.bookings!.abroad?.trips
+    if (!t || t.locked) return
+    const trip = view.bookings!.products.find((p) => p.dayTrip && p.shipped)
+    if (!trip) return
+    const mode = rule.trips ?? 'careful'
+    const want = mode === 'never' ? null : mode === 'always' ? 1 : Math.min(2, t.most)
+    if (want !== t.min) plan.trips = { min: want }
+  }
+
   /** A minimum stay while the target's weekends fill up (plan 2 step 1d). */
   function planMinStay(view: PlayerView, plan: BookingsPlan): void {
     const m = view.bookings!.minStay
@@ -749,12 +794,18 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       const booked = rule.roster === 'under' ? bookedNow : bookedNow + expected
       if (booked === 0 && rule.roster !== 'over') continue
       if (!product?.shipped) continue
-      const need =
+      // Plan 4: a product that follows the conditions runs only on the forecast's suitable slots.
+      const runs = bv.abroad?.runsOn.find((r) => r.productId === productId)
+      const forecastCap =
+        runs && runs.total > 0 ? (product.capacity * runs.suitable) / runs.total : Infinity
+      const need = Math.min(
+        forecastCap,
         rule.roster === 'over'
           ? product.capacity
           : rule.roster === 'under'
             ? booked * UNDER_SHARE
-            : booked * (rule.reviews ? 1 + ROSTER_MARGIN : 1)
+            : booked * (rule.reviews ? 1 + ROSTER_MARGIN : 1),
+      )
       // Food for what the roster is meant to serve; the overstaffing bot leaves the kitchen to
       // cook for every cover it can.
       // Food (plan 2 step 1c): for what is booked and the walk-ins of recent weeks, a tenth more,
@@ -862,14 +913,26 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         (bv.products.find((p) => p.id === id)?.unitCostShare ?? 0) >= THIN_MARGIN_SHARE
       const more = done
         ? productsFor(seg).filter(
-            (id) => (cfg.products[id]?.oneOffCents ?? 0) <= money * EXTRA_SHARE && !thin(id),
+            (id) =>
+              (cfg.products[id]?.oneOffCents ?? 0) <= money * EXTRA_SHARE &&
+              !thin(id) &&
+              allowed(id),
           )
+        : []
+      // Plan 4: a course's next step for its graduates, once the course is ready, when cheap.
+      const nextSteps = bv.abroad
+        ? [...own, ...more]
+            .filter((id) => view.product.features.find((x) => x.id === id)?.shipped)
+            .flatMap((id) => cfg.products[id]?.course?.sameStay?.products ?? [])
+            .filter(
+              (id) => allowed(id) && (cfg.products[id]?.oneOffCents ?? 0) <= money * EXTRA_SHARE,
+            )
         : []
       const toBuild = rule.buildAll
         ? scenario.features.map((f) => f.id)
         : done && second
-          ? [...own, ...more, ...wanted(view, second)]
-          : own
+          ? [...own, ...more, ...nextSteps, ...wanted(view, second)]
+          : [...own, ...nextSteps]
       // With a bank loan on offer (step 6): build what is required first, and never a product
       // the money cannot pay for yet.
       // Products a loan bought are built whatever else happens (plan 2 step 2).
@@ -880,7 +943,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           ? [cfg.renovation.feature]
           : []),
       ]
-      const building = view.loan ? withRequired([...new Set([...toBuild, ...bought])]) : toBuild
+      // Plan 4: the temptation in the first spring, for the bot that cannot resist it.
+      const early =
+        rule.temptationEarly && view.week <= 12 ? [rule.temptationEarly] : ([] as string[])
+      const building = view.loan
+        ? withRequired([...new Set([...toBuild, ...bought, ...early])])
+        : toBuild
       if (view.loan) {
         // Keep the bridge a long-lead market needs (the months beyond the usual buffer) as well.
         const leadMonths = rule.naive ? 0 : Math.ceil((cfg.segments[seg]?.leadWeeks.max ?? 0) / 4)
@@ -894,10 +962,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           (f) => !shipped(f) && building.some((g) => cfg.products[g]?.requires === f),
         )
         const now = required.length > 0 ? required : building
+        // Plan 4 (day conditions only): products started this week count against the money too.
+        let committed = 0
         for (const f of now) {
           const cost = bought.includes(f) ? 0 : (cfg.products[f]?.oneOffCents ?? 0)
           const keep = required.length > 0 ? 0 : reserve
-          if (cost > 0 && view.company.cashCents - keep < cost) continue
+          if (cost > 0 && view.company.cashCents - keep - committed < cost) continue
+          if (bv.abroad && !shipped(f)) committed += cost
           b.build(f, 40 - (b.plan.build[f] ?? 0))
         }
       } else {
@@ -905,6 +976,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       }
       planRenovation(view, plan, building)
       planMinStay(view, plan)
+      planTrips(view, plan)
       if (done && second && rule.channels === 'mix') {
         if (
           reaches(second, 'partnership') &&
@@ -1017,10 +1089,16 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   }
 }
 
-const tourism = (id: string, description: string, rule: TourismRule): Strategy => ({
+const tourism = (
+  id: string,
+  description: string,
+  rule: TourismRule,
+  scenarios?: string[],
+): Strategy => ({
   id,
   description,
   model: 'bookings',
+  ...(scenarios ? { scenarios } : {}),
   ...(rule.loan !== undefined || rule.refitLoan ? { needsLoan: true } : {}),
   create: (scenario) => tourismPlayer(scenario, rule),
 })
@@ -1142,6 +1220,53 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     'tourism_reckless',
     'Plays like tourism_careful but borrows the most the bank lends, with no repayment-free start and the shortest term.',
     { ...CAREFUL_TOURISM, loan: 'reckless' },
+  ),
+  // Plan 4: Rückenwind's own targets (W1 to W5).
+  ...[
+    [
+      'tourism_wind_only',
+      'Plays like tourism_careful but builds only products for wind (good or strong).',
+      { mix: 'wind' },
+    ],
+    [
+      'tourism_calm_only',
+      'Plays like tourism_careful but builds only calm-water products (calm or light wind).',
+      { mix: 'calm' },
+    ],
+    [
+      'tourism_no_courses',
+      'Plays like tourism_careful but sells hire and tours, never a course.',
+      { mix: 'no_courses' },
+    ],
+    [
+      'tourism_trips_always',
+      'Plays like tourism_careful but runs a kite trip for a single student.',
+      { trips: 'always' },
+    ],
+    [
+      'tourism_trips_never',
+      'Plays like tourism_careful but never runs a kite trip.',
+      { trips: 'never' },
+    ],
+    [
+      'tourism_tender_higher',
+      'Plays like tourism_careful but always bids higher in the beach tender.',
+      { forced: { eventId: 'beach_tender', choiceId: 'higher' } },
+    ],
+    [
+      'tourism_tender_same',
+      'Plays like tourism_careful but always bids as before in the beach tender.',
+      { forced: { eventId: 'beach_tender', choiceId: 'same' } },
+    ],
+    [
+      'tourism_efoil_spring',
+      'Plays like tourism_careful but builds the eFoil fleet in the first spring, with the bank.',
+      { temptationEarly: 'efoil_fleet' },
+    ],
+  ].map(([id, text, rule]) =>
+    tourism(id as string, text as string, { ...CAREFUL_TOURISM, ...(rule as TourismRule) }, [
+      'rueckenwind',
+    ]),
   ),
   tourism(
     'tourism_refit_loan',

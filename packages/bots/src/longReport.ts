@@ -437,7 +437,7 @@ const INFO_TARGETS = [10, 13, 14, 15]
 
 export function longTargetRows(input: ReportInput): string[] {
   const met = (t: Target) => (t.value === '-' ? 'not measured' : t.pass ? 'yes' : 'no')
-  const info = evaluateTargets(input).filter((t) => INFO_TARGETS.includes(t.id))
+  const info = evaluateTargets(input).filter((t) => INFO_TARGETS.includes(t.id as number))
   return [
     '## Targets (long mode)',
     '',

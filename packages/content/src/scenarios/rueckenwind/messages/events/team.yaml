@@ -1,0 +1,117 @@
+# The people on the beach.
+events:
+  - id: wing_instructor_poached
+    area: team
+    weight: 2
+    once: true
+    when: [shipped.wing_foil == 1, tour.month >= 5, tour.month <= 9]
+    from: none
+    sender: Your wing and kite instructor
+    look: note
+    text: >-
+      The centre next door offered your wing and kite instructor more money. She would stay for
+      a season contract, she says, or for twenty euros more a day.
+    defaultChoice: let_go
+    choices:
+      - id: match
+        label: Pay her more for the rest of the season
+        hours: 1
+        effects:
+          - { type: fixedCost, id: wing_bonus, name: Wing instructor bonus, monthlyCents: 40000 }
+      - id: let_go
+        label: Let her go
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 2 }
+
+  - id: beach_hand_boat_licence
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: Your beach hand
+    look: note
+    text: >-
+      Your best beach hand wants to take the powerboat licence, so he can drive the rescue boat.
+      The course costs 400 EUR and a week of his afternoons.
+    defaultChoice: decline
+    choices:
+      - id: pay
+        label: Pay for the licence
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: review, rating: 5, count: 2, when: [shipped.rescue_boat == 1] }
+      - id: decline
+        label: Not this season
+        hours: 0
+
+  - id: instructor_no_show
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [tour.peak == 1]
+    from: none
+    sender: Your phone
+    look: note
+    text: >-
+      A freelance instructor did not turn up this morning. His phone is off and his van is at
+      the other beach. You have six kids and a sea.
+    defaultChoice: refund
+    choices:
+      - id: cover
+        label: Teach it yourself
+        hours: 6
+        effects:
+          - { type: energy, delta: -4 }
+      - id: refund
+        label: Refund the morning
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: review, rating: 2, count: 2 }
+
+  - id: seasonal_contract_question
+    area: team
+    weight: 1
+    once: true
+    when: [tour.month >= 3, tour.month <= 5]
+    from: none
+    sender: Your gestor
+    text: >-
+      Your gestor asks whether your instructors will be on seasonal contracts this year. In Spain
+      that is a "fijo discontinuo", she says, which is a contract that sleeps in winter.
+    defaultChoice: later
+    choices:
+      - id: explain
+        label: Spend a morning on it with her
+        hours: 3
+        effects:
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: later
+        label: Later
+        hours: 0
+
+  - id: trainee_from_germany
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 8, week <= 30]
+    from: none
+    sender: A sports student from Cologne
+    text: >-
+      A sports student wants an unpaid internship for the summer, with a bed and lunch. She is
+      keen, she says, and owns a whistle.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take her on, with a bed and lunch
+        hours: 4
+        effects:
+          - { type: fixedCost, id: intern_board, name: Intern's bed and lunch, monthlyCents: 30000 }
+          - { type: energy, delta: 4 }
+      - id: decline
+        label: Decline
+        hours: 0
