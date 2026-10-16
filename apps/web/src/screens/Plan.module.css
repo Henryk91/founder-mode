@@ -69,7 +69,7 @@
 .moreText {
   height: var(--line);
   margin: 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-size: var(--fs);
   line-height: calc(2 * var(--base) - 0.667 * var(--fs));
   /* Handwriting leans past its last letter; without room the clip would cut it. */
@@ -358,7 +358,13 @@
     column-gap: 12px;
   }
 
+  /* The label may wrap so its choices stay on the paper (a long note pushed them off in WebKit). */
   .market > .row {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .market > .choicesRow {
     flex: 0 0 auto;
   }
 }
@@ -448,7 +454,7 @@
   min-width: 0;
   min-height: var(--line);
   margin: 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-size: var(--fs);
   font-weight: 500;
   line-height: var(--line);
@@ -523,4 +529,39 @@
 /* A heading over a few rows, wrapping like any other writing. */
 .wrapped.subWrapped {
   font-weight: 700;
+}
+
+/*
+ * Plan 3, the established stage (docs/design/established.md): "This week" as a form in a card.
+ * The same 44 px rows and controls; sans text, a hairline between rows, no ruled paper.
+ */
+:global([data-stage='established']) .notebook {
+  --base: 27px;
+  --small-base: 27px;
+  --fs-title: 20px;
+  --fs-section: 15px;
+  --fs-summary: 14px;
+  --fs-label: 14px;
+  --fs-hint: 13px;
+  --fs-mono: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+:global([data-stage='established']) .title {
+  font-family: var(--font-head);
+  font-weight: 700;
+}
+
+:global([data-stage='established']) .sectionTitle,
+:global([data-stage='established']) .sub {
+  font-weight: 600;
+}
+
+:global([data-stage='established']) .label,
+:global([data-stage='established']) .summary,
+:global([data-stage='established']) .hint,
+:global([data-stage='established']) .moreText,
+:global([data-stage='established']) .wrapped {
+  font-weight: 400;
 }

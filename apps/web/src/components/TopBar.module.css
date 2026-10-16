@@ -22,7 +22,42 @@
 }
 
 .who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   min-width: 0;
+}
+
+/* Plan 3, established: a square in the scenario's accent with the company's first letter. */
+.logo {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.wide .logo {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+:global([data-stage='established']) .name {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+:global([data-stage='established']) .wide .name {
+  font-size: 20px;
 }
 
 .name {

@@ -34,7 +34,7 @@
 }
 
 .ending {
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 700;
   font-size: 24px;
   line-height: 1;
@@ -82,7 +82,7 @@
 
 .head {
   margin: 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 700;
   font-size: 28px;
   line-height: 1;
@@ -90,7 +90,7 @@
 
 .subhead {
   margin: 4px 0 0;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 700;
   font-size: 22px;
   line-height: 1;
@@ -176,7 +176,7 @@
 .role_viable,
 .role_mediocre,
 .role_trap {
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-weight: 700;
   font-size: 22px;
   line-height: 1;
@@ -326,7 +326,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  font-family: var(--font-hand);
+  font-family: var(--font-paper);
   font-size: 22px;
   line-height: 1.2;
 }
@@ -342,4 +342,33 @@
   margin: 0;
   color: var(--on-dark-muted);
   font-size: 13px;
+}
+
+/* Plan 3, the established stage: headings in Bricolage Grotesque, nothing handwritten. */
+:global([data-stage='established']) .ending,
+:global([data-stage='established']) .head {
+  font-family: var(--font-head);
+  font-weight: 700;
+}
+
+:global([data-stage='established']) .ending {
+  font-size: 18px;
+}
+
+:global([data-stage='established']) .head {
+  font-size: 20px;
+}
+
+:global([data-stage='established']) .subhead {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+:global([data-stage='established']) .role,
+:global([data-stage='established']) .role_viable,
+:global([data-stage='established']) .role_mediocre,
+:global([data-stage='established']) .role_trap,
+:global([data-stage='established']) .milestones {
+  font-size: 14px;
+  font-weight: 600;
 }

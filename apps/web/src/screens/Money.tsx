@@ -2,7 +2,7 @@ import { BankStatement, ComingUp, WorryNote } from '../components/Statement'
 import { Stepper } from '../components/Stepper'
 import { OfficeCard } from '../components/OfficePlan'
 import { formatEuro } from '../format'
-import { count, label, voiceOf } from '../labels'
+import { count, label, stageOf, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 
@@ -71,6 +71,18 @@ export function Money() {
       {view.funding && view.funding.raisedCents > 0 && (
         <section className={styles.card}>
           <h2 className={styles.title}>{label('money.owners', stage)}</h2>
+          {stageOf(stage) === 'established' && (
+            // Plan 3: one stacked bar, the founder's share in the accent; the rows say the same.
+            <div className={styles.capBar} aria-hidden="true">
+              {view.funding.capTable.map((row) => (
+                <span
+                  key={row.name}
+                  className={row.round ? styles.capOther : styles.capYou}
+                  style={{ flexGrow: row.shareBp }}
+                />
+              ))}
+            </div>
+          )}
           {view.funding.capTable.map((row) => (
             <div key={row.name} className={styles.rowHead}>
               <span>
