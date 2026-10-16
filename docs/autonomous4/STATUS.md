@@ -1,12 +1,12 @@
 # Autonomous run 4 status
 
 ## Current
-Step: 0.3 (plan 4 docs committed)
+Step: 1 (shared engine additions), not started
 Last commit: (see git log)
-Next action: run the step 0 baseline (main part, 1,000 seeds, prefix test) for the six protected games and write reports/step0-baseline.md.
+Next action: step 1.1, day conditions in the content schema and engine (docs/abroad-mechanics.md section 2).
 
 ## Checklist
-- [ ] Step 0: set up and baseline (tag plan4-baseline)
+- [x] Step 0: set up and baseline (tag plan4-baseline)
 - [ ] Step 1: shared engine additions (tag plan4-engine)
 - [ ] Step 2: Rückenwind (tag plan4-watersports)
 - [ ] Step 3: assets and Tiefgang (tag plan4-dive)

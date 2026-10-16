@@ -1,0 +1,197 @@
+# Scenario spec: event venue in Munich (working name "Fabriketage")
+
+Source of truth for the second leisure scenario. Read `docs/leisure-mechanics.md` and `docs/scenario-hotel.md` first (whole bookings, deposits, cancellation policy, the loan). Anything not stated here works as in those files. Where the engine design differs from what is assumed here, keep the intent, adapt the mechanics, and record the change in `docs/decisions.md`.
+
+**All numbers are starting points.** Figures marked (est.) are my estimates. Check them against current Munich sources and cite them in section 15, or keep the label. Tune everything against the targets.
+
+"Fabriketage" is a factory floor. Every converted one in Germany is called a loft, which this one refuses to do.
+
+## 1. Premise
+
+The player planned events for a Munich agency for eight years. They lease the empty top floor of a former print works in Obersendling: 650 m², brick walls, a goods lift, and 120 seats at dinner or 220 standing (est.). They fit it out and rent it for company events, weddings and private parties.
+
+### What this scenario teaches
+
+1. **Every date is sold once.** An unsold Saturday is gone for good, and a held one may come back too late.
+2. **The calendar has two businesses.** Companies book weekdays in autumn, couples book Saturdays in summer. Each pays differently, books at a different lead time and cancels differently.
+3. **Neighbours are stakeholders.** Late, loud events earn the most and risk the licence.
+4. **Partners make the money.** Caterers and technicians make the event; the venue's margin depends on its deals with them.
+
+## 2. Starting values
+
+| Value | Start | Note |
+|---|---|---|
+| Mode | Long only, 104 weeks | Week 1 is the first week of March. The fit-out takes 10 weeks (est.); the first events are possible from mid May |
+| Company cash | 40,000 | Own money put in (est.) |
+| Personal savings | 14,250 | As elsewhere |
+| Founder living costs | 675 per week, rising a tenth from week 53 | |
+| Company fixed costs per month | Lease 11,000 (est., about 17 a square metre for an industrial floor), insurance 400 (est.), electricity and heating 1,200 (est.), accountant 250, software and website 150, cleaning contract base 600 (est.) | |
+| Fit-out | Needed before opening: toilets and a prep kitchen for caterers, floors, lighting. 90,000 (est.), usually with the loan | |
+| Founder | Sells, plans and runs events (an event day takes about 12 founder hours); knows caterers and technicians from the agency | |
+| Bank loan | Available (fictional "Isartal Sparkasse"), the fit-out and the items below | |
+| Funding | Not available | |
+
+## 3. Slots
+
+| Slot | Note |
+|---|---|
+| Weekday | Monday to Thursday; conferences, workshops, launches. Some days take a daytime and an evening event |
+| Friday | Company parties, private parties |
+| Saturday | Weddings, private parties |
+| Sunday | Rarely booked; markets and film shoots |
+
+Hard capacity: one event per slot day (two on weekdays with `split_days`, below). An event is one booking unit.
+
+## 4. Products
+
+| Id | Name shown | Prep hours | Cost (est.) | Effect | Required by |
+|---|---|---|---|---|---|
+| `fit_out` | The fit-out | 40 | 90,000, 10 weeks | Events possible | everything |
+| `furniture` | Tables and chairs for a seated dinner of 120 | 5 | 18,000 (or hired per event at 900) | Seated events possible | weddings |
+| `av_tech` | Sound, light and a projector, installed | 10 | 25,000; a technician per event | | companies |
+| `caterer_list` | A list of approved caterers with a 10% commission to the venue | 15 | none | Commission on catering; the caterers' quality affects reviews | weddings, private |
+| `conference_package` | Day rates with tech, coffee breaks and a host | 10 | none | | companies |
+| `wedding_package` | Wedding package with a coordinator on the day | 15 | none | | weddings |
+| `split_days` | Daytime and evening events on one day (a turnaround crew) | 10 | 400 a turnaround | Two weekday events per day | none |
+| `sound_insulation` | Insulated windows and a sound limiter | 10 | 30,000, the floor closed for 2 weeks | Fewer neighbour complaints | none |
+| `late_licence` | Permission for events after 22:00 | 15 | fee 1,500 (est.), 8 weeks' wait; may come with conditions | Late events possible; they pay about a quarter more | private parties |
+| `online_enquiries` | An enquiry form with a live calendar | 10 | 50 a month | | none |
+
+Noise rules after 22:00 are strict in residential parts of Munich (my understanding; verify how a late licence works for a venue like this). In the game, late events without insulation raise the hidden chance of a neighbour complaint. Three complaints in a year bring the authority's warning event, and a fourth may restrict events to 22:00 for a season.
+
+### The temptation
+
+`roof_terrace`: a terrace on the roof for summer drinks. 120,000 (est.), a building permit with a hidden chance of refusal after 12 weeks of waiting, and noise. Every client asks about outdoor space. Nobody's must-have.
+
+## 5. Segments
+
+| | Companies | Weddings | Private parties |
+|---|---|---|---|
+| Id | `companies` | `weddings` | `private_parties` |
+| Description shown | Firms booking conferences, launches, workshops and Christmas parties | Couples booking a Saturday for the wedding party | Birthdays, anniversaries, club nights, film shoots and markets |
+| Booking unit | Per event | Per event | Per event |
+| Requests per week at peak (reachable, est.) | 1 to 4 | 0.5 to 2 | 1 to 4 |
+| Willingness to pay (est.) | 4,000 to 9,000 a day | 3,500 to 7,000 a Saturday | 1,500 to 3,500 |
+| Lead time | 4 to 20 weeks; Christmas parties booked from June | 26 to 70 weeks | 2 to 12 weeks |
+| Slots | Weekdays, Fridays | Saturdays | Fridays, Saturdays, Sundays |
+| Season shape (hidden) | September to December peak (the autumn trade fair season, the weeks around Oktoberfest, Christmas parties), March to June | May to September | All year, December high |
+| Must haves | `av_tech`, `conference_package` | `furniture`, `caterer_list`, `wedding_package` | `caterer_list`, `late_licence` |
+| Holds | Ask often; convert about half (est.) | Ask always; convert about a third (est.), a couple holds three venues at once | Rarely |
+| Cancellation | Low; budgets get cut in recessions (event) | Low, but a cancellation is a whole Saturday | Medium |
+| Channel response: venue platforms (15%, est.) | medium | high | high |
+| Channel response: own website | medium, grows with reviews | medium | medium |
+| Channel response: partnerships | event agencies: high | wedding planners: high | none |
+| Channel response: outreach | high (the founder's old contacts) | low | low |
+| Payment | 30% deposit, rest by invoice after the event, 30 days | 30% at booking, rest 4 weeks before | 50% at booking, rest a week before |
+
+Roles viable, mediocre and trap, shuffled per run.
+
+A polite trap example: wedding planners who praise the brick walls, hold six Saturdays for their couples, and release five of them in March.
+
+## 6. Experiments
+
+| Experiment | Version here | Signal |
+|---|---|---|
+| Interview | HR and office managers, couples at a wedding fair, party hosts | Pain buckets, product mentions, budget hints |
+| Open evening | An evening for event agencies and wedding planners (a day's work and 1,500 in drinks, est.) | Interest and holds from companies and weddings |
+| Test listing | Two weeks on a venue platform | Enquiries, mostly private parties |
+| Wedding fair stand | A weekend and 1,200 (est.) | Interest from couples, months ahead |
+
+## 7. Staff
+
+| Role | Pay (est., verify) | Does |
+|---|---|---|
+| Event technician | 300 a day freelance | Needed with `av_tech` |
+| Event host | 25 an hour | Runs an event instead of the founder (saves about 10 founder hours) |
+| Turnaround crew | 400 a turnaround | With `split_days` |
+| Event manager | Permanent, about 4,200 a month with employer costs (est.) | Sells and runs events, takes holds and enquiries off the founder |
+
+Cleaning after each event: 350 (est.), passed on in the price.
+
+## 8. Policies and pricing
+
+- Prices per segment and slot day, peak and off-peak.
+- The hold policy (`docs/leisure-mechanics.md` section 6).
+- The cancellation policy: flexible or strict, as elsewhere. A strict policy keeps deposits; a flexible one wins more weddings.
+
+## 9. Reviews
+
+Driven by:
+
+- the caterer (a hidden quality per caterer on the list);
+- the host or founder on the day;
+- the technician;
+- turnaround rush on split days;
+- noise restrictions cutting a party short.
+
+## 10. Stages
+
+Office stages 1 and 2:
+
+| Stage | Name | Effect |
+|---|---|---|
+| 1 | The top floor | After the fit-out |
+| 2 | The floor below as a second, smaller room (+5,500 a month, 35,000 to fit out, est.) | A second event for 60 on the same day; breakout rooms for conferences |
+
+Scene drawings: an empty brick floor with tall windows and a goods lift; then the same floor laid for a dinner, with a smaller lit room below. Same muted style.
+
+## 11. Content
+
+| Type | Target |
+|---|---|
+| Intro cards | 4: the agency years, the floor, the calendar's two businesses, the fit-out and the loan |
+| Scenario events | At least 40. Ideas below |
+| Interview quotes | At least 10 per bucket per segment |
+| Names | Invented: firms, couples, caterers, agencies, neighbours |
+
+Event ideas:
+
+| Idea | Tension |
+|---|---|
+| A couple wants to hold three Saturdays while they "talk to the parents" | The hold policy, in person |
+| A neighbour films your party at 23:40 and sends it to the authority | A warning, and what you do about it |
+| The goods lift breaks two days before a launch for 200 | Pay for an emergency repair or carry everything up the stairs |
+| A caterer serves cold food at a wedding | Refund, drop the caterer, or defend them |
+| An agency wants exclusive Christmas party rights for December | Volume at a price |
+| A film crew wants the floor for three days in a quiet week | Easy money, a messy floor |
+| A recession: two firms cut their Christmas parties | Cancellation terms tested |
+| A wedding fair offers a free stand if you host their after-party | Reach against a Saturday |
+| The landlord offers the floor below | Stage 2, early |
+| A start-up wants a launch next week and pays anything | A gap in the calendar, filled |
+| A guest falls on the stairs | Insurance, a review, a procedure |
+| The authority asks for a fire safety concept for over 200 people | Hours and a fee, or a capacity limit |
+
+Interview quote examples:
+
+| Bucket | Example |
+|---|---|
+| Not a problem | "We hold the Christmas party in the canteen. The canteen is free." |
+| Mild | "Somewhere with character would be nice. Our last venue was a hotel ballroom with carpet from 1987." |
+| Noticeable | "Every venue I like is booked two years ahead on Saturdays." |
+| Painful | "I need 180 people seated, a stage and a projector in October, and the agency wants 40,000 euros." |
+| Urgent | "Our launch venue went bust this morning. It is in eleven days. I have a budget and no dignity left." |
+
+## 12. Rough expectation
+
+The fit-out eats the spring. The first summer sells private parties and the odd wedding; the autumn is the test. A player who sold the autumn to companies through the founder's old contacts while couples booked year 2 has a full calendar by the second summer. A player who grants every hold and builds the roof terrace has a calendar full of maybes and a loan full of terrace.
+
+This is a back of the envelope expectation. The bot report is the real answer.
+
+## 13. Scenario targets
+
+On top of T1 to T18 and E1 where they apply. T4 is measured from opening.
+
+| # | Target |
+|---|---|
+| V1 | Holds are a decision: a bot that grants every hold freely and a bot that grants none each lose at least 2 points to the careful bot |
+| V2 | The calendar has two businesses: the careful bot beats bots that sell only to companies and only to weddings by at least 3 points each |
+| V3 | Late events are a trade-off: late events without insulation lead to a restriction in at least 20% of the runs that hold them, and the careful bot's late events pay more than they cost |
+| V4 | The roof terrace is a trap: building it in the first year loses at least 3 points |
+
+## 14. Accent
+
+Established accent `#7A3E1D` (check white text reaches 4.5:1).
+
+## 15. Sources and values as built
+
+The agent fills this in.
