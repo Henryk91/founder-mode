@@ -64,7 +64,10 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
     await page.goto(getUrl())
     await page.getByRole('button', { name: 'New run' }).click()
     // The intro's screens load after the Start screen; wait for them before counting buttons.
-    await page.getByRole('button', { name: /^(Next|Start week 1)/ }).first().waitFor()
+    await page
+      .getByRole('button', { name: /^(Next|Start week 1)/ })
+      .first()
+      .waitFor()
     for (let i = 0; i < 6; i++) {
       const next = page.getByRole('button', { name: /^(Next|Start week 1)/ }).first()
       if (await next.count()) await next.click()
@@ -144,7 +147,10 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
       await page.reload()
       await page.getByRole('button', { name: /^104 weeks/ }).click()
       await page.getByRole('button', { name: 'New run' }).click()
-      await page.getByRole('button', { name: /^(Next|Start week 1)/ }).first().waitFor()
+      await page
+        .getByRole('button', { name: /^(Next|Start week 1)/ })
+        .first()
+        .waitFor()
       for (let i = 0; i < 6; i++) {
         const next = page.getByRole('button', { name: /^(Next|Start week 1)/ }).first()
         if (await next.count()) await next.click()
