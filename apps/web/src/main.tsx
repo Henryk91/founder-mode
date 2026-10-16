@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { App } from './App'
+import { App, preloadScreens } from './App'
 import { browserProfiles, browserStorage } from './storage'
 import { preloadScenarios } from './scenarios'
 import { createGameStore } from './store'
@@ -29,5 +29,6 @@ createRoot(root).render(
   </StrictMode>,
 )
 
-// The scenarios load after the first paint; the Start screen offers a run once they are in.
-void preloadScenarios().then(() => store.getState().markReady())
+// The scenarios and the screens after the Start screen load after the first paint; the Start
+// screen offers a run once both are in, so opening a run never shows a blank page.
+void Promise.all([preloadScenarios(), preloadScreens()]).then(() => store.getState().markReady())
