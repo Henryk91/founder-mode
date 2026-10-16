@@ -1,0 +1,80 @@
+# Products and what they need (docs/scenario-dive.md section 4). Which segment needs which lives
+# in scenario.yaml (segments[].mustHave) and stays hidden. Snags are teething trouble.
+
+- id: try_dive
+  name: 'Try dives: an hour in the pool and a shallow dive from the shore'
+  buildHours: 6
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Just a taste, in a pool first, with somebody holding my hand. Metaphorically.
+
+- id: entry_course
+  name: The entry course (four days, four open water dives, a licence)
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: A proper course with a licence at the end, in the four days we have left.
+
+- id: advanced_course
+  name: The advanced course (two days, five dives, one deep, one on the wreck)
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 2 }
+  mention: I have my licence. I want the next one, and the wreck that comes with it.
+
+- id: shore_dives
+  name: Guided shore dives on the reefs
+  buildHours: 5
+  bugsOnShip: { min: 0, max: 1 }
+  mention: A couple of easy dives from the shore with a guide who knows where the octopus lives.
+
+- id: wreck_dives
+  name: Wreck dives on the Zenobia
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: The Zenobia. Two dives a day, a boat that leaves on time, and nobody's fins in my face.
+
+- id: pool_partnership
+  name: A hotel pool for sessions
+  buildHours: 8
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Is there a pool near the hotel? I am not going into the sea before I have breathed underwater once.
+
+- id: hotel_pickup
+  name: Pick-ups from the resort hotels
+  buildHours: 6
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Larnaca is 45 minutes away. If you pick us up, we come. If not, we lie by the pool.
+
+- id: nitrox
+  name: Nitrox fills
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Nitrox, please, for the deep part of the wreck. And on Sundays too.
+
+- id: group_packages
+  name: Club rates, free places for group leaders, invoices
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 0 }
+  mention: A club rate, a free place for every eight, and an invoice the treasurer can read.
+
+- id: online_booking
+  name: Online booking with instant confirmation
+  buildHours: 15
+  bugsOnShip: { min: 1, max: 2 }
+  mention: I want to book the wreck from the airport and know I have a seat.
+
+- id: centre_licence
+  name: The centre's licence
+  buildHours: 20
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Is the centre licensed? My insurance asks, and so does my mother.
+
+- id: tech_diving
+  name: 'Technical diving: rebreathers, trimix and deep courses'
+  buildHours: 40
+  bugsOnShip: { min: 1, max: 3 }
+  mention: Trimix to the bottom of the Zenobia. I would not book it. I would watch somebody else's video of it.
+
+- id: boat_purchase
+  name: Buy the dive boat
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Your own boat would be nice. Partner boats leave when the partner feels like it.

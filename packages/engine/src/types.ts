@@ -375,6 +375,30 @@ export type BookingsState = {
   minStay?: boolean
   /** Plan 4: the abroad mechanics, where the scenario has day conditions. */
   abroad?: AbroadState
+  /** Plan 4: assets and how the company has them, where the scenario has assets. */
+  assets?: Record<string, AssetState>
+}
+
+/** Plan 4: how the company has an asset. */
+export type AssetOption = 'none' | 'buy' | 'lease' | 'share'
+
+/** Plan 4 (docs/abroad-mechanics.md section 4): one asset, owned, leased, shared or not had. */
+export type AssetState = {
+  option: AssetOption
+  sinceWeek: number
+  /** The week a lease began (its minimum term counts from here). */
+  leaseFromWeek: number | null
+  boughtWeek: number | null
+  /** The last week a breakdown closes it; 0 when it never broke. */
+  brokenUntil: number
+  breakdowns: number
+  /** Shared: the owner took units back this week. */
+  takenBack: boolean
+  /** Shared with a peak rule: calendar years (from 0) whose peak months the owner released. */
+  peakReleased: number[]
+  weeksUsed: number
+  /** Everything spent on it over the run: fees, upkeep, crew, repairs, haul-outs (not the price). */
+  costCents: number
 }
 
 /** Plan 4: a week of day conditions: per slot id, the state of each day, Monday first. */
@@ -1466,6 +1490,8 @@ export type BookingsView = {
   }[]
   /** Plan 4: day conditions, courses, trips and the tender; null without day conditions. */
   abroad: AbroadView | null
+  /** Plan 4: assets (a boat); empty without them. */
+  assets: AssetView[]
   roles: {
     id: string
     name: string
@@ -1509,6 +1535,57 @@ export type BookingsView = {
    * covers or room nights, for the headline (tourism fixes).
    */
   servedByWeek: number[]
+}
+
+/** Plan 4: an asset as the player sees it, with the terms of each option the scenario has. */
+export type AssetView = {
+  id: string
+  name: string
+  option: AssetOption
+  products: FeatureId[]
+  /** The product whose purchase buys it. */
+  buyProduct: FeatureId | null
+  broken: boolean
+  brokenUntil: number | null
+  /** Owned: the next haul-out's first week, or null. */
+  nextHaulOut: number | null
+  /** Owned: what it would sell for now. */
+  valueCents: number | null
+  breakdowns: number
+  weeksUsed: number
+  costCents: number
+  /** Leased: the last week of the minimum term. */
+  leaseMinUntil: number | null
+  /** Shared with a peak rule: whether this year's peak months are yours. */
+  peakReleased: boolean | null
+  terms: {
+    buy: {
+      priceCents: number
+      upkeepMonthlyCents: number
+      crewWeekCents: number
+      haulOut: { month: number; weeks: number; cents: number } | null
+      repairCents: number
+    } | null
+    lease: {
+      seasonCents: number
+      upfrontShare: number
+      months: number[]
+      minMonths: number
+      crewWeekCents: number
+    } | null
+    share: {
+      capacity: number
+      unitCents: number
+      revenueShare: number
+      takeBack: { share: number; months: number[] } | null
+      peakRule: {
+        months: number[]
+        shoulderMonths: number[]
+        needWeeks: number
+        byWeek: number
+      } | null
+    } | null
+  }
 }
 
 /** Plan 4: the abroad mechanics as the player sees them. */
@@ -1855,7 +1932,7 @@ export type ReportEntry =
       kind: 'company_cancelled'
       units: number
       /** Plan 2: `sold_out` when the kitchen prepared too little, `works` for rooms under works. */
-      reason: 'staff' | 'weather' | 'sold_out' | 'works' | 'conditions'
+      reason: 'staff' | 'weather' | 'sold_out' | 'works' | 'conditions' | 'asset'
     }
   /** Plan 4: the week's day conditions, and bookings moved or cancelled for them. */
   | { kind: 'conditions'; days: ConditionsWeek }
@@ -1886,6 +1963,13 @@ export type ReportEntry =
   | { kind: 'costs_rose'; factor: number }
   /** Plan 4: the concession's tender decided. */
   | { kind: 'tender'; bid: 'higher' | 'same' | 'hotel'; kept: boolean }
+  /** Plan 4: an asset's option changed (bought, leased, shared, given up), with what it cost now. */
+  | { kind: 'asset_option'; assetId: string; option: AssetOption; costCents: number }
+  /** Plan 4: an owned asset broke down until `untilWeek`; repairing it costs `repairCents`. */
+  | { kind: 'asset_broke'; assetId: string; untilWeek: number; repairCents: number; booked: number }
+  | { kind: 'asset_repaired'; assetId: string; costCents: number }
+  | { kind: 'asset_haul_out'; assetId: string; weeks: number; costCents: number }
+  | { kind: 'asset_taken_back'; assetId: string }
   | {
       kind: 'trial_result'
       trialId: string
@@ -2278,6 +2362,21 @@ export type GuestsEconomics = {
   contracts?: { permanent: number; part_time: number; seasonal: number }
   /** Plan 4: day conditions, the course ladder, trips and the tender. */
   abroad?: AbroadEconomics
+  /** Plan 4: each asset: how it was had, what it cost, its value at the start and the end. */
+  assets?: AssetEconomics[]
+}
+
+export type AssetEconomics = {
+  id: string
+  name: string
+  option: AssetOption
+  boughtWeek: number | null
+  /** Owned: the price paid, and what it would sell for at the end. */
+  priceCents: number | null
+  valueEndCents: number | null
+  costCents: number
+  weeksUsed: number
+  breakdowns: number
 }
 
 /** Plan 4: the post-mortem's lines on the abroad mechanics. */

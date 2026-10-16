@@ -99,3 +99,7 @@
 [data-scenario='rueckenwind'] {
   --scenario-accent: #1f6a86;
 }
+/* Plan 4: white on #1e4e79 is 8.7:1. */
+[data-scenario='tiefgang'] {
+  --scenario-accent: #1e4e79;
+}

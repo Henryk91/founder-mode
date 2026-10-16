@@ -1,0 +1,67 @@
+# Learning who books: past customers, agents and organisers.
+events:
+  - id: agent_breakfast
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 2, week <= 14]
+    from: none
+    sender: A travel agents' association
+    text: >-
+      The travel agents' association in Munich holds a breakfast in February. Agents who sell the
+      Turkish coast will be there, and so will the croissants.
+    defaultChoice: later
+    choices:
+      - id: go
+        label: Fly over for the breakfast
+        hours: 8
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.03 }
+          - { type: cash, amountCents: -40000 }
+      - id: later
+        label: Not this year
+        hours: 0
+
+  - id: yoga_forum
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 3, week <= 20]
+    from: none
+    sender: A yoga teachers' forum
+    look: note
+    text: >-
+      A forum for yoga teachers asks who has run a retreat on a boat. You could answer, ask a few
+      questions of your own and listen to a lot about mats.
+    defaultChoice: lurk
+    choices:
+      - id: ask
+        label: Ask your questions
+        hours: 3
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: lurk
+        label: Read and say nothing
+        hours: 0
+
+  - id: broker_coffee
+    area: validation
+    weight: 1
+    once: true
+    when: [week >= 4, week <= 24]
+    from: none
+    sender: A charter broker in Göcek
+    look: note
+    text: >-
+      A charter broker in Göcek will tell you over coffee which families charter, when and for what.
+      He talks a lot and pays for nothing.
+    defaultChoice: later
+    choices:
+      - id: coffee
+        label: Have the coffee
+        hours: 3
+        effects:
+          - { type: skill, skill: interviewing, delta: 0.02 }
+      - id: later
+        label: Later
+        hours: 0

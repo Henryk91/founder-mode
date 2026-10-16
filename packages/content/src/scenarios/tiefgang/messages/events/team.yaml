@@ -1,0 +1,120 @@
+# The people in the shop and on the boat.
+events:
+  - id: instructor_liveaboard
+    area: team
+    weight: 2
+    once: true
+    when: [tour.month >= 6, tour.month <= 8]
+    from: none
+    sender: Your best instructor
+    look: note
+    text: >-
+      Your best instructor has an offer from a liveaboard in the Red Sea and wants to leave
+      mid-season. She would stay for more money, she says, or for a season contract.
+    defaultChoice: let_go
+    choices:
+      - id: pay
+        label: Pay her more for the season
+        hours: 1
+        effects:
+          - { type: fixedCost, id: instructor_bonus, name: Instructor bonus, monthlyCents: 40000 }
+      - id: let_go
+        label: Let her go
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3 }
+
+  - id: divemaster_trainee
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 6, week <= 30]
+    from: none
+    sender: A diver from Gothenburg
+    text: >-
+      A keen Swedish diver wants to train as a divemaster with you: a season of free help in
+      exchange for the course. He is keen, polite and owns three dive computers.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take him on as a trainee
+        hours: 4
+        effects:
+          - { type: energy, delta: 4 }
+          - { type: cash, amountCents: 50000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: skipper_sick
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [asset.owned == 1]
+    from: none
+    sender: Your skipper
+    look: note
+    text: >-
+      The skipper is ill and the boat is full tomorrow. A skipper from the next harbour can come,
+      at a skipper-from-the-next-harbour price.
+    defaultChoice: cancel
+    choices:
+      - id: hire
+        label: Pay the other skipper
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -30000 }
+      - id: cancel
+        label: Cancel tomorrow's trips
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3 }
+
+  - id: shop_help_offer
+    area: team
+    weight: 1
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: Your neighbour's daughter
+    text: >-
+      Your neighbour's daughter wants a summer job in the shop: fills, rental gear and the phone.
+      She would take hours off you, and she already knows everyone in Larnaca.
+    defaultChoice: decline
+    choices:
+      - id: hire
+        label: Give her the summer job
+        hours: 2
+        effects:
+          - { type: fixedCost, id: shop_help, name: Summer help in the shop, monthlyCents: 60000 }
+          - { type: energy, delta: 6 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: instructor_no_show
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 16
+    when: [tour.peak == 1]
+    from: none
+    sender: Your phone
+    look: note
+    text: >-
+      A freelance instructor did not turn up this morning. Four try divers are in the pool, in
+      their masks, waiting.
+    defaultChoice: refund
+    choices:
+      - id: cover
+        label: Teach them yourself
+        hours: 5
+        effects:
+          - { type: energy, delta: -4 }
+      - id: refund
+        label: Refund them
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -32000 }
+          - { type: review, rating: 2, count: 2 }

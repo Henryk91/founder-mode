@@ -30,6 +30,15 @@ import { moveOffice } from './office'
 import { priceCurve } from './market'
 import { openVouchers, trialOpen, trialsUsed, trialsValid, voucherBatchesUsed } from './trials'
 import {
+  assetFactor,
+  assetOf,
+  assetsBought,
+  assetsUsed,
+  assetsView,
+  assetsWeek,
+  initAssets,
+} from './assets'
+import {
   addLadder,
   applyCostSteps,
   capacityIn,
@@ -142,6 +151,7 @@ export function initBookings(
         forecast: 'good',
         turnedAway: [],
         abroad: initAbroad(scenario, forecast),
+        ...(cfg.assets ? { assets: initAssets(cfg)! } : {}),
       },
     }
   }
@@ -162,6 +172,7 @@ export function initBookings(
       weather: null,
       forecast: forecastOf(cfg, nextWeather, rng),
       turnedAway: [],
+      ...(cfg.assets ? { assets: initAssets(cfg)! } : {}),
     },
   }
 }
@@ -280,7 +291,9 @@ export function capacityAt(state: GameState, pool: FeatureId, week: number): num
   const cfg = bookingsConfig(state)!
   const r = cfg.renovation
   // Plan 3: an office stage adds seats, rooms or gear.
-  const base = (cfg.products[pool]?.capacity ?? 0) + (stageInEffect(state).capacity?.[pool] ?? 0)
+  const staged = (cfg.products[pool]?.capacity ?? 0) + (stageInEffect(state).capacity?.[pool] ?? 0)
+  // Plan 4: a product that runs on an asset has the share of capacity the asset gives.
+  const base = cfg.assets ? Math.floor(staged * assetFactor(state, pool, week)) : staged
   if (!r || r.product !== pool) return base
   return Math.max(0, base - r.unitsPerRoom * roomsUnderWorks(state, week))
 }
@@ -575,6 +588,24 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     },
   }
   for (const stage of stages) state = moveOffice(state, stage)
+  // Plan 4: assets bought this week, and the week's breakdowns, haul-outs, take-backs and fees.
+  if (cfg.assets) {
+    const bought = assetsBought(
+      state,
+      state.product.features.filter((f) => f.shippedWeek === week).map((f) => f.id),
+    )
+    const openUnits = (product: FeatureId, w: number) =>
+      bought.state
+        .bookings!.bookings.filter(
+          (x) => x.productId === product && x.week === w && x.status === 'booked',
+        )
+        .reduce((t, x) => t + x.units, 0)
+    const weekly = assetsWeek(bought.state, rng, openUnits)
+    state = weekly.state
+    b = state.bookings!
+    out.costsCents += weekly.costsCents
+    out.entries.push(...bought.entries, ...weekly.entries)
+  }
 
   // 4. New requests.
   const bookings = [...b.bookings]
@@ -861,6 +892,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   // Plan 4: day conditions. A product sells only its suitable slots: guests beyond them move to
   // the alternative, under a strict policy to next week, or are refunded.
   let conditionsCancelled = 0
+  // Plan 4: guests booked on an asset that is broken, hauled out or not had this week.
+  let assetCancelled = 0
   if (cond && b.abroad) {
     const lost = { ...b.abroad.lost }
     let moved = 0
@@ -973,7 +1006,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const staffed = new Map<FeatureId, number>()
   const kitchenCovers = new Map<FeatureId, number>()
   const floorUnits = new Map<FeatureId, number>()
-  const why = new Map<FeatureId, 'staff' | 'sold_out' | 'works' | 'conditions'>()
+  const why = new Map<FeatureId, 'staff' | 'sold_out' | 'works' | 'conditions' | 'asset'>()
   // Plan 3: a bigger kitchen sends out more per shift.
   const staffFactor = (role: string) => stageInEffect(state).staffFactors?.[role] ?? 1
   // Plan 4: day trips go first. Decided on the forecast: a trip a forecast-suitable day, for as
@@ -1105,11 +1138,13 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       }
     }
     let limit = covered
-    let reason: 'staff' | 'sold_out' | 'works' = 'staff'
+    let reason: 'staff' | 'sold_out' | 'works' | 'asset' = 'staff'
     const cap = capacityAt(state, poolOf(cfg, id), week)
     if (cap < limit) {
       limit = cap
-      if (cap < (cfg.products[poolOf(cfg, id)]?.capacity ?? 0)) reason = 'works'
+      // Plan 4: an asset that is broken, hauled out or not had is not works.
+      if (cfg.assets && assetOf(cfg, poolOf(cfg, id)) !== null) reason = 'asset'
+      else if (cap < (cfg.products[poolOf(cfg, id)]?.capacity ?? 0)) reason = 'works'
     }
     kitchenCovers.set(id, limit)
     if (cfg.products[id]?.prepared) {
@@ -1163,6 +1198,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       if (reason === 'sold_out') soldOut += x.units
       else if (reason === 'works') closedForWorks += x.units
       else if (reason === 'conditions') conditionsCancelled += x.units
+      else if (reason === 'asset') assetCancelled += x.units
       else staffCancelled += x.units
     }
   }
@@ -1281,6 +1317,20 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     payWeeks[id] = never || waits ? null : week + Math.ceil((dueDays + lateDays) / 7)
     if (!never && waits) waitsForChase.push(id)
   }
+  // Plan 4: crew for an owned or leased asset that was used, a share's fees.
+  if (cfg.assets) {
+    const used = new Map<FeatureId, { units: number; grossCents: number }>()
+    for (const x of served) {
+      const u = used.get(x.productId) ?? { units: 0, grossCents: 0 }
+      used.set(x.productId, {
+        units: u.units + x.units,
+        grossCents: u.grossCents + x.units * x.priceCents,
+      })
+    }
+    const assetCosts = assetsUsed({ ...state, bookings: b }, used)
+    b = assetCosts.state.bookings!
+    unitCosts += assetCosts.costsCents
+  }
   // Plan 4: courses. Graduates may book their next step next week, or come back a year later
   // (only those who booked directly come back directly; the platform keeps its guests).
   if (cond && b.abroad) {
@@ -1378,6 +1428,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       units: conditionsCancelled,
       reason: 'conditions',
     })
+  if (assetCancelled > 0)
+    out.entries.push({ kind: 'company_cancelled', units: assetCancelled, reason: 'asset' })
 
   // 6. Shifts.
   let shifts = 0
@@ -1394,10 +1446,17 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   let rating = b.rating
   let reviews = b.reviews
   // Guests turned away because the food ran out never sat down: they leave no review.
-  const guests = servedUnits + staffCancelled + weatherClosed + closedForWorks + conditionsCancelled
+  const guests =
+    servedUnits +
+    staffCancelled +
+    weatherClosed +
+    closedForWorks +
+    conditionsCancelled +
+    assetCancelled
   if (servedUnits > 0) {
     const r = cfg.reviews
-    const shortfall = guests > 0 ? (staffCancelled + weatherClosed + closedForWorks) / guests : 0
+    const shortfall =
+      guests > 0 ? (staffCancelled + weatherClosed + closedForWorks + assetCancelled) / guests : 0
     // Plan 4: guests the wind sent home mind less than guests nobody could teach.
     const windShare = guests > 0 ? conditionsCancelled / guests : 0
     // Plan 2: contract staff who know the place, renovated rooms, and a floor stretched thin.
@@ -1690,6 +1749,7 @@ export function bookingsView(state: GameState): BookingsView | null {
       priceFactor: prod.priceFactor ?? 1,
     })),
     abroad: abroadView(state),
+    assets: assetsView(state),
     roles: Object.entries(cfg.roles).map(([id, r]) => ({
       id,
       name: r.name,

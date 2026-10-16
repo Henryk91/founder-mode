@@ -627,6 +627,20 @@ const labels = {
     'You had to cancel {n} guest because of the wind and sea.',
   'results.entry.company_cancelled.conditions.other':
     'You had to cancel {n} guests because of the wind and sea.',
+  'results.entry.company_cancelled.asset.one':
+    'You had to cancel {n} guest: the boat was not there for them.',
+  'results.entry.company_cancelled.asset.other':
+    'You had to cancel {n} guests: the boat was not there for them.',
+  'results.entry.asset_option.buy': '{asset} is yours now.',
+  'results.entry.asset_option.lease': '{asset} is leased from this week. {amount} paid up front.',
+  'results.entry.asset_option.share':
+    'You use {asset} by the place from this week. {amount} to settle.',
+  'results.entry.asset_option.none': 'You gave up {asset}. {amount} to settle.',
+  'results.entry.asset_broke':
+    '{asset} broke down: out until week {week}, {booked} booked meanwhile. A repair costs {amount}.',
+  'results.entry.asset_repaired': '{asset} repaired for {amount}.',
+  'results.entry.asset_haul_out': '{asset} is out of the water for {weeks} weeks: {amount}.',
+  'results.entry.asset_taken_back': "{asset}'s owner kept some places back this week.",
   'results.entry.conditions': '{slot}: {states}.',
   'results.entry.conditions_moved.slot.one': '{product}: {n} guest moved to a better slot.',
   'results.entry.conditions_moved.slot.other': '{product}: {n} guests moved to better slots.',
@@ -771,6 +785,41 @@ const labels = {
   'tour.sum.outreach': 'outreach',
   'tour.roster.line': '{product}: {booked} booked, the roster covers {covers}',
   'tour.forecast.title': 'Wind and sea, as forecast',
+  'tour.ladderLine': 'The ladder: {steps}',
+  'asset.drawing': 'A drawing of {name}',
+  'asset.option': 'How you have it',
+  'asset.option.none': 'Not at all yet',
+  'asset.option.buy': 'Yours',
+  'asset.option.lease': 'Leased',
+  'asset.option.share': 'Shared with its owner',
+  'asset.products': 'It carries: {products}.',
+  'asset.capacity': 'Places you get',
+  'asset.capacityShare': '{pct}% of a full boat',
+  'asset.peak': 'Peak weeks',
+  'asset.peak.yours': 'yours this year',
+  'asset.peak.owners': "the owner's, unless you sell the shoulder weeks",
+  'asset.leaseMin': 'Lease runs at least until',
+  'asset.week': 'week {week}',
+  'asset.condition': 'Condition',
+  'asset.broken': 'broken down until week {week}',
+  'asset.working': 'working',
+  'asset.haulOut': 'Next haul-out',
+  'asset.value': 'It would sell for',
+  'asset.breakdowns': 'Breakdowns so far',
+  'asset.spent': 'Spent on it so far',
+  'asset.options': 'The options',
+  'asset.current': '{text} (this is yours)',
+  'asset.terms.share':
+    "Places on the owner's boat: {pct}% of a full boat, {unit} a place, and the owner keeps some back at busy times.",
+  'asset.terms.manage':
+    "Manage the owner's boat: no fixed cost, the owner keeps {share}% of what you sell and pays the crew.",
+  'asset.terms.lease':
+    'Lease: {season} a season, {months}, at least {min} months, the crew {crew} a week used.',
+  'asset.terms.buy':
+    'Buy: {price}, then {upkeep} a month in upkeep and the crew {crew} a week used. Breakdowns and the haul-out are yours.',
+  'asset.switch': "A change comes with the owner's offer each winter.",
+  'asset.switch.buy':
+    'A change comes with the owner\'s offer each winter. To buy, get "{product}" ready, with the bank if needed.',
   'tour.prices.products': 'At this price: {list}',
   'tour.forecast.slot': '{slot}: {states}',
   'tour.runsOn': '{product} runs on {n} of {total} {slot}',

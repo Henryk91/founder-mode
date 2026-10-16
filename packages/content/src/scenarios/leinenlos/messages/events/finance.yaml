@@ -1,0 +1,225 @@
+# Money: the boat, the harbour, the lira and the bank.
+events:
+  - id: gulet_offers
+    area: finance
+    weight: 1
+    once: true
+    trigger: [week >= 1]
+    openWeeks: 6
+    from: none
+    sender: The harbour office
+    look: letter
+    text: >-
+      Three offers are on your desk. Kaptan Murat will let you manage "Mavi Rüya" with his crew and
+      no fixed cost, keeping 75% of what you sell. "Deniz Yıldızı" leases for 110,000 EUR for May to
+      October with its crew, 30% on signing. Buying your own needs a Turkish company and about
+      450,000 EUR.
+    defaultChoice: later
+    choices:
+      - id: manage
+        label: Manage Mavi Rüya
+        hours: 2
+        effects:
+          - { type: asset, id: gulet, option: share }
+      - id: lease
+        label: Lease Deniz Yıldızı for the season
+        hours: 4
+        effects:
+          - { type: asset, id: gulet, option: lease }
+      - id: later
+        label: Decide later
+        hours: 0
+
+  - id: gulet_winter_offers
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 40
+    trigger: [tour.month == 11]
+    openWeeks: 8
+    from: none
+    sender: The harbour office
+    look: letter
+    text: >-
+      Winter is when boats change hands in Fethiye. Kaptan Murat would have you manage "Mavi Rüya"
+      again for 75% of the takings, and "Deniz Yıldızı" leases for next season at 110,000 EUR.
+      Leaving a lease early costs the rest of its season.
+    defaultChoice: keep
+    choices:
+      - id: keep
+        label: Keep things as they are
+        hours: 0
+      - id: manage
+        label: Manage Mavi Rüya next season
+        hours: 2
+        effects:
+          - { type: asset, id: gulet, option: share }
+      - id: lease
+        label: Lease Deniz Yıldızı next season
+        hours: 4
+        effects:
+          - { type: asset, id: gulet, option: lease }
+
+  - id: engine_failure
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 3
+    trigger: [asset.broken == 1]
+    openWeeks: 1
+    from: none
+    sender: Your captain
+    look: note
+    text: >-
+      The engine failed in Kekova with sixteen guests aboard. A mechanic can come by boat and fix it
+      this week for 8,000 EUR; otherwise the boat waits for parts and the next cruises do not sail.
+    defaultChoice: wait
+    choices:
+      - id: repair
+        label: Repair it now
+        hours: 4
+        effects:
+          - { type: assetRepair, id: gulet }
+      - id: wait
+        label: Wait for the parts
+        hours: 0
+
+  - id: harbour_fees_up
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 20]
+    from: none
+    sender: The marina
+    look: official
+    text: >-
+      The marina raises its fees for commercial boats by a third. The marina in Göcek is cheaper
+      and an hour further from your guests.
+    defaultChoice: accept
+    choices:
+      - id: accept
+        label: Pay the new fees
+        hours: 0
+        effects:
+          - { type: fixedCost, id: marina_rise, name: Higher marina fees, monthlyCents: 25000 }
+      - id: move
+        label: Move the boat to Göcek
+        hours: 6
+        effects:
+          - { type: lostHours, hours: 6 }
+
+  - id: agent_bust
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 14]
+    from: none
+    sender: A travel agency in Augsburg
+    look: official
+    text: >-
+      A travel agent at home has gone bust owing you for three cabins. The money is gone; the guests
+      are still coming, and they have paid the agent.
+    defaultChoice: honour
+    choices:
+      - id: honour
+        label: Take the guests anyway
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -180000 }
+          - { type: review, rating: 5, count: 3 }
+      - id: refuse
+        label: Turn them away
+        hours: 1
+        effects:
+          - { type: review, rating: 1, count: 4 }
+
+  - id: coast_guard_check
+    area: finance
+    weight: 2
+    once: true
+    when: [tour.month >= 5, tour.month <= 10]
+    from: none
+    sender: The coast guard
+    look: official
+    text: >-
+      A coast guard check found the life jacket count one short. The fine is small, and the officer
+      would now like to check every boat you work with.
+    defaultChoice: pay
+    choices:
+      - id: pay
+        label: Pay the fine and buy jackets
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -60000 }
+      - id: prepare
+        label: Spend a day checking every boat yourself
+        hours: 8
+        effects:
+          - { type: cash, amountCents: -20000 }
+
+  - id: lira_prices
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 40]
+    from: none
+    sender: Your cook
+    look: note
+    text: >-
+      The cook says food prices in the market have jumped again, and fuel with them. In euros it is
+      less dramatic, but it adds up over a season.
+    defaultChoice: absorb
+    choices:
+      - id: absorb
+        label: Absorb it this year
+        hours: 0
+      - id: menu
+        label: Rework the menu with the cook
+        hours: 4
+        effects:
+          - { type: cash, amountCents: 50000 }
+
+  - id: bank_meeting
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 6, week <= 30]
+    from: none
+    sender: Likya Bankası
+    look: letter
+    text: >-
+      The bank's local manager invites you to tea to talk about boat loans. He lends only to Turkish
+      companies, he says, and only against a boat.
+    defaultChoice: decline
+    choices:
+      - id: tea
+        label: Go for tea
+        hours: 2
+        effects:
+          - { type: skill, skill: selling, delta: 0.01 }
+      - id: decline
+        label: Not now
+        hours: 0
+
+  - id: winter_maintenance_deal
+    area: finance
+    weight: 1
+    once: true
+    when: [tour.month >= 11, asset.owned == 1]
+    from: none
+    sender: The boatyard
+    look: letter
+    text: >-
+      The boatyard offers to do the winter maintenance early, before the rush, at a discount. Early
+      means paying now, when the bank account is at its thinnest.
+    defaultChoice: later
+    choices:
+      - id: early
+        label: Book it early and pay now
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -300000 }
+          - { type: bugs, delta: -1 }
+      - id: later
+        label: Pay the normal price in spring
+        hours: 0

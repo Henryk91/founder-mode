@@ -26,6 +26,9 @@ export function hasHire(state: Pick<GameState, 'team'>): boolean {
 /** The message a condition is read for, if any: its sender's customer or lead. */
 export type ConditionSender = { targetId: string | null } | null
 
+/** Plan 4: the state of the scenario's first asset, or null without assets. */
+const firstAsset = (s: GameState) => Object.values(s.bookings?.assets ?? {})[0] ?? null
+
 const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSender) => number> = {
   week: (s) => s.week,
   'customers.count': (s) => activeCustomers(s).length,
@@ -74,6 +77,15 @@ const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSe
   'tour.turnedAwayWeeks': (s) => turnedAwayWeeks(s),
   'tour.peakTurnedAwayWeeks': (s) => turnedAwayWeeks(s, true),
   'tour.occupancy': occupancyPct,
+  // Plan 4: the scenario's first asset.
+  'asset.owned': (s) => (firstAsset(s)?.option === 'buy' ? 1 : 0),
+  'asset.leased': (s) => (firstAsset(s)?.option === 'lease' ? 1 : 0),
+  'asset.shared': (s) => (firstAsset(s)?.option === 'share' ? 1 : 0),
+  'asset.none': (s) => (firstAsset(s)?.option === 'none' ? 1 : 0),
+  'asset.broken': (s) => {
+    const a = firstAsset(s)
+    return a?.option === 'buy' && a.brokenUntil >= s.week ? 1 : 0
+  },
   'sender.overdue': (s, m) =>
     m?.targetId && s.invoices.some((i) => i.customerId === m.targetId && isOverdue(i, s.week))
       ? 1

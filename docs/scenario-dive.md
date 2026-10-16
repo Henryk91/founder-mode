@@ -249,4 +249,31 @@ On top of T1 to T18 and E1 (`docs/balancing.md`). Office targets T19 to T21 do n
 
 ## 16. Sources and values as built
 
-The agent fills this in: checked figures with sources and dates, and every value changed while tuning with a pointer to `docs/decisions.md`.
+Filled in by plan 4, step 3 (October 2026). Decisions: `docs/decisions.md`, "Plan 4, step 3".
+
+### Checked figures (searched October 2026)
+
+| Figure | Source | Use |
+|---|---|---|
+| Zenobia trips: two dives 110 to 210 EUR (tanks and weights, often lunch and a transfer); advanced open water or the like required | Expedia and Travelocity listings (Alpha Divers, about 178 to 181 USD private); PADI Travel (Cyprus Diving Centre, two dives about 188 USD); GetMyBoat operators (110 EUR with equipment; 195 to 210 EUR with transfer and lunch) | 60 a dive, the advanced level for the wreck, kept |
+| Open water course about 450 EUR | A Larnaca operator on GetMyBoat (undated) | 450 kept (5.6 times a try dive) |
+| Licensing: Cyprus's "Law on Diving and Providers of Recreational Diving Services of 2025" licenses centres, schools, instructors and boats through the Deputy Ministry of Tourism; three-year licences, qualified instructors, ISO 24803 compliance and insurance | Cyprus Mail (November and December 2025); Fast Forward (2025); CBN | The licence product kept; its fee (1,000) and the six weeks' wait stay estimates, as the fee was not published |
+| Activity platforms take 20 to 30% | As in `docs/scenario-watersports.md` section 17 | Divebook at 22% |
+
+Not found from a current source, so still estimates: the shop's rent, boat prices, the lease, seats on a partner's boat, the skipper's and instructors' day rates, the sea's monthly odds and water temperatures.
+
+### Values as built that differ from the spec
+
+| Value | Spec | As built | Why |
+|---|---|---|---|
+| Prices | per product | per segment (a try dive 70, a dive 55, a club dive 46 at the start) with a factor per product (entry course 5.6, advanced 5.8, shore dives 0.67) | The engine prices by segment; opening prices a little low and flat (T7) |
+| Course places per instructor day | 4 per instructor per slot | entry course 1, advanced course 2, try dives 8 | A four-day course takes four instructor days for four students |
+| The skipper | a staff role | a crew cost per week the boat is used (buy or lease) | The roster adds up roles, it cannot require two; decisions |
+| Resort beginners | 20 to 70 a week | 10 to 34 | T2 and T3 rounds 1 and 2, then T1 |
+| Certified divers | 30 to 120 dives a week | 46 to 150 | T3 round 2, T1 round 1 |
+| Dive clubs | 0.1 to 0.6 groups of 8 to 20 divers, 10 dives each, 12 to 40 weeks ahead | 40 to 120 dives a week at peak in groups of 40 to 100 dives, 8 to 30 weeks ahead | A group bigger than the seats could never book (round 1); round 2 for T3 |
+| Technical diving | 35,000 | 35,000 and 500 a month | T2 round 2: the temptation should cost while it waits |
+| Strict policy | | certified divers convert 0.75, clubs 0.7 | T11 round 1 |
+| Shop and compressor help | a staff role freeing 6 founder hours | a summer job offered by an event (a fixed cost and energy) | No role without units on the roster |
+| The boat's price | 70,000 | 70,000 (55,000 was tried for D3 and made owning worse) | |
+

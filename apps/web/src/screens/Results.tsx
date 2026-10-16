@@ -12,6 +12,7 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
     view.bookings?.products.find((p) => p.id === id)?.name ??
     view.product.features.find((f) => f.id === id)?.name ??
     id
+  const asset = (id: string) => view.bookings?.assets.find((x) => x.id === id)?.name ?? id
   switch (entry.kind) {
     case 'savings_transfer':
     case 'founder_draw':
@@ -167,6 +168,31 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       return label('results.entry.costs_rose', stage, {
         pct: Math.round((entry.factor - 1) * 100),
       })
+    case 'asset_option':
+      return label(`results.entry.asset_option.${entry.option}`, stage, {
+        asset: asset(entry.assetId),
+        amount: formatEuro(entry.costCents),
+      })
+    case 'asset_broke':
+      return label('results.entry.asset_broke', stage, {
+        asset: asset(entry.assetId),
+        week: entry.untilWeek,
+        booked: entry.booked,
+        amount: formatEuro(entry.repairCents),
+      })
+    case 'asset_repaired':
+      return label('results.entry.asset_repaired', stage, {
+        asset: asset(entry.assetId),
+        amount: formatEuro(entry.costCents),
+      })
+    case 'asset_haul_out':
+      return label('results.entry.asset_haul_out', stage, {
+        asset: asset(entry.assetId),
+        weeks: entry.weeks,
+        amount: formatEuro(entry.costCents),
+      })
+    case 'asset_taken_back':
+      return label('results.entry.asset_taken_back', stage, { asset: asset(entry.assetId) })
     case 'tender':
       return label(
         entry.bid === 'same'
@@ -497,6 +523,13 @@ function place(entry: ReportEntry): [Group, number] {
     case 'costs_rose':
     case 'tender':
       return ['money', 8]
+    case 'asset_option':
+    case 'asset_broke':
+    case 'asset_haul_out':
+      return ['money', 8]
+    case 'asset_repaired':
+    case 'asset_taken_back':
+      return ['sales', 5]
     case 'term_sheet':
     case 'funding_milestone':
       return ['money', 5]

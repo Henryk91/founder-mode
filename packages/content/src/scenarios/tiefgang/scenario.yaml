@@ -1,0 +1,670 @@
+# Tiefgang: a dive centre in Larnaca, Cyprus, near the Zenobia wreck (plan 4, step 3).
+# Source: docs/scenario-dive.md and docs/abroad-mechanics.md. Long mode only: 104 weeks from the
+# first week of February. Money in cents, time in hours. Figures marked (est.) are estimates;
+# sources in the spec's section 16.
+
+id: tiefgang
+name: Tiefgang
+longOnly: true
+maxWeeks: 104
+# As for every tourism scenario, the last 13 months together must pay for everything.
+win: { profitableMonths: 3, overMonths: 13 }
+
+start:
+  # Own money put in (est.); the compressor, 24 tanks and 12 rental sets are paid for.
+  cashCents: 7000000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 57500
+  priceCentsPerMonth: 8000
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: shop
+      name: Shop with a classroom near the seafront
+      monthlyCents: 160000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 45000
+    - id: compressor
+      name: Compressor service and tank tests
+      monthlyCents: 15000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 20000
+    - id: phone_software
+      name: Phone and software
+      monthlyCents: 10000
+
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  # Year 2 costs more: living costs rise by a tenth from week 53.
+  livingSteps:
+    - { week: 53, centsPerWeek: 63250 }
+
+finance:
+  weeksPerMonth: 4
+  # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
+  # late by a segment dependent number of days, only once chased, or never.
+  invoiceDueDays: 14
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    # Dive prices are quoted to the nearest 10 EUR.
+    budgetSmallStepCents: 1000
+    buckets:
+      - { id: not_a_problem, name: Not a problem, below: 0.2 }
+      - { id: mild, name: Mild, below: 0.4 }
+      - { id: noticeable, name: Noticeable, below: 0.6 }
+      - { id: painful, name: Painful, below: 0.9 }
+      - { id: urgent, name: Urgent }
+  # Not used: the scenario's own trials replace landing tests and pre-sales.
+  landing:
+    hours: 6
+    budgetsCents: [20000, 50000]
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+
+product:
+  startQuality: 85
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  # Price against willingness to pay (r = price / wtp): a yes stays nearly as likely up to about
+  # r 0.9, then gets rarer smoothly (0.97 at r 1, 0.82 at 1.2, a half at the midpoint, 0.24 at
+  # 1.5). Calibrated so the default price plays as before (Phase 8 gate).
+  price: { midpoint: 1.35, steepness: 10 }
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    # Customers paying more than what they would pay leave more often: +0.15 a month per 100%
+    # above it, on top of the rest.
+    priceFrom: 1.0
+    perPrice: 0.15
+    cap: 0.6
+  # Referrals belong to the subscription model; guests spread the word through repeat visits.
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - { id: weak, name: Weak, below: 0.7 }
+    - { id: solid, name: Solid, below: 0.95 }
+    - { id: strong, name: Strong, below: 1.1 }
+    - { id: outstanding, name: Outstanding }
+  roles:
+    # A junior or part time hire: cheaper, fewer hours.
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+
+  # Phase 9: a freelancer, rented by the week. Output is visible and fixed: outputShare of the
+  # booked hours become work, the first week at onboardingFactor of that. Billed weekly per hour.
+  freelance:
+    hoursOptions: [10, 20]
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    # A developer who does not know the code: extra bugs on every feature they worked on.
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+
+# A quieter inbox than the software scenarios: events come about every other week.
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.35
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+
+roles:
+  - id: viable
+    pain: { min: 0.6, max: 0.85 }
+    politeness: { min: 0.05, max: 0.15 }
+  - id: mediocre
+    pain: { min: 0.35, max: 0.55 }
+    politeness: { min: 0.25, max: 0.4 }
+  - id: trap
+    pain: { min: 0.1, max: 0.25 }
+    politeness: { min: 0.5, max: 0.65 }
+
+segments:
+  - id: resort_beginners
+    name: Resort beginners
+    description: Holidaymakers in Ayia Napa and Protaras who have never dived and are curious. They decide by the pool, the day before
+    size: { min: 8000, max: 15000 }
+    # Per try dive of about 80 EUR (est., 0.8 to 1.2 times the list price).
+    wtpCents: { min: 6400, max: 9600 }
+    mustHave: [pool_partnership, hotel_pickup]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.02 }
+      in_person: { min: 0.02, max: 0.04 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For a first try I would pay about {amount}. More if there is a turtle.'
+      - 'The hotel sells a jeep safari for {amount}. A dive sounds less dusty.'
+      - 'Around {amount} each, if you pick us up and bring us back before dinner.'
+      - 'We paid {amount} for a banana boat in Ayia Napa. I would rather breathe underwater.'
+      - 'Something like {amount}. Our budget for adventures is mostly spent on sunscreen.'
+
+  - id: certified_divers
+    name: Certified divers
+    description: Divers on holiday with a licence who want the wreck, often for a week of two dives a day. They read the reviews and book online
+    size: { min: 4000, max: 9000 }
+    # Per dive of about 60 EUR (est., 0.9 to 1.3 times the list price).
+    wtpCents: { min: 5400, max: 7800 }
+    mustHave: [wreck_dives, nitrox, online_booking]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.03 }
+      phone: { min: 0.01, max: 0.02 }
+      in_person: { min: 0.02, max: 0.04 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For a wreck dive with nitrox I pay about {amount}. In Malta it was more and the coffee worse.'
+      - 'Around {amount} a dive is normal, if the boat is not a sardine tin.'
+      - 'I budget {amount} a dive and twenty dives a year. My partner budgets less.'
+      - 'The last centre charged {amount} a dive and lost my weight belt twice.'
+      - 'Something near {amount} a dive, tanks and weights included, please.'
+
+  - id: dive_clubs
+    name: Dive clubs
+    description: Clubs and dive travel organisers from Germany, Britain and Scandinavia booking a week for a group. They plan most of a year ahead and negotiate hard
+    size: { min: 600, max: 1500 }
+    # Per dive in a club week of about 50 EUR (est., 0.7 to 1.0 times the list price).
+    wtpCents: { min: 4200, max: 6000 }
+    mustHave: [group_packages, wreck_dives]
+    channelResponse:
+      cold_email: { min: 0.02, max: 0.04 }
+      phone: { min: 0.03, max: 0.06 }
+      in_person: { min: 0.03, max: 0.06 }
+    paymentDelayDaysMean: 30
+    neverPaysShare: 0.02
+    waitsForChaseShare: 0.25
+    budgetQuotes:
+      - 'Our club pays about {amount} a dive in a group week. The treasurer would like it lower.'
+      - 'In Egypt we paid {amount} a dive, everything included except the sunburn.'
+      - 'Around {amount} a dive for sixteen of us, and two free leader places, of course.'
+      - 'The organiser says {amount} a dive is the going rate. He says that every year.'
+      - 'We can do {amount} a dive if the boat takes all of us at once.'
+
+milestones:
+  - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+  - { id: first_deposit, name: First taster guest back, kind: count, of: deposits, target: 1 }
+  - { id: first_customer, name: First paying diver, kind: count, of: guests, target: 1 }
+  - id: covers_company_costs
+    name: 'A month of guests covers company costs'
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: 'A month of guests covers all costs, you included'
+    kind: revenue
+    covers: all
+  - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+  - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+  - { id: weeks_78, name: 78 weeks survived, kind: weeks, target: 78 }
+  - { id: weeks_104, name: 104 weeks survived, kind: weeks, target: 104 }
+
+# The shop with a classroom, then a bigger centre with its own small pool (offered by an inbox
+# event, docs/scenario-dive.md section 12). Stages 3 to 5 are out of scope in this pass.
+officeStages:
+  - id: dive_shop
+    name: Shop with a classroom
+    monthlyCents: 0
+  - id: pool_centre
+    name: A bigger centre with its own small pool
+    # +1,200 a month (est.); the 25,000 fit-out is paid by the offer.
+    monthlyCents: 120000
+    energyPerWeek: 1
+    walkIns: { segment: resort_beginners, leadsPerWeek: 0.15 }
+    # Try dives at any time and shorter courses: more places a week.
+    capacity: { try_dive: 40, entry_course: 12 }
+
+organisedAt: [covers_all_costs]
+# Plan 3: the established look once money in has covered all costs for these months in a row.
+establishedAt: { monthsCoveringAll: 8 }
+
+# The bank loan (docs/loan-proposal.md): for the boat, nitrox and the first spring.
+loan:
+  bankName: Larnaka Cooperative Bank
+  bridgeMonthsHint: 3
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  ownShare: 0.2
+  unprovenMaxCents: 9000000
+  revenueMultiple: 1
+  minCents: 1000000
+  maxCents: 15000000
+  stepCents: 500000
+  rateBp: { min: 450, max: 750 }
+  leverageSpreadBp: 100
+  termMonths: [36, 60, 84]
+  graceMonths: [0, 6, 12]
+  missedFeeCents: 5000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+  # The boat, nitrox, technical diving (the temptation), and working capital of at most three
+  # months of fixed costs (est.).
+  items: [boat_purchase, nitrox, tech_diving]
+  workingCapitalMonths: 3
+
+# Bookings (docs/tourism-proposal.md, docs/abroad-mechanics.md). Week 1 is the first week of
+# February. A unit is a person on a try dive or a course place, or a dive; products price it as a
+# multiple of the segment's price (priceFactor).
+bookings:
+  startWeekOfYear: 6
+  seasonNoise: 0.2
+  peakMonths: [6, 7, 8, 9]
+  policyWeeks: 4
+  # The sea off Larnaca, two slots a day (docs/scenario-dive.md section 3, est.): boat dives run
+  # in the morning; summer afternoons a little rougher.
+  conditions:
+    states:
+      - { id: calm, name: 'calm sea' }
+      - { id: moderate, name: 'some swell' }
+      - { id: rough, name: 'rough sea (over 1.5 m)' }
+      - { id: storm, name: storm }
+    slots:
+      - { id: morning, name: Mornings }
+      - { id: afternoon, name: Afternoons }
+    monthly:
+      - { morning: [0.3, 0.35, 0.27, 0.08], afternoon: [0.3, 0.35, 0.27, 0.08] }
+      - { morning: [0.3, 0.35, 0.27, 0.08], afternoon: [0.3, 0.35, 0.27, 0.08] }
+      - { morning: [0.38, 0.35, 0.22, 0.05], afternoon: [0.38, 0.35, 0.22, 0.05] }
+      - { morning: [0.45, 0.35, 0.17, 0.03], afternoon: [0.45, 0.35, 0.17, 0.03] }
+      - { morning: [0.55, 0.32, 0.11, 0.02], afternoon: [0.5, 0.35, 0.13, 0.02] }
+      - { morning: [0.65, 0.3, 0.05, 0], afternoon: [0.55, 0.35, 0.09, 0.01] }
+      - { morning: [0.65, 0.3, 0.05, 0], afternoon: [0.55, 0.35, 0.09, 0.01] }
+      - { morning: [0.65, 0.3, 0.05, 0], afternoon: [0.55, 0.35, 0.09, 0.01] }
+      - { morning: [0.65, 0.3, 0.05, 0], afternoon: [0.55, 0.35, 0.09, 0.01] }
+      - { morning: [0.52, 0.32, 0.13, 0.03], afternoon: [0.5, 0.33, 0.14, 0.03] }
+      - { morning: [0.4, 0.35, 0.2, 0.05], afternoon: [0.4, 0.35, 0.2, 0.05] }
+      - { morning: [0.3, 0.35, 0.27, 0.08], afternoon: [0.3, 0.35, 0.27, 0.08] }
+    persistence: 0.6
+    forecastAccuracy: 0.85
+  # The dive boat (docs/scenario-dive.md section 4.3, est.): buy (through the bank or cash), lease
+  # April to November, or seats on a partner's boat.
+  assets:
+    dive_boat:
+      name: The dive boat
+      products: [wreck_dives, advanced_course]
+      buy:
+        product: boat_purchase
+        # Maintenance 400 a month, insurance 2,500 and mooring 3,000 a year.
+        upkeepMonthlyCents: 85800
+        # A skipper at 130 a day, six days a week used.
+        crewWeekCents: 78000
+        haulOut: { month: 1, weeks: 3, cents: 250000 }
+        breakdown: { weekly: 0.01, perYear: 0.002, weeks: { min: 1, max: 3 }, repairCents: 300000 }
+        ageYears: 12
+        valueLossPerYear: 0.08
+      lease:
+        # 3,000 a month from April to November, eight months at least.
+        seasonCents: 2400000
+        upfrontShare: 0
+        months: [4, 5, 6, 7, 8, 9, 10, 11]
+        minMonths: 8
+        crewWeekCents: 78000
+      share:
+        # Six seats of twelve, 30 a diver a trip; on summer weekends the partner keeps one back.
+        capacity: 0.5
+        unitCents: 3000
+        revenueShare: 0
+        takeBack: { chance: 0.4, share: 0.17, months: [6, 7, 8, 9] }
+  # Activity platforms take 20 to 30% (2025); 22% here.
+  platform: { name: Divebook, commission: 0.22 }
+  website: { product: online_booking, repeatsFull: 150 }
+  partnershipHours: 6
+  partnershipCut: 0
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor: { viable: 1, mediocre: 0.45, trap: 0.15 }
+  fitBase: 0.4
+  segments:
+    resort_beginners:
+      # Spec 20 to 70 a week; 9 to 30 while tuning (T2, T3 rounds 1 and 2; decisions).
+      base: { min: 10, max: 34 }
+      unit: person
+      # A try dive (est. 80); the opening price list, a little low and the same all year (T7).
+      price: { peak: 7000, off: 7000 }
+      size: { min: 1, max: 3 }
+      leadWeeks: { min: 0, max: 1 }
+      # June to September, high in August.
+      season: [0, 0, 0.05, 0.2, 0.45, 0.8, 0.95, 1, 0.8, 0.35, 0, 0]
+      response: { platform: 0.8, website: 0.2, partnership: 0.8, outreach: 0.1, walkIn: 0.2 }
+      cancel: 0.15
+      strictConversion: 0.8
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.6
+    certified_divers:
+      # 30 to 120 dives a week at peak (spec), in packages of four to ten.
+      base: { min: 46, max: 150 }
+      unit: person
+      # A dive (est. 60); the opening price list, a little low and the same all year (T7).
+      price: { peak: 5500, off: 5500 }
+      size: { min: 4, max: 10 }
+      leadWeeks: { min: 1, max: 12 }
+      # April to November, peaks in May, June, September and October.
+      season: [0.05, 0.05, 0.2, 0.6, 1, 1, 0.7, 0.6, 1, 1, 0.5, 0.1]
+      response: { platform: 0.4, website: 0.7, partnership: 0, outreach: 0.2, walkIn: 0.1 }
+      cancel: 0.05
+      # Certified divers book by the sea and want to move or cancel (T11 round 1).
+      strictConversion: 0.75
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.7
+      levels: [open_water, advanced]
+    dive_clubs:
+      # 0.1 to 0.6 groups a week at peak of about 140 dives each (spec).
+      base: { min: 40, max: 120 }
+      unit: person
+      # A dive in a club week (est. 50); the opening price list (T7).
+      price: { peak: 4600, off: 4600 }
+      # A group of eight to twelve, five to eight dives each (spec 8 to 20 divers, ten dives).
+      size: { min: 40, max: 100 }
+      # Spec 12 to 40 weeks ahead; 8 to 30 while tuning (T3 round 2).
+      leadWeeks: { min: 8, max: 30 }
+      # Spring and autumn, almost none in August.
+      season: [0.1, 0.1, 0.5, 1, 1, 0.6, 0.2, 0.05, 0.8, 1, 0.6, 0.1]
+      response: { platform: 0, website: 0.4, partnership: 0.8, outreach: 0.8, walkIn: 0 }
+      cancel: 0.06
+      # A club's committee balks at a strict policy (T11 round 1).
+      strictConversion: 0.7
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.3
+      levels: [open_water, advanced]
+  products:
+    try_dive:
+      # Four per instructor in the pool, two sessions a day.
+      capacity: 120
+      serves: [resort_beginners]
+      runsIn: [calm, moderate]
+      requires: centre_licence
+      # A hotel pool at 8 a person and the shore dive's air (est.).
+      unitCostCents: 1000
+      course:
+        level: tried
+        sameStay: { share: 0.15, products: [entry_course] }
+        nextSeason: { direct: 0.05, platform: 0.01, products: [entry_course] }
+    entry_course:
+      # Twelve rental sets, four days a course.
+      capacity: 36
+      serves: [resort_beginners]
+      runsIn: [calm, moderate]
+      requires: centre_licence
+      # 450 a person (est.).
+      priceFactor: 5.6
+      # The licence card and pool sessions (est.).
+      unitCostCents: 4000
+      course:
+        level: open_water
+        sameStay: { share: 0.5, products: [shore_dives, advanced_course] }
+        nextSeason:
+          { direct: 0.15, platform: 0.02, products: [advanced_course, shore_dives, wreck_dives] }
+    advanced_course:
+      capacity: 24
+      serves: [certified_divers]
+      needsLevel: open_water
+      runsIn: [calm, moderate]
+      slots: [morning]
+      requires: centre_licence
+      # 350 a person (est.).
+      priceFactor: 5.8
+      unitCostCents: 3000
+      course:
+        level: advanced
+        sameStay: { share: 0.6, products: [wreck_dives] }
+        nextSeason: { direct: 0.2, platform: 0.02, products: [wreck_dives] }
+    shore_dives:
+      capacity: 112
+      serves: [certified_divers, dive_clubs]
+      needsLevel: open_water
+      runsIn: [calm, moderate]
+      requires: centre_licence
+      # 40 a dive (est.).
+      priceFactor: 0.67
+      unitCostCents: 300
+    wreck_dives:
+      # Twelve divers, two trips a morning, seven mornings.
+      capacity: 168
+      serves: [certified_divers, dive_clubs]
+      needsLevel: advanced
+      runsIn: [calm, moderate]
+      slots: [morning]
+      requires: centre_licence
+      unitCostCents: 500
+    pool_partnership:
+      capacity: 0
+    hotel_pickup:
+      # A minibus leased at 700 a month and fuel (est.).
+      capacity: 0
+      monthlyCents: 85000
+    nitrox:
+      capacity: 0
+      # A fill station (est.).
+      oneOffCents: 600000
+    group_packages:
+      capacity: 0
+    online_booking:
+      capacity: 0
+      monthlyCents: 4000
+    centre_licence:
+      # The authority's fee and six weeks' wait (est., to verify).
+      capacity: 0
+      oneOffCents: 100000
+      waitWeeks: 6
+    tech_diving:
+      capacity: 16
+      serves: [certified_divers]
+      needsLevel: advanced
+      runsIn: [calm]
+      requires: centre_licence
+      priceFactor: 8
+      # Rebreathers, trimix and a deep course kit (est.).
+      oneOffCents: 3500000
+      # Rebreather servicing and helium (est.).
+      monthlyCents: 50000
+      unitCostCents: 9000
+      appeal: 0.05
+    boat_purchase:
+      # A used 11 m dive boat (est.). 55,000 was tried for D3 and made owning worse.
+      capacity: 0
+      oneOffCents: 7000000
+  roles:
+    instructor:
+      name: Dive instructor
+      # 120 a day freelance (est., to verify).
+      centsPerShift: 12000
+      units:
+        try_dive: 8
+        entry_course: 1
+        advanced_course: 2
+        shore_dives: 8
+        wreck_dives: 8
+        tech_diving: 1
+      available: [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+      founderHours: 9
+      # Seasonal about 1,800 a month plus a share (est.): 450 a week.
+      contracts:
+        permanent: { centsPerWeek: 50000, shifts: 5, noticeWeeks: 4, quality: 0.3, max: 2 }
+        part_time: { centsPerWeek: 30000, shifts: 3, noticeWeeks: 4, quality: 0.2, max: 2 }
+        seasonal:
+          { centsPerWeek: 45000, shifts: 5, months: [4, 5, 6, 7, 8, 9, 10], quality: 0.25, max: 2 }
+    divemaster:
+      name: Divemaster
+      centsPerShift: 8000
+      units:
+        try_dive: 4
+        shore_dives: 8
+        wreck_dives: 8
+      available: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+      contracts:
+        seasonal:
+          { centsPerWeek: 32000, shifts: 5, months: [4, 5, 6, 7, 8, 9, 10], quality: 0.2, max: 2 }
+  hosting: { hoursPerUnit: 0.03, maxHours: 15 }
+  trials:
+    pool_taster:
+      name: Pool taster
+      # Free try dives in a hotel pool for eight guests one afternoon (est.).
+      hours: 5
+      cents: 8000
+      weeks: 1
+      people: 8
+      choose: true
+      reach: { resort_beginners: 1, certified_divers: 1, dive_clubs: 1 }
+      rate: { base: 0, perPain: 0.4 }
+      reviewFrom: [resort_beginners]
+      repeat: true
+      max: 2
+    test_listing:
+      name: Test listing
+      hours: 3
+      cents: 25000
+      weeks: 2
+      people: 220
+      reach: { resort_beginners: 0.7, certified_divers: 0.3 }
+      rate: { base: 0.01, perPain: 0.12 }
+      max: 3
+    dive_show:
+      name: Dive show stand
+      # A stand at a dive show at home: a weekend and travel, 1,500 (est.).
+      hours: 16
+      cents: 150000
+      weeks: 4
+      people: 40
+      reach: { certified_divers: 0.5, dive_clubs: 0.5 }
+      rate: { base: 0.01, perPain: 0.2 }
+      repeat: true
+      max: 2
+  reviews:
+    qualityBase: 4.4
+    noiseSd: 0.3
+    understaffPenalty: 2.5
+    tiredPenalty: 0.5
+    cancelPenalty: 1
+    snagPenalty: 0.15
+    valueWeight: 1.5
+    reviewsPerUnit: 0.08
+    reviewsFull: 50
+
+modes:
+  long: {}

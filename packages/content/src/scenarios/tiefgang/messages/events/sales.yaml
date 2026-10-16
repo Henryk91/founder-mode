@@ -1,0 +1,229 @@
+# Getting divers: hotels, reps, organisers, platforms and the wreck itself.
+events:
+  - id: hotel_free_pool
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 6]
+    from: none
+    sender: Hotel Kalamaki Sands
+    look: letter
+    text: >-
+      Hotel Kalamaki Sands offers its pool for your sessions, free, in return for 20% of every try
+      dive its guests book. The hotel has 300 rooms and a lot of curious guests.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the free pool for a cut
+        hours: 2
+        effects:
+          - { type: guests, segment: resort_beginners, count: 25, when: [tour.peak == 1] }
+          - { type: fixedCost, id: hotel_cut, name: Hotel commission, monthlyCents: 40000 }
+      - id: decline
+        label: Keep paying for pool time
+        hours: 0
+
+  - id: tour_rep_cut
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 10, shipped.try_dive == 1]
+    from: none
+    sender: A tour rep in Ayia Napa
+    text: >-
+      A tour rep wants a cut of every try dive sold at her welcome meetings. She holds four a week,
+      to about sixty new arrivals each time, all of them sunburnt and suggestible.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Give her a cut
+        hours: 1
+        effects:
+          - { type: guests, segment: resort_beginners, count: 20 }
+          - { type: fixedCost, id: rep_cut, name: Tour rep commission, monthlyCents: 30000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: wreck_video
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: Your phone
+    look: note
+    text: >-
+      A diver posted a video of the Zenobia's lorries in the hold, and it went everywhere. Your
+      inbox fills with people asking for seats. Seats are what you may not have.
+    defaultChoice: ignore
+    choices:
+      - id: answer
+        label: Answer everyone and offer dates
+        hours: 4
+        effects:
+          - { type: guests, segment: certified_divers, count: 30, when: [shipped.wreck_dives == 1] }
+          - { type: review, rating: 2, count: 3, when: [shipped.wreck_dives == 0] }
+      - id: ignore
+        label: Let it pass
+        hours: 0
+
+  - id: british_club_august
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 10, week <= 30]
+    from: none
+    sender: A British sub-aqua club
+    text: >-
+      A British club wants sixteen places for a week in August, the busiest month of the year. Big
+      money, if the boat has the seats.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the club in August
+        hours: 3
+        effects:
+          - { type: guests, segment: dive_clubs, count: 120, when: [asset.owned == 1] }
+          - { type: guests, segment: dive_clubs, count: 120, when: [asset.leased == 1] }
+          - { type: review, rating: 2, count: 4, when: [asset.shared == 1] }
+      - id: decline
+        label: Say you are full
+        hours: 0
+
+  - id: dive_organiser_contract
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 8]
+    from: none
+    sender: Blauwasser Tauchreisen
+    look: letter
+    text: >-
+      A dive travel organiser in Munich offers to put you in its catalogue for club weeks, at 15%
+      commission. Its clubs book a year ahead and pay on invoice, mostly.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Join the catalogue
+        hours: 3
+        effects:
+          - { type: guests, segment: dive_clubs, count: 80, when: [shipped.group_packages == 1] }
+          - { type: fixedCost, id: organiser_fee, name: Organiser commission, monthlyCents: 25000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: divebook_promo
+    area: sales
+    weight: 2
+    once: true
+    when: [tour.listed == 1, week >= 10]
+    from: none
+    sender: Divebook
+    look: official
+    text: >-
+      Divebook offers a summer feature on its front page for four points more commission on
+      everything. The page has a turtle on it. The commission does not.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the feature
+        hours: 1
+        effects:
+          - { type: guests, segment: resort_beginners, count: 20 }
+          - { type: fixedCost, id: divebook_promo, name: Divebook feature, monthlyCents: 35000 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: travel_writer
+    area: sales
+    weight: 1
+    once: true
+    when: [week >= 14]
+    from: none
+    sender: A travel writer from Hamburg
+    text: >-
+      A travel writer wants a free week of wreck dives for an article about diving in the eastern
+      Mediterranean. She writes well and dives badly.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Host her for a week
+        hours: 6
+        effects:
+          - { type: guests, segment: certified_divers, count: 15, when: [shipped.wreck_dives == 1] }
+          - { type: energy, delta: -3 }
+      - id: decline
+        label: Politely decline
+        hours: 0
+
+  - id: rival_price_cut
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 16]
+    from: none
+    sender: The centre next door
+    look: note
+    text: >-
+      The centre next door has cut its wreck dives by a fifth. Its boat is older and its
+      instructors younger, but the price is what people see first.
+    defaultChoice: hold
+    choices:
+      - id: talk
+        label: Tell your divers what they get for the price
+        hours: 4
+        effects:
+          - { type: review, rating: 5, count: 3 }
+      - id: hold
+        label: Hold your price and say nothing
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }
+
+  - id: cruise_excursion
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 16
+    when: [tour.peak == 1, shipped.try_dive == 1]
+    from: none
+    sender: A shore excursion agent
+    text: >-
+      A cruise ship is in Limassol for a day and the agent wants try dives for thirty passengers,
+      at an agent's price, back on board by four. Some of them will be very old and very keen.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Take the thirty
+        hours: 5
+        effects:
+          - { type: cash, amountCents: 120000 }
+          - { type: energy, delta: -3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: dive_forum_thread
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.reviews >= 10]
+    from: none
+    sender: A dive forum
+    look: note
+    text: >-
+      A forum thread asks which Larnaca centre to use for the Zenobia. Someone says yours has old
+      rental gear. Someone else says yours has the best guide. Both may be right.
+    defaultChoice: ignore
+    choices:
+      - id: reply
+        label: Reply calmly and honestly
+        hours: 2
+        effects:
+          - { type: review, rating: 4, count: 3 }
+      - id: ignore
+        label: Stay out of it
+        hours: 0

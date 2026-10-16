@@ -1,0 +1,226 @@
+# Money: the boat, the authority, the compressor and the bills of winter.
+events:
+  - id: boat_offer
+    area: finance
+    weight: 1
+    once: true
+    trigger: [week >= 1]
+    openWeeks: 4
+    from: none
+    sender: Captain Andreas Kyprianou
+    look: letter
+    text: >-
+      The wreck needs a boat. Andreas can sell you seats on his at 30 EUR a diver a trip, six a
+      trip, though he keeps one back on busy summer weekends. Or lease his spare boat from April to
+      November at 3,000 EUR a month with a skipper you pay. Buying your own is in the plan, for
+      about 70,000 EUR.
+    defaultChoice: later
+    choices:
+      - id: seats
+        label: Buy seats on his boat
+        hours: 1
+        effects:
+          - { type: asset, id: dive_boat, option: share }
+      - id: lease
+        label: Lease the boat for the season
+        hours: 2
+        effects:
+          - { type: asset, id: dive_boat, option: lease }
+      - id: later
+        label: Decide later
+        hours: 0
+
+  - id: boat_winter_offer
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 40
+    trigger: [tour.month == 11]
+    openWeeks: 6
+    from: none
+    sender: Captain Andreas Kyprianou
+    look: letter
+    text: >-
+      Winter is when boats change hands. Andreas offers seats again at 30 EUR a diver, or his spare
+      boat for next season at 3,000 EUR a month from April. Leaving a lease early costs the rest of
+      its eight months, he reminds you, as a friend.
+    defaultChoice: keep
+    choices:
+      - id: keep
+        label: Keep things as they are
+        hours: 0
+      - id: seats
+        label: Buy seats next season
+        hours: 1
+        effects:
+          - { type: asset, id: dive_boat, option: share }
+      - id: lease
+        label: Lease the boat next season
+        hours: 2
+        effects:
+          - { type: asset, id: dive_boat, option: lease }
+
+  - id: boat_breakdown
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 3
+    trigger: [asset.broken == 1]
+    openWeeks: 1
+    from: none
+    sender: The harbour mechanic
+    look: note
+    text: >-
+      The boat's engine has given up somewhere between the harbour and the wreck. A repair this
+      week costs 3,000 EUR; otherwise it waits for parts and the divers booked on it go home.
+    defaultChoice: wait
+    choices:
+      - id: repair
+        label: Repair it now
+        hours: 2
+        effects:
+          - { type: assetRepair, id: dive_boat }
+      - id: wait
+        label: Wait for the parts
+        hours: 0
+
+  - id: pool_centre_offer
+    area: finance
+    weight: 1
+    once: true
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: A landlord on Makenzy beach
+    look: letter
+    text: >-
+      A bigger unit with its own small pool has come free near the beach: try dives at any time,
+      shorter courses, more people walking past. It costs 25,000 EUR to fit out and 1,200 EUR a
+      month more. A pool with nobody in it is still a pool to clean.
+    defaultChoice: not_now
+    choices:
+      - id: move
+        label: Take the bigger centre
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -2500000 }
+          - { type: moveOffice, stage: pool_centre }
+      - id: not_now
+        label: The shop will do
+        hours: 0
+
+  - id: compressor_august
+    area: finance
+    weight: 2
+    once: true
+    when: [tour.month == 8]
+    from: none
+    sender: Your compressor
+    look: note
+    text: >-
+      The compressor has stopped in August, the busiest month, with a noise like a sad tractor. A
+      rival will sell you fills at their price, or a mechanic flies in a part at his.
+    defaultChoice: rival
+    choices:
+      - id: repair
+        label: Fly in the part
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -180000 }
+      - id: rival
+        label: Buy fills from the rival
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -90000 }
+          - { type: lostHours, hours: 8 }
+
+  - id: logbook_audit
+    area: finance
+    weight: 2
+    once: true
+    when: [week >= 15, shipped.centre_licence == 1]
+    from: none
+    sender: The licensing authority
+    look: official
+    text: >-
+      The authority wants to audit the centre's logbooks: every dive, every diver, every depth.
+      Your logbook is partly a notebook and partly a memory.
+    defaultChoice: wing_it
+    choices:
+      - id: prepare
+        label: Spend the hours putting it in order
+        hours: 6
+      - id: wing_it
+        label: Hope they skim
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -150000, chance: 0.5 }
+
+  - id: club_cancels_october
+    area: finance
+    weight: 1
+    once: true
+    when: [week >= 30]
+    from: none
+    sender: Tauchclub Isarperle
+    look: letter
+    text: >-
+      The club cancels its October week with the deposit paid. They would love to come in spring
+      instead, they write, if you keep the deposit as a credit.
+    defaultChoice: keep
+    choices:
+      - id: keep
+        label: Keep the deposit
+        hours: 0
+        effects:
+          - { type: cash, amountCents: 150000 }
+          - { type: review, rating: 2, count: 3 }
+      - id: rebook
+        label: Rebook them for spring
+        hours: 2
+        effects:
+          - { type: guests, segment: dive_clubs, count: 100, when: [shipped.wreck_dives == 1] }
+
+  - id: winter_quiet
+    area: finance
+    weight: 1
+    once: true
+    when: [tour.month == 12]
+    from: none
+    sender: Your accountant
+    look: letter
+    text: >-
+      December, January and February bring almost nobody and still the rent. You could close the
+      shop for six weeks and save on staff and power, or stay open for the odd local diver.
+    defaultChoice: open
+    choices:
+      - id: close
+        label: Close for six weeks
+        hours: 2
+        effects:
+          - { type: cash, amountCents: 60000 }
+          - { type: energy, delta: 6 }
+      - id: open
+        label: Stay open
+        hours: 0
+
+  - id: vat_registration
+    area: finance
+    weight: 1
+    once: true
+    when: [monthlyRevenueEur >= 8000]
+    from: none
+    sender: The tax department
+    look: official
+    text: >-
+      Your turnover is past the threshold for VAT registration, says a letter that could be
+      friendlier. Registering takes a morning and a form; ignoring it takes longer, later.
+    defaultChoice: ignore
+    choices:
+      - id: register
+        label: Register this week
+        hours: 4
+      - id: ignore
+        label: Put it on the pile
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -200000, chance: 0.5 }

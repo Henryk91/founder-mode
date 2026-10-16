@@ -44,6 +44,7 @@ const quietRestaurant = (view: PlayerView) => {
 export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> = {
   // Plan 4: bid higher in the beach tender when the spot carries the business (hotel guests
   // walk past it and come from the hotels nearby); else trust the reviews.
+  tiefgang: {},
   rueckenwind: {
     beach_tender: (_v, c) => (c.target === 'hotel_guests' ? 'higher' : 'same'),
   },

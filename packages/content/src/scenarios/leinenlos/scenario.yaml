@@ -1,0 +1,596 @@
+# Leinen los: week-long gulet cruises from Fethiye, Turkey (plan 4, step 4).
+# Source: docs/scenario-gulet.md and docs/abroad-mechanics.md. Long mode only: 104 weeks from the
+# first week of January. Money in cents (EUR: see the help text), time in hours. Figures marked
+# (est.) are estimates; sources in the spec's section 17.
+
+id: leinenlos
+name: Leinen los
+longOnly: true
+maxWeeks: 104
+# As for every tourism scenario, the last 13 months together must pay for everything.
+win: { profitableMonths: 3, overMonths: 13 }
+
+start:
+  # Own money put in (est.).
+  cashCents: 5000000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 45000
+  priceCentsPerMonth: 90000
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: harbour_desk
+      name: A desk in a harbour office
+      monthlyCents: 30000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 30000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 15000
+    - id: website_software
+      name: Website and booking software
+      monthlyCents: 12000
+    - id: phone
+      name: Phone
+      monthlyCents: 5000
+
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  # Year 2 costs more: living costs rise by a tenth from week 53.
+  livingSteps:
+    - { week: 53, centsPerWeek: 49500 }
+
+finance:
+  weeksPerMonth: 4
+  # Customers are invoiced at every month end. An invoice is due after 14 days and then paid
+  # late by a segment dependent number of days, only once chased, or never.
+  invoiceDueDays: 14
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    # Cruise prices are quoted to the nearest 10 EUR.
+    budgetSmallStepCents: 1000
+    buckets:
+      - { id: not_a_problem, name: Not a problem, below: 0.2 }
+      - { id: mild, name: Mild, below: 0.4 }
+      - { id: noticeable, name: Noticeable, below: 0.6 }
+      - { id: painful, name: Painful, below: 0.9 }
+      - { id: urgent, name: Urgent }
+  # Not used: the scenario's own trials replace landing tests and pre-sales.
+  landing:
+    hours: 6
+    budgetsCents: [20000, 50000]
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+
+product:
+  startQuality: 85
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  # Price against willingness to pay (r = price / wtp): a yes stays nearly as likely up to about
+  # r 0.9, then gets rarer smoothly (0.97 at r 1, 0.82 at 1.2, a half at the midpoint, 0.24 at
+  # 1.5). Calibrated so the default price plays as before (Phase 8 gate).
+  price: { midpoint: 1.35, steepness: 10 }
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    # Customers paying more than what they would pay leave more often: +0.15 a month per 100%
+    # above it, on top of the rest.
+    priceFrom: 1.0
+    perPrice: 0.15
+    cap: 0.6
+  # Referrals belong to the subscription model; guests spread the word through repeat visits.
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - { id: weak, name: Weak, below: 0.7 }
+    - { id: solid, name: Solid, below: 0.95 }
+    - { id: strong, name: Strong, below: 1.1 }
+    - { id: outstanding, name: Outstanding }
+  roles:
+    # A junior or part time hire: cheaper, fewer hours.
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill: { min: 0.5, max: 1.2 }
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+
+  # Phase 9: a freelancer, rented by the week. Output is visible and fixed: outputShare of the
+  # booked hours become work, the first week at onboardingFactor of that. Billed weekly per hour.
+  freelance:
+    hoursOptions: [10, 20]
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    # A developer who does not know the code: extra bugs on every feature they worked on.
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+
+# A quieter inbox than the software scenarios: events come about every other week.
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.35
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+
+roles:
+  - id: viable
+    pain: { min: 0.6, max: 0.85 }
+    politeness: { min: 0.05, max: 0.15 }
+  - id: mediocre
+    pain: { min: 0.35, max: 0.55 }
+    politeness: { min: 0.25, max: 0.4 }
+  - id: trap
+    pain: { min: 0.1, max: 0.25 }
+    politeness: { min: 0.5, max: 0.65 }
+
+segments:
+  - id: cabin_guests
+    name: Cabin guests
+    description: Couples, friends and solo travellers booking a cabin on a shared cruise, mostly through agents and platforms, weeks or months ahead
+    size: { min: 4000, max: 9000 }
+    # Per person for a week, full board (est., 750 to 1,150 at peak).
+    wtpCents: { min: 75000, max: 115000 }
+    mustHave: [cabin_sales, german_host, airport_transfers]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.02 }
+      phone: { min: 0.01, max: 0.03 }
+      in_person: { min: 0.01, max: 0.03 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For a week on a boat with all meals I would pay about {amount} each. Less if the cabin has no window.'
+      - 'Our hotel week costs {amount} each, and the hotel does not move.'
+      - 'Around {amount} a person, if the food is good and the music is not.'
+      - 'We paid {amount} each for a river cruise. The river was beige.'
+      - 'Something like {amount} each for a week, transfers included, please.'
+
+  - id: private_charters
+    name: Private charters
+    description: Families and groups of friends booking the whole boat for a week, through charter brokers, well ahead of the school holidays
+    size: { min: 800, max: 2000 }
+    # Per place of sixteen for a week (est., 10,000 to 18,000 for the boat at peak).
+    wtpCents: { min: 62500, max: 112500 }
+    mustHave: [charter_contracts, chef_menu]
+    channelResponse:
+      cold_email: { min: 0.01, max: 0.03 }
+      phone: { min: 0.02, max: 0.05 }
+      in_person: { min: 0.02, max: 0.04 }
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - 'For the whole boat in August we would pay about {amount} a head. My brother-in-law pays the rest.'
+      - 'The villa in Bodrum was {amount} each for the week, and it had no captain.'
+      - 'Around {amount} a person for the boat, if the cook is a real cook.'
+      - 'Our broker says {amount} each is normal for a good gulet. He says it every year.'
+      - 'We can do {amount} a head, if nobody else is on the boat. Nobody.'
+
+  - id: retreats
+    name: Retreats
+    description: Yoga teachers, hiking guides and photographers who bring their own group for a week, planned months ahead and paid after
+    size: { min: 600, max: 1500 }
+    # Per place for a week (est., 6,000 to 9,000 for the boat).
+    wtpCents: { min: 37500, max: 56000 }
+    mustHave: [retreat_setup, invoice_billing]
+    channelResponse:
+      cold_email: { min: 0.02, max: 0.04 }
+      phone: { min: 0.02, max: 0.05 }
+      in_person: { min: 0.03, max: 0.06 }
+    paymentDelayDaysMean: 30
+    neverPaysShare: 0.03
+    waitsForChaseShare: 0.25
+    budgetQuotes:
+      - 'My students can pay about {amount} each for a week, if I take no fee. I will take a fee.'
+      - 'The mountain hotel costs me {amount} a head for a retreat week. It has no sea.'
+      - 'Around {amount} each for twelve, with shade on deck and plant-based food.'
+      - 'Our photo tours charge {amount} a person for the boat part. Sunrise included, somehow.'
+      - 'I could do {amount} a head, paid after the week, when my students have paid me.'
+
+milestones:
+  - { id: first_interview, name: First interview, kind: count, of: interviews, target: 1 }
+  - { id: first_deposit, name: First taster guest back, kind: count, of: deposits, target: 1 }
+  - { id: first_customer, name: First paying guest, kind: count, of: guests, target: 1 }
+  - id: covers_company_costs
+    name: 'A month of guests covers company costs'
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: 'A month of guests covers all costs, you included'
+    kind: revenue
+    covers: all
+  - { id: weeks_26, name: 26 weeks survived, kind: weeks, target: 26 }
+  - { id: weeks_52, name: 52 weeks survived, kind: weeks, target: 52 }
+  - { id: weeks_78, name: 78 weeks survived, kind: weeks, target: 78 }
+  - { id: weeks_104, name: 104 weeks survived, kind: weeks, target: 104 }
+
+# Office stage 1 only: the boat options are this scenario's progression (spec section 13).
+officeStages:
+  - id: harbour_desk
+    name: A desk in the harbour office
+    monthlyCents: 0
+
+organisedAt: [covers_all_costs]
+establishedAt: { monthsCoveringAll: 8 }
+
+# The bank loan: only for owning, and only once the Turkish company exists (the purchase needs it).
+loan:
+  bankName: Likya Bankası
+  bridgeMonthsHint: 4
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  # The bank lends up to 70% of the price.
+  ownShare: 0.3
+  unprovenMaxCents: 32000000
+  revenueMultiple: 2
+  minCents: 1000000
+  maxCents: 40000000
+  stepCents: 500000
+  rateBp: { min: 700, max: 1100 }
+  leverageSpreadBp: 100
+  termMonths: [60, 84, 120]
+  graceMonths: [0, 6, 12]
+  missedFeeCents: 10000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+  items: [gulet_purchase, luxury_refit]
+  workingCapitalMonths: 3
+
+# Bookings (docs/tourism-proposal.md, docs/abroad-mechanics.md). Week 1 is the first week of
+# January. A unit is a place on a cruise for a week; a charter or a retreat takes the whole boat.
+bookings:
+  startWeekOfYear: 1
+  seasonNoise: 0.2
+  peakMonths: [7, 8]
+  policyWeeks: 4
+  # Weather along the coast, one slot a day (docs/scenario-gulet.md section 5, est.).
+  conditions:
+    states:
+      - { id: calm, name: calm days }
+      - { id: breezy, name: 'breezy days (the afternoon wind)' }
+      - { id: rough, name: 'rough days (the strong westerly)' }
+    slots:
+      - { id: day, name: Days }
+    monthly:
+      - { day: [0.4, 0.3, 0.3] }
+      - { day: [0.4, 0.3, 0.3] }
+      - { day: [0.4, 0.3, 0.3] }
+      - { day: [0.45, 0.32, 0.23] }
+      - { day: [0.5, 0.35, 0.15] }
+      - { day: [0.5, 0.4, 0.1] }
+      - { day: [0.35, 0.45, 0.2] }
+      - { day: [0.35, 0.45, 0.2] }
+      - { day: [0.5, 0.4, 0.1] }
+      - { day: [0.5, 0.35, 0.15] }
+      - { day: [0.4, 0.3, 0.3] }
+      - { day: [0.4, 0.3, 0.3] }
+    persistence: 0.6
+    forecastAccuracy: 0.8
+    # A rough day costs a cruise week some review quality; the sheltered route halves it.
+    review:
+      bad: [rough]
+      perBadSlot: 0.12
+      good: [calm]
+      perGoodSlot: 0.03
+      shelter: sheltered_route
+      shelterFactor: 0.5
+  # Local costs rise from the second season: food, fuel, crew and harbour fees (est.).
+  costSteps:
+    - { week: 53, factor: 1.15, fixedCosts: [], roles: true, unitCosts: true }
+  # The gulet (docs/scenario-gulet.md section 3, est.): manage an owner's, lease one, or buy.
+  assets:
+    gulet:
+      name: The gulet
+      products: [blue_cruise, charter_contracts]
+      buy:
+        product: gulet_purchase
+        # Mooring 6,000 and insurance 9,000 a year.
+        upkeepMonthlyCents: 125000
+        # A captain, a cook and two deckhands in season (about 7,000 a month), food and fuel
+        # 1,800, for every week that sails.
+        crewWeekCents: 355000
+        # The winter haul-out and maintenance (15,000), in February.
+        haulOut: { month: 2, weeks: 4, cents: 1500000 }
+        breakdown: { weekly: 0.01, perYear: 0.001, weeks: { min: 1, max: 2 }, repairCents: 800000 }
+        ageYears: 20
+        valueLossPerYear: 0.05
+      lease:
+        # Deniz Yıldızı with its crew, May to October: 110,000, 30% on signing.
+        seasonCents: 11000000
+        upfrontShare: 0.3
+        months: [5, 6, 7, 8, 9, 10]
+        minMonths: 6
+        # Food and fuel for a cruising week.
+        crewWeekCents: 180000
+      share:
+        # Managing Mavi Rüya: the owner keeps 75% and pays crew, food and fuel; he keeps July and
+        # August for his agents unless six shoulder weeks are sold by the end of March.
+        capacity: 1
+        unitCents: 0
+        revenueShare: 0.75
+        peakRule: { months: [7, 8], shoulderMonths: [5, 6, 9, 10], needWeeks: 6, byWeek: 13 }
+  # Cruise platforms take 15 to 20% (est.); 18% here.
+  platform: { name: Mavitur, commission: 0.18 }
+  website: { product: online_booking, repeatsFull: 120 }
+  partnershipHours: 6
+  partnershipCut: 0
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor: { viable: 1, mediocre: 0.45, trap: 0.15 }
+  fitBase: 0.4
+  segments:
+    cabin_guests:
+      base: { min: 8, max: 30 }
+      unit: person
+      price: { peak: 95000, off: 75000 }
+      size: { min: 1, max: 4 }
+      leadWeeks: { min: 2, max: 20 }
+      # June to September.
+      season: [0, 0, 0, 0, 0.5, 0.9, 1, 1, 0.9, 0.5, 0, 0]
+      response: { platform: 0.9, website: 0.2, partnership: 0.5, outreach: 0.5, walkIn: 0.05 }
+      cancel: 0.1
+      strictConversion: 0.8
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.7
+    private_charters:
+      # 0.2 to 1.0 boats a week at peak, sixteen places each.
+      base: { min: 3, max: 16 }
+      unit: person
+      price: { peak: 85000, off: 60000 }
+      size: { min: 16, max: 16 }
+      leadWeeks: { min: 8, max: 40 }
+      # July and August, school holidays.
+      season: [0, 0, 0, 0, 0.2, 0.6, 1, 1, 0.4, 0.1, 0, 0]
+      response: { platform: 0.1, website: 0.4, partnership: 0.9, outreach: 0.5, walkIn: 0 }
+      cancel: 0.04
+      strictConversion: 0.85
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.5
+    retreats:
+      # 0.1 to 0.5 groups a week at peak, twelve to sixteen places.
+      base: { min: 1.5, max: 7 }
+      unit: person
+      price: { peak: 50000, off: 50000 }
+      size: { min: 12, max: 16 }
+      leadWeeks: { min: 12, max: 40 }
+      # May, June, September and October.
+      season: [0, 0, 0, 0, 1, 1, 0.3, 0.3, 1, 1, 0, 0]
+      response: { platform: 0, website: 0.2, partnership: 0, outreach: 0.9, walkIn: 0 }
+      cancel: 0.1
+      strictConversion: 0.8
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.4
+  products:
+    blue_cruise:
+      # Eight cabins, sixteen places, one departure a week, May to October.
+      capacity: 16
+      serves: [cabin_guests]
+      wholeWeek: true
+      months: [5, 6, 7, 8, 9, 10]
+      # Transfers from Dalaman and the welcome bag (est.).
+      unitCostCents: 3000
+    cabin_sales:
+      capacity: 0
+    charter_contracts:
+      # The whole boat, from the cruise's own sixteen places.
+      capacity: 0
+      capacityOf: blue_cruise
+      serves: [private_charters, retreats]
+      wholeWeek: true
+      months: [5, 6, 7, 8, 9, 10]
+      unitCostCents: 1500
+    german_host:
+      capacity: 0
+    chef_menu:
+      # About 250 a week more in food, all year round as a cost (est.).
+      capacity: 0
+      monthlyCents: 70000
+    retreat_setup:
+      capacity: 0
+      oneOffCents: 250000
+    airport_transfers:
+      capacity: 0
+    sheltered_route:
+      capacity: 0
+    themed_weeks:
+      capacity: 0
+    online_booking:
+      capacity: 0
+      monthlyCents: 4000
+    invoice_billing:
+      capacity: 0
+    local_company:
+      # A Turkish company: 4,000 in fees and about eight weeks (est., to verify).
+      capacity: 0
+      oneOffCents: 400000
+      waitWeeks: 8
+    gulet_purchase:
+      # A used 24 m gulet with eight cabins (est.).
+      capacity: 0
+      oneOffCents: 45000000
+      requires: local_company
+    luxury_refit:
+      # Air conditioning, a new teak deck and a jacuzzi: 120,000 and eight weeks out (est.).
+      capacity: 0
+      oneOffCents: 12000000
+      requires: gulet_purchase
+  roles:
+    host:
+      name: Host on board
+      # A hired host for a cruising week (est.); the founder can host instead, a whole week.
+      centsPerShift: 70000
+      units:
+        blue_cruise: 16
+        charter_contracts: 16
+      available: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      founderHours: 45
+  trials:
+    taster_day:
+      name: Taster day
+      # A day trip on a boat for twelve people from one group, from May (est.).
+      hours: 10
+      cents: 60000
+      weeks: 1
+      people: 12
+      choose: true
+      reach: { cabin_guests: 1, private_charters: 1, retreats: 1 }
+      rate: { base: 0, perPain: 0.4 }
+      reviewFrom: [cabin_guests]
+      repeat: true
+      max: 2
+    test_listing:
+      name: Test listing
+      hours: 3
+      cents: 30000
+      weeks: 2
+      people: 200
+      reach: { cabin_guests: 0.85, private_charters: 0.15 }
+      rate: { base: 0.01, perPain: 0.12 }
+      max: 3
+    travel_fair:
+      name: Travel fair stand
+      # A stand at a travel fair at home in winter: a weekend and 2,000 (est.).
+      hours: 16
+      cents: 200000
+      weeks: 4
+      people: 40
+      reach: { private_charters: 0.5, retreats: 0.5 }
+      rate: { base: 0.01, perPain: 0.2 }
+      repeat: true
+      max: 2
+  reviews:
+    qualityBase: 4.4
+    noiseSd: 0.3
+    understaffPenalty: 2.5
+    tiredPenalty: 0.5
+    cancelPenalty: 1
+    snagPenalty: 0.15
+    valueWeight: 1.5
+    reviewsPerUnit: 0.12
+    reviewsFull: 40
+
+modes:
+  long: {}

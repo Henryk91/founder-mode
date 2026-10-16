@@ -1,0 +1,43 @@
+# Onboarding text shown before week 1, and the founder's notes shown in weeks 1 to 4.
+# Nothing here may reveal which kind of customer is the real market.
+intro:
+  cards:
+    - id: you
+      title: You
+      body: >-
+        You guided holiday divers in other people's centres for years, and spent the winters in
+        Munich wishing you were underwater. Now you live in Larnaca. The company account holds
+        {cash:eur} of your own money, your savings hold {savings:eur}, and life here costs
+        {living:eur} a week, about {livingMonth:eur} a month.
+    - id: idea
+      title: Larnaca and the wreck
+      body: >-
+        You have a narrow shop with a classroom near the seafront, a compressor, 24 tanks and
+        twelve rental sets. Offshore lies the Zenobia, a ferry that sank in 1980 with its lorries
+        still in the hold, and one of the best-known wreck dives in Europe. The centre needs a
+        licence before anyone gets wet.
+    - id: problem
+      title: Three kinds of diver
+      body: >-
+        Holiday beginners in the resorts, certified divers who want the wreck, and dive clubs
+        from home might all pay. Not all of them will. Each step of the ladder, from a try dive
+        to the wreck, is a sale, and each needs the step before.
+    - id: goal
+      title: The boat and the season
+      body: >-
+        The wreck needs a boat: buy one, lease one, or buy seats on a partner's. It is February;
+        guests come from April, and the shop's rent comes in January too. Last {maxWeeks} weeks:
+        your last thirteen months of guests must pay for the centre, the boat, any loan and you.
+
+founderNotes:
+  first_week: >-
+    Week 1. The compressor works, the tanks are full, and the sea is the colour of a filing
+    cabinet.
+  no_evidence: >-
+    Week {week}. Still no idea who will pay. Larnaca charges {living:eur} a week either way.
+  only_interviews: >-
+    {n} conversations so far. Everybody loves the wreck. The wreck is free to look at online.
+  built_unseen: >-
+    Something is ready, and nobody knows. A dive flag on the door is not a marketing plan.
+  leads_only: >-
+    {n} people have asked. Asking is not diving.

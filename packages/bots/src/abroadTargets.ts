@@ -91,3 +91,119 @@ export function watersportsTargets(
     },
   ]
 }
+
+const median = (xs: number[]) => {
+  if (xs.length === 0) return null
+  const s = [...xs].sort((a, b) => a - b)
+  const m = Math.floor(s.length / 2)
+  return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2
+}
+
+/** Bankrupt or with the loan called: the runs owning went wrong in. */
+const failed = (r: StrategyRuns['results'][number]) =>
+  r.ending === 'bankrupt' || r.ending === 'bank_called'
+
+/**
+ * Three single-option bots on paired seeds: on the seeds where they do not all end alike, the
+ * share each has the best result (a win where another lost; among equals, the most money).
+ */
+function bestOfThree(bots: StrategyRuns[], seeds: number[]) {
+  const best = bots.map(() => 0)
+  let differ = 0
+  for (const i of seeds) {
+    const rs = bots.map((b) => b.results[i]!)
+    const w = rs.map((r) => winsOf(r))
+    if (w.every((x) => x === w[0]) && rs.every((r) => r.ending === rs[0]!.ending)) continue
+    differ++
+    const score = rs.map((r, k) => (w[k] ? 1e15 : 0) + r.finalWealthCents)
+    best[score.indexOf(Math.max(...score))]!++
+  }
+  return { differ, shares: best.map((n) => (differ > 0 ? (100 * n) / differ : 0)) }
+}
+
+/** Plan 4: Tiefgang's targets D1 to D4 (`docs/scenario-dive.md` section 15). */
+export function diveTargets(
+  careful: StrategyRuns,
+  s: (id: string) => StrategyRuns | undefined,
+  all: number[],
+): Target[] {
+  if (!s('tourism_always_buy')) return []
+  return assetTargets('D', careful, s, all, {
+    only: 'tourism_certified_only',
+    ladder: 'tourism_no_ladder',
+    options: ['tourism_always_buy', 'tourism_always_lease', 'tourism_always_share'],
+  })
+}
+
+function assetTargets(
+  prefix: 'D' | 'G',
+  careful: StrategyRuns,
+  s: (id: string) => StrategyRuns | undefined,
+  all: number[],
+  ids: { only?: string; ladder?: string; options: [string, string, string] },
+): Target[] {
+  const vs = (id: string | undefined) => {
+    const o = id ? s(id) : undefined
+    return o ? pairedOn(careful, o, all) : null
+  }
+  const loses = (p: { change: number; margin: number } | null, by: number) =>
+    p !== null && p.change - p.margin <= -by
+  const v = (p: { change: number } | null) => (p ? signed(p.change) : '-')
+  const m = (p: { margin: number } | null) => (p ? fmtMargin(p.margin) : '')
+  const bots = ids.options.map((id) => s(id))
+  const out: Target[] = []
+  if (prefix === 'D') {
+    const only = vs(ids.only)
+    out.push({
+      id: 'D1',
+      text: 'The famous site is not the business: a bot that sells only to certified divers (wreck and shore dives, no try dives or entry courses) loses at least 3 points to the careful bot',
+      value: v(only),
+      margin: m(only),
+      pass: loses(only, 3),
+    })
+  }
+  if (bots.every(Boolean)) {
+    const b = bots as StrategyRuns[]
+    const three = bestOfThree(b, all)
+    const names = ids.options.map((x) => x.replace('tourism_', ''))
+    out.push({
+      id: `${prefix}${prefix === 'D' ? 2 : 1}`,
+      text: `No boat option is always right: on paired seeds, each of ${names.join(', ')} has the best result of the three in at least 15% of the seeds where they differ`,
+      value: `${names.map((n, k) => `${n} ${three.shares[k]!.toFixed(1)}%`).join(', ')} of ${three.differ} seeds`,
+      margin: '',
+      pass: three.differ > 0 && three.shares.every((x) => x >= 15),
+    })
+    const failShare = (x: StrategyRuns) =>
+      (100 * x.results.filter(failed).length) / Math.max(1, x.results.length)
+    const gap = failShare(b[0]!) - failShare(b[2]!)
+    const gapMargin =
+      1.96 *
+      Math.sqrt(
+        (failShare(b[0]!) * (100 - failShare(b[0]!)) +
+          failShare(b[2]!) * (100 - failShare(b[2]!))) /
+          Math.max(1, b[0]!.results.length),
+      )
+    const cash = b.map((x) => median(x.results.filter(winsOf).map((r) => r.finalWealthCents / 100)))
+    const highest = cash[0] !== null && cash.every((c, k) => k === 0 || c === null || cash[0]! >= c)
+    out.push({
+      id: `${prefix}${prefix === 'D' ? 3 : 2}`,
+      text: `Owning is risky: ${names[0]} ends bankrupt or with the loan called at least 10 points more often than ${names[2]}, and its median final cash among its wins is the highest of the three`,
+      value: `failed ${failShare(b[0]!).toFixed(1)}% against ${failShare(b[2]!).toFixed(1)}% (gap ${signed(gap)}); median cash in wins ${cash.map((c, k) => `${names[k]} ${c === null ? '-' : Math.round(c).toLocaleString('en-GB')}`).join(', ')} EUR`,
+      margin: fmtMargin(gapMargin),
+      pass: gap + gapMargin >= 10 && highest,
+    })
+  }
+  if (prefix === 'D') {
+    const ladder = vs(ids.ladder)
+    out.push({
+      id: 'D4',
+      text: 'The ladder pays: a bot that sells try dives but no courses loses at least 3 points',
+      value: v(ladder),
+      margin: m(ladder),
+      pass: loses(ladder, 3),
+    })
+  }
+  return out
+}
+
+export { assetTargets }

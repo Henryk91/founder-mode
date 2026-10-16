@@ -267,7 +267,13 @@ describe('content', () => {
         .filter((c) => c.category === id)
         .map((c) => c.id)
     expect(byCategory('startups')).toEqual(['kantino', 'zollstock'])
-    expect(byCategory('tourism')).toEqual(['gratwanderung', 'hinterhof', 'seeblick', 'rueckenwind'])
+    expect(byCategory('tourism')).toEqual([
+      'gratwanderung',
+      'hinterhof',
+      'seeblick',
+      'rueckenwind',
+      'tiefgang',
+    ])
     for (const c of scenarioCatalogue()) {
       expect(c.tags.length).toBeGreaterThanOrEqual(2)
       expect(c.tags.length).toBeLessThanOrEqual(3)
@@ -361,6 +367,26 @@ describe('content', () => {
       }
     })
 
+    /** Plan 4: the amounts an asset's message may name. */
+    const assetAmounts = (sc: typeof s, id: string): number[] => {
+      const a = sc.bookings?.assets?.[id]
+      if (!a) return []
+      return [
+        ...(a.share ? [a.share.unitCents] : []),
+        ...(a.lease
+          ? [
+              a.lease.seasonCents,
+              Math.round(
+                (a.lease.seasonCents * (1 - a.lease.upfrontShare)) / a.lease.months.length,
+              ),
+            ]
+          : []),
+        ...(a.buy
+          ? [sc.bookings!.products[a.buy.product]?.oneOffCents ?? 0, a.buy.breakdown.repairCents]
+          : []),
+      ]
+    }
+
     it('names only amounts of money that a choice actually costs or pays', () => {
       const eur = (cents: number) => `${(Math.abs(cents) / 100).toLocaleString('en-GB')} EUR`
       for (const e of s.events) {
@@ -375,7 +401,10 @@ describe('content', () => {
                     ? [eur(s.officeStages.find((o) => o.id === fx.stage)!.monthlyCents)]
                     : fx.type === 'officeMove'
                       ? officeAmounts(s, fx.stage).map(eur)
-                      : [],
+                      : // Plan 4: an asset's terms (a seat, a month's lease, the price, a repair).
+                        fx.type === 'asset' || fx.type === 'assetRepair'
+                        ? assetAmounts(s, fx.id).map(eur)
+                        : [],
             ),
           ),
         )

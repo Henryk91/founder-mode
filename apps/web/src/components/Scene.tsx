@@ -35,6 +35,9 @@ export type OfficeStage =
   // Plan 4: Rückenwind.
   | 'container_flag'
   | 'beach_station'
+  // Plan 4: Tiefgang.
+  | 'dive_shop'
+  | 'pool_centre'
 
 const DRAWINGS: readonly OfficeStage[] = [
   'kitchen_table',

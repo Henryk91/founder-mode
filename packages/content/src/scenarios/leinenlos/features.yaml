@@ -1,0 +1,86 @@
+# Products and what they need (docs/scenario-gulet.md section 4). Which segment needs which lives
+# in scenario.yaml (segments[].mustHave) and stays hidden. Snags are teething trouble.
+
+- id: blue_cruise
+  name: The week-long route, Fethiye to Kekova and back
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: A week on a wooden boat, a different bay every night. That is the whole holiday.
+
+- id: cabin_sales
+  name: Selling single cabins, with rules for who shares a boat
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Just a cabin for the two of us, please. We do not need the whole boat, or its crew's opinions.
+
+- id: charter_contracts
+  name: Whole-boat charter contracts, deposits and a menu choice
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: The whole boat for the family, with a contract that says what happens if it rains.
+
+- id: german_host
+  name: A German-speaking host on board
+  buildHours: 5
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Somebody on board who speaks German and knows where we are. My Turkish is two words.
+
+- id: chef_menu
+  name: A better menu with a named cook's dishes
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: If we charter the boat, we want the food to be the reason we never get off it.
+
+- id: retreat_setup
+  name: Shade sails, mats and a flexible daily plan
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: My yoga group needs shade on deck at seven and a plan that bends around the wind.
+
+- id: airport_transfers
+  name: Transfers from Dalaman airport
+  buildHours: 5
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Somebody to meet us at Dalaman. The last taxi driver took us to Antalya, briefly.
+
+- id: sheltered_route
+  name: A second route through the sheltered bays near Göcek
+  buildHours: 15
+  bugsOnShip: { min: 0, max: 1 }
+  mention: When the westerly blows, is there somewhere calm to go? My stomach would like to know.
+
+- id: themed_weeks
+  name: Adults-only and family weeks
+  buildHours: 8
+  bugsOnShip: { min: 0, max: 0 }
+  mention: A week without other people's children would be lovely. Ours are with their grandmother.
+
+- id: online_booking
+  name: Online booking with instant confirmation
+  buildHours: 15
+  bugsOnShip: { min: 1, max: 2 }
+  mention: I want to see which cabins are left and book one tonight, not email a captain.
+
+- id: invoice_billing
+  name: Invoices for organisers
+  buildHours: 5
+  bugsOnShip: { min: 0, max: 0 }
+  mention: My retreat guests pay me; I pay you. On an invoice, please, after the week.
+
+- id: local_company
+  name: A Turkish company of your own
+  buildHours: 20
+  bugsOnShip: { min: 0, max: 0 }
+  mention: Do you own a boat here? You need a company for that, the harbour master says.
+
+- id: gulet_purchase
+  name: Buy a 24 m gulet
+  buildHours: 20
+  bugsOnShip: { min: 0, max: 1 }
+  mention: The best captains own their boats. The rest manage someone else's dreams.
+
+- id: luxury_refit
+  name: Air conditioning, a new teak deck and a deck jacuzzi
+  buildHours: 30
+  bugsOnShip: { min: 1, max: 2 }
+  mention: Air conditioning would be nice. A jacuzzi on deck would be a story. I am not sure I would pay for it.

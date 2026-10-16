@@ -1,0 +1,118 @@
+# The crew and the hosts.
+events:
+  - id: host_offer
+    area: team
+    weight: 2
+    once: true
+    when: [week >= 8, week <= 26]
+    from: none
+    sender: A tour guide from Leipzig
+    text: >-
+      A tour guide who speaks German, English and some Turkish wants to host cruises this summer,
+      paid by the week on the roster like any host. She asks 200 EUR a month to keep the summer
+      free for you, and brings her own past guests.
+    defaultChoice: decline
+    choices:
+      - id: hire
+        label: Keep her free for the summer
+        hours: 2
+        effects:
+          - { type: fixedCost, id: host_retainer, name: Host's retainer, monthlyCents: 20000 }
+          - { type: guests, segment: cabin_guests, count: 6, when: [shipped.cabin_sales == 1] }
+      - id: decline
+        label: Host the cruises yourself
+        hours: 0
+
+  - id: deckhand_fight
+    area: team
+    weight: 1
+    once: true
+    when: [asset.owned == 1]
+    from: none
+    sender: Your captain
+    look: note
+    text: >-
+      The two deckhands have fallen out over a girlfriend, a debt or a football team; the captain is
+      not sure which. One of them should go, he says.
+    defaultChoice: ignore
+    choices:
+      - id: replace
+        label: Replace one of them
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -30000 }
+      - id: ignore
+        label: Let the captain handle it
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }
+
+  - id: captain_raise
+    area: team
+    weight: 2
+    once: true
+    when: [asset.owned == 1, tour.month >= 4]
+    from: none
+    sender: Your captain
+    look: note
+    text: >-
+      The captain has an offer from a bigger boat and would stay for 300 EUR a month more. Good
+      captains are scarce in season, and he knows every bay by its smell.
+    defaultChoice: let_go
+    choices:
+      - id: pay
+        label: Pay him more
+        hours: 1
+        effects:
+          - { type: fixedCost, id: captain_raise, name: Captain's raise, monthlyCents: 30000 }
+      - id: let_go
+        label: Let him go
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3 }
+
+  - id: crew_tips
+    area: team
+    weight: 1
+    once: true
+    when: [tour.month >= 5, tour.month <= 10]
+    from: none
+    sender: Your host
+    look: note
+    text: >-
+      Guests ask how much to tip the crew, and the crew asks you how much guests tip. A clear line in
+      the welcome letter would settle it, and possibly the crew.
+    defaultChoice: leave
+    choices:
+      - id: letter
+        label: Write the line into the welcome letter
+        hours: 1
+        effects:
+          - { type: review, rating: 4, count: 2 }
+      - id: leave
+        label: Leave it to the guests
+        hours: 0
+
+  - id: owner_crew_complaint
+    area: team
+    weight: 1
+    once: true
+    when: [asset.shared == 1]
+    from: none
+    sender: Kaptan Murat
+    look: note
+    text: >-
+      Kaptan Murat says your guests ask his crew too many questions in German. He would like you, or
+      a host you pay, on board every week.
+    defaultChoice: ignore
+    choices:
+      - id: host
+        label: Promise a host every week
+        hours: 2
+        effects:
+          - { type: review, rating: 4, count: 2 }
+      - id: ignore
+        label: Smile and change nothing
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }

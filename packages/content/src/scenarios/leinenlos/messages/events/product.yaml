@@ -1,0 +1,199 @@
+# The boat, the sea and the guests on it.
+events:
+  - id: rough_week_review
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [tour.month >= 6, tour.month <= 9, tour.bookedWeek >= 6]
+    from: none
+    sender: A guest's review in draft
+    look: note
+    text: >-
+      A rough week: three guests were seasick and one is writing a review the length of a novel.
+      You have seen the first chapter. It is about soup.
+    defaultChoice: ignore
+    choices:
+      - id: reply
+        label: Reply kindly and offer a discount next year
+        hours: 2
+        effects:
+          - { type: review, rating: 4, count: 2 }
+      - id: refund
+        label: Refund part of the week
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: review, rating: 5, count: 2 }
+      - id: ignore
+        label: Let the review be
+        hours: 0
+        effects:
+          - { type: review, rating: 1, count: 2 }
+
+  - id: cook_quits
+    area: product
+    weight: 2
+    once: true
+    when: [tour.month == 6]
+    from: none
+    sender: The cook
+    look: note
+    text: >-
+      The cook has quit in June for a hotel kitchen with air conditioning. A good cook from Bodrum
+      would come at a premium; the owner's cousin would come tomorrow and cook rice.
+    defaultChoice: cousin
+    choices:
+      - id: premium
+        label: Hire the cook from Bodrum
+        hours: 3
+        effects:
+          - { type: fixedCost, id: cook_premium, name: Cook from Bodrum, monthlyCents: 50000 }
+      - id: cousin
+        label: The cousin, then
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 4 }
+
+  - id: mixed_group_clash
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 16
+    when: [shipped.cabin_sales == 1, tour.peak == 1]
+    from: none
+    sender: Your host
+    look: note
+    text: >-
+      A family with small children and a group of friends on a birthday trip are sharing the boat
+      this week. Breakfast was tense. Dinner may be worse.
+    defaultChoice: hope
+    choices:
+      - id: separate
+        label: Plan the days around both groups
+        hours: 4
+        effects:
+          - { type: review, rating: 4, count: 3 }
+      - id: hope
+        label: Hope it settles
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3 }
+
+  - id: water_maker
+    area: product
+    weight: 1
+    once: true
+    when: [asset.owned == 1]
+    from: none
+    sender: Your captain
+    look: note
+    text: >-
+      The water maker is failing. Guests can shower in salt water and smile about it, or you buy a
+      new one before the next departure.
+    defaultChoice: salt
+    choices:
+      - id: buy
+        label: Buy a new water maker
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -250000 }
+      - id: salt
+        label: Salt water showers it is
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3 }
+
+  - id: menu_tasting
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 6, week <= 18]
+    from: none
+    sender: A cook in Fethiye
+    text: >-
+      A cook with a following in Fethiye offers to design a menu for your charters, with a tasting
+      evening for your past customers. The cook's followers are very hungry.
+    defaultChoice: decline
+    choices:
+      - id: tasting
+        label: Hold the tasting evening
+        hours: 6
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: guests, segment: private_charters, count: 16, when: [shipped.chef_menu == 1] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: snorkel_gear
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 10]
+    from: none
+    sender: Your host
+    look: note
+    text: >-
+      Guests keep asking for snorkel gear and a paddle board. A set for the boat costs 1,200 EUR;
+      they would stop asking, and start posting.
+    defaultChoice: decline
+    choices:
+      - id: buy
+        label: Buy the gear
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -120000 }
+          - { type: review, rating: 5, count: 3 }
+      - id: decline
+        label: Not this year
+        hours: 0
+
+  - id: anchor_dispute
+    area: product
+    weight: 1
+    once: true
+    when: [tour.peak == 1]
+    from: none
+    sender: Your captain
+    look: note
+    text: >-
+      A bigger gulet took your favourite bay before you arrived, music included. The captain can
+      sail on to a quieter bay an hour away, which costs fuel and patience.
+    defaultChoice: stay
+    choices:
+      - id: sail_on
+        label: Sail on to the quiet bay
+        hours: 0
+        effects:
+          - { type: cash, amountCents: -20000 }
+          - { type: review, rating: 5, count: 2 }
+      - id: stay
+        label: Stay and share the bay
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }
+
+  - id: owner_sells_boat
+    area: product
+    weight: 1
+    once: true
+    when: [asset.shared == 1, week >= 30]
+    from: none
+    sender: Kaptan Murat
+    look: letter
+    text: >-
+      Kaptan Murat wants to sell "Mavi Rüya" and retire. He would give you first refusal, at a
+      friend's price, or you can manage another boat next season, or lose your weeks with his.
+    defaultChoice: wait
+    choices:
+      - id: other
+        label: Look for another boat to manage
+        hours: 6
+        effects:
+          - { type: energy, delta: -3 }
+      - id: wait
+        label: Wait and see
+        hours: 0
+        effects:
+          - { type: asset, id: gulet, option: none, chance: 0.3 }

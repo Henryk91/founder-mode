@@ -1,0 +1,207 @@
+# The sea, the gear and the boat.
+events:
+  - id: rough_june_week
+    area: product
+    weight: 2
+    once: true
+    when: [tour.month == 6, tour.bookedWeek >= 4]
+    from: none
+    sender: The forecast
+    look: note
+    text: >-
+      A rough week in June, and eighteen wreck dives are booked. The sheltered reef behind the
+      harbour wall is diveable. The wreck is not.
+    defaultChoice: wait
+    choices:
+      - id: shore
+        label: Offer shore dives on the reef instead
+        hours: 4
+        effects:
+          - { type: review, rating: 5, count: 4, when: [shipped.shore_dives == 1] }
+          - { type: review, rating: 2, count: 4, when: [shipped.shore_dives == 0] }
+      - id: refund
+        label: Refund the lost dives at once
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -100000 }
+          - { type: review, rating: 4, count: 2 }
+      - id: wait
+        label: Wait and see
+        hours: 0
+
+  - id: partner_keeps_seats
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when: [asset.shared == 1, tour.peak == 1]
+    from: none
+    sender: Captain Andreas Kyprianou
+    look: note
+    text: >-
+      Andreas needs your seats for his own divers on Saturday. Family, he says, though it is a
+      very large family from Stockholm.
+    defaultChoice: refund
+    choices:
+      - id: second_boat
+        label: Hire a second boat for the day
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: review, rating: 5, count: 2 }
+      - id: refund
+        label: Refund and apologise
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 3 }
+
+  - id: jellyfish_shallows
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [tour.month >= 6, tour.month <= 9]
+    from: none
+    sender: The lifeguards
+    look: note
+    text: >-
+      Jellyfish have filled the shallows for a week. Try dives from the shore are miserable; the
+      wreck at 40 metres is fine.
+    defaultChoice: carry_on
+    choices:
+      - id: pool_only
+        label: Run try dives in the pool only this week
+        hours: 3
+        effects:
+          - { type: review, rating: 4, count: 2, when: [shipped.pool_partnership == 1] }
+      - id: carry_on
+        label: Carry on with vinegar ready
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 2, when: [shipped.try_dive == 1] }
+
+  - id: out_of_air_drill
+    area: product
+    weight: 1
+    once: true
+    when: [shipped.entry_course == 1]
+    from: none
+    sender: Your instructor
+    look: note
+    text: >-
+      A student's out-of-air drill turned out not to be a drill. Everyone is fine, including the
+      student, who now loves you. The incident form is four pages long.
+    defaultChoice: skip
+    choices:
+      - id: review
+        label: Review the course and retrain
+        hours: 5
+        effects:
+          - { type: bugs, delta: -1 }
+      - id: skip
+        label: File the form and move on
+        hours: 0
+        effects:
+          - { type: review, rating: 3, count: 2 }
+
+  - id: rental_gear_worn
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 20
+    when: [week >= 20]
+    from: none
+    sender: Your divemaster
+    look: note
+    text: >-
+      Three regulators are free-flowing and two jackets leak. The rental sets have done a season;
+      the season has done them.
+    defaultChoice: patch
+    choices:
+      - id: replace
+        label: Replace the worst sets
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -180000 }
+      - id: patch
+        label: Patch them up
+        hours: 0
+        effects:
+          - { type: bugs, delta: 1 }
+
+  - id: tech_diver_offer
+    area: product
+    weight: 1
+    once: true
+    when: [week >= 12]
+    from: none
+    sender: A technical diving instructor
+    text: >-
+      A technical diver offers to run deep courses from your centre for a share of the fees, with
+      his own rebreathers. He has a beard that suggests depth.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Let him run courses for a share
+        hours: 2
+        effects:
+          - { type: cash, amountCents: 120000, when: [shipped.wreck_dives == 1] }
+          - { type: bugs, delta: 1 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: ear_injury
+    area: product
+    weight: 1
+    once: true
+    when: [shipped.try_dive == 1]
+    from: none
+    sender: A doctor at the clinic
+    look: letter
+    text: >-
+      A try diver hurt an ear coming down too fast. The doctor is calm, the guest less so, and the
+      guest's husband is writing a review in real time.
+    defaultChoice: apologise
+    choices:
+      - id: care
+        label: Visit, refund and follow up
+        hours: 4
+        effects:
+          - { type: cash, amountCents: -8000 }
+          - { type: review, rating: 4, count: 2 }
+      - id: apologise
+        label: Apologise by email
+        hours: 0
+        effects:
+          - { type: review, rating: 1, count: 2 }
+
+  - id: boat_full_complaint
+    area: product
+    weight: 1
+    once: true
+    when: [shipped.wreck_dives == 1, tour.peak == 1]
+    from: none
+    sender: A certified diver
+    look: note
+    text: >-
+      A diver complains that the boat had eleven divers and one guide, and that she saw the
+      wreck mainly through a cloud of fins. She has a point and a blog.
+    defaultChoice: ignore
+    choices:
+      - id: extra_guide
+        label: Add a divemaster on busy trips
+        hours: 2
+        effects:
+          - {
+              type: fixedCost,
+              id: extra_guide,
+              name: Extra guide on busy trips,
+              monthlyCents: 30000,
+            }
+          - { type: review, rating: 5, count: 3 }
+      - id: ignore
+        label: Thank her and change nothing
+        hours: 0
+        effects:
+          - { type: review, rating: 2, count: 2 }
