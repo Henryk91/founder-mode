@@ -538,8 +538,10 @@ bookings:
       unitCostShare: 0.27
     wine_list:
       capacity: 0
-      # Opening stock (est.).
+      # Opening stock (est.), and keeping it fresh: bottles that do not sell are written off
+      # (tuning 1, T2 round 1, est.).
       oneOffCents: 300000
+      monthlyCents: 30000
     online_reservations:
       capacity: 0
       monthlyCents: 5000
@@ -550,7 +552,8 @@ bookings:
       capacity: 80
       serves: [tourists, evening_locals]
       requires: fit_out
-      monthlyCents: 100000
+      # A Sunday crew at Sunday rates, whoever comes (1,000 until tuning 1; T2 round 1, est.).
+      monthlyCents: 150000
       unitCostShare: 0.28
     courtyard:
       prepared: true
@@ -572,7 +575,9 @@ bookings:
       capacity: 150
       serves: [office_lunch]
       requires: fit_out
-      monthlyCents: 60000
+      # The van share, crates and a standing order with the wholesaler (600 until tuning 1; T2
+      # round 1, est.).
+      monthlyCents: 120000
       unitCostCents: 100
       unitCostShare: 0.35
     delivery:
@@ -587,8 +592,9 @@ bookings:
       # changes, a packing station and insulated storage (25,000 EUR, estimate).
       oneOffCents: 2500000
       # The platform's tablet and a stock of packaging, and a minijob packer for the rush (plan 2
-      # audit, T2 round 2: about 600 EUR plus employer costs; est.).
-      monthlyCents: 150000
+      # audit, T2 round 2: about 600 EUR plus employer costs; est.); with the platform's monthly
+      # listing fee and minimum order guarantee, 2,500 (tuning 1, T2 round 2, est.).
+      monthlyCents: 250000
       unitCostCents: 150
       unitCostShare: 0.62
   roles:
