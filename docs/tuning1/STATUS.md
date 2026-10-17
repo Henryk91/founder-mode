@@ -1,12 +1,12 @@
 # Tuning run 1 status
 
 ## Current
-Step: 0, set up
-Last commit: (none yet)
+Step: 1, Leinen los
+Last commit: c3ba246 Tuning 1 step 0
 Next action: Step 1.1, measure owned assets fairly in the bot report (cash plus resale minus loan for G1, G2, D2, D3).
 
 ## Checklist
-- [ ] Step 0: set up (tag tuning1-start)
+- [x] Step 0: set up (tag tuning1-start)
 - [ ] Step 1: Leinen los (tag tuning1-gulet)
 - [ ] Step 2: Tiefgang (tag tuning1-dive)
 - [ ] Step 3: Rückenwind (tag tuning1-watersports)
