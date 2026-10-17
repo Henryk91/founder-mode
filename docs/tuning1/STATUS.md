@@ -2,7 +2,7 @@
 
 ## Current
 Step: complete (tag tuning1-complete)
-Last commit: 5777711 Tuning 1 step 5: older targets (Seeblick T6 diagnosed and open, Gratwanderung school demand researched, fingerprints for Hinterhof and Seeblick, step report) (tag tuning1-older)
+Last commit: 739fcdc Tuning 1 step 6: the full report (per scenario), backlog, final report
 Next action: none. Tuning plan 1 is complete; final report in docs/tuning1/reports/final.md, open targets in docs/BACKLOG.md section 3. Plan 5 is next when Henry starts it.
 
 ## Checklist
