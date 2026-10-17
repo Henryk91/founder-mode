@@ -190,3 +190,8 @@ Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/off
 - **Bots:** a careful guesthouse moves only when guests are turned away and a year's surplus carries twice the added rent.
 - **Open:** the annex is a large debt for a few peak weekends; moves come in runs already won and cost money there (T19 and T21, O3; O1 restated after review: moving costs at most 1 point).
 - **The established look:** once money coming in has covered all costs, the founder's living costs included, for eight months in a row, or on moving into stage 4 (target E1).
+
+## What changed in tuning 1, and why
+
+- **T7:** the careful bot prices the off season at the level guests state, not 0.85 of it; below what guests would pay a discount won almost nobody. T7 +5.7.
+- **T11:** project guests convert 0.8 under a strict cancellation policy (was 0.85: firms book rooms they may need to move); groups 1.0 (was 0.95: a group books its date on a contract with a deposit anyway). Strict leads for groups and leisure, flexible for project guests. Estimates.
