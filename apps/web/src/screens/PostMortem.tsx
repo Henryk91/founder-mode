@@ -132,6 +132,30 @@ export function PostMortem({ desk }: { desk: boolean }) {
         </li>
         {g.turnedAwayRecent > 0 && <li>{count('pm.guests.away', stage, g.turnedAwayRecent)}</li>}
         <li>{label('pm.guests.costs', stage, { amount: formatEuro(g.bookingCostsCents) })}</li>
+        {g.cancelledWeeks && g.cancelledWeeks.length > 0 && (
+          <>
+            <li>
+              {count('pm.guests.cancelledWeeks', stage, g.cancelledWeeks.length, {
+                lost: formatEuro(g.cancelledWeeks.reduce((t, x) => t + x.lostCents, 0)),
+                saved: formatEuro(g.cancelledWeeks.reduce((t, x) => t + x.savedCents, 0)),
+                cost: formatEuro(g.cancelledWeeks.reduce((t, x) => t + x.costCents, 0)),
+              })}
+            </li>
+            {g.cancelledWeeks.map((x) => (
+              <li key={x.week}>
+                {label('pm.guests.cancelledWeek', stage, {
+                  week: x.week,
+                  cabins: x.cabins,
+                  lost: formatEuro(x.lostCents),
+                  saved: formatEuro(x.savedCents),
+                })}
+              </li>
+            ))}
+            {g.cancelledWeeks.some((x) => x.lostCents > x.savedCents) && (
+              <li>{label('pm.guests.cancelledLesson', stage)}</li>
+            )}
+          </>
+        )}
         {g.wasteCents !== undefined && g.wasteCents > 0 && (
           <li>{label('pm.guests.waste', stage, { amount: formatEuro(g.wasteCents) })}</li>
         )}

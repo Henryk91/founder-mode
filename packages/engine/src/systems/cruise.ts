@@ -1,7 +1,15 @@
 import type { BookingsConfig } from '@founder-mode/content'
 import type { Rng } from '../rng'
-import type { Booking, CruiseView, FeatureId, GameState, ReportEntry } from '../types'
-import { assetFactor } from './assets'
+import type {
+  Booking,
+  CancelledWeek,
+  CruiseView,
+  FeatureId,
+  GameState,
+  ReportEntry,
+} from '../types'
+import { costFactor } from './abroad'
+import { assetFactor, assetOf } from './assets'
 
 // Plan 4 (docs/scenario-gulet.md section 6): selling a cruise week. Weeks held for whole-boat
 // bookings, the minimum to sail (cancelled three weeks out), friction among strangers on one
@@ -28,22 +36,28 @@ const cabinsOf = (units: number, perUnit: number) => Math.ceil(units / perUnit)
 export function applyMinSail(
   state: GameState,
   bookings: Booking[],
-): { held: number[]; costsCents: number; badReviews: number; entries: ReportEntry[] } {
+): {
+  held: number[]
+  costsCents: number
+  badReviews: number
+  entries: ReportEntry[]
+  cancelled: CancelledWeek | null
+} {
   const cfg = state.scenario.bookings!
   const m = cfg.minSail
   const b = state.bookings!
   const held = [...(b.held ?? [])]
   const setting = b.minSail
-  if (!m || !setting || setting.min === 0)
-    return { held, costsCents: 0, badReviews: 0, entries: [] }
+  const none = { held, costsCents: 0, badReviews: 0, entries: [], cancelled: null }
+  if (!m || !setting || setting.min === 0) return none
   const t = state.week + m.weeksBefore
   const mine = bookings.filter(
     (x) => x.productId === m.product && x.week === t && x.status === 'booked',
   )
   const units = mine.reduce((s, x) => s + x.units, 0)
-  if (units === 0) return { held, costsCents: 0, badReviews: 0, entries: [] }
+  if (units === 0) return none
   const cabins = cabinsOf(units, m.perUnit)
-  if (cabins >= setting.min) return { held, costsCents: 0, badReviews: 0, entries: [] }
+  if (cabins >= setting.min) return none
   let cost = 0
   for (const x of mine) {
     x.status = 'company_cancelled'
@@ -51,12 +65,42 @@ export function applyMinSail(
   }
   if (setting.move) cost += cabins * m.moveCents
   if (!held.includes(t)) held.push(t)
+  const lost = mine.reduce((s, x) => s + x.units * x.priceCents, 0)
   return {
     held,
     costsCents: cost,
     badReviews: setting.move ? 0 : mine.length,
     entries: [{ kind: 'cruise_cancelled', week: t, cabins, moved: setting.move, costCents: cost }],
+    cancelled: {
+      week: t,
+      cabins,
+      lostCents: lost,
+      savedCents: sailingCost(state, units, lost),
+      costCents: cost,
+    },
   }
+}
+
+/**
+ * Tuning 1: what sailing a week of the minimum's product with these guests would have cost: the
+ * boat's crew, food and fuel for a week (owned or leased) or the owner's share (managed), and
+ * the costs per guest. Only the deposits were refunded, so the rest is what the week gave up.
+ */
+function sailingCost(state: GameState, units: number, grossCents: number): number {
+  const cfg = state.scenario.bookings!
+  const product = cfg.minSail!.product
+  const local = (kind: 'roles' | 'unitCosts') =>
+    cfg.costSteps ? costFactor(state.scenario, state.week, kind) : 1
+  let cost = Math.round(units * (cfg.products[product]?.unitCostCents ?? 0) * local('unitCosts'))
+  const found = assetOf(cfg, product)
+  if (!found) return cost
+  const [id, a] = found
+  const option = state.bookings!.assets?.[id]?.option
+  if (option === 'buy') cost += Math.round((a.buy?.crewWeekCents ?? 0) * local('roles'))
+  if (option === 'lease') cost += Math.round((a.lease?.crewWeekCents ?? 0) * local('roles'))
+  if (option === 'share' && a.share)
+    cost += units * a.share.unitCents + Math.round(grossCents * a.share.revenueShare)
+  return cost
 }
 
 /**

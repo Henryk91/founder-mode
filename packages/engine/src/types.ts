@@ -381,6 +381,21 @@ export type BookingsState = {
   held?: number[]
   /** Plan 4: the minimum to sail, in cabins (0 sails with any), and since when it holds. */
   minSail?: { min: number; move: boolean; sinceWeek: number }
+  /** Tuning 1: each week cancelled below the minimum to sail, for the post-mortem. */
+  cancelledWeeks?: CancelledWeek[]
+}
+
+/**
+ * Tuning 1: a cruise week cancelled below the minimum to sail. `lostCents` is what its guests
+ * would have paid; `savedCents` what sailing it would have cost (crew, food and fuel, the
+ * owner's share, costs per guest); `costCents` what cancelling cost (refunds or moving guests).
+ */
+export type CancelledWeek = {
+  week: number
+  cabins: number
+  lostCents: number
+  savedCents: number
+  costCents: number
 }
 
 /** Plan 4: how the company has an asset. */
@@ -2402,6 +2417,8 @@ export type GuestsEconomics = {
   contracts?: { permanent: number; part_time: number; seasonal: number }
   /** Plan 4: day conditions, the course ladder, trips and the tender. */
   abroad?: AbroadEconomics
+  /** Tuning 1: weeks cancelled below the minimum to sail. Absent without a minimum to sail. */
+  cancelledWeeks?: CancelledWeek[]
   /** Plan 4: each asset: how it was had, what it cost, its value at the start and the end. */
   assets?: AssetEconomics[]
 }

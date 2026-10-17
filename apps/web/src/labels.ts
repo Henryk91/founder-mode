@@ -1330,6 +1330,14 @@ const labels = {
   'pm.guests.away.one': '1 guest was turned away for lack of room in the last 12 weeks.',
   'pm.guests.away.other': '{n} guests were turned away for lack of room in the last 12 weeks.',
   'pm.guests.costs': 'Shifts and costs per guest came to {amount}.',
+  'pm.guests.cancelledWeeks.one':
+    '1 week was cancelled below your minimum to sail: {lost} of guests given up to save {saved} of sailing costs, and cancelling cost {cost}.',
+  'pm.guests.cancelledWeeks.other':
+    '{n} weeks were cancelled below your minimum to sail: {lost} of guests given up to save {saved} of sailing costs, and cancelling cost {cost}.',
+  'pm.guests.cancelledWeek':
+    'Week {week}, cabins sold {cabins}: {lost} given up, {saved} saved.',
+  'pm.guests.cancelledLesson':
+    'Once the boat is paid for, a half-empty week costs little more than food and fuel. A cancelled one earns nothing.',
   'pm.guests.rating': 'rated {rating} from {reviews} reviews',
   'pm.guests.noRating': 'no reviews',
   'pm.heading.luck': 'Luck',
