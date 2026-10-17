@@ -301,7 +301,7 @@ Not found from a current source, so still estimates: the beach licence fee and h
 | Peak months | July and August | June to September | The engine has two seasons |
 | Requests at peak, before reach and fit | hotel 60 to 200, learners 15 to 50, regulars 8 to 30 | hotel 80 to 210, learners 9 to 31, regulars 4.5 to 17 | Tuned (T1 and T3) |
 | Wing and kite instructors, June to September | scarce | 5, 4, 4, 5 shifts a week available | W2 round 1 |
-| Kite course | 420 | 1.9 times a course place (about 418 at the start), appeal 0.25 | W2 round 2 |
+| Kite course | 420 | 1.9 times a course place (about 418 at the start); 12% of learners and wind regulars come for kite alone (`ownDemand`, tuning 1; appeal 0.25 in plan 4); a trip day's van and fuel 70 (was 40) | W2 round 2; tuning 1 |
 | eFoil | 120 an hour | 2.7 times an activity (108 at the start), appeal 0.05, 40 a unit in wear, hotel guests only | W5 |
 | Strict cancellation policy | | learners convert 0.82, wind regulars 0.78 | T11 rounds 1 and 2 |
 | Permanent and part time contracts | | 525 and 320 a week | 1,500 a month gross in 14 payments with employer costs (est.) |

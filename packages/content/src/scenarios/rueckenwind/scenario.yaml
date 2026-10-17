@@ -587,14 +587,16 @@ bookings:
       capacity: 6
       serves: [learners, wind_regulars]
       runsIn: [good, strong]
-      # About 450 for three trip days (est.). Few guests come for kiting alone: it fills up
-      # when the bay's own courses are full (decisions, plan 4 step 2).
+      # About 450 for three trip days (est.).
       priceFactor: 1.9
-      appeal: 0.25
+      # Tuning 1 (W2): people who come to learn to kite, on top of the segments' other guests,
+      # instead of a share of the bay's own course guests (appeal 0.25 in plan 4).
+      ownDemand: 0.12
       # Three kite sets at 1,900 and radio helmets (est.).
       oneOffCents: 600000
       unitCostCents: 1000
-      dayTrip: { perTrip: 3, days: 3, costCents: 4000 }
+      # The van, fuel and the parking at the spot, per trip day (4,000 in plan 4; tuning 1, W2).
+      dayTrip: { perTrip: 3, days: 3, costCents: 7000 }
       course:
         level: kite_basic
         sameStay: { share: 0.2, products: [kite_trips] }

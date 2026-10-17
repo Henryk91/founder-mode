@@ -446,6 +446,10 @@ export const BookingProductSchema = z.object({
   // How readily a guest picks this product among those with room, against 1 for the others.
   // With any product naming it, guests pick by these weights instead of by the most room.
   appeal: z.number().positive().optional(),
+  // Tuning 1: guests who come for this product alone, as a share of each segment it serves
+  // (their own requests on top of the segment's); the segment's other guests never pick it.
+  // Absent: it shares the segment's guests with the other products.
+  ownDemand: Share.optional(),
   // Plan 4 (the refit): shipping it closes an asset for some weeks, and once shipped these
   // segments would pay this much more (their willingness to pay times the factor).
   closesAsset: z.object({ asset: Id, weeks: z.number().int().positive() }).optional(),

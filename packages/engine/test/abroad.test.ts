@@ -264,6 +264,30 @@ describe('day trips', () => {
     expect(wasted).toBeGreaterThan(0)
   })
 
+  it('with guests of its own (tuning 1), sells only to them, and the others never pick it', () => {
+    const base = abroadScenario().bookings!
+    const own = {
+      products: {
+        ...base.products,
+        allergy_filter: { ...base.products['allergy_filter']!, ownDemand: 0.5 },
+      },
+    }
+    const both = ['allergy_filter', 'basic_ordering']
+    const count = (s: GameState, id: string) =>
+      s.bookings!.bookings.filter((b) => b.productId === id && b.segmentId === 'medical').length
+    const shared = run(shipped(game('own', {}), both), 12, { platform: true })
+    const alone = run(shipped(game('own', own), both), 12, { platform: true })
+    expect(count(alone, 'allergy_filter')).toBeGreaterThan(0)
+    // Its own guests come on top: the medical course guests are not drawn away to the trips.
+    expect(count(alone, 'basic_ordering')).toBeGreaterThanOrEqual(count(shared, 'basic_ordering'))
+    // With no trips run, its guests never ask, so nobody is turned away for it.
+    const closed = shipped(game('own', own), both)
+    const never = run(endWeek(closed, plan(bp({ trips: { min: null } }))).state, 12, {
+      platform: true,
+    })
+    expect(count(never, 'allergy_filter')).toBe(0)
+  })
+
   it('needs a staff shift per trip day', () => {
     const s = run(shipped(game('noshift'), ['allergy_filter']), 10, { platform: true, shifts: {} })
     expect(s.bookings!.abroad!.trips!.run).toBe(0)
