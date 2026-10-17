@@ -56,6 +56,17 @@ Details and options in `docs/autonomous3/STATUS.md`, `docs/autonomous2/STATUS.md
 
 These are better as their own small tuning plan than mixed into a content plan.
 
+### Patterns across the open targets (review after plan 4)
+
+| Pattern | Seen in | Proposed fix |
+|---|---|---|
+| Segments that book months ahead are weak in a run that starts close to the season | Leinen los charters and retreats (T3, G3), Tiefgang dive clubs (T3) | Start these runs earlier (Leinen los in October, a full winter of selling), or let long-lead segments arrive with bookings already in the pipeline |
+| Owned assets are judged on cash only, so their remaining value is ignored | Leinen los G1, Tiefgang D3 | Count the asset's resale value minus the loan left in the target comparison (the post-mortem already has "net of the boat"). A measurement fix, not a value change |
+| A single-choice bot beats the careful bot | Leinen los (always lease 41.4% against careful 30.9%), Tiefgang (naive careful 29.9% against 25.8%) | Fix the careful bot first: managing the gulet in season 1 costs about 10 points when the lease is this cheap |
+| The minimum to sail always loses | Leinen los G4 | Probably correct: once the boat is paid for, a half-empty cruise beats a cancelled one. Keep it as a trap the post-mortem explains (marginal cost), and restate G4 |
+| Staff contracts in seasonal businesses | T14 in every tourism scenario, Rückenwind most | A contract that sleeps in winter (the Spanish fijo discontinuo), or restate T14 for seasonal businesses |
+| "At the limit" used for results outside their margin | Tiefgang T6 (+1.0 ±1.6 against at least 3) | Count it as failing |
+
 ## 4. Features not in any plan
 
 | Item | Notes |
