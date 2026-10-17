@@ -224,3 +224,8 @@ Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/off
 - **Bots:** a careful restaurant moves only when guests are turned away and a year's surplus carries twice the added rent; it lists the stage in the bank's plan when its money falls short.
 - **Open:** the moves come in runs already won and cost money there (T19 and T21, O3; O1 restated after review: moving costs at most 1 point).
 - **The established look:** once money coming in has covered all costs, the founder's living costs included, for eight months in a row, or on moving into stage 4 (target E1).
+
+## F. What changed in tuning 1, and why
+
+- **T2 (the no-tests bot won 16.3%):** services a restaurant runs whether or not guests come cost more each month: Sundays 1,500 (was 1,000: a Sunday crew at Sunday rates), catering 1,200 (was 600: the van share, crates, a standing order), the wine list 300 a month on top of its opening stock (bottles written off), and the delivery set-up 2,500 (was 1,500: the platform's listing fee and minimum order). Estimates. No tests 6.5% ±1.5 (at the limit), careful 23.0% ±2.6 (at the limit of 25), 1,000 seeds.
+- **T7 (seasonal pricing):** the careful bot prices the off season at the level guests state, not 0.85 of it; a discount below what they would pay won almost nobody. T7 +5.5.
