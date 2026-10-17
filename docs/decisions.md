@@ -799,3 +799,8 @@ Bots and content:
 
 - T7 passes since step 4 (+5.5 here).
 - T2, the Tiefgang approach (a product nobody books still costs something each month). Round 1: Sundays 1,500 a month (was 1,000), catering 1,200 (was 600), the wine list 300 a month: no tests 8.3%, careful 23.2%. Round 2, also the delivery set-up 2,500 a month (was 1,500): no tests 6.5% ±1.5 (at the limit, pass), careful 23.0% ±2.6 (at the limit of 25, pass), T6 +2.0 ±1.4 (at the limit), T17 gap +23.5. Round 3, Sundays back at 1,000: careful 26.4% but no tests 8.7% (fails); reverted to round 2. All estimates.
+
+### Seeblick
+
+- T7 passes since step 4 (+5.7 here).
+- T11 (strict and flexible each lead in some split): round 1, project guests convert 0.75 under a strict policy (was 0.85; firms book rooms they may move): flexible leads for them (-12.6) but strict nowhere. Round 2, 0.8: strict leads only within its margin. Round 3, also groups 1.0 (was 0.95: a group books its date on a contract with a deposit anyway): strict ahead +1.6 overall, groups +6.1, leisure +4.4, project guests -6.3: pass. Other targets unchanged within their margins (careful 33.1%). Estimates.
