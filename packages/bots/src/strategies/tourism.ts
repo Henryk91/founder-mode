@@ -133,6 +133,15 @@ const BUG_LIMIT = 2
 const SEATS_FULL = 0.5
 /** Plan 4: a segment whose smallest booking is this many units books the whole boat. */
 const WHOLE_BOAT = 12
+/**
+ * Tuning 1: the careful bot's boat choice from expected weeks. Before a season shows how many
+ * weeks fill, it expects a whole-boat market to sail this share of the season's weeks, and a
+ * cabin market this share with this many of the sixteen places sold (about what leased boats
+ * sailed in their first season, 300 seeds).
+ */
+const WHOLE_FILL = 0.6
+const CABIN_FILL = 0.72
+const CABIN_PLACES = 12
 /** A product costing this share of its price or more is not worth adding (step 6). */
 const THIN_MARGIN_SHARE = 0.5
 /** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
@@ -794,14 +803,51 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         const wholeBoat =
           !!cfg.hold && target !== null && (cfg.segments[target]?.size.min ?? 0) >= WHOLE_BOAT
         if (now === 'none' && target === null && view.week < 4 && cfg.hold) continue
-        if (now === 'none') want = wholeBoat && leaseAffordable(view) ? 'lease' : 'share'
-        else if (now === 'share' && seatsFull() && (!cfg.hold || leaseAffordable(view)))
-          want = 'lease'
+        if (cfg.hold) {
+          // Tuning 1: a gulet by expected value. Lease when the weeks it expects to fill pay
+          // the season's fee better than managing would; manage when they are few.
+          if ((now === 'none' || now === 'share') && leaseAffordable(view) && leaseWorth(view))
+            want = 'lease'
+          else if (now === 'none') want = 'share'
+        } else if (now === 'none') want = wholeBoat && leaseAffordable(view) ? 'lease' : 'share'
+        else if (now === 'share' && seatsFull()) want = 'lease'
       }
       const choice = want && want !== now ? pick(want) : undefined
       if (choice) out.push({ messageId: m.id, choiceId: choice.id })
     }
     return out
+  }
+
+  /**
+   * Tuning 1: whether a gulet's next season should be leased. The weeks it expects to fill (from
+   * the last season where the boat sailed, with groups turned away, else from the market it
+   * targets) against the weeks a lease needs to pay its fee and the year's company and living
+   * costs. Lease when they are enough; manage when they are few. Null without a target or terms.
+   */
+  function leaseWorth(view: PlayerView): boolean | null {
+    const bv = view.bookings!
+    const a = bv.assets[0]
+    const lease = a?.terms.lease
+    if (!a || !lease || target === null) return null
+    const seg = cfg.segments[target]
+    const prices = bv.prices[target]
+    if (!seg || !prices) return null
+    const whole = seg.size.min >= WHOLE_BOAT
+    const capacity = cfg.products[a.products[0]!]?.capacity ?? 16
+    const season = Math.round((lease.months.length * 52) / 12)
+    const peakWeeks = Math.round(
+      (lease.months.filter((m) => cfg.peakMonths.includes(m)).length * 52) / 12,
+    )
+    const price = (prices.peak * peakWeeks + prices.off * (season - peakWeeks)) / season
+    const places = whole ? capacity : Math.min(capacity, CABIN_PLACES)
+    const net = places * price * (1 - bv.platform.commission / 2) - lease.crewWeekCents
+    let weeks = season * (whole ? WHOLE_FILL : CABIN_FILL)
+    if (a.weeksUsed > 0 && view.week > 26) {
+      const away = bv.segments.reduce((t, x) => t + x.turnedAwayLast4, 0) / places
+      weeks = Math.min(season, a.weeksUsed / Math.ceil(view.week / 52) + away)
+    }
+    const costs = 13 * (view.company.monthlyFixedCostsCents + view.founder.livingCostCentsPerMonth)
+    return net > 0 && weeks >= (lease.seasonCents + costs) / net
   }
 
   function answer(view: PlayerView): { messageId: string; choiceId: string }[] {

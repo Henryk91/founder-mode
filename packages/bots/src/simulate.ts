@@ -1,5 +1,6 @@
 import type { Scenario } from '@founder-mode/content'
 import {
+  assetsEconomics,
   bookingTotals,
   createGame,
   endWeek,
@@ -96,6 +97,11 @@ export type RunResult = {
   customersEnd: number
   /** Company cash plus personal savings at the end. */
   finalWealthCents: number
+  /**
+   * Tuning 1: final wealth plus the resale value of owned assets, less the loans left. Equal to
+   * `finalWealthCents` in scenarios without assets. The asset targets compare money with it.
+   */
+  netWealthCents: number
   /** Week of the offer to the one hire, or null when nobody was hired. */
   hiredWeek: number | null
   hiredRole: 'developer' | 'salesperson' | null
@@ -472,6 +478,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     ),
     customersEnd: state.customers.filter((c) => c.churnedWeek === null).length,
     finalWealthCents: state.company.cashCents + state.founder.savingsCents,
+    netWealthCents: netWealth(state),
     hiredWeek: state.team.members[0]?.offerWeek ?? null,
     hiredRole: state.team.members[0]?.role ?? null,
     pacingWeeks,
@@ -650,4 +657,17 @@ function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
         }
       : {}),
   }
+}
+
+/** Cash and savings, plus what owned assets would sell for, less the loans left (tuning 1). */
+function netWealth(state: GameState): number {
+  const cash = state.company.cashCents + state.founder.savingsCents
+  const assets = assetsEconomics(state)
+  if (!assets) return cash
+  const owned = assets.reduce((t, a) => t + (a.option === 'buy' ? (a.valueEndCents ?? 0) : 0), 0)
+  const owed = (state.loan?.loans ?? []).reduce(
+    (t, l) => t + (l.status === 'repaid' ? 0 : l.balanceCents),
+    0,
+  )
+  return cash + owned - owed
 }
