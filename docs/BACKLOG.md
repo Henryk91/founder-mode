@@ -2,7 +2,7 @@
 
 Everything planned or discussed that no plan builds yet. When a plan picks an item up, move it to that plan. When a plan leaves something out or opens an issue, add it here.
 
-Last updated: 16 October 2026, when plans 4 and 5 were written.
+Last updated: 17 October 2026, at the end of plan 4.
 
 ## 1. Left out of plan 4 (the abroad scenarios)
 
@@ -16,7 +16,13 @@ Last updated: 16 October 2026, when plans 4 and 5 were written.
 | A currency system | Everything is in euros. Turkey's rising local costs are a flat step in year 2 |
 | Package travel law for the gulet | Selling cruises from Germany may count as package travel, with insolvency insurance |
 | New mockups or a new visual style for the abroad screens | Plan 4 reuses existing components |
-| Tuning beyond the first-pass budget | Targets still failing after plan 4 land in section 2 |
+| Tuning beyond the first-pass budget | Plan 4's open targets are in section 3 |
+| Buying the rescue boat in Rückenwind | Leased in season only; the asset mechanic could carry it |
+| Gear as a fleet in Rückenwind | Buying more boards and rigs is one purchase per product, not a growing fleet |
+| A separate skipper and crew on the roster | Crew is a cost per week the boat is used; the roster cannot require several roles together |
+| A shop and compressor help role in Tiefgang | An event's summer job instead |
+| Three seasons of prices | The engine has peak and off season; the abroad specs have a shoulder |
+| A tender for Tiefgang's harbour berth or Leinen los's mooring | Only Rückenwind's beach licence is tendered |
 | A surf school in Portugal | Atlantic swell, a different business from wind sports. A possible fourth abroad scenario |
 
 ## 2. Left out of plan 5 (the leisure scenarios)
@@ -44,6 +50,9 @@ Details and options in `docs/autonomous3/STATUS.md`, `docs/autonomous2/STATUS.md
 | Seeblick | T6, T7, T11 |
 | Gratwanderung | School group demand well above the spec |
 | All four long modes | O3 (no office stage is always right; offices are rarely taken) |
+| Rückenwind (plan 4) | T7 (seasonal pricing, -2.1), T14 (permanent and part time contracts in a business closed all winter), W2 (never running kite trips is ahead) |
+| Tiefgang (plan 4) | T2 (the no-tests bot wins about a fifth), T3 (dive clubs about 5%), D3 (the seats bot's wins hold the most money), T6 and L2 (at their limits) |
+| Leinen los (plan 4) | T3 (charters and retreats well behind cabin-led runs), T5, T6, T11, E1, G1 (buying rarely best), G3 (holding weeks), G4 (the minimum to sail). T4, T9, T14 and the loan targets T15 to T18 do not apply as written |
 
 These are better as their own small tuning plan than mixed into a content plan.
 
