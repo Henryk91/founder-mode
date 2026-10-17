@@ -211,7 +211,7 @@ This is a back of the envelope expectation. The bot report is the real answer.
 
 ## 16. Scenario targets
 
-On top of T1 to T18 and E1 (`docs/balancing.md`). T9 (staffing) applies only to owners. T14 (contracts) applies to the crew. Office targets T19 to T21 do not apply.
+On top of T1 to T18 and E1 (`docs/balancing.md`). As built (tuning 1): T4 is judged on the first season's first month (by week 35), since no cruise sails before May; T9, T14, T15 to T18 and the office targets T19 to T21 do not apply (the crew is a weekly cost, not staff on contracts; the bank lends only to owners; one office stage).
 
 | # | Target |
 |---|---|
@@ -243,7 +243,7 @@ Not found from a current source, so still estimates: the lease and management te
 | Managing | the owner keeps 75%; July and August his unless six shoulder weeks are sold by March | 70%, three weeks | Round 2; the owner's share comes off revenue net of the platform's cut (decisions) |
 | Buying | 450,000 for 24 m, the bank lends 70% | 200,000 for an older, smaller gulet, the bank lends 80% | The own-money rule left no way to buy (G1 round 1) |
 | Cabin guests | 8 to 30 a week | 8 to 30 (12 to 36 in plan 4) | Back to the spec with requests ahead (tuning 1) |
-| Private charters | 0.2 to 1.0 boats a week | 3.2 to 16 places (0.2 to 1.0 boats; 5 to 20 places in plan 4) | Back to the spec with requests ahead (tuning 1) |
+| Private charters | 0.2 to 1.0 boats a week, booking 8 to 40 weeks ahead | 3.2 to 16 places (0.2 to 1.0 boats; 5 to 20 places in plan 4), booking 4 to 20 weeks ahead | Back to the spec with requests ahead; the shorter lead time (an estimate) made the cancellation policy a decision (T11, tuning 1) |
 | Friction | 0.2 per mixed week | 0.2 per mixed week, 0.5 of review quality | As spec; the first version compounded it per group |
 | The chef's menu | +250 a week in food | in the charter's cost per place | Not a cost in weeks without charters |
 | Crew when owning | four roles on seasonal contracts | a crew cost per week sailed (3,550 with food and fuel) | The roster cannot require several roles together (decisions, step 3) |

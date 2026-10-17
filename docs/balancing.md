@@ -4931,6 +4931,14 @@ Share of weeks with at least one noteworthy thing: a new message, new leads, a l
 
 # Tuning notes
 
+## Leinen los: targets that do not apply (tuning 1)
+
+- T9 (staffing): the only role is the host, one a week; the crew is a cost per week sailed. Nothing to over- or understaff.
+- T14 (contracts): no staff contracts, for the same reason.
+- T15 to T18 (the loan targets): the bank lends only to owners, and the careful bot never buys, so it never borrows.
+- T19 to T21 (office stages): one stage only.
+- T4 is restated for runs that start out of season (the first season's first month); see `docs/decisions.md`, tuning 1 step 1.
+
 Tuning steps per scenario, newest last. Each one lists the change, the reason, and the effect on the targets. Details are in `docs/decisions.md`.
 
 ## Kantino
