@@ -218,7 +218,7 @@ On top of T1 to T18 and E1 (`docs/balancing.md`). T9 (staffing) applies only to 
 | G1 | No boat option is always right: on paired seeds, each of `always_manage`, `always_lease` and `always_buy` has the best result of the three in at least 15% of the seeds where they differ. Money counts net of the boat: cash plus the owned boat's resale value less the loan left (restated in tuning 1) |
 | G2 | Owning is risky: `always_buy` ends bankrupt or with the loan called at least 10 points more often than `always_manage`, and its median final money net of the boat (cash plus resale value less the loan left) among its wins is the highest of the three (restated in tuning 1) |
 | G3 | Holding weeks is a decision: a bot that holds every peak week for charters and a bot that never holds each lose to the careful bot by at least 2 points |
-| G4 | The minimum to sail is a decision: always sailing and sailing only with 6 or more each lead in some segment split, and neither is ahead by more than 5 points overall |
+| G4 | Sailing half-empty beats cancelling: always sailing beats a minimum of six cabins by at least 3 points, and the post-mortem shows each cancelled week's lost revenue against the costs it saved (restated in tuning 1; was: the minimum to sail is a decision, each leading in some segment split and neither more than 5 points ahead) |
 
 ## 17. Sources and values as built
 

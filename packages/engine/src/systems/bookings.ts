@@ -688,6 +688,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   if (cfg.minSail) {
     const ms = applyMinSail({ ...state, bookings: b }, bookings)
     b = { ...b, held: ms.held }
+    if (ms.cancelled) b = { ...b, cancelledWeeks: [...(b.cancelledWeeks ?? []), ms.cancelled] }
     out.costsCents += ms.costsCents
     out.entries.push(...ms.entries)
     minSailReviews = ms.badReviews

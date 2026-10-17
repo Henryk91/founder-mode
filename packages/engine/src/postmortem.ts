@@ -279,6 +279,7 @@ export function guestsEconomics(state: GameState): GuestsEconomics | null {
           wasteCents: b.wasteCents ?? 0,
         }
       : {}),
+    ...(cfg.minSail ? { cancelledWeeks: (b.cancelledWeeks ?? []).map((x) => ({ ...x })) } : {}),
     ...(b.abroad
       ? {
           abroad: {

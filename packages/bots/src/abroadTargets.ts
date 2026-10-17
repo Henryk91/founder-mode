@@ -245,14 +245,12 @@ export function guletTargets(
       const seeds = all.filter((i) => careful.results[i]!.viableSegment === mk)
       return { mk, p: pairedOn(always, six, seeds) }
     })
-    const sixAhead = splits.some((x) => x.p.change - x.p.margin > 0)
-    const alwaysAhead = splits.some((x) => x.p.change + x.p.margin < 0)
     out.push({
       id: 'G4',
-      text: 'The minimum to sail is a decision: always sailing and sailing only with 6 or more each lead in some segment split, and neither is ahead by more than 5 points overall',
-      value: `six ahead by ${signed(overall.change)} overall; ${splits.map((x) => `${x.mk} ${signed(x.p.change)}`).join(', ')}`,
+      text: 'Sailing half-empty beats cancelling: always sailing beats a minimum of six cabins by at least 3 points (restated in tuning 1: a trap whose lesson the post-mortem shows, each cancelled week with what it gave up and what it saved)',
+      value: `always sailing ahead by ${signed(-overall.change)} overall; ${splits.map((x) => `${x.mk} ${signed(-x.p.change)}`).join(', ')}`,
       margin: fmtMargin(overall.margin),
-      pass: sixAhead && alwaysAhead && Math.abs(overall.change) - overall.margin <= 5,
+      pass: overall.change - overall.margin <= -3,
     })
   }
   return out

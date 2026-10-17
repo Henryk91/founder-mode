@@ -972,3 +972,4 @@ See `docs/abroad-mechanics.md`. Every new content field is optional with no defa
 
 - Content, `BookingsConfig.requestsAhead?: boolean`: requests follow the season of the weeks they ask for (the week made plus each lead time alike), and each request's lead time is drawn in proportion to those weeks' season. Absent: the season of the week they are made, as before. Leinen los only.
 - Bots: `RunResult.netWealthCents`, final cash and savings plus owned assets' resale value less the loans left (equal to `finalWealthCents` without assets). The asset targets compare money with it. `assetsEconomics` is exported from the engine.
+- State: `BookingsState.cancelledWeeks?: CancelledWeek[]` (`{ week, cabins, lostCents, savedCents, costCents }`), added when a week is cancelled below the minimum to sail. Post-mortem: `GuestsEconomics.cancelledWeeks?` (present where the scenario has a minimum to sail), shown as a total line, a line per week and the marginal cost lesson.

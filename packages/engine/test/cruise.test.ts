@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import type { BookingsConfig } from '@founder-mode/content'
-import { createGame, endWeek, getView, replay, toSave, validatePlan } from '../src/index'
+import {
+  createGame,
+  endWeek,
+  getView,
+  replay,
+  toSave,
+  validatePlan,
+} from '../src/index'
 import { canFinance } from '../src/systems/loan'
+import { guestsEconomics } from '../src/postmortem'
 import type { BookingsPlan, GameState, WeekPlan } from '../src/types'
 import { abroadScenario, conditions, STATES } from './abroad'
 import { plan } from './helpers'
@@ -173,6 +181,13 @@ describe('cruise weeks', () => {
       ),
     ).toBe(true)
     expect(m.bookings!.reviews).toBeLessThan(r.bookings!.reviews)
+    // Tuning 1: the post-mortem gets each cancelled week, what it gave up and what it saved.
+    const weeks = guestsEconomics(m)!.cancelledWeeks!
+    expect(weeks.length).toBeGreaterThan(0)
+    expect(weeks[0]!.lostCents).toBeGreaterThan(0)
+    expect(weeks[0]!.costCents).toBeGreaterThan(0)
+    // A managed boat: sailing would have cost the owner's three quarters of the takings.
+    expect(weeks[0]!.savedCents).toBeGreaterThanOrEqual(Math.round(weeks[0]!.lostCents * 0.75))
     // The minimum stays for its weeks.
     expect(validatePlan(r, plan(bp({ minSail: { min: 0, move: false } })))).toEqual([])
     const fresh = endWeek(start('lock'), plan(bp({ minSail: { min: 4, move: false } }))).state
