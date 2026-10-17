@@ -286,7 +286,7 @@ segments:
     description: Clubs and dive travel organisers from Germany, Britain and Scandinavia booking a week for a group. They plan most of a year ahead and negotiate hard
     size: { min: 600, max: 1500 }
     # Per dive in a club week of about 50 EUR (est., 0.7 to 1.0 times the list price).
-    wtpCents: { min: 4200, max: 6000 }
+    wtpCents: { min: 5000, max: 7000 }
     mustHave: [group_packages, wreck_dives]
     channelResponse:
       cold_email: { min: 0.02, max: 0.04 }
@@ -335,8 +335,9 @@ officeStages:
     capacity: { try_dive: 40, entry_course: 12 }
 
 organisedAt: [covers_all_costs]
-# Plan 3: the established look once money in has covered all costs for these months in a row.
-establishedAt: { monthsCoveringAll: 8 }
+# Plan 3: the established look once money in has covered all costs for these months in a row
+# (8 until tuning 1; 7 after the upkeep of step 2 kept E1 under 40% of the wins).
+establishedAt: { monthsCoveringAll: 7 }
 
 # The bank loan (docs/loan-proposal.md): for the boat, nitrox and the first spring.
 loan:
@@ -473,10 +474,10 @@ bookings:
       levels: [open_water, advanced]
     dive_clubs:
       # 0.1 to 0.6 groups a week at peak of about 140 dives each (spec).
-      base: { min: 40, max: 120 }
+      base: { min: 60, max: 160 }
       unit: person
       # A dive in a club week (est. 50); the opening price list (T7).
-      price: { peak: 4600, off: 4600 }
+      price: { peak: 5400, off: 5400 }
       # A group of eight to twelve, five to eight dives each (spec 8 to 20 divers, ten dives).
       size: { min: 40, max: 100 }
       # Spec 12 to 40 weeks ahead; 8 to 30 while tuning (T3 round 2).
@@ -515,6 +516,8 @@ bookings:
       priceFactor: 5.6
       # The licence card and pool sessions (est.).
       unitCostCents: 4000
+      # Tuning 1 (T2): pool hire and the rental sets' upkeep, whether or not anyone books (est.).
+      monthlyCents: 60000
       course:
         level: open_water
         sameStay: { share: 0.5, products: [shore_dives, advanced_course] }
@@ -530,6 +533,8 @@ bookings:
       # 350 a person (est.).
       priceFactor: 5.8
       unitCostCents: 3000
+      # Tuning 1 (T2): course materials and the instructor's standby (est.).
+      monthlyCents: 30000
       course:
         level: advanced
         sameStay: { share: 0.6, products: [wreck_dives] }
@@ -560,8 +565,9 @@ bookings:
       monthlyCents: 85000
     nitrox:
       capacity: 0
-      # A fill station (est.).
+      # A fill station (est.), and its analyser and filters (tuning 1, T2; est.).
       oneOffCents: 600000
+      monthlyCents: 30000
     group_packages:
       capacity: 0
     online_booking:

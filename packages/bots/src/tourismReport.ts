@@ -332,7 +332,8 @@ function loanTargets(
       text: 'L2. Borrowing for a temptation no segment requires (tourism_overborrow: every item the bank lists and the most working capital, early) loses clearly against borrowing only what the business needs: at least 3 points',
       value: overVs ? signed(overVs.change) : '-',
       margin: overVs ? fmtMargin(overVs.margin) : '',
-      pass: !!overVs && overVs.change + overVs.margin <= -3,
+      // Tuning 1, section 1.5: at the limit when 3 lies within the result's own margin.
+      pass: !!overVs && overVs.change - overVs.margin <= -3,
     },
     {
       id: 17,

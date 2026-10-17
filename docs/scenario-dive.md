@@ -243,8 +243,8 @@ On top of T1 to T18 and E1 (`docs/balancing.md`). Office targets T19 to T21 do n
 | # | Target |
 |---|---|
 | D1 | The famous site is not the business: a bot that sells only to certified divers (wreck and shore dives, no try dives or entry courses) loses at least 3 points to the careful bot |
-| D2 | No boat option is always right: on paired seeds, each of `always_buy`, `always_lease` and `always_share` has the best result of the three in at least 15% of the seeds where they differ |
-| D3 | Owning is risky: `always_buy` ends bankrupt or with the loan called at least 10 points more often than `always_share`, and its median final cash among its wins is the highest of the three |
+| D2 | No boat option is always right: on paired seeds, each of `always_buy`, `always_lease` and `always_share` has the best result of the three in at least 15% of the seeds where they differ, money counted net of the boat (restated in tuning 1) |
+| D3 | Owning is risky: `always_buy` ends bankrupt or with the loan called at least 10 points more often than `always_share`, and its median final money net of the boat (cash plus resale value less the loan left) among its wins is the highest of the three (restated in tuning 1) |
 | D4 | The ladder pays: a bot that sells try dives but no courses loses at least 3 points |
 
 ## 16. Sources and values as built
@@ -271,9 +271,11 @@ Not found from a current source, so still estimates: the shop's rent, boat price
 | The skipper | a staff role | a crew cost per week the boat is used (buy or lease) | The roster adds up roles, it cannot require two; decisions |
 | Resort beginners | 20 to 70 a week | 10 to 34 | T2 and T3 rounds 1 and 2, then T1 |
 | Certified divers | 30 to 120 dives a week | 46 to 150 | T3 round 2, T1 round 1 |
-| Dive clubs | 0.1 to 0.6 groups of 8 to 20 divers, 10 dives each, 12 to 40 weeks ahead | 40 to 120 dives a week at peak in groups of 40 to 100 dives, 8 to 30 weeks ahead | A group bigger than the seats could never book (round 1); round 2 for T3 |
+| Dive clubs | 0.1 to 0.6 groups of 8 to 20 divers, 10 dives each, 12 to 40 weeks ahead | 60 to 160 dives a week at peak in groups of 40 to 100 dives, 8 to 30 weeks ahead, willing to pay 50 to 70 EUR a dive (listed at 54) | A group bigger than the seats could never book (round 1); round 2 for T3; more demand and a better price per dive in tuning 1 (T3) |
 | Technical diving | 35,000 | 35,000 and 500 a month | T2 round 2: the temptation should cost while it waits |
 | Strict policy | | certified divers convert 0.75, clubs 0.7 | T11 round 1 |
 | Shop and compressor help | a staff role freeing 6 founder hours | a summer job offered by an event (a fixed cost and energy) | No role without units on the roster |
 | The boat's price | 70,000 | 70,000 (55,000 was tried for D3 and made owning worse) | |
+| Upkeep of products | none beyond the stated costs | the entry course 600 a month (pool hire, rental sets), the advanced course 300, nitrox 300 (estimates) | Tuning 1 (T2): a product nobody books should still cost something; the no-tests bot built everything for free |
+| The established look | after 8 months covering all costs | after 7 | Tuning 1, after the upkeep (E1) |
 
