@@ -3,7 +3,7 @@
 ## Current
 Step: 6, wrap up
 Last commit: 5777711 Tuning 1 step 5: older targets (Seeblick T6 diagnosed and open, Gratwanderung school demand researched, fingerprints for Hinterhof and Seeblick, step report) (tag tuning1-older)
-Next action: Step 6.1, the full report once (pnpm bots --runs 1000 --seed-prefix test --events --mode all, about two hours), then pnpm seeds, docs, backlog and final report.
+Next action: Step 6.1 running: the full report (started; about three hours). When it ends, check docs/balancing.md, run pnpm seeds, update BACKLOG and write the final report.
 
 ## Checklist
 - [x] Step 0: set up (tag tuning1-start)
