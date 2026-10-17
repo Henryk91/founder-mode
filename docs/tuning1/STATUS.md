@@ -2,8 +2,8 @@
 
 ## Current
 Step: 1, Leinen los
-Last commit: c107563 Tuning 1 step 1.4 (G4 restated, post-mortem cancelled weeks)
-Next action: Step 1.5, write at least 15 new Leinen los events (winter selling months and year 2), then run the events part for Leinen los.
+Last commit: d443796 Tuning 1 step 1.5: 15 new Leinen los events for the winter and year 2; two events wait for the first guests; spec money realism
+Next action: Step 1.6, E1 (established look). Now 77.4% of wins but median week 40 (needs after 52 with the October start). Then step 1.7 budget rounds on T3, G1, G3, T11. Latest main: careful 44.3%.
 
 ## Checklist
 - [x] Step 0: set up (tag tuning1-start)
