@@ -1,16 +1,16 @@
 # Tuning run 1 status
 
 ## Current
-Step: 4, shared targets (T14, T7, O3)
-Last commit: 220e3c5 Tuning 1 step 3: Rückenwind (kite trips have guests of their own via ownDemand; dearer trip days; second-segment channels in every abroad scenario without held weeks; the tender reader bids as before) (tag tuning1-watersports)
-Next action: Step 4.1, T14: change the single-kind contract bots to sign once the roster has been full for several weeks (not only once rich); then a sleeping contract as a content option; measure every tourism scenario before and after.
+Step: 5, older scenario targets
+Last commit: 422c176 Tuning 1 step 4: shared targets (contracts that sleep and the contract bots' money rule for T14; off-season prices at the hints' level for T7 in Hinterhof, Seeblick, Rückenwind; O3 restated) (tag tuning1-shared)
+Next action: Step 5.1, Kantino long targets 20, 27, 32, 33 (bot fixes first; 32/33 options: founder salary in founder value, 33 against bootstrap, four desks).
 
 ## Checklist
 - [x] Step 0: set up (tag tuning1-start)
 - [x] Step 1: Leinen los (tag tuning1-gulet)
 - [x] Step 2: Tiefgang (tag tuning1-dive)
 - [x] Step 3: Rückenwind (tag tuning1-watersports)
-- [ ] Step 4: shared targets T14, T7, O3 (tag tuning1-shared)
+- [x] Step 4: shared targets T14, T7, O3 (tag tuning1-shared)
 - [ ] Step 5: older scenario targets (tag tuning1-older)
 - [ ] Step 6: wrap up (tag tuning1-complete)
 
@@ -22,10 +22,12 @@ Next action: Step 4.1, T14: change the single-kind contract bots to sign once th
 - Tiefgang T3: 18.9 points (clubs 16.9%) after three value rounds. Options: club weeks priced per group; clubs needing the boat less.
 - Tiefgang T6: reading +2.7 ±1.6 (at the limit), blind effort +2.5 (allowed about 0.9). No single event behind it.
 - Rückenwind W2: always -0.9 ±1.2 (at the limit), never -0.3 ±1.5 (fails), after ownDemand. Options: a cheaper trip day for the instructor (a course place costs a whole shift); kite seekers as a larger, separate segment.
-- Rückenwind T7 -4.0 and T14 (step 4).
-- Leinen los T7: -0.2 ±1.7 (was +2.1), to step 4.
+- Rückenwind T7: -0.7 ±1.7 after flat off-season prices; its starting prices already sit at the market level. T14 passes (fijos discontinuos).
+- T14 open in Gratwanderung (permanent -20.6, part time -15.2), Hinterhof and Seeblick (no effect beyond margins). Options: restate T14 for businesses whose work pattern suits only some kinds.
+- Leinen los T7: -0.2 ±1.7; flat off-season prices give +3.0 but careful 48.2% (T1).
 
 ## For Henry to review (non-blocking)
+- Step 4: AUTONOMOUS contracts that sleep (fijo discontinuo) in Rückenwind; careful bot prices the off season at hint level in Hinterhof, Seeblick, Rückenwind; O3 restated (decisions, tuning 1 step 4).
 - Step 3: AUTONOMOUS engine option `ownDemand` (guests who come for one product alone); the tender reader always bids as before (decisions, tuning 1 step 3).
 - Step 2: AUTONOMOUS L2 judged by section 1.5; Tiefgang products cost upkeep when unbooked (decisions, tuning 1 step 2).
 - Step 1: AUTONOMOUS restatement: T4 for runs that start out of season; E1 months raised to 10, not lowered (decisions, tuning 1 step 1).
