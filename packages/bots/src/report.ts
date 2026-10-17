@@ -30,6 +30,8 @@ export type ReportInput = {
   maxWeeks?: number
   /** A tourism scenario (the bookings model): its own targets and tables. */
   tourism?: boolean
+  /** Tuning 1: a tourism scenario's first week in season (target 4 where it is after week 9). */
+  firstSeasonWeek?: number
   /** Build hours of each market's must have features, for the freelancer split (target 19). */
   marketBuildHours?: Record<string, number>
 }

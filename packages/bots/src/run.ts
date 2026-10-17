@@ -232,7 +232,7 @@ function reportFor(scenario: Scenario, planned: Planned[], done: TaskDone[]): st
     : botScenario(scenario.id).playtest
   const input = {
     ...(scenario.mode ? { maxWeeks: scenario.maxWeeks } : {}),
-    ...(scenario.bookings ? { tourism: true } : {}),
+    ...(scenario.bookings ? { tourism: true, firstSeasonWeek: firstSeasonWeek(scenario) } : {}),
     engineVersion: ENGINE_VERSION,
     runs: args.runs,
     seedPrefix: args.seedPrefix,
@@ -403,4 +403,28 @@ if (args.out === '-') {
   const order = catalogue.flatMap((about) => about.modes.map((mode) => sectionOf(about, mode)))
   writeFileSync(path, mergeReportFile(old, order, sections))
   console.log(`Report written to ${args.out}`)
+}
+
+/**
+ * Tuning 1: the first run week in which a tourism scenario's products can sell (1 where one sells
+ * all year), for target 4 in runs that start out of season.
+ */
+function firstSeasonWeek(scenario: Scenario): number {
+  const b = scenario.bookings!
+  const months = Object.values(b.products)
+    .filter((p) => (p.serves ?? []).length > 0)
+    .map((p) => p.months ?? [])
+  if (months.some((m) => m.length === 0)) return 1
+  const open = new Set(months.flat())
+  const inSeason = (w: number) => {
+    const woy = ((b.startWeekOfYear - 1 + w - 1) % 52) + 1
+    return open.has(Math.min(12, Math.floor(((woy - 1) * 12) / 52) + 1))
+  }
+  // A season's last few weeks at the start (Leinen los starts in October) do not count: nobody
+  // could have booked them. The first season is the first that opens after a closed week.
+  let w = 1
+  while (w <= 8 && inSeason(w)) w++
+  if (w > 8) return 1
+  while (w <= scenario.maxWeeks && !inSeason(w)) w++
+  return w
 }
