@@ -1,9 +1,9 @@
 # Tuning run 1 status
 
 ## Current
-Step: 5, older scenario targets
-Last commit: 0312d33 Tuning 1 step 5.1: Kantino long (target 11 and 27 judged with their margins; 33 restated against bootstrap; 20 and 32 open)
-Next action: Step 5.2, Hinterhof T2 (no tests 16.3%); T7 already passes (+4.8). Then 5.3 Seeblick T6, T11; 5.4 Gratwanderung school demand research.
+Step: 6, wrap up
+Last commit: 5777711 Tuning 1 step 5: older targets (Seeblick T6 diagnosed and open, Gratwanderung school demand researched, fingerprints for Hinterhof and Seeblick, step report) (tag tuning1-older)
+Next action: Step 6.1, the full report once (pnpm bots --runs 1000 --seed-prefix test --events --mode all, about two hours), then pnpm seeds, docs, backlog and final report.
 
 ## Checklist
 - [x] Step 0: set up (tag tuning1-start)
@@ -11,10 +11,13 @@ Next action: Step 5.2, Hinterhof T2 (no tests 16.3%); T7 already passes (+4.8). 
 - [x] Step 2: Tiefgang (tag tuning1-dive)
 - [x] Step 3: Rückenwind (tag tuning1-watersports)
 - [x] Step 4: shared targets T14, T7, O3 (tag tuning1-shared)
-- [ ] Step 5: older scenario targets (tag tuning1-older)
+- [x] Step 5: older scenario targets (tag tuning1-older)
 - [ ] Step 6: wrap up (tag tuning1-complete)
 
 ## Open issues
+- Kantino long 20 (burst +0.0, steady -2.4) and 32 (traction -5.3, value 1.20x): unchanged.
+- Seeblick T6: blind effort +6.7 against reading +9.1; the high-hours answers are the right ones in the costliest events.
+- Gratwanderung school demand: plausible by derived estimate, not established by a source.
 - Leinen los T3: 68.0 points (cabin 79.4%, charters 44.7%, retreats 11.4%); retreat runs go bankrupt around week 40 with a lease and few weeks sailed. Options: retreats pay their balance before sailing; a shoulder-season lease; retreat demand as its own share.
 - Leinen los G1: buying best in 6.3% of differing seeds. Owned crew at 3,000 a week passes (21.7%) but the no-tests bot wins 12.9%; revisit if a cost for unasked-for products lands in step 2.
 - Leinen los G3: never holding ties the careful bot (-0.3 ±0.9): with requests ahead charters book the peak first. Options: restate G3 (holding every peak week is the trap); cabin guests booking further ahead.
@@ -27,6 +30,7 @@ Next action: Step 5.2, Hinterhof T2 (no tests 16.3%); T7 already passes (+4.8). 
 - Leinen los T7: -0.2 ±1.7; flat off-season prices give +3.0 but careful 48.2% (T1).
 
 ## For Henry to review (non-blocking)
+- Step 5: AUTONOMOUS restatement of Kantino long 33 (against bootstrap); target 11 judged with margins; Hinterhof upkeep; Seeblick strict conversions (decisions, tuning 1 step 5).
 - Step 4: AUTONOMOUS contracts that sleep (fijo discontinuo) in Rückenwind; careful bot prices the off season at hint level in Hinterhof, Seeblick, Rückenwind; O3 restated (decisions, tuning 1 step 4).
 - Step 3: AUTONOMOUS engine option `ownDemand` (guests who come for one product alone); the tender reader always bids as before (decisions, tuning 1 step 3).
 - Step 2: AUTONOMOUS L2 judged by section 1.5; Tiefgang products cost upkeep when unbooked (decisions, tuning 1 step 2).
