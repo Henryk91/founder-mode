@@ -37,6 +37,7 @@ export function evaluateOfficeTargets(
     const taken = offered.filter((r) => r.office.taken.includes(n))
     return { n, offered: offered.length, taken: taken.length }
   })
+  const judged = (x: { offered: number }) => pct(x.offered, won.length) >= O3_MIN_OFFERED
   return [
     {
       id: firstId,
@@ -56,12 +57,14 @@ export function evaluateOfficeTargets(
     },
     {
       id: firstId + 2,
-      text: "O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of the wins where it was offered)",
+      // Restated in tuning 1 (plan section 1.4): a stage offered in almost no wins cannot show
+      // whether it is always right, and "never offered" failed the old wording by itself.
+      text: `O3. No stage is always right: among the careful bot's wins, each of stages 3 to 5 offered in at least ${O3_MIN_OFFERED}% of them is taken in some and declined in others (taken in at most 90% of the wins where it was offered); stages offered less often are not judged (restated in tuning 1)`,
       value: careful
         ? stages
             .map((x) =>
               x.offered
-                ? `stage ${x.n} taken in ${fmtPct(pct(x.taken, x.offered))} of ${x.offered}`
+                ? `stage ${x.n} taken in ${fmtPct(pct(x.taken, x.offered))} of ${x.offered}${judged(x) ? '' : ' (not judged)'}`
                 : `stage ${x.n} never offered`,
             )
             .join('; ')
@@ -69,11 +72,16 @@ export function evaluateOfficeTargets(
       margin: '',
       pass:
         !!careful &&
-        stages.every((x) => x.offered > 0 && x.taken > 0 && x.taken < x.offered) &&
-        stages.every((x) => pct(x.taken, x.offered) <= 90),
+        stages.some(judged) &&
+        stages
+          .filter(judged)
+          .every((x) => x.taken > 0 && x.taken < x.offered && pct(x.taken, x.offered) <= 90),
     },
   ]
 }
+
+/** O3 (tuning 1): stages offered in fewer of the careful bot's wins than this are not judged. */
+export const O3_MIN_OFFERED = 5
 
 /** E1: the least share of the careful bot's winning runs that turn established, and year 2. */
 export const E1_MIN_SHARE = 40

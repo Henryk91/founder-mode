@@ -465,7 +465,9 @@ export const ContractSchema = z.object({
   shifts: z.number().int().positive(),
   // Weeks paid after notice is given. Absent: cannot be ended (seasonal).
   noticeWeeks: z.number().int().nonnegative().optional(),
-  // Seasonal: the months it runs in; it ends when they end. Absent: all year.
+  // Seasonal: the months it runs in; it ends when they end. Absent: all year. With a notice
+  // period as well (tuning 1), it sleeps outside its months instead of ending: paid and working
+  // only in them, every year, until notice is given (the Spanish fijo discontinuo).
   months: z.array(z.number().int().min(1).max(12)).optional(),
   // Review quality added when contract staff do all of a week's shifts (they know the place).
   quality: z.number().nonnegative(),

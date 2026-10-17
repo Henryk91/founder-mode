@@ -122,6 +122,16 @@ const CHANNEL_USEFUL = 0.3
 /** Price from the budget hints: peak and off season, as shares of their mean. */
 const HINT_PEAK = 1.0
 const HINT_OFF = 0.85
+/**
+ * Tuning 1 (T7): where seasonal pricing failed, the off season is priced at the hints' level
+ * too. Below what guests would pay a discount wins almost nobody (the price curve is flat there),
+ * so the 0.85 only gave money away: the careful bot gained about 5 points in Hinterhof and
+ * Seeblick without it (1,000 seeds), and raising the peak price when full never helped.
+ * Gratwanderung and Tiefgang keep 0.85 (their T7 passes); so do Rückenwind, where flat prices
+ * gained nothing (its starting prices already sit at the market's level), and Leinen los, where
+ * the careful bot then won 48.2% (decisions, tuning 1 step 4).
+ */
+const HINT_OFF_AT_HINTS = new Set(['hinterhof', 'seeblick', 'rueckenwind'])
 const MIN_HINTS = 3
 /** The most a price moves at once from the hints. */
 const MAX_PRICE_STEP = 0.3
@@ -588,7 +598,11 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       const seasonal = option('seasonal')
       const permanent = option('permanent')
       const partTime = option('part_time')
-      const affordable = (cents: number) => money >= 3 * monthly + 13 * cents
+      // Tuning 1 (T14): the single-kind bots sign once the roster has been full for weeks, with
+      // a month of the contract's pay in hand, not only once a quarter of it is spare (by then
+      // the run was usually won, and a contract could not show what it pays).
+      const affordable = (cents: number) =>
+        money >= 3 * monthly + (mode === 'careful' ? 13 : 4) * cents
       // Compare a contract with the weekly shifts it replaces. Requiring every contracted shift
       // to have been used made even a clearly cheaper part time contract impossible for the bot:
       // the founder covers the first shifts, and demand seldom lands on the contract's exact size.
@@ -1278,7 +1292,8 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
             Math.max(base * (1 - MAX_PRICE_STEP), median),
           )
           const peak = Math.max(100, Math.round((mean * HINT_PEAK) / 100) * 100)
-          const off = Math.max(100, Math.round((mean * HINT_OFF) / 100) * 100)
+          const offShare = HINT_OFF_AT_HINTS.has(scenario.id) ? 1 : HINT_OFF
+          const off = Math.max(100, Math.round((mean * offShare) / 100) * 100)
           const now = bv.prices[id]
           if (!now || now.peak !== peak || now.off !== off) plan.prices[id] = { peak, off }
         }

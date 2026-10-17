@@ -209,6 +209,46 @@ describe('contracts (plan 2 step 1b)', () => {
     expect(c.endWeek).toBeLessThan(32)
   })
 
+  it('a contract with months and notice sleeps outside them and wakes every year (tuning 1)', () => {
+    // Gratwanderung's guide on a permanent contract made to sleep outside June to September.
+    const base = rich('gratwanderung')
+    const roles = base.bookings!.roles
+    const guide = roles['guide']!
+    const sleeping: Scenario = {
+      ...base,
+      bookings: {
+        ...base.bookings!,
+        roles: {
+          ...roles,
+          guide: {
+            ...guide,
+            contracts: {
+              ...guide.contracts,
+              permanent: { ...guide.contracts!.permanent!, months: [6, 7, 8, 9] },
+            },
+          },
+        },
+      },
+    }
+    let state = endWeek(
+      createGame(sleeping, 'contract-4'),
+      plan(bp({ hire: [{ roleId: 'guide', kind: 'permanent' }] })),
+    ).state
+    // Early March: asleep and unpaid, but it can be ended and does not end by itself.
+    const c = getView(state).bookings!.contracts[0]!
+    expect(state.ledger.at(-1)!.bookingCostsCents).toBe(0)
+    expect(c.working).toBe(false)
+    expect(c.canEnd).toBe(true)
+    expect(state.bookings!.contracts![0]!.endWeek).toBeNull()
+    state = playWeeks(state, 14)
+    expect(getView(state).bookings!.contracts[0]!.working).toBe(true)
+    // Asleep again after September, and back the next June.
+    state = playWeeks(state, 20)
+    expect(getView(state).bookings!.contracts[0]!.working).toBe(false)
+    state = playWeeks(state, 32)
+    expect(getView(state).bookings!.contracts[0]!.working).toBe(true)
+  })
+
   it('no more than the role allows', () => {
     const s = createGame(quiet('gratwanderung'), 'contract-3')
     const k = { roleId: 'guide', kind: 'permanent' as const }

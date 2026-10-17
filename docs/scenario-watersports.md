@@ -304,5 +304,6 @@ Not found from a current source, so still estimates: the beach licence fee and h
 | Kite course | 420 | 1.9 times a course place (about 418 at the start); 12% of learners and wind regulars come for kite alone (`ownDemand`, tuning 1; appeal 0.25 in plan 4); a trip day's van and fuel 70 (was 40) | W2 round 2; tuning 1 |
 | eFoil | 120 an hour | 2.7 times an activity (108 at the start), appeal 0.05, 40 a unit in wear, hotel guests only | W5 |
 | Strict cancellation policy | | learners convert 0.82, wind regulars 0.78 | T11 rounds 1 and 2 |
-| Permanent and part time contracts | | 525 and 320 a week | 1,500 a month gross in 14 payments with employer costs (est.) |
+| Permanent and part time contracts | | 525 and 320 a week, as fijos discontinuos: working and paid May to October, asleep and unpaid in between (tuning 1, T14) | 1,500 a month gross in 14 payments with employer costs (est.); the Spanish permanent contract for seasonal work |
+| Demand | | hotel guests 76 to 200, learners 8.5 to 29.5, wind regulars 4.3 to 16 a week at peak (about 5% under plan 4) | Tuning 1: the contracts that sleep made every bot win more (T1, T2) |
 

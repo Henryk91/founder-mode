@@ -612,18 +612,26 @@ function ContractsPlan() {
                 kind: label(`tour.contract.kind.${o.kind}`, stage),
               })}
               note={
-                o.noticeWeeks !== null
-                  ? label('tour.contract.noteNotice', stage, {
-                      shifts: o.shifts,
-                      amount: formatEuro(o.centsPerWeek),
-                      weeks: o.noticeWeeks,
-                    })
-                  : label('tour.contract.noteSeason', stage, {
+                o.noticeWeeks !== null && o.months !== null
+                  ? label('tour.contract.noteSleeps', stage, {
                       shifts: o.shifts,
                       amount: formatEuro(o.centsPerWeek),
                       from: monthName(months[0] ?? 1, stage),
                       to: monthName(months.at(-1) ?? 12, stage),
+                      weeks: o.noticeWeeks,
                     })
+                  : o.noticeWeeks !== null
+                    ? label('tour.contract.noteNotice', stage, {
+                        shifts: o.shifts,
+                        amount: formatEuro(o.centsPerWeek),
+                        weeks: o.noticeWeeks,
+                      })
+                    : label('tour.contract.noteSeason', stage, {
+                        shifts: o.shifts,
+                        amount: formatEuro(o.centsPerWeek),
+                        from: monthName(months[0] ?? 1, stage),
+                        to: monthName(months.at(-1) ?? 12, stage),
+                      })
               }
               choices={
                 full && !on ? (

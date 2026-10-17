@@ -4,7 +4,8 @@ import { currentStage } from './office'
 
 // Plan 2 step 1b: staff on contracts. Permanent and part time staff work every week and are paid
 // whether busy or not; notice keeps them (and their pay) for a few weeks more. A seasonal contract
-// runs through its months and cannot be ended early. No random numbers are drawn here.
+// runs through its months and cannot be ended early. Tuning 1: a contract with months and notice
+// sleeps outside its months (unpaid) and wakes in them every year. No random numbers are drawn here.
 
 const WEEKS_PER_YEAR = 52
 
@@ -115,7 +116,10 @@ export function applyContracts(input: GameState, plan: WeekPlan): ContractsWeek 
       kind: h.kind,
       name,
       startWeek: input.week,
-      endWeek: c.months ? seasonEnd(input, c.months, input.week) : null,
+      // Tuning 1: a contract with months and notice sleeps outside its months; only a seasonal
+      // one without notice ends with them.
+      endWeek:
+        c.months && c.noticeWeeks === undefined ? seasonEnd(input, c.months, input.week) : null,
     })
     out.entries.push({ kind: 'contract_signed', roleId: h.roleId, contractKind: h.kind, name })
   }

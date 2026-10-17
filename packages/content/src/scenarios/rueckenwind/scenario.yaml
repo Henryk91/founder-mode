@@ -437,7 +437,7 @@ bookings:
   segments:
     hotel_guests:
       # 60 to 200 reachable requests a week at peak (spec), before reach and fit.
-      base: { min: 80, max: 210 }
+      base: { min: 76, max: 200 }
       unit: person
       # One activity (est.): hire at half of it, a kids' club week at four and a half times.
       # The previous tenant's price list, the same all year (decisions, plan 4 step 2).
@@ -453,7 +453,7 @@ bookings:
       invoiced: false
       reviewWeight: 0.6
     learners:
-      base: { min: 9, max: 31 }
+      base: { min: 8.5, max: 29.5 }
       unit: person
       # A course place (est. 220 a windsurf course), the same all year.
       price: { peak: 22000, off: 22000 }
@@ -469,7 +469,7 @@ bookings:
       invoiced: false
       reviewWeight: 0.7
     wind_regulars:
-      base: { min: 4.5, max: 17 }
+      base: { min: 4.3, max: 16 }
       unit: person
       # A week's hire package (est. 260).
       price: { peak: 26000, off: 26000 }
@@ -638,8 +638,13 @@ bookings:
       founderHours: 9
       contracts:
         # About 1,500 a month gross in 14 payments with employer costs (est.): 525 a week.
-        permanent: { centsPerWeek: 52500, shifts: 5, noticeWeeks: 4, quality: 0.3, max: 2 }
-        part_time: { centsPerWeek: 32000, shifts: 3, noticeWeeks: 4, quality: 0.2, max: 2 }
+        # Tuning 1 (T14): permanent and part time as fijos discontinuos, the Spanish permanent
+        # contract for seasonal work: they sleep, unpaid, from November to April and come back
+        # every May (a year-round contract here was paid through the closed months).
+        permanent:
+          { centsPerWeek: 52500, shifts: 5, noticeWeeks: 4, months: [5, 6, 7, 8, 9, 10], quality: 0.3, max: 2 }
+        part_time:
+          { centsPerWeek: 32000, shifts: 3, noticeWeeks: 4, months: [5, 6, 7, 8, 9, 10], quality: 0.2, max: 2 }
         seasonal:
           { centsPerWeek: 62000, shifts: 5, months: [5, 6, 7, 8, 9, 10], quality: 0.25, max: 2 }
     sailing_instructor:
