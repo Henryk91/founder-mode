@@ -2,8 +2,8 @@
 
 ## Current
 Step: 1, Leinen los
-Last commit: c3ba246 Tuning 1 step 0
-Next action: Step 1.1, measure owned assets fairly in the bot report (cash plus resale minus loan for G1, G2, D2, D3).
+Last commit: 97984db Tuning 1 step 1.1-1.2 (asset targets net of the boat; careful leases by expected weeks)
+Next action: Step 1.3, start Leinen los in October (startWeekOfYear, peak rule byWeek, cost steps, intro cards, spec), then re-measure the main part.
 
 ## Checklist
 - [x] Step 0: set up (tag tuning1-start)
@@ -17,5 +17,7 @@ Next action: Step 1.1, measure owned assets fairly in the bot report (cash plus 
 ## Open issues
 
 ## For Henry to review (non-blocking)
+- Step 1: AUTONOMOUS restatement: G1, G2, D2, D3 compare money net of the boat (decisions, tuning 1 step 1).
+- Step 1: AUTONOMOUS careful bot leases the gulet when expected weeks cover the lease and the year's costs (decisions, tuning 1 step 1).
 
 ## Stopped
