@@ -1,9 +1,9 @@
 # Autonomous run 4 status
 
 ## Current
-Step: 5 (wrap up), not started
+Step: complete (tag plan4-complete)
 Last commit: (see git log)
-Next action: step 5.1, revisit every open issue once with a fresh budget of 2 rounds each (decide which are worth it), then 5.2 the full report once (every scenario), pnpm seeds, docs and final report.
+Next action: none. Plan 4 is complete; plan 5 (docs/AUTONOMOUS_PLAN_5.md) is next when Henry starts it.
 
 ## Checklist
 - [x] Step 0: set up and baseline (tag plan4-baseline)
@@ -11,7 +11,7 @@ Next action: step 5.1, revisit every open issue once with a fresh budget of 2 ro
 - [x] Step 2: Rückenwind (tag plan4-watersports)
 - [x] Step 3: assets and Tiefgang (tag plan4-dive)
 - [x] Step 4: Leinen los (tag plan4-gulet)
-- [ ] Step 5: wrap up (tag plan4-complete)
+- [x] Step 5: wrap up (tag plan4-complete)
 
 ## Open issues
 - Leinen los T3 (retreats 7.6%, charters 19.2% against cabin-led runs 65.5%), T4 (first guest in week 19: cruises start in May), T5 (decision news 80.7%, year 2 67.6%), T6, T11, E1 (18.4% of wins), G1 (buying best in 5.7% of differing seeds), G3 (the careful bot rarely holds, so never holding ties it), G4 (six cabins loses everywhere). T9, T14, T15 to T18 do not apply as written. Options in reports/step4-gulet.md and decisions, plan 4 step 4.
@@ -24,6 +24,7 @@ Next action: step 5.1, revisit every open issue once with a fresh budget of 2 ro
 - Rückenwind W2 (kite trips): never running trips is +4.7 ±1.5 ahead of a group of two; always is -0.7. Options: kite as its own demand instead of a share of the segment's; cheaper trip days; a second van.
 
 ## For Henry to review (non-blocking)
+- Step 5: AUTONOMOUS Leinen los T4 recorded as not applicable (no guest can come before week 18); the step 5 round on G3 and T3 reverted (decisions, plan 4 step 5).
 - Step 4: AUTONOMOUS Leinen los's money moved far from the spec to be playable at all: lease 80,000 with 15% down, manager keeps 30%, an older gulet at 200,000 with the bank at 80% (decisions, plan 4 step 4; spec section 17).
 - Step 4: AUTONOMOUS groups flex to the season's next weeks (the formula round that took the careful bot from 12.8% to 30.4%).
 - Step 3: AUTONOMOUS buying is a purchase product; lease and seats are inbox answers; the crew is a cost per week used, not roster roles (decisions, plan 4 step 3).
