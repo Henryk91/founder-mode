@@ -2,8 +2,8 @@
 
 ## Current
 Step: 5, older scenario targets
-Last commit: 422c176 Tuning 1 step 4: shared targets (contracts that sleep and the contract bots' money rule for T14; off-season prices at the hints' level for T7 in Hinterhof, Seeblick, Rückenwind; O3 restated) (tag tuning1-shared)
-Next action: Step 5.1, Kantino long targets 20, 27, 32, 33 (bot fixes first; 32/33 options: founder salary in founder value, 33 against bootstrap, four desks).
+Last commit: 0312d33 Tuning 1 step 5.1: Kantino long (target 11 and 27 judged with their margins; 33 restated against bootstrap; 20 and 32 open)
+Next action: Step 5.2, Hinterhof T2 (no tests 16.3%); T7 already passes (+4.8). Then 5.3 Seeblick T6, T11; 5.4 Gratwanderung school demand research.
 
 ## Checklist
 - [x] Step 0: set up (tag tuning1-start)
