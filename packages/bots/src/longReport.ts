@@ -344,10 +344,12 @@ export function evaluateFundingTargets(input: ReportInput): Target[] {
   const namedShare = pct(named, earlyLosses.length)
   const t33: Target = {
     id: 33,
-    text: 'Raising on weak traction is punished: raise_early wins at least 8 points less than raise_on_traction and less than bootstrap, and the post-mortem names the round as a cause (bankrupt while or after raising, or investors met before a paying customer who passed as too early) in at least half of its losing runs',
+    // Restated in tuning 1 (plan section 1.4): against raise_on_traction the 8 points measured how
+    // well raising on traction does in two years (target 32), not what an early pitch costs.
+    text: 'Raising on weak traction is punished: raise_early wins less than bootstrap (beyond its margin), and the post-mortem names the round as a cause (bankrupt while or after raising, or investors met before a paying customer who passed as too early) in at least half of its losing runs (restated in tuning 1; was: at least 8 points less than raise_on_traction as well)',
     value: `${signed(et.change)} against raise_on_traction, ${signed(eb.change)} against bootstrap; round named in ${fmtPct(namedShare)} of losses`,
     margin: `${fmtMargin(et.margin)}, ${fmtMargin(eb.margin)}`,
-    pass: et.change - et.margin <= -8 && eb.change - eb.margin < 0 && namedShare >= 50,
+    pass: eb.change + eb.margin < 0 && namedShare >= 50,
   }
   const bootWins = all.filter((i) => winsOf(boot.results[i]!))
   const ab = pairedOn(boot, always, bootWins)
