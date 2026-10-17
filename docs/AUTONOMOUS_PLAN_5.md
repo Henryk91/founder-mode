@@ -32,9 +32,9 @@ This plan is written for **any coding agent** (Claude Code, OpenAI Codex, or ano
    - `packages/bots/src/args.ts` (the current bot flags);
    - the tourism bot strategies in `packages/bots/src/strategies/`.
 
-### 0.2 Is plan 4 finished?
+### 0.2 Are plan 4 and tuning plan 1 finished?
 
-Check for the git tag `plan4-complete`. If it is missing, stop: write the reason in `docs/autonomous5/STATUS.md` under "Stopped" and end. Plan 5 needs plan 4's courses, assets and licences.
+Check for the git tags `plan4-complete` and `tuning1-complete`. If either is missing, stop: write the reason in `docs/autonomous5/STATUS.md` under "Stopped" and end. Plan 5 needs plan 4's courses, assets and licences, and starts from the tuned games (`docs/AUTONOMOUS_PLAN_TUNING_1.md`).
 
 ## 1. Rules for an unattended run
 
