@@ -938,6 +938,8 @@ const labels = {
   'tour.contract.noticeGiven': 'Notice this week',
   'tour.contract.option': '{role}, {kind}',
   'tour.contract.noteNotice': '{shifts} shifts a week for {amount}, {weeks} weeks notice',
+  'tour.contract.noteSleeps':
+    '{shifts} shifts a week for {amount}, {from} to {to} every year, unpaid in between, {weeks} weeks notice',
   'tour.contract.noteSeason':
     '{shifts} shifts a week for {amount}, {from} to {to}, cannot be ended early',
   'tour.contract.hire': 'Hire',
