@@ -779,11 +779,22 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const sent = b.eventGuests?.[seg.id] ?? 0
     const sentRequests = sent > 0 ? Math.max(1, Math.round(sent / meanSize)) : 0
     const ownRequests = randomRound(units / meanSize, rng)
-    const requests = ownRequests + sentRequests
+    // Tuning 1: guests who come for one product alone (`ownDemand`), after the others.
+    const alone = Object.entries(cfg.products).flatMap(([id, prod]) =>
+      prod.ownDemand && prod.serves.includes(seg.id)
+        ? [{ id, n: randomRound((units * prod.ownDemand) / meanSize, rng) }]
+        : [],
+    )
+    const aloneIds = alone.flatMap((x) => Array.from({ length: x.n }, () => x.id))
+    const requests = ownRequests + sentRequests + aloneIds.length
     let made = 0
     let madeUnits = 0
     let lost = 0
     for (let i = 0; i < requests; i++) {
+      const only =
+        i >= ownRequests + sentRequests ? aloneIds[i - ownRequests - sentRequests]! : null
+      // The segment's own guests and those who come for one product alone (not sent by a partner).
+      const asOwn = i < ownRequests || only !== null
       let size = rng.int(s.size.min, s.size.max)
       const lead = ahead
         ? s.leadWeeks.min + drawIndex(ahead, aheadSum, rng)
@@ -791,10 +802,12 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       let target = week + lead
       const platform = reach.total > 0 && rng.chance(reach.platform / reach.total)
       if (target > state.scenario.maxWeeks) continue
+      // Tuning 1: guests for a product nobody can buy (not built, or trips not run) never ask.
+      if (only !== null && !sells(state, only, target)) continue
       // Guests a partner sent have agreed to your terms already.
-      if (i < ownRequests && b.policy === 'strict' && !rng.chance(s.strictConversion)) continue
+      if (asOwn && b.policy === 'strict' && !rng.chance(s.strictConversion)) continue
       // Plan 4: themed weeks put some cabin guests off.
-      if (i < ownRequests && cfg.friction?.themed && themedTurnsAway(state, seg.id, rng)) continue
+      if (asOwn && cfg.friction?.themed && themedTurnsAway(state, seg.id, rng)) continue
       // A minimum stay (plan 2 step 1d): fewer book, those who do stay longer.
       const ms = cfg.minStay
       if (
@@ -803,7 +816,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         ms.segments.includes(seg.id) &&
         ms.months.includes(monthOf(state.scenario, target))
       ) {
-        if (i < ownRequests && !rng.chance(ms.conversion)) continue
+        if (asOwn && !rng.chance(ms.conversion)) continue
         size += ms.extraUnits
       }
       const optionsAt = (w: number) =>
@@ -815,7 +828,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
               // Plan 4: a product for a level only sells to guests who hold it.
               (!prod.needsLevel || (s.levels ?? []).includes(prod.needsLevel)) &&
               // Plan 4: a week held for whole-boat bookings sells no cabins.
-              !(cfg.hold && heldFor(cfg, b.held, id, w)),
+              !(cfg.hold && heldFor(cfg, b.held, id, w)) &&
+              // Tuning 1: a product with guests of its own sells only to them.
+              (only !== null ? id === only : !prod.ownDemand),
           )
           .map(([id]) => ({ id, free: roomFor(seg.id, id, w) }))
           .filter((o) => o.free >= size)
@@ -847,7 +862,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       if (!pick) {
         lost += size
         // Guests a partner sent and you could not take complain about it.
-        if (i >= ownRequests) sentLost++
+        if (i >= ownRequests && only === null) sentLost++
         continue
       }
       bookings.push({

@@ -1218,13 +1218,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           b.free -= bv.partnershipHours
         }
         if (reaches(second, 'platform') && !bv.platform.listed) plan.platform = true
-        // Tuning 1 (the asset scenarios without held weeks, Tiefgang): the website serves the
-        // second kind of guest too, so it is built when they book online, even if the first
-        // kind does not.
-        if (cfg.assets && !cfg.hold && reaches(second, 'website'))
+        // Tuning 1 (the abroad scenarios without held weeks: Rückenwind and Tiefgang): the
+        // website serves the second kind of guest too, so it is built when they book online,
+        // even if the first kind does not.
+        if (cfg.conditions && !cfg.hold && reaches(second, 'website'))
           b.build(cfg.website.product, 20 - (b.plan.build[cfg.website.product] ?? 0))
         // And calls and visits to the second kind of guest, where they answer them.
-        if (cfg.assets && !cfg.hold && reaches(second, 'outreach')) {
+        if (cfg.conditions && !cfg.hold && reaches(second, 'outreach')) {
           const h = Math.min(OUTREACH_HOURS, b.free)
           if (h > 0) {
             plan.outreach[second] = (plan.outreach[second] ?? 0) + h

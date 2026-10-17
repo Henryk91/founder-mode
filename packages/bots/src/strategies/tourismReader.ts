@@ -42,11 +42,11 @@ const quietRestaurant = (view: PlayerView) => {
 }
 
 export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> = {
-  // Plan 4: bid higher in the beach tender when the spot carries the business (hotel guests
-  // walk past it and come from the hotels nearby); else trust the reviews.
+  // Plan 4: the beach tender. Tuning 1: bidding as before (bidding higher where hotel guests
+  // were the market cost the careful bot 1.5 points, 1,000 seeds); the reviews carry the bid.
   tiefgang: {},
   rueckenwind: {
-    beach_tender: (_v, c) => (c.target === 'hotel_guests' ? 'higher' : 'same'),
+    beach_tender: () => 'same',
   },
   gratwanderung: {
     // Validation: contacts are worth it where something sells to them; skill courses are not.
