@@ -156,10 +156,10 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | tiefgang (long) | bank_called | `tourism_reckless` | `ending-16` | 69 |
 | leinenlos (long) | sustainable | `tourism_careful` | `ending-2` | 104 |
 | leinenlos (long) | sustainable | `tourism_careful` | `ending-4` | 104 |
-| leinenlos (long) | sustainable | `tourism_careful` | `ending-6` | 104 |
-| leinenlos (long) | still_searching | `tourism_careful` | `ending-14` | 104 |
-| leinenlos (long) | still_searching | `tourism_careful` | `ending-24` | 104 |
-| leinenlos (long) | still_searching | `tourism_careful` | `ending-25` | 104 |
+| leinenlos (long) | sustainable | `tourism_careful` | `ending-8` | 104 |
+| leinenlos (long) | still_searching | `tourism_careful` | `ending-6` | 104 |
+| leinenlos (long) | still_searching | `tourism_careful` | `ending-7` | 104 |
+| leinenlos (long) | still_searching | `tourism_careful` | `ending-9` | 104 |
 | leinenlos (long) | bankrupt | `tourism_no_tests` | `ending-1` | 19 |
 | leinenlos (long) | bankrupt | `tourism_no_tests` | `ending-2` | 19 |
 | leinenlos (long) | bankrupt | `tourism_no_tests` | `ending-3` | 19 |
@@ -169,6 +169,6 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | leinenlos (long) | shut_down | `shut_down@10` | `ending-1` | 10 |
 | leinenlos (long) | shut_down | `shut_down@10` | `ending-2` | 10 |
 | leinenlos (long) | shut_down | `shut_down@10` | `ending-3` | 10 |
-| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-5` | 45 |
-| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-7` | 56 |
-| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-10` | 71 |
+| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-7` | 53 |
+| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-9` | 48 |
+| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-14` | 47 |

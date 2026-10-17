@@ -110,7 +110,8 @@ events:
     area: sales
     weight: 1
     once: true
-    when: [week >= 20]
+    # After the first guests have sailed (tuning 1: week 31 is May).
+    when: [week >= 33]
     from: none
     sender: Your phone
     look: note
@@ -245,6 +246,176 @@ events:
               when: [shipped.charter_contracts == 1],
             }
           - { type: review, rating: 3, count: 3 }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  # Tuning 1: the winter's selling months (the run starts in October) and the second season.
+  - id: winter_brochure
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 5, week <= 22]
+    from: none
+    sender: Matbaa Deniz, a print shop by the harbour
+    look: note
+    text: >-
+      The print shop offers 2,000 brochures for the agents' winter fairs at 600 EUR. Agents still
+      like paper, and paper still likes agents. It only helps if they can sell your cabins.
+    defaultChoice: skip
+    choices:
+      - id: print
+        label: Print the brochures
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -60000 }
+          - { type: guests, segment: cabin_guests, count: 14, when: [shipped.cabin_sales == 1] }
+      - id: skip
+        label: Not this year
+        hours: 0
+
+  - id: charter_early_bird
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 8, week <= 24]
+    from: none
+    sender: Familie Overbeck, Hamburg
+    look: letter
+    text: >-
+      A family wants the whole boat for a July week and asks for 800 EUR off for paying the deposit
+      in January. Early money is real money. So is a July week.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Give the discount
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -80000 }
+          - {
+              type: guests,
+              segment: private_charters,
+              count: 16,
+              when: [shipped.charter_contracts == 1],
+            }
+      - id: decline
+        label: Keep the price
+        hours: 0
+
+  - id: agent_allotment
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 10, week <= 28]
+    from: none
+    sender: Reisebüro Sonnenkap, Stuttgart
+    look: letter
+    text: >-
+      An agent wants an allotment: six cabins on four June weeks, handed back six weeks before if
+      unsold. She takes her usual cut and needs your catalogue text by Friday, in German, with
+      fewer exclamation marks than last time.
+    defaultChoice: decline
+    choices:
+      - id: sign
+        label: Sign the allotment
+        hours: 4
+        effects:
+          - { type: guests, segment: cabin_guests, count: 16, when: [shipped.cabin_sales == 1] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: christmas_cabin
+    area: sales
+    weight: 1
+    once: true
+    when: [tour.month == 12]
+    from: none
+    sender: A customer in Münster
+    text: >-
+      A woman wants a cabin as a Christmas present for her parents' fortieth anniversary, paid now,
+      in an envelope with a ribbon. They would sail in September, if their knees and the envelope
+      allow.
+    defaultChoice: decline
+    choices:
+      - id: sell
+        label: Sell the cabin now
+        hours: 1
+        effects:
+          - { type: cash, amountCents: 180000, when: [shipped.cabin_sales == 1] }
+      - id: decline
+        label: Not before the season's prices are set
+        hours: 0
+
+  - id: returning_couples
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 60, week <= 80, tour.reviews >= 5]
+    from: none
+    sender: Last September's guests
+    text: >-
+      Two couples from last September want the same cabins, the same week and the same cook. They
+      ask 10% off as returning guests and promise to bring friends, who they say are quieter.
+    defaultChoice: decline
+    choices:
+      - id: accept
+        label: Give them the discount
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: guests, segment: cabin_guests, count: 12, when: [shipped.cabin_sales == 1] }
+      - id: decline
+        label: Thank them, at full price
+        hours: 0
+
+  - id: travel_writer
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 56, week <= 78]
+    from: none
+    sender: A travel writer from Vienna
+    look: letter
+    text: >-
+      A travel writer wants a free cabin in June for a Sunday paper feature. She writes well, eats a
+      lot, and once called a hotel "sincere". Her readers book cabins, not whole boats.
+    defaultChoice: decline
+    choices:
+      - id: host
+        label: Give her the cabin
+        hours: 3
+        effects:
+          - { type: cash, amountCents: -50000 }
+          - { type: guests, segment: cabin_guests, count: 12, when: [shipped.cabin_sales == 1] }
+      - id: decline
+        label: Decline politely
+        hours: 0
+
+  - id: broker_second_season
+    area: sales
+    weight: 2
+    once: true
+    when: [week >= 58, week <= 80]
+    from: none
+    sender: A charter broker in Marmaris
+    look: letter
+    text: >-
+      A broker who ignored you last year now writes as if you were old friends. He has two families
+      for August and wants 1,000 EUR to put your boat first in his folder. The folder is leather.
+    defaultChoice: decline
+    choices:
+      - id: pay
+        label: Pay for the folder
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -100000 }
+          - {
+              type: guests,
+              segment: private_charters,
+              count: 16,
+              when: [shipped.charter_contracts == 1],
+            }
       - id: decline
         label: Decline
         hours: 0

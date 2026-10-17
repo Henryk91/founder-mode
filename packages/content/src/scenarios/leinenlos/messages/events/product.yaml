@@ -130,7 +130,7 @@ events:
     area: product
     weight: 1
     once: true
-    when: [week >= 10]
+    when: [week >= 33]
     from: none
     sender: Your host
     look: note
@@ -197,3 +197,74 @@ events:
         hours: 0
         effects:
           - { type: asset, id: gulet, option: none, chance: 0.3 }
+
+  # Tuning 1: the winter's selling months and the second season.
+  - id: website_translation
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 5, week <= 24]
+    from: none
+    sender: A translator in Izmir
+    text: >-
+      A translator offers your website in English and Dutch for 400 EUR. Dutch couples book cabins
+      early and complain precisely. It only matters where guests can book online.
+    defaultChoice: decline
+    choices:
+      - id: translate
+        label: Translate the site
+        hours: 2
+        effects:
+          - { type: cash, amountCents: -40000 }
+          - { type: guests, segment: cabin_guests, count: 12, when: [shipped.online_booking == 1] }
+      - id: decline
+        label: German will do
+        hours: 0
+
+  - id: tv_crew
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 12, week <= 30]
+    from: none
+    sender: A regional TV travel programme
+    look: letter
+    text: >-
+      A German travel programme wants to film a June cruise for free. They want the best cabin, a
+      sunset on cue and nobody seasick on camera. Rough water would make good television, just not
+      for you.
+    defaultChoice: decline
+    choices:
+      - id: film
+        label: Let them film
+        hours: 6
+        effects:
+          - { type: guests, segment: cabin_guests, count: 16, when: [shipped.sheltered_route == 1] }
+          - { type: review, rating: 2, count: 3, when: [shipped.sheltered_route == 0] }
+      - id: decline
+        label: Decline
+        hours: 0
+
+  - id: boat_of_the_year
+    area: product
+    weight: 2
+    once: true
+    when: [week >= 60, week <= 90, tour.reviews >= 10]
+    from: none
+    sender: Mavi Ödül, a review site
+    look: official
+    text: >-
+      A review site offers to name you "Boat of the Year" for 300 EUR, with a plaque and a badge.
+      Guests read badges. Some of them also read your rating next to it.
+    defaultChoice: decline
+    choices:
+      - id: pay
+        label: Pay for the badge
+        hours: 1
+        effects:
+          - { type: cash, amountCents: -30000 }
+          - { type: guests, segment: cabin_guests, count: 12, when: [tour.rating >= 45] }
+          - { type: review, rating: 2, count: 2, when: [tour.rating <= 40] }
+      - id: decline
+        label: Decline
+        hours: 0
