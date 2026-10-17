@@ -65,3 +65,26 @@ events:
       - id: later
         label: Later
         hours: 0
+
+  # Tuning 1: the winter's selling months.
+  - id: retreat_scout_visit
+    area: validation
+    weight: 2
+    once: true
+    when: [week >= 6, week <= 26]
+    from: none
+    sender: A hiking guide from Innsbruck
+    text: >-
+      A hiking guide wants to see a boat before she books a May retreat. The gulets are under
+      covers and the captains are in Antalya. Showing her round takes a day and a long lunch.
+    defaultChoice: decline
+    choices:
+      - id: show
+        label: Show her round
+        hours: 8
+        effects:
+          - { type: cash, amountCents: -15000 }
+          - { type: guests, segment: retreats, count: 14, when: [shipped.retreat_setup == 1] }
+      - id: decline
+        label: Send photos instead
+        hours: 0

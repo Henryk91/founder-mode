@@ -239,13 +239,23 @@ Not found from a current source, so still estimates: the lease and management te
 
 | Value | Spec | As built | Why |
 |---|---|---|---|
-| Lease | 110,000, 30% on signing | 80,000, 15% on signing | Rounds 1 and 2: a lease could never pay; the deposit in November left no money |
+| Lease | 110,000, 30% on signing | 110,000, 15% on signing (80,000 in plan 4) | Plan 4 rounds 1 and 2 lowered it to 80,000 when nobody could ask in winter; with requests ahead (tuning 1) the spec's fee is back. 15% on signing keeps the deposit payable in November |
 | Managing | the owner keeps 75%; July and August his unless six shoulder weeks are sold by March | 70%, three weeks | Round 2; the owner's share comes off revenue net of the platform's cut (decisions) |
 | Buying | 450,000 for 24 m, the bank lends 70% | 200,000 for an older, smaller gulet, the bank lends 80% | The own-money rule left no way to buy (G1 round 1) |
-| Cabin guests | 8 to 30 a week | 12 to 36 | Round 1 |
-| Private charters | 0.2 to 1.0 boats a week | 5 to 20 places (0.3 to 1.25 boats) | Round 1 |
+| Cabin guests | 8 to 30 a week | 8 to 30 (12 to 36 in plan 4) | Back to the spec with requests ahead (tuning 1) |
+| Private charters | 0.2 to 1.0 boats a week | 3.2 to 16 places (0.2 to 1.0 boats; 5 to 20 places in plan 4) | Back to the spec with requests ahead (tuning 1) |
 | Friction | 0.2 per mixed week | 0.2 per mixed week, 0.5 of review quality | As spec; the first version compounded it per group |
 | The chef's menu | +250 a week in food | in the charter's cost per place | Not a cost in weeks without charters |
 | Crew when owning | four roles on seasonal contracts | a crew cost per week sailed (3,550 with food and fuel) | The roster cannot require several roles together (decisions, step 3) |
 | Peak months | July and August, shoulder May, June, September, October | peak July and August | As spec |
+| Start | the first week of January | the first week of October | Tuning 1: the first season is sold over a full winter, as gulet operators do |
+| When guests ask | (not stated) | by the season of the week they want (`requestsAhead`) | Tuning 1: charters and retreats book months ahead, so they ask in winter |
+
+### Money realism (tuning 1)
+
+Three of the money values are kept for playability rather than for realism:
+
+- **The lease at 110,000 for May to October with its crew.** It is the spec's estimate. Plan 4 had it at 80,000, which is cheap for a crewed eight-cabin gulet over six months; it was only needed while nobody could book in winter.
+- **Your 30% for managing an owner's gulet.** Management deals on the coast are usually a commission on what you sell, often nearer 15 to 25% (estimate, not checked). 30% keeps managing a survivable first season rather than a slow way to go bankrupt.
+- **A 200,000 EUR gulet with the bank lending 80%.** Optimistic for a 20-year-old wooden boat bought by a new, foreign-owned Turkish company: banks lend less against old boats and new companies, and a 24 m gulet in good order costs far more (the spec's 450,000). Kept so that owning is a real option in a 104 week game; the post-mortem counts the boat at its resale value.
 
