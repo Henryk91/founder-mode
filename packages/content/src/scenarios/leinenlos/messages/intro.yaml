@@ -23,13 +23,14 @@ intro:
     - id: goal
       title: Three offers from the harbour
       body: >-
-        It is January; the boats sail from May to October. You can manage an owner's gulet, lease
-        one for the season, or buy your own. Last {maxWeeks} weeks: your last thirteen months of
+        It is October. The last guests of the year are leaving, and next season, May to October, is
+        sold over the winter. You can manage an owner's gulet, lease one for the season, or buy
+        your own. Last {maxWeeks} weeks: your last thirteen months of
         guests must pay for the boat, any loan and you.
 
 founderNotes:
   first_week: >-
-    Week 1. The harbour is full of boats under covers and the office kettle has seen things.
+    Week 1. The last cruises of the year are coming in, and the office kettle has seen things.
   no_evidence: >-
     Week {week}. Still no idea who will book. Fethiye charges {living:eur} a week either way.
   only_interviews: >-

@@ -773,6 +773,10 @@ export const BookingsConfigSchema = z.object({
   tender: TenderSchema.optional(),
   // Plan 4 (section 4): assets with buy, lease and share options.
   assets: z.record(Id, AssetSchema).optional(),
+  // Tuning 1: requests follow the season of the week they ask for (the week they are made plus
+  // their lead time), not the week they are made, so guests who book months ahead ask through
+  // the winter. Absent: by the week they are made, as before.
+  requestsAhead: z.boolean().optional(),
   // Plan 4 (the gulet, docs/scenario-gulet.md section 6). Weeks the player holds for whole-boat
   // bookings: these products sell nothing in a held week.
   hold: z.object({ products: z.array(Id).min(1) }).optional(),

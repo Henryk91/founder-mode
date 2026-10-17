@@ -236,3 +236,32 @@ describe('cruise weeks', () => {
     expect(diff(again, s, '').slice(0, 5)).toEqual([])
   })
 })
+
+describe('requests ahead (tuning 1)', () => {
+  // Cabin guests who travel only in July and book 8 to 20 weeks ahead. The fixture's calendar
+  // starts in week 10 of the year, early March.
+  const july = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+  const run = (ahead: boolean) => {
+    const base = scenario()
+    const segs = base.bookings.segments
+    let s = start('ahead', {
+      requestsAhead: ahead,
+      segments: {
+        ...segs,
+        small_offices: { ...segs['small_offices']!, season: july, leadWeeks: { min: 8, max: 20 } },
+      },
+    })
+    for (let i = 0; i < 8; i++) s = endWeek(s, plan(bp())).state
+    return s.bookings!.bookings.filter((b) => b.productId === 'multi_site')
+  }
+
+  it('lets guests ask in spring for the summer weeks they want', () => {
+    // By the week they are made, March and April ask for nothing; by the weeks they want, they
+    // ask for July.
+    expect(run(false)).toEqual([])
+    const ahead = run(true)
+    expect(ahead.length).toBeGreaterThan(0)
+    const months = ahead.map((b) => Math.floor(((((10 - 1 + b.week - 1) % 52) * 12) / 52) + 1))
+    expect(months.every((m) => m >= 6 && m <= 8)).toBe(true)
+  })
+})
