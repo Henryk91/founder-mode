@@ -507,6 +507,11 @@
   color: var(--ink-muted);
 }
 
+/* Muted ink on the soft fill needs its full strength to stay readable. */
+.heatClosed .heatWeek {
+  opacity: 1;
+}
+
 .heatLow {
   background: color-mix(in srgb, var(--accent) 12%, white);
   color: var(--ink);

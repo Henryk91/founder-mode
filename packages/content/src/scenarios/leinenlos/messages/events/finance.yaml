@@ -5,13 +5,14 @@ events:
     weight: 1
     once: true
     trigger: [week >= 1]
-    openWeeks: 6
+    # Open through the winter's first months (tuning 1: the run starts in October).
+    openWeeks: 10
     from: none
     sender: The harbour office
     look: letter
     text: >-
       Three offers are on your desk. Kaptan Murat will let you manage "Mavi Rüya" with his crew and
-      no fixed cost, keeping 70% of what you sell. "Deniz Yıldızı" leases for 80,000 EUR for May to
+      no fixed cost, keeping 70% of what you sell. "Deniz Yıldızı" leases for 110,000 EUR for May to
       October with its crew, 15% on signing. Buying your own needs a Turkish company and about
       200,000 EUR.
     defaultChoice: later
@@ -35,14 +36,15 @@ events:
     weight: 1
     once: false
     cooldownWeeks: 40
-    trigger: [tour.month == 11]
+    # From the second winter: the first winter has the opening offers (tuning 1).
+    trigger: [tour.month == 11, week >= 13]
     openWeeks: 8
     from: none
     sender: The harbour office
     look: letter
     text: >-
       Winter is when boats change hands in Fethiye. Kaptan Murat would have you manage "Mavi Rüya"
-      again for 70% of the takings, and "Deniz Yıldızı" leases for next season at 80,000 EUR.
+      again for 70% of the takings, and "Deniz Yıldızı" leases for next season at 110,000 EUR.
       Leaving a lease early costs the rest of its season.
     defaultChoice: keep
     choices:

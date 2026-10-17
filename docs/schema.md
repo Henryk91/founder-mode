@@ -967,3 +967,8 @@ See `docs/abroad-mechanics.md`. Every new content field is optional with no defa
 - State: `BookingsState.held?: number[]`, `minSail?: { min, move, sinceWeek }`. Plan: `BookingsPlan.hold?: { week, on }[]`, `minSail?: { min, move }`.
 - View: `BookingsView.cruise: CruiseView | null` (the season's weeks with held, chartered, cabins sold, closed; the minimum to sail and its options; themed weeks).
 - Report entries `cruise_cancelled`, `friction`.
+
+### Tuning 1 (engine 0.14.0, off unless a scenario names them)
+
+- Content, `BookingsConfig.requestsAhead?: boolean`: requests follow the season of the weeks they ask for (the week made plus each lead time alike), and each request's lead time is drawn in proportion to those weeks' season. Absent: the season of the week they are made, as before. Leinen los only.
+- Bots: `RunResult.netWealthCents`, final cash and savings plus owned assets' resale value less the loans left (equal to `finalWealthCents` without assets). The asset targets compare money with it. `assetsEconomics` is exported from the engine.

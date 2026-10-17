@@ -25,7 +25,7 @@ Three kinds of customer might book. In each run only some of them really do.
 
 | Value | Start | Note |
 |---|---|---|
-| Mode | Long only, 104 weeks | Week 1 is the first week of January. Cruises run from May to October, so the player has 17 weeks to sell the first season |
+| Mode | Long only, 104 weeks | Week 1 is the first week of October (tuning 1; January in plan 4). Cruises run from May to October, so the first season (weeks 31 to 57) is sold over a full winter, and the second runs May to September (weeks 83 to 104) |
 | Company cash | 50,000 | Own money put in (est.) |
 | Personal savings | 14,250 | As elsewhere |
 | Founder living costs | 450 per week (est.), rising a tenth from week 53 | |

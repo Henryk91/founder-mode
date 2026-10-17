@@ -90,6 +90,16 @@ export const monthOfWeek = (woy: number): number =>
 
 export const monthOf = (scenario: Scenario, week: number) => monthOfWeek(weekOfYear(scenario, week))
 
+/** An index drawn with chances in proportion to `weights` (which sum to `sum`, above 0). */
+function drawIndex(weights: readonly number[], sum: number, rng: Rng): number {
+  let x = rng.next() * sum
+  for (let i = 0; i < weights.length; i++) {
+    x -= weights[i]!
+    if (x < 0) return i
+  }
+  return weights.length - 1
+}
+
 /** A season curve at a week of the year: the monthly values, interpolated between month middles. */
 export function seasonAt(curve: readonly number[], woy: number): number {
   const pos = ((woy - 0.5) * 12) / WEEKS_PER_YEAR - 0.5
@@ -744,9 +754,18 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const wtp = wtpRaised ? wtpWithFactors(state, seg.id, baseWtp) : baseWtp
     const price = b.prices[seg.id]?.peak ?? 1
     const weatherF = s.weatherSensitive && cfg.weather ? cfg.weather.demand[weather] : 1
+    // Tuning 1: with `requestsAhead`, the season of the weeks asked for (each lead time alike),
+    // and each request's lead drawn by those weeks' season.
+    const curve = hiddenB.season[seg.id] ?? []
+    const ahead = cfg.requestsAhead
+      ? Array.from({ length: s.leadWeeks.max - s.leadWeeks.min + 1 }, (_, k) =>
+          seasonAt(curve, weekOfYear(state.scenario, week + s.leadWeeks.min + k)),
+        )
+      : null
+    const aheadSum = ahead ? ahead.reduce((t, x) => t + x, 0) : 0
     const units =
       (hiddenB.base[seg.id] ?? 0) *
-      seasonAt(hiddenB.season[seg.id] ?? [], woy) *
+      (ahead ? aheadSum / ahead.length : seasonAt(curve, woy)) *
       reach.total *
       fitOf(state, seg.id) *
       priceCurve(state.scenario, price / wtp) *
@@ -765,7 +784,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     let lost = 0
     for (let i = 0; i < requests; i++) {
       let size = rng.int(s.size.min, s.size.max)
-      const lead = rng.int(s.leadWeeks.min, s.leadWeeks.max)
+      const lead = ahead
+        ? s.leadWeeks.min + drawIndex(ahead, aheadSum, rng)
+        : rng.int(s.leadWeeks.min, s.leadWeeks.max)
       let target = week + lead
       const platform = reach.total > 0 && rng.chance(reach.platform / reach.total)
       if (target > state.scenario.maxWeeks) continue

@@ -1,6 +1,6 @@
 # Leinen los: week-long gulet cruises from Fethiye, Turkey (plan 4, step 4).
 # Source: docs/scenario-gulet.md and docs/abroad-mechanics.md. Long mode only: 104 weeks from the
-# first week of January. Money in cents (EUR: see the help text), time in hours. Figures marked
+# first week of October (tuning 1: the first season is sold over a full winter). Money in cents (EUR: see the help text), time in hours. Figures marked
 # (est.) are estimates; sources in the spec's section 17.
 
 id: leinenlos
@@ -355,9 +355,14 @@ loan:
   workingCapitalMonths: 3
 
 # Bookings (docs/tourism-proposal.md, docs/abroad-mechanics.md). Week 1 is the first week of
-# January. A unit is a place on a cruise for a week; a charter or a retreat takes the whole boat.
+# October (week 40 of the year; the January start of plan 4 left 17 weeks to sell the first
+# season). Two seasons follow: May to October of year 1 (weeks 31 to 57) and May to September of
+# year 2 (weeks 83 to 104). A unit is a place on a cruise for a week; a charter or a retreat takes the whole boat.
 bookings:
-  startWeekOfYear: 1
+  startWeekOfYear: 40
+  # Guests ask by the season of the week they want, so charters and retreats book over the
+  # winter, months ahead (tuning 1).
+  requestsAhead: true
   seasonNoise: 0.2
   peakMonths: [7, 8]
   policyWeeks: 4
@@ -414,8 +419,9 @@ bookings:
         valueLossPerYear: 0.05
       lease:
         # Deniz Yıldızı with its crew, May to October: spec 110,000 with 30% on signing; 80,000
-        # (round 1) with 15% on signing (round 2; decisions, plan 4 step 4).
-        seasonCents: 8000000
+        # (round 1) with 15% on signing (round 2; decisions, plan 4 step 4); the spec's 110,000
+        # again with requests ahead (tuning 1).
+        seasonCents: 11000000
         upfrontShare: 0.15
         months: [5, 6, 7, 8, 9, 10]
         minMonths: 6
@@ -462,8 +468,9 @@ bookings:
   fitBase: 0.4
   segments:
     cabin_guests:
-      # Spec 8 to 30 a week; 12 to 36 after round 1.
-      base: { min: 12, max: 36 }
+      # Spec 8 to 30 a week; 12 to 36 after round 1; back to the spec with requests ahead
+      # (tuning 1).
+      base: { min: 8, max: 30 }
       unit: person
       price: { peak: 95000, off: 75000 }
       size: { min: 1, max: 4 }
@@ -478,8 +485,9 @@ bookings:
       invoiced: false
       reviewWeight: 0.7
     private_charters:
-      # 0.2 to 1.0 boats a week at peak, sixteen places each.
-      base: { min: 5, max: 20 }
+      # 0.2 to 1.0 boats a week at peak, sixteen places each (5 to 20 places in plan 4; the spec
+      # with requests ahead, tuning 1).
+      base: { min: 3.2, max: 16 }
       unit: person
       price: { peak: 85000, off: 60000 }
       size: { min: 16, max: 16 }

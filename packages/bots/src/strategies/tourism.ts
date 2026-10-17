@@ -136,12 +136,13 @@ const WHOLE_BOAT = 12
 /**
  * Tuning 1: the careful bot's boat choice from expected weeks. Before a season shows how many
  * weeks fill, it expects a whole-boat market to sail this share of the season's weeks, and a
- * cabin market this share with this many of the sixteen places sold (about what leased boats
- * sailed in their first season, 300 seeds).
+ * cabin market this share with this many of the sixteen places sold (a little under what leased
+ * boats sailed in their first season with requests ahead, 400 seeds: 80 to 90% of the weeks at
+ * about 10,000 EUR a week).
  */
-const WHOLE_FILL = 0.6
-const CABIN_FILL = 0.72
-const CABIN_PLACES = 12
+const WHOLE_FILL = 0.75
+const CABIN_FILL = 0.85
+const CABIN_PLACES = 14
 /** A product costing this share of its price or more is not worth adding (step 6). */
 const THIN_MARGIN_SHARE = 0.5
 /** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
@@ -186,6 +187,25 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       view.company.cashCents >=
       t.seasonCents * t.upfrontShare + monthly + 3 * view.company.monthlyFixedCostsCents
     )
+  }
+
+  /**
+   * Tuning 1: weeks the boat sailed in the last season that ended (null before one has), from
+   * its weeks used at the end of each season's months.
+   */
+  let lastSeason: number | null = null
+  let usedAtSeasonEnd = 0
+  let lastMonth = 0
+  const trackSeason = (view: PlayerView) => {
+    const bv = view.bookings
+    const a = bv?.assets[0]
+    const months = a?.terms.lease?.months
+    if (!bv || !a || !months) return
+    if (months.includes(lastMonth) && !months.includes(bv.month) && a.weeksUsed > usedAtSeasonEnd) {
+      lastSeason = a.weeksUsed - usedAtSeasonEnd
+      usedAtSeasonEnd = a.weeksUsed
+    }
+    lastMonth = bv.month
   }
 
   /** Plan 4: shared units used against those offered over the last season's peak weeks. */
@@ -726,6 +746,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
   return {
     focus: () => target,
     respond(input) {
+      trackSeason(input)
       // Plan 3: office stage offers by the bot's office rule, whatever its inbox policy.
       const office = answerOffers(
         input,
@@ -842,9 +863,9 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const places = whole ? capacity : Math.min(capacity, CABIN_PLACES)
     const net = places * price * (1 - bv.platform.commission / 2) - lease.crewWeekCents
     let weeks = season * (whole ? WHOLE_FILL : CABIN_FILL)
-    if (a.weeksUsed > 0 && view.week > 26) {
+    if (lastSeason !== null) {
       const away = bv.segments.reduce((t, x) => t + x.turnedAwayLast4, 0) / places
-      weeks = Math.min(season, a.weeksUsed / Math.ceil(view.week / 52) + away)
+      weeks = Math.min(season, lastSeason + away)
     }
     const costs = 13 * (view.company.monthlyFixedCostsCents + view.founder.livingCostCentsPerMonth)
     return net > 0 && weeks >= (lease.seasonCents + costs) / net
