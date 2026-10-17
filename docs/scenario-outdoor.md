@@ -208,3 +208,18 @@ Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/off
 - **Bots:** a careful company moves only when guests are turned away and its surplus over the last year (not a peak month) carries twice the added rent. Judged on a summer month, it moved into a winter's rent and won 19% of those runs against 56% for staying.
 - **Open:** moves happen only in runs already won and cost money there (targets T19 and T21, O3; O1 restated after review: moving costs at most 1 point).
 - **The established look:** once money coming in has covered all costs, the founder's living costs included, for seven months in a row, or on moving into stage 4 (target E1).
+
+## 17. School demand checked (tuning 1)
+
+The game uses 5 to 8 school groups a week at peak; this spec estimated 0.3 to 1.2. Searched October 2026:
+
+| Figure | Source |
+|---|---|
+| German youth hostels: about 9 million overnight stays in 2024, schools the largest guest group at about 41% | DJH press releases on the 2024 results ([Westfalen-Lippe, March 2025](https://www.jugendherberge.de/fileadmin/presse/2025_03_04_pm_bilanz_jugendherbergen_westfalen-lippe_final.pdf); [evangelisch.de, March 2025](https://www.evangelisch.de/inhalte/240439/04-03-2025/jugendherbergen-ohne-foerderung-von-sanierungen-ist-zukunft-unsicher)) |
+| Westfalen-Lippe 2024: 630,393 overnight stays, 40.7% (256,471) from school classes | [DJH Westfalen-Lippe, March 2025](https://www.jugendherberge.de/fileadmin/presse/2025_03_04_pm_bilanz_jugendherbergen_westfalen-lippe_final.pdf) |
+| Bavaria: about 50 youth hostels; school trips concentrate in spring up to the summer holidays and in late summer and autumn | [DJH Bayern school trip catalogue 2023/24](https://job-fit-bayern.jugendherberge.de/fileadmin/landesverbaende/bayern/downloads/pdf_und_cover_von_print/djh_gs_katalog_23_24_72.pdf); [Sonntagsblatt](https://sonntagsblatt.de/artikel/jugendherbergswerk-bayern-fordert-gruenes-licht-fuer-klassenfahrten) |
+| Alpine hostels sell four-night class trips with guided outdoor days (team training, stream expeditions, forest rallies, night hikes) at about 270 to 280 EUR a pupil | Garmisch-Partenkirchen, Mittenwald, Oberammergau and Berchtesgaden programme sheets on jugendherberge.de |
+
+No source counts the classes that book a guided outdoor day in one Alpine region in June and July. Our arithmetic, every step an estimate: if Bavaria has about a sixth of German hostel nights (1.5 million) and 41% are schools, that is about 600,000 school nights, or about 6,000 class trips of 25 pupils and four nights a year. If the Alpine hostels take a quarter and May to July a third of those, about 40 to 50 classes a week stay in the Bavarian Alps in early summer, before counting day trips and other lodgings. A new operator reaching a tenth to a sixth of them would see 4 to 8 a week.
+
+So the sources make the game's 5 to 8 groups a week plausible, but they do not establish it: the Bavarian hostel share and the Alpine share are our assumptions, and the issue is recorded as not closed. Options: ask DJH Bayern for school nights by hostel and month; keep 5 to 8 labelled "estimate (derived)"; or tune school demand down toward 2 to 4 groups and give schools another lever (a higher price per class, or a partnership with the hostels).
