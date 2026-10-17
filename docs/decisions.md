@@ -738,3 +738,9 @@ Bots and content:
 
 - One round for Leinen los G3 and T3: the careful bot also holding the peak weeks when charters are its chosen guests, and charter and retreat demand a little higher (6 to 24 and 3 to 10 places). The careful bot fell from about 30% to 22.4% (500 seeds), never holding moved further ahead (+6.4), and T3 did not close: reverted.
 - Not revisited, as no lever is left inside the first-pass budget that does not trade one target for another: Rückenwind T7, T14 and W2; Tiefgang T2, T3, D3, T6 and L2; Leinen los T3 to T6, T11, E1, G1, G3 and G4. Leinen los T4 measures the first viable guest by week 12 in a run that starts in January with cruises from May: it measures the wrong thing for this calendar (no guest can come before week 18), so it is recorded as not applicable rather than restated; it would have rewarded nothing a player can do.
+
+## Tuning 1, step 1: Leinen los
+
+- AUTONOMOUS, restatement (plan section 1.4): the asset targets (Leinen los G1 and G2, Tiefgang D2 and D3) compare money net of the boat: final cash and savings, plus the owned boat's resale value, less the loans left (`netWealthCents` in the bot results, the post-mortem's asset value). The old wording compared cash only, so it rewarded never owning: a boat worth most of its price at week 104 counted as nothing, while the loan paid for it had already left the cash. The win condition is unchanged.
+- AUTONOMOUS, bot fix: the careful bot leases the gulet when the weeks it expects to fill cover the lease and the year's company and living costs, else manages. Before a season it expects what leased boats sailed in their first season (cabin markets 72% of the weeks with 12 places, whole-boat markets 60%); after one, the weeks the boat sailed plus guests turned away. Careful 30.9% to 38.0% (always lease 41.4%), 1,000 seeds; reading the inbox (T6) +5.5, now passing; T7 fell from +2.1 to -0.5 (the price-blind bot gains the same boat rule).
+

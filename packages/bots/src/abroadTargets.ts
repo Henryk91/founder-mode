@@ -105,7 +105,8 @@ const failed = (r: StrategyRuns['results'][number]) =>
 
 /**
  * Three single-option bots on paired seeds: on the seeds where they do not all end alike, the
- * share each has the best result (a win where another lost; among equals, the most money).
+ * share each has the best result (a win where another lost; among equals, the most money net of
+ * the boat).
  */
 function bestOfThree(bots: StrategyRuns[], seeds: number[]) {
   const best = bots.map(() => 0)
@@ -115,7 +116,7 @@ function bestOfThree(bots: StrategyRuns[], seeds: number[]) {
     const w = rs.map((r) => winsOf(r))
     if (w.every((x) => x === w[0]) && rs.every((r) => r.ending === rs[0]!.ending)) continue
     differ++
-    const score = rs.map((r, k) => (w[k] ? 1e15 : 0) + r.finalWealthCents)
+    const score = rs.map((r, k) => (w[k] ? 1e15 : 0) + r.netWealthCents)
     best[score.indexOf(Math.max(...score))]!++
   }
   return { differ, shares: best.map((n) => (differ > 0 ? (100 * n) / differ : 0)) }
@@ -168,7 +169,7 @@ function assetTargets(
     const names = ids.options.map((x) => x.replace('tourism_', ''))
     out.push({
       id: `${prefix}${prefix === 'D' ? 2 : 1}`,
-      text: `No boat option is always right: on paired seeds, each of ${names.join(', ')} has the best result of the three in at least 15% of the seeds where they differ`,
+      text: `No boat option is always right: on paired seeds, each of ${names.join(', ')} has the best result of the three in at least 15% of the seeds where they differ (money counted net of the boat: cash plus its resale value less the loan left)`,
       value: `${names.map((n, k) => `${n} ${three.shares[k]!.toFixed(1)}%`).join(', ')} of ${three.differ} seeds`,
       margin: '',
       pass: three.differ > 0 && three.shares.every((x) => x >= 15),
@@ -183,12 +184,12 @@ function assetTargets(
           failShare(b[2]!) * (100 - failShare(b[2]!))) /
           Math.max(1, b[0]!.results.length),
       )
-    const cash = b.map((x) => median(x.results.filter(winsOf).map((r) => r.finalWealthCents / 100)))
+    const cash = b.map((x) => median(x.results.filter(winsOf).map((r) => r.netWealthCents / 100)))
     const highest = cash[0] !== null && cash.every((c, k) => k === 0 || c === null || cash[0]! >= c)
     out.push({
       id: `${prefix}${prefix === 'D' ? 3 : 2}`,
-      text: `Owning is risky: ${names[0]} ends bankrupt or with the loan called at least 10 points more often than ${names[2]}, and its median final cash among its wins is the highest of the three`,
-      value: `failed ${failShare(b[0]!).toFixed(1)}% against ${failShare(b[2]!).toFixed(1)}% (gap ${signed(gap)}); median cash in wins ${cash.map((c, k) => `${names[k]} ${c === null ? '-' : Math.round(c).toLocaleString('en-GB')}`).join(', ')} EUR`,
+      text: `Owning is risky: ${names[0]} ends bankrupt or with the loan called at least 10 points more often than ${names[2]}, and its median final money net of the boat (cash plus resale value less the loan left) among its wins is the highest of the three`,
+      value: `failed ${failShare(b[0]!).toFixed(1)}% against ${failShare(b[2]!).toFixed(1)}% (gap ${signed(gap)}); median net in wins ${cash.map((c, k) => `${names[k]} ${c === null ? '-' : Math.round(c).toLocaleString('en-GB')}`).join(', ')} EUR`,
       margin: fmtMargin(gapMargin),
       pass: gap + gapMargin >= 10 && highest,
     })

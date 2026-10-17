@@ -12,6 +12,7 @@ export { viewConditionsHold, viewConditionValue } from './systems/viewConditions
 export { hireEconomics, hiresEconomics, roleTerms } from './systems/team'
 export { buildPostMortem, fundingEconomics } from './postmortem'
 export { bookingTotals } from './systems/bookings'
+export { assetsEconomics } from './systems/assets'
 export type { HireEconomics } from './systems/team'
 export { replay, saveProblem, toSave } from './save'
 export { scenarioHash } from './hash'
