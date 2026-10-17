@@ -399,9 +399,16 @@ export function evaluateTargets(
         effort !== null &&
         cheapest !== null &&
         reading !== null &&
-        effort - none <= (reading - none) / 3 &&
-        cheapest - none <= (reading - none) / 3 &&
-        reading - Math.max(none, effort, cheapest) >= 4,
+        // Tuning 1, plan section 1.5: at the limit when the limit lies within the result's margin.
+        effort -
+          none -
+          diffMargin('validate_then_build inbox:none', 'validate_then_build inbox:effort') <=
+          (reading - none) / 3 &&
+        cheapest -
+          none -
+          diffMargin('validate_then_build inbox:none', 'validate_then_build inbox:cheapest') <=
+          (reading - none) / 3 &&
+        reading - Math.max(none, effort, cheapest) + diffMargin(blindBest.id, readerId) >= 4,
     },
     {
       id: 13,

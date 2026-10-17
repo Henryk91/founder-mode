@@ -91,7 +91,7 @@ Conditions use only facts the player can see. The offer's text states the condit
 |---|---|
 | O1 | Moving at the right time costs little: the careful bot with stage rules loses at most 1 point against a "never move" bot, in each long mode scenario (restated, see below) |
 | O2 | Moving early loses: a bot that accepts every offer at once loses to the careful bot by at least 3 points, in each scenario |
-| O3 | No stage is always right: among the careful bot's winning runs, each of stages 3 to 5 is taken in some and declined in others (taken in at most 90% of winning runs where it was offered) |
+| O3 | No stage is always right: among the careful bot's winning runs, each of stages 3 to 5 offered in at least 5% of them is taken in some and declined in others (taken in at most 90% of winning runs where it was offered); stages offered less often are not judged (restated in tuning 1) |
 | O4 | Costs are visible: the offer text names the one-off cost, the rent and the effect; the post-mortem names what each stage cost and what changed after it (a test checks both) |
 | O5 | All existing targets of each long mode scenario still pass, or stay open issues no worse than before this work |
 

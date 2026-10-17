@@ -332,7 +332,7 @@ One existing system becomes a paid lead channel once there is money (blocker 9 i
 |---|---|---|
 | 31 | **Both paths are viable.** `bootstrap` and `raise_on_traction` each win 25 to 45%, within 8 points of each other | Wins are Sustainable plus Growing |
 | 32 | **Neither dominates.** `bootstrap` wins at least as often as `raise_on_traction` (within its margin), and the raiser's median founder share value in winning runs is at least 1.3 times the bootstrapper's | Share value = ownership x company value rule (3.5) |
-| 33 | **Raising on weak traction is punished.** `raise_early` wins at least 8 points less than `raise_on_traction` and less than `bootstrap`, and the post-mortem names the round as a cause in at least half of its losing runs | Paired seeds, post-mortem cause ids |
+| 33 | **Raising on weak traction is punished.** `raise_early` wins less than `bootstrap` beyond its margin, and the post-mortem names the round as a cause in at least half of its losing runs (restated in tuning 1; was also: at least 8 points less than `raise_on_traction`) | Paired seeds, post-mortem cause ids |
 | 34 | **Raising when you do not need to costs you.** On the seeds `bootstrap` wins, `raise_always` ends with a lower median founder share value than `bootstrap` and wins no more often | Paired on the bootstrapper's winning seeds |
 | 35 | **Running out while raising is real.** `raise_late` goes bankrupt with a round still open in at least 25% of its runs; `raise_on_traction` in under 5% | Round state at the ending |
 | 36 | **Updates are worth a little, not a lot.** Always proper beats never by 1 to 5 points for `raise_on_traction` | Update policy runs |
