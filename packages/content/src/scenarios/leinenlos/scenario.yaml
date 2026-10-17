@@ -326,8 +326,9 @@ officeStages:
     monthlyCents: 0
 
 organisedAt: [covers_all_costs]
-# Spec 8 (6 was tried for E1 and brought the look in year 1).
-establishedAt: { monthsCoveringAll: 8 }
+# Spec 8 (6 was tried for E1 and brought the look in year 1); 10 in tuning 1 (12 and more kept it
+# from half the wins: a streak cannot cross the second winter).
+establishedAt: { monthsCoveringAll: 10 }
 
 # The bank loan: only for owning, and only once the Turkish company exists (the purchase needs it).
 loan:

@@ -163,7 +163,7 @@ As elsewhere, plus:
 
 ## 13. Stages
 
-Office stage 1 only (a desk in the harbour office). The boat options are this scenario's progression. Stages 2 to 5 are out of scope in this pass. The established look comes from sustained profitability (`establishedAt: { monthsCoveringAll: 8 }`, tune).
+Office stage 1 only (a desk in the harbour office). The boat options are this scenario's progression. Stages 2 to 5 are out of scope in this pass. The established look comes from sustained profitability (`establishedAt: { monthsCoveringAll: 10 }` as built in tuning 1; spec 8).
 
 Scene drawings: a desk with a harbour window and a gulet's masts outside; the boat itself is shown on the Finance tab's boat card (a simple side view of a two-masted wooden gulet). Same muted style.
 
