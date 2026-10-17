@@ -1,9 +1,9 @@
 # Tuning run 1 status
 
 ## Current
-Step: 6, wrap up
+Step: complete (tag tuning1-complete)
 Last commit: 5777711 Tuning 1 step 5: older targets (Seeblick T6 diagnosed and open, Gratwanderung school demand researched, fingerprints for Hinterhof and Seeblick, step report) (tag tuning1-older)
-Next action: Step 6.1: the one-process full report ran out of memory in its events part (nothing written); it is rerunning one scenario at a time (scratchpad full2.sh, as plan 4 did). Then seeds, BACKLOG, final report, tag.
+Next action: none. Tuning plan 1 is complete; final report in docs/tuning1/reports/final.md, open targets in docs/BACKLOG.md section 3. Plan 5 is next when Henry starts it.
 
 ## Checklist
 - [x] Step 0: set up (tag tuning1-start)
@@ -12,7 +12,7 @@ Next action: Step 6.1: the one-process full report ran out of memory in its even
 - [x] Step 3: Rückenwind (tag tuning1-watersports)
 - [x] Step 4: shared targets T14, T7, O3 (tag tuning1-shared)
 - [x] Step 5: older scenario targets (tag tuning1-older)
-- [ ] Step 6: wrap up (tag tuning1-complete)
+- [x] Step 6: wrap up (tag tuning1-complete)
 
 ## Open issues
 - Kantino long 20 (burst +0.0, steady -2.4) and 32 (traction -5.3, value 1.20x): unchanged.
@@ -30,6 +30,7 @@ Next action: Step 6.1: the one-process full report ran out of memory in its even
 - Leinen los T7: -0.2 ±1.7; flat off-season prices give +3.0 but careful 48.2% (T1).
 
 ## For Henry to review (non-blocking)
+- Step 6: the priority list is in docs/tuning1/reports/final.md; the one-process full report runs out of memory, so run it per scenario.
 - Step 5: AUTONOMOUS restatement of Kantino long 33 (against bootstrap); target 11 judged with margins; Hinterhof upkeep; Seeblick strict conversions (decisions, tuning 1 step 5).
 - Step 4: AUTONOMOUS contracts that sleep (fijo discontinuo) in Rückenwind; careful bot prices the off season at hint level in Hinterhof, Seeblick, Rückenwind; O3 restated (decisions, tuning 1 step 4).
 - Step 3: AUTONOMOUS engine option `ownDemand` (guests who come for one product alone); the tender reader always bids as before (decisions, tuning 1 step 3).

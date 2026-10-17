@@ -2,7 +2,7 @@
 
 Everything planned or discussed that no plan builds yet. When a plan picks an item up, move it to that plan. When a plan leaves something out or opens an issue, add it here.
 
-Last updated: 17 October 2026, at the end of plan 4.
+Last updated: 17 October 2026, at the end of tuning plan 1.
 
 ## 1. Left out of plan 4 (the abroad scenarios)
 
@@ -40,32 +40,25 @@ Plan 5 (`docs/AUTONOMOUS_PLAN_5.md`) builds the escape room, event venue, fitnes
 
 ## 3. Open targets
 
-Details and options in `docs/autonomous3/STATUS.md`, `docs/autonomous2/STATUS.md` and `docs/decisions.md`. Plan 4 adds its own open issues in `docs/autonomous4/STATUS.md`; copy them here at its end.
+Left open by tuning plan 1 (`docs/AUTONOMOUS_PLAN_TUNING_1.md`), with the closest result after its budget. Details and options in `docs/tuning1/reports/final.md` and `docs/decisions.md` (tuning 1 sections).
 
-| Scenario | Targets |
-|---|---|
-| Kantino long | 20, 27, 32, 33 (32 about 1 point worse since office stages) |
-| All tourism scenarios | T14 (staff contracts; the target may measure the wrong thing, see the plan 2 audit) |
-| Hinterhof | T2, T7 |
-| Seeblick | T6, T7, T11 |
-| Gratwanderung | School group demand well above the spec |
-| All four long modes | O3 (no office stage is always right; offices are rarely taken) |
-| Rückenwind (plan 4) | T7 (seasonal pricing, -2.1), T14 (permanent and part time contracts in a business closed all winter), W2 (never running kite trips is ahead) |
-| Tiefgang (plan 4) | T2 (the no-tests bot wins about a fifth), T3 (dive clubs about 5%), D3 (the seats bot's wins hold the most money), T6 and L2 (at their limits) |
-| Leinen los (plan 4) | T3 (charters and retreats well behind cabin-led runs), T5, T6, T11, E1, G1 (buying rarely best), G3 (holding weeks), G4 (the minimum to sail). T4, T9, T14 and the loan targets T15 to T18 do not apply as written |
+| Scenario | Target | Closest result | Options |
+|---|---|---|---|
+| Kantino long | 20 (renting against hiring) | burst +0.0 ±1.0, steady hire -2.4 ±0.9 | Not tuned again; Munich part-time economics do not support a 2-point gap either way |
+| Kantino long | 32 (neither path dominates) | raise_on_traction -5.3 ±1.0, value 1.20 times | Funded founder's salary in the value (about 1.28 times); a stronger traction round |
+| Gratwanderung, Hinterhof, Seeblick | T14 (staff contracts) | Gratwanderung permanent -20.6, part time -15.2; Hinterhof and Seeblick no effect beyond margins | Restate T14 for businesses whose work suits only some contract kinds; a German seasonal equivalent of the contract that sleeps |
+| Seeblick | T6 (reading the inbox) | reading +9.1, blind effort +6.7 (±2.2) | Make the high-hours answers in the costliest events pay only where the screen shows it |
+| Gratwanderung | School group demand | 5 to 8 groups a week, plausible by a derived estimate, not by a source | Ask DJH Bayern for school nights by hostel and month; or 2 to 4 groups with a better price per class |
+| Rückenwind | T7 (seasonal pricing) | -0.7 ±1.7 | Its starting prices already sit at the market level; a price curve that rewards discounts below willingness to pay |
+| Rückenwind | W2 (kite trips) | always -1.0 ±1.2, never +1.1 ±1.3 | A kite student earns little after a day of the scarce wing and kite instructor; cheaper instructor days for trips, or kite seekers as a larger own segment |
+| Tiefgang | T3 (dive clubs) | 18.9 points (clubs 16.9%) | Club weeks priced per group; clubs needing the boat less |
+| Leinen los | T3 (retreats and charters) | 68.0 points (retreats 11.4%) | Retreats pay their balance before sailing; a shoulder-season lease |
+| Leinen los | G1 (buying best somewhere) | 6.3% of differing seeds | Owned crew at 3,000 a week passes (21.7%) but lets the no-tests bot win 12.9%; pair with upkeep for unasked-for products |
+| Leinen los | G3 (holding weeks) | never holding -0.3 ±0.9 | Charters book the peak first with requests ahead; restate G3 or let cabin guests book further ahead |
+| Leinen los | E1 (established look) | 48.9% of wins, median week 48 | Closed months not breaking the streak; restate the week rule for runs whose first season ends after week 52 |
+| Leinen los | T7 (seasonal pricing) | -0.2 ±1.7 | Flat off-season prices give +3.0, but the careful bot then wins 48.2% (T1) |
 
-These are better as their own small tuning plan than mixed into a content plan.
-
-### Patterns across the open targets (review after plan 4)
-
-| Pattern | Seen in | Proposed fix |
-|---|---|---|
-| Segments that book months ahead are weak in a run that starts close to the season | Leinen los charters and retreats (T3, G3), Tiefgang dive clubs (T3) | Start these runs earlier (Leinen los in October, a full winter of selling), or let long-lead segments arrive with bookings already in the pipeline |
-| Owned assets are judged on cash only, so their remaining value is ignored | Leinen los G1, Tiefgang D3 | Count the asset's resale value minus the loan left in the target comparison (the post-mortem already has "net of the boat"). A measurement fix, not a value change |
-| A single-choice bot beats the careful bot | Leinen los (always lease 41.4% against careful 30.9%), Tiefgang (naive careful 29.9% against 25.8%) | Fix the careful bot first: managing the gulet in season 1 costs about 10 points when the lease is this cheap |
-| The minimum to sail always loses | Leinen los G4 | Probably correct: once the boat is paid for, a half-empty cruise beats a cancelled one. Keep it as a trap the post-mortem explains (marginal cost), and restate G4 |
-| Staff contracts in seasonal businesses | T14 in every tourism scenario, Rückenwind most | A contract that sleeps in winter (the Spanish fijo discontinuo), or restate T14 for seasonal businesses |
-| "At the limit" used for results outside their margin | Tiefgang T6 (+1.0 ±1.6 against at least 3) | Count it as failing |
+Targets that do not apply as written: Leinen los T9, T14, T15 to T18; every abroad scenario T15, T20, T21 (one office stage, no second loan).
 
 ## 4. Features not in any plan
 
