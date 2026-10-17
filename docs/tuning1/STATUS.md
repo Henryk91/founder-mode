@@ -3,7 +3,7 @@
 ## Current
 Step: 6, wrap up
 Last commit: 5777711 Tuning 1 step 5: older targets (Seeblick T6 diagnosed and open, Gratwanderung school demand researched, fingerprints for Hinterhof and Seeblick, step report) (tag tuning1-older)
-Next action: Step 6.1 running: the full report (started; about three hours). When it ends, check docs/balancing.md, run pnpm seeds, update BACKLOG and write the final report.
+Next action: Step 6.1: the one-process full report ran out of memory in its events part (nothing written); it is rerunning one scenario at a time (scratchpad full2.sh, as plan 4 did). Then seeds, BACKLOG, final report, tag.
 
 ## Checklist
 - [x] Step 0: set up (tag tuning1-start)
