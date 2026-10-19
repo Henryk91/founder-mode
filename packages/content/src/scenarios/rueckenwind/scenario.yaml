@@ -642,9 +642,23 @@ bookings:
         # contract for seasonal work: they sleep, unpaid, from November to April and come back
         # every May (a year-round contract here was paid through the closed months).
         permanent:
-          { centsPerWeek: 52500, shifts: 5, noticeWeeks: 4, months: [5, 6, 7, 8, 9, 10], quality: 0.3, max: 2 }
+          {
+            centsPerWeek: 52500,
+            shifts: 5,
+            noticeWeeks: 4,
+            months: [5, 6, 7, 8, 9, 10],
+            quality: 0.3,
+            max: 2,
+          }
         part_time:
-          { centsPerWeek: 32000, shifts: 3, noticeWeeks: 4, months: [5, 6, 7, 8, 9, 10], quality: 0.2, max: 2 }
+          {
+            centsPerWeek: 32000,
+            shifts: 3,
+            noticeWeeks: 4,
+            months: [5, 6, 7, 8, 9, 10],
+            quality: 0.2,
+            max: 2,
+          }
         seasonal:
           { centsPerWeek: 62000, shifts: 5, months: [5, 6, 7, 8, 9, 10], quality: 0.25, max: 2 }
     sailing_instructor:

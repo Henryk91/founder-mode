@@ -1,13 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { BookingsConfig } from '@founder-mode/content'
-import {
-  createGame,
-  endWeek,
-  getView,
-  replay,
-  toSave,
-  validatePlan,
-} from '../src/index'
+import { createGame, endWeek, getView, replay, toSave, validatePlan } from '../src/index'
 import { canFinance } from '../src/systems/loan'
 import { guestsEconomics } from '../src/postmortem'
 import type { BookingsPlan, GameState, WeekPlan } from '../src/types'
@@ -276,7 +269,7 @@ describe('requests ahead (tuning 1)', () => {
     expect(run(false)).toEqual([])
     const ahead = run(true)
     expect(ahead.length).toBeGreaterThan(0)
-    const months = ahead.map((b) => Math.floor(((((10 - 1 + b.week - 1) % 52) * 12) / 52) + 1))
+    const months = ahead.map((b) => Math.floor((((10 - 1 + b.week - 1) % 52) * 12) / 52 + 1))
     expect(months.every((m) => m >= 6 && m <= 8)).toBe(true)
   })
 })
