@@ -3,8 +3,8 @@
 ## Current
 
 Step: 2.3.10 Existing contracts count before seasonal hiring; final bot baseline queued.
-Last commit: HEAD, Plan 5: count all working contracts before seasonal hires.
-Next action: Let main-3 finish as intermediate evidence; queued session 67784 then automatically runs main-4 with every bot correction, main only on 1,000 test seeds. Judge that complete baseline before any value tuning, finish the protected comparisons below, and run the event table once after tuning; full report only in step 6.
+Last commit: HEAD, Plan 5: complete all nine protected-game comparisons.
+Next action: Let main-3 finish as intermediate evidence; queued session 67784 then automatically runs main-4 with every bot correction, main only on 1,000 test seeds. Judge that complete baseline before any value tuning, retain the completed protected proof below, and run the event table once after tuning; full report only in step 6.
 
 ## Checklist
 
@@ -19,9 +19,9 @@ Next action: Let main-3 finish as intermediate evidence; queued session 67784 th
 ## Running checks
 
 - Ausgesperrt: all 28 strategies, main only, 1,000 `test` seeds. Session 6820; /tmp/plan5-ausgesperrt-main-3.log; output tuning/ausgesperrt-main-3.md. Careful wins 42.3% (T1 passes); quarterly rooms 67.5% is above T2’s 60% target. Counts and individual margins are in tuning/ausgesperrt-main-3-progress.md; this predates the horizon guard; retain it as intermediate evidence.
-- Protected: nine games, main only, 1,000 `test` seeds. Session 17724; /tmp/plan5-protected-step2-progress.log; outputs protected-step2/. Kantino standard/long, Zollstock, Gratwanderung, Hinterhof, Seeblick Tiefgang and Rückenwind match; Leinen los pending. All nine fingerprints match /tmp/plan5-step2-fingerprints.json.
+- Protected proof complete: all nine main-only, 1,000-`test` comparisons and fingerprints match exactly apart from timings. See reports/step2-protected.md and protected-step2/. Session 17724 completed successfully.
 - Full tests are green: 79 files, 1,539 passed, 21 skipped; /tmp/plan5-step2-finished-rooms-full-test-2.log, two workers. Browser teardown passed after the first repair (new leisure port 5202 plus lower test concurrency). Lint/typechecks pass; /tmp/plan5-step2-test-port-lint.log.
-- Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. Eight protected snapshots and validation are committed; Leinen los remains running.
+- Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. All nine protected snapshots and validation are committed.
 
 - Corrected no-tests strategy finished: 29.5% on main only, 1,000 `test` seeds, one process; tuning/ausgesperrt-no-tests-corrected.md. This predates the horizon guard and is diagnostic.
 - Horizon guard: 35 leisure bot tests and lint/typechecks pass. The 30-seed behaviour trace has zero unusable rebuilds after the guard (/tmp/plan5-rebuild-horizon-fixed.json), versus four before. Refresh seed examples and full tests after the next outcome changes; neither is a new balance measurement.
@@ -39,6 +39,8 @@ Runtime caches previously proved byte-identical on 30 careful diagnostic runs. M
 Later-step preparation only, outside repo: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 lines), /tmp/plan5-venue-scenes-draft.json (two native SVG scenes). Integrate only after step 2 passes. Current repo content/UI are authoritative; do not recopy old Ausgesperrt /tmp drafts.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: all nine protected main comparisons and content/save fingerprints match baseline; see reports/step2-protected.md.
 
 - Step 2: leisure seasonal hiring subtracts every working contract’s coverage, preventing duplicate cover on top of permanent staff. See docs/decisions.md, Plan 5 step 2.
 
