@@ -91,6 +91,7 @@ export function leisureScenario(over: Partial<LeisureConfig> = {}) {
         basic_ordering: { ...b.products.basic_ordering!, capacity: 8 },
         allergy_filter: { ...b.products.allergy_filter!, capacity: 8 },
         member_billing: { ...zero },
+        invoice_export: { ...zero },
         supplier_portal: { ...zero },
         shift_schedule: { ...zero },
       },

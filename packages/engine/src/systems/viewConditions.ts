@@ -59,6 +59,19 @@ const VIEW_METRICS: Record<FixedConditionPath, (v: PlayerView, m: MessageView | 
   'tour.turnedAwayWeeks': (v) => v.office.turnedAwayWeeks,
   'tour.peakTurnedAwayWeeks': (v) => v.office.peakTurnedAwayWeeks,
   'tour.occupancy': (v) => v.office.occupancyPct,
+  'leisure.open': (v) => (v.bookings?.leisure?.openingWeek ? 1 : 0),
+  'leisure.weeksOpen': (v) =>
+    v.bookings?.leisure?.openingWeek ? Math.max(0, v.week - v.bookings.leisure.openingWeek + 1) : 0,
+  'leisure.members': (v) => v.bookings?.leisure?.members.reduce((n, m) => n + m.active, 0) ?? 0,
+  'leisure.cancellations': (v) => v.bookings?.leisure?.cancellationsLast4 ?? 0,
+  'leisure.packed': (v) => v.bookings?.leisure?.load.filter((x) => x.load === 'packed').length ?? 0,
+  'leisure.aggregator': (v) => (v.bookings?.leisure?.aggregator?.joined ? 1 : 0),
+  'leisure.checkins': (v) => v.bookings?.leisure?.aggregator?.checkinsLast4 ?? 0,
+  'leisure.holds': (v) =>
+    v.bookings?.leisure?.holds?.calendar.filter((h) => h.status === 'held').length ?? 0,
+  'leisure.tired': (v) =>
+    v.bookings?.leisure?.freshness.filter((f) => f.word === 'tired').length ?? 0,
+  'leisure.instructorLosses': (v) => v.bookings?.leisure?.instructorDepartures.length ?? 0,
   // Plan 4: the scenario's first asset.
   'asset.owned': (v) => (v.bookings?.assets[0]?.option === 'buy' ? 1 : 0),
   'asset.leased': (v) => (v.bookings?.assets[0]?.option === 'lease' ? 1 : 0),

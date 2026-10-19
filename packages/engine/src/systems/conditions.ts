@@ -77,6 +77,28 @@ const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSe
   'tour.turnedAwayWeeks': (s) => turnedAwayWeeks(s),
   'tour.peakTurnedAwayWeeks': (s) => turnedAwayWeeks(s, true),
   'tour.occupancy': occupancyPct,
+  'leisure.open': (s) => (s.bookings?.leisure?.openingWeek ? 1 : 0),
+  'leisure.weeksOpen': (s) =>
+    s.bookings?.leisure?.openingWeek ? Math.max(0, s.week - s.bookings.leisure.openingWeek + 1) : 0,
+  'leisure.members': (s) =>
+    s.bookings?.leisure?.members.filter((m) => m.endedWeek === null && !m.inactive).length ?? 0,
+  'leisure.cancellations': (s) =>
+    s.bookings?.leisure?.weeks
+      .filter((w) => w.week > s.week - 5)
+      .reduce((n, w) => n + w.cancelled, 0) ?? 0,
+  'leisure.packed': (s) =>
+    s.bookings?.leisure?.weeks.at(-1)?.slots.filter((x) => x.load === 'packed').length ?? 0,
+  'leisure.aggregator': (s) => (s.bookings?.leisure?.aggregator?.joined ? 1 : 0),
+  'leisure.checkins': (s) =>
+    s.bookings?.leisure?.weeks
+      .filter((w) => w.week > s.week - 5)
+      .reduce((n, w) => n + w.slots.reduce((t, x) => t + x.aggregator, 0), 0) ?? 0,
+  'leisure.holds': (s) => s.bookings?.leisure?.holds.filter((h) => h.status === 'held').length ?? 0,
+  'leisure.tired': (s) =>
+    Object.entries(s.bookings?.leisure?.freshness ?? {}).filter(
+      ([id, f]) => f.value <= (s.scenario.bookings?.leisure?.freshness?.[id]?.knownAbove ?? -1),
+    ).length,
+  'leisure.instructorLosses': (s) => s.bookings?.leisure?.instructorDepartures.length ?? 0,
   // Plan 4: the scenario's first asset.
   'asset.owned': (s) => (firstAsset(s)?.option === 'buy' ? 1 : 0),
   'asset.leased': (s) => (firstAsset(s)?.option === 'lease' ? 1 : 0),

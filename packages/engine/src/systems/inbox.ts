@@ -1,3 +1,4 @@
+import { loseLeisureInstructor } from './leisure'
 import type { Effect, ScenarioEvent } from '@founder-mode/content'
 import type { Rng } from '../rng'
 import type {
@@ -239,6 +240,8 @@ function applyEffect(
         hidden: { ...state.hidden, funding: { ...state.hidden.funding, confidence } },
       }
     }
+    case 'leisureInstructor':
+      return loseLeisureInstructor(state, effect.role, rng)
     case 'leisureStart': {
       const b = state.bookings
       if (!b?.leisure) return state

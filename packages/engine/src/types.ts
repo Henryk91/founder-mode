@@ -2566,6 +2566,7 @@ export type HireEconomicsView = {
 export type LeisureState = {
   openingWeek: number | null
   buildChoice: FeatureId[]
+  instructorDepartures: { week: number; roleId: string; stopped: number; pending: number }[]
   members: LeisureMember[]
   offers: Record<FeatureId, { enabled: boolean; priceCents: number }>
   timetable: Record<FeatureId, Record<string, number>>
@@ -2600,6 +2601,7 @@ export type LeisureState = {
   weeks: LeisureWeek[]
 }
 export type LeisureMember = {
+  billingWeek?: number
   id: string
   segmentId: SegmentId
   offerId: FeatureId
@@ -2645,6 +2647,7 @@ export type LeisureWeek = {
   }[]
 }
 export type HiddenLeisure = {
+  instructorFollowing: Record<string, number>
   localPools: Record<FeatureId, number>
   payoutCents: number | null
 }
@@ -2658,6 +2661,7 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  instructorDepartures: { week: number; name: string; stopped: number; pending: number }[]
   openingWeek: number | null
   buildChoice: FeatureId[]
   slots: { id: string; name: string; hours: number }[]
@@ -2668,6 +2672,7 @@ export type LeisureView = {
     active: number
     inactive: number
     owedVisits: number
+    agreedMonthlyCents: number
     enabled: boolean
     priceCents: number
     kind: string
