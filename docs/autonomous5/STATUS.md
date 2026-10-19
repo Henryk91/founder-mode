@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.3.10 Existing contracts count before seasonal hiring; final bot baseline queued.
-Last commit: HEAD, Plan 5: complete all nine protected-game comparisons.
-Next action: Let main-3 finish as intermediate evidence; queued session 67784 then automatically runs main-4 with every bot correction, main only on 1,000 test seeds. Judge that complete baseline before any value tuning, retain the completed protected proof below, and run the event table once after tuning; full report only in step 6.
+Step: 2.4 Complete intermediate measurement recorded; corrected bot baseline running.
+Last commit: HEAD, Plan 5: record complete bot diagnosis before value tuning.
+Next action: Finish main-4 (session 67784, /tmp/plan5-ausgesperrt-main-4.log), all corrected bots on main only with 1,000 test seeds, then judge every target and begin the bounded value budget. Keep the completed protected proof; run the Ausgesperrt event table once after tuning and reserve the full report for step 6.
 
 ## Checklist
 
@@ -18,7 +18,7 @@ Next action: Let main-3 finish as intermediate evidence; queued session 67784 th
 
 ## Running checks
 
-- Ausgesperrt: all 28 strategies, main only, 1,000 `test` seeds. Session 6820; /tmp/plan5-ausgesperrt-main-3.log; output tuning/ausgesperrt-main-3.md. Careful wins 42.3% (T1 passes); quarterly rooms 67.5% is above T2’s 60% target. Counts and individual margins are in tuning/ausgesperrt-main-3-progress.md; this predates the horizon guard; retain it as intermediate evidence.
+- Main-3 completed: all 28 strategies, main only, 1,000 `test` seeds. Intermediate complete target table in tuning/ausgesperrt-main-3.md, before the horizon/portfolio/contract-coverage corrections. Do not tune from its old bot verdicts.
 - Protected proof complete: all nine main-only, 1,000-`test` comparisons and fingerprints match exactly apart from timings. See reports/step2-protected.md and protected-step2/. Session 17724 completed successfully.
 - Full tests are green: 79 files, 1,539 passed, 21 skipped; /tmp/plan5-step2-finished-rooms-full-test-2.log, two workers. Browser teardown passed after the first repair (new leisure port 5202 plus lower test concurrency). Lint/typechecks pass; /tmp/plan5-step2-test-port-lint.log.
 - Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. All nine protected snapshots and validation are committed.
@@ -26,13 +26,13 @@ Next action: Let main-3 finish as intermediate evidence; queued session 67784 th
 - Corrected no-tests strategy finished: 29.5% on main only, 1,000 `test` seeds, one process; tuning/ausgesperrt-no-tests-corrected.md. This predates the horizon guard and is diagnostic.
 - Horizon guard: 35 leisure bot tests and lint/typechecks pass. The 30-seed behaviour trace has zero unusable rebuilds after the guard (/tmp/plan5-rebuild-horizon-fixed.json), versus four before. Refresh seed examples and full tests after the next outcome changes; neither is a new balance measurement.
 
-- Queued final bot baseline: session 67784, /tmp/plan5-final-bot-baseline-progress.log. Starts after main-3’s completion marker, writes tuning/ausgesperrt-main-4.md and /tmp/plan5-ausgesperrt-main-4.log. No values changed. Current bot correction prevents seasonal hires from covering work already covered by permanent/part-time staff; all 36 bot tests and lint/typechecks pass.
+- Final bot baseline is running: session 67784, /tmp/plan5-final-bot-baseline-progress.log; writes tuning/ausgesperrt-main-4.md and /tmp/plan5-ausgesperrt-main-4.log. No values changed. Current bot correction prevents seasonal hires from covering work already covered by permanent/part-time staff; all 36 bot tests and lint/typechecks pass.
 
 ## Open issues
 
 No complete final target measurement yet. No scenario-value/formula tuning rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
 
-Latest focused checks: 44 leisure engine and 33 bot tests pass. The full suite also passes after the unfinished-room bot repair: 79 files / 1,539 tests (21 skipped), with lint/typechecks green. Browser coverage includes Help/results/post-mortem words and 24 cases over three stages, four widths, Chromium/WebKit and axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
+Latest focused checks: 44 leisure engine and 36 bot tests pass. The full suite also passes after the unfinished-room bot repair: 79 files / 1,539 tests (21 skipped), with lint/typechecks green. Browser coverage includes Help/results/post-mortem words and 24 cases over three stages, four widths, Chromium/WebKit and axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 
 Runtime caches previously proved byte-identical on 30 careful diagnostic runs. Main-3 timings overlap full tests and protected runs; note contention when judging T12. Diagnostic traces are behaviour checks, not target measurements.
 

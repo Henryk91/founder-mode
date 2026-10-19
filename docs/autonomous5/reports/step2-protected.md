@@ -1,14 +1,14 @@
 # Step 2: protected-game proof
 
-All nine protected games match their immutable step0 baselines exactly apart from
+All nine protected games match their immutable step 0 baselines exactly apart from
 timings. These are **main only, 1,000 seeds per strategy, prefix `test`**, one scenario
 per process, at most two scenario processes with two workers each. No event tables,
 wide parts or full report ran. Existing failures in those games remain unchanged.
 
 The comparison helper retains engine version and every outcome row, removing only
-strategy durations and their timing targets. Engine version remains0.14.0. All nine
+strategy durations and their timing targets. Engine version remains 0.14.0. All nine
 content/save fingerprints also match baseline/content-fingerprints.json, verified
-against /tmp/plan5-step2-fingerprints.json. The new leisure branches are off in these
+against /tmp/plan5-step 2-fingerprints.json. The new leisure branches are off in these
 games; scoped leisure strategies are filtered out and preserve the old strategy order.
 
 Snapshots are in protected-step2/. The raw progress/result records are
@@ -30,9 +30,9 @@ exact comparison’s IDENTICAL result. Wall times overlap other bot and test act
 
 This completes the protected proof for the gated slot prices, room-space/minimum-area
 rules, leisure calendar/reservation caches and cancellation-deposit settlement added
-in step2. Later leisure-only bot corrections use the same explicit gate; no protected
+in step 2. Later leisure-only bot corrections use the same explicit gate; no protected
 branch’s rule or random draws changed. Any subsequent engine/shared change affecting
 these paths requires a new main comparison under CLAUDE.md’s budget.
 
-Ausgesperrt’s final target measurement and tuning remain in progress. Its own step2
-report and milestone tag follow that work. The full report remains reserved for step6.
+Ausgesperrt’s final target measurement and tuning remain in progress. Its own step 2
+report and milestone tag follow that work. The full report remains reserved for step 6.

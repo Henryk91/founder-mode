@@ -5195,7 +5195,7 @@ Four events (crash_report, apprentice_setup, guild_evening, the shared regional_
 
 Ran the main part only for all nine protected games, 1,000 seeds per strategy with prefix
 `test`, one scenario per process. The snapshots and commands are in
-[the step 0 report](autonomous5/reports/step0-baseline.md). No event tables or wide parts ran.
+[the step 0 report](autonomous5/reports/step 0-baseline.md). No event tables or wide parts ran.
 The existing full-report sections above remain available; plan 5's single full report is
 reserved for step 6. No engine or bot behaviour changed.
 
@@ -5235,7 +5235,14 @@ will include that correction. No values, event tables or full report changed.
 
 ### Plan 5, step 2: protected comparisons complete
 
-All nine protected games match step0 exactly apart from timings: **main only,
+All nine protected games match step 0 exactly apart from timings: **main only,
 1,000 seeds per strategy, prefix `test`**, one scenario per process. All nine
-content/save fingerprints match too. See [the step2 proof](autonomous5/reports/step2-protected.md).
+content/save fingerprints match too. See [the step 2 proof](autonomous5/reports/step2-protected.md).
 No protected values or outcomes changed. No event table or full report ran.
+
+### Plan 5, step 2: complete intermediate bot diagnosis
+
+[Main-3](autonomous5/tuning/ausgesperrt-main-3.md) completed **all 28 strategies,
+main only, 1,000 `test` seeds each**. It predates the final horizon, blind-portfolio
+and seasonal-coverage fixes. Main-4 is measuring those corrections before game-value
+tuning. No game values, event table or full report changed.

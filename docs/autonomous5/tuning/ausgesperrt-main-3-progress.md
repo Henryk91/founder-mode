@@ -1,5 +1,8 @@
 # Ausgesperrt main-3 progress
 
+Main-3 is now complete; see [the full intermediate report](ausgesperrt-main-3.md).
+The counts below are the earlier progress checkpoint. Main-4 measures current bots.
+
 **Main only, 1,000 seeds per strategy, prefix `test`.** The complete measurement
 is still running; this records completed strategy counts from its progress log,
 not a final target table. Each row has its individual 95% rate margin. Differences
