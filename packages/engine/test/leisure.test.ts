@@ -818,3 +818,149 @@ describe('finite theme pools and maintenance', () => {
     expect(leisureCapacity(next, 'basic_ordering', 'daytime', 2)).toBe(4)
   })
 })
+
+describe('slot calendar and indoor course ladder', () => {
+  const courseGame = () => {
+    const c = leisureConfig()
+    for (const seg of Object.values(c.segments)) seg.slotShare = { daytime: 0, evening: 1 }
+    const scenario = leisureScenario(c)
+    for (const seg of Object.values(scenario.bookings.segments)) seg.base = { min: 0, max: 0 }
+    scenario.bookings.products.basic_ordering!.course = {
+      level: 'basic',
+      sameStay: { share: 1, products: ['allergy_filter'] },
+    }
+    scenario.bookings.products.allergy_filter!.needsLevel = 'basic'
+    return open(createGame(scenario, 'indoor-course'))
+  }
+  const shifts = () =>
+    plan({
+      bookings: {
+        shifts: { guide: 1 },
+        founderShifts: {},
+        prices: {},
+        policy: null,
+        platform: null,
+        partnerships: [],
+        outreach: {},
+      },
+    })
+
+  it('gives graduates named-slot follow-ups and exposes factual course totals without weather', () => {
+    let s = courseGame()
+    s = { ...s, bookings: { ...s.bookings!, bookings: [booking({ segmentId: 'medical' })] } }
+    s = endWeek(s, shifts()).state
+    expect(
+      s.bookings!.bookings.find((b) => b.week === 2 && b.productId === 'allergy_filter'),
+    ).toMatchObject({ slotId: 'evening', units: 1 })
+    const view = getView(s).bookings!
+    expect(view.abroad).toBeNull()
+    expect(view.leisure!.courses).toMatchObject({
+      students: 1,
+      sameStay: 1,
+      returnedDirect: 0,
+      returnedPlatform: 0,
+    })
+  })
+
+  it('does not bypass a full preferred slot with a course follow-up', () => {
+    let s = courseGame()
+    s = {
+      ...s,
+      bookings: {
+        ...s.bookings!,
+        bookings: [
+          booking({ segmentId: 'medical' }),
+          booking({
+            id: 'already_full',
+            productId: 'allergy_filter',
+            segmentId: 'medical',
+            week: 2,
+            units: 4,
+          }),
+        ],
+      },
+    }
+    s = endWeek(s, shifts()).state
+    expect(s.bookings!.bookings.filter((b) => b.week === 2)).toHaveLength(1)
+    expect(getView(s).bookings!.leisure!.courses).toMatchObject({ students: 1, sameStay: 0 })
+  })
+
+  it('shows held, booked and free capacity independently, including future construction', () => {
+    let s = start(
+      open(
+        game({
+          holds: {
+            feeCents: 50000,
+            weeks: { min: 2, max: 2 },
+            lateReleaseShare: 0,
+            segments: {
+              small_offices: { ask: 1, convert: 1, feeConversion: 1, noHoldConversion: 0 },
+            },
+          },
+        }),
+      ),
+    )
+    s = holdLeisure(s, booking({ week: 4 }), rng()).state
+    s = {
+      ...s,
+      bookings: { ...s.bookings!, bookings: [booking({ id: 'confirmed', week: 4, units: 2 })] },
+    }
+    const row = getView(s).bookings!.leisure!.slotCalendar.find(
+      (x) => x.productId === 'basic_ordering' && x.slotId === 'evening' && x.week === 4,
+    )
+    expect(row).toMatchObject({ capacity: 4, booked: 2, held: 1 })
+    const scenario = leisureScenario({
+      buildOut: { basic_ordering: { weeks: 2 } },
+      opening: { areas: ['basic_ordering'], requires: [] },
+    })
+    const before = createGame(scenario, 'calendar-build')
+    const building = endWeek(
+      before,
+      plan({
+        build: {
+          basic_ordering: scenario.features.find((f) => f.id === 'basic_ordering')!.buildHours,
+        },
+      }),
+    ).state
+    const calendar = getView(building).bookings!.leisure!.slotCalendar
+    expect(
+      calendar.find(
+        (x) => x.productId === 'basic_ordering' && x.slotId === 'evening' && x.week === 2,
+      )!.capacity,
+    ).toBe(0)
+    expect(
+      calendar.find(
+        (x) => x.productId === 'basic_ordering' && x.slotId === 'evening' && x.week === 3,
+      )!.capacity,
+    ).toBe(4)
+  })
+
+  it('gives returning graduates a named slot and reserves its capacity', () => {
+    let s = courseGame()
+    s = {
+      ...s,
+      hidden: {
+        ...s.hidden,
+        bookings: {
+          ...s.hidden.bookings!,
+          returns: [
+            {
+              askWeek: 1,
+              targetWeek: 2,
+              segmentId: 'medical',
+              channel: 'direct',
+              units: 1,
+              products: ['allergy_filter'],
+            },
+          ],
+        },
+      },
+    }
+    s = endWeek(s, shifts()).state
+    expect(s.bookings!.bookings.find((b) => b.productId === 'allergy_filter')).toMatchObject({
+      week: 2,
+      slotId: 'evening',
+    })
+    expect(getView(s).bookings!.leisure!.courses!.returnedDirect).toBe(1)
+  })
+})
