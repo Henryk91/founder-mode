@@ -74,6 +74,7 @@ What to run, by kind of change:
 - **Engine changes:** the main part of every scenario on 1,000 seeds. The engine is deterministic, so identical results on 1,000 seeds prove a game is unchanged; 10,000 seeds are never needed to prove "unchanged".
 - **Event content:** the event table (`--events`) for the affected scenario only.
 - **End of a whole plan, before a release, or when Henry asks:** the full report, once.
+- **How to run the full report:** one scenario per process, never all scenarios in one (that runs out of memory after about an hour and writes nothing). For Kantino long, name the parts explicitly and include `team` and `funding`, because the default parts leave them out.
 
 Rules:
 
