@@ -841,3 +841,9 @@ Bots and content:
 - AUTONOMOUS: the indoor calendar shows twelve weeks of actual slot capacity, bookings and holds, including announced construction readiness. Existing course progression and returning graduates use named slots indoors; factual course totals are exposed without introducing weather. Climbing-specific qualifications and course-to-membership conversion remain for its scenario step if needed.
 
 - AUTONOMOUS: the regression helper now identifies timing targets by their text, covering the 60-week target 5 and Kantino long target 30 as well as tourism T12. The first two comparisons differed only in those timing rows; their saved reports match without rerunning simulations. Every outcome row remains in the comparison.
+
+## Plan 5, step 2: Ausgesperrt
+
+- AUTONOMOUS: T1 to T18 and E1 apply: this has segment discovery, reviews, channels, cancellation terms, weekly shifts and three contract kinds, seasonal prices, optional later-room borrowing and a VR temptation. T4 is measured from each run's actual opening. X1 to X4 apply unchanged. Office expansion targets T19 to T22 are outside this plan's scope.
+- AUTONOMOUS: stage 2 finishes reception within the original basement, because the plan explicitly excludes a second location although the spec suggests one across the road. Company bookings use two to four room-games, priced per room-game, within broad weekly slots; no exact headcount or simultaneous start time is claimed.
+- AUTONOMOUS: design preparation and elapsed construction are separate; contracted construction is included in the room price. Freelance building help speeds preparation, rather than promising an unsupported two-week cut to the construction calendar. Slot prices and physical room-space limits are gated engine gaps added in this scenario step.
