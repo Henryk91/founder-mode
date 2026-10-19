@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.3.1 Leisure runtime caches validated; initial Ausgesperrt measurement still running.
-Last commit: HEAD, Plan 5: cache leisure calendars and reservation lookups.
-Next action: Finish corrected main-only measurement (session 47891, /tmp/plan5-ausgesperrt-main-1.log, output tuning/ausgesperrt-main-1.md). Judge every T1–T18, E1, X1–X4 with margins and check bot behaviour before value tuning. UI and content in repo are authoritative; do not recopy /tmp drafts. Full bot report only in step 6.
+Step: 2.3.2 Careful bot responds to observable capacity pressure.
+Last commit: HEAD, Plan 5: expand leisure rooms after repeated visible crowding.
+Next action: Repair the leisure deposit-refund gap found by tracing the 85.7% understaffing result: cancelled bookings currently retain advances. Gate the repair to leisure, test refunds, then remeasure affected targets. Finish corrected main-only measurement (session 47891, /tmp/plan5-ausgesperrt-main-1.log, output tuning/ausgesperrt-main-1.md). Judge every T1–T18, E1, X1–X4 with margins and check bot behaviour before value tuning. UI and content in repo are authoritative; do not recopy /tmp drafts. Full bot report only in step 6.
 
 ## Checklist
 
@@ -23,6 +23,8 @@ No complete target measurement yet. First measurement was deliberately interrupt
 Runtime cache checks: 40 engine tests pass, including direct equality against uncached reservations and calendar boundaries. Thirty diagnostic careful results match byte for byte (/tmp/plan5-leisure-before.json, /tmp/plan5-leisure-indexed.json); time 8.37 to 5.19 seconds. Main-1 workers predate the caches, so their timing target is not a current runtime measurement. No game values have been tuned yet.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: careful expansion also responds to packed slots and refusals in three of eight weeks; no hidden demand is used. A deposit-refund defect was found during staffing diagnosis and is next. See docs/decisions.md, Plan 5 step 2.
 
 - Step 2: next-room choices use observed freshness; first theme is broad or seeded, never picked from hidden truth. Simultaneous rebuilds share one budget. See docs/decisions.md, Plan 5 step 2.
 

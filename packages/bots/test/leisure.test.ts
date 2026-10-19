@@ -14,12 +14,57 @@ import { playsIn } from '../src/strategy'
 import { TOURISM_STRATEGIES } from '../src/strategies/tourism'
 import { evaluateTourismTargets } from '../src/tourismReport'
 import { PlanBuilder } from '../src/strategy'
-import { planLeisure } from '../src/strategies/leisure'
+import { leisureWanted, planLeisure } from '../src/strategies/leisure'
 import { CAREFUL_TOURISM } from '../src/strategies/tourism'
 
 describe('Ausgesperrt players', () => {
   const scenario = loadScenario('ausgesperrt', 'long')
   const strategies = TOURISM_STRATEGIES.filter((s) => playsIn(s, scenario))
+  it('adds capacity after repeated visible refusals, while preserving the comparison policies', () => {
+    const view = getView(createGame(scenario, 'room-pressure'))
+    const l = view.bookings!.leisure!
+    l.buildChoice = ['heist']
+    l.openingWeek = 10
+    view.week = 14
+    const first = view.product.features.find((f) => f.id === 'heist')!
+    first.shipped = true
+    first.remainingHours = 0
+    const theme = l.freshness.find((f) => f.productId === 'heist')!
+    theme.openedWeek = 10
+    theme.word = 'new'
+    const wanted = (rule = CAREFUL_TOURISM) =>
+      leisureWanted(scenario, view, rule, [], 'locals', 'room-pressure')
+    expect(wanted()).toEqual(['heist'])
+    l.history = [11, 12, 13].map((week) => ({
+      week,
+      turnedAway: { locals: 5 },
+      joined: 0,
+      cancelled: 0,
+      active: 0,
+      signed: 0,
+      held: 0,
+      converted: 0,
+      released: 0,
+      lateReleased: 0,
+      aggregatorCancellations: 0,
+      aggregatorPayoutCents: 0,
+      slots: [
+        {
+          productId: 'heist',
+          slotId: 'weekend',
+          visits: 14,
+          turnedAway: 5,
+          aggregator: 0,
+          load: 'packed' as const,
+        },
+      ],
+    }))
+    expect(wanted()).toHaveLength(2)
+    expect(wanted({ ...CAREFUL_TOURISM, leisure: { rooms: 'one' } })).toEqual(['heist'])
+    expect(wanted({ ...CAREFUL_TOURISM, leisure: { rooms: 'quarterly' } })).toEqual(['heist'])
+    l.history = l.history.slice(1)
+    expect(wanted()).toEqual(['heist'])
+  })
   it('budgets all rebuilds together with construction finishing this week', () => {
     const view = getView(createGame(scenario, 'rebuild-budget'))
     view.company.cashCents = 7000000
