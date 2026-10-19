@@ -8,6 +8,7 @@ export type LeisureRule = {
   themeBlind?: boolean
   noDaytime?: boolean
   vrEarly?: boolean
+  laterLoans?: boolean
 }
 
 const shuffled = (ids: string[], seed: string) => {

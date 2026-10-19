@@ -578,7 +578,9 @@ const AUSGESPERRT: Overrides = {
   'help.week.1':
     'Plan your hours. A normal week is 50 h, and up to 65 h costs energy. Choose a first theme, finish its preparation and allow eight weeks for construction. The Rooms tab shows slots and future dates.',
   'help.week.4':
-    'Every fourth week is a month end, when the basement, other fixed costs and loan payments go out. Room-games are paid at booking; companies pay a deposit and an invoice for the balance. A voucher is cash now and a game still owed.',
+    'Every fourth week is a month end, when the basement, other fixed costs and loan payments go out. Room-games are paid at booking; companies pay a deposit and an invoice for the balance. You refund advances when you cancel, or when a group cancels under flexible terms. A voucher is cash now and a game still owed.',
+  'explain.prices.text':
+    'Each group and slot has peak and off-season prices. A flexible policy refunds cancelled groups; a strict one keeps the agreed charge but puts some groups off. If you cancel a game, you return its advance payment under either policy. Closing sales keeps existing bookings reserved.',
   'explain.test.text':
     'A test listing costs {hours} and an ad budget, then reports after {weeks}: how many saw the offer and asked for dates. It is a signal, not paid bookings. A play test costs {presale} and gives {size} groups a finished room; keen groups buy a voucher and may return. Compare what people pay for with what they praise.',
   'pm.guests.cancelled':

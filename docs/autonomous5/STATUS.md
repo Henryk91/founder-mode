@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.3.4 Accepted loans clear the leisure bot’s obsolete refusal ceiling.
-Last commit: HEAD, Plan 5: let leisure bots finance later rooms after startup loans.
-Next action: Finish the six-strategy refund-only contribution run (session 32296, /tmp/plan5-ausgesperrt-repaired-core.log), then run the complete Ausgesperrt main on 1,000 test seeds with all bot fixes. The initial defective-accounting run was deliberately stopped; see tuning/ausgesperrt-accounting-diagnosis.md. Judge every target before value tuning. Full bot report only in step 6.
+Step: 2.3.5 Correctness repairs and complete validation are green; balance measurement running.
+Last commit: HEAD, Plan 5: measure optional room loans and explain refunds.
+Next action: Finish complete main measurement (session 73208, /tmp/plan5-ausgesperrt-main-2.log, tuning/ausgesperrt-main-2.md) and the new paired loan comparison (session 53242, /tmp/plan5-ausgesperrt-later-loan.log). Both use 1,000 test seeds, main only. Use the loan report for T15 and leisure split margins; main-2 workers predate those reporting fixes but use all gameplay fixes. Judge every target before tuning. Then run the event table once and protected main proofs. Full report only in step 6.
 
 ## Checklist
 
@@ -18,11 +18,15 @@ Next action: Finish the six-strategy refund-only contribution run (session 32296
 
 ## Open issues
 
-No complete target measurement yet. First measurement was deliberately interrupted for a bot budgeting fix; see tuning/ausgesperrt-initial-interrupted.md. Current lint/typechecks pass; 30 leisure bot tests and all 172 seed tests pass. The full suite passed 78 files/1,508 tests with only missing new seed examples failing; generation and seed replay fixed that failure. All 24 leisure browser cases pass across three UI stages, four widths, Chromium/WebKit, axe and word checks. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure. At step end, rerun the required full suite/lint, event table once, and nine protected main proofs. Full report only in step 6.
+No complete final target measurement yet. Refund-only contribution: careful 5.1%, understaffing 3.4%, quarterly rooms 21.7%, before the accepted-loan ceiling fix; see tuning/ausgesperrt-repaired-core.md. Interrupted diagnostic runs are documented in tuning/ausgesperrt-accounting-diagnosis.md and tuning/ausgesperrt-initial-interrupted.md. No scenario-value/formula tuning rounds consumed.
+
+Full validation: 79 files, 1,539 tests passed, 21 skipped; lint/typechecks pass. This includes 44 leisure engine tests, 33 leisure bot tests, all seed examples, Help/results/post-mortem word checks and 24 browser cases across three stages/four widths/Chromium/WebKit with axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure. Seed regeneration changes only Ausgesperrt. Later-step event copy is drafted outside the repo at /tmp/plan5-venue-events-draft.md; integrate only after step 2 passes.
 
 Runtime cache checks: 40 engine tests pass, including direct equality against uncached reservations and calendar boundaries. Thirty diagnostic careful results match byte for byte (/tmp/plan5-leisure-before.json, /tmp/plan5-leisure-indexed.json); time 8.37 to 5.19 seconds. Main-1 workers predate the caches, so their timing target is not a current runtime measurement. No game values have been tuned yet.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: T15 compares later-room borrowing with retained-cash finance; T3 applies its 95% split margin. Thresholds stay unchanged. See docs/decisions.md, Plan 5 step 2.
 
 - Step 2: accepting a loan clears the bot’s refusal ceiling so later rooms can obtain larger loans; extended leisure word checks cover Help/results/post-mortem. See docs/decisions.md, Plan 5 step 2.
 

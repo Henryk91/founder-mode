@@ -13,7 +13,7 @@ import {
   type StrategyRuns,
   type Target,
 } from './report'
-import { fmtMargin, rateMargin } from './margin'
+import { combined, fmtMargin, rateMargin } from './margin'
 import { diveTargets, guletTargets, watersportsTargets } from './abroadTargets'
 import { escapeTargets } from './leisureTargets'
 import type { RunResult } from './simulate'
@@ -45,6 +45,13 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     ? Math.max(...byMarket.map((m) => m.rate)) - Math.min(...byMarket.map((m) => m.rate))
     : 0
   const indoor = careful.results.some((x) => x.tourism?.leisure)
+  const spreadMargin = (() => {
+    if (!indoor || byMarket.length < 2) return 0
+    const ordered = [...byMarket].sort((a, b) => a.rate - b.rate)
+    const margin = (x: (typeof ordered)[number]) =>
+      rateMargin(Math.round((x.rate * x.runs) / 100), x.runs)
+    return combined(margin(ordered[0]!), margin(ordered.at(-1)!))
+  })()
   const firstWeeks = wins(careful.results).flatMap((x) =>
     x.tourism?.firstViableWeek != null
       ? [x.tourism.firstViableWeek - (x.tourism.leisure?.openingWeek ?? 1) + 1]
@@ -139,8 +146,8 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
       id: 3,
       text: 'tourism_careful win rates across the viable segments lie within 15 points',
       value: `${spread.toFixed(1)} points (${byMarket.map((m) => `${m.market} ${fmtPct(m.rate)}`).join(', ')})`,
-      margin: '',
-      pass: byMarket.length > 0 && spread <= 15,
+      margin: indoor ? fmtMargin(spreadMargin) : '',
+      pass: byMarket.length > 0 && spread - spreadMargin <= 15,
     },
     // Tuning 1: a run that starts out of season (Leinen los, cruises from week 31) is judged on
     // its first season's first month instead of week 12.
@@ -298,7 +305,8 @@ function loanTargets(
   all: number[],
 ): Target[] {
   if (!careful.results.some((x) => x.loan !== null)) return []
-  const refit = s('tourism_refit_loan')
+  const indoor = careful.results.some((x) => x.tourism?.leisure)
+  const refit = indoor ? s('leisure_no_later_loan') : s('tourism_refit_loan')
   const over = s('tourism_overborrow')
   const reckless = s('tourism_reckless')
   const optional = refit ? pairedOn(careful, refit, all) : null
@@ -328,8 +336,9 @@ function loanTargets(
         m: Math.sqrt(recklessOwing.m ** 2 + carefulOwing.m ** 2),
       }
     : null
-  const second = refit
-    ? pct(refit.results.filter((r) => r.loan?.second).length, refit.results.length)
+  const borrowing = indoor ? careful : refit
+  const second = borrowing
+    ? pct(borrowing.results.filter((r) => r.loan?.second).length, borrowing.results.length)
     : 0
   const borrowers = careful.results.filter((r) => (r.loan?.loans ?? 0) > 0)
   const interest = median(borrowers.map((r) => (r.loan?.interestCents ?? 0) / 100))
@@ -337,9 +346,11 @@ function loanTargets(
   return [
     {
       id: 15,
-      text: 'L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other',
+      text: indoor
+        ? 'L1. An optional loan for later rooms is a real choice: borrowing and funding later rooms from retained cash are within 5 points of each other'
+        : 'L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other',
       value: optional
-        ? `second loan ${signed(optional.change)} against none (second loan taken in ${fmtPct(second)} of runs)`
+        ? `second loan ${signed(indoor ? -optional.change : optional.change)} against none (second loan taken in ${fmtPct(second)} of runs)`
         : '-',
       margin: optional ? fmtMargin(optional.margin) : '',
       pass: !!optional && second > 0 && Math.abs(optional.change) - optional.margin <= 5,

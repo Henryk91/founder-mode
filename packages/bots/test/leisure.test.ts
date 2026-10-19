@@ -35,6 +35,8 @@ describe('Ausgesperrt players', () => {
     }
     expect(accepted).toHaveLength(2)
     expect(accepted[1]).toBeGreaterThan(accepted[0]!)
+    const cashOnly = strategies.find((s) => s.id === 'leisure_no_later_loan')!
+    expect(runGame(scenario, cashOnly, 'test-0').loan?.second).toBe(false)
   })
   it('adds capacity after repeated visible refusals, while preserving the comparison policies', () => {
     const view = getView(createGame(scenario, 'room-pressure'))
@@ -159,5 +161,7 @@ describe('Ausgesperrt players', () => {
     ).toEqual(['X1', 'X2', 'X3', 'X4'])
     expect(targets.map((t) => t.id)).not.toContain(19)
     expect(targets.find((t) => t.id === 4)!.text).toContain('from opening')
+    expect(targets.find((t) => t.id === 3)!.margin).toContain('±')
+    expect(targets.find((t) => t.id === 15)!.text).toContain('retained cash')
   })
 })
