@@ -774,6 +774,7 @@ export const LeisureSchema = z
         priceChurn: Share,
         januaryFade: Share,
         waitlistAt: z.number().int().positive(),
+        minimumAreas: z.number().int().positive().optional(),
       }),
     ),
     products: z.record(
@@ -789,6 +790,12 @@ export const LeisureSchema = z
       }),
     ),
     instructors: z.record(Id, ShareRange).optional(),
+    slotPrices: z
+      .record(Id, z.record(Id, z.object({ peak: Cents.positive(), off: Cents.positive() })))
+      .optional(),
+    space: z
+      .object({ max: z.number().int().positive(), uses: z.record(Id, z.number().int().positive()) })
+      .optional(),
     memberships: z
       .record(
         Id,
@@ -864,6 +871,11 @@ export const LeisureSchema = z
       for (const id of Object.keys(segment.slotShare))
         if (!slots.has(id)) issue(`unknown slot ${id}`)
     }
+    for (const prices of Object.values(l.slotPrices ?? {}))
+      for (const id of Object.keys(prices)) if (!slots.has(id)) issue(`unknown price slot ${id}`)
+    for (const segment of Object.values(l.segments))
+      if (segment.minimumAreas && segment.minimumAreas > (l.opening?.areas.length ?? 0))
+        issue('minimum areas exceeds configured opening areas')
     for (const product of Object.values(l.products)) {
       if (product.classPlaces && !product.classHours) issue('classes need their hours')
       for (const id of [...Object.keys(product.capacity), ...Object.keys(product.comfort ?? {})]) {
@@ -1655,6 +1667,10 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         if (!bk.roles[id]) issue(`unknown instructor ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.segments))
         if (!bk.segments[id]) issue(`unknown leisure segment ${id}`, ['bookings', 'leisure'])
+      for (const id of Object.keys(leisure.slotPrices ?? {}))
+        if (!bk.segments[id]) issue(`unknown priced segment ${id}`, ['bookings', 'leisure'])
+      for (const id of Object.keys(leisure.space?.uses ?? {}))
+        if (!featureIds.has(id)) issue(`unknown space product ${id}`, ['bookings', 'leisure'])
       for (const map of [
         leisure.products,
         leisure.memberships,

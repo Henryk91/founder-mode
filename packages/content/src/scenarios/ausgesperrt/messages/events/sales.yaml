@@ -1,0 +1,402 @@
+events:
+  - id: school_morning
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Frau Seidel, teacher
+    look: letter
+    text: A school class wants a Wednesday morning. Your calendar shows no other games then, but
+      they need a quiet version and clear supervision. The pupils have already appointed a
+      detective.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Prepare the school version
+        hours: 5
+        effects:
+          - type: cash
+            amountCents: -10000
+          - type: guests
+            segment: locals
+            count: 5
+            when: []
+      - id: leave
+        label: Decline the request
+        hours: 0
+        effects: []
+  - id: hr_free_test
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Nora at Kieselwerk
+    look: letter
+    text: An HR team wants a free test before discussing an event. Their message names no date and
+      no number of players. They have attached a very polished logo.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Ask for a paid date and a headcount
+        hours: 1
+        effects:
+          - type: guests
+            segment: companies
+            count: 2
+            when:
+              - shipped.team_package == 1
+      - id: leave
+        label: Decline the enquiry
+        hours: 0
+        effects: []
+      - id: more
+        label: Give the whole team a free evening
+        hours: 8
+        effects:
+          - type: cash
+            amountCents: -28000
+          - type: energy
+            delta: -2
+  - id: hotel_concierge
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Mira at Pension Mondfalter
+    look: letter
+    text: Mira asks for a short English description she can hand to guests. She does not need a
+      folder or a branded pen. She needs to know when the last game starts.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Send a one-page guide and visit
+        hours: 3
+        effects:
+          - type: guests
+            segment: tourists
+            count: 8
+            when:
+              - shipped.english_games == 1
+      - id: leave
+        label: Leave the request unanswered
+        hours: 0
+        effects: []
+      - id: more
+        label: Order glossy folders
+        hours: 5
+        effects:
+          - type: cash
+            amountCents: -45000
+  - id: platform_feature
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - tour.listed == 1
+    from: none
+    sender: Rauszeit listings
+    look: letter
+    text: The activity platform offers a featured slot for a fee. Your own website is already
+      getting enquiries. The platform's sample report counts every impression as a small
+      victory.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Keep the fee and improve your own listing
+        hours: 2
+        effects:
+          - type: guests
+            segment: locals
+            count: 3
+            when:
+              - shipped.online_booking == 1
+      - id: leave
+        label: Decline the feature
+        hours: 0
+        effects: []
+      - id: more
+        label: Buy the feature
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -65000
+          - type: guests
+            segment: tourists
+            count: 3
+            when: []
+  - id: corporate_saturday
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - tour.bookedAhead >= 12
+    from: none
+    sender: Rika at Sanderlicht
+    look: letter
+    text: Rika wants every room on a Saturday. The calendar already has paid local groups, and the
+      company would pay by invoice. The offer sounds larger when she says people rather than
+      rooms.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Offer a weekday with the briefing room
+        hours: 3
+        effects:
+          - type: guests
+            segment: companies
+            count: 5
+            when:
+              - shipped.meeting_room == 1
+      - id: leave
+        label: Decline the booking
+        hours: 0
+        effects: []
+      - id: more
+        label: Clear Saturday for them
+        hours: 5
+        effects:
+          - type: cash
+            amountCents: -35000
+          - type: review
+            rating: 2
+            count: 3
+            when: []
+  - id: birthday_helpers
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - shipped.kids_adventure == 1
+    from: none
+    sender: A parent with a spreadsheet
+    look: letter
+    text: A birthday organiser asks whether every child gets a useful job. Last time one child held
+      the torch for an hour and declared retirement. A proper briefing would prevent another
+      resignation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Prepare roles for the children
+        hours: 3
+        effects:
+          - type: guests
+            segment: locals
+            count: 5
+            when:
+              - shipped.kids_adventure == 1
+      - id: leave
+        label: Promise that everybody will be busy
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+            when: []
+  - id: tourist_video
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - shipped.munich_history == 1
+    from: none
+    sender: A visiting video maker
+    look: letter
+    text: A visitor wants to film the brewery room in return for exposure. Their audience is mostly
+      abroad and the clip must contain no solutions. You can spare an hour to agree the shots.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Agree a spoiler-free English clip
+        hours: 2
+        effects:
+          - type: guests
+            segment: tourists
+            count: 9
+            when: []
+      - id: leave
+        label: Hand over the keys for the afternoon
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when: []
+  - id: agency_commission
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Kira at Faltplan Events
+    look: letter
+    text: Kira offers a regular place on her agency's shortlist. She wants invoices, a debrief and a
+      written commission agreement. She has not asked for a free headset.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Agree the terms and show the briefing room
+        hours: 4
+        effects:
+          - type: guests
+            segment: companies
+            count: 8
+            when:
+              - shipped.meeting_room == 1
+              - shipped.team_package == 1
+      - id: leave
+        label: Decline the shortlist
+        hours: 0
+        effects: []
+      - id: more
+        label: Send a generic brochure
+        hours: 5
+        effects:
+          - type: guests
+            segment: companies
+            count: 1
+            when: []
+  - id: gift_deadline
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - tour.month == 12
+      - leisure.open == 1
+    from: none
+    sender: The December inbox
+    look: letter
+    text: Three people ask whether a voucher can arrive before they leave the office. The printer
+      can do cards by tomorrow. Nobody asks for a card large enough to hide its expiry date.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Make printable vouchers with clear terms
+        hours: 4
+        effects:
+          - type: guests
+            segment: locals
+            count: 7
+            when:
+              - shipped.gift_vouchers == 1
+      - id: leave
+        label: Let the gift requests pass
+        hours: 0
+        effects: []
+      - id: more
+        label: Order elaborate gift boxes
+        hours: 6
+        effects:
+          - type: cash
+            amountCents: -38000
+  - id: quiet_tuesday
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your empty calendar
+    look: letter
+    text: Tuesday daytime has no groups and no one has asked for a cheaper Saturday. A former
+      colleague knows an office manager nearby. Calling them is less glamorous than another
+      photo of the vault.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Call about a weekday team event
+        hours: 4
+        effects:
+          - type: guests
+            segment: companies
+            count: 6
+            when:
+              - shipped.team_package == 1
+      - id: leave
+        label: Discount Saturday on the platform
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -25000
+          - type: guests
+            segment: locals
+            count: 1
+            when: []
+  - id: opening_sign
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 0
+    from: none
+    sender: A local sign painter
+    look: letter
+    text: A permanent illuminated sign costs more than the reception desk. A clear temporary sign
+      would tell the first groups where the stairs are. The permanent one promises stronger
+      brand recognition among people already outside.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Use a clear temporary sign
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+      - id: leave
+        label: Keep the handwritten sign
+        hours: 0
+        effects: []
+      - id: more
+        label: Order the illuminated sign
+        hours: 5
+        effects:
+          - type: cash
+            amountCents: -140000
+  - id: launch_agency
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 0
+    from: none
+    sender: A launch agency
+    look: letter
+    text: An agency offers a launch package with balloons and a twelve-month retainer. You do not
+      yet know who will play. A basic page can collect enquiries without requiring balloons to
+      become a business model.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Publish a basic enquiry page
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -18000
+      - id: leave
+        label: Decline the launch package
+        hours: 0
+        effects: []
+      - id: more
+        label: Take the annual launch package
+        hours: 6
+        effects:
+          - type: cash
+            amountCents: -180000

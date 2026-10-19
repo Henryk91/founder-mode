@@ -1,0 +1,154 @@
+events:
+  - id: neighbour_screams
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - shipped.horror == 1
+    from: none
+    sender: The flat above
+    look: note
+    text: A neighbour hears screaming every Friday. Saying that it is theatrical does not help them
+      sleep. A quieter sound setting and a visit would cost less than exchanging formal letters.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Visit and agree a sound check
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -22000
+          - type: energy
+            delta: 2
+      - id: leave
+        label: Explain the theatre by email
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -65000
+          - type: energy
+            delta: -3
+  - id: forgotten_birthday
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your sister
+    look: note
+    text: You have missed another family birthday because a room needed resetting. Your sister has
+      sent a photograph of the cake. It contains no clues, which feels pointed.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Keep one evening free
+        hours: 5
+        effects:
+          - type: energy
+            delta: 8
+      - id: leave
+        label: Send a voucher instead
+        hours: 0
+        effects:
+          - type: energy
+            delta: -6
+  - id: basement_air
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The Tuesday afternoon shift
+    look: note
+    text: The basement air is warm and the ventilation grille is dusty. You have been calling it
+      atmosphere. The next group is likely to call it something else.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Service the ventilation
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -28000
+          - type: energy
+            delta: 3
+      - id: leave
+        label: Open the corridor door
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+            when: []
+  - id: puzzle_conference
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 18
+    from: none
+    sender: A puzzle designers' gathering
+    look: note
+    text: A gathering promises three days of inspiration and an expensive hotel. There is also a
+      local evening talk. You currently need the next room finished more than a conference
+      lanyard.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Go to the local talk
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -6000
+          - type: energy
+            delta: 3
+      - id: leave
+        label: Stay at work
+        hours: 0
+        effects: []
+      - id: more
+        label: Book the full gathering
+        hours: 12
+        effects:
+          - type: cash
+            amountCents: -145000
+          - type: energy
+            delta: 5
+  - id: paint_samples
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 0
+    from: none
+    sender: Your growing sample cupboard
+    look: note
+    text: You have fourteen paint samples and no interview appointments booked. The wall will remain
+      a wall in every shade. A former colleague is free for a useful conversation this
+      afternoon.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Put the samples away and make the calls
+        hours: 2
+        effects:
+          - type: skill
+            skill: interviewing
+            delta: 0.02
+      - id: leave
+        label: Keep the current colour
+        hours: 0
+        effects: []
+      - id: more
+        label: Spend the afternoon choosing another shade
+        hours: 5
+        effects:
+          - type: energy
+            delta: -3

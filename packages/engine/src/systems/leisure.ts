@@ -32,6 +32,39 @@ const count = (n: number) => Number.isInteger(n) && n >= 0
 const entries = <T>(value: Record<string, T>): [string, T][] =>
   Object.entries(value).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
 
+type SlotPrices = NonNullable<LeisurePlan['slotPrices']>
+const mergeSlotPrices = (base: SlotPrices = {}, updates: SlotPrices = {}): SlotPrices =>
+  Object.fromEntries(
+    [...new Set([...Object.keys(base), ...Object.keys(updates)])].map((id) => [
+      id,
+      Object.fromEntries(
+        Object.entries({ ...base[id], ...updates[id] }).map(([slot, p]) => [slot, { ...p }]),
+      ),
+    ]),
+  )
+
+export function leisureSpaceUsed(s: GameState, plan?: WeekPlan): number {
+  return Object.entries(cfgOf(s)?.space?.uses ?? {}).reduce((sum, [id, places]) => {
+    const f = s.product.features.find((x) => x.id === id)
+    return (
+      sum +
+      (f &&
+      (f.shippedWeek !== null ||
+        f.readyWeek !== undefined ||
+        f.progressHours > 0 ||
+        (plan?.build[id] ?? 0) > 0)
+        ? places
+        : 0)
+    )
+  }, 0)
+}
+
+/** Restrictions apply to new enquiries; already sold games keep their reservations. */
+export function leisureSellsSlot(s: GameState, segment: string, slot: string | undefined): boolean {
+  const slots = s.bookings?.leisure?.salesSlots?.[segment]
+  return !slots || (slot !== undefined && slots.includes(slot))
+}
+
 export function initLeisure(
   scenario: Scenario,
   rng: Rng,
@@ -55,6 +88,14 @@ export function initLeisure(
       ),
     },
     state: {
+      ...(c.slotPrices
+        ? {
+            slotPrices: mergeSlotPrices(c.slotPrices),
+            salesSlots: Object.fromEntries(
+              Object.keys(c.segments).map((id) => [id, c.slots.map((slot) => slot.id)]),
+            ),
+          }
+        : {}),
       openingWeek: c.opening ? null : 1,
       buildChoice: [],
       instructorDepartures: [],
@@ -111,6 +152,14 @@ export function initLeisure(
 
 export function cloneLeisurePlan(p: LeisurePlan): LeisurePlan {
   return {
+    ...(p.slotPrices ? { slotPrices: mergeSlotPrices(p.slotPrices) } : {}),
+    ...(p.salesSlots
+      ? {
+          salesSlots: Object.fromEntries(
+            Object.entries(p.salesSlots).map(([id, slots]) => [id, [...slots]]),
+          ),
+        }
+      : {}),
     ...(p.offers
       ? { offers: Object.fromEntries(Object.entries(p.offers).map(([id, o]) => [id, { ...o }])) }
       : {}),
@@ -141,12 +190,33 @@ export function leisureHours(s: Pick<GameState, 'scenario' | 'bookings'>, plan: 
 }
 
 export function leisureValid(s: GameState, plan: WeekPlan): boolean {
-  const p = plan.bookings?.leisure
-  if (!p) return true
   const c = cfgOf(s)
   const l = s.bookings?.leisure
-  if (!c || !l) return false
+  const change = plan.bookings?.leisure
+  if (!c || !l) return !change
+  if (c.space && leisureSpaceUsed(s, plan) > c.space.max) return false
+  const p = change ?? {}
   const slots = new Set(c.slots.map((x) => x.id))
+  for (const [segment, prices] of Object.entries(p.slotPrices ?? {})) {
+    if (!c.slotPrices?.[segment]) return false
+    for (const [slot, price] of Object.entries(prices))
+      if (
+        !slots.has(slot) ||
+        !count(price.peak) ||
+        !count(price.off) ||
+        price.peak === 0 ||
+        price.off === 0
+      )
+        return false
+  }
+  for (const [segment, selected] of Object.entries(p.salesSlots ?? {}))
+    if (
+      !c.slotPrices ||
+      !c.segments[segment] ||
+      new Set(selected).size !== selected.length ||
+      selected.some((id) => !slots.has(id))
+    )
+      return false
   for (const [id, o] of Object.entries(p.offers ?? {}))
     if (
       !c.memberships?.[id] ||
@@ -249,6 +319,13 @@ export function leisureRoom(
   segment?: string,
 ): number {
   const cfg = s.scenario.bookings!
+  const minimum = segment ? cfg.leisure?.segments[segment]?.minimumAreas : undefined
+  if (
+    minimum &&
+    (cfg.leisure?.opening?.areas.filter((id) => readyAt(s, id, week) && leisureOpen(s, id, week))
+      .length ?? 0) < minimum
+  )
+    return 0
   const pool = cfg.products[product]?.capacityOf ?? product
   const booked = bookings
     .filter(
@@ -327,6 +404,19 @@ export function beginLeisure(
   let revenueCents = 0
   const l: LeisureState = {
     ...original,
+    ...(original.slotPrices
+      ? { slotPrices: mergeSlotPrices(original.slotPrices, p?.slotPrices) }
+      : {}),
+    ...(original.salesSlots
+      ? {
+          salesSlots: Object.fromEntries(
+            Object.entries({ ...original.salesSlots, ...p?.salesSlots }).map(([id, slots]) => [
+              id,
+              [...slots],
+            ]),
+          ),
+        }
+      : {}),
     offers: { ...original.offers, ...p?.offers },
     timetable: { ...original.timetable, ...p?.timetable },
     settingHours: { ...original.settingHours, ...p?.settingHours },
@@ -480,6 +570,22 @@ export function leisureView(s: GameState): LeisureView | null {
     { students: 0, sameStay: 0, returnedDirect: 0, returnedPlatform: 0 },
   )
   return {
+    minimumAreas: Object.fromEntries(
+      entries(c.segments).flatMap(([id, seg]) =>
+        seg.minimumAreas ? [[id, seg.minimumAreas]] : [],
+      ),
+    ),
+    ...(l.slotPrices ? { slotPrices: mergeSlotPrices(l.slotPrices) } : {}),
+    ...(l.salesSlots
+      ? {
+          salesSlots: Object.fromEntries(
+            Object.entries(l.salesSlots).map(([id, slots]) => [id, [...slots]]),
+          ),
+        }
+      : {}),
+    ...(c.space
+      ? { space: { max: c.space.max, used: leisureSpaceUsed(s), uses: { ...c.space.uses } } }
+      : {}),
     slotCalendar: Object.keys(c.products)
       .sort()
       .filter((id) =>

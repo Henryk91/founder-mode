@@ -133,9 +133,9 @@ The rooms are this scenario's progression. Office stages 1 and 2 only:
 | Stage | Name | Effect |
 |---|---|---|
 | 1 | Basement with four room spaces | Start |
-| 2 | A second basement across the road (+3,000 a month, 10,000 to fit out, est.) | Room for four more rooms |
+| 2 | Finish reception and briefing space in the existing basement (8,000 once, 500 a month, est.) | Better service; the same four physical spaces |
 
-Scene drawings: a basement corridor with four doors, one lit; then two buildings with a sign between them. Same muted style.
+Scene drawings: a basement corridor with four doors and a camera desk; then a finished reception and briefing table in the same basement. Same muted style. The no-second-location rule in plan 5 takes precedence over the original across-the-road proposal.
 
 ## 11. Content
 
@@ -196,4 +196,35 @@ Established accent `#5B2A86` (check white text reaches 4.5:1).
 
 ## 15. Sources and values as built
 
-The agent fills this in.
+Checked 19 October 2026. These are game estimates, not a quote for a real Munich lease or fit-out.
+
+- [A Munich operator's price list](https://www.escaperooms-muenchen.de/preise/) lists EUR86 for two people, EUR120 for four and EUR144 for six. This supports the order of magnitude of a group game. The initial game prices, EUR125 local and EUR140 visitor at peak, remain estimates for a typical group. Company games include the debrief and administration; their EUR180 per room-game is an estimate.
+- [BMAS minimum-wage guidance, dated January 2026](https://www.bmas.de/EN/Labour/Minimum-Wage/the-minimum-wage-questions-and-answers.html) gives EUR13.90 gross an hour in 2026 and says employer contributions are additional. The flexible game-master shift is five hours for EUR90, covering three 90-minute games and handover. This assumes EUR15 gross plus about 20% employer costs. Permanent, part-time and seasonal costs are estimates including employer costs; a fixed contract also pays for idle time. This abstracts employment categories rather than modelling individual minijobs or payroll law.
+- Rent for the specific 240 m² basement, build prices, prop wear, translation, room refreshes, professional fees and activity-marketplace commission remain estimates. No matching current commercial lease or supplier quotation was found. A residential rent index would not substantiate a commercial basement rent.
+- The local group pool, reachable demand, role multipliers, season curves and theme life are simulation estimates. They do not claim to count Munich residents who would buy a particular room. Every balancing change and measured result will be recorded below after the scenario's tuning rounds.
+
+### Adaptations to the weekly model
+
+- One unit is one room-game for a group. A company enquiry contains two to four room-games, representing a larger team; its price is per room-game rather than an invented exact headcount. Named slots describe parts of a week, not individual start times.
+- The plan excludes a second location. Stage 2 therefore finishes reception and briefing space within the existing basement instead of leasing another basement across the road. The draft fit-out is EUR8,000 plus EUR500 a month, both estimates.
+- Design work and elapsed construction are separate: founder preparation must finish before the eight-week construction wait. Contracted construction is included in the room price. A generic freelance builder can help with preparation; it does not promise an unsupported two-week cut to the calendar.
+
+### Initial values in the YAML
+
+These precede balancing; measured adjustments will be added here.
+
+| Value | As built | Reason |
+|---|---|---|
+| Local games | Peak EUR125, off season EUR110; daytime EUR100 / EUR88 | A typical group; daytime discount is an estimate |
+| Visitor games | Peak EUR140, off season EUR125; daytime EUR112 / EUR100 | English games, typical group; estimate |
+| Company games | Daytime EUR180 / EUR160; evenings and weekends EUR207 / EUR184 | Per room-game, debrief and administration; estimate |
+| Weekly room capacity | 20 daytime, 15 evening, 14 weekend | The spec's games per day, aggregated into weekly slots |
+| Physical spaces | Four; each theme and the meeting room takes one | Meeting space competes with a fourth room |
+| Company enquiry | Two to four room-games; at least two areas ready by the requested week | A larger group needs multiple rooms |
+| Flexible staff | EUR90 per five-hour shift, three games | EUR15 gross plus assumed employer costs |
+| Contracts | Permanent EUR720/week for eight shifts; part time EUR370 for four; seasonal EUR750 for eight | Includes employer costs and idle time; estimate |
+| Stage 2 | EUR8,000 once, EUR500/month | Finished reception in the same basement; estimate |
+| Construction | 24 founder preparation hours, then eight weeks | Design work and elapsed contracted building are distinct |
+
+Room prices, rebuilds, local pools, demand, seasonal curves and platform commission otherwise retain the spec's starting estimates. There are 48 authored decision events plus the first-theme choice and reception offer, and 150 interview quotes.
+

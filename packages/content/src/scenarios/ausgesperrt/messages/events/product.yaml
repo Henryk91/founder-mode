@@ -1,0 +1,397 @@
+events:
+  - id: first_theme
+    area: product
+    weight: 1
+    once: true
+    when:
+      - week == 1
+    from: none
+    sender: Your fit-out contractor
+    look: official
+    text: The first room needs a theme before the builders start. A heist is broad, horror divides
+      groups, a brewery mystery suits visitors and a pirate adventure suits families. Each build
+      takes eight weeks once the design work is finished.
+    defaultChoice: heist
+    choices:
+      - id: heist
+        label: 'The Last Vault: a heist'
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - heist
+      - id: horror
+        label: 'Ward Seven: horror'
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - horror
+      - id: munich_history
+        label: 'The Missing Brewer: Munich history'
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - munich_history
+      - id: kids_adventure
+        label: 'The Paper Pirate: a family adventure'
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - kids_adventure
+  - id: false_door
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: A rather strong guest
+    look: note
+    text: A group pulls a decorative cupboard off the wall. It was never a door, although the hinges
+      made a persuasive argument. The next booking arrives tonight.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Secure the cupboard and check the room
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -18000
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Put a sign on it
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+            when: []
+  - id: sticking_lock
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The closing shift
+    look: note
+    text: The last lock sticks when it gets warm. The game master now opens it with a spoon, which
+      is not in the story. Two reviews mention the spoon.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Replace it before the evening games
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Keep the spoon
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+            when: []
+  - id: camera_blind_spot
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your camera desk
+    look: note
+    text: A camera has found an excellent view of a wall and a poor view of the players. Moving it
+      needs a ladder and a quiet morning. Hints currently depend on listening for despair.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Move and test the camera
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -8000
+          - type: review
+            rating: 4
+            count: 1
+            when: []
+      - id: leave
+        label: Give louder hints
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when: []
+  - id: cleaning_fog
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - shipped.horror == 1
+    from: none
+    sender: The first game master
+    look: note
+    text: The fog machine leaves a film on the clue cards. The atmosphere is excellent; the
+      handwriting has become optional. A professional clean would use the only free morning.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Clean the props and turn down the fog
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -16000
+          - type: review
+            rating: 4
+            count: 1
+            when: []
+      - id: leave
+        label: Call it part of the mystery
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+            when: []
+  - id: worn_map
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - shipped.munich_history == 1
+    from: none
+    sender: A family from Pasing
+    look: note
+    text: The brewery map has been folded so often that the brewery is now in three pieces. A child
+      solved the puzzle by looking through the tear. The child wants a discount for helping.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Print and mount a fresh map
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -9000
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Tape it together again
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+            when: []
+  - id: headset_battery
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - shipped.vr_room == 1
+    from: none
+    sender: The virtual room
+    look: note
+    text: The headsets need new batteries and the supplier recommends its premium service plan. The
+      premium is clear; the service is described in smaller type.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Replace the batteries without the plan
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -65000
+      - id: leave
+        label: Take the premium plan
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -180000
+  - id: fire_exit
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 10
+    from: none
+    sender: The district inspector
+    look: note
+    text: The inspector wants escape signs, extinguishers and a door that opens without solving
+      anything. Your photographs show the signs clearly. A rehearsal would still take most of a
+      morning.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Walk every exit and file the evidence
+        hours: 5
+        effects:
+          - type: cash
+            amountCents: -10000
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Send last month's photographs
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -85000
+  - id: spoiler_video
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: A game master
+    look: note
+    text: Someone has posted a complete solution with the title No Spoilers. The comments are not
+      convinced. Changing two clues would make the video less useful without rebuilding the
+      room.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Change the exposed clues
+        hours: 6
+        effects:
+          - type: cash
+            amountCents: -25000
+          - type: review
+            rating: 4
+            count: 1
+            when: []
+      - id: leave
+        label: Ask politely for deletion
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+            when: []
+  - id: design_for_sale
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.weeksOpen >= 8
+    from: none
+    sender: Enno, puzzle designer
+    look: note
+    text: Enno offers a finished clue sequence with working drawings. It still needs testing in your
+      room. Paying for drawings without checking the measurements would make an unusually
+      expensive puzzle.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the drawings and buy the useful parts
+        hours: 5
+        effects:
+          - type: cash
+            amountCents: -55000
+          - type: bugs
+            delta: -2
+      - id: leave
+        label: Buy the complete package unseen
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -190000
+          - type: bugs
+            delta: 1
+  - id: old_plans
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 0
+    from: none
+    sender: Your contractor
+    look: note
+    text: The basement plan has one drain in a different place from the actual basement. The
+      contractor suggests measuring before ordering the floor panels. The paper drain has not
+      objected.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Measure and mark the real drain
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -8000
+      - id: leave
+        label: Order from the old drawing
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -48000
+  - id: design_rights
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 0
+    from: none
+    sender: The puzzle supplier
+    look: note
+    text: The draft contract describes a licence for one room, not ownership of the puzzle design.
+      Your plan includes changing clues later. The supplier will clarify the rights before you
+      pay.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Agree the modification rights in writing
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Sign the unamended contract
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -75000
+  - id: sound_before_plaster
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 0
+    from: none
+    sender: The neighbour upstairs
+    look: note
+    text: The neighbour asks about sound before the ceilings are finished. Testing a speaker now
+      would be easier than opening the new plaster later. They are particularly interested in
+      what you mean by immersive.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Test the sound and agree quiet settings
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -25000
+      - id: leave
+        label: Promise that it will be fine
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -85000

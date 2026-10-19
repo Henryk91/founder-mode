@@ -1,0 +1,29 @@
+intro:
+  cards:
+    - id: you
+      title: The badge
+      body: You designed games until your employer closed. Your access badge stopped working a week
+        before anyone explained why. You have {cash:eur} in the company, {savings:eur} in
+        savings and living costs of {living:eur} a week.
+    - id: idea
+      title: The basement
+      body: Four room spaces in Untersendling, a camera desk and a corridor with ambitions. It is
+        August. Choose the first theme now; eight weeks of construction separate a room from a
+        room people can leave.
+    - id: problem
+      title: The players
+      body: Local groups want evenings, visitors want games in English, and companies want weekday
+        events with invoices. A local group plays each theme once. A full Saturday does not pay
+        for an empty Tuesday by itself.
+    - id: goal
+      title: The goal
+      body:
+        Last {maxWeeks} weeks. The last thirteen months together must pay for the rooms, the bank
+        and you. The first room opens when its build finishes; interest does not wait for
+        opening night.
+founderNotes:
+  first_week: Week 1. Four doors, no puzzles. Pick a theme, speak to people and start the build.
+  no_evidence: Week {week}. Still no evidence about who will play. The landlord has evidence about the rent.
+  only_interviews: You have {n} conversations. Everybody knows a good puzzle until you ask them to pay for one.
+  built_unseen: A room is ready and nobody knows where it is. Basements rarely advertise themselves.
+  leads_only: You have {n} enquiries. None has found the payment button yet.

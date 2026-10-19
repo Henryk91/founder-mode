@@ -3,6 +3,7 @@ import { viewConditionValue } from '../src/systems/viewConditions'
 import { describe, expect, it } from 'vitest'
 import { ScenarioSchema, EventSchema, loadScenario } from '@founder-mode/content'
 import { respond } from '../src/systems/inbox'
+import { priceFor } from '../src/systems/bookings'
 import { canFinance, settleLoans } from '../src/systems/loan'
 import { clonePlan, validatePlan } from '../src/plan'
 import { createGame, endWeek, getView, replay, toSave } from '../src/index'
@@ -17,6 +18,7 @@ import {
   leisureOpen,
   leisureRoom,
   leisureValid,
+  leisureSellsSlot,
   leisureVisits,
   loseLeisureInstructor,
   joinLeisure,
@@ -82,6 +84,114 @@ const bp = (leisure: NonNullable<NonNullable<WeekPlan['bookings']>['leisure']>):
   })
 
 describe('leisure slots and crowding', () => {
+  it('reserves physical space from the first design hour, including plans without a leisure action', () => {
+    const s = game({ space: { max: 1, uses: { basic_ordering: 1, allergy_filter: 1 } } })
+    expect(leisureValid(s, plan({ build: { basic_ordering: 1 } }))).toBe(true)
+    expect(leisureValid(s, plan({ build: { basic_ordering: 1, allergy_filter: 1 } }))).toBe(false)
+    const started = {
+      ...s,
+      product: {
+        ...s.product,
+        features: s.product.features.map((f) =>
+          f.id === 'basic_ordering' ? { ...f, progressHours: 1 } : f,
+        ),
+      },
+    }
+    expect(leisureValid(started, plan({ build: { allergy_filter: 1 } }))).toBe(false)
+    expect(getView(started).bookings!.leisure!.space).toMatchObject({ max: 1, used: 1 })
+  })
+
+  it('requires the stated number of areas at the requested date', () => {
+    const c = leisureConfig({
+      opening: { areas: ['basic_ordering', 'allergy_filter'], requires: [] },
+    })
+    c.segments.small_offices!.minimumAreas = 2
+    const original = game(c)
+    const s = {
+      ...original,
+      product: {
+        ...original.product,
+        features: original.product.features.map((f) =>
+          f.id === 'basic_ordering'
+            ? { ...f, shippedWeek: 1 }
+            : f.id === 'allergy_filter'
+              ? { ...f, readyWeek: 4 }
+              : f,
+        ),
+      },
+    }
+    expect(leisureRoom(s, [], 'basic_ordering', 'daytime', 3, 'small_offices')).toBe(0)
+    expect(leisureRoom(s, [], 'basic_ordering', 'daytime', 4, 'small_offices')).toBe(4)
+    expect(getView(s).bookings!.leisure!.minimumAreas).toEqual({ small_offices: 2 })
+  })
+
+  it('prices a requested slot by its season and copies nested actions and public prices', () => {
+    const s = open(
+      game({
+        slotPrices: {
+          small_offices: {
+            daytime: { peak: 5000, off: 4000 },
+            evening: { peak: 12000, off: 10000 },
+          },
+        },
+      }),
+    )
+    const action = bp({
+      slotPrices: { small_offices: { daytime: { peak: 6000, off: 4500 } } },
+      salesSlots: { small_offices: ['evening'] },
+    })
+    const original = structuredClone(s)
+    const changed = beginLeisure(s, action, rng()).state
+    const peak = changed.scenario.bookings!.peakMonths.includes(getView(changed).bookings!.month)
+    expect(priceFor(changed, 'small_offices', 1, 'daytime')).toBe(peak ? 6000 : 4500)
+    expect(priceFor(changed, 'small_offices', 1, 'evening')).toBe(peak ? 12000 : 10000)
+    expect(leisureSellsSlot(changed, 'small_offices', 'daytime')).toBe(false)
+    expect(leisureCapacity(changed, 'basic_ordering', 'daytime', 1)).toBe(4)
+    const copy = clonePlan(action)
+    copy.bookings!.leisure!.slotPrices!.small_offices!.daytime!.peak = 1
+    copy.bookings!.leisure!.salesSlots!.small_offices!.push('daytime')
+    expect(action.bookings!.leisure!.slotPrices!.small_offices!.daytime!.peak).toBe(6000)
+    const view = getView(changed).bookings!.leisure!
+    view.slotPrices!.small_offices!.daytime!.peak = 2
+    expect(priceFor(changed, 'small_offices', 1, 'daytime')).toBe(peak ? 6000 : 4500)
+    expect(s).toEqual(original)
+    expect(
+      leisureValid(s, bp({ slotPrices: { small_offices: { unknown: { peak: 100, off: 100 } } } })),
+    ).toBe(false)
+    expect(leisureValid(s, bp({ salesSlots: { small_offices: ['daytime', 'daytime'] } }))).toBe(
+      false,
+    )
+  })
+
+  it('uses the slot price once for demand, and closed sales prevent new requests without removing reservations', () => {
+    const c = leisureConfig({
+      memberships: undefined,
+      slotPrices: { small_offices: { daytime: { peak: 100, off: 100 } } },
+    })
+    for (const seg of Object.values(c.segments)) seg.slotShare = { daytime: 1, evening: 0 }
+    let s = open(game(c))
+    s = { ...s, bookings: { ...s.bookings!, platformListed: true } }
+    const p = bp({})
+    const first = endWeek(s, p).state
+    expect(first.bookings!.bookings.some((b) => b.segmentId === 'small_offices')).toBe(true)
+    const expensiveBase = {
+      ...s,
+      bookings: {
+        ...s.bookings!,
+        prices: { ...s.bookings!.prices, small_offices: { peak: 100000000, off: 100000000 } },
+      },
+    }
+    expect(endWeek(expensiveBase, p).state.bookings!.bookings).toEqual(first.bookings!.bookings)
+    const closed = endWeek(s, bp({ salesSlots: { small_offices: [] } })).state
+    expect(closed.bookings!.bookings.filter((b) => b.segmentId === 'small_offices')).toHaveLength(0)
+    const reservation = booking({ week: 4 })
+    const reserved = { ...s, bookings: { ...s.bookings!, bookings: [reservation] } }
+    expect(
+      beginLeisure(reserved, bp({ salesSlots: { small_offices: [] } }), rng()).state.bookings!
+        .bookings,
+    ).toContainEqual(reservation)
+  })
+
   it('keeps each slot within its hard capacity and holds consume exactly one place', () => {
     const s = open(game())
     const booked = [booking({ units: 4 })]

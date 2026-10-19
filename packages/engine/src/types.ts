@@ -2564,6 +2564,8 @@ export type HireEconomicsView = {
 
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
 export type LeisureState = {
+  slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
+  salesSlots?: Record<SegmentId, string[]>
   openingWeek: number | null
   buildChoice: FeatureId[]
   instructorDepartures: { week: number; roleId: string; stopped: number; pending: number }[]
@@ -2653,6 +2655,8 @@ export type HiddenLeisure = {
   payoutCents: number | null
 }
 export type LeisurePlan = {
+  slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
+  salesSlots?: Record<SegmentId, string[]>
   offers?: Record<FeatureId, { enabled: boolean; priceCents: number }>
   timetable?: Record<FeatureId, Record<string, number>>
   settingHours?: Record<FeatureId, number>
@@ -2662,6 +2666,10 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
+  salesSlots?: Record<SegmentId, string[]>
+  space?: { max: number; used: number; uses: Record<FeatureId, number> }
+  minimumAreas: Record<SegmentId, number>
   slotCalendar: {
     productId: FeatureId
     slotId: string

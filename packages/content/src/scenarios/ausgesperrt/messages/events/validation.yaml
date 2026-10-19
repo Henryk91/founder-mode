@@ -1,0 +1,178 @@
+events:
+  - id: accessibility_call
+    area: validation
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Amelie, group organiser
+    look: note
+    text: Amelie asks about stairs, noise and lighting before booking. She has described what her
+      group needs precisely. Your current website says unforgettable experience, which answers
+      none of it.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Write and send a factual access guide
+        hours: 3
+        effects:
+          - type: guests
+            segment: locals
+            count: 4
+            when: []
+      - id: leave
+        label: Repeat the marketing copy
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when: []
+  - id: horror_interviews
+    area: validation
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 4
+    from: none
+    sender: Your interview notes
+    look: note
+    text: Two groups ask for more horror and one family asks for less of everything frightening.
+      They describe different evenings, not a vote for one universal room. Sorting the notes
+      takes an afternoon.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Separate preferences by kind of group
+        hours: 4
+        effects:
+          - type: skill
+            skill: interviewing
+            delta: 0.03
+      - id: leave
+        label: Treat the loudest request as the market
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2
+  - id: free_game_survey
+    area: validation
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Four test groups
+    look: note
+    text: The test groups liked the story and struggled with the same clue. Two would pay; two have
+      only suggested more free tests. Their applause does not separate them.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Call back and ask about a paid return
+        hours: 4
+        effects:
+          - type: guests
+            segment: locals
+            count: 3
+            when: []
+      - id: leave
+        label: Book another free test evening
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -18000
+  - id: review_language
+    area: validation
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your booking notes
+    look: note
+    text: English enquiries are increasing, but a translated title is not an English game. Guests
+      keep asking how hints work. A short demonstration would give them an answer.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Record the actual hint process in English
+        hours: 3
+        effects:
+          - type: guests
+            segment: tourists
+            count: 5
+            when:
+              - shipped.english_games == 1
+      - id: leave
+        label: Translate the title again
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -12000
+  - id: repeat_question
+    area: validation
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.weeksOpen >= 16
+    from: none
+    sender: A returning local group
+    look: note
+    text: A group loved the vault and asks what it can play next. Another run of the same vault is
+      not what they meant. Their organiser would like a date rather than a promise.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Ask which theme they would pay for next
+        hours: 3
+        effects:
+          - type: skill
+            skill: interviewing
+            delta: 0.02
+      - id: leave
+        label: Say nothing new is ready
+        hours: 0
+        effects: []
+      - id: more
+        label: Offer the same room with the lights dimmed
+        hours: 5
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when: []
+  - id: access_before_steps
+    area: validation
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 0
+    from: none
+    sender: Amelie, prospective organiser
+    look: note
+    text: Amelie asks whether the entrance has steps and whether flashing lights are used. The
+      builders are still working, so you can check and describe the access before publishing a
+      promise. Unforgettable is not an access specification.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the route and publish the facts
+        hours: 3
+        effects:
+          - type: skill
+            skill: interviewing
+            delta: 0.02
+      - id: leave
+        label: Publish the brochure description
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -20000

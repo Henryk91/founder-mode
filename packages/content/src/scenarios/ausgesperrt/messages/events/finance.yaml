@@ -1,0 +1,195 @@
+events:
+  - id: lease_storage
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 12
+    from: none
+    sender: Herr Falk, landlord
+    look: official
+    text: Herr Falk wants to store archive boxes in the unused fourth space. His proposed discount
+      lasts one month; the boxes have no departure date. The lease still calls it your space.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Keep the space and confirm the lease terms
+        hours: 2
+        effects: []
+      - id: leave
+        label: Ask him to come back later
+        hours: 0
+        effects: []
+      - id: more
+        label: Take the discount and move the boxes
+        hours: 5
+        effects:
+          - type: cash
+            amountCents: 25000
+          - type: lostHours
+            hours: 12
+  - id: insurance_inventory
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your insurance broker
+    look: official
+    text: The broker asks for an inventory of electronics and custom props. Without it, replacement
+      value is a conversation after the accident. Photographing the room takes longer than
+      forwarding the policy.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: List and photograph the equipment
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -8000
+      - id: leave
+        label: Forward last year's paperwork
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -45000
+  - id: utility_adjustment
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - tour.month <= 3
+      - leisure.open == 1
+    from: none
+    sender: The electricity supplier
+    look: official
+    text: The first winter bill is higher than the advance payment. Screens, lights and ventilation
+      apparently use electricity even in a fictional bank. Checking the timer settings could cut
+      the next one.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the timers and settle the balance
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -22000
+      - id: leave
+        label: Pay without checking the settings
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -42000
+  - id: invoice_reference
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - shipped.team_package == 1
+    from: none
+    sender: Kieselwerk accounts
+    look: official
+    text: Accounts cannot pay the invoice without the purchase order number. The organiser insists
+      it was in an email; it was, underneath a picture of a cake. The invoice will not find it
+      itself.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Correct and resend the invoice
+        hours: 2
+        effects:
+          - type: energy
+            delta: -1
+      - id: leave
+        label: Wait for accounts to discover the cake
+        hours: 0
+        effects:
+          - type: lostHours
+            hours: 5
+  - id: prop_supplier
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your prop supplier
+    look: official
+    text: The supplier offers a bulk box of specialist padlocks. The discount assumes more rooms
+      than you have doors. Buying a small repair stock costs more per lock and less in total.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Buy a small repair stock
+        hours: 1
+        effects:
+          - type: cash
+            amountCents: -18000
+      - id: leave
+        label: Order replacements only when needed
+        hours: 0
+        effects: []
+      - id: more
+        label: Take the impressive bulk discount
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -95000
+  - id: winter_rent
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 40
+    from: none
+    sender: Herr Falk, landlord
+    look: official
+    text: The landlord proposes a rent adjustment and encloses a cheerful diagram of Munich. The
+      lease has a notice clause, less cheerful and more useful. Reading it is an evening's work.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the clause and reply
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -18000
+      - id: leave
+        label: Accept the proposed amount
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -90000
+  - id: construction_cover
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 0
+    from: none
+    sender: Your insurance broker
+    look: official
+    text: The ordinary policy starts when the room opens. The contractor asks who covers the
+      equipment arriving next week. Everybody agrees it should be somebody.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Arrange cover for the build period
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -22000
+      - id: leave
+        label: Assume the ordinary policy covers it
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -65000

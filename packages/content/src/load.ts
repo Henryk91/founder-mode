@@ -11,6 +11,7 @@ import { sources as seeblick } from './sources/seeblick'
 import { sources as rueckenwind } from './sources/rueckenwind'
 import { sources as tiefgang } from './sources/tiefgang'
 import { sources as leinenlos } from './sources/leinenlos'
+import { sources as ausgesperrt } from './sources/ausgesperrt'
 import { sources as zollstock } from './sources/zollstock'
 
 export { SCENARIO_IDS, SCENARIO_MODES, isScenarioId, type ScenarioId } from './ids'
@@ -39,6 +40,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
   rueckenwind,
   tiefgang,
   leinenlos,
+  ausgesperrt,
 }
 
 /**
