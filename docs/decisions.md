@@ -839,3 +839,5 @@ Bots and content:
 - AUTONOMOUS: local theme pools reserve unplayed groups across every slot and outstanding date. Freshness words reflect depletion as well as wear; visitors outside the local pool still arrive. A rebuilt theme can take bookings for its reopening dates. Optional content-defined review penalties and reset capacity losses model stale products and a morning closed for setting.
 
 - AUTONOMOUS: the indoor calendar shows twelve weeks of actual slot capacity, bookings and holds, including announced construction readiness. Existing course progression and returning graduates use named slots indoors; factual course totals are exposed without introducing weather. Climbing-specific qualifications and course-to-membership conversion remain for its scenario step if needed.
+
+- AUTONOMOUS: the regression helper now identifies timing targets by their text, covering the 60-week target 5 and Kantino long target 30 as well as tourism T12. The first two comparisons differed only in those timing rows; their saved reports match without rerunning simulations. Every outcome row remains in the comparison.
