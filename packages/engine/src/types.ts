@@ -2626,6 +2626,7 @@ export type LeisureHold = {
   feeCents: number
 }
 export type LeisureWeek = {
+  turnedAway: Record<string, number>
   week: number
   joined: number
   cancelled: number
@@ -2666,6 +2667,7 @@ export type LeisureView = {
   buildChoice: FeatureId[]
   slots: { id: string; name: string; hours: number }[]
   load: LeisureWeek['slots']
+  turnedAwayBySlot: Record<string, number>
   members: {
     offerId: FeatureId
     name: string

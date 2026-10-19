@@ -18,6 +18,8 @@ import {
   leisureValid,
   leisureVisits,
   loseLeisureInstructor,
+  joinLeisure,
+  recordLeisureTurnAway,
 } from '../src/systems/leisure'
 import type { Booking, GameState, LeisureMember, WeekPlan } from '../src/types'
 import { plan } from './helpers'
@@ -665,5 +667,94 @@ describe('intro membership cohorts', () => {
       reason: 'january',
       noticeUntil: 10,
     })
+  })
+})
+
+describe('aggregator contract and lost slots', () => {
+  const platform = () => ({
+    name: 'Test platform',
+    payoutCents: { min: 1000, max: 1000 },
+    capPerMonth: 4,
+    noticeWeeks: 13,
+    users: { small_offices: { min: 1, max: 1 }, medical: { min: 1, max: 1 } },
+    visitsPerWeek: 1,
+    cannibalisation: { small_offices: 1, medical: 1 },
+  })
+
+  it('honours the exit notice even if access is closed, then leaves the contract', () => {
+    let s = beginLeisure(
+      open(game({ aggregator: platform() })),
+      bp({ aggregator: { slots: ['daytime'], leave: false } }),
+      rng(),
+    ).state
+    s = beginLeisure(
+      { ...s, week: 2 },
+      bp({ aggregator: { slots: [], leave: false } }),
+      rng(),
+    ).state
+    expect(s.bookings!.leisure!.aggregator).toMatchObject({ joined: true, slots: [] })
+    s = beginLeisure(s, bp({ aggregator: { slots: [], leave: true } }), rng()).state
+    expect(s.bookings!.leisure!.aggregator).toMatchObject({ joined: true, leavingWeek: 15 })
+    expect(leisureValid(s, bp({ aggregator: { slots: ['evening'], leave: false } }))).toBe(false)
+    expect(
+      beginLeisure({ ...s, week: 14 }, plan(), rng()).state.bookings!.leisure!.aggregator!.joined,
+    ).toBe(true)
+    const left = beginLeisure({ ...s, week: 15 }, plan(), rng()).state
+    expect(left.bookings!.leisure!.aggregator).toMatchObject({
+      joined: false,
+      slots: [],
+      leavingWeek: null,
+    })
+  })
+
+  it('can replace corporate as well as personal memberships without disclosing its hidden share', () => {
+    const c = leisureConfig({ aggregator: platform() })
+    c.segments.small_offices!.memberShare = 1
+    c.segments.medical!.memberShare = 1
+    const initial = beginLeisure(
+      open(game(c)),
+      bp({ offers: { member_billing: { enabled: true, priceCents: 100 } } }),
+      rng(),
+    ).state
+    const joined = beginLeisure(
+      initial,
+      bp({ aggregator: { slots: ['daytime'], leave: false } }),
+      rng(),
+    ).state
+    for (const segment of ['small_offices', 'medical']) {
+      expect(
+        joinLeisure(initial, segment, 10, rng()).bookings!.leisure!.members.length,
+      ).toBeGreaterThan(0)
+      expect(joinLeisure(joined, segment, 10, rng()).bookings!.leisure!.members).toHaveLength(0)
+    }
+    expect(JSON.stringify(getView(joined).bookings!.leisure)).not.toContain('cannibalisation')
+  })
+
+  it('does not pay or consume a user cap for visits the studio could not serve', () => {
+    let s = beginLeisure(
+      open(game({ aggregator: platform() })),
+      bp({ aggregator: { slots: ['daytime', 'evening'], leave: false } }),
+      rng(),
+    ).state
+    const visits = leisureVisits(s, [], rng())
+    expect(visits.added.length).toBeGreaterThan(0)
+    s = finishLeisure(
+      visits.state,
+      visits.added.map((b) => ({ ...b, status: 'company_cancelled' as const })),
+    ).state
+    expect(s.bookings!.leisure!.aggregator).toMatchObject({ checkins: 0, payoutCents: 0 })
+    expect(s.bookings!.leisure!.aggregator!.users.every((u) => u.visits === 0)).toBe(true)
+  })
+
+  it('records the slot of rejected enquiries and gives the UI independent copies', () => {
+    const s = start(open(game()))
+    const original = structuredClone(s)
+    const lost = recordLeisureTurnAway(s, 'evening', 7)
+    const view = getView(lost).bookings!.leisure!
+    expect(view.turnedAwayBySlot.evening).toBe(7)
+    view.turnedAwayBySlot.evening = 0
+    view.history[0]!.turnedAway.evening = 0
+    expect(lost.bookings!.leisure!.weeks[0]!.turnedAway.evening).toBe(7)
+    expect(s).toEqual(original)
   })
 })
