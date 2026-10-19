@@ -64,12 +64,21 @@ export function leisureWanted(
     .filter((f) => started.includes(f.productId) && f.openedWeek !== null)
     .sort((a, b) => b.openedWeek! - a.openedWeek!)[0]
   const known = newest !== undefined && newest.word !== 'new'
+  const crowded =
+    l.history
+      .slice(-8)
+      .filter(
+        (week) =>
+          week.slots.some((slot) => slot.load === 'packed') &&
+          Object.values(week.turnedAway).some((n) => n > 0),
+      ).length >= 3
   const need =
     rule.leisure?.rooms !== 'one' &&
     opened !== null &&
     (quarterly
       ? started.length < 1 + Math.floor((view.week - opened) / 13)
-      : (known && started.every((id) => view.product.features.find((f) => f.id === id)?.shipped)) ||
+      : ((known || crowded) &&
+          started.every((id) => view.product.features.find((f) => f.id === id)?.shipped)) ||
         (l.minimumAreas[segment] ?? 1) > started.length)
   const next = need
     ? preferred.find((id) => !started.includes(id) && !first.includes(id))
