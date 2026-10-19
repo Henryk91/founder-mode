@@ -317,6 +317,7 @@ export function leisureRoom(
   slot: string,
   week: number,
   segment?: string,
+  reservations?: { occupied: number; local: number },
 ): number {
   const cfg = s.scenario.bookings!
   const minimum = segment ? cfg.leisure?.segments[segment]?.minimumAreas : undefined
@@ -327,24 +328,28 @@ export function leisureRoom(
   )
     return 0
   const pool = cfg.products[product]?.capacityOf ?? product
-  const booked = bookings
-    .filter(
-      (b) =>
-        b.week === week &&
-        b.status === 'booked' &&
-        b.slotId === slot &&
-        (cfg.products[b.productId]?.capacityOf ?? b.productId) === pool,
-    )
-    .reduce((t, b) => t + b.units, 0)
-  const held = (s.bookings?.leisure?.holds ?? [])
-    .filter(
-      (h) =>
-        h.status === 'held' &&
-        h.booking.week === week &&
-        h.booking.slotId === slot &&
-        (cfg.products[h.booking.productId]?.capacityOf ?? h.booking.productId) === pool,
-    )
-    .reduce((t, h) => t + h.booking.units, 0)
+  const booked =
+    reservations?.occupied ??
+    bookings
+      .filter(
+        (b) =>
+          b.week === week &&
+          b.status === 'booked' &&
+          b.slotId === slot &&
+          (cfg.products[b.productId]?.capacityOf ?? b.productId) === pool,
+      )
+      .reduce((t, b) => t + b.units, 0)
+  const held = reservations
+    ? 0
+    : (s.bookings?.leisure?.holds ?? [])
+        .filter(
+          (h) =>
+            h.status === 'held' &&
+            h.booking.week === week &&
+            h.booking.slotId === slot &&
+            (cfg.products[h.booking.productId]?.capacityOf ?? h.booking.productId) === pool,
+        )
+        .reduce((t, h) => t + h.booking.units, 0)
   const free = Math.max(0, leisureCapacity(s, pool, slot, week) - booked - held)
   const f = cfg.leisure?.freshness?.[pool]
   const live = s.bookings?.leisure?.freshness[pool]
@@ -352,28 +357,74 @@ export function leisureRoom(
   if (!segment || !f?.localSegments.includes(segment) || !live || groups === undefined) return free
   const reset = live.refreshUntil !== null && live.refreshUntil <= week
   const from = reset ? live.refreshUntil! : 0
-  const reserved = bookings
-    .filter(
-      (b) =>
-        b.productId === pool &&
-        b.status === 'booked' &&
-        b.week >= from &&
-        f.localSegments.includes(b.segmentId),
-    )
-    .reduce((n, b) => n + b.units, 0)
-  const heldGroups = (s.bookings?.leisure?.holds ?? [])
-    .filter(
-      (h) =>
-        h.status === 'held' &&
-        h.booking.productId === pool &&
-        h.booking.week >= from &&
-        f.localSegments.includes(h.booking.segmentId),
-    )
-    .reduce((n, h) => n + h.booking.units, 0)
+  const reserved =
+    reservations?.local ??
+    bookings
+      .filter(
+        (b) =>
+          b.productId === pool &&
+          b.status === 'booked' &&
+          b.week >= from &&
+          f.localSegments.includes(b.segmentId),
+      )
+      .reduce((n, b) => n + b.units, 0)
+  const heldGroups = reservations
+    ? 0
+    : (s.bookings?.leisure?.holds ?? [])
+        .filter(
+          (h) =>
+            h.status === 'held' &&
+            h.booking.productId === pool &&
+            h.booking.week >= from &&
+            f.localSegments.includes(h.booking.segmentId),
+        )
+        .reduce((n, h) => n + h.booking.units, 0)
   return Math.min(
     free,
     Math.max(0, groups - (reset ? 0 : live.localGroups) - reserved - heldGroups),
   )
+}
+
+/** A phase-local index. Append new reservations freely; recreate after changing old statuses. */
+export function leisureRoomReader(bookings: readonly Booking[]) {
+  const occupied = new Map<string, number>()
+  const local = new Map<string, number>()
+  const afterReset = new Map<string, number>()
+  let seen = 0
+  let holdsSeen = 0
+  return (s: GameState, product: string, slot: string, week: number, segment?: string) => {
+    const cfg = s.scenario.bookings!
+    const l = s.bookings!.leisure!
+    const key = (product: string, slot: string | undefined, week: number) =>
+      `${product}|${slot}|${week}`
+    const add = (b: Booking) => {
+      const pool = cfg.products[b.productId]?.capacityOf ?? b.productId
+      const k = key(pool, b.slotId, b.week)
+      occupied.set(k, (occupied.get(k) ?? 0) + b.units)
+      const f = cfg.leisure?.freshness?.[b.productId]
+      if (!f?.localSegments.includes(b.segmentId)) return
+      local.set(b.productId, (local.get(b.productId) ?? 0) + b.units)
+      const reset = l.freshness[b.productId]?.refreshUntil
+      if (reset !== null && reset !== undefined && b.week >= reset)
+        afterReset.set(b.productId, (afterReset.get(b.productId) ?? 0) + b.units)
+    }
+    for (; seen < bookings.length; seen++) {
+      const b = bookings[seen]!
+      if (b.status === 'booked') add(b)
+    }
+    for (; holdsSeen < l.holds.length; holdsSeen++) {
+      const h = l.holds[holdsSeen]!
+      if (h.status === 'held') add(h.booking)
+    }
+    const pool = cfg.products[product]?.capacityOf ?? product
+    const reset = l.freshness[pool]?.refreshUntil
+    return leisureRoom(s, bookings, product, slot, week, segment, {
+      occupied: occupied.get(key(pool, slot, week)) ?? 0,
+      local:
+        (reset !== null && reset !== undefined && reset <= week ? afterReset : local).get(pool) ??
+        0,
+    })
+  }
 }
 
 export function leisureAppeal(s: GameState, segment: string, id: string, week = s.week): number {
@@ -559,6 +610,31 @@ export function leisureView(s: GameState): LeisureView | null {
     const k = key(b.productId, b.slotId, b.week)
     held.set(k, (held.get(k) ?? 0) + b.units)
   }
+  // Capacity changes only at readiness/reopening dates and the end of a reset's lost slot.
+  // Reuse it within those intervals rather than evaluating twelve identical future weeks.
+  const changes = new Set([s.week])
+  const boundary = (week: number | null | undefined) => {
+    if (week !== null && week !== undefined && week > s.week && week < s.week + 12)
+      changes.add(week)
+  }
+  for (const f of s.product.features) boundary(f.readyWeek)
+  for (const f of Object.values(l.freshness)) {
+    boundary(f.refreshUntil)
+    boundary(f.lastRefreshWeek)
+    if (f.lastRefreshWeek !== null) boundary(f.lastRefreshWeek + 1)
+  }
+  const dates = [...changes].sort((a, b) => a - b)
+  const capacities = new Map<string, number>()
+  const calendarCapacity = (product: string, slot: string, week: number) => {
+    let at = s.week
+    for (const date of dates) {
+      if (date > week) break
+      at = date
+    }
+    const k = key(product, slot, at)
+    if (!capacities.has(k)) capacities.set(k, leisureCapacity(s, product, slot, at))
+    return capacities.get(k)!
+  }
   const ladder = s.bookings?.abroad?.ladder ?? []
   const totals = ladder.reduce(
     (sum, y) => ({
@@ -602,8 +678,7 @@ export function leisureView(s: GameState): LeisureView | null {
               productId,
               slotId: slot.id,
               week,
-              capacity: leisureCapacity(
-                s,
+              capacity: calendarCapacity(
                 cfg.products[productId]?.capacityOf ?? productId,
                 slot.id,
                 week,
@@ -1004,6 +1079,7 @@ export function leisureVisits(
   if (!c || !original || !leisureOpen(input, '', input.week)) return { state: input, added: [] }
   const members = original.members.map((m) => ({ ...m, waitlist: [...m.waitlist] }))
   const all = [...existing]
+  const room = leisureRoomReader(all)
   const added: Booking[] = []
   const denied: { productId: string; slotId: string; units: number }[] = []
   const week = input.week
@@ -1013,13 +1089,11 @@ export function leisureVisits(
       .filter(
         (id) =>
           input.scenario.bookings!.products[id]?.serves.includes(segmentId) &&
-          leisureRoom(input, all, id, slot, week, segmentId) > 0 &&
+          room(input, id, slot, week, segmentId) > 0 &&
           leisureOpen(input, id, week),
       )
       .sort(
-        (a, b) =>
-          leisureRoom(input, all, b, slot, week, segmentId) -
-          leisureRoom(input, all, a, slot, week, segmentId),
+        (a, b) => room(input, b, slot, week, segmentId) - room(input, a, slot, week, segmentId),
       )[0]
   const add = (segmentId: string, slotId: string, memberId?: string, aggregatorUser?: number) => {
     const productId = pickProduct(segmentId, slotId)

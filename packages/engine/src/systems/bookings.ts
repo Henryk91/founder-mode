@@ -5,7 +5,7 @@ import {
   leisureSellsSlot,
   leisureOpen,
   leisureCapacity,
-  leisureRoom,
+  leisureRoomReader,
   leisureSlot,
   leisureAppeal,
   leisureView,
@@ -802,10 +802,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       }
     }
   }
+  let indoorRoom = cfg.leisure ? leisureRoomReader(bookings) : null
   const roomFor = (seg: SegmentId, id: FeatureId, w: number, slot?: string) => {
     const free =
       cfg.leisure && slot
-        ? Math.min(room(id, w), leisureRoom(state, bookings, id, slot, w, seg))
+        ? Math.min(room(id, w), indoorRoom!(state, id, slot, w, seg))
         : room(id, w)
     const share = cfg.segments[seg]?.capacityShare
     if (!share) return free
@@ -1607,6 +1608,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   // Plan 4: courses. Graduates may book their next step next week, or come back a year later
   // (only those who booked directly come back directly; the platform keeps its guests).
+  if (cfg.leisure) indoorRoom = leisureRoomReader(bookings)
   if ((cond || cfg.leisure) && b.abroad) {
     let graduates = 0
     let sameStay = 0
