@@ -5226,3 +5226,9 @@ unfinished-room bot deadlock; the cash-only policy also allowed office finance.
 Both bot errors are now fixed, and these figures remain intermediate diagnosis.
 See [the loan diagnostic](autonomous5/tuning/ausgesperrt-later-loan.md). Main-3
 measures all 28 corrected strategies before any scenario values are tuned.
+
+The corrected blind-portfolio contribution is **main only, one strategy, 1,000
+`test` seeds**: 29.5% wins, versus 32.5% when physical space silently excluded VR.
+See [the portfolio report](autonomous5/tuning/ausgesperrt-no-tests-corrected.md).
+It predates the final public-calendar rebuild guard; the next complete bot baseline
+will include that correction. No values, event tables or full report changed.

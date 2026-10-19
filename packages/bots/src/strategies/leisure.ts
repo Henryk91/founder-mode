@@ -104,9 +104,10 @@ export function leisureBuildOrder(
   ids: string[],
   expensiveFirst = false,
 ): string[] {
-  const space = view.bookings?.leisure?.space
-  if (!space) return ids
-  let free = space.max - space.used
+  const leisure = view.bookings?.leisure
+  if (!leisure) return ids
+  const space = leisure.space
+  let free = space ? space.max - space.used : Infinity
   const ordered = expensiveFirst
     ? [...ids].sort(
         (a, b) =>
@@ -116,8 +117,11 @@ export function leisureBuildOrder(
     : ids
   return ordered.filter((id) => {
     const f = view.product.features.find((f) => f.id === id)
+    const build = leisure.builds.find((b) => b.productId === id)
+    if (build && !build.started && !f?.shipped && view.week + build.weeks > view.maxWeeks)
+      return false
     if (f && (f.shipped || f.progressHours > 0 || f.readyWeek !== null)) return true
-    const uses = space.uses[id] ?? 0
+    const uses = space?.uses[id] ?? 0
     if (uses > free) return false
     free -= uses
     return true
@@ -175,6 +179,34 @@ export function planLeisure(
       !view.product.features.some((p) => p.id === f.productId && p.shipped)
     )
       continue
+    const reopens = view.week + f.refreshWeeks
+    if (reopens > view.maxWeeks) continue
+    const lastVisibleWeek = Math.max(view.week, ...l.slotCalendar.map((cell) => cell.week))
+    if (view.maxWeeks <= lastVisibleWeek) {
+      const product = view.bookings!.products.find((p) => p.id === f.productId)!
+      // Even selling every remaining place at the highest stated price must cover the rebuild.
+      // This is an optimistic bound, using the public calendar and prices, not hidden demand.
+      const most = l.slotCalendar
+        .filter(
+          (cell) =>
+            cell.productId === f.productId && cell.week >= reopens && cell.week <= view.maxWeeks,
+        )
+        .reduce((sum, cell) => {
+          const price = Math.max(
+            0,
+            ...product.serves.map((id) => {
+              const prices =
+                leisure.slotPrices?.[id]?.[cell.slotId] ??
+                l.slotPrices?.[id]?.[cell.slotId] ??
+                plan.prices[id] ??
+                view.bookings!.prices[id]!
+              return Math.round(Math.max(prices.peak, prices.off) * product.priceFactor)
+            }),
+          )
+          return sum + cell.capacity * price
+        }, 0)
+      if (most < f.refreshCents) continue
+    }
     if (f.refreshWeeks > 0 && spare >= f.refreshCents && b.free >= f.resetHours) {
       leisure.refresh = [...(leisure.refresh ?? []), f.productId]
       b.free -= f.resetHours

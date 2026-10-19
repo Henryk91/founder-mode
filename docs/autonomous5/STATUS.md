@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.3.8 No-tests portfolio includes VR; complete measurement continues.
-Last commit: HEAD, Plan 5: include the VR temptation in the blind room portfolio.
-Next action: Finish main-3 and judge every Ausgesperrt target with margins before any value tuning. Finish the validation and protected comparisons below; run its event table once after tuning, and reserve the full report for step 6.
+Step: 2.3.9 Public-calendar guards prevent unusable late construction and rebuilds.
+Last commit: HEAD, Plan 5: avoid leisure builds with no remaining service window.
+Next action: Let main-3 finish as intermediate evidence, then run the complete Ausgesperrt main on 1,000 test seeds with the current horizon guard and VR-inclusive blind portfolio before any value tuning. Finish the protected comparisons below; run the event table once after tuning, and reserve the full report for step 6.
 
 ## Checklist
 
@@ -18,13 +18,13 @@ Next action: Finish main-3 and judge every Ausgesperrt target with margins befor
 
 ## Running checks
 
-- Ausgesperrt: all 28 strategies, main only, 1,000 `test` seeds. Session 6820; /tmp/plan5-ausgesperrt-main-3.log; output tuning/ausgesperrt-main-3.md. Careful wins 42.3% (T1 passes); quarterly rooms 67.5% is above T2’s 60% target. Counts and individual margins are in tuning/ausgesperrt-main-3-progress.md; wait for complete paired comparisons before tuning.
-- Protected: nine games, main only, 1,000 `test` seeds. Session 17724; /tmp/plan5-protected-step2-progress.log; outputs protected-step2/. Kantino standard/long, Zollstock, Gratwanderung, Hinterhof and Seeblick match; three abroad games pending. All nine fingerprints match /tmp/plan5-step2-fingerprints.json.
+- Ausgesperrt: all 28 strategies, main only, 1,000 `test` seeds. Session 6820; /tmp/plan5-ausgesperrt-main-3.log; output tuning/ausgesperrt-main-3.md. Careful wins 42.3% (T1 passes); quarterly rooms 67.5% is above T2’s 60% target. Counts and individual margins are in tuning/ausgesperrt-main-3-progress.md; this predates the horizon guard; retain it as intermediate evidence.
+- Protected: nine games, main only, 1,000 `test` seeds. Session 17724; /tmp/plan5-protected-step2-progress.log; outputs protected-step2/. Kantino standard/long, Zollstock, Gratwanderung, Hinterhof, Seeblick and Tiefgang match; Rückenwind and Leinen los pending. All nine fingerprints match /tmp/plan5-step2-fingerprints.json.
 - Full tests are green: 79 files, 1,539 passed, 21 skipped; /tmp/plan5-step2-finished-rooms-full-test-2.log, two workers. Browser teardown passed after the first repair (new leisure port 5202 plus lower test concurrency). Lint/typechecks pass; /tmp/plan5-step2-test-port-lint.log.
-- Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. Six protected snapshots and validation are committed; the three abroad snapshots remain running.
+- Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. Seven protected snapshots and validation are committed; the last two abroad snapshots remain running.
 
-- Corrected no-tests strategy: main only, 1,000 `test` seeds, one process. Session 37616; /tmp/plan5-ausgesperrt-no-tests-corrected.log; output tuning/ausgesperrt-no-tests-corrected.md. Use its absolute win rate for T2 instead of main-3’s old no-tests row. No other strategy changed.
-- New bot correction: 34 leisure bot tests and lint/typechecks pass. Seed regeneration runs in session 13265 (/tmp/plan5-no-tests-portfolio-seeds.log); refresh full suite after subsequent value tuning.
+- Corrected no-tests strategy finished: 29.5% on main only, 1,000 `test` seeds, one process; tuning/ausgesperrt-no-tests-corrected.md. This predates the horizon guard and is diagnostic.
+- Horizon guard: 35 leisure bot tests and lint/typechecks pass. The 30-seed behaviour trace has zero unusable rebuilds after the guard (/tmp/plan5-rebuild-horizon-fixed.json), versus four before. Refresh seed examples and full tests after the next outcome changes; neither is a new balance measurement.
 
 ## Open issues
 
@@ -37,6 +37,8 @@ Runtime caches previously proved byte-identical on 30 careful diagnostic runs. M
 Later-step preparation only, outside repo: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 lines), /tmp/plan5-venue-scenes-draft.json (two native SVG scenes). Integrate only after step 2 passes. Current repo content/UI are authoritative; do not recopy old Ausgesperrt /tmp drafts.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: bots decline builds beyond the run and rebuilds that cannot repay even at maximum quoted remaining receipts. See docs/decisions.md, Plan 5 step 2.
 
 - Step 2: no-tests buys expensive quoted builds first so the four-space limit does not silently remove the VR temptation. See docs/decisions.md, Plan 5 step 2.
 

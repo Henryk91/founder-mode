@@ -28,6 +28,10 @@ describe('Ausgesperrt players', () => {
     expect(blind).toContain('vr_room')
     expect(blind).toHaveLength(view.bookings!.leisure!.space!.max)
     expect(blind[0]).toBe('vr_room')
+    view.week = 100
+    expect(leisureBuildOrder(view, themes)).toEqual([])
+    delete view.bookings!.leisure!.space
+    expect(leisureBuildOrder(view, themes)).toEqual([])
   })
   it('can finance a larger room after accepting a smaller startup loan', () => {
     const player = strategies.find((s) => s.id === 'tourism_careful')!.create(scenario, 'test-0')
@@ -129,6 +133,39 @@ describe('Ausgesperrt players', () => {
     delete next.leisure
     planLeisure(view, building, next, CAREFUL_TOURISM)
     expect(next.leisure!.refresh).toHaveLength(1)
+  })
+  it('declines rebuilds that cannot reopen or earn their cost before the run ends', () => {
+    const view = getView(createGame(scenario, 'rebuild-horizon'))
+    view.company.cashCents = 7000000
+    const l = view.bookings!.leisure!
+    const feature = view.product.features.find((f) => f.id === 'heist')!
+    feature.shipped = true
+    feature.remainingHours = 0
+    const f = l.freshness.find((f) => f.productId === 'heist')!
+    f.word = 'tired'
+    const refresh = () => {
+      const b = new PlanBuilder(view, 50)
+      const plan: BookingsPlan = {
+        shifts: {},
+        founderShifts: {},
+        prices: {},
+        policy: null,
+        platform: null,
+        partnerships: [],
+        outreach: {},
+      }
+      planLeisure(view, b, plan, CAREFUL_TOURISM)
+      return plan.leisure!.refresh ?? []
+    }
+    view.week = 103
+    expect(refresh()).toEqual([])
+    view.week = 98
+    l.slotCalendar = [
+      { productId: 'heist', slotId: 'daytime', week: 104, capacity: 49, booked: 0, held: 0 },
+    ]
+    expect(refresh()).toEqual([])
+    f.refreshCents = 100000
+    expect(refresh()).toEqual(['heist'])
   })
   it.each(strategies.map((s) => [s.id, s] as const))(
     '%s completes a run with valid plans',
