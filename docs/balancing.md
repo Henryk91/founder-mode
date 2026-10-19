@@ -5190,3 +5190,11 @@ Also worth knowing: in winning runs referrals bring 19.1% of customers (largest 
 ### After part C: events round, reverted (no change to this report)
 
 Four events (crash_report, apprentice_setup, guild_evening, the shared regional_grant) were made situational to bring blind effort under 4. It rose instead: Zollstock +4.8 to +5.5 on the `test` seeds (+5.9 to +7.0 on 3000 seeds, reading 31.2% to 26.4%), and Kantino's target 11 failed at +4.6 through the shared grant. Reverted; both reports above stand. Details in `docs/decisions.md`.
+
+### Plan 5, step 0: protected baseline (19 October 2026)
+
+Ran the main part only for all nine protected games, 1,000 seeds per strategy with prefix
+`test`, one scenario per process. The snapshots and commands are in
+[the step 0 report](autonomous5/reports/step0-baseline.md). No event tables or wide parts ran.
+The existing full-report sections above remain available; plan 5's single full report is
+reserved for step 6. No engine or bot behaviour changed.
