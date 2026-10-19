@@ -7,7 +7,7 @@ trap 'rm -rf "$scratch"' EXIT HUP INT TERM
 strip() {
   sed -E \
     -e 's/\([0-9.]+ s for [0-9]+ runs\)//g' \
-    -e '/^\| T12 \|/d' \
+    -e '/^\|.*runs complete in under [0-9]+ seconds/d' \
     -e '/^Main: /d' "$1"
 }
 strip "$1" > "$scratch/baseline"
