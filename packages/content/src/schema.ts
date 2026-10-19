@@ -827,10 +827,12 @@ export const LeisureSchema = z
           localPool: rangeOf(z.number().int().positive()).optional(),
           localSegments: z.array(Id),
           sensitivity: z.record(Id, Share),
+          reviewPenalty: z.number().nonnegative().optional(),
           refresh: z.object({
             hours: z.number().int().positive(),
             cents: Cents.nonnegative(),
             weeks: z.number().int().nonnegative(),
+            lostCapacity: z.record(Id, z.number().int().nonnegative()).optional(),
           }),
         }),
       )
@@ -872,6 +874,9 @@ export const LeisureSchema = z
     }
     for (const f of Object.values(l.freshness ?? {}))
       if (f.knownAbove >= f.newAbove) issue('freshness words need ordered thresholds')
+    for (const f of Object.values(l.freshness ?? {}))
+      for (const id of Object.keys(f.refresh.lostCapacity ?? {}))
+        if (!slots.has(id)) issue(`unknown maintenance slot ${id}`)
     for (const offer of Object.values(l.memberships ?? {})) {
       for (const id of offer.slots) if (!slots.has(id)) issue(`unknown slot ${id}`)
       if (offer.kind === 'pack' && (!offer.visits || !offer.validWeeks))

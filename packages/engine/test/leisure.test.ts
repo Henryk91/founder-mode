@@ -13,6 +13,7 @@ import {
   finishLeisure,
   holdLeisure,
   leisureCapacity,
+  leisureAppeal,
   leisureOpen,
   leisureRoom,
   leisureValid,
@@ -756,5 +757,64 @@ describe('aggregator contract and lost slots', () => {
     view.history[0]!.turnedAway.evening = 0
     expect(lost.bookings!.leisure!.weeks[0]!.turnedAway.evening).toBe(7)
     expect(s).toEqual(original)
+  })
+})
+
+describe('finite theme pools and maintenance', () => {
+  const room = () => ({
+    newAbove: 65,
+    knownAbove: 30,
+    weeklyLoss: 0,
+    useLoss: 0,
+    localPool: { min: 2, max: 2 },
+    localSegments: ['small_offices'],
+    sensitivity: { small_offices: 1, coworking: 0 },
+    reviewPenalty: 1,
+    refresh: { hours: 2, cents: 0, weeks: 2 },
+  })
+
+  it('reserves a finite theme audience across slots and future dates', () => {
+    const s = start(open(game({ freshness: { basic_ordering: room() } })))
+    const reserved = [booking({ week: 2 })]
+    expect(leisureRoom(s, reserved, 'basic_ordering', 'daytime', 1, 'small_offices')).toBe(1)
+    expect(leisureRoom(s, reserved, 'basic_ordering', 'daytime', 1, 'coworking')).toBe(4)
+    const played = finishLeisure(s, [booking({ status: 'served', units: 2 })])
+    expect(played.reviewPenalty).toBeGreaterThan(0)
+    expect(leisureAppeal(played.state, 'small_offices', 'basic_ordering')).toBe(0)
+    expect(leisureAppeal(played.state, 'coworking', 'basic_ordering')).toBe(1)
+    const view = getView(played.state).bookings!.leisure!
+    expect(view.freshness[0]).toMatchObject({ word: 'tired', localGroups: 2 })
+    expect(JSON.stringify(view)).not.toContain('localPools')
+    expect(JSON.stringify(view)).not.toContain('"value":')
+  })
+
+  it('opens the next theme pool for dates after a rebuild, while the room stays closed now', () => {
+    const s = start(open(game({ freshness: { basic_ordering: room() } })))
+    const played = finishLeisure(s, [booking({ status: 'served', units: 2 })]).state
+    const rebuilding = beginLeisure(played, bp({ refresh: ['basic_ordering'] }), rng()).state
+    expect(leisureRoom(rebuilding, [], 'basic_ordering', 'daytime', 1, 'small_offices')).toBe(0)
+    expect(leisureRoom(rebuilding, [], 'basic_ordering', 'daytime', 3, 'small_offices')).toBe(2)
+    expect(leisureAppeal(rebuilding, 'small_offices', 'basic_ordering', 3)).toBe(1)
+  })
+
+  it('closes only the content-defined part of a slot during a route reset', () => {
+    const { localPool: _pool, ...base } = room()
+    void _pool
+    const f = {
+      ...base,
+      localSegments: [],
+      refresh: { hours: 2, cents: 0, weeks: 0, lostCapacity: { daytime: 2 } },
+    }
+    const s = open(game({ freshness: { basic_ordering: f } }))
+    const reset = beginLeisure(s, bp({ settingHours: { basic_ordering: 2 } }), rng()).state
+    expect(leisureCapacity(reset, 'basic_ordering', 'daytime', 1)).toBe(2)
+    expect(leisureCapacity(reset, 'basic_ordering', 'evening', 1)).toBe(4)
+    expect(leisureCapacity(reset, 'allergy_filter', 'daytime', 1)).toBe(4)
+    const next = beginLeisure(
+      { ...reset, week: 2 },
+      bp({ settingHours: { basic_ordering: 0 } }),
+      rng(),
+    ).state
+    expect(leisureCapacity(next, 'basic_ordering', 'daytime', 2)).toBe(4)
   })
 })

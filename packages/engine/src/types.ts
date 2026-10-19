@@ -2717,6 +2717,7 @@ export type LeisureView = {
     resetHours: number
     refreshCents: number
     refreshWeeks: number
+    lostCapacity: Record<string, number>
     refreshingUntil: number | null
   }[]
   builds: {
