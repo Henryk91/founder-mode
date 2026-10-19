@@ -10,6 +10,13 @@ import {
 import { budgetHints } from '../pricing'
 import { PlanBuilder, segmentNotes, type Player, type Strategy } from '../strategy'
 import { TOURISM_READER } from './tourismReader'
+import {
+  leisureFirstTheme,
+  leisureWanted,
+  leisureBuildOrder,
+  planLeisure,
+  type LeisureRule,
+} from './leisure'
 import { answerInbox, fromConditions, rankMarkets, readInbox } from './validateThenBuild'
 
 /**
@@ -18,6 +25,7 @@ import { answerInbox, fromConditions, rankMarkets, readInbox } from './validateT
  * season curves or the true weather.
  */
 export type TourismRule = {
+  leisure?: LeisureRule
   /** Interviews, a test listing and a pilot before choosing; false builds without them. */
   tests: boolean
   /** Builds every product, the temptation included (the no-tests bot). */
@@ -178,7 +186,7 @@ const IDLE_WEEKS = 6
 const WORKS_BUSY = 0.5
 const MIN_STAY_BUSY = 0.8
 
-export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
+export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''): Player {
   const cfg = scenario.bookings!
   /** Plan 3: the scenario's office stage offers. */
   const stageOffers = officeOffers(scenario)
@@ -280,7 +288,8 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       scenario.loan && asked.length > 0
         ? quickest(asked)
         : quickest(productsFor(seg).filter(allowed))
-    return [...new Set([...(base ? [base] : []), ...mentions.filter(allowed)])]
+    const requested = [...new Set([...(base ? [base] : []), ...mentions.filter(allowed)])]
+    return cfg.leisure ? leisureWanted(scenario, view, rule, requested, seg, seed) : requested
   }
 
   /**
@@ -340,7 +349,10 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
     const cash = view.company.cashCents
     // What the plan needs: products not yet shipped, and a buffer of fixed costs.
     const unshipped = wanted.filter(
-      (id) => !view.product.features.find((f) => f.id === id)?.shipped,
+      (id) =>
+        !view.product.features.find((f) => f.id === id)?.shipped &&
+        !view.bookings?.leisure?.builds.some((b) => b.productId === id && b.started) &&
+        !(cfg.leisure && view.loan?.plan?.bought.includes(id)),
     )
     // Rooms renovated one at a time count at their price per room (plan 2 step 1d).
     const reno = cfg.renovation
@@ -365,7 +377,10 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       view.company.officeStage.id !== refitOffer.stage &&
       view.monthlyRevenueCents >= refitOffer.revenueCents &&
       cash < refitOffer.cents + RESERVE_MONTHS * monthly
-    const first = runningLoans.length === 0 && (need > 0 || mode !== 'careful')
+    const first =
+      (runningLoans.length === 0 ||
+        (cfg.leisure && runningLoans.length < (scenario.loan?.maxLoans ?? 0) && oneOff > 0)) &&
+      (need > 0 || mode !== 'careful')
     // Plan 3: an office stage on offer that the money in hand cannot carry goes to the bank.
     const stageLoan =
       !first && !refit && l.plan
@@ -782,6 +797,14 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         ...assetAnswers,
         ...answer(view).filter((a) => !assetIds.has(a.messageId)),
       ]
+      if (cfg.leisure) {
+        const initial = leisureFirstTheme(view, rule, seed)
+        if (initial) {
+          const existing = answers.findIndex((a) => a.messageId === initial.messageId)
+          if (existing >= 0) answers.splice(existing, 1)
+          answers.push(initial)
+        }
+      }
       if (!rule.forced) return answers
       // Every arrival of the forced event gets the forced answer; the rest as the bot reads them.
       const { eventId, choiceId } = rule.forced
@@ -941,6 +964,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       }
       const c = m.choices.find((x) => x.id === id)
       if (!c || id === event.defaultChoice) continue
+      if (
+        cfg.leisure &&
+        c.costCents > 0 &&
+        view.company.cashCents - c.costCents < view.company.monthlyFixedCostsCents
+      )
+        continue
       if (used + c.hours > view.founder.maxHoursPerWeek) continue
       extra.push({ messageId: m.id, choiceId: id })
       used += c.hours
@@ -1190,9 +1219,10 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
           ? Object.values(cfg.assets ?? {}).flatMap((a) => (a.buy ? [a.buy.product] : []))
           : []),
       ]
-      const building = view.loan
+      const baseBuilding = view.loan
         ? withRequired([...new Set([...toBuild, ...bought, ...early])])
         : toBuild
+      const building = cfg.leisure ? leisureBuildOrder(view, baseBuilding) : baseBuilding
       if (view.loan) {
         // Keep the bridge a long-lead market needs (the months beyond the usual buffer) as well.
         const leadMonths = rule.naive ? 0 : Math.ceil((cfg.segments[seg]?.leadWeeks.max ?? 0) / 4)
@@ -1209,10 +1239,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         // Plan 4 (day conditions only): products started this week count against the money too.
         let committed = 0
         for (const f of now) {
-          const cost = bought.includes(f) ? 0 : (cfg.products[f]?.oneOffCents ?? 0)
+          const cost =
+            bought.includes(f) || bv.leisure?.builds.some((x) => x.productId === f && x.started)
+              ? 0
+              : (cfg.products[f]?.oneOffCents ?? 0)
           const keep = required.length > 0 ? 0 : reserve
           if (cost > 0 && view.company.cashCents - keep - committed < cost) continue
-          if (bv.abroad && !shipped(f)) committed += cost
+          if ((bv.abroad || bv.leisure) && !shipped(f)) committed += cost
           b.build(f, 40 - (b.plan.build[f] ?? 0))
         }
       } else {
@@ -1235,10 +1268,10 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
         // Tuning 1 (the abroad scenarios without held weeks: Rückenwind and Tiefgang): the
         // website serves the second kind of guest too, so it is built when they book online,
         // even if the first kind does not.
-        if (cfg.conditions && !cfg.hold && reaches(second, 'website'))
+        if ((cfg.conditions || cfg.leisure) && !cfg.hold && reaches(second, 'website'))
           b.build(cfg.website.product, 20 - (b.plan.build[cfg.website.product] ?? 0))
         // And calls and visits to the second kind of guest, where they answer them.
-        if (cfg.conditions && !cfg.hold && reaches(second, 'outreach')) {
+        if ((cfg.conditions || cfg.leisure) && !cfg.hold && reaches(second, 'outreach')) {
           const h = Math.min(OUTREACH_HOURS, b.free)
           if (h > 0) {
             plan.outreach[second] = (plan.outreach[second] ?? 0) + h
@@ -1327,6 +1360,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule): Player {
       plan.outreach[target] = (plan.outreach[target] ?? 0) + b.free
       b.free = 0
     }
+    if (cfg.leisure) planLeisure(view, b, plan, rule)
     b.plan.bookings = plan
     return b.plan
   }
@@ -1359,7 +1393,7 @@ const tourism = (
   model: 'bookings',
   ...(scenarios ? { scenarios } : {}),
   ...(rule.loan !== undefined || rule.refitLoan ? { needsLoan: true } : {}),
-  create: (scenario) => tourismPlayer(scenario, rule),
+  create: (scenario, seed) => tourismPlayer(scenario, rule, seed),
 })
 
 /** The careful bot answering one event the same way every time (the event table, item 18). */
@@ -1371,6 +1405,36 @@ export const tourismForced = (eventId: string, choiceId: string): Strategy =>
   )
 
 export const TOURISM_STRATEGIES: Strategy[] = [
+  tourism(
+    'leisure_one_room',
+    'Never builds a second room; still maintains the first.',
+    { ...CAREFUL_TOURISM, leisure: { rooms: 'one' } },
+    ['ausgesperrt'],
+  ),
+  tourism(
+    'leisure_quarterly_rooms',
+    'Starts another room every thirteen weeks from opening when it can finance it.',
+    { ...CAREFUL_TOURISM, leisure: { rooms: 'quarterly' } },
+    ['ausgesperrt'],
+  ),
+  tourism(
+    'leisure_theme_blind',
+    'Chooses room themes from a seeded order without matching the market.',
+    { ...CAREFUL_TOURISM, leisure: { themeBlind: true } },
+    ['ausgesperrt'],
+  ),
+  tourism(
+    'leisure_no_daytime',
+    'Closes weekday daytime sales and keeps the other careful policies.',
+    { ...CAREFUL_TOURISM, leisure: { noDaytime: true } },
+    ['ausgesperrt'],
+  ),
+  tourism(
+    'leisure_vr_first_year',
+    'Adds the virtual room in the first year with bank help when needed.',
+    { ...CAREFUL_TOURISM, leisure: { vrEarly: true } },
+    ['ausgesperrt'],
+  ),
   tourism(
     'tourism_careful',
     "Interviews every segment in week 1; in week 2 a pilot and, for a segment that books on platforms, a test listing where the interviews point. Picks the segment its evidence favours, builds a product that sells to it and what its interviewees ask for, lists on the platform where that segment books there, sets up its partnerships, builds the website and does outreach where those reach it, prices from interview budget hints (peak at their mean, off season at 85%), rosters to this week's bookings plus a tenth (taking up to two shifts itself), fixes snags, chases invoices, and turns strict only once cancellations are frequent and the calendar busy. It takes a bigger place when guests were turned away in 3 of the last 8 weeks (at the last stage, in peak weeks or above four fifths full, and only with someone on contract where the place needs it) and cash and savings cover the move, six months of the added rent and two months of costs; else it lists the place in the bank's plan.",

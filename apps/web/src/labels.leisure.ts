@@ -1,0 +1,46 @@
+export const LEISURE_LABELS = {
+  'leisure.space': '{used} of {max} physical spaces reserved by rooms or meeting space.',
+  'leisure.spaceFull': 'No unreserved space for this build.',
+  'leisure.minimumAreas': '{name}: at least {n} rooms must be ready for the requested date.',
+  'leisure.salesHint':
+    'Open slots for new enquiries. Existing bookings stay reserved when you close sales.',
+  'leisure.salesSlot': 'Sell {name}',
+  'leisure.priceWhat': '{season} price for {segment}, {slot}',
+  'leisure.price.peak': 'Peak',
+  'leisure.price.off': 'Off season',
+  'leisure.calendar': 'Slots and bookings',
+  'leisure.beforeOpening':
+    'Not open yet. Design work and construction must finish before games can run.',
+  'leisure.opened': 'Opened in week {week}.',
+  'leisure.buildProgress': '{name}: construction paid, {amount}; ready in week {week}.',
+  'leisure.buildPrep':
+    '{name}: {amount} committed. Finish the design work, then allow {weeks} weeks for construction.',
+  'leisure.freshnessLine': '{word}. Local groups who have played: {groups}.',
+  'leisure.freshness.new': 'New',
+  'leisure.freshness.known': 'Known',
+  'leisure.freshness.tired': 'Tired',
+  'leisure.reopening': 'Closed for work until week {week}.',
+  'leisure.refreshCost': 'Rebuild: {hours} h, {amount}, closed for {weeks} weeks.',
+  'leisure.refresh': 'Rebuild this theme',
+  'leisure.refreshCancel': 'Cancel this week’s rebuild',
+  'leisure.setting': 'Route setting each week',
+  'leisure.settingProgress': '{done} of {total} h towards the next reset.',
+  'leisure.settingWhat': 'setting hours for {name}',
+  'leisure.refused': '{n} requests turned away last week.',
+  'leisure.slotLoad': '{name}: {visits} visits, {word}.',
+  'leisure.load.quiet': 'quiet',
+  'leisure.load.busy': 'busy',
+  'leisure.load.packed': 'packed',
+  'leisure.futureDates': 'Next twelve weeks',
+  'leisure.calendarCell': 'Week {week}, {name}: {booked} booked, {held} held, {free} free.',
+  'leisure.roomLife': '{name}: {word}; {served} served, {refreshes} resets.',
+  'leisure.lessons': 'The life of the business',
+  'leisure.slotHistory': '{name}: {packed} packed services, {quiet} quiet services.',
+  'leisure.membersHistory': '{retained} contracts retained from {signed} signed.',
+  'leisure.aggregatorHistory':
+    '{name} paid {amount}; {cancellations} cancellations said they moved there.',
+  'leisure.holdsHistory':
+    '{granted} holds granted, {converted} converted, {lost} released too late.',
+  'leisure.lifeHistory':
+    '{name}: {served} visits, {refreshes} resets, {tired} tired weeks and {closed} weeks closed for work.',
+} as const

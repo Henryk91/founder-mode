@@ -1,4 +1,5 @@
 import { SCENARIO_LABELS } from './labels.tourism'
+import { LEISURE_LABELS } from './labels.leisure'
 
 export type UiStage = 'scrappy' | 'organised' | 'established'
 
@@ -11,6 +12,7 @@ export type LabelEntry = string | { scrappy: string; organised: string; establis
 // Every string the player sees. `{name}` style placeholders are filled by `label`'s vars.
 // Counts use `.one` and `.other` keys, see `count`. Game text: short, dry, British, no em dashes.
 const labels = {
+  ...LEISURE_LABELS,
   'app.title': 'Founder Mode',
   'app.tagline':
     'Find paying customers before the money runs out. Nobody will tell you where they are.',

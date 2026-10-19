@@ -178,6 +178,7 @@ export type RunResult = {
     turnedAway: number
     companyCancelled: number
     firstViableWeek: number | null
+    leisure?: { openingWeek: number | null; roomsBuilt: number; refreshes: number }
     /** Staff contracts signed over the run, by kind (plan 2 target T14). */
     contracts: { permanent: number; seasonal: number; partTime: number }
     /**
@@ -638,6 +639,17 @@ function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
       .filter((x) => x.status === 'company_cancelled')
       .reduce((t, x) => t + x.units, 0),
     firstViableWeek: Number.isFinite(first) ? first : null,
+    ...(b.leisure
+      ? {
+          leisure: {
+            openingWeek: b.leisure.openingWeek,
+            roomsBuilt: (state.scenario.bookings?.leisure?.opening?.areas ?? []).filter((id) =>
+              state.product.features.some((f) => f.id === id && f.shippedWeek !== null),
+            ).length,
+            refreshes: Object.values(b.leisure.freshness).reduce((sum, f) => sum + f.refreshes, 0),
+          },
+        }
+      : {}),
     contracts: {
       permanent: (b.contracts ?? []).filter((x) => x.kind === 'permanent').length,
       seasonal: (b.contracts ?? []).filter((x) => x.kind === 'seasonal').length,

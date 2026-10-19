@@ -1,6 +1,7 @@
 import type { ChannelId, PlanIssue, PlayerView, WeekPlan } from '@founder-mode/engine'
 import { useContext, useEffect, useRef } from 'react'
 import { FounderNote } from '../components/FounderNote'
+import { LeisureUpkeep, leisurePlanHours } from '../components/Leisure'
 import {
   Choices,
   FeatureRow,
@@ -57,7 +58,7 @@ export function hoursByActivity(
     sum(Object.values(p.outreach).map((o) => o.hours)) +
     p.demos.length * costs.demoHours +
     p.followUps.length * costs.followUpHours
-  const build = sum(Object.values(p.build)) + p.bugFixHours
+  const build = sum(Object.values(p.build)) + p.bugFixHours + leisurePlanHours(view, p.bookings)
   const learn =
     sum(Object.values(p.interviews)) * costs.interviewHours +
     Object.values(p.landing).filter((b) => b > 0).length * costs.landingHours +
@@ -76,7 +77,7 @@ function sectionHours(view: PlayerView, p: WeekPlan): Record<SectionId, number> 
       Object.values(p.landing).filter((b) => b > 0).length * costs.landingHours +
       sum(Object.values(p.presales)) * costs.presaleHoursPerBatch +
       trialsHours(view, p.bookings),
-    build: sum(Object.values(p.build)) + p.bugFixHours,
+    build: sum(Object.values(p.build)) + p.bugFixHours + leisurePlanHours(view, p.bookings),
     sell: sum(Object.values(p.outreach).map((o) => o.hours)),
     demos:
       p.demos.length * costs.demoHours +
@@ -610,6 +611,17 @@ function BuildBody({ free }: { free: number }) {
   const stage = voiceOf(view)
   const { product } = view
   const shipped = product.features.filter((f) => f.shipped)
+  const space = view.bookings?.leisure?.space
+  const startingSpaces = space
+    ? product.features.reduce(
+        (sum, f) =>
+          sum +
+          (!f.shipped && f.progressHours === 0 && f.readyWeek === null && (build[f.id] ?? 0) > 0
+            ? (space.uses[f.id] ?? 0)
+            : 0),
+        0,
+      )
+    : 0
   return (
     <>
       <Writing>
@@ -623,11 +635,17 @@ function BuildBody({ free }: { free: number }) {
         .filter((f) => !f.shipped)
         .map((f) => {
           const value = build[f.id] ?? 0
+          const fits =
+            !space ||
+            f.progressHours > 0 ||
+            f.readyWeek !== null ||
+            value > 0 ||
+            space.used + startingSpaces + (space.uses[f.id] ?? 0) <= space.max
           return (
             <FeatureRow
               key={f.id}
               name={f.name}
-              note={productNote(view, f.id, stage)}
+              note={fits ? productNote(view, f.id, stage) : label('leisure.spaceFull', stage)}
               progressHours={f.progressHours}
               buildHours={f.buildHours}
               progressText={label('plan.progress', stage, {
@@ -646,7 +664,7 @@ function BuildBody({ free }: { free: number }) {
                 display={plannedText(value, stage)}
                 hoursValue
                 step={5}
-                max={Math.min(f.remainingHours, value + free)}
+                max={fits ? Math.min(f.remainingHours, value + free) : value}
                 onChange={(n) => setBuild(f.id, n)}
               />
             </FeatureRow>
@@ -674,6 +692,7 @@ function BuildBody({ free }: { free: number }) {
         </Row>
       )}
       <RenovationPlan />
+      <LeisureUpkeep />
       <HintLine term="build" hint={label('plan.hint.build', stage)} />
     </>
   )

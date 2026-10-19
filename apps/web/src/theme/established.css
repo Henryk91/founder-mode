@@ -107,3 +107,7 @@
 [data-scenario='leinenlos'] {
   --scenario-accent: #8a4b2a;
 }
+/* Plan 5: white on #5b2a86 is 9.9:1. */
+[data-scenario='ausgesperrt'] {
+  --scenario-accent: #5b2a86;
+}
