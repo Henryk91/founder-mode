@@ -56,7 +56,9 @@ export function applyProduct(
   const features = state.product.features.map((f) => {
     const def = scenario.features.find((x) => x.id === f.id)
     // Plan 4: a licence applied for ships once the authority's wait is over.
-    const waitWeeks = scenario.bookings?.products[f.id]?.waitWeeks
+    const waitWeeks =
+      scenario.bookings?.leisure?.buildOut?.[f.id]?.weeks ??
+      scenario.bookings?.products[f.id]?.waitWeeks
     if (f.readyWeek !== undefined && f.shippedWeek === null) {
       if (f.readyWeek > state.week || !def) return f
       const bugsAdded = rng.int(def.bugsOnShip.min, def.bugsOnShip.max)

@@ -6,3 +6,6 @@
 - id: tourism
   name: Tourism
   order: 2
+- id: leisure
+  name: Leisure
+  order: 3

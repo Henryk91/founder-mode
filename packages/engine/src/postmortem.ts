@@ -1,3 +1,4 @@
+import { leisureView } from './systems/leisure'
 import { stageNumber } from './systems/office'
 import { bookingTotals, bookingsRevenueOrSubscriptions } from './systems/bookings'
 import { assetsEconomics } from './systems/assets'
@@ -72,6 +73,7 @@ export function buildPostMortem(state: GameState): PostMortem {
   const savingsEmpty = state.ledger.find((l) => l.savingsEndCents <= 0) ?? null
 
   return {
+    ...(state.scenario.bookings?.leisure ? { leisure: leisureView(state)! } : {}),
     scenarioId: state.scenarioId,
     seed: state.seed,
     ending: state.ending,

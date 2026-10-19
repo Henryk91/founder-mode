@@ -239,6 +239,14 @@ function applyEffect(
         hidden: { ...state.hidden, funding: { ...state.hidden.funding, confidence } },
       }
     }
+    case 'leisureStart': {
+      const b = state.bookings
+      if (!b?.leisure) return state
+      return {
+        ...state,
+        bookings: { ...b, leisure: { ...b.leisure, buildChoice: [...effect.products] } },
+      }
+    }
     case 'tender': {
       const t = applyTender(state, effect.bid, rng)
       out.entries.push(...t.entries)
@@ -307,6 +315,31 @@ function eligibleEvents(state: GameState, taken: ReadonlySet<string>): ScenarioE
  * than `openLimit` messages are open. If no slot was filled and fewer than `guaranteeBelowOpen`
  * messages are open, one more draw happens without the chance.
  */
+/** The initial build choice is visible before the first week; older games add no messages. */
+export function initialLeisureChoices(state: GameState): GameState {
+  if (!state.scenario.bookings?.leisure) return state
+  const events = state.scenario.events.filter(
+    (event) =>
+      event.choices.some((choice) =>
+        choice.effects.some((effect) => effect.type === 'leisureStart'),
+      ) && conditionsHold(state, event.when),
+  )
+  if (!events.length) return state
+  return {
+    ...state,
+    inbox: [
+      ...state.inbox,
+      ...events.map((event, index) =>
+        makeMessage(state, event, { name: event.sender, targetId: null }, state.week, index),
+      ),
+    ],
+    drawnEvents: [
+      ...state.drawnEvents,
+      ...events.map((event) => ({ eventId: event.id, week: state.week })),
+    ],
+  }
+}
+
 export function drawMessages(state: GameState, rng: Rng): GameState {
   const cfg = state.scenario.inbox
   const arrival = state.week + 1

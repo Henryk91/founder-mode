@@ -1,3 +1,4 @@
+import { leisureHours } from './leisure'
 import type { FounderState, GameState, HoursByActivity, Scenario, WeekPlan } from '../types'
 import { bookingsHours, hostingHours } from './bookings'
 import { fundingHours } from './funding'
@@ -20,7 +21,7 @@ export function committedHours(state: Pick<GameState, 'inbox'>): number {
  * taken out of this week by earlier penalties. Rest counts as planned time.
  */
 export function plannedHours(
-  state: Pick<GameState, 'scenario' | 'inbox' | 'founder' | 'team' | 'week'>,
+  state: Pick<GameState, 'scenario' | 'inbox' | 'founder' | 'team' | 'week' | 'bookings'>,
   plan: WeekPlan,
 ): number {
   const h = hoursByActivity(state, plan)
@@ -34,7 +35,7 @@ export function plannedHours(
  * team are admin.
  */
 export function hoursByActivity(
-  state: Pick<GameState, 'scenario' | 'inbox' | 'founder' | 'team' | 'week'>,
+  state: Pick<GameState, 'scenario' | 'inbox' | 'founder' | 'team' | 'week' | 'bookings'>,
   plan: WeekPlan,
 ): HoursByActivity {
   const { scenario } = state
@@ -46,7 +47,7 @@ export function hoursByActivity(
         scenario.experiments.landing.hours +
       sum(Object.values(plan.presales)) * scenario.experiments.presale.hoursPerBatch +
       trialsHours(state, plan),
-    building: sum(Object.values(plan.build)) + plan.bugFixHours,
+    building: sum(Object.values(plan.build)) + plan.bugFixHours + leisureHours(state, plan),
     selling:
       bookingsHours(state, plan) +
       sum(Object.values(plan.outreach).map((o) => o.hours)) +

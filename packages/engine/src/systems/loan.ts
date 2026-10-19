@@ -124,6 +124,7 @@ export function roomsToFinance(state: GameState): number {
 export function canFinance(state: GameState, id: string): boolean {
   const cfg = loanConfig(state)
   if (!cfg?.items?.includes(id)) return false
+  if (state.bookings?.leisure?.buildPaid.includes(id)) return false
   if (state.product.features.some((f) => f.id === id && f.shippedWeek !== null)) return false
   // Plan 4: the bank lends for an asset only once the company it needs exists.
   if (waitsForCompany(state, id)) return false
@@ -426,10 +427,16 @@ export function settleLoans(
     })
     money.inCents += accepted.amountCents
     // A plan's products and rooms are bought as the money arrives; only the working capital stays.
-    money.itemsCents += planItemsCents(state, accepted)
+    const unpaidItems = state.bookings?.leisure
+      ? (accepted.items ?? []).filter((id) => !state.bookings!.leisure!.buildPaid.includes(id))
+      : accepted.items
+    money.itemsCents += planItemsCents(
+      state,
+      state.bookings?.leisure ? { ...accepted, items: unpaidItems ?? [] } : accepted,
+    )
     entries.push({ kind: 'loan_paid_out', amountCents: accepted.amountCents, name: cfg.bankName })
     if (accepted.items?.length || accepted.rooms) {
-      bought = [...bought, ...(accepted.items ?? [])]
+      bought = [...bought, ...(unpaidItems ?? [])]
       roomsBought += accepted.rooms ?? 0
     }
     if (accepted.stage) prepaidStage = accepted.stage

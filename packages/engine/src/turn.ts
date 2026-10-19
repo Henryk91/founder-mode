@@ -130,6 +130,7 @@ export function endWeek(
     const tourism = applyBookings(state, plan, rng)
     state = tourism.state
     entries.push(...tourism.entries)
+    extras.voucherCents = (extras.voucherCents ?? 0) + (tourism.voucherCents ?? 0)
     extras.bookingRevenueCents += tourism.revenueCents
     extras.bookingCostsCents += tourism.costsCents
     extras.voucherRedeemedCents = (extras.voucherRedeemedCents ?? 0) + tourism.voucherRedeemedCents

@@ -1,3 +1,4 @@
+import { initialLeisureChoices } from './systems/inbox'
 import { initialLoan } from './systems/loan'
 import { Rng, seedRng } from './rng'
 import { initBookings } from './systems/bookings'
@@ -76,5 +77,5 @@ export function createGame(scenario: Scenario, seed: string): GameState {
     modifiers: [],
   }
   // The first office stage is where every run starts, with its rent and effects if it has any.
-  return moveOffice(state, scenario.officeStages[0]!.id)
+  return initialLeisureChoices(moveOffice(state, scenario.officeStages[0]!.id))
 }
