@@ -340,7 +340,7 @@ for (const part of PARTS) {
   const finished = await runTasks(tasks, args.jobs, (task, d) => {
     if (task.spec.kind !== 'forced')
       console.log(
-        `${task.scenarioId}${task.mode === 'standard' ? '' : ` (${task.mode})`} ${strategyOf(task.spec).id}: ${task.runs} runs in ${d.seconds.toFixed(1)} s`,
+        `${task.scenarioId}${task.mode === 'standard' ? '' : ` (${task.mode})`} ${strategyOf(task.spec).id}: ${task.runs} runs in ${d.seconds.toFixed(1)} s; ${d.results.filter((r) => r.ending === 'sustainable' || r.ending === 'growing').length} wins`,
       )
   })
   index.forEach(({ s, i }, k) => {

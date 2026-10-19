@@ -42,6 +42,67 @@ const quietRestaurant = (view: PlayerView) => {
 }
 
 export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> = {
+  ausgesperrt: {
+    ...Object.fromEntries(
+      [
+        'false_door',
+        'sticking_lock',
+        'camera_blind_spot',
+        'cleaning_fog',
+        'worn_map',
+        'headset_battery',
+        'fire_exit',
+        'spoiler_video',
+        'reset_checklist',
+        'late_finish',
+        'sick_shift',
+        'double_room_training',
+        'freelance_builder',
+        'first_payroll',
+        'school_morning',
+        'hr_free_test',
+        'hotel_concierge',
+        'platform_feature',
+        'corporate_saturday',
+        'birthday_helpers',
+        'tourist_video',
+        'agency_commission',
+        'gift_deadline',
+        'accessibility_call',
+        'horror_interviews',
+        'free_game_survey',
+        'review_language',
+        'repeat_question',
+        'lease_storage',
+        'insurance_inventory',
+        'utility_adjustment',
+        'invoice_reference',
+        'prop_supplier',
+        'winter_rent',
+        'neighbour_screams',
+        'basement_air',
+        'design_for_sale',
+        'quiet_tuesday',
+        'old_plans',
+        'opening_sign',
+        'design_rights',
+        'construction_cover',
+        'launch_agency',
+        'sound_before_plaster',
+        'paint_samples',
+        'access_before_steps',
+      ].map((id) => [id, () => 'act']),
+    ),
+    forgotten_birthday: ifTired(80, 'act'),
+    puzzle_conference: ifTired(65, 'act'),
+    paint_samples: (view) => (view.week <= 3 ? 'act' : null),
+    school_morning: (view) =>
+      view.bookings?.leisure?.slotCalendar.some(
+        (c) => c.slotId === 'daytime' && c.week === view.week && c.booked + c.held < c.capacity,
+      )
+        ? 'act'
+        : null,
+  },
   // Plan 4: the beach tender. Tuning 1: bidding as before (bidding higher where hotel guests
   // were the market cost the careful bot 1.5 points, 1,000 seeds); the reviews carry the bid.
   tiefgang: {},

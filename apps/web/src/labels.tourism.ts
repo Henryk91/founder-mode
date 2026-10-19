@@ -530,7 +530,63 @@ const LEINENLOS: Overrides = {
     'You cancelled {company} places for the boat, the minimum to sail or a short roster; guests cancelled {guest}.',
 }
 
+const AUSGESPERRT: Overrides = {
+  ...shared({
+    test: {
+      one: 'Test listing',
+      other: 'Test listings',
+      lower: 'test listing',
+      lowerPlural: 'test listings',
+    },
+    pilot: { one: 'Play test', other: 'Play tests', lower: 'play test', lowerPlural: 'play tests' },
+    formal: {
+      test: { one: 'Listing test', other: 'Listing tests' },
+      pilot: { one: 'Test game', other: 'Test games' },
+    },
+    fixFormal: 'Prop repairs',
+    snag: { one: 'snag', other: 'snags' },
+    fix: 'Fix room snags',
+    fixWhat: 'hours fixing room snags',
+    build: 'Build and refresh rooms',
+    invoices: {
+      hint: 'Companies pay a deposit when booking and receive an invoice for the balance after the games. Local groups and visitors pay at booking. Chasing an overdue company invoice costs {hours}; unpaid invoices are written off two months after they were due.',
+      none: 'No company invoices yet. They start once company games have run.',
+    },
+    fixedCosts: 'Company costs per month (basement, utilities, insurance, software, accountant)',
+  }),
+  'bar.company': { scrappy: '{name}', organised: '{name}', established: '{name} GmbH' },
+  'stat.guests': 'Room-games, last 4 weeks',
+  'stat.guests.short': 'Games',
+  'tour.calendar': 'Rooms',
+  'tab.calendar': { scrappy: 'Rooms', organised: 'Rooms', established: 'Rooms' },
+  'plan.hint.build':
+    'Finish preparation, then allow the stated construction time. Started rooms reserve space.',
+  'tab.pipeline': { scrappy: 'Rooms', organised: 'Rooms', established: 'Rooms' },
+  'plan.section.talk': {
+    scrappy: 'Talk to groups',
+    organised: 'Market conversations',
+    established: 'Market research',
+  },
+  'plan.section.guests': {
+    scrappy: 'Fill the rooms',
+    organised: 'Channels',
+    established: 'Distribution',
+  },
+  'market.trials.title': 'Listings, test games and vouchers',
+  'results.entry.ui_established':
+    'The basement pays its bills. The doors still stick, but only in the story.',
+  'help.week.1':
+    'Plan your hours. A normal week is 50 h, and up to 65 h costs energy. Choose a first theme, finish its preparation and allow eight weeks for construction. The Rooms tab shows slots and future dates.',
+  'help.week.4':
+    'Every fourth week is a month end, when the basement, other fixed costs and loan payments go out. Room-games are paid at booking; companies pay a deposit and an invoice for the balance. A voucher is cash now and a game still owed.',
+  'explain.test.text':
+    'A test listing costs {hours} and an ad budget, then reports after {weeks}: how many saw the offer and asked for dates. It is a signal, not paid bookings. A play test costs {presale} and gives {size} groups a finished room; keen groups buy a voucher and may return. Compare what people pay for with what they praise.',
+  'pm.guests.cancelled':
+    'You cancelled {company} room-games for lack of staff or a closed room; groups cancelled {guest}.',
+}
+
 export const SCENARIO_LABELS: Record<string, Overrides> = {
+  ausgesperrt: AUSGESPERRT,
   leinenlos: LEINENLOS,
   tiefgang: TIEFGANG,
   rueckenwind: RUECKENWIND,

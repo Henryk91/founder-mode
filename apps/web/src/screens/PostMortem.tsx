@@ -11,6 +11,7 @@ import type {
   PostMortem as PostMortemData,
 } from '@founder-mode/engine'
 import { StorageNote } from '../components/StorageNote'
+import { LeisureSummary } from '../components/Leisure'
 import { formatEuro } from '../format'
 import { count, label, voiceOf, stageOf, type Voice } from '../labels'
 import { useGame } from '../useGame'
@@ -482,6 +483,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
               {next}
               {markets}
               {guests}
+              {pm.leisure && <LeisureSummary leisure={pm.leisure} view={view} />}
             </div>
             <div className={styles.col}>
               {misreads}
@@ -498,6 +500,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
             {next}
             {markets}
             {guests}
+            {pm.leisure && <LeisureSummary leisure={pm.leisure} view={view} />}
             {misreads}
             {hours}
             {moneyFold}

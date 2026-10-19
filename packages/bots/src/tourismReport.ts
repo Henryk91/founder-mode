@@ -15,6 +15,7 @@ import {
 } from './report'
 import { fmtMargin, rateMargin } from './margin'
 import { diveTargets, guletTargets, watersportsTargets } from './abroadTargets'
+import { escapeTargets } from './leisureTargets'
 import type { RunResult } from './simulate'
 import { PACING_WEEKS, YEAR2_WEEK } from './simulate'
 
@@ -43,8 +44,11 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
   const spread = byMarket.length
     ? Math.max(...byMarket.map((m) => m.rate)) - Math.min(...byMarket.map((m) => m.rate))
     : 0
+  const indoor = careful.results.some((x) => x.tourism?.leisure)
   const firstWeeks = wins(careful.results).flatMap((x) =>
-    x.tourism?.firstViableWeek != null ? [x.tourism.firstViableWeek] : [],
+    x.tourism?.firstViableWeek != null
+      ? [x.tourism.firstViableWeek - (x.tourism.leisure?.openingWeek ?? 1) + 1]
+      : [],
   )
   const firstMedian = median(firstWeeks)
   const share = (
@@ -140,21 +144,29 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     },
     // Tuning 1: a run that starts out of season (Leinen los, cruises from week 31) is judged on
     // its first season's first month instead of week 12.
-    (input.firstSeasonWeek ?? 1) + 3 > 12
+    indoor
       ? {
           id: 4,
-          text: `The first guest from the viable segment is served in the first season's first month (by week ${input.firstSeasonWeek! + 3}) in the median winning run (restated in tuning 1)`,
-          value: `week ${fmtNum(firstMedian, 1)}`,
-          margin: '',
-          pass: firstMedian !== null && firstMedian <= input.firstSeasonWeek! + 3,
-        }
-      : {
-          id: 4,
-          text: 'The first guest from the viable segment is served by week 12 in the median winning run',
-          value: `week ${fmtNum(firstMedian, 1)}`,
+          text: 'The first viable-segment group is served by the twelfth week from opening in the median winning run',
+          value: `week ${fmtNum(firstMedian, 1)} from opening`,
           margin: '',
           pass: firstMedian !== null && firstMedian <= 12,
-        },
+        }
+      : (input.firstSeasonWeek ?? 1) + 3 > 12
+        ? {
+            id: 4,
+            text: `The first guest from the viable segment is served in the first season's first month (by week ${input.firstSeasonWeek! + 3}) in the median winning run (restated in tuning 1)`,
+            value: `week ${fmtNum(firstMedian, 1)}`,
+            margin: '',
+            pass: firstMedian !== null && firstMedian <= input.firstSeasonWeek! + 3,
+          }
+        : {
+            id: 4,
+            text: 'The first guest from the viable segment is served by week 12 in the median winning run',
+            value: `week ${fmtNum(firstMedian, 1)}`,
+            margin: '',
+            pass: firstMedian !== null && firstMedian <= 12,
+          },
     {
       id: 5,
       text: `Decision news in at least 85% of weeks 1 to ${PACING_WEEKS} and 70% of weeks ${YEAR2_WEEK} to 104`,
@@ -260,12 +272,17 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     },
     ...loanTargets(input, careful, s, all),
     // Plan 3: office stages, on the main part's seeds.
-    ...evaluateOfficeTargets(19, careful, s('tourism_never_move'), s('tourism_always_move')),
-    evaluateEstablishedTarget(22, careful),
+    ...(indoor
+      ? []
+      : evaluateOfficeTargets(19, careful, s('tourism_never_move'), s('tourism_always_move'))),
+    indoor
+      ? { ...evaluateEstablishedTarget(22, careful), id: 'E1' }
+      : evaluateEstablishedTarget(22, careful),
     // Plan 4: the abroad scenarios' own targets.
     ...watersportsTargets(careful, s, all),
     ...diveTargets(careful, s, all),
     ...guletTargets(careful, s, all),
+    ...escapeTargets(careful, s, all),
   ]
 }
 
