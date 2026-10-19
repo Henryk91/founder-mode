@@ -5198,3 +5198,12 @@ Ran the main part only for all nine protected games, 1,000 seeds per strategy wi
 [the step 0 report](autonomous5/reports/step0-baseline.md). No event tables or wide parts ran.
 The existing full-report sections above remain available; plan 5's single full report is
 reserved for step 6. No engine or bot behaviour changed.
+
+### Plan 5, step 1: protected engine comparison (19 October 2026)
+
+All nine protected games match their step 0 snapshots exactly apart from timings:
+**main only, 1,000 seeds per strategy, prefix `test`**, one scenario per process.
+All nine content/save fingerprints also match. See
+[the shared-engine report](autonomous5/reports/step1-engine.md) and its snapshots.
+Existing target failures above are unchanged. No event table, wide part or full report ran;
+the single full report remains reserved for step 6.
