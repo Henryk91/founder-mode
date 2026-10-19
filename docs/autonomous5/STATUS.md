@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.3.3 Leisure advance deposits refunded on cancellation.
-Last commit: HEAD, Plan 5: refund cancelled leisure reservation deposits.
-Next action: Finish repaired core measurement (session 32296, /tmp/plan5-ausgesperrt-repaired-core.log, tuning/ausgesperrt-repaired-core.md): main only, six affected strategies, 1,000 test seeds. Initial full main measurement session 47891 remains useful as defect evidence. Check extended Help/results/post-mortem word tests, then judge targets and tune within budget. Full bot report only in step 6.
+Step: 2.3.4 Accepted loans clear the leisure bot’s obsolete refusal ceiling.
+Last commit: HEAD, Plan 5: let leisure bots finance later rooms after startup loans.
+Next action: Finish the six-strategy refund-only contribution run (session 32296, /tmp/plan5-ausgesperrt-repaired-core.log), then run the complete Ausgesperrt main on 1,000 test seeds with all bot fixes. The initial defective-accounting run was deliberately stopped; see tuning/ausgesperrt-accounting-diagnosis.md. Judge every target before value tuning. Full bot report only in step 6.
 
 ## Checklist
 
@@ -23,6 +23,8 @@ No complete target measurement yet. First measurement was deliberately interrupt
 Runtime cache checks: 40 engine tests pass, including direct equality against uncached reservations and calendar boundaries. Thirty diagnostic careful results match byte for byte (/tmp/plan5-leisure-before.json, /tmp/plan5-leisure-indexed.json); time 8.37 to 5.19 seconds. Main-1 workers predate the caches, so their timing target is not a current runtime measurement. No game values have been tuned yet.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: accepting a loan clears the bot’s refusal ceiling so later rooms can obtain larger loans; extended leisure word checks cover Help/results/post-mortem. See docs/decisions.md, Plan 5 step 2.
 
 - Step 2: advance deposits are refunded on company or flexible guest cancellation, gated to leisure. Strict guest cancellations retain the agreed price. This fixes an accounting defect, before value tuning. See docs/decisions.md, Plan 5 step 2.
 

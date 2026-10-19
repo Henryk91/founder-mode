@@ -23,6 +23,7 @@ const RUNS: { id: ScenarioId; seed: string; week: number }[] = [
   { id: 'rueckenwind', seed: 'shot-1', week: 24 },
   { id: 'tiefgang', seed: 'shot-1', week: 24 },
   { id: 'leinenlos', seed: 'shot-1', week: 26 },
+  { id: 'ausgesperrt', seed: 'test-0', week: 24 },
 ]
 
 /** The careful bot's game: a save at the given week and one of the finished run. */

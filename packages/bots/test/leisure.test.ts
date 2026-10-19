@@ -20,6 +20,22 @@ import { CAREFUL_TOURISM } from '../src/strategies/tourism'
 describe('Ausgesperrt players', () => {
   const scenario = loadScenario('ausgesperrt', 'long')
   const strategies = TOURISM_STRATEGIES.filter((s) => playsIn(s, scenario))
+  it('can finance a larger room after accepting a smaller startup loan', () => {
+    const player = strategies.find((s) => s.id === 'tourism_careful')!.create(scenario, 'test-0')
+    let state = createGame(scenario, 'test-0')
+    const accepted: number[] = []
+    while (state.status === 'running' && accepted.length < 2) {
+      for (const a of player.respond?.(getView(state)) ?? [])
+        state = respond(state, a.messageId, a.choiceId)
+      const result = endWeek(state, player.plan(getView(state)))
+      state = result.state
+      player.observe?.(result.report, getView(state))
+      for (const entry of result.report.entries)
+        if (entry.kind === 'loan_accepted') accepted.push(entry.amountCents)
+    }
+    expect(accepted).toHaveLength(2)
+    expect(accepted[1]).toBeGreaterThan(accepted[0]!)
+  })
   it('adds capacity after repeated visible refusals, while preserving the comparison policies', () => {
     const view = getView(createGame(scenario, 'room-pressure'))
     const l = view.bookings!.leisure!

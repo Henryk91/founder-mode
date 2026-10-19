@@ -339,6 +339,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       repay: null,
     } as NonNullable<typeof b.plan.loan>
     if (l.offer) {
+      if (cfg.leisure) refusedAt = null
       p.accept = true
       b.plan.loan = p
       return
