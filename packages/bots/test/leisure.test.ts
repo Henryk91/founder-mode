@@ -14,12 +14,21 @@ import { playsIn } from '../src/strategy'
 import { TOURISM_STRATEGIES } from '../src/strategies/tourism'
 import { evaluateTourismTargets } from '../src/tourismReport'
 import { PlanBuilder } from '../src/strategy'
-import { leisureWanted, planLeisure } from '../src/strategies/leisure'
+import { leisureBuildOrder, leisureWanted, planLeisure } from '../src/strategies/leisure'
 import { CAREFUL_TOURISM } from '../src/strategies/tourism'
 
 describe('Ausgesperrt players', () => {
   const scenario = loadScenario('ausgesperrt', 'long')
   const strategies = TOURISM_STRATEGIES.filter((s) => playsIn(s, scenario))
+  it('keeps the brochure-led portfolio temptation inside its physical-space limit', () => {
+    const view = getView(createGame(scenario, 'blind-portfolio'))
+    const themes = scenario.bookings!.leisure!.opening!.areas
+    expect(leisureBuildOrder(view, themes)).not.toContain('vr_room')
+    const blind = leisureBuildOrder(view, themes, true)
+    expect(blind).toContain('vr_room')
+    expect(blind).toHaveLength(view.bookings!.leisure!.space!.max)
+    expect(blind[0]).toBe('vr_room')
+  })
   it('can finance a larger room after accepting a smaller startup loan', () => {
     const player = strategies.find((s) => s.id === 'tourism_careful')!.create(scenario, 'test-0')
     let state = createGame(scenario, 'test-0')

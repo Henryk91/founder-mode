@@ -99,11 +99,22 @@ export function leisureWanted(
 }
 
 /** Drop impossible starts before the bank prices a plan; already reserved builds still fit. */
-export function leisureBuildOrder(view: PlayerView, ids: string[]): string[] {
+export function leisureBuildOrder(
+  view: PlayerView,
+  ids: string[],
+  expensiveFirst = false,
+): string[] {
   const space = view.bookings?.leisure?.space
   if (!space) return ids
   let free = space.max - space.used
-  return ids.filter((id) => {
+  const ordered = expensiveFirst
+    ? [...ids].sort(
+        (a, b) =>
+          (view.bookings!.products.find((p) => p.id === b)?.oneOffCents ?? 0) -
+          (view.bookings!.products.find((p) => p.id === a)?.oneOffCents ?? 0),
+      )
+    : ids
+  return ordered.filter((id) => {
     const f = view.product.features.find((f) => f.id === id)
     if (f && (f.shipped || f.progressHours > 0 || f.readyWeek !== null)) return true
     const uses = space.uses[id] ?? 0

@@ -1227,7 +1227,9 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       const baseBuilding = view.loan
         ? withRequired([...new Set([...toBuild, ...bought, ...early])])
         : toBuild
-      const building = cfg.leisure ? leisureBuildOrder(view, baseBuilding) : baseBuilding
+      const building = cfg.leisure
+        ? leisureBuildOrder(view, baseBuilding, rule.buildAll)
+        : baseBuilding
       if (view.loan) {
         // Keep the bridge a long-lead market needs (the months beyond the usual buffer) as well.
         const leadMonths = rule.naive ? 0 : Math.ceil((cfg.segments[seg]?.leadWeeks.max ?? 0) / 4)
