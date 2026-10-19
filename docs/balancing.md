@@ -5232,3 +5232,10 @@ The corrected blind-portfolio contribution is **main only, one strategy, 1,000
 See [the portfolio report](autonomous5/tuning/ausgesperrt-no-tests-corrected.md).
 It predates the final public-calendar rebuild guard; the next complete bot baseline
 will include that correction. No values, event tables or full report changed.
+
+### Plan 5, step 2: protected comparisons complete
+
+All nine protected games match step0 exactly apart from timings: **main only,
+1,000 seeds per strategy, prefix `test`**, one scenario per process. All nine
+content/save fingerprints match too. See [the step2 proof](autonomous5/reports/step2-protected.md).
+No protected values or outcomes changed. No event table or full report ran.
