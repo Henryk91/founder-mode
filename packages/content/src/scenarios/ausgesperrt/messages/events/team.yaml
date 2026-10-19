@@ -1,0 +1,179 @@
+events:
+  - id: reset_checklist
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Lotte, game master
+    look: note
+    text: A key went back in the wrong drawer and a group spent twelve minutes proving it. Lotte
+      proposes a reset checklist. It takes time to write and rather less time to follow.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Write it together and rehearse a reset
+        hours: 4
+        effects:
+          - type: bugs
+            delta: -1
+          - type: review
+            rating: 4
+            count: 1
+            when: []
+      - id: leave
+        label: Tell everybody to be careful
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+            when: []
+  - id: late_finish
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - tour.bookedWeek >= 8
+    from: none
+    sender: The Saturday shift
+    look: note
+    text: A group refuses to leave until it has solved the final puzzle. The next group is waiting
+      in the corridor and can hear the ending. The clock has stopped being decorative.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Offer the ending privately and reset
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -8000
+          - type: review
+            rating: 4
+            count: 1
+            when: []
+      - id: leave
+        label: Let them finish at their own pace
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 3
+            when: []
+  - id: sick_shift
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - tour.bookedWeek >= 6
+    from: none
+    sender: Bastian, game master
+    look: note
+    text: Bastian is ill before a busy evening. A trained replacement can come, at a short-notice
+      rate. You could cover it yourself, but the sales calls are already booked.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Book the trained replacement
+        hours: 1
+        effects:
+          - type: cash
+            amountCents: -24000
+      - id: leave
+        label: Cover it yourself
+        hours: 0
+        effects:
+          - type: lostHours
+            hours: 7
+  - id: double_room_training
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.weeksOpen >= 12
+    from: none
+    sender: Your game masters
+    look: note
+    text: The crew can reset two rooms efficiently if everyone learns both stories. Training means
+      closing a few practice slots. Knowing half a story has already proved unhelpful.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Run a cross-training morning
+        hours: 6
+        effects:
+          - type: cash
+            amountCents: -18000
+          - type: review
+            rating: 5
+            count: 1
+            when: []
+      - id: leave
+        label: Keep everybody on one room
+        hours: 0
+        effects:
+          - type: energy
+            delta: -3
+  - id: freelance_builder
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Jannik, prop builder
+    look: note
+    text: Jannik has three free days between theatre jobs. He offers to repair the moving props, not
+      redesign the entire room. The distinction is unusually clear on his quote.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Give him the repair list
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -42000
+          - type: bugs
+            delta: -2
+      - id: leave
+        label: Wait until the props stop moving
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+            when:
+              - bugs >= 2
+  - id: first_payroll
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.weeksOpen >= 4
+    from: none
+    sender: Your accountant
+    look: note
+    text: The first game master asks about paid preparation time. The accountant confirms that a
+      reset is work even when nobody is applauding. Fixing the records now is smaller than
+      fixing them in December.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the hours and pay the difference
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -22000
+      - id: leave
+        label: Leave the records as they are
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -55000

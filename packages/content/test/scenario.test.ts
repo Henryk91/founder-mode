@@ -424,7 +424,13 @@ describe('content', () => {
         e.choices.some((c) => c.effects.some((fx) => fx.type === 'officeMove')),
       )
       // Plan 4: the abroad scenarios have stages 1 and 2 only, so no such offers.
-      expect(offers).toHaveLength(ls.mode === 'long' && ls.officeStages.length > 2 ? 3 : 0)
+      expect(offers).toHaveLength(
+        ls.bookings?.leisure
+          ? ls.officeStages.length - 1
+          : ls.mode === 'long' && ls.officeStages.length > 2
+            ? 3
+            : 0,
+      )
       for (const e of offers) {
         const fx = e.choices.flatMap((c) => c.effects).find((x) => x.type === 'officeMove')!
         if (fx.type !== 'officeMove') continue

@@ -2,6 +2,7 @@ import {
   initLeisure,
   cloneLeisurePlan,
   leisureValid,
+  leisureSellsSlot,
   leisureOpen,
   leisureCapacity,
   leisureRoom,
@@ -393,9 +394,16 @@ export function bookedUnits(state: GameState, id: FeatureId, week: number): numb
 }
 
 /** The price per unit a segment pays for a week, by its season. */
-export function priceFor(state: GameState, segmentId: SegmentId, week: number): number {
+export function priceFor(
+  state: GameState,
+  segmentId: SegmentId,
+  week: number,
+  slot?: string,
+): number {
   const cfg = bookingsConfig(state)!
-  const p = state.bookings!.prices[segmentId]!
+  const p =
+    (slot ? state.bookings!.leisure?.slotPrices?.[segmentId]?.[slot] : undefined) ??
+    state.bookings!.prices[segmentId]!
   return cfg.peakMonths.includes(monthOf(state.scenario, week)) ? p.peak : p.off
 }
 
@@ -831,7 +839,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       (ahead ? aheadSum / ahead.length : seasonAt(curve, woy)) *
       reach.total *
       fitOf(state, seg.id) *
-      priceCurve(state.scenario, price / wtp) *
+      (cfg.leisure?.slotPrices ? 1 : priceCurve(state.scenario, price / wtp)) *
       reviewFactor(state, seg.id) *
       weatherF *
       roleFactor(seg.id) *
@@ -874,6 +882,14 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       const slot = leisureSlot(state, seg.id, rng)
       const platform = reach.total > 0 && rng.chance(reach.platform / reach.total)
       if (target > state.scenario.maxWeeks) continue
+      if (cfg.leisure?.slotPrices) {
+        if (!leisureSellsSlot(state, seg.id, slot)) continue
+        if (
+          asOwn &&
+          !rng.chance(priceCurve(state.scenario, priceFor(state, seg.id, target, slot) / wtp))
+        )
+          continue
+      }
       // Tuning 1: guests for a product nobody can buy (not built, or trips not run) never ask.
       if (only !== null && !sells(state, only, target)) continue
       // Guests a partner sent have agreed to your terms already.
@@ -929,7 +945,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       const pick = byAppeal ? pickByAppeal(cfg, options, rng) : options[0]
       // A deposit on booking, where the segment pays one (step 7).
       const deposit = pick
-        ? Math.round(size * unitPrice(state, seg.id, pick.id, target) * (s.depositShare ?? 0))
+        ? Math.round(size * unitPrice(state, seg.id, pick.id, target, slot) * (s.depositShare ?? 0))
         : 0
       if (!pick) {
         lost += size
@@ -948,7 +964,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         productId: pick.id,
         week: target,
         units: size,
-        priceCents: unitPrice(state, seg.id, pick.id, target),
+        priceCents: unitPrice(state, seg.id, pick.id, target, slot),
         channel: platform ? 'platform' : 'direct',
         bookedWeek: week,
         status: 'booked',
@@ -994,7 +1010,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     for (const r of returns.filter((x) => x.askWeek <= week)) {
       const slot = leisureSlot(state, r.segmentId, rng)
       const pick = r.products
-        .filter((id) => sells(state, id, r.targetWeek))
+        .filter(
+          (id) => leisureSellsSlot(state, r.segmentId, slot) && sells(state, id, r.targetWeek),
+        )
         .map((id) => ({ id, free: roomFor(r.segmentId, id, r.targetWeek, slot) }))
         .filter((o) => o.free >= r.units)
         .sort((x, y) => y.free - x.free)[0]
@@ -1008,7 +1026,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         productId: pick.id,
         week: r.targetWeek,
         units: r.units,
-        priceCents: unitPrice(state, r.segmentId, pick.id, r.targetWeek),
+        priceCents: unitPrice(state, r.segmentId, pick.id, r.targetWeek, slot),
         channel: r.channel,
         bookedWeek: week,
         status: 'booked',
@@ -1605,7 +1623,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           n > 0 && w <= state.scenario.maxWeeks
             ? next.products
                 .filter((id) => sells(state, id, w))
-                .find((id) => (cfg.leisure ? roomFor(x.segmentId, id, w, slot) : room(id, w)) >= n)
+                .find(
+                  (id) =>
+                    leisureSellsSlot(state, x.segmentId, slot) &&
+                    (cfg.leisure ? roomFor(x.segmentId, id, w, slot) : room(id, w)) >= n,
+                )
             : undefined
         if (pick) {
           bookings.push({
@@ -1614,7 +1636,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
             productId: pick,
             week: w,
             units: n,
-            priceCents: unitPrice(state, x.segmentId, pick, w),
+            priceCents: unitPrice(state, x.segmentId, pick, w, slot),
             channel: x.channel,
             bookedWeek: week,
             status: 'booked',
@@ -2317,9 +2339,15 @@ function abroadView(state: GameState): AbroadView | null {
 }
 
 /** Plan 4: a segment's price for one unit of a product: the segment's price times its factor. */
-export function unitPrice(state: GameState, segmentId: SegmentId, id: FeatureId, week: number) {
+export function unitPrice(
+  state: GameState,
+  segmentId: SegmentId,
+  id: FeatureId,
+  week: number,
+  slot?: string,
+) {
   const f = bookingsConfig(state)!.products[id]?.priceFactor
-  const p = priceFor(state, segmentId, week)
+  const p = priceFor(state, segmentId, week, slot)
   return f === undefined ? p : Math.round(p * f)
 }
 

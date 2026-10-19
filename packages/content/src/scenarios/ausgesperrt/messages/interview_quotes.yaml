@@ -1,0 +1,168 @@
+locals:
+  not_a_problem:
+    - We play board games at home. The cat is the escape room.
+    - Our group cannot agree on dinner. A locked room seems ambitious.
+    - We prefer a walk. Nobody needs to explain the ending.
+    - My friends have children now. The calendars are the puzzle.
+    - We went once and decided the pub was more our difficulty level.
+    - We already do puzzles at home, mostly finding the television remote.
+    - I do not like timers. My job has enough of those.
+    - The cinema suits us. We can be quiet in different ways.
+    - We have a regular games night and a cupboard full of unopened boxes.
+    - I am happy for other people to be locked in a basement.
+  mild:
+    - We did one in Hamburg. It was fine; the hints were rude.
+    - It could be a birthday idea, if everybody answers the group chat.
+    - A heist sounds fun. I would not travel far for one.
+    - We might try a history room once the weather gets worse.
+    - I like puzzles, but booking for six people takes more effort.
+    - An evening game would be nice if we could book it online.
+    - We would go with visiting friends rather than every month.
+    - The children keep asking for a pirate room. They also ask for a pony.
+    - It might beat another pub quiz if it is not too expensive.
+    - I would need to see the theme before persuading the others.
+  noticeable:
+    - Every room we fancy is booked on Saturday by Wednesday.
+    - We have played the nearby heists. We need a new story now.
+    - Our friends want horror; our partners want to remain friends afterwards.
+    - The last room had three broken props and a very apologetic voice.
+    - We can do weekday evenings but nobody answers booking emails quickly.
+    - A proper family room is difficult to find. Ours are not horror children.
+    - We want a challenge without needing to guess what the designer meant.
+    - The cheap rooms keep charging extra once we arrive with six people.
+    - We want an evening activity we can all do without buying equipment.
+    - The last place gave away the answer when we asked for a small hint.
+  painful:
+    - We spend ages finding a room none of our six friends has played.
+    - Our birthday booking fell through because the room was double booked.
+    - We paid for a difficult room and half the clues were broken.
+    - Our children loved the pirate room elsewhere. There is no second one.
+    - The group only has one free Friday this month and everything is gone.
+    - We keep travelling across Munich for new themes. We would rather stay nearby.
+    - My partner will not do horror and the rest of the group wants a real story.
+    - We booked online, arrived, and found a handwritten closed sign.
+    - The last game master watched two rooms and heard neither group.
+    - We need a room that works for grandparents as well as twelve-year-olds.
+  urgent:
+    - Our birthday group arrives on Saturday and the original venue has cancelled.
+    - We have six people free this Friday. Can we actually reserve an evening?
+    - My sister is visiting next week and has played every heist we suggested.
+    - The children have invited their friends for next Sunday. I promised a pirate game.
+    - We have a reunion in ten days and still need an activity for eight people.
+    - Our friends arrive tomorrow. We need a room we can book now.
+    - We have bought dinner for afterwards. The game is the missing part.
+    - My partner turns forty next week and wants puzzles, not speeches.
+    - Our group has one evening before two friends move away. Is anything new ready?
+    - We need an English game on Saturday because our visiting friends are coming too.
+tourists:
+  not_a_problem:
+    - We came for the mountains. A basement was not on the itinerary.
+    - Our hotel has a bar and we have no further requirements.
+    - We have only one evening and already booked a concert.
+    - I do enough puzzles with the ticket machines.
+    - We prefer museums. The objects do not ask us to hurry.
+    - Our children want the zoo. They have formed a majority.
+    - We do not speak enough German to solve a mystery.
+    - The rain does not bother us. We packed coats.
+    - Our tour group has every hour accounted for already.
+    - We would rather see the city than a room designed to hide it.
+  mild:
+    - Maybe if it rains and the museum is full.
+    - An English game could be fun after dinner.
+    - We did one on another holiday and liked the story.
+    - The brewery mystery sounds more local than a generic bank vault.
+    - We could ask the hotel whether you are easy to reach.
+    - We might book if there is a late game near the centre.
+    - Something for the whole family would fill an evening.
+    - We would need to know how long it takes including the briefing.
+    - I would read a few reviews before spending our last evening there.
+    - We could fit it between sightseeing and the train home.
+  noticeable:
+    - Most listings say English and then the hints are only in German.
+    - We want an evening activity that does not involve another large beer.
+    - Our hotel could not tell us which rooms take English-speaking groups.
+    - Booking from abroad was difficult because the website wanted a local phone number.
+    - The history theme looks interesting, but the description does not explain the game.
+    - We need something for teenagers who have finished enjoying churches.
+    - The platform price changes when we select the number of people.
+    - We like puzzles and would rather book a real room than another app tour.
+    - It is hard to judge whether a room is suitable for children from photographs.
+    - We have one free evening and want to know the final price before deciding.
+  painful:
+    - Our booked activity was cancelled and the hotel has suggested more shopping.
+    - We spent an hour finding an English room and got a German confirmation.
+    - The children are tired of sightseeing. We need something they can actually do.
+    - The room we tried had English cards but nobody could give us English hints.
+    - We want a Munich story, not the same vault we played in our own city.
+    - We have four friends with different languages and need one shared activity.
+    - Our last booking was moved twice. We have no spare evening for a third attempt.
+    - The hotel recommended a room that closed last year. We need current information.
+    - We want a good family evening and cannot spend another hour comparing listings.
+    - Our group cannot split up. We need an activity everyone can join.
+  urgent:
+    - Our tour was cancelled for tomorrow evening. Do you have a game in English?
+    - We leave on Sunday and tonight is the only time all six of us are free.
+    - The hotel gave us your number. Can we book for this evening?
+    - Our teenagers have voted against another museum tomorrow. Please help.
+    - We arrive in Munich on Friday and want a confirmed time before travelling.
+    - Our birthday dinner is booked for eight. Can we play beforehand?
+    - Our other escape room cancelled because its game master is ill. We are here now.
+    - We have one free afternoon before the airport train. Is the history room available?
+    - There are eight of us waiting for an activity and nobody wants to decide again.
+    - We need an English-speaking game master next Saturday, not just English instructions.
+companies:
+  not_a_problem:
+    - Our team event is lunch. Nobody has to escape from it.
+    - We do not organise activities outside working hours.
+    - Purchasing has a fixed supplier list and your basement is not on it.
+    - Our staff prefer cash bonuses. HR has collected strong evidence.
+    - We already have a bowling booking for the entire year.
+    - The office is enough of a puzzle without paying for another one.
+    - Our team works remotely across four countries. A room would need better internet.
+    - We have no team budget until the next financial year.
+    - The last event was compulsory fun and people have not forgiven us.
+    - We are a team of two. We can disagree perfectly well in the office.
+  mild:
+    - It could work for a small team if you can send a proper invoice.
+    - We might try it when the new starters arrive.
+    - The idea is fun, but our budget meeting comes first.
+    - A weekday afternoon would be easier than asking people to stay late.
+    - We would need somewhere to sit afterwards for a debrief.
+    - I can mention it to the office manager, who has heard many ideas.
+    - Could we see a sample schedule before deciding anything?
+    - Two rooms at once might work if both groups finish around the same time.
+    - We would want something neutral. Horror divides the office before the game starts.
+    - Perhaps for the Christmas event, once the date is agreed.
+  noticeable:
+    - Our team has twenty people and every listing stops at six.
+    - I need one quote for rooms, briefing and a space afterwards.
+    - The boss wants team building and the team wants a decent afternoon.
+    - We can fill a weekday, but the room must run in English as well.
+    - Booking four rooms separately means four invoices and one unhappy accounts team.
+    - The usual venues are full in November. We need another option.
+    - We want a heist rather than anything that frightens half the department.
+    - The last supplier could not tell us when the event would actually end.
+    - We need a debrief room with chairs, not a corridor beside the next group.
+    - Our new colleagues need an activity where they can talk to each other.
+  painful:
+    - I need something for eighteen people on Thursday that is not bowling.
+    - Our last venue sent invoices to every participant. Accounts is still discussing it.
+    - We have a team day and three hours left to fill before dinner.
+    - The team has rejected another brewery tour. They have prepared a list.
+    - The venue we used every year has closed and nobody has a replacement.
+    - We need simultaneous rooms so one group does not spend an hour waiting.
+    - Our international team needs English hints and a properly timed finish.
+    - Every agency offers an entire day when we need one afternoon.
+    - We need a quiet room afterwards to discuss the project, not buy souvenirs.
+    - The original organiser left the company and took every booking detail with them.
+  urgent:
+    - Our event is in nine days, the venue cancelled and the invitations are sent.
+    - We have twenty-four people arriving on Thursday. Can you run parallel games?
+    - The board approved the budget today. I need a written quote by tomorrow.
+    - Our Christmas booking fell through and the team has already booked trains.
+    - We need an English event for twelve colleagues next week with one invoice.
+    - The boss promised a team day this month. This month has six working days left.
+    - Our workshop finishes at two on Wednesday and we need an activity afterwards.
+    - We have visitors from three offices on Friday and no afternoon programme.
+    - Our caterer needs a final headcount tomorrow. I need the activity confirmed first.
+    - The venue cancelled this morning. Do you have rooms and a briefing space next Thursday?

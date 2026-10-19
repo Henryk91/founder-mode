@@ -1,0 +1,71 @@
+- id: heist
+  name: The Last Vault
+  buildHours: 24
+  bugsOnShip:
+    min: 0
+    max: 2
+  mention: A good heist suits everybody. We can argue about who gets the keys afterwards.
+- id: horror
+  name: Ward Seven
+  buildHours: 24
+  bugsOnShip:
+    min: 0
+    max: 2
+  mention: Something properly frightening. Our friends vote for that; our children have not been
+    consulted.
+- id: munich_history
+  name: The Missing Brewer
+  buildHours: 24
+  bugsOnShip:
+    min: 0
+    max: 2
+  mention: A Munich mystery we can play in English. We came for more than the station.
+- id: kids_adventure
+  name: The Paper Pirate
+  buildHours: 24
+  bugsOnShip:
+    min: 0
+    max: 2
+  mention: A room where children can solve things and adults can stop explaining them.
+- id: vr_room
+  name: The Virtual Vault
+  buildHours: 24
+  bugsOnShip:
+    min: 0
+    max: 2
+  mention: Virtual reality looks impressive in the brochure. Does it come with a headache?
+- id: online_booking
+  name: Online booking with time slots
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A date, a time and a button. Our group chat needs all three.
+- id: english_games
+  name: Games and hints in English
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Our friends understand English. One understands the clues, allegedly.
+- id: team_package
+  name: Parallel games, debrief and invoices
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: We need an invoice and a debrief. The debrief should not be about the invoice.
+- id: meeting_room
+  name: Briefing and meeting room
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Somewhere for the team afterwards, with chairs and no timer.
+- id: gift_vouchers
+  name: Gift vouchers
+  buildHours: 5
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A present we can all do together. Socks have had their chance.

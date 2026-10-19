@@ -1,0 +1,979 @@
+id: ausgesperrt
+name: Ausgesperrt
+longOnly: true
+maxWeeks: 104
+win:
+  profitableMonths: 3
+  overMonths: 13
+start:
+  cashCents: 5500000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  priceCentsPerMonth: 12500
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: lease
+      name: Basement lease
+      monthlyCents: 420000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 20000
+    - id: software
+      name: Booking software
+      monthlyCents: 8000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 22500
+    - id: utilities
+      name: Electricity and internet
+      monthlyCents: 35000
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  livingSteps:
+    - week: 53
+      centsPerWeek: 74250
+finance:
+  weeksPerMonth: 4
+  invoiceDueDays: 14
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    budgetSmallStepCents: 1000
+    buckets:
+      - id: not_a_problem
+        name: Not a problem
+        below: 0.2
+      - id: mild
+        name: Mild
+        below: 0.4
+      - id: noticeable
+        name: Noticeable
+        below: 0.6
+      - id: painful
+        name: Painful
+        below: 0.9
+      - id: urgent
+        name: Urgent
+  landing:
+    hours: 6
+    budgetsCents:
+      - 20000
+      - 50000
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+product:
+  startQuality: 90
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  price:
+    midpoint: 1.35
+    steepness: 10
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    priceFrom: 1
+    perPrice: 0.15
+    cap: 0.6
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - id: weak
+      name: Weak
+      below: 0.7
+    - id: solid
+      name: Solid
+      below: 0.95
+    - id: strong
+      name: Strong
+      below: 1.1
+    - id: outstanding
+      name: Outstanding
+  roles:
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill:
+        min: 0.5
+        max: 1.2
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill:
+        min: 0.5
+        max: 1.2
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+  freelance:
+    hoursOptions:
+      - 10
+      - 20
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.55
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+roles:
+  - id: viable
+    pain:
+      min: 0.6
+      max: 0.85
+    politeness:
+      min: 0.05
+      max: 0.15
+  - id: mediocre
+    pain:
+      min: 0.35
+      max: 0.55
+    politeness:
+      min: 0.25
+      max: 0.4
+  - id: trap
+    pain:
+      min: 0.1
+      max: 0.25
+    politeness:
+      min: 0.5
+      max: 0.65
+segments:
+  - id: locals
+    name: Local groups
+    description: Friends, couples and families around Munich. Evenings and weekends, usually booked
+      on their own website
+    size:
+      min: 2500
+      max: 6000
+    wtpCents:
+      min: 10000
+      max: 15000
+    mustHave:
+      - online_booking
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.03
+        max: 0.06
+      in_person:
+        min: 0.03
+        max: 0.06
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - About {amount} for a room game. We can split the bill more easily than the clues.
+      - Our budget is {amount} per group. The last place charged extra for a padlock.
+      - For {amount}, we expect a working room and someone listening when we get stuck.
+      - We paid {amount} last time. Half the team still claims they solved it.
+      - Something around {amount} works. Send the total before we organise the people.
+  - id: tourists
+    name: Visitors to Munich
+    description: Visitors looking for an evening activity, in English. Hotels and activity listings
+      bring them downstairs
+    size:
+      min: 2500
+      max: 6000
+    wtpCents:
+      min: 11000
+      max: 17000
+    mustHave:
+      - english_games
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.03
+        max: 0.06
+      in_person:
+        min: 0.03
+        max: 0.06
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - About {amount} for a room game. We can split the bill more easily than the clues.
+      - Our budget is {amount} per group. The last place charged extra for a padlock.
+      - For {amount}, we expect a working room and someone listening when we get stuck.
+      - We paid {amount} last time. Half the team still claims they solved it.
+      - Something around {amount} works. Send the total before we organise the people.
+  - id: companies
+    name: Company teams
+    description: Office managers arranging team games. Weekday slots, proper invoices and somewhere
+      to debrief
+    size:
+      min: 2500
+      max: 6000
+    wtpCents:
+      min: 15000
+      max: 23000
+    mustHave:
+      - team_package
+      - meeting_room
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.03
+        max: 0.06
+      in_person:
+        min: 0.03
+        max: 0.06
+    paymentDelayDaysMean: 30
+    neverPaysShare: 0.01
+    waitsForChaseShare: 0.15
+    budgetQuotes:
+      - About {amount} for a room game. We can split the bill more easily than the clues.
+      - Our budget is {amount} per group. The last place charged extra for a padlock.
+      - For {amount}, we expect a working room and someone listening when we get stuck.
+      - We paid {amount} last time. Half the team still claims they solved it.
+      - Something around {amount} works. Send the total before we organise the people.
+milestones:
+  - id: first_interview
+    name: First interview
+    kind: count
+    of: interviews
+    target: 1
+  - id: first_deposit
+    name: First voucher sold
+    kind: count
+    of: deposits
+    target: 1
+  - id: first_customer
+    name: First paying group
+    kind: count
+    of: guests
+    target: 1
+  - id: covers_company_costs
+    name: A month of groups covers company costs
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: A month of groups covers all costs, you included
+    kind: revenue
+    covers: all
+  - id: weeks_26
+    name: 26 weeks survived
+    kind: weeks
+    target: 26
+  - id: weeks_52
+    name: 52 weeks survived
+    kind: weeks
+    target: 52
+  - id: weeks_78
+    name: 78 weeks survived
+    kind: weeks
+    target: 78
+  - id: weeks_104
+    name: 104 weeks survived
+    kind: weeks
+    target: 104
+officeStages:
+  - id: basement
+    name: Basement with four room spaces
+    monthlyCents: 0
+  - id: finished_basement
+    name: Finished reception and briefing space
+    monthlyCents: 50000
+    oneOffCents: 800000
+    moveWeeks: 2
+    qualityBonus: 0.1
+office:
+  noticeWeeks: 13
+  moveHoursPerWeek: 4
+organisedAt:
+  - covers_all_costs
+establishedAt:
+  monthsCoveringAll: 8
+loan:
+  bankName: Isartal Savings Bank
+  bridgeMonthsHint: 4
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  ownShare: 0.2
+  unprovenMaxCents: 10000000
+  revenueMultiple: 1
+  minCents: 1000000
+  maxCents: 18000000
+  stepCents: 500000
+  rateBp:
+    min: 450
+    max: 750
+  leverageSpreadBp: 100
+  termMonths:
+    - 60
+    - 84
+    - 120
+  graceMonths:
+    - 0
+    - 6
+    - 12
+  missedFeeCents: 5000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+  items:
+    - heist
+    - horror
+    - munich_history
+    - kids_adventure
+    - meeting_room
+    - vr_room
+  workingCapitalMonths: 3
+bookings:
+  startWeekOfYear: 31
+  seasonNoise: 0.15
+  peakMonths:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 10
+    - 11
+    - 12
+  policyWeeks: 4
+  platform:
+    name: Rauszeit
+    commission: 0.2
+  website:
+    product: online_booking
+    repeatsFull: 120
+  partnershipHours: 6
+  partnershipCut: 0.1
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor:
+    viable: 1
+    mediocre: 0.45
+    trap: 0.15
+  fitBase: 0.35
+  segments:
+    locals:
+      base:
+        min: 40
+        max: 120
+      unit: group
+      price:
+        peak: 12500
+        off: 11000
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 0
+        max: 3
+      season:
+        - 0.9
+        - 0.9
+        - 0.85
+        - 0.8
+        - 0.65
+        - 0.5
+        - 0.4
+        - 0.45
+        - 0.7
+        - 1
+        - 1
+        - 1
+      response:
+        platform: 0.5
+        website: 0.9
+        partnership: 0
+        outreach: 0.15
+        walkIn: 0.05
+      cancel: 0.04
+      strictConversion: 0.85
+      depositShare: 1
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.8
+    tourists:
+      base:
+        min: 10
+        max: 40
+      unit: group
+      price:
+        peak: 14000
+        off: 12500
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 0
+        max: 1
+      season:
+        - 0.4
+        - 0.45
+        - 0.6
+        - 0.8
+        - 0.9
+        - 0.9
+        - 0.95
+        - 1
+        - 1
+        - 0.85
+        - 0.55
+        - 0.7
+      response:
+        platform: 0.95
+        website: 0.2
+        partnership: 0.6
+        outreach: 0
+        walkIn: 0.1
+      cancel: 0.09
+      strictConversion: 0.8
+      depositShare: 1
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.7
+    companies:
+      base:
+        min: 2
+        max: 10
+      unit: group
+      price:
+        peak: 18000
+        off: 16000
+      size:
+        min: 2
+        max: 4
+      leadWeeks:
+        min: 2
+        max: 8
+      season:
+        - 0.5
+        - 0.7
+        - 0.85
+        - 0.9
+        - 0.85
+        - 0.8
+        - 0.5
+        - 0.2
+        - 0.9
+        - 1
+        - 1
+        - 1
+      response:
+        platform: 0.1
+        website: 0.5
+        partnership: 0.9
+        outreach: 0.9
+        walkIn: 0
+      cancel: 0.08
+      strictConversion: 0.95
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.4
+  products:
+    heist:
+      capacity: 49
+      serves:
+        - locals
+        - tourists
+        - companies
+      oneOffCents: 3000000
+      unitCostCents: 600
+    horror:
+      capacity: 49
+      serves:
+        - locals
+      oneOffCents: 3000000
+      unitCostCents: 600
+    munich_history:
+      capacity: 49
+      serves:
+        - locals
+        - tourists
+        - companies
+      oneOffCents: 3200000
+      unitCostCents: 600
+    kids_adventure:
+      capacity: 49
+      serves:
+        - locals
+        - tourists
+      oneOffCents: 2800000
+      unitCostCents: 600
+    vr_room:
+      capacity: 49
+      serves:
+        - locals
+        - tourists
+        - companies
+      oneOffCents: 4000000
+      unitCostCents: 1800
+      monthlyCents: 60000
+      appeal: 0.7
+    online_booking:
+      capacity: 0
+      oneOffCents: 0
+    english_games:
+      capacity: 0
+      oneOffCents: 80000
+    team_package:
+      capacity: 0
+      oneOffCents: 0
+    meeting_room:
+      capacity: 0
+      oneOffCents: 800000
+    gift_vouchers:
+      capacity: 0
+      oneOffCents: 0
+  roles:
+    game_master:
+      name: Game master
+      centsPerShift: 9000
+      units:
+        heist: 3
+        horror: 3
+        munich_history: 3
+        kids_adventure: 3
+        vr_room: 3
+      available:
+        - 24
+        - 24
+        - 24
+        - 24
+        - 24
+        - 24
+        - 24
+        - 24
+        - 24
+        - 24
+        - 24
+        - 24
+      founderHours: 5
+      contracts:
+        permanent:
+          centsPerWeek: 72000
+          shifts: 8
+          noticeWeeks: 4
+          quality: 0.2
+          max: 2
+        part_time:
+          centsPerWeek: 37000
+          shifts: 4
+          noticeWeeks: 4
+          quality: 0.15
+          max: 3
+        seasonal:
+          centsPerWeek: 75000
+          shifts: 8
+          months:
+            - 10
+            - 11
+            - 12
+            - 1
+            - 2
+            - 3
+            - 4
+          quality: 0.15
+          max: 2
+  hosting:
+    hoursPerUnit: 0.2
+    maxHours: 12
+  trials:
+    test_listing:
+      name: Test listing
+      hours: 4
+      cents: 20000
+      weeks: 2
+      people: 160
+      reach:
+        locals: 0.6
+        tourists: 0.4
+      rate:
+        base: 0.01
+        perPain: 0.12
+      max: 3
+    play_test:
+      name: Free test games
+      hours: 6
+      cents: 12000
+      weeks: 1
+      people: 4
+      reach:
+        locals: 0.5
+        tourists: 0.25
+        companies: 0.25
+      rate:
+        base: 0
+        perPain: 0.5
+      repeat: true
+      max: 3
+  vouchers:
+    hoursPerBatch: 4
+    batchSize: 12
+    rate:
+      base: 0
+      perPain: 0.12
+    segments:
+      - locals
+    units: 1
+    maxBatches: 4
+    redeemShare: 0.85
+    redeemWeeks:
+      min: 4
+      max: 26
+  reviews:
+    qualityBase: 4.3
+    noiseSd: 0.3
+    understaffPenalty: 2.5
+    tiredPenalty: 0.5
+    cancelPenalty: 1
+    snagPenalty: 0.15
+    valueWeight: 1.5
+    reviewsPerUnit: 0.4
+    reviewsFull: 60
+  leisure:
+    slots:
+      - id: daytime
+        name: Weekday daytime
+        hours: 35
+      - id: evening
+        name: Weekday evening
+        hours: 30
+      - id: weekend
+        name: Weekend
+        hours: 26
+    segments:
+      locals:
+        slotShare:
+          daytime: 0.05
+          evening: 0.5
+          weekend: 0.45
+        visitsPerWeek: 0
+        memberShare: 0
+        churn: 0
+        crowdingChurn: 0
+        freshnessChurn: 0
+        priceChurn: 0
+        januaryFade: 0
+        waitlistAt: 100
+      tourists:
+        slotShare:
+          daytime: 0.25
+          evening: 0.45
+          weekend: 0.3
+        visitsPerWeek: 0
+        memberShare: 0
+        churn: 0
+        crowdingChurn: 0
+        freshnessChurn: 0
+        priceChurn: 0
+        januaryFade: 0
+        waitlistAt: 100
+      companies:
+        slotShare:
+          daytime: 0.75
+          evening: 0.2
+          weekend: 0.05
+        visitsPerWeek: 0
+        memberShare: 0
+        churn: 0
+        crowdingChurn: 0
+        freshnessChurn: 0
+        priceChurn: 0
+        januaryFade: 0
+        waitlistAt: 100
+        minimumAreas: 2
+    products:
+      heist:
+        capacity:
+          daytime: 20
+          evening: 15
+          weekend: 14
+      horror:
+        capacity:
+          daytime: 20
+          evening: 15
+          weekend: 14
+      munich_history:
+        capacity:
+          daytime: 20
+          evening: 15
+          weekend: 14
+      kids_adventure:
+        capacity:
+          daytime: 20
+          evening: 15
+          weekend: 14
+      vr_room:
+        capacity:
+          daytime: 20
+          evening: 15
+          weekend: 14
+    freshness:
+      heist:
+        newAbove: 65
+        knownAbove: 30
+        weeklyLoss: 0.15
+        useLoss: 0.035
+        localPool:
+          min: 2500
+          max: 6000
+        localSegments:
+          - locals
+        sensitivity:
+          locals: 1
+          tourists: 0.2
+          companies: 0.3
+        reviewPenalty: 0.3
+        refresh:
+          hours: 15
+          cents: 2500000
+          weeks: 6
+      horror:
+        newAbove: 65
+        knownAbove: 30
+        weeklyLoss: 0.15
+        useLoss: 0.035
+        localPool:
+          min: 2500
+          max: 6000
+        localSegments:
+          - locals
+        sensitivity:
+          locals: 1
+          tourists: 0.2
+          companies: 0.3
+        reviewPenalty: 0.3
+        refresh:
+          hours: 15
+          cents: 2500000
+          weeks: 6
+      munich_history:
+        newAbove: 65
+        knownAbove: 30
+        weeklyLoss: 0.15
+        useLoss: 0.035
+        localPool:
+          min: 2500
+          max: 6000
+        localSegments:
+          - locals
+        sensitivity:
+          locals: 1
+          tourists: 0.2
+          companies: 0.3
+        reviewPenalty: 0.3
+        refresh:
+          hours: 15
+          cents: 2500000
+          weeks: 6
+      kids_adventure:
+        newAbove: 65
+        knownAbove: 30
+        weeklyLoss: 0.15
+        useLoss: 0.035
+        localPool:
+          min: 2500
+          max: 6000
+        localSegments:
+          - locals
+        sensitivity:
+          locals: 1
+          tourists: 0.2
+          companies: 0.3
+        reviewPenalty: 0.3
+        refresh:
+          hours: 15
+          cents: 2500000
+          weeks: 6
+      vr_room:
+        newAbove: 65
+        knownAbove: 30
+        weeklyLoss: 0.15
+        useLoss: 0.035
+        localPool:
+          min: 2500
+          max: 6000
+        localSegments:
+          - locals
+        sensitivity:
+          locals: 1
+          tourists: 0.2
+          companies: 0.3
+        reviewPenalty: 0.3
+        refresh:
+          hours: 15
+          cents: 2500000
+          weeks: 6
+    buildOut:
+      heist:
+        weeks: 8
+      horror:
+        weeks: 8
+      munich_history:
+        weeks: 8
+      kids_adventure:
+        weeks: 8
+      vr_room:
+        weeks: 8
+    opening:
+      areas:
+        - heist
+        - horror
+        - munich_history
+        - kids_adventure
+        - vr_room
+      requires: []
+    crowdingPenalty: 0
+    quietBelow: 0.4
+    packedFrom: 0.85
+    space:
+      max: 4
+      uses:
+        heist: 1
+        horror: 1
+        munich_history: 1
+        kids_adventure: 1
+        vr_room: 1
+        meeting_room: 1
+    slotPrices:
+      locals:
+        daytime:
+          peak: 10000
+          off: 8800
+        evening:
+          peak: 12500
+          off: 11000
+        weekend:
+          peak: 12500
+          off: 11000
+      tourists:
+        daytime:
+          peak: 11200
+          off: 10000
+        evening:
+          peak: 14000
+          off: 12500
+        weekend:
+          peak: 14000
+          off: 12500
+      companies:
+        daytime:
+          peak: 18000
+          off: 16000
+        evening:
+          peak: 20700
+          off: 18400
+        weekend:
+          peak: 20700
+          off: 18400
+modes:
+  long: {}
