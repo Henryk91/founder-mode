@@ -835,3 +835,5 @@ Bots and content:
 - AUTONOMOUS: leisure events can condition only on observable opening, membership/cancellation, load, platform check-ins, held dates, freshness words and instructor losses. Engine and player-view condition readers are tested against the same facts. New dictionary-driven PRNG draws are sorted by id.
 
 - AUTONOMOUS: closing every aggregator slot is not leaving its contract; the notice still runs and the membership substitution effect remains until exit. Check-in caps and payouts count only served visits. Refused enquiries are counted by their requested slot, without attributing them to an invented product.
+
+- AUTONOMOUS: local theme pools reserve unplayed groups across every slot and outstanding date. Freshness words reflect depletion as well as wear; visitors outside the local pool still arrive. A rebuilt theme can take bookings for its reopening dates. Optional content-defined review penalties and reset capacity losses model stale products and a morning closed for setting.

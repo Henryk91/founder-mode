@@ -797,7 +797,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const roomFor = (seg: SegmentId, id: FeatureId, w: number, slot?: string) => {
     const free =
       cfg.leisure && slot
-        ? Math.min(room(id, w), leisureRoom(state, bookings, id, slot, w))
+        ? Math.min(room(id, w), leisureRoom(state, bookings, id, slot, w, seg))
         : room(id, w)
     const share = cfg.segments[seg]?.capacityShare
     if (!share) return free
@@ -941,7 +941,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         if (i >= ownRequests && only === null) sentLost++
         continue
       }
-      if (cfg.leisure && !rng.chance(leisureAppeal(state, seg.id, pick.id))) continue
+      if (cfg.leisure && !rng.chance(leisureAppeal(state, seg.id, pick.id, target))) continue
       const booking: Booking = {
         id: cfg.leisure ? `booking_${week}_${seg.id}_${i}` : `booking_${bookings.length + 1}`,
         segmentId: seg.id,

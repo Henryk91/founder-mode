@@ -232,7 +232,10 @@ export function leisureCapacity(s: GameState, id: string, slot: string, week: nu
       )
     : Object.values(p.capacity).reduce((n, x) => n + x, 0)
   const bonus = stageInEffect(s).capacity?.[id] ?? 0
-  return base + (total > 0 ? Math.floor((bonus * base) / total) : 0)
+  const f = s.bookings?.leisure?.freshness[id]
+  const loss =
+    f?.lastRefreshWeek === week ? (cfgOf(s)?.freshness?.[id]?.refresh.lostCapacity?.[slot] ?? 0) : 0
+  return Math.max(0, base + (total > 0 ? Math.floor((bonus * base) / total) : 0) - loss)
 }
 
 export function leisureRoom(
@@ -241,6 +244,7 @@ export function leisureRoom(
   product: string,
   slot: string,
   week: number,
+  segment?: string,
 ): number {
   const cfg = s.scenario.bookings!
   const pool = cfg.products[product]?.capacityOf ?? product
@@ -262,17 +266,48 @@ export function leisureRoom(
         (cfg.products[h.booking.productId]?.capacityOf ?? h.booking.productId) === pool,
     )
     .reduce((t, h) => t + h.booking.units, 0)
-  return Math.max(0, leisureCapacity(s, pool, slot, week) - booked - held)
+  const free = Math.max(0, leisureCapacity(s, pool, slot, week) - booked - held)
+  const f = cfg.leisure?.freshness?.[pool]
+  const live = s.bookings?.leisure?.freshness[pool]
+  const groups = s.hidden.bookings?.leisure?.localPools[pool]
+  if (!segment || !f?.localSegments.includes(segment) || !live || groups === undefined) return free
+  const reset = live.refreshUntil !== null && live.refreshUntil <= week
+  const from = reset ? live.refreshUntil! : 0
+  const reserved = bookings
+    .filter(
+      (b) =>
+        b.productId === pool &&
+        b.status === 'booked' &&
+        b.week >= from &&
+        f.localSegments.includes(b.segmentId),
+    )
+    .reduce((n, b) => n + b.units, 0)
+  const heldGroups = (s.bookings?.leisure?.holds ?? [])
+    .filter(
+      (h) =>
+        h.status === 'held' &&
+        h.booking.productId === pool &&
+        h.booking.week >= from &&
+        f.localSegments.includes(h.booking.segmentId),
+    )
+    .reduce((n, h) => n + h.booking.units, 0)
+  return Math.min(
+    free,
+    Math.max(0, groups - (reset ? 0 : live.localGroups) - reserved - heldGroups),
+  )
 }
 
-export function leisureAppeal(s: GameState, segment: string, id: string): number {
+export function leisureAppeal(s: GameState, segment: string, id: string, week = s.week): number {
   const f = cfgOf(s)?.freshness?.[id]
   const l = s.bookings?.leisure?.freshness[id]
   if (!f || !l) return 1
   const pool = s.hidden.bookings?.leisure?.localPools[id]
+  const reset = l.refreshUntil !== null && l.refreshUntil <= week
   const remaining =
-    pool && f.localSegments.includes(segment) ? Math.max(0, 1 - l.localGroups / pool) : 1
-  return (1 - (f.sensitivity[segment] ?? 0) * (1 - l.value / 100)) * remaining
+    pool && f.localSegments.includes(segment)
+      ? Math.max(0, 1 - (reset ? 0 : l.localGroups) / pool)
+      : 1
+  return (1 - (f.sensitivity[segment] ?? 0) * (1 - (reset ? 100 : l.value) / 100)) * remaining
 }
 
 /** All state updates are copies; the caller adds the returned money to the week's ledger. */
@@ -494,6 +529,7 @@ export function leisureView(s: GameState): LeisureView | null {
       resetHours: f.refresh.hours,
       refreshCents: f.refresh.cents,
       refreshWeeks: f.refresh.weeks,
+      lostCapacity: { ...f.refresh.lostCapacity },
       refreshingUntil: l.freshness[id]?.refreshUntil ?? null,
     })),
     builds: Object.entries(c.buildOut ?? {}).map(([id, build]) => {
@@ -680,7 +716,11 @@ export function billLeisure(
         (x) => x.load === 'packed' && (segment.slotShare[x.slotId] ?? 0) > 0,
       )
       const fresh = entries(c.freshness ?? {})
-        .filter(([id]) => input.scenario.bookings!.products[id]?.serves.includes(m.segmentId))
+        .filter(
+          ([id]) =>
+            shipped(input, id) &&
+            input.scenario.bookings!.products[id]?.serves.includes(m.segmentId),
+        )
         .map(
           ([id, f]) =>
             (1 - (original.freshness[id]?.value ?? 100) / 100) * (f.sensitivity[m.segmentId] ?? 0),
@@ -804,14 +844,17 @@ export function leisureVisits(
   const week = input.week
   const pickProduct = (segmentId: string, slot: string) =>
     Object.keys(c.products)
+      .sort()
       .filter(
         (id) =>
           input.scenario.bookings!.products[id]?.serves.includes(segmentId) &&
-          leisureRoom(input, all, id, slot, week) > 0 &&
+          leisureRoom(input, all, id, slot, week, segmentId) > 0 &&
           leisureOpen(input, id, week),
       )
       .sort(
-        (a, b) => leisureRoom(input, all, b, slot, week) - leisureRoom(input, all, a, slot, week),
+        (a, b) =>
+          leisureRoom(input, all, b, slot, week, segmentId) -
+          leisureRoom(input, all, a, slot, week, segmentId),
       )[0]
   const add = (segmentId: string, slotId: string, memberId?: string, aggregatorUser?: number) => {
     const productId = pickProduct(segmentId, slotId)
@@ -932,6 +975,7 @@ export function finishLeisure(
   const slots = row.slots.map((x) => ({ ...x }))
   const month = Math.floor((week - 1) / 52) * 12 + monthOf(input, week)
   const served = bookings.filter((b) => b.week === week && b.status === 'served')
+  const totalServed = served.reduce((n, b) => n + b.units, 0)
   for (const b of served) {
     const slotId = b.slotId
     if (!slotId) continue
@@ -954,6 +998,15 @@ export function finishLeisure(
       now.value = Math.max(0, now.value - b.units * f.useLoss)
       now.served += b.units
       if (f.localSegments.includes(b.segmentId)) now.localGroups += b.units
+      const pool = input.hidden.bookings?.leisure?.localPools[b.productId]
+      if (pool !== undefined)
+        now.value = Math.min(now.value, 100 * Math.max(0, 1 - now.localGroups / pool))
+      reviewPenalty +=
+        ((f.reviewPenalty ?? 0) *
+          (f.sensitivity[b.segmentId] ?? 0) *
+          (1 - now.value / 100) *
+          b.units) /
+        Math.max(1, totalServed)
     }
     if (b.memberId) {
       const m = members.find((x) => x.id === b.memberId)
