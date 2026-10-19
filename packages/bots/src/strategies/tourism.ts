@@ -380,7 +380,10 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       cash < refitOffer.cents + RESERVE_MONTHS * monthly
     const first =
       (runningLoans.length === 0 ||
-        (cfg.leisure && runningLoans.length < (scenario.loan?.maxLoans ?? 0) && oneOff > 0)) &&
+        (cfg.leisure &&
+          rule.leisure?.laterLoans !== false &&
+          runningLoans.length < (scenario.loan?.maxLoans ?? 0) &&
+          oneOff > 0)) &&
       (need > 0 || mode !== 'careful')
     // Plan 3: an office stage on offer that the money in hand cannot carry goes to the bank.
     const stageLoan =
@@ -1434,6 +1437,12 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     'leisure_vr_first_year',
     'Adds the virtual room in the first year with bank help when needed.',
     { ...CAREFUL_TOURISM, leisure: { vrEarly: true } },
+    ['ausgesperrt'],
+  ),
+  tourism(
+    'leisure_no_later_loan',
+    'Keeps the careful startup loan policy but funds every later room from retained cash.',
+    { ...CAREFUL_TOURISM, leisure: { laterLoans: false } },
     ['ausgesperrt'],
   ),
   tourism(

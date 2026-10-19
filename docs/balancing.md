@@ -5207,3 +5207,15 @@ All nine content/save fingerprints also match. See
 [the shared-engine report](autonomous5/reports/step1-engine.md) and its snapshots.
 Existing target failures above are unchanged. No event table, wide part or full report ran;
 the single full report remains reserved for step 6.
+
+### Plan 5, step 2: accounting contribution (19 October 2026)
+
+Ran **main only, six Ausgesperrt strategies, 1,000 seeds each, prefix `test`**.
+Returning cancelled-booking advances removes the understaffing exploit: its win
+rate is 3.4%, versus 5.1% careful before repairing later-room loan planning.
+Quarterly rooms win 21.7%, theme blind 4.5%, no daytime 11.8%, early VR 15.8%.
+This is diagnosis before value tuning, not the final scenario balance. See
+[the contribution report](autonomous5/tuning/ausgesperrt-repaired-core.md) and
+[the defect record](autonomous5/tuning/ausgesperrt-accounting-diagnosis.md).
+The complete main run with corrected room financing is in progress. No event
+table or full report ran; the full report remains reserved for step 6.
