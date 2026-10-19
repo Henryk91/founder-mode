@@ -17,6 +17,7 @@ import {
   leisureAppeal,
   leisureOpen,
   leisureRoom,
+  leisureRoomReader,
   leisureValid,
   leisureSellsSlot,
   leisureVisits,
@@ -84,6 +85,119 @@ const bp = (leisure: NonNullable<NonNullable<WeekPlan['bookings']>['leisure']>):
   })
 
 describe('leisure slots and crowding', () => {
+  it('indexes appended bookings and holds exactly like the scanning calculation across a rebuild', () => {
+    let s = open(
+      game({
+        freshness: {
+          basic_ordering: {
+            newAbove: 65,
+            knownAbove: 30,
+            weeklyLoss: 0,
+            useLoss: 0,
+            localPool: { min: 10, max: 10 },
+            localSegments: ['small_offices'],
+            sensitivity: { small_offices: 1 },
+            refresh: { hours: 2, cents: 100, weeks: 4 },
+          },
+        },
+      }),
+    )
+    s = {
+      ...s,
+      bookings: {
+        ...s.bookings!,
+        leisure: {
+          ...s.bookings!.leisure!,
+          freshness: {
+            ...s.bookings!.leisure!.freshness,
+            basic_ordering: {
+              ...s.bookings!.leisure!.freshness.basic_ordering!,
+              localGroups: 4,
+              refreshUntil: 5,
+            },
+          },
+        },
+      },
+    }
+    const bookings: Booking[] = []
+    const indexed = leisureRoomReader(bookings)
+    const check = () => {
+      for (let week = 1; week <= 8; week++)
+        for (const slot of ['daytime', 'evening'])
+          for (const segment of ['small_offices', 'medical'])
+            for (const product of ['basic_ordering', 'allergy_filter'])
+              expect(indexed(s, product, slot, week, segment)).toBe(
+                leisureRoom(s, bookings, product, slot, week, segment),
+              )
+    }
+    check()
+    bookings.push(
+      booking({ id: 'before', week: 3 }),
+      booking({ id: 'after', week: 6 }),
+      booking({ id: 'visitor', week: 6, segmentId: 'medical', units: 2 }),
+    )
+    check()
+    s = {
+      ...s,
+      bookings: {
+        ...s.bookings!,
+        leisure: {
+          ...s.bookings!.leisure!,
+          holds: [
+            {
+              id: 'held',
+              booking: booking({ week: 7 }),
+              releaseWeek: 4,
+              status: 'held',
+              feeCents: 0,
+            },
+          ],
+        },
+      },
+    }
+    check()
+    bookings.push(booking({ id: 'another', week: 6, slotId: 'daytime', units: 2 }))
+    check()
+  })
+
+  it('keeps the cached calendar exact at construction, reopening and maintenance boundaries', () => {
+    const f = {
+      newAbove: 65,
+      knownAbove: 30,
+      weeklyLoss: 0,
+      useLoss: 0,
+      localSegments: [],
+      sensitivity: {},
+      refresh: { hours: 2, cents: 0, weeks: 2, lostCapacity: { daytime: 1 } },
+    }
+    let s = open(game({ freshness: { basic_ordering: f, allergy_filter: f } }))
+    s = {
+      ...s,
+      product: {
+        ...s.product,
+        features: s.product.features.map((f) =>
+          f.id === 'allergy_filter' ? { ...f, shippedWeek: null, readyWeek: 4 } : f,
+        ),
+      },
+      bookings: {
+        ...s.bookings!,
+        leisure: {
+          ...s.bookings!.leisure!,
+          freshness: {
+            ...s.bookings!.leisure!.freshness,
+            basic_ordering: {
+              ...s.bookings!.leisure!.freshness.basic_ordering!,
+              lastRefreshWeek: 1,
+            },
+            allergy_filter: { ...s.bookings!.leisure!.freshness.allergy_filter!, refreshUntil: 6 },
+          },
+        },
+      },
+    }
+    for (const cell of getView(s).bookings!.leisure!.slotCalendar)
+      expect(cell.capacity).toBe(leisureCapacity(s, cell.productId, cell.slotId, cell.week))
+  })
+
   it('reserves physical space from the first design hour, including plans without a leisure action', () => {
     const s = game({ space: { max: 1, uses: { basic_ordering: 1, allergy_filter: 1 } } })
     expect(leisureValid(s, plan({ build: { basic_ordering: 1 } }))).toBe(true)

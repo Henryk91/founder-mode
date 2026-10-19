@@ -2,8 +2,8 @@
 
 ## Current
 
-Step: 2.3 Ausgesperrt interface, scenes, bots and metrics integrated; initial target measurement running.
-Last commit: HEAD, Plan 5: expose leisure decisions and add escape-room bots.
+Step: 2.3.1 Leisure runtime caches validated; initial Ausgesperrt measurement still running.
+Last commit: HEAD, Plan 5: cache leisure calendars and reservation lookups.
 Next action: Finish corrected main-only measurement (session 47891, /tmp/plan5-ausgesperrt-main-1.log, output tuning/ausgesperrt-main-1.md). Judge every T1–T18, E1, X1–X4 with margins and check bot behaviour before value tuning. UI and content in repo are authoritative; do not recopy /tmp drafts. Full bot report only in step 6.
 
 ## Checklist
@@ -19,6 +19,8 @@ Next action: Finish corrected main-only measurement (session 47891, /tmp/plan5-a
 ## Open issues
 
 No complete target measurement yet. First measurement was deliberately interrupted for a bot budgeting fix; see tuning/ausgesperrt-initial-interrupted.md. Current lint/typechecks pass; 30 leisure bot tests and all 172 seed tests pass. The full suite passed 78 files/1,508 tests with only missing new seed examples failing; generation and seed replay fixed that failure. All 24 leisure browser cases pass across three UI stages, four widths, Chromium/WebKit, axe and word checks. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure. At step end, rerun the required full suite/lint, event table once, and nine protected main proofs. Full report only in step 6.
+
+Runtime cache checks: 40 engine tests pass, including direct equality against uncached reservations and calendar boundaries. Thirty diagnostic careful results match byte for byte (/tmp/plan5-leisure-before.json, /tmp/plan5-leisure-indexed.json); time 8.37 to 5.19 seconds. Main-1 workers predate the caches, so their timing target is not a current runtime measurement. No game values have been tuned yet.
 
 ## For Henry to review (non-blocking)
 
