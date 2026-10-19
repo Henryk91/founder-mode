@@ -818,3 +818,7 @@ Bots and content:
 
 - AUTONOMOUS: kept and committed the pre-existing CLAUDE.md full-report clarification separately (299c9ee). Initial lint required formatting three tracked files (labels, Rückenwind scenario YAML, cruise tests); only whitespace and wrapping changed, so protected game values remain unchanged.
 - AUTONOMOUS: browser tests run with local server permission because the sandbox refused localhost listeners. Initial verification: 76 test files passed, 1,396 tests passed and 18 skipped; lint and typechecks passed. Baselines use main only, 1,000 seeds with prefix test, two workers and one scenario per process; the full report remains reserved for step 6.
+
+- AUTONOMOUS: after the first six baselines, paused only the serial scheduler while its Rückenwind child continued, and started Tiefgang and Leinen los independently (three workers each). This shortens the setup while keeping one scenario per process and all main-part seeds unchanged; no completed run is repeated.
+
+- AUTONOMOUS: capture the content fingerprints of all nine protected modes alongside their main-part reports, so optional schema additions must also preserve long-mode save compatibility. Capture refuses overwrites. Regression comparison preserves the engine version and all outcomes, omitting timing-only fields.
