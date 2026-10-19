@@ -178,9 +178,9 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | ausgesperrt (long) | still_searching | `tourism_careful` | `ending-1` | 104 |
 | ausgesperrt (long) | still_searching | `tourism_careful` | `ending-4` | 104 |
 | ausgesperrt (long) | still_searching | `tourism_careful` | `ending-7` | 104 |
-| ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-1` | 92 |
-| ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-9` | 91 |
-| ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-11` | 100 |
+| ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-26` | 21 |
+| ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-36` | 16 |
+| ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-48` | 16 |
 | ausgesperrt (long) | burnout | `tourism_overworker` | `ending-1` | 12 |
 | ausgesperrt (long) | burnout | `tourism_overworker` | `ending-2` | 12 |
 | ausgesperrt (long) | burnout | `tourism_overworker` | `ending-3` | 12 |
