@@ -3,7 +3,7 @@
 ## Current
 
 Step: 2.3.7 Final bot validation green; complete balance and protected measurements running.
-Last commit: HEAD, Plan 5: validate completed rooms and record protected comparisons.
+Last commit: HEAD, Plan 5: record six protected matches and corrected bot progress.
 Next action: Finish main-3 and judge every Ausgesperrt target with margins before any value tuning. Finish the validation and protected comparisons below; run its event table once after tuning, and reserve the full report for step 6.
 
 ## Checklist
@@ -18,10 +18,10 @@ Next action: Finish main-3 and judge every Ausgesperrt target with margins befor
 
 ## Running checks
 
-- Ausgesperrt: all 28 strategies, main only, 1,000 `test` seeds. Session 6820; /tmp/plan5-ausgesperrt-main-3.log; output tuning/ausgesperrt-main-3.md. Quarterly rooms 67.5% is above T2’s 60% target; wait for complete comparisons before tuning.
-- Protected: nine games, main only, 1,000 `test` seeds. Session 17724; /tmp/plan5-protected-step2-progress.log; outputs protected-step2/. Kantino standard/long, Zollstock and Gratwanderung match; five pending. All nine fingerprints match /tmp/plan5-step2-fingerprints.json.
+- Ausgesperrt: all 28 strategies, main only, 1,000 `test` seeds. Session 6820; /tmp/plan5-ausgesperrt-main-3.log; output tuning/ausgesperrt-main-3.md. Careful wins 42.3% (T1 passes); quarterly rooms 67.5% is above T2’s 60% target. Counts and individual margins are in tuning/ausgesperrt-main-3-progress.md; wait for complete paired comparisons before tuning.
+- Protected: nine games, main only, 1,000 `test` seeds. Session 17724; /tmp/plan5-protected-step2-progress.log; outputs protected-step2/. Kantino standard/long, Zollstock, Gratwanderung, Hinterhof and Seeblick match; three abroad games pending. All nine fingerprints match /tmp/plan5-step2-fingerprints.json.
 - Full tests are green: 79 files, 1,539 passed, 21 skipped; /tmp/plan5-step2-finished-rooms-full-test-2.log, two workers. Browser teardown passed after the first repair (new leisure port 5202 plus lower test concurrency). Lint/typechecks pass; /tmp/plan5-step2-test-port-lint.log.
-- Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. The first four protected snapshots and validation are committed; remaining snapshots will be committed as they finish.
+- Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. Six protected snapshots and validation are committed; the three abroad snapshots remain running.
 
 ## Open issues
 
