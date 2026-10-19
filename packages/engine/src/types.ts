@@ -214,6 +214,10 @@ export type Booking = {
   voucherId?: string
   /** Plan 4: a trip guest who waited a week for a group already (absent otherwise). */
   waited?: true
+  /** Plan 5: the indoor slot and visits paid through a membership or aggregator. */
+  slotId?: string
+  memberId?: string
+  aggregatorUser?: number
 }
 
 /** Plan 2 step 1a: a voucher sold; a liability until it is redeemed. */
@@ -331,6 +335,7 @@ export type BookingTotal = {
 }
 
 export type BookingsState = {
+  leisure?: LeisureState
   bookings: Booking[]
   /** Price per unit per segment, for peak and off season months. */
   prices: Record<SegmentId, { peak: number; off: number }>
@@ -472,6 +477,7 @@ export type ReturnRequest = {
 }
 
 export type HiddenBookings = {
+  leisure?: HiddenLeisure
   base: Record<SegmentId, number>
   /** Twelve monthly multipliers per segment, the drawn season curve. */
   season: Record<SegmentId, number[]>
@@ -489,6 +495,7 @@ export type HiddenBookings = {
  * new prices, the cancellation policy, the platform listing, new partnerships, and outreach.
  */
 export type BookingsPlan = {
+  leisure?: LeisurePlan
   shifts: Record<string, number>
   founderShifts: Record<string, number>
   prices: Record<SegmentId, { peak: number; off: number }>
@@ -1470,6 +1477,7 @@ export type RenovationView = {
 
 /** Tourism as the player sees it. No demand, no season curve, no true weather. */
 export type BookingsView = {
+  leisure?: LeisureView
   weekOfYear: number
   month: number
   peak: boolean
@@ -2450,6 +2458,7 @@ export type AbroadEconomics = {
 }
 
 export type PostMortem = {
+  leisure?: LeisureView
   scenarioId: string
   seed: string
   ending: EndingId
@@ -2551,4 +2560,189 @@ export type HireEconomicsView = {
   customersGained: number
   costPerCustomerCents: number | null
   lifetimeValueCents: number | null
+}
+
+/** Plan 5: independent of conditions; present only with bookings.leisure content. */
+export type LeisureState = {
+  openingWeek: number | null
+  buildChoice: FeatureId[]
+  members: LeisureMember[]
+  offers: Record<FeatureId, { enabled: boolean; priceCents: number }>
+  timetable: Record<FeatureId, Record<string, number>>
+  settingHours: Record<FeatureId, number>
+  freshness: Record<
+    FeatureId,
+    {
+      value: number
+      settingProgress: number
+      localGroups: number
+      refreshUntil: number | null
+      served: number
+      refreshes: number
+      lastRefreshWeek: number | null
+      openedWeek: number | null
+      weeksTired: number
+      closedWeeks: number
+    }
+  >
+  buildPaid: FeatureId[]
+  holdPolicy: 'free' | 'fee' | 'none'
+  holds: LeisureHold[]
+  aggregator: {
+    slots: string[]
+    joined: boolean
+    leavingWeek: number | null
+    checkins: number
+    payoutCents: number
+    cancellations: number
+    users: { segmentId: SegmentId; month: number; visits: number }[]
+  } | null
+  weeks: LeisureWeek[]
+}
+export type LeisureMember = {
+  id: string
+  segmentId: SegmentId
+  offerId: FeatureId
+  joinedWeek: number
+  termUntil: number
+  noticeUntil: number | null
+  endedWeek: number | null
+  inactive: boolean
+  priceCents: number
+  owedVisits: number | null
+  owedCents?: number
+  expiresWeek: number | null
+  waitlist: number[]
+  reason:
+    'price' | 'crowding' | 'freshness' | 'january' | 'aggregator' | 'expired' | 'instructor' | null
+}
+export type LeisureHold = {
+  id: string
+  booking: Booking
+  releaseWeek: number
+  status: 'held' | 'converted' | 'released'
+  feeCents: number
+}
+export type LeisureWeek = {
+  week: number
+  joined: number
+  cancelled: number
+  active: number
+  signed: number
+  held: number
+  converted: number
+  released: number
+  lateReleased: number
+  aggregatorCancellations: number
+  aggregatorPayoutCents: number
+  slots: {
+    productId: FeatureId
+    slotId: string
+    visits: number
+    turnedAway: number
+    aggregator: number
+    load: 'quiet' | 'busy' | 'packed'
+  }[]
+}
+export type HiddenLeisure = {
+  localPools: Record<FeatureId, number>
+  payoutCents: number | null
+}
+export type LeisurePlan = {
+  offers?: Record<FeatureId, { enabled: boolean; priceCents: number }>
+  timetable?: Record<FeatureId, Record<string, number>>
+  settingHours?: Record<FeatureId, number>
+  refresh?: FeatureId[]
+  aggregator?: { slots: string[]; leave: boolean }
+  holdPolicy?: 'free' | 'fee' | 'none'
+}
+/** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
+export type LeisureView = {
+  openingWeek: number | null
+  buildChoice: FeatureId[]
+  slots: { id: string; name: string; hours: number }[]
+  load: LeisureWeek['slots']
+  members: {
+    offerId: FeatureId
+    name: string
+    active: number
+    inactive: number
+    owedVisits: number
+    enabled: boolean
+    priceCents: number
+    kind: string
+    termWeeks: number
+    noticeWeeks: number
+    slots: string[]
+    validWeeks: number | null
+  }[]
+  joinsLast4: number
+  cancellationsLast4: number
+  signed: number
+  retained: number
+  aggregator: {
+    name: string
+    slots: string[]
+    joined: boolean
+    leavingWeek: number | null
+    capPerMonth: number
+    noticeWeeks: number
+    checkinsLast4: number
+    payoutLast4Cents: number
+    cancellationsLast4: number
+    checkins: number
+    payoutCents: number
+    cancellations: number
+  } | null
+  freshness: {
+    productId: FeatureId
+    name: string
+    word: 'new' | 'known' | 'tired'
+    localGroups: number
+    settingHours: number
+    settingProgressHours: number
+    served: number
+    refreshes: number
+    lastRefreshWeek: number | null
+    openedWeek: number | null
+    weeksTired: number
+    closedWeeks: number
+    resetHours: number
+    refreshCents: number
+    refreshWeeks: number
+    refreshingUntil: number | null
+  }[]
+  builds: {
+    productId: FeatureId
+    name: string
+    readyWeek: number | null
+    weeks: number
+    started: boolean
+    complete: boolean
+    costCents: number
+  }[]
+  holds: {
+    policy: 'free' | 'fee' | 'none'
+    feeCents: number
+    calendar: {
+      id: string
+      week: number
+      slotId: string | null
+      segmentId: SegmentId
+      releaseWeek: number
+      status: LeisureHold['status']
+    }[]
+    granted: number
+    converted: number
+    released: number
+    lateReleased: number
+  } | null
+  timetable: {
+    productId: FeatureId
+    name: string
+    room: string | null
+    places: number
+    classes: Record<string, number>
+  }[]
+  history: LeisureWeek[]
 }

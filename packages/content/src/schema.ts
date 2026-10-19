@@ -750,6 +750,137 @@ export const AssetSchema = z.object({
 })
 export type AssetConfig = z.infer<typeof AssetSchema>
 
+// Plan 5: indoor leisure additions. Optional as a whole: earlier content hashes stay unchanged.
+const SlotShares = z
+  .record(Id, Share)
+  .refine(
+    (s) => Math.abs(Object.values(s).reduce((a, b) => a + b, 0) - 1) < 0.000001,
+    'slot shares must sum to one',
+  )
+export const LeisureSchema = z
+  .object({
+    slots: z
+      .array(z.object({ id: Id, name: z.string().min(1), hours: z.number().positive() }))
+      .min(1),
+    segments: z.record(
+      Id,
+      z.object({
+        slotShare: SlotShares,
+        visitsPerWeek: z.number().nonnegative(),
+        memberShare: Share,
+        churn: Share,
+        crowdingChurn: Share,
+        freshnessChurn: Share,
+        priceChurn: Share,
+        januaryFade: Share,
+        waitlistAt: z.number().int().positive(),
+      }),
+    ),
+    products: z.record(
+      Id,
+      z.object({
+        // Hard capacity per slot; comfort below it makes crowding a soft limit.
+        capacity: z.record(Id, z.number().int().nonnegative()),
+        comfort: z.record(Id, z.number().int().positive()).optional(),
+        // A class has these places, multiplied by the timetable's class count.
+        classPlaces: z.number().int().positive().optional(),
+        classHours: z.number().positive().optional(),
+        room: Id.optional(),
+      }),
+    ),
+    memberships: z
+      .record(
+        Id,
+        z.object({
+          kind: z.enum(['monthly', 'annual', 'off_peak', 'pack', 'intro']),
+          priceCents: Cents.positive(),
+          serves: z.array(Id).min(1),
+          slots: z.array(Id).min(1),
+          termWeeks: z.number().int().nonnegative(),
+          noticeWeeks: z.number().int().nonnegative(),
+          visits: z.number().int().positive().optional(),
+          validWeeks: z.number().int().positive().optional(),
+          convert: Share.optional(),
+        }),
+      )
+      .optional(),
+    aggregator: z
+      .object({
+        name: z.string().min(1),
+        payoutCents: rangeOf(Cents.positive()),
+        capPerMonth: z.number().int().positive(),
+        noticeWeeks: z.number().int().positive(),
+        users: z.record(Id, rangeOf(z.number().int().nonnegative())),
+        visitsPerWeek: Share,
+        cannibalisation: z.record(Id, Share),
+      })
+      .optional(),
+    freshness: z
+      .record(
+        Id,
+        z.object({
+          newAbove: z.number().min(0).max(100),
+          knownAbove: z.number().min(0).max(100),
+          weeklyLoss: z.number().min(0).max(100),
+          useLoss: z.number().nonnegative(),
+          localPool: rangeOf(z.number().int().positive()).optional(),
+          localSegments: z.array(Id),
+          sensitivity: z.record(Id, Share),
+          refresh: z.object({
+            hours: z.number().int().positive(),
+            cents: Cents.nonnegative(),
+            weeks: z.number().int().nonnegative(),
+          }),
+        }),
+      )
+      .optional(),
+    buildOut: z.record(Id, z.object({ weeks: z.number().int().positive() })).optional(),
+    // Any one of these completed areas opens the business; optional extra prerequisites.
+    opening: z.object({ areas: z.array(Id).min(1), requires: z.array(Id) }).optional(),
+    holds: z
+      .object({
+        feeCents: Cents.nonnegative(),
+        weeks: rangeOf(z.number().int().positive()),
+        lateReleaseShare: Share,
+        segments: z.record(
+          Id,
+          z.object({ ask: Share, convert: Share, feeConversion: Share, noHoldConversion: Share }),
+        ),
+      })
+      .optional(),
+    crowdingPenalty: z.number().nonnegative(),
+    quietBelow: Share,
+    packedFrom: Share,
+  })
+  .superRefine((l, ctx) => {
+    const slots = new Set(l.slots.map((s) => s.id))
+    const issue = (message: string) => ctx.addIssue({ code: 'custom', message })
+    if (slots.size !== l.slots.length) issue('duplicate leisure slot')
+    if (l.quietBelow >= l.packedFrom) issue('quiet threshold must be below packed threshold')
+    for (const segment of Object.values(l.segments)) {
+      for (const id of Object.keys(segment.slotShare))
+        if (!slots.has(id)) issue(`unknown slot ${id}`)
+    }
+    for (const product of Object.values(l.products)) {
+      if (product.classPlaces && !product.classHours) issue('classes need their hours')
+      for (const id of [...Object.keys(product.capacity), ...Object.keys(product.comfort ?? {})]) {
+        if (!slots.has(id)) issue(`unknown slot ${id}`)
+        if ((product.comfort?.[id] ?? 0) > (product.capacity[id] ?? 0))
+          issue('comfort exceeds hard capacity')
+      }
+    }
+    for (const f of Object.values(l.freshness ?? {}))
+      if (f.knownAbove >= f.newAbove) issue('freshness words need ordered thresholds')
+    for (const offer of Object.values(l.memberships ?? {})) {
+      for (const id of offer.slots) if (!slots.has(id)) issue(`unknown slot ${id}`)
+      if (offer.kind === 'pack' && (!offer.visits || !offer.validWeeks))
+        issue('packs need visits and validity')
+      if (offer.kind === 'intro' && (!offer.validWeeks || offer.convert === undefined))
+        issue('intro offers need validity and conversion')
+    }
+  })
+export type LeisureConfig = z.infer<typeof LeisureSchema>
+
 export const BookingsConfigSchema = z.object({
   startWeekOfYear: z.number().int().min(1).max(52),
   seasonNoise: Share,
@@ -768,6 +899,7 @@ export const BookingsConfigSchema = z.object({
     })
     .optional(),
   conditions: ConditionsSchema.optional(),
+  leisure: LeisureSchema.optional(),
   // Plan 4 (section 5): the trip policy, which must stay `policyWeeks` before it changes, and the
   // smallest group a run starts with (absent: no trips until the player sets a policy).
   trips: z
@@ -1044,6 +1176,7 @@ export const EffectSchema = z.discriminatedUnion('type', [
   }),
   // The investors' confidence moves by this much (0 to 1). Nothing happens without investors.
   z.object({ type: z.literal('investorConfidence'), delta: z.number(), ...fx }),
+  z.object({ type: z.literal('leisureStart'), products: z.array(Id).min(1), ...fx }),
   // Plan 4: the answer to a concession's tender (docs/abroad-mechanics.md section 6).
   z.object({ type: z.literal('tender'), bid: z.enum(['higher', 'same', 'hotel']), ...fx }),
   // Plan 4: an asset leased, shared or given up (buying is its purchase product). Ending a lease
@@ -1495,9 +1628,47 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       issue('unknown website product', ['bookings', 'website', 'product'])
     }
     // Plan 4: weather or conditions, and the abroad mechanics name real things.
-    if (!bk.weather === !bk.conditions) {
-      issue('exactly one of weather and conditions', ['bookings'])
+    if (Number(!!bk.weather) + Number(!!bk.conditions) + Number(!!bk.leisure) !== 1) {
+      issue('exactly one of weather, conditions and leisure', ['bookings'])
     }
+    const leisure = bk.leisure
+    if (leisure) {
+      for (const id of Object.keys(leisure.segments))
+        if (!bk.segments[id]) issue(`unknown leisure segment ${id}`, ['bookings', 'leisure'])
+      for (const map of [
+        leisure.products,
+        leisure.memberships,
+        leisure.freshness,
+        leisure.buildOut,
+      ]) {
+        for (const id of Object.keys(map ?? {}))
+          if (!bk.products[id]) issue(`unknown leisure product ${id}`, ['bookings', 'leisure'])
+      }
+      for (const id of [...(leisure.opening?.areas ?? []), ...(leisure.opening?.requires ?? [])])
+        if (!bk.products[id]) issue(`unknown opening product ${id}`, ['bookings', 'leisure'])
+      for (const offer of Object.values(leisure.memberships ?? {}))
+        for (const id of offer.serves)
+          if (!bk.segments[id]) issue(`unknown membership segment ${id}`, ['bookings', 'leisure'])
+      for (const f of Object.values(leisure.freshness ?? {}))
+        for (const id of [...f.localSegments, ...Object.keys(f.sensitivity)])
+          if (!bk.segments[id]) issue(`unknown freshness segment ${id}`, ['bookings', 'leisure'])
+      for (const map of [
+        leisure.aggregator?.users,
+        leisure.aggregator?.cannibalisation,
+        leisure.holds?.segments,
+      ])
+        for (const id of Object.keys(map ?? {}))
+          if (!bk.segments[id]) issue(`unknown leisure segment ${id}`, ['bookings', 'leisure'])
+    }
+    for (const event of s.events)
+      for (const choice of event.choices)
+        for (const effect of choice.effects)
+          if (effect.type === 'leisureStart') {
+            if (!event.once || event.from !== 'none')
+              issue('initial build choices must be once, from none', ['events', event.id])
+            if (!leisure || effect.products.some((id) => !leisure.buildOut?.[id]))
+              issue('start choice needs leisure build-out products', ['events', event.id])
+          }
     const c = bk.conditions
     const stateIds = new Set((c?.states ?? []).map((x) => x.id))
     const slotIds = new Set((c?.slots ?? []).map((x) => x.id))

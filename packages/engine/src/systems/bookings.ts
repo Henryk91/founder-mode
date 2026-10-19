@@ -1,3 +1,20 @@
+import {
+  initLeisure,
+  cloneLeisurePlan,
+  leisureValid,
+  leisureOpen,
+  leisureCapacity,
+  leisureRoom,
+  leisureSlot,
+  leisureAppeal,
+  leisureView,
+  beginLeisure,
+  joinLeisure,
+  billLeisure,
+  leisureVisits,
+  finishLeisure,
+  holdLeisure,
+} from './leisure'
 import type { OfficeStage } from '@founder-mode/content'
 import type { BookingsConfig, Scenario, WeatherState } from '@founder-mode/content'
 import type { Rng } from '../rng'
@@ -149,6 +166,7 @@ export function initBookings(
     repeatGuests[seg.id] = 0
   }
   // Plan 4: day conditions instead of the weather; the weather fields stay at a fixed value.
+  const leisure = initLeisure(scenario, rng)
   const c = cfg.conditions
   if (c) {
     const truth = drawConditionsWeek(c, monthOf(scenario, 1), null, rng)
@@ -183,9 +201,14 @@ export function initBookings(
       },
     }
   }
-  const nextWeather = drawWeather(cfg, monthOf(scenario, 1), rng)
+  const nextWeather = cfg.leisure ? 'good' : drawWeather(cfg, monthOf(scenario, 1), rng)
   return {
-    hidden: { base, season, nextWeather },
+    hidden: {
+      base,
+      season,
+      nextWeather,
+      ...(leisure ? { leisure: leisure.hidden, returns: [] } : {}),
+    },
     state: {
       bookings: [],
       prices,
@@ -198,7 +221,13 @@ export function initBookings(
       rating: null,
       reviews: 0,
       weather: null,
-      forecast: forecastOf(cfg, nextWeather, rng),
+      forecast: cfg.leisure ? 'good' : forecastOf(cfg, nextWeather, rng),
+      ...(leisure
+        ? {
+            leisure: leisure.state,
+            abroad: { forecast: {}, lastWeek: null, byMonth: {}, lost: {}, moved: 0, ladder: [] },
+          }
+        : {}),
       turnedAway: [],
       ...(cfg.assets ? { assets: initAssets(cfg)! } : {}),
     },
@@ -235,6 +264,7 @@ export const cloneBookingsPlan = (p: BookingsPlan): BookingsPlan => ({
   ...(p.trips ? { trips: { ...p.trips } } : {}),
   ...(p.hold ? { hold: p.hold.map((h) => ({ ...h })) } : {}),
   ...(p.minSail ? { minSail: { ...p.minSail } } : {}),
+  ...(p.leisure ? { leisure: cloneLeisurePlan(p.leisure) } : {}),
 })
 
 /**
@@ -319,6 +349,8 @@ export function roomsUnderWorks(state: Pick<GameState, 'bookings'>, week: number
 /** A capacity pool's units in a week: its capacity, less the rooms under works. */
 export function capacityAt(state: GameState, pool: FeatureId, week: number): number {
   const cfg = bookingsConfig(state)!
+  if (cfg.leisure)
+    return cfg.leisure.slots.reduce((n, slot) => n + leisureCapacity(state, pool, slot.id, week), 0)
   const r = cfg.renovation
   // Plan 3: an office stage adds seats, rooms or gear.
   const staged = (cfg.products[pool]?.capacity ?? 0) + (stageInEffect(state).capacity?.[pool] ?? 0)
@@ -328,11 +360,22 @@ export function capacityAt(state: GameState, pool: FeatureId, week: number): num
   return Math.max(0, base - r.unitsPerRoom * roomsUnderWorks(state, week))
 }
 
+/** Leisure can sell future dates after a prepared build will be ready. */
+function cfgLeisureReady(state: GameState, id: FeatureId, week: number): boolean {
+  if (!state.scenario.bookings?.leisure) return isShipped(state, id)
+  return state.product.features.some(
+    (f) =>
+      f.id === id && (f.shippedWeek !== null || (f.readyWeek !== undefined && f.readyWeek <= week)),
+  )
+}
+
 /** A product can be sold in a week: shipped and in season. */
 function sells(state: GameState, id: FeatureId, week: number): boolean {
   const p = state.scenario.bookings?.products[id]
-  if (!p || !isShipped(state, id)) return false
-  if (p.requires !== undefined && !isShipped(state, p.requires)) return false
+  const ready = cfgLeisureReady(state, id, week)
+  if (!p || !ready) return false
+  if (state.scenario.bookings?.leisure && !leisureOpen(state, id, week)) return false
+  if (p.requires !== undefined && !cfgLeisureReady(state, p.requires, week)) return false
   // Plan 4: a day trip sells while the trip policy runs trips and its asset is there.
   if (p.dayTrip) {
     if ((state.bookings?.abroad?.trips?.min ?? null) === null) return false
@@ -364,6 +407,7 @@ export function bookingsValid(state: GameState, plan: WeekPlan): boolean {
     if (Object.values(plan.landing).some((x) => x > 0)) return false
     if (Object.values(plan.presales).some((x) => x > 0)) return false
   }
+  if (!leisureValid(state, plan)) return false
   if (!p) return true
   if (!cfg || !state.bookings) return false
   const month = monthOf(state.scenario, state.week)
@@ -482,7 +526,11 @@ function reviewFactor(state: GameState, segmentId: SegmentId): number {
 function fitOf(state: GameState, segmentId: SegmentId): number {
   const cfg = bookingsConfig(state)!
   const serving = Object.entries(cfg.products).some(
-    ([id, p]) => p.serves.includes(segmentId) && isShipped(state, id),
+    ([id, p]) =>
+      p.serves.includes(segmentId) &&
+      (isShipped(state, id) ||
+        (cfg.leisure &&
+          state.product.features.some((f) => f.id === id && f.readyWeek !== undefined))),
   )
   if (!serving) return 0
   const must = state.hidden.segments[segmentId]?.mustHave ?? []
@@ -500,6 +548,7 @@ export type BookingsOutcome = {
   costsCents: number
   /** Plan 2: what the vouchers redeemed this week were sold for (earned now, paid before). */
   voucherRedeemedCents: number
+  voucherCents?: number
 }
 
 /**
@@ -583,6 +632,14 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     })
   }
 
+  if (cfg.leisure) {
+    const leisure = beginLeisure({ ...state, bookings: b }, plan, rng)
+    state = leisure.state
+    b = state.bookings!
+    out.costsCents += leisure.costsCents
+    out.revenueCents += leisure.revenueCents
+  }
+
   // 2. Weather, or (plan 4) this week's day conditions and next week's forecast.
   const weather = input.hidden.bookings.nextWeather
   let nextWeather = weather
@@ -601,7 +658,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       byMonth: countMonth(b.abroad.byMonth, monthOf(state.scenario, week), actual),
     }
     out.entries.push({ kind: 'conditions', days: actual })
-  } else {
+  } else if (!cfg.leisure) {
     nextWeather = drawWeather(cfg, monthOf(state.scenario, week + 1), rng)
     b.weather = weather
     b.forecast = forecastOf(cfg, nextWeather, rng)
@@ -623,7 +680,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     if (!prod || f.shippedWeek !== week) continue
     if (loan?.bought?.includes(f.id)) {
       loan = { ...loan, bought: loan.bought.filter((x) => x !== f.id) }
-    } else out.costsCents += prod.oneOffCents
+    } else if (!b.leisure?.buildPaid.includes(f.id)) out.costsCents += prod.oneOffCents
     if (prod.stage) stages.push(prod.stage)
     if (prod.monthlyCents > 0 && !fixedCosts.some((c) => c.id === `product_${f.id}`)) {
       const name = state.scenario.features.find((x) => x.id === f.id)?.name ?? f.id
@@ -736,12 +793,16 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       }
     }
   }
-  const roomFor = (seg: SegmentId, id: FeatureId, w: number) => {
+  const roomFor = (seg: SegmentId, id: FeatureId, w: number, slot?: string) => {
+    const free =
+      cfg.leisure && slot
+        ? Math.min(room(id, w), leisureRoom(state, bookings, id, slot, w))
+        : room(id, w)
     const share = cfg.segments[seg]?.capacityShare
-    if (!share) return room(id, w)
+    if (!share) return free
     const peak = cfg.peakMonths.includes(monthOf(state.scenario, w))
     const cap = capacityAt(state, poolOf(cfg, id), w) * (peak ? share.peak : share.off)
-    return Math.min(room(id, w), Math.floor(cap) - (heldBySeg.get(segKey(seg, id, w)) ?? 0))
+    return Math.min(free, Math.floor(cap) - (heldBySeg.get(segKey(seg, id, w)) ?? 0))
   }
   let sentLost = 0
   const wtpRaised = Object.values(cfg.products).some((x) => x.wtpFactor)
@@ -774,11 +835,20 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       weatherF *
       roleFactor(seg.id) *
       (stageInEffect(state).segmentFactors?.[seg.id] ?? 1)
+    if (cfg.leisure?.memberships) {
+      state = joinLeisure({ ...state, bookings: b }, seg.id, units, rng)
+      b = state.bookings!
+    }
     const meanSize = (s.size.min + s.size.max) / 2
     // Guests sent by an inbox answer ask like anyone else, in groups of the usual size.
     const sent = b.eventGuests?.[seg.id] ?? 0
     const sentRequests = sent > 0 ? Math.max(1, Math.round(sent / meanSize)) : 0
-    const ownRequests = randomRound(units / meanSize, rng)
+    const ownRequests = randomRound(
+      (units *
+        (cfg.leisure?.memberships ? 1 - (cfg.leisure.segments[seg.id]?.memberShare ?? 0) : 1)) /
+        meanSize,
+      rng,
+    )
     // Tuning 1: guests who come for one product alone (`ownDemand`), after the others.
     const alone = Object.entries(cfg.products).flatMap(([id, prod]) =>
       prod.ownDemand && prod.serves.includes(seg.id)
@@ -800,6 +870,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         ? s.leadWeeks.min + drawIndex(ahead, aheadSum, rng)
         : rng.int(s.leadWeeks.min, s.leadWeeks.max)
       let target = week + lead
+      const slot = leisureSlot(state, seg.id, rng)
       const platform = reach.total > 0 && rng.chance(reach.platform / reach.total)
       if (target > state.scenario.maxWeeks) continue
       // Tuning 1: guests for a product nobody can buy (not built, or trips not run) never ask.
@@ -832,7 +903,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
               // Tuning 1: a product with guests of its own sells only to them.
               (only !== null ? id === only : !prod.ownDemand),
           )
-          .map(([id]) => ({ id, free: roomFor(seg.id, id, w) }))
+          .map(([id]) => ({ id, free: roomFor(seg.id, id, w, slot) }))
           .filter((o) => o.free >= size)
           .sort((x, y) => y.free - x.free)
       let options = optionsAt(target)
@@ -865,8 +936,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         if (i >= ownRequests && only === null) sentLost++
         continue
       }
-      bookings.push({
-        id: `booking_${bookings.length + 1}`,
+      if (cfg.leisure && !rng.chance(leisureAppeal(state, seg.id, pick.id))) continue
+      const booking: Booking = {
+        id: cfg.leisure ? `booking_${week}_${seg.id}_${i}` : `booking_${bookings.length + 1}`,
         segmentId: seg.id,
         productId: pick.id,
         week: target,
@@ -876,7 +948,16 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         bookedWeek: week,
         status: 'booked',
         ...(deposit > 0 ? { depositCents: deposit } : {}),
-      })
+        ...(slot ? { slotId: slot } : {}),
+      }
+      if (cfg.leisure?.holds) {
+        const hold = holdLeisure({ ...state, bookings: b }, booking, rng)
+        state = hold.state
+        b = state.bookings!
+        out.revenueCents += hold.revenueCents
+        if (!hold.accepted || hold.held) continue
+      }
+      bookings.push(booking)
       out.revenueCents += deposit
       held.set(heldKey(pick.id, target), (held.get(heldKey(pick.id, target)) ?? 0) + size)
       if (s.capacityShare) {
@@ -991,6 +1072,24 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       const k = segKey(v.segmentId, pick.id, target)
       heldBySeg.set(k, (heldBySeg.get(k) ?? 0) + v.units)
     }
+  }
+
+  if (cfg.leisure) {
+    const billed = billLeisure({ ...state, bookings: b }, rng)
+    state = billed.state
+    b = state.bookings!
+    out.revenueCents += billed.revenueCents
+    out.voucherCents = billed.voucherCents
+    out.voucherRedeemedCents += billed.voucherRedeemedCents
+    const visits = leisureVisits(state, bookings, rng)
+    state = visits.state
+    b = state.bookings!
+    bookings.push(...visits.added)
+    for (const x of visits.added)
+      held.set(
+        heldKey(x.productId, x.week),
+        (held.get(heldKey(x.productId, x.week)) ?? 0) + x.units,
+      )
   }
 
   // 5. This week's bookings.
@@ -1318,19 +1417,30 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   let unitCosts = 0
   const served: Booking[] = []
   const left = new Map(staffed)
+  const usedSlots = new Map<string, number>()
   for (const x of due
     // Trip guests waiting for a group moved to next week (plan 4).
     .filter((y) => y.status === 'booked' && y.week === week)
     .sort((a, z) => a.bookedWeek - z.bookedWeek)) {
-    const room2 = left.get(x.productId) ?? 0
+    const slotKey = `${poolOf(cfg, x.productId)}|${x.slotId ?? ''}`
+    const slotRoom =
+      cfg.leisure && x.slotId
+        ? Math.max(
+            0,
+            leisureCapacity(state, poolOf(cfg, x.productId), x.slotId, week) -
+              (usedSlots.get(slotKey) ?? 0),
+          )
+        : Infinity
+    const room2 = Math.min(left.get(x.productId) ?? 0, slotRoom)
     if (room2 >= x.units) {
-      left.set(x.productId, room2 - x.units)
+      left.set(x.productId, (left.get(x.productId) ?? 0) - x.units)
+      if (cfg.leisure && x.slotId) usedSlots.set(slotKey, (usedSlots.get(slotKey) ?? 0) + x.units)
       x.status = 'served'
       servedUnits += x.units
       served.push(x)
     } else {
       x.status = 'company_cancelled'
-      const reason = why.get(x.productId) ?? 'staff'
+      const reason = cfg.leisure && slotRoom < x.units ? 'works' : (why.get(x.productId) ?? 'staff')
       if (reason === 'sold_out') soldOut += x.units
       else if (reason === 'works') closedForWorks += x.units
       else if (reason === 'conditions') conditionsCancelled += x.units
@@ -1434,6 +1544,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       out.revenueCents += owed
       continue
     }
+    if (cfg.leisure && owed === 0) continue
     const hidden = state.hidden.segments[x.segmentId]!
     const id = `invoice_${state.invoices.length + invoices.length + 1}`
     const never = rng.chance(hidden.neverPaysShare)
@@ -1469,7 +1580,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   // Plan 4: courses. Graduates may book their next step next week, or come back a year later
   // (only those who booked directly come back directly; the platform keeps its guests).
-  if (cond && b.abroad) {
+  if ((cond || cfg.leisure) && b.abroad) {
     let graduates = 0
     let sameStay = 0
     for (const x of served) {
@@ -1578,6 +1689,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   if (shifts > 0) out.entries.push({ kind: 'shifts_paid', shifts, amountCents: wages })
   out.costsCents += wages + unitCosts + Math.round(contracts.wagesCents * roleF) + tripCosts
 
+  const leisureFinished = finishLeisure({ ...state, bookings: b }, bookings)
+  state = leisureFinished.state
+  b = state.bookings!
+  out.voucherRedeemedCents += leisureFinished.voucherRedeemedCents
+
   // 7. Reviews.
   let rating = b.rating
   let reviews = b.reviews
@@ -1656,7 +1772,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           roomsBonus +
           seaDays -
           friction.penalty -
-          floorPenalty +
+          floorPenalty -
+          leisureFinished.reviewPenalty +
           rng.normal(r.noiseSd),
       ),
     )
@@ -1716,7 +1833,15 @@ function randomRound(x: number, rng: Rng): number {
 
 /** Revenue earned from bookings over the last four weeks played, for the headline and milestones. */
 export function bookingRevenueLast4(state: GameState): number {
-  return state.ledger.slice(-4).reduce((t, l) => t + l.bookingRevenueCents, 0)
+  return state.ledger
+    .slice(-4)
+    .reduce(
+      (t, l) =>
+        t +
+        l.bookingRevenueCents +
+        (state.scenario.bookings?.leisure ? (l.voucherRedeemedCents ?? 0) : 0),
+      0,
+    )
 }
 
 /**
@@ -1840,6 +1965,7 @@ export function bookingsView(state: GameState): BookingsView | null {
     w - WEEKS_PER_YEAR >= 1 ? (past.get(key(id, w)) ?? 0) : null
   const running = (b.contracts ?? []).filter((x) => x.endWeek === null || x.endWeek >= state.week)
   return {
+    ...(cfg.leisure ? { leisure: leisureView(state)! } : {}),
     weekOfYear: woy,
     month,
     peak: cfg.peakMonths.includes(month),

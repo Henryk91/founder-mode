@@ -261,6 +261,7 @@ describe('content', () => {
     expect(scenarioCategories()).toEqual([
       { id: 'startups', name: 'Startups', order: 1 },
       { id: 'tourism', name: 'Tourism', order: 2 },
+      { id: 'leisure', name: 'Leisure', order: 3 },
     ])
     const byCategory = (id: string) =>
       scenarioCatalogue()

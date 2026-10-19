@@ -37,6 +37,8 @@ export type {
   GameMode,
   BookingsPlan,
   BookingsView,
+  LeisurePlan,
+  LeisureView,
   AbroadView,
   AssetView,
   AssetEconomics,

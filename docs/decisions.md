@@ -822,3 +822,10 @@ Bots and content:
 - AUTONOMOUS: after the first six baselines, paused only the serial scheduler while its Rückenwind child continued, and started Tiefgang and Leinen los independently (three workers each). This shortens the setup while keeping one scenario per process and all main-part seeds unchanged; no completed run is repeated.
 
 - AUTONOMOUS: capture the content fingerprints of all nine protected modes alongside their main-part reports, so optional schema additions must also preserve long-mode save compatibility. Capture refuses overwrites. Regression comparison preserves the engine version and all outcomes, omitting timing-only fields.
+
+## Plan 5, step 1: shared leisure engine
+
+- AUTONOMOUS: leisure is a third optional bookings mode, mutually exclusive with weather and day conditions. It adds no defaults to older scenarios and initial build choices draw no random numbers. All nine protected content fingerprints still match the step 0 snapshot; outcome comparisons wait until the engine step is complete.
+- AUTONOMOUS: keep the existing four-week billing calendar, with a fixed annual membership term of 52 weeks. Unhappy annual members can stop attending while fees remain due; packs keep owed visits and integer-cent value until service or expiry.
+- AUTONOMOUS: preparation hours and elapsed build time are separate. Construction is charged when work starts; loan-paid items are consumed once, and an already accepted loan reimburses construction bridged from cash instead of purchasing it twice. The initial inbox choice selects the build plan and is visible in week 1.
+- AUTONOMOUS: setting hours accumulate towards a complete reset; partial hours do not grant an immediate fraction of a fresh wall. Slot capacity is checked when accepting a booking and again at service. The aggregator contract remains distinct from its open slots, with the content-defined exit notice.
