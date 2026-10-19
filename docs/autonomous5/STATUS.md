@@ -2,8 +2,8 @@
 
 ## Current
 
-Step: 2.3.7 Final bot validation green; complete balance and protected measurements running.
-Last commit: HEAD, Plan 5: record six protected matches and corrected bot progress.
+Step: 2.3.8 No-tests portfolio includes VR; complete measurement continues.
+Last commit: HEAD, Plan 5: include the VR temptation in the blind room portfolio.
 Next action: Finish main-3 and judge every Ausgesperrt target with margins before any value tuning. Finish the validation and protected comparisons below; run its event table once after tuning, and reserve the full report for step 6.
 
 ## Checklist
@@ -23,6 +23,9 @@ Next action: Finish main-3 and judge every Ausgesperrt target with margins befor
 - Full tests are green: 79 files, 1,539 passed, 21 skipped; /tmp/plan5-step2-finished-rooms-full-test-2.log, two workers. Browser teardown passed after the first repair (new leisure port 5202 plus lower test concurrency). Lint/typechecks pass; /tmp/plan5-step2-test-port-lint.log.
 - Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. Six protected snapshots and validation are committed; the three abroad snapshots remain running.
 
+- Corrected no-tests strategy: main only, 1,000 `test` seeds, one process. Session 37616; /tmp/plan5-ausgesperrt-no-tests-corrected.log; output tuning/ausgesperrt-no-tests-corrected.md. Use its absolute win rate for T2 instead of main-3’s old no-tests row. No other strategy changed.
+- New bot correction: 34 leisure bot tests and lint/typechecks pass. Seed regeneration runs in session 13265 (/tmp/plan5-no-tests-portfolio-seeds.log); refresh full suite after subsequent value tuning.
+
 ## Open issues
 
 No complete final target measurement yet. No scenario-value/formula tuning rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
@@ -34,6 +37,8 @@ Runtime caches previously proved byte-identical on 30 careful diagnostic runs. M
 Later-step preparation only, outside repo: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 lines), /tmp/plan5-venue-scenes-draft.json (two native SVG scenes). Integrate only after step 2 passes. Current repo content/UI are authoritative; do not recopy old Ausgesperrt /tmp drafts.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: no-tests buys expensive quoted builds first so the four-space limit does not silently remove the VR temptation. See docs/decisions.md, Plan 5 step 2.
 
 - Step 2: unfinished rooms remain in the build queue, and the no-later-loan variant cannot bypass its policy through office finance. See docs/decisions.md, Plan 5 step 2.
 
