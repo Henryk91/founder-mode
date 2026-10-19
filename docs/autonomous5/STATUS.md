@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.3.6 Bots retain unfinished rooms; complete corrected measurement running.
-Last commit: HEAD, Plan 5: finish started leisure rooms before expanding again.
-Next action: Finish main-3 (session 6820, /tmp/plan5-ausgesperrt-main-3.log, tuning/ausgesperrt-main-3.md), all 28 Ausgesperrt strategies, main only, 1,000 test seeds. Main-2 was stopped after the unfinished-room bug; the completed later-loan report is intermediate diagnosis. Finish refreshed seed generation (session 31434, /tmp/plan5-step2-finished-rooms-seeds.log), then rerun full tests after that bot change. Protected main comparisons run in session 17724; /tmp/plan5-protected-step2-progress.log, two scenario processes/two workers each. First two match; all nine fingerprints match. Judge every target before value tuning; event table once after tuning. Full report only in step 6.
+Step: 2.3.7 Final bot validation green; complete balance and protected measurements running.
+Last commit: HEAD, Plan 5: validate completed rooms and record protected comparisons.
+Next action: Finish main-3 and judge every Ausgesperrt target with margins before any value tuning. Finish the validation and protected comparisons below; run its event table once after tuning, and reserve the full report for step 6.
 
 ## Checklist
 
@@ -16,13 +16,22 @@ Next action: Finish main-3 (session 6820, /tmp/plan5-ausgesperrt-main-3.log, tun
 - [ ] Step 5: Griffig (tag plan5-climbing)
 - [ ] Step 6: wrap up (tag plan5-complete)
 
+## Running checks
+
+- Ausgesperrt: all 28 strategies, main only, 1,000 `test` seeds. Session 6820; /tmp/plan5-ausgesperrt-main-3.log; output tuning/ausgesperrt-main-3.md. Quarterly rooms 67.5% is above T2’s 60% target; wait for complete comparisons before tuning.
+- Protected: nine games, main only, 1,000 `test` seeds. Session 17724; /tmp/plan5-protected-step2-progress.log; outputs protected-step2/. Kantino standard/long, Zollstock and Gratwanderung match; five pending. All nine fingerprints match /tmp/plan5-step2-fingerprints.json.
+- Full tests are green: 79 files, 1,539 passed, 21 skipped; /tmp/plan5-step2-finished-rooms-full-test-2.log, two workers. Browser teardown passed after the first repair (new leisure port 5202 plus lower test concurrency). Lint/typechecks pass; /tmp/plan5-step2-test-port-lint.log.
+- Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. The first four protected snapshots and validation are committed; remaining snapshots will be committed as they finish.
+
 ## Open issues
 
-No complete final target measurement yet. Refund-only contribution: careful 5.1%, understaffing 3.4%, quarterly rooms 21.7%, before the accepted-loan ceiling fix; see tuning/ausgesperrt-repaired-core.md. Interrupted diagnostic runs are documented in tuning/ausgesperrt-accounting-diagnosis.md and tuning/ausgesperrt-initial-interrupted.md. No scenario-value/formula tuning rounds consumed.
+No complete final target measurement yet. No scenario-value/formula tuning rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
 
-Full validation: 79 files, 1,539 tests passed, 21 skipped; lint/typechecks pass. This includes 44 leisure engine tests, 33 leisure bot tests, all seed examples, Help/results/post-mortem word checks and 24 browser cases across three stages/four widths/Chromium/WebKit with axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure. Seed regeneration changes only Ausgesperrt. Later-step event copy is drafted outside the repo at /tmp/plan5-venue-events-draft.md; integrate only after step 2 passes.
+Latest focused checks: 44 leisure engine and 33 bot tests pass. The full suite also passes after the unfinished-room bot repair: 79 files / 1,539 tests (21 skipped), with lint/typechecks green. Browser coverage includes Help/results/post-mortem words and 24 cases over three stages, four widths, Chromium/WebKit and axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 
-Runtime cache checks: 40 engine tests pass, including direct equality against uncached reservations and calendar boundaries. Thirty diagnostic careful results match byte for byte (/tmp/plan5-leisure-before.json, /tmp/plan5-leisure-indexed.json); time 8.37 to 5.19 seconds. Main-1 workers predate the caches, so their timing target is not a current runtime measurement. No game values have been tuned yet.
+Runtime caches previously proved byte-identical on 30 careful diagnostic runs. Main-3 timings overlap full tests and protected runs; note contention when judging T12. Diagnostic traces are behaviour checks, not target measurements.
+
+Later-step preparation only, outside repo: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 lines), /tmp/plan5-venue-scenes-draft.json (two native SVG scenes). Integrate only after step 2 passes. Current repo content/UI are authoritative; do not recopy old Ausgesperrt /tmp drafts.
 
 ## For Henry to review (non-blocking)
 
