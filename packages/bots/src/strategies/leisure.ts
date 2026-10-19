@@ -95,7 +95,7 @@ export function leisureWanted(
     canFit('vr_room')
       ? ['vr_room']
       : []
-  return [...new Set([...first, ...support, ...more, ...vr])]
+  return [...new Set([...first, ...started, ...support, ...more, ...vr])]
 }
 
 /** Drop impossible starts before the bank prices a plan; already reserved builds still fit. */

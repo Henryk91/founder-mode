@@ -346,6 +346,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     }
     if (l.application || l.accepted) return
     const runningLoans = l.loans.filter((x) => x.status === 'running')
+    if (cfg.leisure && rule.leisure?.laterLoans === false && runningLoans.length > 0) return
     const monthly = view.company.monthlyFixedCostsCents
     const cash = view.company.cashCents
     // What the plan needs: products not yet shipped, and a buffer of fixed costs.

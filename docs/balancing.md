@@ -5219,3 +5219,10 @@ This is diagnosis before value tuning, not the final scenario balance. See
 [the defect record](autonomous5/tuning/ausgesperrt-accounting-diagnosis.md).
 The complete main run with corrected room financing is in progress. No event
 table or full report ran; the full report remains reserved for step 6.
+
+The subsequent **main-only, two-strategy, 1,000-test-seed** loan diagnostic measured
+11.7% careful against 2.7% retained-cash finance (+9.0 ±2.0 points). It exposed an
+unfinished-room bot deadlock; the cash-only policy also allowed office finance.
+Both bot errors are now fixed, and these figures remain intermediate diagnosis.
+See [the loan diagnostic](autonomous5/tuning/ausgesperrt-later-loan.md). Main-3
+measures all 28 corrected strategies before any scenario values are tuned.

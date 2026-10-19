@@ -38,3 +38,22 @@ accordingly. The next complete main measurement must include that bot fix.
 
 No scenario-value or formula tuning rounds have been consumed. Correctness repairs
 and sensible bot play precede tuning under plan section 1.7.
+
+## Following construction through
+
+Main-2 completed six 1,000-seed strategies before a further bot defect was found:
+one room 0.8%, quarterly 33.3%, theme blind 9.6%, no daytime 8.5%, early VR 20.7%,
+careful 11.7%. The remaining simulations were deliberately stopped. Its log is
+`/tmp/plan5-ausgesperrt-main-2.log`; it did not write a complete report.
+
+A partly prepared room dropped out of the bot’s wanted list as soon as it counted
+as started. The careful policy then waited for every started room to finish, while
+never allocating that room more preparation. Started rooms now remain in the list.
+A direct test covers an unfinished second room both with new and known freshness.
+Thirty diagnostic seeds complete two to four rooms and include 15 wins; this small
+sample checks behaviour, not targets. A regression also exposed office-stage finance
+bypassing the cash-only variant, now blocked after its first running loan. The
+same failure passed after the first repair; all 33 leisure bot tests pass.
+
+Main-3 is the first complete-main attempt with all these bot corrections and the
+refund repair, including the real no-later-loan variant. Values remain untouched.

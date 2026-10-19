@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.3.5 Correctness repairs and complete validation are green; balance measurement running.
-Last commit: HEAD, Plan 5: measure optional room loans and explain refunds.
-Next action: Finish complete main measurement (session 73208, /tmp/plan5-ausgesperrt-main-2.log, tuning/ausgesperrt-main-2.md) and the new paired loan comparison (session 53242, /tmp/plan5-ausgesperrt-later-loan.log). Both use 1,000 test seeds, main only. Use the loan report for T15 and leisure split margins; main-2 workers predate those reporting fixes but use all gameplay fixes. Judge every target before tuning. Then run the event table once and protected main proofs. Full report only in step 6.
+Step: 2.3.6 Bots retain unfinished rooms; complete corrected measurement running.
+Last commit: HEAD, Plan 5: finish started leisure rooms before expanding again.
+Next action: Finish main-3 (session 6820, /tmp/plan5-ausgesperrt-main-3.log, tuning/ausgesperrt-main-3.md), all 28 Ausgesperrt strategies, main only, 1,000 test seeds. Main-2 was stopped after the unfinished-room bug; the completed later-loan report is intermediate diagnosis. Finish refreshed seed generation (session 31434, /tmp/plan5-step2-finished-rooms-seeds.log), then rerun full tests after that bot change. Protected main comparisons run in session 17724; /tmp/plan5-protected-step2-progress.log, two scenario processes/two workers each. First two match; all nine fingerprints match. Judge every target before value tuning; event table once after tuning. Full report only in step 6.
 
 ## Checklist
 
@@ -25,6 +25,8 @@ Full validation: 79 files, 1,539 tests passed, 21 skipped; lint/typechecks pass.
 Runtime cache checks: 40 engine tests pass, including direct equality against uncached reservations and calendar boundaries. Thirty diagnostic careful results match byte for byte (/tmp/plan5-leisure-before.json, /tmp/plan5-leisure-indexed.json); time 8.37 to 5.19 seconds. Main-1 workers predate the caches, so their timing target is not a current runtime measurement. No game values have been tuned yet.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: unfinished rooms remain in the build queue, and the no-later-loan variant cannot bypass its policy through office finance. See docs/decisions.md, Plan 5 step 2.
 
 - Step 2: T15 compares later-room borrowing with retained-cash finance; T3 applies its 95% split margin. Thresholds stay unchanged. See docs/decisions.md, Plan 5 step 2.
 

@@ -82,6 +82,12 @@ describe('Ausgesperrt players', () => {
     expect(wanted({ ...CAREFUL_TOURISM, leisure: { rooms: 'quarterly' } })).toEqual(['heist'])
     l.history = l.history.slice(1)
     expect(wanted()).toEqual(['heist'])
+    const unfinished = view.product.features.find((f) => f.id === 'horror')!
+    unfinished.progressHours = 5
+    unfinished.remainingHours -= 5
+    expect(wanted()).toEqual(['heist', 'horror'])
+    theme.word = 'known'
+    expect(wanted()).toEqual(['heist', 'horror'])
   })
   it('budgets all rebuilds together with construction finishing this week', () => {
     const view = getView(createGame(scenario, 'rebuild-budget'))
