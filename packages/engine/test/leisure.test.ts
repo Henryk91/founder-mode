@@ -3,7 +3,7 @@ import { viewConditionValue } from '../src/systems/viewConditions'
 import { describe, expect, it } from 'vitest'
 import { ScenarioSchema, EventSchema, loadScenario } from '@founder-mode/content'
 import { respond } from '../src/systems/inbox'
-import { priceFor } from '../src/systems/bookings'
+import { applyBookings, priceFor } from '../src/systems/bookings'
 import { canFinance, settleLoans } from '../src/systems/loan'
 import { clonePlan, validatePlan } from '../src/plan'
 import { createGame, endWeek, getView, replay, toSave } from '../src/index'
@@ -611,6 +611,44 @@ describe('leisure integration boundaries', () => {
       }).success,
     ).toBe(false)
   })
+
+  it.each(['company', 'flexible', 'strict', 'served'] as const)(
+    'settles advance deposits correctly for %s reservations',
+    (mode) => {
+      const scenario = leisureScenario()
+      for (const segment of Object.values(scenario.bookings.segments)) {
+        segment.base = { min: 0, max: 0 }
+        segment.cancel = mode === 'flexible' || mode === 'strict' ? 1 : 0
+      }
+      const s = open(createGame(scenario, 'deposit-settlement'))
+      s.bookings!.policy = mode === 'strict' ? 'strict' : 'flexible'
+      s.bookings!.bookings = [booking({ bookedWeek: 0, depositCents: 5000 })]
+      const next = plan({
+        bookings: {
+          shifts: mode === 'company' ? {} : { guide: 1 },
+          founderShifts: {},
+          prices: {},
+          policy: null,
+          platform: null,
+          partnerships: [],
+          outreach: {},
+        },
+      })
+      const original = structuredClone(s)
+      const result = applyBookings(s, next, rng())
+      expect(result.state.bookings!.bookings[0]!.status).toBe(
+        mode === 'company'
+          ? 'company_cancelled'
+          : mode === 'flexible'
+            ? 'cancelled'
+            : mode === 'strict'
+              ? 'cancelled_paid'
+              : 'served',
+      )
+      expect(result.revenueCents).toBe(mode === 'company' || mode === 'flexible' ? -5000 : 5000)
+      expect(s).toEqual(original)
+    },
+  )
 
   it('rechecks the particular slot at service, even when another slot still has space', () => {
     const c = leisureConfig()
