@@ -1,3 +1,5 @@
+import { conditionValue } from '../src/systems/conditions'
+import { viewConditionValue } from '../src/systems/viewConditions'
 import { describe, expect, it } from 'vitest'
 import { ScenarioSchema, EventSchema, loadScenario } from '@founder-mode/content'
 import { respond } from '../src/systems/inbox'
@@ -15,6 +17,7 @@ import {
   leisureRoom,
   leisureValid,
   leisureVisits,
+  loseLeisureInstructor,
 } from '../src/systems/leisure'
 import type { Booking, GameState, LeisureMember, WeekPlan } from '../src/types'
 import { plan } from './helpers'
@@ -567,5 +570,100 @@ describe('opening choices and construction finance', () => {
     expect(reimbursement.state.loan!.bought ?? []).not.toContain('basic_ordering')
     expect(canFinance(bridged, 'basic_ordering')).toBe(false)
     expect(bridged).toEqual(original)
+  })
+})
+
+describe('instructors and observable event conditions', () => {
+  it('honours terms and notice when the most-followed teacher leaves, and exposes only the observed loss', () => {
+    let s = start(open(game({ instructors: { guide: { min: 1, max: 1 } } })))
+    s = {
+      ...s,
+      bookings: {
+        ...s.bookings!,
+        leisure: {
+          ...s.bookings!.leisure!,
+          members: [
+            member(),
+            member({ id: 'annual', offerId: 'supplier_portal', termUntil: 53, priceCents: 8000 }),
+          ],
+        },
+      },
+    }
+    const original = structuredClone(s)
+    const left = loseLeisureInstructor(s, 'most_followed', rng())
+    expect(left.bookings!.leisure!.members).toMatchObject([
+      { inactive: true, noticeUntil: 5, endedWeek: null },
+      { inactive: true, noticeUntil: null, endedWeek: null },
+    ])
+    expect(left.bookings!.leisure!.instructorDepartures[0]).toMatchObject({
+      roleId: 'guide',
+      stopped: 2,
+      pending: 1,
+    })
+    expect(billLeisure(left, rng()).state.bookings!.leisure!.members[0]!.endedWeek).toBeNull()
+    const atNotice = billLeisure({ ...left, week: 5 }, rng())
+    expect(atNotice.state.bookings!.leisure!.members[0]!.endedWeek).toBe(5)
+    expect(atNotice.state.bookings!.leisure!.members[1]!.endedWeek).toBeNull()
+    const view = getView(left).bookings!.leisure!
+    expect(view.instructorDepartures[0]).toMatchObject({ stopped: 2, pending: 1 })
+    expect(JSON.stringify(view)).not.toContain('instructorFollowing')
+    expect(s).toEqual(original)
+  })
+
+  it('reads every leisure condition from facts available in the player view', () => {
+    let s = start(open(game({ instructors: { guide: { min: 1, max: 1 } } })))
+    s = withMember(s, member())
+    s = finishLeisure(s, [booking({ status: 'served', units: 4 })]).state
+    s = loseLeisureInstructor(s, 'guide', rng())
+    const view = getView(s)
+    const paths = [
+      'leisure.open',
+      'leisure.weeksOpen',
+      'leisure.members',
+      'leisure.cancellations',
+      'leisure.packed',
+      'leisure.aggregator',
+      'leisure.checkins',
+      'leisure.holds',
+      'leisure.tired',
+      'leisure.instructorLosses',
+    ] as const
+    for (const path of paths)
+      expect(viewConditionValue(view, path), path).toBe(conditionValue(s, path))
+  })
+})
+
+describe('intro membership cohorts', () => {
+  it('starts a new billing cycle at conversion but keeps the original January cohort', () => {
+    const c = leisureConfig()
+    c.memberships!.invoice_export = {
+      kind: 'intro',
+      priceCents: 4900,
+      serves: ['small_offices'],
+      slots: ['daytime', 'evening'],
+      termWeeks: 0,
+      noticeWeeks: 0,
+      validWeeks: 3,
+      convert: 1,
+    }
+    c.segments.small_offices!.januaryFade = 1
+    const scenario = leisureScenario(c)
+    scenario.bookings.startWeekOfYear = 1
+    let s = start(open(createGame(scenario, 'intro-cohort')))
+    s = beginLeisure(
+      { ...s, week: 6 },
+      bp({ offers: { member_billing: { enabled: true, priceCents: 10000 } } }),
+      rng(),
+    ).state
+    s = withMember(s, member({ offerId: 'invoice_export', priceCents: 4900, expiresWeek: 6 }))
+    const converted = billLeisure(s, rng())
+    expect(converted.revenueCents).toBe(10000)
+    expect(converted.state.bookings!.leisure!.members[0]).toMatchObject({
+      offerId: 'member_billing',
+      joinedWeek: 1,
+      billingWeek: 6,
+      reason: 'january',
+      noticeUntil: 10,
+    })
   })
 })

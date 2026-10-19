@@ -788,6 +788,7 @@ export const LeisureSchema = z
         room: Id.optional(),
       }),
     ),
+    instructors: z.record(Id, ShareRange).optional(),
     memberships: z
       .record(
         Id,
@@ -1075,6 +1076,17 @@ export const CONDITION_PATHS = [
   'tour.turnedAwayWeeks',
   'tour.peakTurnedAwayWeeks',
   'tour.occupancy',
+  'leisure.open',
+  'leisure.weeksOpen',
+  'leisure.members',
+  'leisure.cancellations',
+  'leisure.packed',
+  'leisure.aggregator',
+  'leisure.checkins',
+  'leisure.holds',
+  'leisure.tired',
+  'leisure.instructorLosses',
+
   // Plan 4: the scenario's first asset: 1 when it is owned, leased, shared, none of them, or
   // broken down this week; 0 otherwise or without assets.
   'asset.owned',
@@ -1177,6 +1189,7 @@ export const EffectSchema = z.discriminatedUnion('type', [
   // The investors' confidence moves by this much (0 to 1). Nothing happens without investors.
   z.object({ type: z.literal('investorConfidence'), delta: z.number(), ...fx }),
   z.object({ type: z.literal('leisureStart'), products: z.array(Id).min(1), ...fx }),
+  z.object({ type: z.literal('leisureInstructor'), role: Id, ...fx }),
   // Plan 4: the answer to a concession's tender (docs/abroad-mechanics.md section 6).
   z.object({ type: z.literal('tender'), bid: z.enum(['higher', 'same', 'hotel']), ...fx }),
   // Plan 4: an asset leased, shared or given up (buying is its purchase product). Ending a lease
@@ -1633,6 +1646,8 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     }
     const leisure = bk.leisure
     if (leisure) {
+      for (const id of Object.keys(leisure.instructors ?? {}))
+        if (!bk.roles[id]) issue(`unknown instructor ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.segments))
         if (!bk.segments[id]) issue(`unknown leisure segment ${id}`, ['bookings', 'leisure'])
       for (const map of [
@@ -1660,15 +1675,24 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         for (const id of Object.keys(map ?? {}))
           if (!bk.segments[id]) issue(`unknown leisure segment ${id}`, ['bookings', 'leisure'])
     }
-    for (const event of s.events)
-      for (const choice of event.choices)
-        for (const effect of choice.effects)
+    for (const event of s.events) {
+      for (const choice of event.choices) {
+        for (const effect of choice.effects) {
+          if (
+            effect.type === 'leisureInstructor' &&
+            (!leisure?.instructors ||
+              (effect.role !== 'most_followed' && !leisure.instructors[effect.role]))
+          )
+            issue('instructor effect needs a leisure instructor', ['events', event.id])
           if (effect.type === 'leisureStart') {
             if (!event.once || event.from !== 'none')
               issue('initial build choices must be once, from none', ['events', event.id])
             if (!leisure || effect.products.some((id) => !leisure.buildOut?.[id]))
               issue('start choice needs leisure build-out products', ['events', event.id])
           }
+        }
+      }
+    }
     const c = bk.conditions
     const stateIds = new Set((c?.states ?? []).map((x) => x.id))
     const slotIds = new Set((c?.slots ?? []).map((x) => x.id))
