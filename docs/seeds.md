@@ -172,12 +172,12 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-1` | 56 |
 | leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-9` | 71 |
 | leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-11` | 56 |
+| ausgesperrt (long) | sustainable | `tourism_careful` | `ending-2` | 104 |
 | ausgesperrt (long) | sustainable | `tourism_careful` | `ending-3` | 104 |
 | ausgesperrt (long) | sustainable | `tourism_careful` | `ending-6` | 104 |
-| ausgesperrt (long) | sustainable | `tourism_careful` | `ending-12` | 104 |
 | ausgesperrt (long) | still_searching | `tourism_careful` | `ending-1` | 104 |
-| ausgesperrt (long) | still_searching | `tourism_careful` | `ending-2` | 104 |
 | ausgesperrt (long) | still_searching | `tourism_careful` | `ending-4` | 104 |
+| ausgesperrt (long) | still_searching | `tourism_careful` | `ending-7` | 104 |
 | ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-1` | 92 |
 | ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-9` | 91 |
 | ausgesperrt (long) | bankrupt | `tourism_no_tests` | `ending-11` | 100 |
@@ -187,6 +187,6 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | ausgesperrt (long) | shut_down | `shut_down@10` | `ending-1` | 10 |
 | ausgesperrt (long) | shut_down | `shut_down@10` | `ending-2` | 10 |
 | ausgesperrt (long) | shut_down | `shut_down@10` | `ending-3` | 10 |
-| ausgesperrt (long) | bank_called | `tourism_reckless` | `ending-14` | 104 |
+| ausgesperrt (long) | bank_called | `tourism_reckless` | `ending-1` | 28 |
 | ausgesperrt (long) | bank_called | `tourism_reckless` | `ending-26` | 60 |
-| ausgesperrt (long) | bank_called | `tourism_reckless` | `ending-31` | 104 |
+| ausgesperrt (long) | bank_called | `tourism_reckless` | `ending-27` | 104 |

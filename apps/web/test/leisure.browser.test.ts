@@ -41,7 +41,7 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('leisure screens', () => {
     server = await createServer({
       root: fileURLToPath(new URL('..', import.meta.url)),
       logLevel: 'silent',
-      server: { port: 5197 },
+      server: { port: 5202 },
     })
     await server.listen()
     url = server.resolvedUrls?.local[0] ?? ''
