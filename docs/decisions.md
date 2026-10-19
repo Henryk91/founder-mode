@@ -837,3 +837,5 @@ Bots and content:
 - AUTONOMOUS: closing every aggregator slot is not leaving its contract; the notice still runs and the membership substitution effect remains until exit. Check-in caps and payouts count only served visits. Refused enquiries are counted by their requested slot, without attributing them to an invented product.
 
 - AUTONOMOUS: local theme pools reserve unplayed groups across every slot and outstanding date. Freshness words reflect depletion as well as wear; visitors outside the local pool still arrive. A rebuilt theme can take bookings for its reopening dates. Optional content-defined review penalties and reset capacity losses model stale products and a morning closed for setting.
+
+- AUTONOMOUS: the indoor calendar shows twelve weeks of actual slot capacity, bookings and holds, including announced construction readiness. Existing course progression and returning graduates use named slots indoors; factual course totals are exposed without introducing weather. Climbing-specific qualifications and course-to-membership conversion remain for its scenario step if needed.

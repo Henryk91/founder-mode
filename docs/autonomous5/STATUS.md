@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 1.4 finite theme pools, freshness and maintenance complete; engine step remains in progress.
-Last commit: HEAD, Plan 5: finite theme pools and maintenance costs.
-Next action: Finish the slot/hold calendar and indoor course/return slot handling with factual ladder totals, then the remaining shared-engine tests. Run full pnpm test and pnpm lint and prove all nine protected main reports unchanged (1,000 seeds, prefix test) before tagging plan5-engine. Source is integrated; /tmp drafts are stale. Research: /tmp/plan5-research-notes.md. Full bot report only in step 6.
+Step: 1.5 slot calendar and indoor course handling complete; engine verification in progress.
+Last commit: HEAD, Plan 5: slot calendar and indoor course progression.
+Next action: Finish full-suite verification (/tmp/plan5-step1-full-test.log, session 54415) and nine protected main comparisons (/tmp/plan5-protected-step1.log, scheduler session 23844). Check fingerprints, write the step 1 report and tag plan5-engine before starting Ausgesperrt. Full bot report only in step 6.
 
 ## Checklist
 
@@ -18,7 +18,7 @@ Next action: Finish the slot/hold calendar and indoor course/return slot handlin
 
 ## Open issues
 
-No new scenario targets measured yet. Current lint/typechecks pass; 30 leisure tests pass; all four bot condition tests passed at the preceding checkpoint. All 181 active content tests passed at the foundation checkpoint. The other 66 non-browser files passed before the two repaired assertions; full phase checks and bot comparisons remain pending. The full bot report is reserved for step 6, once.
+No new scenario targets measured yet. Current lint/typechecks pass; 34 leisure and 18 course tests pass. Full suite and main-only protected comparisons are running. The full bot report is reserved for step 6, once.
 
 ## For Henry to review (non-blocking)
 

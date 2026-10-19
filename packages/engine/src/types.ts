@@ -2662,6 +2662,15 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  slotCalendar: {
+    productId: FeatureId
+    slotId: string
+    week: number
+    capacity: number
+    booked: number
+    held: number
+  }[]
+  courses: (LadderYear & { byYear: LadderYear[] }) | null
   instructorDepartures: { week: number; name: string; stopped: number; pending: number }[]
   openingWeek: number | null
   buildChoice: FeatureId[]

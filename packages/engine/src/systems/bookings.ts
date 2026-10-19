@@ -992,9 +992,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     let units = 0
     let direct = 0
     for (const r of returns.filter((x) => x.askWeek <= week)) {
+      const slot = leisureSlot(state, r.segmentId, rng)
       const pick = r.products
         .filter((id) => sells(state, id, r.targetWeek))
-        .map((id) => ({ id, free: roomFor(r.segmentId, id, r.targetWeek) }))
+        .map((id) => ({ id, free: roomFor(r.segmentId, id, r.targetWeek, slot) }))
         .filter((o) => o.free >= r.units)
         .sort((x, y) => y.free - x.free)[0]
       if (!pick) {
@@ -1011,6 +1012,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         channel: r.channel,
         bookedWeek: week,
         status: 'booked',
+        ...(slot ? { slotId: slot } : {}),
       })
       held.set(
         heldKey(pick.id, r.targetWeek),
@@ -1051,9 +1053,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       voucherWeeks[v.id] = null
       continue
     }
+    const slot = leisureSlot(state, v.segmentId, rng)
     const pick = Object.entries(cfg.products)
       .filter(([id, prod]) => prod.serves.includes(v.segmentId) && sells(state, id, target))
-      .map(([id]) => ({ id, free: roomFor(v.segmentId, id, target) }))
+      .map(([id]) => ({ id, free: roomFor(v.segmentId, id, target, slot) }))
       .filter((o) => o.free >= v.units)
       .sort((x, y) => y.free - x.free)[0]
     if (!pick) {
@@ -1071,6 +1074,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       bookedWeek: week,
       status: 'booked',
       voucherId: v.id,
+      ...(slot ? { slotId: slot } : {}),
     })
     held.set(heldKey(pick.id, target), (held.get(heldKey(pick.id, target)) ?? 0) + v.units)
     if (s.capacityShare) {
@@ -1596,9 +1600,12 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       if (next) {
         const n = Math.min(x.units, randomRound(x.units * next.share, rng))
         const w = week + 1
+        const slot = cfg.leisure && n > 0 ? leisureSlot(state, x.segmentId, rng) : undefined
         const pick =
           n > 0 && w <= state.scenario.maxWeeks
-            ? next.products.filter((id) => sells(state, id, w)).find((id) => room(id, w) >= n)
+            ? next.products
+                .filter((id) => sells(state, id, w))
+                .find((id) => (cfg.leisure ? roomFor(x.segmentId, id, w, slot) : room(id, w)) >= n)
             : undefined
         if (pick) {
           bookings.push({
@@ -1611,6 +1618,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
             channel: x.channel,
             bookedWeek: week,
             status: 'booked',
+            ...(slot ? { slotId: slot } : {}),
           })
           held.set(heldKey(pick, w), (held.get(heldKey(pick, w)) ?? 0) + n)
           sameStay += n

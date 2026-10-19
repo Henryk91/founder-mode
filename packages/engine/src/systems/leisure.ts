@@ -223,6 +223,8 @@ export function leisureOpen(s: GameState, id: string, week: number): boolean {
 export function leisureCapacity(s: GameState, id: string, slot: string, week: number): number {
   const p = cfgOf(s)?.products[id]
   if (!p || !readyAt(s, id, week) || !leisureOpen(s, id, week)) return 0
+  const required = s.scenario.bookings?.products[id]?.requires
+  if (required && !readyAt(s, required, week)) return 0
   const classes = p.classPlaces ? (s.bookings?.leisure?.timetable[id]?.[slot] ?? 0) : 1
   const base = p.classPlaces ? classes * p.classPlaces : (p.capacity[slot] ?? 0)
   const total = p.classPlaces
@@ -451,7 +453,64 @@ export function leisureView(s: GameState): LeisureView | null {
   const recent = l.weeks.filter((w) => w.week > s.week - 5)
   const active = l.members.filter((m) => m.endedWeek === null)
   const a = l.aggregator
+  const cfg = s.scenario.bookings!
+  const key = (product: string, slot: string, week: number) =>
+    `${cfg.products[product]?.capacityOf ?? product}|${slot}|${week}`
+  const booked = new Map<string, number>()
+  const held = new Map<string, number>()
+  for (const b of s.bookings!.bookings) {
+    if (b.status !== 'booked' || !b.slotId || b.week < s.week || b.week >= s.week + 12) continue
+    const k = key(b.productId, b.slotId, b.week)
+    booked.set(k, (booked.get(k) ?? 0) + b.units)
+  }
+  for (const h of l.holds) {
+    const b = h.booking
+    if (h.status !== 'held' || !b.slotId || b.week < s.week || b.week >= s.week + 12) continue
+    const k = key(b.productId, b.slotId, b.week)
+    held.set(k, (held.get(k) ?? 0) + b.units)
+  }
+  const ladder = s.bookings?.abroad?.ladder ?? []
+  const totals = ladder.reduce(
+    (sum, y) => ({
+      students: sum.students + y.students,
+      sameStay: sum.sameStay + y.sameStay,
+      returnedDirect: sum.returnedDirect + y.returnedDirect,
+      returnedPlatform: sum.returnedPlatform + y.returnedPlatform,
+    }),
+    { students: 0, sameStay: 0, returnedDirect: 0, returnedPlatform: 0 },
+  )
   return {
+    slotCalendar: Object.keys(c.products)
+      .sort()
+      .filter((id) =>
+        s.product.features.some(
+          (f) => f.id === id && (f.shippedWeek !== null || f.readyWeek !== undefined),
+        ),
+      )
+      .flatMap((productId) =>
+        c.slots.flatMap((slot) =>
+          Array.from({ length: 12 }, (_, n) => {
+            const week = s.week + n
+            const k = key(productId, slot.id, week)
+            return {
+              productId,
+              slotId: slot.id,
+              week,
+              capacity: leisureCapacity(
+                s,
+                cfg.products[productId]?.capacityOf ?? productId,
+                slot.id,
+                week,
+              ),
+              booked: booked.get(k) ?? 0,
+              held: held.get(k) ?? 0,
+            }
+          }),
+        ),
+      ),
+    courses: Object.values(cfg.products).some((p) => p.course)
+      ? { ...totals, byYear: ladder.map((y) => ({ ...y })) }
+      : null,
     instructorDepartures: l.instructorDepartures.map((d) => ({
       week: d.week,
       name: s.scenario.bookings!.roles[d.roleId]?.name ?? d.roleId,
