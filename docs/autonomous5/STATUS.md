@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 1.2 membership and instructor lifecycle complete; shared engine step remains in progress.
-Last commit: HEAD, Plan 5: membership departures and observable event conditions.
-Next action: Complete aggregator lifecycle/cannibalisation tests, slot-level newly rejected requests, indoor course/return slot handling and factual ladder totals, the slot calendar, and remaining freshness/hold/build tests. Then run full pnpm test and pnpm lint and prove all nine protected main reports unchanged (1,000 seeds, prefix test) before tagging plan5-engine. Source is integrated; /tmp drafts are stale. Research: /tmp/plan5-research-notes.md. Full bot report only in step 6.
+Step: 1.3 aggregator lifecycle and slot lost-demand reporting complete; engine step remains in progress.
+Last commit: HEAD, Plan 5: aggregator lifecycle and slot lost demand.
+Next action: Finish finite theme-pool/freshness and refresh tests, indoor course/return slot handling with factual ladder totals, and the slot/hold calendar. Then run full pnpm test and pnpm lint and prove all nine protected main reports unchanged (1,000 seeds, prefix test) before tagging plan5-engine. Source is integrated; /tmp drafts are stale. Research: /tmp/plan5-research-notes.md. Full bot report only in step 6.
 
 ## Checklist
 
@@ -18,7 +18,7 @@ Next action: Complete aggregator lifecycle/cannibalisation tests, slot-level new
 
 ## Open issues
 
-No new scenario targets measured yet. Current lint/typechecks pass; 23 leisure tests and all four bot condition tests pass. All 181 active content tests passed at the foundation checkpoint. The other 66 non-browser files passed before the two repaired assertions; full phase checks and bot comparisons remain pending. The full bot report is reserved for step 6, once.
+No new scenario targets measured yet. Current lint/typechecks pass; 27 leisure tests pass; all four bot condition tests passed at the preceding checkpoint. All 181 active content tests passed at the foundation checkpoint. The other 66 non-browser files passed before the two repaired assertions; full phase checks and bot comparisons remain pending. The full bot report is reserved for step 6, once.
 
 ## For Henry to review (non-blocking)
 

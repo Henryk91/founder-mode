@@ -351,6 +351,7 @@ export function beginLeisure(
   }
   const bookings = input.bookings!.bookings.map((b) => ({ ...b }))
   const row: LeisureWeek = {
+    turnedAway: {},
     week,
     joined: 0,
     cancelled: 0,
@@ -426,6 +427,7 @@ export function leisureView(s: GameState): LeisureView | null {
     buildChoice: [...l.buildChoice],
     slots: c.slots.map((x) => ({ ...x })),
     load: (l.weeks.at(-1)?.slots ?? []).map((x) => ({ ...x })),
+    turnedAwayBySlot: { ...l.weeks.at(-1)?.turnedAway },
     members: entries(c.memberships ?? {}).map(([id, offer]) => {
       const members = active.filter((m) => m.offerId === id)
       return {
@@ -533,7 +535,11 @@ export function leisureView(s: GameState): LeisureView | null {
         places: p.classPlaces!,
         classes: { ...l.timetable[id] },
       })),
-    history: l.weeks.map((w) => ({ ...w, slots: w.slots.map((x) => ({ ...x })) })),
+    history: l.weeks.map((w) => ({
+      ...w,
+      turnedAway: { ...w.turnedAway },
+      slots: w.slots.map((x) => ({ ...x })),
+    })),
   }
 }
 
@@ -876,7 +882,9 @@ export function leisureVisits(
           weeks: original.weeks.map((w) => {
             if (w.week !== week) return w
             const slots = w.slots.map((x) => ({ ...x }))
+            const turnedAway = { ...w.turnedAway }
             for (const d of denied) {
+              turnedAway[d.slotId] = (turnedAway[d.slotId] ?? 0) + d.units
               const row = slots.find((x) => x.productId === d.productId && x.slotId === d.slotId)
               if (row) row.turnedAway += d.units
               else
@@ -889,7 +897,7 @@ export function leisureVisits(
                   load: 'quiet',
                 })
             }
-            return { ...w, slots }
+            return { ...w, slots, turnedAway }
           }),
         },
       },
@@ -1117,4 +1125,16 @@ export function loseLeisureInstructor(input: GameState, chosen: string, rng: Rng
       },
     },
   }
+}
+
+/** A rejected enquiry has a known slot, not a sold product or an inferred theme. */
+export function recordLeisureTurnAway(input: GameState, slotId: string, units: number): GameState {
+  const l = input.bookings?.leisure
+  if (!l) return input
+  const weeks = l.weeks.map((w) =>
+    w.week === input.week
+      ? { ...w, turnedAway: { ...w.turnedAway, [slotId]: (w.turnedAway[slotId] ?? 0) + units } }
+      : w,
+  )
+  return { ...input, bookings: { ...input.bookings!, leisure: { ...l, weeks } } }
 }

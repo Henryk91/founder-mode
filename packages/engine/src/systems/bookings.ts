@@ -14,6 +14,7 @@ import {
   leisureVisits,
   finishLeisure,
   holdLeisure,
+  recordLeisureTurnAway,
 } from './leisure'
 import type { OfficeStage } from '@founder-mode/content'
 import type { BookingsConfig, Scenario, WeatherState } from '@founder-mode/content'
@@ -932,6 +933,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         : 0
       if (!pick) {
         lost += size
+        if (slot && cfg.leisure) {
+          state = recordLeisureTurnAway({ ...state, bookings: b }, slot, size)
+          b = state.bookings!
+        }
         // Guests a partner sent and you could not take complain about it.
         if (i >= ownRequests && only === null) sentLost++
         continue
