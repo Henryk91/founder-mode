@@ -20,6 +20,48 @@ import { CAREFUL_TOURISM } from '../src/strategies/tourism'
 describe('Ausgesperrt players', () => {
   const scenario = loadScenario('ausgesperrt', 'long')
   const strategies = TOURISM_STRATEGIES.filter((s) => playsIn(s, scenario))
+  it('uses existing permanent shifts before adding seasonal contracts', () => {
+    const state = createGame(scenario, 'contract-coverage')
+    state.week = 20
+    state.company.cashCents = 100000000
+    state.bookings!.contracts = [
+      {
+        id: 'existing',
+        roleId: 'game_master',
+        kind: 'permanent',
+        name: 'Test worker',
+        startWeek: 1,
+        endWeek: null,
+      },
+    ]
+    state.product.features.find((f) => f.id === 'heist')!.shippedWeek = 1
+    state.bookings!.leisure!.openingWeek = 1
+    state.bookings!.bookings = ['daytime', 'evening', 'weekend'].map((slotId) => ({
+      id: slotId,
+      productId: 'heist',
+      segmentId: 'locals',
+      week: 20,
+      units: 10,
+      priceCents: 12500,
+      channel: 'direct' as const,
+      bookedWeek: 19,
+      status: 'booked' as const,
+      slotId,
+    }))
+    const view = getView(state)
+    expect(view.bookings!.contracts[0]!.working).toBe(true)
+    const player = strategies
+      .find((s) => s.id === 'tourism_careful')!
+      .create(scenario, 'contract-coverage')
+    for (const week of [20, 21, 22]) {
+      view.week = week
+      const plan = player.plan(view)
+      expect(plan.bookings!.hire ?? []).not.toContainEqual({
+        roleId: 'game_master',
+        kind: 'seasonal',
+      })
+    }
+  })
   it('keeps the brochure-led portfolio temptation inside its physical-space limit', () => {
     const view = getView(createGame(scenario, 'blind-portfolio'))
     const themes = scenario.bookings!.leisure!.opening!.areas

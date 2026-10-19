@@ -632,10 +632,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         const seasonalShifts = bv.contracts
           .filter((c) => c.roleId === r.id && c.kind === 'seasonal' && c.working)
           .reduce((t, c) => t + c.shifts, 0)
-        if (
-          recentAvg - seasonalShifts >= breakEvenShifts(seasonal) &&
-          affordable(seasonal.centsPerWeek)
-        ) {
+        const covered = cfg.leisure
+          ? bv.contracts
+              .filter((c) => c.roleId === r.id && c.working)
+              .reduce((t, c) => t + c.shifts, 0)
+          : seasonalShifts
+        if (recentAvg - covered >= breakEvenShifts(seasonal) && affordable(seasonal.centsPerWeek)) {
           hire.push({ roleId: r.id, kind: 'seasonal' })
           continue
         }
