@@ -228,3 +228,5 @@ These precede balancing; measured adjustments will be added here.
 
 Room prices, rebuilds, local pools, demand, seasonal curves and platform commission otherwise retain the spec's starting estimates. There are 48 authored decision events plus the first-theme choice and reception offer, and 150 interview quotes.
 
+
+Advance payments are refunded if the company cancels a game or the guest cancels under flexible terms. Strict guest cancellations retain the agreed charge. This accounting repair was found by tracing the initial understaffing bot result; it changes no price or demand estimate.

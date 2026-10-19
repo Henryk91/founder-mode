@@ -1533,6 +1533,14 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     })
   }
   // Money: paid on the day (net of commission), or invoiced.
+  // Leisure advances are liabilities until service. Flexible guest cancellations and every
+  // company cancellation return them; strict guest cancellations keep the agreed payment.
+  if (cfg.leisure) {
+    for (const x of due) {
+      if (x.status === 'cancelled' || x.status === 'company_cancelled')
+        out.revenueCents -= x.depositCents ?? 0
+    }
+  }
   const invoices: Invoice[] = []
   const earned = { ...(b.earned ?? {}) }
   const payWeeks = { ...state.hidden.payWeeks }
