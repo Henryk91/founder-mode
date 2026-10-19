@@ -813,3 +813,8 @@ Bots and content:
 ## Tuning 1, step 6: wrap up
 
 - The full report ran once per scenario (1,000 seeds, 10,000 wide, event tables). A single process for every scenario ran out of memory in its event part and wrote nothing; Kantino long was completed with its team and funding parts, which the default parts leave out. Every tourism section matches its step's main-part runs; Kantino, Zollstock and Kantino long games are unchanged from plan 4. `pnpm seeds` changed nothing.
+
+## Plan 5, step 0: setup and baseline
+
+- AUTONOMOUS: kept and committed the pre-existing CLAUDE.md full-report clarification separately (299c9ee). Initial lint required formatting three tracked files (labels, Rückenwind scenario YAML, cruise tests); only whitespace and wrapping changed, so protected game values remain unchanged.
+- AUTONOMOUS: browser tests run with local server permission because the sandbox refused localhost listeners. Initial verification: 76 test files passed, 1,396 tests passed and 18 skipped; lint and typechecks passed. Baselines use main only, 1,000 seeds with prefix test, two workers and one scenario per process; the full report remains reserved for step 6.

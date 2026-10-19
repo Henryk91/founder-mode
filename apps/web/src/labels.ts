@@ -1336,8 +1336,7 @@ const labels = {
     '1 week was cancelled below your minimum to sail: {lost} of guests given up to save {saved} of sailing costs, and cancelling cost {cost}.',
   'pm.guests.cancelledWeeks.other':
     '{n} weeks were cancelled below your minimum to sail: {lost} of guests given up to save {saved} of sailing costs, and cancelling cost {cost}.',
-  'pm.guests.cancelledWeek':
-    'Week {week}, cabins sold {cabins}: {lost} given up, {saved} saved.',
+  'pm.guests.cancelledWeek': 'Week {week}, cabins sold {cabins}: {lost} given up, {saved} saved.',
   'pm.guests.cancelledLesson':
     'Once the boat is paid for, a half-empty week costs little more than food and fuel. A cancelled one earns nothing.',
   'pm.guests.rating': 'rated {rating} from {reviews} reviews',
