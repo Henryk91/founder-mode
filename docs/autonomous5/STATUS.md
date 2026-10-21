@@ -3,8 +3,8 @@
 ## Current
 
 Step:4 isolated engine groundwork and unregistered content pass.
-Last commit:HEAD,Plan5:prepare researched fitness content and paid-offer contracts.
-Next action:Merge main75f180b(completed/tagged venue) into this fitness branch,then implement front-desk administrative relief,register content/drawings and finish sensible bots/UI. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
+Last commit:HEAD,Plan5:bring completed venue history into fitness work.
+Next action:Implement front-desk administrative relief,register content/drawings and finish sensible bots/UI. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
 
 ## Checklist
 

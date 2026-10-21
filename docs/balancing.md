@@ -5253,3 +5253,50 @@ Plan 5 corrected Ausgesperrt baseline: [main-4](autonomous5/tuning/ausgesperrt-m
 Ausgesperrt first value round: [report](autonomous5/tuning/ausgesperrt-values-1.md), main only, 1,000 `test` seeds, all 28 strategies. Careful 55.7% ±3.1; market spread 43.5 ±6.7 points. Twelve targets still fail; T16 and X2 pass at the limit. One value round remains; no formula round, event table or full report has run.
 
 Ausgesperrt final step 2 value measurement: [main report](autonomous5/tuning/ausgesperrt-values-2.md), all 28 strategies, main only, 1,000 `test` seeds. Careful 42.8% ±3.1, top 48.4%; all four escape targets pass (X1 at the limit). Eight tourism targets remain open. Both value rounds used; formula allowance deliberately unused. Event table/full tests follow; the full bot report has not run.
+
+Ausgesperrt step2 is complete: [event table](autonomous5/tuning/ausgesperrt-events.md), events only,1,000 `test` seeds,115 forced-answer strategies;101,267 of115,000 games played, remainder reused. The47 judged event rankings split24 cheapest/23 more-effort point leaders, with no significance claim from small differences. [Step report](autonomous5/reports/step2-escape.md) retains the final main outcomes and eight open targets. Full tests and protected proof pass; full bot report remains reserved for step6.
+
+Fabriketage initial isolated draft:[main only](autonomous5/tuning/fabriketage-main-initial.md),28 strategies,1,000 `test` seeds,one worker. Careful25.8%±2.7,top companies-only32.8%±2.9;V3/V4 pass,T15 unmeasured and nine targets fail. No tuning rounds used. [Step3 incomplete report](autonomous5/reports/step3-venue.md) records the mandatory three-repair WebKit heading stop. Draft unmerged;protected proof and complete phase suite pending. No venue event table or full report ran.
+
+
+### Plan5 step3:Fabriketage final main and events
+
+[Final main](autonomous5/venue/fabriketage-values-2.md):main only,all29 strategies,
+1,000 test seeds,two workers. Careful46.6%±3.1,top47.6%,no-tests0.0%.
+T1,T7,T10,V2 pass at the limit;all V targets pass. T3,T6,T11,T13,T14,T15
+remain open with closest evidence/options in
+[step3 report](autonomous5/reports/step3-venue.md). Values2/2,formula deliberately
+unused. All ten protected/earlier-leisure main reports/fingerprints match.
+
+| Target | Description | Value | Margin | Met |
+|---|---|---|---|---|
+| T1 | tourism_careful wins (Sustainable or Growing) 25 to 45% of runs | 46.6% | ±3.1 | yes |
+| T2 | No strategy wins over 60%; tourism_no_tests under 5% | top tourism_always_strict 47.6%; no tests 0.0% | ±3.1; ±0.0 | yes |
+| T3 | tourism_careful win rates across the viable segments lie within 15 points | 62.2 points (companies 72.0%, private_parties 55.7%, weddings 9.7%) | ±5.8 | no |
+| T4 | The first viable-segment group is served by the twelfth week from opening in the median winning run | week 2.0 from opening |  | yes |
+| T5 | Decision news in at least 85% of weeks 1 to 20 and 70% of weeks 53 to 104 | 90.9%; year 2 98.0% |  | yes |
+| T6 | Reading the inbox pays: tourism_careful beats leaving every message to its default by at least 3 points, and blind effort gains at most a third of that | reading +15.4, blind effort +15.9 | ±2.3 | no |
+| T7 | Seasonal pricing pays: tourism_careful (prices from hints per season) beats tourism_price_blind by 2 to 10 points | +1.6 | ±1.6 | yes |
+| T8 | Platform dependence is a trap: tourism_platform_only loses at least 3 points to the careful mix | -37.2 | ±3.0 | yes |
+| T9 | Staffing is a decision: over and understaffing each lose at least 3 points to the careful roster | over -35.2, under -5.6 | ±3.0, ±1.7 | yes |
+| T10 | Reviews matter: tourism_review_blind loses at least 2 points | -1.8 | ±1.4 | yes |
+| T11 | The cancellation policy is a real decision: always strict and always flexible each win in some segment split, and neither is ahead by more than 5 points overall | strict ahead by +1.0 overall; companies +0.0, private_parties +3.2, weddings -0.3 | ±1.5 | no |
+| T12 | 1000 runs complete in under 150 seconds (slowest strategy) | 100.5 s per 1000 runs |  | yes |
+| T13 | A player without scenario-specific bot knowledge can win: tourism_naive_careful wins at least 20% and no more than 10 points less than tourism_careful | 32.4%; gap -14.2 | ±2.9; ±2.2 | no |
+| T14 | Every staff contract kind wins somewhere: on the seeds where its single-kind bot signs it, permanent, seasonal and part time each beat weekly shifts by their paired margin | permanent +0.0 (signed in 12.1%); seasonal -0.3 (signed in 39.7%); part time -0.4 (signed in 45.1%) | ±0.0; ±0.9; ±1.2 | no |
+| T15 | L1. Optional borrowing and retained-cash funding of later venue investments are within 5 points of each other | second loan +40.6 against none (second loan taken in 100.0% of runs) | ±3.1 | no |
+| T16 | L2. Borrowing for a temptation no segment requires (tourism_overborrow: every item the bank lists and the most working capital, early) loses clearly against borrowing only what the business needs: at least 3 points | -46.6 | ±3.1 | yes |
+| T17 | L3. Debt is dangerous: tourism_reckless (the most the bank lends, a temptation included, no repayment-free start) ends with the loan called or bankrupt owing the bank at least 15 points more often than tourism_careful, and tourism_careful misses a payment the business itself could carry in under 3% of runs | ending owing: reckless 100.0%, careful 50.3% (gap +49.7); careful loan-caused misses 2.2% | ±3.1; ±0.9 | yes |
+| T18 | L4. The post-mortem names each loan's interest, what it paid for, and whether it was paid back (tourism_careful's borrowers) | 100.0% borrowed; median interest and fees 21137 EUR |  | yes |
+| E1 | E1. The established look comes once the company has made it: the careful bot reaches it in at least 40% of its winning runs, in clearly fewer of its losing runs, and in year 2 (median week after 52) | 94.0% of 466 wins, 3.2% of 534 losses; median week 55 | ±2.2, ±1.5; ±1.0 | yes |
+| V1 | Holds are a decision: granting every hold freely and granting none each lose at least 2 points to careful | free -4.5; none -4.5 | ±1.8; ±1.9 | yes |
+| V2 | The calendar has two businesses: careful beats companies-only and weddings-only by at least 3 points each | companies -2.4; weddings -46.5 | ±2.7; ±3.1 | yes |
+| V3 | Late events without insulation restrict at least 20% of runs that hold them; careful late events pay more than their attributable costs | restricted 69.6% (397/570); careful mean net 22839 EUR/run | ±3.8; ±1856 EUR | yes |
+| V4 | The roof terrace is a trap: building it in the first year loses at least 3 points | -38.5 | ±3.0 | yes |
+
+[Event table](autonomous5/venue/fabriketage-events.md) ran once,events only,
+1,000 test seeds,111 forced-answer strategies,two workers.86,203/111,000 games
+played,remainder reused;2,113s event wall plus44s automatic baseline.55 cards,
+54 judged:21 cheapest/33 other point leaders,without significance claims;
+turnaround unseen. Full suite86 files/1,691 pass,24 skips;lint passes.
+The full bot report has NEVER run;reserved once for step6. No push.

@@ -890,6 +890,14 @@ Bots and content:
 - AUTONOMOUS: both Ausgesperrt value rounds are complete: main only, 1,000 test seeds, all 28 strategies. Careful 42.8% ±3.1; highest 48.4%; all four escape targets pass, X1 at the limit. Keep eight tourism targets open for step 6. The formula allowance is an upper bound and stays unused by decision: no justified formula is required for playability, and adding a borrowing penalty or magnifying tiny rating differences would distort the lesson. The report preserves every failed target and its options.
 - AUTONOMOUS: corrected demand-unit documentation. Booking base counts room-game units, so company 4–14 means roughly 1.3–4.7 requests at the mean three games per request. Earlier prose incorrectly called those counts enquiries. YAML outcomes stay as measured; do not disguise another value round as a unit repair.
 
+### Plan 5 step 2: phase complete
+
+AUTONOMOUS: complete the once-only event table (events only,1,000 test seeds,115 forced-answer strategies;101,267 games played with unchanged seeds reused). Its47 judged events split24 cheapest/23 more-effort point leaders; small differences are not significant. Three unseen events remain unjudged for this policy. Final targets come from the main-only round2 report; eight issues remain for step6. Protected proof, lint and79 files/1,542 tests pass; tag plan5-escape locally and continue the isolated venue draft. Full report has not run.
+
+### Plan 5 step 3: mandatory stop in isolated draft
+
+AUTONOMOUS: preserve venue UI/source separately at5c8abf2 and stop under section1.2.1 after three repairs still leave the established375px WebKit heading clipped.23/24 browser cases,all16 terminology checks and lint pass;full phase/protected proof remain pending. Initial main(28 strategies,1,000 test seeds) has25.8% careful/32.8% top;no venue value/formula rounds or event table used. Main stays at completed plan5-escape;see reports/step3-venue.md and STATUS.md for evidence/options. Full report has never run.
+
 ## Plan 5, step 3: Fabriketage
 
 - AUTONOMOUS: prepare venue changes in an isolated local worktree while the frozen step 2 event table and full tests run. No merge until the step 2 gate passes; no branch deletion, rewrite or push. Applicable targets are T1–T18, E1 and V1–V4; office targets T19–T22 remain outside scope. The initial gap/adaptation plan is autonomous5/venue/IMPLEMENTATION.md.
@@ -952,6 +960,14 @@ AUTONOMOUS: after corrected contributions,calibrate no-hold acceptance(.35/.15/.
 AUTONOMOUS: round1 is playable(careful42.7%,top45.0%),with T5 and T13 now passing. Use the second value allowance on paid-hold acceptance(.95/.90/.95),wedding strict acceptance(.65) and unresolved snag penalty(.50). Paired round1 contributions precede these estimates;spec section15 records rationale. Keep quoted costs,demand,lead times and financing unchanged. Conservatively debit round2 to all targets;formula0/1.
 
 AUTONOMOUS: freeze venue round2 values and leave the formula allowance unused by decision,as an upper bound rather than a quota. No justified formula addresses long-lead wedding cash,contract utilisation or startup/later-loan dependency without changing the intended lesson. Main round2 still measures every target;retain failures and closest results for step6. Start the required once-only venue event table on this frozen source,events only,1,000 test seeds,two workers. It can exceed15 minutes;CLAUDE's event-content budget and plan section1.6 explicitly require this run. No full report.
+
+AUTONOMOUS: frozen venue round2 source passes all86 test files/1,691 tests,24 skipped,including both-browser cutoff/axe matrices;lint/typechecks pass. Regenerate189 ending examples and prove every earlier row byte-identical. Record venue fingerprint c042cb5934228e6b at engine0.14.0. The protected proof,final main and once-only event table still run;do not claim the phase complete yet. Fitness preparation stays isolated until the venue gate.
+
+AUTONOMOUS: final venue main(all29 strategies,1,000 test seeds,main only) is46.6%±3.1 careful/47.6% top. All V targets pass;T1,T7,T10,V2 at limit. Six tourism targets remain open with closest evidence/options in reports/step3-venue.md. Both value rounds used;formula deliberately unused. All nine older protected reports match apart from timings;Ausgesperrt and once-only event table continue. No playability stop,no full report. Freeze raw venue baseline/fingerprint for the next step.
+
+AUTONOMOUS: all ten step3 protected/earlier-leisure main comparisons match raw baselines exactly apart from timings,on1,000 test seeds per strategy. Nine old fingerprints and Ausgesperrt ea908900d9f19996 match;engine0.14.0. Retain earlier workers whose only later repair is provably unreachable for these games;report records this gating rationale. Proof raw/compare/json files are committed,logs preserved under /tmp. Event95560 is the remaining phase gate;no full report.
+
+AUTONOMOUS: venue event table completes once:events only,1,000 test seeds,111 strategies,two workers;86,203/111,000 games played,remainder reused;2,113s event wall plus44s automatic baseline.54 judged cards have21 cheapest/33 other point leaders,without significance claims;turnaround unseen. Breakout answer ties staying on its observed subset,so expansion benefit remains a review question. All phase gates pass;merge locally and tag plan5-venue. Full report never run.
 
 ## Plan5 step4: isolated fitness preparation
 
