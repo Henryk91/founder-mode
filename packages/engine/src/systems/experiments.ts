@@ -114,7 +114,14 @@ export function runInterviews(
         rng,
       )
       const mentions = rng.chance(cfg.mentionBase + cfg.mentionPerPain * hidden.pain)
-      const mentionedFeatureId = mentions ? rng.pick(hidden.mustHave) : null
+      const niche = state.scenario.bookings?.leisure?.premiumNiche
+      const mentionedFeatureId =
+        niche?.segments.includes(seg.id) &&
+        rng.chance(state.hidden.bookings?.leisure?.premiumInterest ?? 0)
+          ? niche.feature
+          : mentions
+            ? rng.pick(hidden.mustHave)
+            : null
       const asked =
         interviewsOf(state.knowledge[seg.id] ?? []).length +
         outcomes.filter((o) => o.evidence.segmentId === seg.id).length

@@ -795,6 +795,22 @@ export const LeisureSchema = z
       }),
     ),
     instructors: z.record(Id, ShareRange).optional(),
+    premiumNiche: z
+      .object({
+        feature: Id,
+        offers: z.array(Id).min(1),
+        segments: z.array(Id).min(1),
+        share: ShareRange,
+        wtpFactor: z.number().positive(),
+      })
+      .optional(),
+    foundingFollowing: z
+      .object({
+        segment: Id,
+        count: rangeOf(z.number().int().nonnegative()),
+        weeks: z.number().int().positive(),
+      })
+      .optional(),
     slotPrices: z
       .record(Id, z.record(Id, z.object({ peak: Cents.positive(), off: Cents.positive() })))
       .optional(),
@@ -961,6 +977,12 @@ export const LeisureSchema = z
     for (const f of Object.values(l.freshness ?? {}))
       for (const id of Object.keys(f.refresh.lostCapacity ?? {}))
         if (!slots.has(id)) issue(`unknown maintenance slot ${id}`)
+    for (const id of l.premiumNiche?.offers ?? [])
+      if (!l.memberships?.[id]) issue(`unknown premium offer ${id}`)
+    for (const id of l.premiumNiche?.segments ?? [])
+      if (!l.segments[id]) issue(`unknown premium segment ${id}`)
+    if (l.foundingFollowing && !l.segments[l.foundingFollowing.segment])
+      issue('unknown founding following segment')
     for (const offer of Object.values(l.memberships ?? {})) {
       for (const id of offer.slots) if (!slots.has(id)) issue(`unknown slot ${id}`)
       for (const id of offer.products ?? [])
@@ -1765,6 +1787,8 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
           if (!bk.products[id]) issue(`unknown noise product ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.slotUpgrades ?? {}))
         if (!featureIds.has(id)) issue(`unknown capacity upgrade ${id}`, ['bookings', 'leisure'])
+      if (leisure.premiumNiche && !featureIds.has(leisure.premiumNiche.feature))
+        issue('unknown premium niche feature', ['bookings', 'leisure'])
       for (const product of Object.values(leisure.products))
         if (product.classPlacesWhen && !featureIds.has(product.classPlacesWhen.feature))
           issue(`unknown class conversion ${product.classPlacesWhen.feature}`, [

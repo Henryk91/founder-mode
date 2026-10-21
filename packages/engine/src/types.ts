@@ -2592,6 +2592,7 @@ export type LeisureNoiseState = {
 
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
 export type LeisureState = {
+  foundingFollowing?: { invited: number; joined: number }
   permitRefunds?: Record<FeatureId, { week: number; cents: number }>
   noise?: LeisureNoiseState
   extras?: Record<FeatureId, LeisureExtraTotals>
@@ -2685,6 +2686,8 @@ export type LeisureWeek = {
   }[]
 }
 export type HiddenLeisure = {
+  premiumInterest?: number
+  foundingFollowing?: number
   instructorFollowing: Record<string, number>
   localPools: Record<FeatureId, number>
   payoutCents: number | null
@@ -2701,6 +2704,7 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  foundingFollowing?: { invited: number; joined: number }
   noise?: {
     complaints: number
     totalComplaints: number

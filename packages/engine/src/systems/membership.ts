@@ -1,3 +1,4 @@
+import type { Rng } from '../rng'
 import type { LeisureConfig } from '@founder-mode/content'
 import type { Booking, GameState } from '../types'
 
@@ -44,6 +45,33 @@ export function leisureReviewPrice(s: GameState, booking: Booking): number {
     : undefined
   const offer = member ? c.memberships?.[member.offerId] : undefined
   return member && offer
-    ? membershipMonthlyCost(s, member.segmentId, offer, member.priceCents)
+    ? membershipMonthlyCost(s, member.segmentId, offer, member.priceCents) /
+        membershipWtp(s, member.segmentId, member.offerId, 1)
     : leisurePriceBasis(s, booking.segmentId, booking.priceCents)
+}
+
+/** A niche is a preference,not another must-have for the whole market. */
+export function chooseMembershipOffer(
+  s: GameState,
+  segmentId: string,
+  offers: [string, Offer][],
+  rng: Rng,
+): [string, Offer] {
+  const niche = s.scenario.bookings!.leisure!.premiumNiche
+  if (!niche?.segments.includes(segmentId)) return rng.pick(offers)
+  const premium = rng.chance(s.hidden.bookings?.leisure?.premiumInterest ?? 0)
+  const preferred = offers.filter(([id]) => niche.offers.includes(id) === premium)
+  return rng.pick(preferred.length ? preferred : offers)
+}
+
+export function membershipWtp(
+  s: GameState,
+  segmentId: string,
+  offerId: string,
+  base: number,
+): number {
+  const niche = s.scenario.bookings?.leisure?.premiumNiche
+  return niche?.segments.includes(segmentId) && niche.offers.includes(offerId)
+    ? base * niche.wtpFactor
+    : base
 }

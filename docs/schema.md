@@ -1153,3 +1153,26 @@ Optional `LeisureState.classCoverage[product][slot]` records actual covered clas
 counts for the week. Public `LeisureView.timetable[].coveredClasses` is a copied
 map of those counts. Original games without the switch receive no new fields
 and keep the original guest-based staffing path.
+
+### Optional premium niche and founding following
+
+`leisure.premiumNiche` names the premium feature/paid offers/segments,a hidden
+run-level interest-share range,and a budget multiplier for that paid premium
+service. `HiddenLeisure.premiumInterest` is drawn only with this block. Its
+customers prefer premium offers when available;actual joins still test the paid
+monthly-equivalent fee. The same premium budget basis applies to price churn
+and service-value reviews. Intro migration uses the same observed-offer eligibility
+and preference routing. Premium service restrictions remain in offer product lists.
+
+Interviews can mention the premium feature from actual underlying niche interest,
+using the existing public mentioned-feature evidence. The share stays hidden;
+players/bots can learn from real mentions and actual paid enrolment,not a seed key.
+
+`leisure.foundingFollowing: {segment,count,weeks}` draws a finite opening cohort
+in `HiddenLeisure.foundingFollowing`. Over the configured first open weeks,it
+adds those people to genuine membership enquiries,independent of advertising.
+The ordinary paid-offer/price test still applies;they are people,not free revenue
+or guaranteed signed members. Optional `LeisureState.foundingFollowing` and
+`LeisureView.foundingFollowing` record only actual introductions and paid joins.
+The total estimate and premium share never enter the public view. Unconfigured
+games draw nothing extra and receive no fields.
