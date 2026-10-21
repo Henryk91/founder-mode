@@ -893,3 +893,7 @@ Bots and content:
 ### Plan 5 step 2: phase complete
 
 AUTONOMOUS: complete the once-only event table (events only,1,000 test seeds,115 forced-answer strategies;101,267 games played with unchanged seeds reused). Its47 judged events split24 cheapest/23 more-effort point leaders; small differences are not significant. Three unseen events remain unjudged for this policy. Final targets come from the main-only round2 report; eight issues remain for step6. Protected proof, lint and79 files/1,542 tests pass; tag plan5-escape locally and continue the isolated venue draft. Full report has not run.
+
+### Plan 5 step 3: mandatory stop in isolated draft
+
+AUTONOMOUS: preserve venue UI/source separately at5c8abf2 and stop under section1.2.1 after three repairs still leave the established375px WebKit heading clipped.23/24 browser cases,all16 terminology checks and lint pass;full phase/protected proof remain pending. Initial main(28 strategies,1,000 test seeds) has25.8% careful/32.8% top;no venue value/formula rounds or event table used. Main stays at completed plan5-escape;see reports/step3-venue.md and STATUS.md for evidence/options. Full report has never run.

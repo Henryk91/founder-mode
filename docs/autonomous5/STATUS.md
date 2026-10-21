@@ -2,80 +2,65 @@
 
 ## Current
 
-Step: 2 complete; continuing step 3 in the isolated venue worktree.
-Last commit: HEAD, Plan 5: finish Ausgesperrt event review and phase gate.
-Next action: Continue /private/tmp/founder-mode-plan5-venue (branch plan5-venue-work, latest bot commit213f74a). Its venue main measurement is complete, UI/browser checks are underway; commit that tested substep and merge after resolving status/decision docs. Main is tagged plan5-escape. Do not restart venue work or rerun the event table. Full report once only in step6.
+Step: 3.6 HARD STOP under plan section1.2.1: WebKit heading test still fails after three repairs.
+Last commit: HEAD, Plan 5: record mandatory venue browser stop and initial results.
+Next action: Stopped. Review the375px WebKit heading and recorded attempts/options before explicitly authorising further repairs. Venue draft is isolated at /private/tmp/founder-mode-plan5-venue,branch plan5-venue-work,UI commit5c8abf2. Do not merge it or run more bots/full reports. Main's completed milestone is plan5-escape(d9381dc).
 
 ## Checklist
 
-- [x] Step 0: set up and baseline (tag plan5-baseline)
-- [x] Step 1: shared engine additions (tag plan5-engine)
-- [x] Step 2: Ausgesperrt (tag plan5-escape)
-- [ ] Step 3: Fabriketage (tag plan5-venue)
-- [ ] Step 4: Schweißperle (tag plan5-fitness)
-- [ ] Step 5: Griffig (tag plan5-climbing)
-- [ ] Step 6: wrap up (tag plan5-complete)
+- [x] Step0: setup/baseline(tag plan5-baseline)
+- [x] Step1: shared engine(tag plan5-engine)
+- [x] Step2: Ausgesperrt(tag plan5-escape)
+- [ ] Step3: Fabriketage
+- [ ] Step4: Schweißperle
+- [ ] Step5: Griffig
+- [ ] Step6: wrap up
 
-## Running checks and open issues
+## Checks and open issues
 
-- Final main measurement complete: all 28 strategies, 1,000 `test` seeds. Careful 42.8% ±3.1; top 48.4%; slowest 128 seconds. Every escape target passes; X1 at the limit. Main result: tuning/ausgesperrt-values-2.md; raw later-step baseline: baseline/ausgesperrt-long.md, fingerprint alongside it.
-- Open: T2 no-tests 22.1%, T3 market spread 32.5 ±7.0, T6 blind effort too helpful, T10 review-blind +4.7, T11 policy split inconclusive, T14 seasonal +1.9 ±2.2, T15 borrowing +16.5, T17 owing gap 3.9. Full values, closest results and options: reports/step2-escape.md. Two value rounds used; formula allowance unused by decision, not claimed exhausted. Revisit all eight once in step 6.
-- Event table complete once: events only,1,000 test seeds,115 forced-answer strategies,101,267/115,000 played/remainder reused;6,492 seconds wall.47 judged events:24 cheapest/23 more-effort point leaders (not significance claims). Three unseen/unjudged. Raw tuning/ausgesperrt-events.md. Full report has not run; reserved for step6.
-- Full tests pass: 79 files, 1,542 passed, 21 skipped; /tmp/plan5-step2-final-full-tests.log, two workers. Final-value lint/typechecks pass; 235 focused tests pass, 21 skipped. Screenshots and all browser checks refreshed.
-- Seed regeneration complete: 171 examples; 172 checks pass. Eight Ausgesperrt rows changed; protected rows byte identical.
-- All nine protected main comparisons and fingerprints match baseline exactly apart from timings, 1,000 `test` seeds per strategy; reports/step2-protected.md and protected-step2/. Neither value round changed engine/shared bots.
-- UI checks: three stages, 375/390/430/1440 px, Chromium/WebKit/axe/cut/words. Help/results/post-mortem words 390/1440. Screenshot refresh in the full suite: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
-- Corrected company demand prose: base 4–14 counts room-games, roughly 1.3–4.7 requests at mean three games. Measured values remain intact; this was a documentation error.
-
-Isolated venue implementation draft: /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work, latest content commit 203a314 (tested engine/content; venue bots/UI pending). Source/dependencies are isolated; merge only after the event table finishes and main tags plan5-escape. Its venue/IMPLEMENTATION.md records targets/gaps/adaptations. Code review found existing forward sales already work for prepared readyWeek builds; reuse and test them.
-
-Later-step preparation only, outside repo; integrate in order after the current phase gate:
-- Venue: /tmp/plan5-venue-prep.md (gaps incl forward sales, assets and ancillary receipts), /tmp/plan5-venue-content-draft/ (PENDING.md), /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 quotes), /tmp/plan5-venue-scenes-draft.json (two SVG scenes). Primary permission sources: /tmp/plan5-research-notes.md, 21 October entry.
-- Fitness: /tmp/plan5-membership-prep.md, /tmp/plan5-fitness-content-draft/, /tmp/plan5-fitness-events-draft.md (48 events), /tmp/plan5-fitness-quotes-draft.json (150 quotes), /tmp/plan5-fitness-scenes-draft.json (two SVG scenes).
-- Climbing: /tmp/plan5-climbing-content-draft/, /tmp/plan5-climbing-events-draft.md (48 events), /tmp/plan5-climbing-quotes-draft.json (150 quotes), /tmp/plan5-climbing-scenes-draft.json (two SVG scenes).
-These drafts do not implement their pending mechanics. Current repo content/UI remain authoritative.
+- Step2 complete:careful42.8%±3.1,top48.4%;all escape targets pass(X1 at limit). Both value rounds used,formula allowance deliberately unused. T2,T3,T6,T10,T11,T14,T15,T17 remain open for the mandatory step6 revisit. Results/options:reports/step2-escape.md.
+- Step2 proof:all nine protected main reports/fingerprints match baseline apart from timings,1,000 test seeds. Full suite79 files/1,542 passed/21 skipped;lint passes. Seeds171 examples/172 checks;protected seed rows unchanged.
+- Step2 event table complete once:events only,1,000 test seeds,115 forced-answer strategies;101,267/115,000 played,remainder reused;6,492 seconds wall.47 judged rankings:24 cheapest/23 more-effort point leaders(no significance claim);three unseen/unjudged. Do not rerun.
+- Venue initial main:28 strategies,1,000 test seeds,main only,506 seconds wall. Careful25.8%±2.7,top32.8%. Raw tuning/fabriketage-main-initial.md;incomplete report reports/step3-venue.md. T3,T5,T6,T7,T10,T11,T14,V1,V2 fail;T15 not measured. No value/formula rounds used. Venue event table has not run.
+- Isolated venue draft:87 engine,221 content(24 skips),68 bot/replay checks pass;lint/typechecks pass.23/24 venue browser cases pass;all16 terminology/Help/results/post-mortem checks pass. Whole-phase suite and fresh protected/Ausgesperrt proof remain pending;draft is unmerged.
+- Screenshots outside repo:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue and founder-mode-leisure.
+- Full bot report has NEVER run;reserved for step6,once. Steps4/5 have preparation drafts only under /tmp/plan5-fitness-* and /tmp/plan5-climbing-*;do not treat them as implementation.
 
 ## For Henry to review (non-blocking)
 
-- Step2 complete, local tag plan5-escape: full tests/protected proof/event table pass. Eight open tourism targets and unjudged events remain documented in reports/step2-escape.md for step6.
-
-- Step 2: playable final values, eight open tourism targets, formula allowance deliberately unused; demand-unit prose corrected. See reports/step2-escape.md and docs/decisions.md.
-
-- Step 2: second and last value round adjusts upkeep, temporary staffing, demand, fault reviews, budget signals and cancellation trade-offs; estimates are in spec section 15 and docs/decisions.md.
-
-- Step 2: first value round uses estimated room upkeep, flexible staffing premium and market-specific demand; see spec section 15 and docs/decisions.md.
-
-- Step 2: all nine protected main comparisons and content/save fingerprints match baseline; see reports/step2-protected.md.
-
-- Step 2: leisure seasonal hiring subtracts every working contract’s coverage, preventing duplicate cover on top of permanent staff. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: bots decline builds beyond the run and rebuilds that cannot repay even at maximum quoted remaining receipts. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: no-tests buys expensive quoted builds first so the four-space limit does not silently remove the VR temptation. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: unfinished rooms remain in the build queue, and the no-later-loan variant cannot bypass its policy through office finance. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: T15 compares later-room borrowing with retained-cash finance; T3 applies its 95% split margin. Thresholds stay unchanged. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: accepting a loan clears the bot’s refusal ceiling so later rooms can obtain larger loans; extended leisure word checks cover Help/results/post-mortem. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: advance deposits are refunded on company or flexible guest cancellation, gated to leisure. Strict guest cancellations retain the agreed price. This fixes an accounting defect, before value tuning. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: careful expansion also responds to packed slots and refusals in three of eight weeks; no hidden demand is used. A deposit-refund defect was found during staffing diagnosis and is next. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: next-room choices use observed freshness; first theme is broad or seeded, never picked from hidden truth. Simultaneous rebuilds share one budget. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: four spaces reserved from design start, minimum two rooms for companies, and prices/open sales by slot. Staff figures include employer costs; other estimates are labelled in spec section 15. See docs/decisions.md, Plan 5 step 2.
-
-- Step 2: same-basement stage 2, company room-game units and separate design/construction time. Targets T1–T18, E1 and X1–X4 apply. See docs/decisions.md, Plan 5 step 2.
-
-- Step 1: lead freelance instructors stand for role-level followings; agreed contract prices stay fixed, and intro conversion preserves signup cohorts. See docs/decisions.md, Plan 5 step 1.
-
-- Step 1: four-week billing, 52-week annual terms, paid-at-start builds, bank reimbursement and cumulative setting work. See docs/decisions.md, Plan 5 step 1.
-
-- Step 0: all nine content/save fingerprints are now captured, alongside the required main-part baselines (1,000 seeds, test). See docs/decisions.md, Plan 5 step 0.
-
-- Step 0: formatting only in three pre-existing files; no game values changed. See docs/decisions.md, Plan 5 step 0. Browser tests require local server permission; initial checks passed (1,396 tests, 18 skipped; lint and typechecks).
+- Required stop:375px WebKit heading remains cut off after three repairs;details/options below. Venue UI/source saved separately in commit5c8abf2.
+- Venue first pass:early guest balances deferred;lower floor is breakout rooms,not a separately booked hall;authored caterer incidents replace supplier selection. Estimates/source corrections and finance/hold/noise decisions are in the draft spec and decisions log;reports/step3-venue.md summarises them.
+- Venue tuning:initial hold values favour no holds in every market;T15 comparison missing. Inspect contributions before using the untouched tuning budget.
+- Ausgesperrt:eight tourism targets remain open despite playable final values;formula allowance deliberately unused. See reports/step2-escape.md and docs/decisions.md.
+- Prior autonomous decisions are preserved in docs/decisions.md,including physical-room limits,deposits,bank/refit timing,contracts and company room-game demand units.
 
 ## Stopped
 
+Plan section1.2.1 requires stopping after three honest repairs of the same failure.
+The established venue company heading clips in WebKit; final reproduction is375px
+across Inbox,Plan,Calendar,Market and Finance. /tmp/plan5-venue-browser-4.log shows
+23 passing cases and this one failure. /tmp/plan5-venue-ui-lint-4.log passes.
+
+Attempts:
+1. Listen for FontFaceSet loadingdone as well as fonts.ready. Still clipped at390px:
+   /tmp/plan5-venue-browser-2.log.
+2. Give the name column a stable flex basis and recheck after layout with requestAnimationFrame.
+   Still clipped at375/390px: /tmp/plan5-venue-browser-3.log.
+3. Measure text-range bounds and scale/shrink using glyph width rather than cached block
+   scrollWidth.390px now passes;375px still clips: /tmp/plan5-venue-browser-4.log.
+A separate calendar landmark defect was fixed by omitting the unused tourism calendar;
+all axe checks now pass. A read-only heading-dimension diagnosis is logged at
+/tmp/plan5-venue-name-diagnosis.log and was not counted as a repair.
+
+Options for a subsequently authorised repair: inspect final375px text-range/scroll
+metrics and flex layout; consider measuring a separate inline text span, or explicitly
+reserve more heading space by hiding the logo before shrinking. Keep the full name,
+minimum12px and existing no-cut test; do not weaken the test or shorten the name solely
+to hide the defect. No fourth repair attempted. The UI draft is committed for review,
+not merged. Shared engine/bot protected proof and the full phase suite remain pending.
+
+Next venue work after this stop is resolved: add the missing T15 cash-funded variant,
+inspect contributions before value tuning (0/2 rounds,0/1 formula used), fix the initial
+hold-value dominance (no-hold conversion currently exceeds free-hold conversion in all
+markets), then finish phase tests/protected proof and the once-only venue event table.
+Steps4,5 and6 remain unfinished. Full report has never run in this plan. No push.
