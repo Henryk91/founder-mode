@@ -94,3 +94,11 @@ in the step report for the mandatory step 6 revisit with its fresh budget.
 Company base values count room-games, not team requests. At the final 4–14 units
 and mean three per request, this is roughly 1.3–4.7 requests before demand factors.
 Documentation is corrected to match the measured units; no third value round occurred.
+
+## Step 2 event table, complete
+
+Once only: parts events,1,000 test seeds,115 forced-answer strategies,two workers.
+101,267/115,000 games played, the rest reused;6,492 seconds wall.47 judged events,
+24 cheapest-answer point leaders and23 more-effort point leaders; no significance
+claim from rankings. Raw report:ausgesperrt-events.md. Full report still reserved
+for step6. No new value/formula round. Main outcomes remain the final round2 table.

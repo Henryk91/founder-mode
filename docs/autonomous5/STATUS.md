@@ -2,15 +2,15 @@
 
 ## Current
 
-Step: 2.5 Final values and full phase tests complete; once-only event table running.
-Last commit: HEAD, Plan 5: record isolated venue engine and content progress.
-Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesperrt-events.log) ; full tests pass (79 files/1,542 tests, 21 skipped). Update reports/step2-escape.md, commit/tag plan5-escape when green, then begin step 3 from a clean tree. Formula allowance deliberately unused; eight targets remain open for step 6. Never rerun the event table or full report to reconfirm.
+Step: 2 complete; continuing step 3 in the isolated venue worktree.
+Last commit: HEAD, Plan 5: finish Ausgesperrt event review and phase gate.
+Next action: Continue /private/tmp/founder-mode-plan5-venue (branch plan5-venue-work, latest bot commit213f74a). Its venue main measurement is complete, UI/browser checks are underway; commit that tested substep and merge after resolving status/decision docs. Main is tagged plan5-escape. Do not restart venue work or rerun the event table. Full report once only in step6.
 
 ## Checklist
 
 - [x] Step 0: set up and baseline (tag plan5-baseline)
 - [x] Step 1: shared engine additions (tag plan5-engine)
-- [ ] Step 2: Ausgesperrt (tag plan5-escape)
+- [x] Step 2: Ausgesperrt (tag plan5-escape)
 - [ ] Step 3: Fabriketage (tag plan5-venue)
 - [ ] Step 4: Schweißperle (tag plan5-fitness)
 - [ ] Step 5: Griffig (tag plan5-climbing)
@@ -20,7 +20,7 @@ Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesp
 
 - Final main measurement complete: all 28 strategies, 1,000 `test` seeds. Careful 42.8% ±3.1; top 48.4%; slowest 128 seconds. Every escape target passes; X1 at the limit. Main result: tuning/ausgesperrt-values-2.md; raw later-step baseline: baseline/ausgesperrt-long.md, fingerprint alongside it.
 - Open: T2 no-tests 22.1%, T3 market spread 32.5 ±7.0, T6 blind effort too helpful, T10 review-blind +4.7, T11 policy split inconclusive, T14 seasonal +1.9 ±2.2, T15 borrowing +16.5, T17 owing gap 3.9. Full values, closest results and options: reports/step2-escape.md. Two value rounds used; formula allowance unused by decision, not claimed exhausted. Revisit all eight once in step 6.
-- Event table running once, parts events, 1,000 `test` seeds, two workers: session 14569, /tmp/plan5-ausgesperrt-events.log. Full report has not run; reserved for step 6.
+- Event table complete once: events only,1,000 test seeds,115 forced-answer strategies,101,267/115,000 played/remainder reused;6,492 seconds wall.47 judged events:24 cheapest/23 more-effort point leaders (not significance claims). Three unseen/unjudged. Raw tuning/ausgesperrt-events.md. Full report has not run; reserved for step6.
 - Full tests pass: 79 files, 1,542 passed, 21 skipped; /tmp/plan5-step2-final-full-tests.log, two workers. Final-value lint/typechecks pass; 235 focused tests pass, 21 skipped. Screenshots and all browser checks refreshed.
 - Seed regeneration complete: 171 examples; 172 checks pass. Eight Ausgesperrt rows changed; protected rows byte identical.
 - All nine protected main comparisons and fingerprints match baseline exactly apart from timings, 1,000 `test` seeds per strategy; reports/step2-protected.md and protected-step2/. Neither value round changed engine/shared bots.
@@ -36,6 +36,8 @@ Later-step preparation only, outside repo; integrate in order after the current 
 These drafts do not implement their pending mechanics. Current repo content/UI remain authoritative.
 
 ## For Henry to review (non-blocking)
+
+- Step2 complete, local tag plan5-escape: full tests/protected proof/event table pass. Eight open tourism targets and unjudged events remain documented in reports/step2-escape.md for step6.
 
 - Step 2: playable final values, eight open tourism targets, formula allowance deliberately unused; demand-unit prose corrected. See reports/step2-escape.md and docs/decisions.md.
 
