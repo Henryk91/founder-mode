@@ -1074,3 +1074,21 @@ rows include the returned fee when present. These are returned liabilities, not 
 new cost subtracted from the late-event contribution. Normal client-decided hold
 releases remain in the ordinary weekly hold counts; restriction releases have
 their separate observed counter. No markers are added to earlier games.
+
+### Permit decisions
+
+Optional `leisure.permits.<build>` supplies a hidden approval chance and a stated
+refundable component no larger than its price. It requires a build-out wait. At
+readiness, the PRNG decides once: approval ships normally; refusal stores optional
+`FeatureProgress.refusedWeek`, removes readiness and prevents retrying that same
+application. The construction charge was paid once at the wait's start (or through
+the existing bank item settlement). A refusal reverses the stated cost once,
+recorded in optional `LeisureState.permitRefunds` by product/week/cents. It is a cost
+refund, not new venue sales. This follows the existing cash-basis expense window;
+capital timing remains part of the plan's documented ending-window limitation.
+
+The optional public build `permit` exposes refundable cents, actual refusal week
+and returned cents, never approval chance. `permit_refused` report entries state
+the returned amount and remaining application cost. Observable condition
+`leisure.permitRefusals` counts actual refusals identically in state and view.
+Unconfigured builds, fields and random draws remain as before.

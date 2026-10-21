@@ -164,6 +164,12 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         name: entry.name,
         week: entry.readyWeek,
       })
+    case 'permit_refused':
+      return label('results.entry.permit_refused', stage, {
+        name: entry.name,
+        refund: formatEuro(entry.refundCents),
+        fee: formatEuro(entry.feeCents),
+      })
     case 'costs_rose':
       return label('results.entry.costs_rose', stage, {
         pct: Math.round((entry.factor - 1) * 100),
@@ -527,6 +533,7 @@ function place(entry: ReportEntry): [Group, number] {
     case 'trips':
       return ['sales', 7]
     case 'licence_applied':
+    case 'permit_refused':
       return ['product', 6]
     case 'costs_rose':
     case 'tender':

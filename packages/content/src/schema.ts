@@ -889,6 +889,9 @@ export const LeisureSchema = z
         }),
       )
       .optional(),
+    permits: z
+      .record(Id, z.object({ approval: Share, refundCents: Cents.nonnegative() }))
+      .optional(),
     // Any one of these completed areas opens the business; optional extra prerequisites.
     opening: z.object({ areas: z.array(Id).min(1), requires: z.array(Id) }).optional(),
     holds: z
@@ -916,6 +919,8 @@ export const LeisureSchema = z
       if (l.noise.insulatedComplaint > l.noise.complaint)
         issue('insulation must not increase complaints')
     }
+    for (const id of Object.keys(l.permits ?? {}))
+      if (!l.buildOut?.[id]) issue('a permit needs its stated build-out wait')
     const upgraded = new Set<string>()
     for (const upgrade of Object.values(l.slotUpgrades ?? {})) {
       if (!l.products[upgrade.product]) issue(`unknown upgraded product ${upgrade.product}`)
@@ -1164,6 +1169,7 @@ export const CONDITION_PATHS = [
   'leisure.instructorLosses',
   'leisure.complaints',
   'leisure.restricted',
+  'leisure.permitRefusals',
 
   // Plan 4: the scenario's first asset: 1 when it is owned, leased, shared, none of them, or
   // broken down this week; 0 otherwise or without assets.
@@ -1730,6 +1736,11 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         if (!bk.segments[id]) issue(`unknown leisure segment ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.slotPrices ?? {}))
         if (!bk.segments[id]) issue(`unknown priced segment ${id}`, ['bookings', 'leisure'])
+      for (const [id, permit] of Object.entries(leisure.permits ?? {})) {
+        if (!bk.products[id]) issue(`unknown permit product ${id}`, ['bookings', 'leisure'])
+        else if (permit.refundCents > bk.products[id]!.oneOffCents)
+          issue('permit refund cannot exceed its purchase', ['bookings', 'leisure'])
+      }
       for (const id of Object.keys(leisure.extras ?? {}))
         if (!featureIds.has(id)) issue(`unknown ancillary feature ${id}`, ['bookings', 'leisure'])
       for (const extra of Object.values(leisure.extras ?? {}))

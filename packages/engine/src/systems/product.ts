@@ -55,12 +55,21 @@ export function applyProduct(
   let freelanceBugs = state.team.freelanceBugs
   const features = state.product.features.map((f) => {
     const def = scenario.features.find((x) => x.id === f.id)
+    if (f.refusedWeek !== undefined) return f
     // Plan 4: a licence applied for ships once the authority's wait is over.
     const waitWeeks =
       scenario.bookings?.leisure?.buildOut?.[f.id]?.weeks ??
       scenario.bookings?.products[f.id]?.waitWeeks
     if (f.readyWeek !== undefined && f.shippedWeek === null) {
       if (f.readyWeek > state.week || !def) return f
+      const permit = scenario.bookings?.leisure?.permits?.[f.id]
+      if (permit && !rng.chance(permit.approval))
+        return {
+          id: f.id,
+          progressHours: f.progressHours,
+          shippedWeek: null,
+          refusedWeek: state.week,
+        }
       const bugsAdded = rng.int(def.bugsOnShip.min, def.bugsOnShip.max)
       bugs += bugsAdded
       entries.push({
