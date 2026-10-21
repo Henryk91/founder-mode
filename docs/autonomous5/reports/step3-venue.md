@@ -1,6 +1,6 @@
-# Step 3: Fabriketage, incomplete at mandatory hard stop
+# Step 3: Fabriketage, in progress after resumed stop
 
-The draft is committed separately on `plan5-venue-work`, UI stop commit `5c8abf2`,
+The draft is committed separately on `plan5-venue-work`;the user resumed the UI stop in `5c8abf2`,
 in `/private/tmp/founder-mode-plan5-venue`. It is not merged into main. Main's
 completed milestone is `plan5-escape` at `d9381dc`.
 
@@ -100,3 +100,14 @@ Plan section1.2.1 requires stopping after three honest attempts at the same fail
 test. Font-load listeners,stable flex/post-layout checks,and text-range measurement
 left the375px WebKit name cut off. No fourth repair attempted. STATUS.md records
 logs/options. Steps4,5 and6 are unfinished;the full report has never run. No push.
+
+## Resumed progress
+
+The user requested continuation. The repaired heading passes all80 venue/earlier
+established browser cases and lint. The full suite then identified a real equipment
+preparation prerequisite and missing seed examples:the first is fixed with109
+focused checks passing;the second adds18 venue examples with all190 checks passing
+and every earlier row byte-identical. A venue-specific T15 comparison and no-cost
+reader correction are being measured in a corrected main baseline(all29 strategies,
+1,000 test seeds). No value rounds used. Protected main proof is running;main is
+still at the Ausgesperrt milestone and the venue draft remains isolated.
