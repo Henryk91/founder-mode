@@ -54,7 +54,7 @@ Hard capacity: one event per slot day (two on weekdays with `split_days`, below)
 | `wedding_package` | Wedding package with a coordinator on the day | 15 | none | | weddings |
 | `split_days` | Daytime and evening events on one day (a turnaround crew) | 10 | 400 a turnaround | Two weekday events per day | none |
 | `sound_insulation` | Insulated windows and a sound limiter | 10 | 30,000, the floor closed for 2 weeks | Fewer neighbour complaints | none |
-| `late_licence` | Permission for events after 22:00 | 15 | fee 1,500 (est.), 8 weeks' wait; may come with conditions | Late events possible; they pay about a quarter more | private parties |
+| `late_licence` | Agreed late-event conditions | 15 | fee 1,500 (est.), 8 weeks' wait; may come with conditions | Late events possible; they pay about a quarter more | private parties |
 | `online_enquiries` | An enquiry form with a live calendar | 10 | 50 a month | | none |
 
 Noise rules after 22:00 are strict in residential parts of Munich (my understanding; verify how a late licence works for a venue like this). In the game, late events without insulation raise the hidden chance of a neighbour complaint. Three complaints in a year bring the authority's warning event, and a fourth may restrict events to 22:00 for a season.
@@ -194,4 +194,62 @@ Established accent `#7A3E1D` (check white text reaches 4.5:1).
 
 ## 15. Sources and values as built
 
-The agent fills this in.
+### Initial implementation, 21 October 2026
+
+These are initial estimates, not measured tuning. The draft is isolated until the
+Ausgesperrt gate passes. All T1–T18, E1 and V1–V4 apply unchanged; T4 starts at opening.
+
+[Munich indoor-event notification](https://stadt.muenchen.de/service/info/sicherheit-und-ordnung/1063794/)
+allows authority conditions for fire safety, noise, food and medical cover. It does
+not establish a general right to operate loudly after 22:00.
+[Alcohol-serving permission](https://stadt.muenchen.de/service/info/gaststattenerlaubnis/1063662/n0/)
+for changed premises follows building/use-change clearance.
+[Building permission](https://stadt.muenchen.de/service/info/referat-fur-stadtplanung-und-bauordnung/10331531/)
+is normally required for alterations or changed use. Accordingly the game's late
+permission is a simplified review of operating/noise conditions. Its 1,500 EUR fee,
+eight-week wait, four-complaint threshold and 26-week restriction are gameplay
+estimates. They are not a statement of Munich legal thresholds or processing times.
+
+[Published 2026 venue prices](https://www.muenchenhoch5.de/kosten) list Freiraum at
+5,500 EUR/day, the whole location at 9,500 EUR/day, plus charges. This is a headline
+comparison, not a quote for the fictional print works. It corrects an earlier
+preparation note that called the 5,500 rate the whole location. The game's company
+6,500/5,200, wedding 5,500/4,400 and private 2,800/2,300 peak/off rates remain estimates.
+
+| As built initially | Basis and limits |
+|---|---|
+| One event per booking unit; four weekday events, one Friday, Saturday and Sunday | Weekly aggregate of the original day slots; no simultaneous separate hall |
+| Split weekdays add four events; 400 EUR for each actual served event beyond four | Estimate; empty or cancelled reset capacity costs nothing |
+| Fit-out 90,000 EUR, 40 hours, ten weeks | Estimate; forward sales only for dates after prepared/paid readiness |
+| Furniture 18,000 EUR to buy or 900 EUR per served dinner to hire | Estimate; hire genuinely supplies the wedding must-have |
+| Installed AV 25,000 EUR; insulation 30,000 EUR with two closed weeks | Estimates; known closed dates cannot accept events |
+| Event host 250 EUR per ten-hour shift; technician 300 EUR per event | Freelance estimates, not gross employee wages |
+| Manager 1,050 EUR/week for five shifts; part time 450 for two; seasonal 1,100 for five | Estimated employer-inclusive cost; part time has a modest saving versus separate shifts, permanent payroll continues in quiet weeks |
+| Catering commission 10% of estimated 4,000 EUR wedding / 2,000 EUR private packages | Actual service receipts of 400/200 EUR; no receipts from held or cancelled dates; authored supplier incidents affect reviews |
+| Late-only enquiries 60% of the ordinary private enquiry base; late price x1.25 | Initial estimate using existing own-demand mechanics; keeps a real distinct late product rather than an alias never selected |
+| Complaint draw per late event 0.24; insulated 0.02 | Hidden gameplay estimates; actual complaints, warnings, restriction dates and refunds are public |
+| Roof 120,000 EUR, twelve weeks, 117,000 refundable on refusal | Estimate: remaining 3,000 EUR is application/preparation; decision once, no retry. Small WTP factors 1.03/1.06/1.04 make its outdoor promise real; it remains the named expensive temptation |
+| Breakout rooms below: 35,000 EUR, six weeks, 5,500/month; company requests x1.45 | Same-building office upgrade, estimate. Does not create an independently bookable second event hall |
+| Fixed monthly costs 13,600 EUR before upgrades | Original lease/insurance/utilities/accountant/software/cleaning estimates; no matching current commercial lease quote found |
+
+### First-pass adaptations
+
+Strict guest cancellations retain the advance only. Company-caused and flexible
+cancellations return advances. Guest balances settle on the event date; the
+proposed four-week wedding and one-week private balance collections are deferred.
+Company balances are invoiced after service with 30-day terms. Deposits are paid
+at booking and credited once at settlement. No supplier roster or hidden supplier
+selection is simulated; authored caterer incidents affect real reviews.
+
+The late alias takes five hours of launch preparation, rather than the invalid
+zero-hour draft. It shares the main hall, needs the agreed late conditions and
+uses a technician and host. Actual contribution includes attributable staff,
+service costs, equipment/reset costs and dedicated setup. Shared rent stays in the
+business ledger. Restrictions release affected future dates and refund advances
+once immediately. The paid roof build returns its refundable component once if
+refused; refunds reverse costs in the existing cash-basis accounting. Capital
+purchase/refund timing in the ending window remains a first-pass limitation.
+
+Content currently has four intro cards, 51 authored events including the fit-out,
+furniture and breakout offers, and 150 interview quotes. Sources support only what
+is explicitly attributed above; all other figures remain estimates.

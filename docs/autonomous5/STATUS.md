@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.2 Isolated venue engine draft: deposit-only terms complete.
-Last commit: HEAD, Plan 5: settle venue cancellations from retained deposits.
-Next action: Integrate venue content and source notes, then bots/UI. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge only after main tags plan5-escape. No venue measurement yet; prove nine protected games plus Ausgesperrt unchanged after shared work.
+Step: 3.2 Isolated venue content integrated; bots/UI pending.
+Last commit: HEAD, Plan 5: add Fabriketage content and sourced first-pass adaptations.
+Next action: Implement sensible venue bots and target measurements, then UI/drawings/browser checks. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge only after main tags plan5-escape. No venue measurement yet; prove nine protected games plus Ausgesperrt unchanged after shared work.
 
 ## Checklist
 
@@ -17,6 +17,8 @@ Next action: Integrate venue content and source notes, then bots/UI. Worktree /p
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks and open issues
+
+- Venue content registered only in this isolated branch:51 events, four cards, 150 quotes. All221 content tests pass (24 skips); lint/typechecks green, /tmp/plan5-venue-content-tests-ready.log and /tmp/plan5-venue-content-lint-2.log. Initial schema errors were an unknown invoice condition and sender-dependent payment effect; corrected independently, all green. Values still unmeasured and tuning budget zero.
 
 - Deposit-only terms:87 focused engine tests and lint/typechecks pass, /tmp/plan5-venue-deposit-tests-2.log and /tmp/plan5-venue-deposit-lint-2.log. First test assertion used the wrong invoice field; corrected once. No unresolved failure.
 
@@ -44,6 +46,8 @@ Later-step preparation only, outside repo; integrate in order after the current 
 These drafts do not implement their pending mechanics. Current repo content/UI remain authoritative.
 
 ## For Henry to review (non-blocking)
+
+- Step 3 draft: source corrections, deposit/late/furniture mechanics, estimates and early-balance/breakout adaptations are in scenario-event-venue.md section 15 and docs/decisions.md.
 
 - Step 3 draft: strict cancellations keep deposits, including correct platform/invoiced settlement; optional switch leaves old games intact. See docs/decisions.md.
 

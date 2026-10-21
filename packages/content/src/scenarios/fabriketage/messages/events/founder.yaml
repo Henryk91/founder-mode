@@ -1,0 +1,163 @@
+events:
+  - id: the_sunday_tour
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: A familiar number
+    look: note
+    text: A couple wants a Sunday viewing after you have worked Friday and Saturday nights. They can
+      also come on Tuesday. Your calendar has more flexibility than your knees.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Offer Tuesday
+        hours: 0
+        effects:
+          - type: energy
+            delta: 5
+      - id: leave
+        label: Work the third day without a break
+        hours: 0
+        effects:
+          - type: energy
+            delta: -8
+  - id: the_agency_reunion
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: A familiar number
+    look: note
+    text:
+      Old colleagues invite you for coffee and gossip about autumn budgets. It costs a morning you
+      meant to spend refining the website. They already know people who book rooms.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Meet them with the calendar
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -10000
+          - type: guests
+            segment: companies
+            count: 2
+      - id: leave
+        label: Send the website link
+        hours: 0
+        effects: []
+  - id: the_flattering_award
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: A familiar number
+    look: note
+    text: A magazine offers a plaque for an emerging venue and a paid advertisement. The plaque is
+      included. The audience figures are available on request, apparently after payment.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Ask for evidence before spending
+        hours: 1
+        effects: []
+      - id: leave
+        label: Buy the plaque package
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -90000
+  - id: the_quiet_walk
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: A familiar number
+    look: note
+    text:
+      Nothing is booked this afternoon and the week’s invoices are sent. You could walk by the Isar
+      or rearrange the furniture again. The furniture has expressed no preference.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Take the afternoon off
+        hours: 0
+        effects:
+          - type: energy
+            delta: 8
+      - id: leave
+        label: Find another task
+        hours: 0
+        effects:
+          - type: energy
+            delta: -4
+  - id: the_family_weekend
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: A familiar number
+    look: note
+    text:
+      Your family chooses the only Saturday with two serious enquiries. You can pay a trained host
+      or explain again why owning a venue means never attending anything.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Book cover and go
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -25000
+          - type: energy
+            delta: 8
+      - id: leave
+        label: Run the event yourself
+        hours: 0
+        effects:
+          - type: energy
+            delta: -8
+  - id: the_empty_floor_photograph
+    area: founder
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: A familiar number
+    look: note
+    text:
+      Your friend photographs the floor before a dinner and says it looks like a real business. You
+      see the hire bill, the hold calendar and six hours until the guests arrive. Both descriptions
+      can be correct.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Finish the handover and go home
+        hours: 1
+        effects:
+          - type: energy
+            delta: 4
+      - id: leave
+        label: Stay to check everything twice
+        hours: 0
+        effects:
+          - type: energy
+            delta: -5
