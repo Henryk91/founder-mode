@@ -13,6 +13,7 @@ import type {
   LeisureState,
   LeisureView,
   LeisureWeek,
+  ReportEntry,
   WeekPlan,
 } from '../types'
 
@@ -489,7 +490,7 @@ export function beginLeisure(
   input: GameState,
   plan: WeekPlan,
   rng: Rng,
-): { state: GameState; costsCents: number; revenueCents: number } {
+): { state: GameState; costsCents: number; revenueCents: number; entries?: ReportEntry[] } {
   const c = cfgOf(input)
   const original = input.bookings?.leisure
   if (!c || !original) return { state: input, costsCents: 0, revenueCents: 0 }
@@ -497,6 +498,7 @@ export function beginLeisure(
   const week = input.week
   let costsCents = 0
   let revenueCents = 0
+  const permitEntries: ReportEntry[] = []
   const l: LeisureState = {
     ...original,
     ...(original.slotPrices
@@ -618,6 +620,19 @@ export function beginLeisure(
     else costsCents += input.scenario.bookings!.products[id]?.oneOffCents ?? 0
     l.buildPaid.push(id)
   }
+  for (const [id, permit] of entries(c.permits ?? {})) {
+    const f = input.product.features.find((x) => x.id === id)
+    if (f?.refusedWeek === undefined || l.permitRefunds?.[id] || !l.buildPaid.includes(id)) continue
+    l.permitRefunds = { ...l.permitRefunds, [id]: { week, cents: permit.refundCents } }
+    costsCents -= permit.refundCents
+    permitEntries.push({
+      kind: 'permit_refused',
+      featureId: id,
+      name: input.scenario.features.find((x) => x.id === id)?.name ?? id,
+      refundCents: permit.refundCents,
+      feeCents: (input.scenario.bookings!.products[id]?.oneOffCents ?? 0) - permit.refundCents,
+    })
+  }
   if (
     l.openingWeek === null &&
     c.opening &&
@@ -627,7 +642,12 @@ export function beginLeisure(
     l.openingWeek = week
   l.weeks.push(row)
   const state = { ...input, loan, bookings: { ...input.bookings!, bookings, leisure: l } }
-  return { state, costsCents, revenueCents }
+  return {
+    state,
+    costsCents,
+    revenueCents,
+    ...(permitEntries.length ? { entries: permitEntries } : {}),
+  }
 }
 
 export function leisureView(s: GameState): LeisureView | null {
@@ -842,6 +862,15 @@ export function leisureView(s: GameState): LeisureView | null {
         started: l.buildPaid.includes(id),
         complete: shipped(s, id),
         costCents: s.scenario.bookings!.products[id]?.oneOffCents ?? 0,
+        ...(c.permits?.[id]
+          ? {
+              permit: {
+                refundableCents: c.permits[id]!.refundCents,
+                refusedWeek: f?.refusedWeek ?? null,
+                returnedCents: l.permitRefunds?.[id]?.cents ?? 0,
+              },
+            }
+          : {}),
       }
     }),
     holds: c.holds

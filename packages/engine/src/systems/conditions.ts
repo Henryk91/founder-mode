@@ -101,6 +101,8 @@ const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSe
     ).length,
   'leisure.instructorLosses': (s) => s.bookings?.leisure?.instructorDepartures.length ?? 0,
   'leisure.complaints': venueComplaints,
+  'leisure.permitRefusals': (s) =>
+    s.product.features.filter((f) => f.refusedWeek !== undefined).length,
   'leisure.restricted': (s) =>
     s.bookings?.leisure?.noise?.restrictions.some(
       (r) => r.fromWeek <= s.week && s.week < r.untilWeek,

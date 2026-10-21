@@ -8,8 +8,11 @@ const shipped = (s: GameState, id: string) =>
   s.product.features.some((f) => f.id === id && f.shippedWeek !== null)
 const emptyExtra = (): LeisureExtraTotals => ({ units: 0, receiptsCents: 0, costsCents: 0 })
 
-export function initVenue(c: LeisureConfig): Pick<LeisureState, 'noise' | 'extras'> {
+export function initVenue(
+  c: LeisureConfig,
+): Pick<LeisureState, 'noise' | 'extras' | 'permitRefunds'> {
   return {
+    ...(c.permits ? { permitRefunds: {} } : {}),
     ...(c.noise
       ? {
           noise: {

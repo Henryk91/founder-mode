@@ -610,6 +610,8 @@ export type FeatureProgress = {
   shippedWeek: number | null
   /** Plan 4: a licence applied for, which ships in this week (absent otherwise). */
   readyWeek?: number
+  /** A venue permit refused after its wait; it cannot be rebuilt on the same application. */
+  refusedWeek?: number
 }
 
 export type ProductState = {
@@ -2020,6 +2022,13 @@ export type ReportEntry =
   | { kind: 'graduates_returned'; units: number; direct: number }
   /** Plan 4: a licence applied for; it arrives in `readyWeek`. */
   | { kind: 'licence_applied'; featureId: FeatureId; name: string; readyWeek: number }
+  | {
+      kind: 'permit_refused'
+      featureId: FeatureId
+      name: string
+      refundCents: number
+      feeCents: number
+    }
   /** Plan 4: local costs rose by a factor this week. */
   | { kind: 'costs_rose'; factor: number }
   /** Plan 4: the concession's tender decided. */
@@ -2583,6 +2592,7 @@ export type LeisureNoiseState = {
 
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
 export type LeisureState = {
+  permitRefunds?: Record<FeatureId, { week: number; cents: number }>
   noise?: LeisureNoiseState
   extras?: Record<FeatureId, LeisureExtraTotals>
   slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
@@ -2809,6 +2819,7 @@ export type LeisureView = {
     refreshingUntil: number | null
   }[]
   builds: {
+    permit?: { refundableCents: number; refusedWeek: number | null; returnedCents: number }
     closes?: FeatureId[]
     productId: FeatureId
     name: string

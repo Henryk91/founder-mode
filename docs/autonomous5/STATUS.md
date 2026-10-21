@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.2 Isolated venue engine draft: complaints/restrictions and real ancillary receipts complete.
-Last commit: HEAD, Plan 5: account for venue restrictions refunds and catering receipts.
-Next action: Implement content-gated permit decisions/refunds and venue deposit-only strict cancellation, with fixture tests/schema docs; then integrate venue content/bots/UI. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge after main tags plan5-escape. No venue measurement yet; prove nine protected games plus Ausgesperrt unchanged after shared work.
+Step: 3.2 Isolated venue engine draft: permit decisions/refunds complete.
+Last commit: HEAD, Plan 5: implement waited permit decisions and one-time refunds.
+Next action: Add venue deposit-only strict cancellation with fixture tests/schema docs, then integrate venue content/bots/UI. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge only after main tags plan5-escape. No venue measurement yet; prove nine protected games plus Ausgesperrt unchanged after shared work.
 
 ## Checklist
 
@@ -17,6 +17,8 @@ Next action: Implement content-gated permit decisions/refunds and venue deposit-
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks and open issues
+
+- Current worktree:78 engine tests pass (7 permits+10 noise/receipts+17 venue+44 leisure), including public refund terms, approval/refusal, no retry, one refund and replay. /tmp/plan5-venue-permit-tests.log; lint/typechecks pass at /tmp/plan5-venue-permit-lint.log. Report refusal text uses labels and existing Results styling; new scenario UI/browser checks remain pending.
 
 - Current worktree:71 engine tests pass (10 noise/receipts+17 venue+44 leisure), including immediate/single refunds, real contribution, date restrictions, fee attribution, public conditions and replay. /tmp/plan5-venue-noise-tests-4.log; lint/typechecks green at /tmp/plan5-venue-noise-lint-ready.log. Replay fixture needed matched budgets and its distinct late route; all assertions now pass. No unresolved test failure.
 

@@ -658,6 +658,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     b = state.bookings!
     out.costsCents += leisure.costsCents
     out.revenueCents += leisure.revenueCents
+    out.entries.push(...(leisure.entries ?? []))
   }
 
   // 2. Weather, or (plan 4) this week's day conditions and next week's forecast.
