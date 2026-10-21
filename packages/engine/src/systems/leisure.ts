@@ -301,19 +301,26 @@ export function leisureOpen(s: GameState, id: string, week: number): boolean {
   return until === undefined || until === null || week >= until
 }
 
+/** A paid conversion changes seats within the same room and timetable hours. */
+export function leisureClassPlaces(s: GameState, id: string, week: number): number {
+  const p = cfgOf(s)?.products[id]
+  if (!p?.classPlaces) return 0
+  return p.classPlacesWhen && readyAt(s, p.classPlacesWhen.feature, week)
+    ? p.classPlacesWhen.places
+    : p.classPlaces
+}
+
 /** The slot's safety limit; its comfortable capacity never reaches the player view. */
 export function leisureCapacity(s: GameState, id: string, slot: string, week: number): number {
   const p = cfgOf(s)?.products[id]
   if (!p || !readyAt(s, id, week) || !leisureOpen(s, id, week)) return 0
   const required = s.scenario.bookings?.products[id]?.requires
   if (required && !readyAt(s, required, week)) return 0
+  const places = leisureClassPlaces(s, id, week)
   const classes = p.classPlaces ? (s.bookings?.leisure?.timetable[id]?.[slot] ?? 0) : 1
-  const base = p.classPlaces ? classes * p.classPlaces : (p.capacity[slot] ?? 0)
+  const base = p.classPlaces ? classes * places : (p.capacity[slot] ?? 0)
   const total = p.classPlaces
-    ? Object.values(s.bookings?.leisure?.timetable[id] ?? {}).reduce(
-        (n, x) => n + x * p.classPlaces!,
-        0,
-      )
+    ? Object.values(s.bookings?.leisure?.timetable[id] ?? {}).reduce((n, x) => n + x * places, 0)
     : Object.values(p.capacity).reduce((n, x) => n + x, 0)
   const bonus = stageInEffect(s).capacity?.[id] ?? 0
   const f = s.bookings?.leisure?.freshness[id]
@@ -900,7 +907,7 @@ export function leisureView(s: GameState): LeisureView | null {
         productId: id,
         name: name(id),
         room: p.room ?? null,
-        places: p.classPlaces!,
+        places: leisureClassPlaces(s, id, s.week),
         classes: { ...l.timetable[id] },
       })),
     history: l.weeks.map((w) => ({

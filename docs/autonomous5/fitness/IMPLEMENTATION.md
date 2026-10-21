@@ -70,3 +70,17 @@ be clearly distinguished in scenario-fitness.md section15.
 
 Merge only after the frozen venue's phase gate,protected proof,event table and
 plan5-venue milestone. Preserve both local branches;no rewrite or push.
+
+## Additional staffing gap found during conversion review
+
+The foundation pools instructor shifts against guest counts,not individual
+scheduled classes. With mat seats reduced18to8,one old18-person shift could
+wrongly cover two separate classes. Before fitness registration,add optional
+class-aware coverage per product/slot,consume one qualified shift per scheduled
+class,and cap actual service by covered classes times actual seats. Keep room
+hours unchanged. Bot rosters must pay the timetable,including empty scheduled
+classes;uncovered classes cannot serve. Existing games retain the old roster.
+
+Freelance shifts have no persistent individual identity;do not claim that a role
+with several teachers is one tired person. Decide/document how the12-class limit
+applies to identified founder/contract staff before content promises it.
