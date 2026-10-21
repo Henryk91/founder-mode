@@ -1,6 +1,6 @@
 # Step3: Fabriketage
 
-Status: implementation/tuning/full tests complete;protected Ausgesperrt proof and event table still running. Phase gate incomplete.
+Status: implementation/tuning/full tests complete;protected proof complete;event table still running. Phase gate incomplete.
 
 Fabriketage is a104-week event-venue game with a single shared hall,company,
 wedding and private-party calendars,forward sales and refundable advances.
@@ -62,7 +62,7 @@ the user and is resolved;logs and decisions remain recorded.
 
 The protected main-only proof uses1,000 test seeds per strategy,one scenario per
 process. All nine older main reports match exactly apart from timings. Ausgesperrt
-is still running. All nine old content fingerprints match the baseline;
+also matches. All nine old content fingerprints match the baseline;
 Ausgesperrt also matches ea908900d9f19996. Full proof report follows completion.
 
 ## Final main targets
@@ -130,5 +130,5 @@ contributions,not rankings from the event-only table.
 
 The once-only venue event table is running:events only,1,000 test seeds,two
 workers,session95560. Do not restart or rerun. Main snapshots above stay the
-target judgement. Protected Ausgesperrt comparison is also running;finish and
-record both before merging/tagging plan5-venue. Full report NEVER run;step6 only.
+target judgement. All ten protected/earlier-leisure comparisons match;see [proof](step3-protected.md).
+Finish and record the event table before merging/tagging plan5-venue. Full report NEVER run;step6 only.
