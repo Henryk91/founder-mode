@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.7 equipment/freelancer repair and T15 comparison implemented.
-Last commit: HEAD, Plan 5: respect hired equipment and add venue financing comparison.
-Next action: Measure corrected venue main on1,000 test seeds(all29 strategies),finish seed regeneration(session51958) and replay checks,then tune within the untouched budget. Protected main proof continues(session99011). Heading matrix80/80 and109 focused gap tests pass;lint passes. No venue event table/full report yet.
+Step: 3.7 phase-test repairs verified;corrected measurement running.
+Last commit: HEAD, Plan 5: add venue ending examples and roof lesson.
+Next action: Measure corrected venue main on1,000 test seeds(all29 strategies),seed regeneration and190 replay/coverage checks pass,then tune within the untouched budget. Protected main proof continues(session99011). Heading matrix80/80 and109 focused gap tests pass;lint passes. No venue event table/full report yet.
 
 ## Checklist
 
@@ -78,3 +78,7 @@ Initial full suite:83 files passed,3 failed;1,660 tests passed,9 failed,24 skipp
 ## Equipment follow-up
 
 The freelancer failure is repaired on its first attempt:equipment belongs to service readiness,not preparation of a leisure offer.109 focused tests pass,/tmp/plan5-venue-gaps-tests.log;lint passes,/tmp/plan5-venue-gaps-lint.log. Venue-only T15 variant and no-cost reader correction are ready. No scenario values or tuning rounds used. Earlier unconfigured paths are retained;proof is in progress.
+
+## Ending examples and lesson
+
+189 seed examples are generated,including18 for the venue. All190 checks pass,/tmp/plan5-venue-seed-tests.log;every earlier row is byte-identical. The public post-mortem explicitly explains that the roof quote creates no new dates and states any actual refusal/refund. Venue Help/results/post-mortem word checks pass at390/1440px,/tmp/plan5-venue-roof-words.log;lint passes,/tmp/plan5-roof-lesson-lint.log. Final full suite follows final tuning values.

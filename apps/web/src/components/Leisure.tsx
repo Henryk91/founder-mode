@@ -386,6 +386,28 @@ export function LeisureSummary({ leisure: l, view }: { leisure: LeisureView; vie
     <section className={ui.card}>
       <h2 className={ui.title}>{label('leisure.lessons', stage)}</h2>
       <VenueFacts leisure={l} view={view} />
+      {l.noise &&
+        l.builds
+          .filter((b) => b.productId === 'roof_terrace')
+          .map((b) => (
+            <div key={b.productId}>
+              <p>
+                {label('leisure.roofLesson', stage, {
+                  name: b.name,
+                  amount: formatEuro(b.costCents),
+                })}
+              </p>
+              {b.permit?.refusedWeek != null && (
+                <p>
+                  {label('leisure.permitRefused', stage, {
+                    name: b.name,
+                    week: b.permit.refusedWeek,
+                    amount: formatEuro(b.permit.returnedCents),
+                  })}
+                </p>
+              )}
+            </div>
+          ))}
       {l.slots.map((slot) => {
         const rows = l.history.flatMap((w) => w.slots.filter((s) => s.slotId === slot.id))
         return (
