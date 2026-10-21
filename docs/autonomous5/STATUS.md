@@ -2,21 +2,24 @@
 
 ## Current
 
-Step: 3.5 Isolated venue bots tested; initial main measurement next.
-Last commit: HEAD, Plan 5: teach venue bots financing holds and calendar choices.
-Next action: Run initial venue main on 1,000 test seeds (no value rounds used), then complete UI/drawings/browser checks while it runs. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge only after main tags plan5-escape. No venue measurement yet; prove nine protected games plus Ausgesperrt unchanged after shared work.
+Step: 3.6 HARD STOP under plan section1.2.1: same WebKit heading failure after three repairs.
+Last commit: HEAD, Plan 5: save venue UI draft at mandatory browser hard stop.
+Next action: Stopped. Review the 375px WebKit heading failure and the three attempts/options below before explicitly authorising further repair work. Do not merge this draft or run more bots/full reports. Main has completed/tagged step2 at d9381dc (plan5-escape).
 
 ## Checklist
 
 - [x] Step 0: set up and baseline (tag plan5-baseline)
 - [x] Step 1: shared engine additions (tag plan5-engine)
-- [ ] Step 2: Ausgesperrt (tag plan5-escape)
+- [x] Step 2: Ausgesperrt (tag plan5-escape)
 - [ ] Step 3: Fabriketage (tag plan5-venue)
 - [ ] Step 4: Schweißperle (tag plan5-fitness)
 - [ ] Step 5: Griffig (tag plan5-climbing)
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks and open issues
+
+- Initial venue main completed:28 strategies,main only,1,000 test seeds;venue/fabriketage-main-initial.md. Careful25.8%±2.7,top companies-only32.8%;no value/formula rounds used. T3,T5,T6,T7,T10,T11,T14,V1,V2 fail;T15 not measured because its venue variant is missing. V3/V4 pass. No venue event table/full report ran.
+- Venue UI draft exposes holds, expiry/refunds, permits, closures, reset/catering costs and late contribution; two native SVG scenes and brown accent. Browser matrix after third heading repair:23/24 pass; WebKit established375px still clips the company heading. All16 terminology/Help/results/post-mortem cases pass. Lint/typechecks pass. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue. These are not completed phase checks.
 
 - Venue bots:68 focused tests and lint/typechecks pass, /tmp/plan5-venue-bots-tests-ready.log and /tmp/plan5-venue-bots-lint-ready.log. Real opening/replay pass. Source tracing repaired idle works and cash reserves before measurement; values unchanged. Six V-target variants and actual venue report observations added. Protected/Aus proof pending after shared work.
 
@@ -48,6 +51,8 @@ Later-step preparation only, outside repo; integrate in order after the current 
 These drafts do not implement their pending mechanics. Current repo content/UI remain authoritative.
 
 ## For Henry to review (non-blocking)
+
+- HARD STOP: venue heading still clips at375px in WebKit after three repairs; draft remains isolated and unmerged. See Stopped below.
 
 - Step 3 draft: observable hold/furniture/insulation decisions and earlier fit-out finance; V3 counts late-active runs and actual setup-inclusive contribution. See docs/decisions.md.
 
@@ -97,3 +102,31 @@ These drafts do not implement their pending mechanics. Current repo content/UI r
 
 ## Stopped
 
+Plan section1.2.1 requires stopping after three honest repairs of the same failure.
+The established venue company heading clips in WebKit; final reproduction is375px
+across Inbox,Plan,Calendar,Market and Finance. /tmp/plan5-venue-browser-4.log shows
+23 passing cases and this one failure. /tmp/plan5-venue-ui-lint-4.log passes.
+
+Attempts:
+1. Listen for FontFaceSet loadingdone as well as fonts.ready. Still clipped at390px:
+   /tmp/plan5-venue-browser-2.log.
+2. Give the name column a stable flex basis and recheck after layout with requestAnimationFrame.
+   Still clipped at375/390px: /tmp/plan5-venue-browser-3.log.
+3. Measure text-range bounds and scale/shrink using glyph width rather than cached block
+   scrollWidth.390px now passes;375px still clips: /tmp/plan5-venue-browser-4.log.
+A separate calendar landmark defect was fixed by omitting the unused tourism calendar;
+all axe checks now pass. A read-only heading-dimension diagnosis is logged at
+/tmp/plan5-venue-name-diagnosis.log and was not counted as a repair.
+
+Options for a subsequently authorised repair: inspect final375px text-range/scroll
+metrics and flex layout; consider measuring a separate inline text span, or explicitly
+reserve more heading space by hiding the logo before shrinking. Keep the full name,
+minimum12px and existing no-cut test; do not weaken the test or shorten the name solely
+to hide the defect. No fourth repair attempted. The UI draft is committed for review,
+not merged. Shared engine/bot protected proof and the full phase suite remain pending.
+
+Next venue work after this stop is resolved: add the missing T15 cash-funded variant,
+inspect contributions before value tuning (0/2 rounds,0/1 formula used), fix the initial
+hold-value dominance (no-hold conversion currently exceeds free-hold conversion in all
+markets), then finish phase tests/protected proof and the once-only venue event table.
+Steps4,5 and6 remain unfinished. Full report has never run in this plan. No push.

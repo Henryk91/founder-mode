@@ -5,7 +5,7 @@ import { noBookings } from '../store'
 import { useGame } from '../useGame'
 import { Choices, HintLine, Market, SubHeading, Writing } from './Ruled'
 import { Stepper } from './Stepper'
-import { LeisurePrices } from './Leisure'
+import { LeisurePrices, LeisureHolds } from './Leisure'
 import styles from './ui.module.css'
 
 // The tourism sections of the Plan tab (step 4): who works this week, how guests find you, and
@@ -303,6 +303,7 @@ export function PricesPlan() {
   return (
     <>
       <LeisurePrices />
+      <LeisureHolds />
       <Writing>{label(b.peak ? 'tour.prices.peakNow' : 'tour.prices.offNow', stage)}</Writing>
       {!b.leisure?.slotPrices &&
         b.segments.flatMap((s) => {

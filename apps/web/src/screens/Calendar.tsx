@@ -19,69 +19,67 @@ export function Calendar() {
   return (
     <>
       {b.leisure && <LeisureCalendar view={view} />}
-      <section
-        className={styles.card}
-        aria-label={label('tour.calendar', stage)}
-        hidden={!!b.leisure}
-      >
-        <h2 className={styles.title}>{label('tour.calendar', stage)}</h2>
-        <p>
-          {/* Plan 4: wind and sea by the half day instead of one weather. */}
-          {b.leisure
-            ? ''
-            : b.abroad
-              ? b.abroad.slots
-                  .map((slot) =>
-                    label('tour.forecast.slot', stage, {
-                      slot: slot.name,
-                      states: forecastLine(
-                        b.abroad!.states,
-                        b.abroad!.forecastCounts[slot.id] ?? {},
-                      ),
-                    }),
-                  )
-                  .join('. ') + '.'
-              : label(`tour.forecast.${b.forecast}`, stage)}{' '}
-          {b.rating === null
-            ? label('tour.rating.none', stage)
-            : label('tour.rating', stage, { rating: b.rating.toFixed(1), reviews: b.reviews })}
-        </p>
-        {b.calendar.length === 0 && (
-          <p className={styles.hint}>{label('tour.calendar.empty', stage)}</p>
-        )}
-        {stageOf(stage) === 'established' && b.calendar.length > 0 && <HeatGrid view={view} />}
-        {stageOf(stage) !== 'established' &&
-          b.calendar.map((c) => {
-            const product = b.products.find((p) => p.id === c.productId)
-            return (
-              <div key={c.productId}>
-                <h3 className={styles.title}>{product?.name ?? c.productId}</h3>
-                <ul className={styles.list}>
-                  {c.cells.map((cell) => (
-                    <li key={cell.week} className={styles.rowHead}>
-                      <span>{label('tour.calendar.week', stage, { week: cell.week })}</span>
-                      <span className={styles.mono}>
-                        {cell.capacity === 0
-                          ? label('tour.calendar.closed', stage)
-                          : label(
-                              cell.lastYear === null
-                                ? 'tour.calendar.cell'
-                                : 'tour.calendar.cellLast',
-                              stage,
-                              {
-                                booked: cell.booked,
-                                capacity: cell.capacity,
-                                last: cell.lastYear ?? 0,
-                              },
-                            )}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )
-          })}
-      </section>
+      {!b.leisure && (
+        <section className={styles.card} aria-label={label('tour.calendar', stage)}>
+          <h2 className={styles.title}>{label('tour.calendar', stage)}</h2>
+          <p>
+            {/* Plan 4: wind and sea by the half day instead of one weather. */}
+            {b.leisure
+              ? ''
+              : b.abroad
+                ? b.abroad.slots
+                    .map((slot) =>
+                      label('tour.forecast.slot', stage, {
+                        slot: slot.name,
+                        states: forecastLine(
+                          b.abroad!.states,
+                          b.abroad!.forecastCounts[slot.id] ?? {},
+                        ),
+                      }),
+                    )
+                    .join('. ') + '.'
+                : label(`tour.forecast.${b.forecast}`, stage)}{' '}
+            {b.rating === null
+              ? label('tour.rating.none', stage)
+              : label('tour.rating', stage, { rating: b.rating.toFixed(1), reviews: b.reviews })}
+          </p>
+          {b.calendar.length === 0 && (
+            <p className={styles.hint}>{label('tour.calendar.empty', stage)}</p>
+          )}
+          {stageOf(stage) === 'established' && b.calendar.length > 0 && <HeatGrid view={view} />}
+          {stageOf(stage) !== 'established' &&
+            b.calendar.map((c) => {
+              const product = b.products.find((p) => p.id === c.productId)
+              return (
+                <div key={c.productId}>
+                  <h3 className={styles.title}>{product?.name ?? c.productId}</h3>
+                  <ul className={styles.list}>
+                    {c.cells.map((cell) => (
+                      <li key={cell.week} className={styles.rowHead}>
+                        <span>{label('tour.calendar.week', stage, { week: cell.week })}</span>
+                        <span className={styles.mono}>
+                          {cell.capacity === 0
+                            ? label('tour.calendar.closed', stage)
+                            : label(
+                                cell.lastYear === null
+                                  ? 'tour.calendar.cell'
+                                  : 'tour.calendar.cellLast',
+                                stage,
+                                {
+                                  booked: cell.booked,
+                                  capacity: cell.capacity,
+                                  last: cell.lastYear ?? 0,
+                                },
+                              )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            })}
+        </section>
+      )}
       {b.cruise && (
         <section className={styles.card} aria-label={label('cruise.calendar', stage)}>
           <h2 className={styles.title}>{label('cruise.calendar', stage)}</h2>
