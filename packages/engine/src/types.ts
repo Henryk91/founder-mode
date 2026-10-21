@@ -2859,6 +2859,7 @@ export type LeisureView = {
     name: string
     room: string | null
     places: number
+    available?: boolean
     coveredClasses?: Record<string, number>
     classes: Record<string, number>
   }[]

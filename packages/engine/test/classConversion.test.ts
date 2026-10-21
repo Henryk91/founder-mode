@@ -71,6 +71,28 @@ describe('optional class-room conversion', () => {
     expect(leisureCapacity(s, 'basic_ordering', 'evening', 4)).toBe(16)
   })
 
+  it('keeps a prepared annex class unavailable until the business occupies that stage', () => {
+    const s = game()
+    s.scenario.officeStages.push({
+      ...s.scenario.officeStages[0]!,
+      id: 'annex',
+      name: 'The adjoining room',
+      monthlyCents: 10000,
+    })
+    s.scenario.bookings!.leisure!.products.basic_ordering!.availableStages = ['annex']
+    expect(leisureCapacity(s, 'basic_ordering', 'evening', 1)).toBe(0)
+    expect(
+      getView(s).bookings!.leisure!.timetable.find((x) => x.productId === 'basic_ordering')!
+        .available,
+    ).toBe(false)
+    s.company.officeStage = 'annex'
+    expect(leisureCapacity(s, 'basic_ordering', 'evening', 1)).toBe(36)
+    expect(
+      getView(s).bookings!.leisure!.timetable.find((x) => x.productId === 'basic_ordering')!
+        .available,
+    ).toBe(true)
+  })
+
   it('rejects a conversion on a product with no classes', () => {
     const c = leisureConfig()
     c.products.basic_ordering!.classPlacesWhen = { feature: 'invoice_export', places: 8 }
