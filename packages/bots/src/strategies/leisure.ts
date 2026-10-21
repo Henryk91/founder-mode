@@ -2,6 +2,7 @@ import type { Scenario } from '@founder-mode/content'
 import type { BookingsPlan, PlayerView } from '@founder-mode/engine'
 import type { PlanBuilder } from '../strategy'
 import type { TourismRule } from './tourism'
+import { venueWanted } from './venue'
 
 export type LeisureRule = {
   rooms?: 'careful' | 'one' | 'quarterly'
@@ -9,6 +10,8 @@ export type LeisureRule = {
   noDaytime?: boolean
   vrEarly?: boolean
   laterLoans?: boolean
+  venueInsulation?: boolean
+  holdPolicy?: 'free' | 'none'
 }
 
 const shuffled = (ids: string[], seed: string) => {
@@ -42,6 +45,7 @@ export function leisureWanted(
   const l = view.bookings?.leisure
   const c = scenario.bookings?.leisure
   if (!l || !c?.opening) return requested
+  if (c.noise) return venueWanted(scenario, view, rule, requested)
   const areas = c.opening.areas
   const first = l.buildChoice.length ? l.buildChoice : [areas[0]!]
   const started = areas.filter((id) =>
@@ -137,6 +141,13 @@ export function planLeisure(
   const l = view.bookings?.leisure
   if (!l) return
   const leisure: NonNullable<BookingsPlan['leisure']> = {}
+  if (l.holds) {
+    const decided = l.holds.granted - l.holds.calendar.filter((h) => h.status === 'held').length
+    const conversion = decided > 0 ? l.holds.converted / decided : 0
+    leisure.holdPolicy =
+      rule.leisure?.holdPolicy ??
+      (decided < 8 ? 'fee' : conversion > 0.7 ? 'free' : conversion < 0.2 ? 'none' : 'fee')
+  }
   if (l.slotPrices) {
     leisure.slotPrices = {}
     leisure.salesSlots = {}

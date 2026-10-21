@@ -587,7 +587,84 @@ const AUSGESPERRT: Overrides = {
     'You cancelled {company} room-games for lack of staff or a closed room; groups cancelled {guest}.',
 }
 
+const FABRIKETAGE: Overrides = {
+  ...shared({
+    test: {
+      one: 'Test listing',
+      other: 'Test listings',
+      lower: 'test listing',
+      lowerPlural: 'test listings',
+    },
+    pilot: {
+      one: 'Open evening',
+      other: 'Open evenings',
+      lower: 'open evening',
+      lowerPlural: 'open evenings',
+    },
+    formal: {
+      test: { one: 'Listing test', other: 'Listing tests' },
+      pilot: { one: 'Agency evening', other: 'Agency evenings' },
+    },
+    fixFormal: 'Venue upkeep',
+    snag: { one: 'snag', other: 'snags' },
+    fix: 'Fix venue snags',
+    fixWhat: 'hours fixing venue snags',
+    build: 'Fit out and improve the floor',
+    invoices: {
+      hint: 'Companies pay a deposit at booking and receive a balance invoice after the event. Guest balances are collected on the event date. Chasing an overdue invoice costs {hours}; unpaid invoices are written off after their stated term.',
+      none: 'No company balance invoices yet. They follow served company events.',
+    },
+    fixedCosts:
+      'Company costs per month (lease, insurance, utilities, accountant, software and cleaning)',
+  }),
+  'bar.company': { scrappy: '{name}', organised: '{name}', established: '{name} GmbH' },
+  'stat.guests': 'Events, last 4 weeks',
+  'stat.guests.short': 'Events',
+  'tour.calendar': 'Calendar',
+  'tab.calendar': { scrappy: 'Calendar', organised: 'Calendar', established: 'Calendar' },
+  'tab.pipeline': { scrappy: 'Calendar', organised: 'Calendar', established: 'Calendar' },
+  'plan.section.talk': {
+    scrappy: 'Talk to organisers',
+    organised: 'Client conversations',
+    established: 'Market research',
+  },
+  'plan.section.guests': {
+    scrappy: 'Sell the dates',
+    organised: 'Channels',
+    established: 'Distribution',
+  },
+  'plan.hint.build':
+    'Prepare the work, fund its quote and allow the stated wait. Forward bookings need a ready date.',
+  'leisure.beforeOpening':
+    'Not open yet. Finish and fund the fit-out, then allow its stated construction time. Future events can reserve dates after readiness.',
+  'leisure.buildPrep': '{name}: {amount} committed. Finish preparation, then allow {weeks} weeks.',
+  'leisure.slotLoad': '{name}: {visits} events, {word}.',
+  'market.trials.title': 'Listings, open evenings and fair stands',
+  'tour.heat.sub': 'Next {n} weeks, events booked of {capacity} a week',
+  'asset.option.share': 'Hired per event',
+  'asset.products': 'Used for: {products}.',
+  'asset.capacity': 'Dinner capacity',
+  'asset.capacityShare': '{pct}% of the dinner capacity',
+  'asset.terms.share': 'Full hire costs {unit} per served dinner; no fee on empty dates.',
+  'asset.terms.buy': 'Buy for {price}; monthly upkeep {upkeep}, crew cost {crew} in a week used.',
+  'asset.switch.buy':
+    'Hire or return furniture through the supplier’s inbox offer. Buy through the product list; accepted weddings still need chairs on their actual date.',
+  'help.week.1':
+    'Plan your hours. Prepare the common fit-out and speak to the bank while researching organisers. The Calendar shows held, booked and free capacity. A waiting approval does not stop you preparing other work.',
+  'help.week.4':
+    'Every fourth week is a month end: rent, other fixed costs and loan payments go out. Deposits are cash received for future events. Company balances are invoiced after service; guest balances are collected on the event date. Strict guest cancellations keep only the deposit; flexible or company cancellations return it.',
+  'explain.prices.text':
+    'Price each market and slot separately. Hold terms apply to new enquiries: free, paid or no holds. A held date blocks capacity until its decision. Flexible cancellations return deposits; strict guest cancellations keep the deposit. Company-caused cancellation always returns advances. Closing sales preserves accepted bookings.',
+  'explain.test.text':
+    'A listing test and an open evening measure interest before you commit to a market. Read the result, the requested dates and the budget hints. These tests are signals; the real calendar still needs accepted bookings and crew.',
+  'results.entry.ui_established':
+    'The floor pays its bills. The calendar is still written in pencil, but the pencil has an accountant.',
+  'pm.guests.cancelled':
+    'You cancelled {company} events for closed dates or missing cover; clients cancelled {guest}.',
+}
+
 export const SCENARIO_LABELS: Record<string, Overrides> = {
+  fabriketage: FABRIKETAGE,
   ausgesperrt: AUSGESPERRT,
   leinenlos: LEINENLOS,
   tiefgang: TIEFGANG,

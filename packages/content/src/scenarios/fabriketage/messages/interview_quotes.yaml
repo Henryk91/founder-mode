@@ -1,0 +1,168 @@
+companies:
+  not_a_problem:
+    - We have a meeting room. It contains a projector and most of the people we employ.
+    - The Christmas party is in the canteen. Nobody has complained in writing.
+    - We work remotely and celebrate remotely. The wine is easier to account for.
+    - Our agency books everything. I only choose which train to miss.
+    - We do not need brick walls for a budget presentation.
+    - We have a hotel contract and a person who understands it.
+    - The launch is online. It has excellent access for people who stay at home.
+    - Twenty people fit in our office if six of them do not sit down.
+    - There is no event budget this year. We have been encouraged to be inventive.
+    - We hold the workshop at headquarters. The parking is already an argument we know.
+  mild:
+    - A different room might help the annual workshop feel less annual.
+    - Brick walls would be nice if the screen worked.
+    - We sometimes need more space than the office, perhaps twice a year.
+    - A weekday package could save me chasing separate suppliers.
+    - We might try a local venue for the next team day.
+    - I would need a simple quotation before showing the idea to finance.
+    - Our Christmas party could leave the hotel, provided the price included enough chairs.
+    - We like interesting buildings. We also like predictable coffee.
+    - The agency has suggested a factory floor. My director has asked whether it is warm.
+    - A change of scene would be pleasant, but the current arrangement still works.
+  noticeable:
+    - Every autumn date seems to require a call to three different people.
+    - I can find a room or a technician. Finding both on the same date is the project.
+    - The last invoice charged separately for a screen and the cable that made it useful.
+    - We need a weekday in November with enough space for 140 people.
+    - Our launch needs access the evening before. The booking sites rarely mention it.
+    - A single conference price would let me compare something other than footnotes.
+    - The Christmas dates disappear while the board decides whether Christmas will happen.
+    - Our last venue made us hire its caterer. The food was an expensive surprise.
+    - I need a proper host, not a phone number on a door.
+    - We lose too much time finding out whether a quotation includes heating.
+  painful:
+    - Our last technician left before the questions. The questions needed the microphone.
+    - The venue cancelled our workshop after finding a wedding that paid more.
+    - I need 180 standing in October, a stage and a quotation finance can approve.
+    - We booked a room for a product launch and discovered the lift closed at six.
+    - Our agency spent three weeks trying to reserve a Tuesday that nobody had actually sold.
+    - The last party ended with our staff carrying hired chairs downstairs.
+    - I cannot send another invoice through finance with unspecified extras.
+    - The keynote failed because the projector had not met the speaker’s laptop.
+    - We need an accessible delivery route and somebody who can explain it.
+    - We have had two event dates move because a supplier’s promise was not a booking.
+  urgent:
+    - Our launch venue has closed. It is in eleven days and the invitations are printed.
+    - The board approved the December budget this morning. Is a Friday still available?
+    - We have 120 colleagues arriving next month and the room was never confirmed.
+    - Our agency has lost its technician. Can your weekday offer include one?
+    - The hotel has double booked us. I need a real date, not a sympathetic email.
+    - Our speaker is flying in next week. Please tell me whether the screen works.
+    - The director wants an October workshop and has just discovered it is October.
+    - We need a paid reservation today so finance can release the supplier orders.
+    - Our Christmas organiser is off sick. The budget and the guests remain healthy.
+    - We have a headcount, a purchase-order number and no room. Which part do you need first?
+weddings:
+  not_a_problem:
+    - We are having dinner with twelve people. Our parents have accepted this in principle.
+    - The registry office and a restaurant will do. The photographer can invent the grandeur.
+    - Our family has a garden and has started discussing gazebos.
+    - We booked a venue last year. We now spend our time choosing napkins.
+    - We want a small day. Other people want a large one, but they are not signing the contract.
+    - We have decided to marry abroad. Our relatives can argue somewhere warmer.
+    - The wedding is in our village hall. Everybody knows where the chairs live.
+    - We do not need a room for dancing. This has disappointed one uncle.
+    - We have a restaurant with a private room and no terrace ambitions.
+    - We are not engaged. Our families are conducting preliminary research.
+  mild:
+    - A brick floor might be nicer than another hotel ballroom.
+    - We like the photographs, but we have not chosen a year yet.
+    - A summer Saturday would be lovely if it fitted the budget.
+    - We might want our own caterer, mostly because my sister has opinions.
+    - It looks interesting. We would need to bring the parents for a viewing.
+    - We are collecting ideas before making any sensible decisions.
+    - I would want to see the room laid for dinner rather than a conference.
+    - An indoor venue would make the weather less of a family negotiation.
+    - We could consider a Friday if it saved enough money.
+    - We like the lift. Our grandparents would like to see that it works.
+  noticeable:
+    - Every Saturday we ask about is held by somebody who has not decided.
+    - We want our own caterer and most venues want to sell us theirs.
+    - The room prices make sense until the furniture quotation arrives.
+    - We have 100 guests, two children with allergies and a year to organise dinner.
+    - We need a clear end time before booking the band.
+    - We keep seeing beautiful photographs of rooms without enough toilets.
+    - A coordinator on the day would save our parents becoming unpaid staff.
+    - We need to know when our suppliers can enter and when they must leave.
+    - We can pay a deposit if it means the Saturday actually belongs to us.
+    - The available dates change between the website and the reply.
+  painful:
+    - We lost a date because the hold expired without anybody telling us.
+    - Our chosen venue has changed caterers and doubled the food quotation.
+    - We need a Saturday for 120 people and every answer seems to be a waiting list.
+    - Our parents held three venues and now none of them agrees which one is ours.
+    - The band contract says midnight. The venue’s small print says ten.
+    - We have paid for furniture that does not fit the lift.
+    - Our organiser is leaving and nobody can find the supplier arrangements.
+    - We have eight months left and still cannot tell what the room will really cost.
+    - The room was shown empty. With all the tables, the dance floor becomes a cupboard.
+    - We need somebody to run the dinner so our families can attend it.
+  urgent:
+    - Our venue has cancelled. We have the date, the dress and 110 people to inform.
+    - We must confirm a Saturday this week or lose the caterer.
+    - The parents finally agree on a date. Please do not tell them there are more options.
+    - Our wedding is in six weeks and the coordinator has stopped replying.
+    - We can pay a deposit today if the date and the access times are confirmed.
+    - The band needs an answer tomorrow about when the evening ends.
+    - We are arriving for a viewing with both families. This is a considerable logistical event.
+    - The original room failed its safety inspection. The wedding has not been postponed.
+    - We need a room with working toilets and no new surprises. The budget is approved.
+    - We have a Saturday in mind and everyone has booked travel. Is it genuinely free?
+private_parties:
+  not_a_problem:
+    - We book the back room at the pub. It already contains drinks.
+    - My birthday fits in my flat if nobody brings a partner.
+    - Our club uses the school hall. The headteacher knows where we live.
+    - We are going bowling. The furniture arrangement is settled.
+    - I do not celebrate round birthdays. My friends are being informed of this again.
+    - The anniversary dinner is at home. Our neighbours have been warned.
+    - We need a film location, but the script currently says park.
+    - The market runs outdoors. Rain is part of its business model.
+    - We meet at the same restaurant every year. It has learned our arguments.
+    - Our choir needs a rehearsal room rather than a party venue.
+  mild:
+    - A larger room might make the birthday feel less like a crowded kitchen.
+    - We like an industrial background for photographs, if it is not too expensive.
+    - A Sunday market could work indoors once we know the attendance.
+    - We might book a Friday for the anniversary. Saturday is somebody else’s problem.
+    - It looks like a good room for a club party, provided the music can run long enough.
+    - We would need a simple price and permission to bring decorations.
+    - Our reunion could use somewhere more interesting than the old restaurant.
+    - The film crew likes the windows. The producer would like a discount.
+    - We are comparing rooms before asking anybody to commit.
+    - A private event would be nice, but hiring chairs sounds like a separate hobby.
+  noticeable:
+    - We need a late Friday and every listing hides its actual end time.
+    - The cheap room becomes expensive once the cleaning charge appears.
+    - I want a birthday where my partner does not spend the night working the door.
+    - Our film crew needs reliable power and a lift, rather than just attractive brickwork.
+    - The club party needs room to dance without blocking an exit.
+    - We want to bring a caterer who already knows our dietary requirements.
+    - I need to know who has the keys at the end of the night.
+    - Sundays are available, but nobody replies about loading and unloading.
+    - We need a room for 160 standing and somewhere to put their coats.
+    - The last venue called a speaker and a socket a sound package.
+  painful:
+    - Our last party was stopped early after a neighbour complained.
+    - We paid a deposit and then discovered the listed price did not cover a host.
+    - The film shoot lost a morning because the goods lift was locked.
+    - I need a birthday venue that will actually confirm the finish time.
+    - Our club has sold tickets and the room now says the capacity was only an estimate.
+    - The last cleaning bill cost more than the band.
+    - We need a space where the caterer can work without borrowing somebody’s fridge.
+    - The organiser stayed until four moving furniture because nobody had booked a crew.
+    - We have had two venues promise late music and withdraw it after the deposit.
+    - Our reunion needs a real plan for the bar, the coats and the people arriving late.
+  urgent:
+    - Our party is next Friday and the venue’s licence has been restricted.
+    - We have sold 140 tickets and the original floor has flooded.
+    - The film crew starts next week. We need a quiet weekday with power and lift access.
+    - My partner’s birthday is in ten days. The surprise currently consists of no venue.
+    - We can pay now if the late finish and the host are written into the booking.
+    - The caterer needs the delivery address today. I would also enjoy knowing it.
+    - Our anniversary room has double booked us and suggests changing the anniversary.
+    - The club committee has finally approved the budget. The date is in two weeks.
+    - We need a room on Sunday and can finish before the neighbours finish their tea.
+    - The invitations say Munich and Saturday. We are still working on the building.

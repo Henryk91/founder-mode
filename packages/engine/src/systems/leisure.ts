@@ -1,4 +1,6 @@
 import { stageInEffect } from './bookings'
+import { assetFactor, assetOf, leisureAssetSupplies } from './assets'
+import { finishVenue, initVenue, venueOpen, venueView, type VenueMoney } from './venue'
 import type { Scenario } from '@founder-mode/content'
 import type { Rng } from '../rng'
 import { priceCurve } from './market'
@@ -11,6 +13,7 @@ import type {
   LeisureState,
   LeisureView,
   LeisureWeek,
+  ReportEntry,
   WeekPlan,
 } from '../types'
 
@@ -18,6 +21,7 @@ const cfgOf = (s: Pick<GameState, 'scenario'>) => s.scenario.bookings?.leisure
 const shipped = (s: GameState, id: string) =>
   s.product.features.some((f) => f.id === id && f.shippedWeek !== null)
 const readyAt = (s: GameState, id: string, week: number) =>
+  leisureAssetSupplies(s, id, week) ||
   s.product.features.some(
     (f) =>
       f.id === id && (f.shippedWeek !== null || (f.readyWeek !== undefined && f.readyWeek <= week)),
@@ -88,6 +92,7 @@ export function initLeisure(
       ),
     },
     state: {
+      ...initVenue(c),
       ...(c.slotPrices
         ? {
             slotPrices: mergeSlotPrices(c.slotPrices),
@@ -278,12 +283,18 @@ export function leisureOpen(s: GameState, id: string, week: number): boolean {
   const c = cfgOf(s)
   const l = s.bookings?.leisure
   if (!c || !l) return true
+  if (!venueOpen(s, id, week)) return false
   if (c.opening && l.openingWeek === null) {
     if (
       !c.opening.areas.some((p) => readyAt(s, p, week)) ||
       !c.opening.requires.every((p) => readyAt(s, p, week))
     )
       return false
+  }
+  for (const [buildId, build] of entries(c.buildOut ?? {})) {
+    if (!build.closes?.includes(id)) continue
+    const f = s.product.features.find((p) => p.id === buildId)
+    if (f?.shippedWeek === null && f.readyWeek !== undefined && week < f.readyWeek) return false
   }
   const until = l.freshness[id]?.refreshUntil
   return until === undefined || until === null || week >= until
@@ -307,7 +318,41 @@ export function leisureCapacity(s: GameState, id: string, slot: string, week: nu
   const f = s.bookings?.leisure?.freshness[id]
   const loss =
     f?.lastRefreshWeek === week ? (cfgOf(s)?.freshness?.[id]?.refresh.lostCapacity?.[slot] ?? 0) : 0
-  return Math.max(0, base + (total > 0 ? Math.floor((bonus * base) / total) : 0) - loss)
+  const extra = entries(cfgOf(s)?.slotUpgrades ?? {}).reduce(
+    (sum, [feature, upgrade]) =>
+      sum +
+      (upgrade.product === id && upgrade.slot === slot && readyAt(s, feature, week)
+        ? upgrade.additional
+        : 0),
+    0,
+  )
+  const capacity = Math.max(
+    0,
+    base + (total > 0 ? Math.floor((bonus * base) / total) : 0) + extra - loss,
+  )
+  return s.scenario.bookings?.assets ? Math.floor(capacity * assetFactor(s, id, week)) : capacity
+}
+
+/** Actual sale/visit capacity, including a shared-pool alias's own equipment. */
+export function leisureProductCapacity(
+  s: GameState,
+  product: string,
+  slot: string,
+  week: number,
+): number {
+  const cfg = s.scenario.bookings!
+  const required = cfg.products[product]?.requires
+  if (
+    !readyAt(s, product, week) ||
+    !leisureOpen(s, product, week) ||
+    (required && !readyAt(s, required, week))
+  )
+    return 0
+  const pool = cfg.products[product]?.capacityOf ?? product
+  const capacity = leisureCapacity(s, pool, slot, week)
+  return product !== pool && assetOf(cfg, product)
+    ? Math.floor(capacity * assetFactor(s, product, week))
+    : capacity
 }
 
 export function leisureRoom(
@@ -350,7 +395,7 @@ export function leisureRoom(
             (cfg.products[h.booking.productId]?.capacityOf ?? h.booking.productId) === pool,
         )
         .reduce((t, h) => t + h.booking.units, 0)
-  const free = Math.max(0, leisureCapacity(s, pool, slot, week) - booked - held)
+  const free = Math.max(0, leisureProductCapacity(s, product, slot, week) - booked - held)
   const f = cfg.leisure?.freshness?.[pool]
   const live = s.bookings?.leisure?.freshness[pool]
   const groups = s.hidden.bookings?.leisure?.localPools[pool]
@@ -445,7 +490,7 @@ export function beginLeisure(
   input: GameState,
   plan: WeekPlan,
   rng: Rng,
-): { state: GameState; costsCents: number; revenueCents: number } {
+): { state: GameState; costsCents: number; revenueCents: number; entries?: ReportEntry[] } {
   const c = cfgOf(input)
   const original = input.bookings?.leisure
   if (!c || !original) return { state: input, costsCents: 0, revenueCents: 0 }
@@ -453,6 +498,7 @@ export function beginLeisure(
   const week = input.week
   let costsCents = 0
   let revenueCents = 0
+  const permitEntries: ReportEntry[] = []
   const l: LeisureState = {
     ...original,
     ...(original.slotPrices
@@ -574,6 +620,19 @@ export function beginLeisure(
     else costsCents += input.scenario.bookings!.products[id]?.oneOffCents ?? 0
     l.buildPaid.push(id)
   }
+  for (const [id, permit] of entries(c.permits ?? {})) {
+    const f = input.product.features.find((x) => x.id === id)
+    if (f?.refusedWeek === undefined || l.permitRefunds?.[id] || !l.buildPaid.includes(id)) continue
+    l.permitRefunds = { ...l.permitRefunds, [id]: { week, cents: permit.refundCents } }
+    costsCents -= permit.refundCents
+    permitEntries.push({
+      kind: 'permit_refused',
+      featureId: id,
+      name: input.scenario.features.find((x) => x.id === id)?.name ?? id,
+      refundCents: permit.refundCents,
+      feeCents: (input.scenario.bookings!.products[id]?.oneOffCents ?? 0) - permit.refundCents,
+    })
+  }
   if (
     l.openingWeek === null &&
     c.opening &&
@@ -583,7 +642,12 @@ export function beginLeisure(
     l.openingWeek = week
   l.weeks.push(row)
   const state = { ...input, loan, bookings: { ...input.bookings!, bookings, leisure: l } }
-  return { state, costsCents, revenueCents }
+  return {
+    state,
+    costsCents,
+    revenueCents,
+    ...(permitEntries.length ? { entries: permitEntries } : {}),
+  }
 }
 
 export function leisureView(s: GameState): LeisureView | null {
@@ -626,8 +690,8 @@ export function leisureView(s: GameState): LeisureView | null {
   const dates = [...changes].sort((a, b) => a - b)
   const capacities = new Map<string, number>()
   const calendarCapacity = (product: string, slot: string, week: number) => {
-    let at = s.week
-    for (const date of dates) {
+    let at = cfg.assets ? week : s.week
+    for (const date of cfg.assets ? [] : dates) {
       if (date > week) break
       at = date
     }
@@ -646,6 +710,21 @@ export function leisureView(s: GameState): LeisureView | null {
     { students: 0, sameStay: 0, returnedDirect: 0, returnedPlatform: 0 },
   )
   return {
+    ...venueView(s),
+    ...(c.slotUpgrades
+      ? {
+          upgrades: entries(c.slotUpgrades).map(([id, upgrade]) => ({
+            productId: id,
+            name: name(id),
+            poolId: upgrade.product,
+            slotId: upgrade.slot,
+            additional: upgrade.additional,
+            unitCostCents: upgrade.unitCostCents,
+            active: readyAt(s, id, s.week),
+            paidCents: l.weeks.reduce((sum, w) => sum + (w.turnaroundCents?.[id] ?? 0), 0),
+          })),
+        }
+      : {}),
     minimumAreas: Object.fromEntries(
       entries(c.segments).flatMap(([id, seg]) =>
         seg.minimumAreas ? [[id, seg.minimumAreas]] : [],
@@ -777,11 +856,21 @@ export function leisureView(s: GameState): LeisureView | null {
       return {
         productId: id,
         name: name(id),
+        ...(build.closes ? { closes: [...build.closes] } : {}),
         readyWeek: f?.readyWeek ?? null,
         weeks: build.weeks,
         started: l.buildPaid.includes(id),
         complete: shipped(s, id),
         costCents: s.scenario.bookings!.products[id]?.oneOffCents ?? 0,
+        ...(c.permits?.[id]
+          ? {
+              permit: {
+                refundableCents: c.permits[id]!.refundCents,
+                refusedWeek: f?.refusedWeek ?? null,
+                returnedCents: l.permitRefunds?.[id]?.cents ?? 0,
+              },
+            }
+          : {}),
       }
     }),
     holds: c.holds
@@ -795,6 +884,7 @@ export function leisureView(s: GameState): LeisureView | null {
             segmentId: h.booking.segmentId,
             releaseWeek: h.releaseWeek,
             status: h.status,
+            ...(h.refundedCents !== undefined ? { refundedCents: h.refundedCents } : {}),
           })),
           granted: l.holds.length,
           converted: l.holds.filter((h) => h.status === 'converted').length,
@@ -813,6 +903,10 @@ export function leisureView(s: GameState): LeisureView | null {
       })),
     history: l.weeks.map((w) => ({
       ...w,
+      ...(w.turnaroundCents ? { turnaroundCents: { ...w.turnaroundCents } } : {}),
+      ...(w.extras
+        ? { extras: Object.fromEntries(entries(w.extras).map(([id, total]) => [id, { ...total }])) }
+        : {}),
       turnedAway: { ...w.turnedAway },
       slots: w.slots.map((x) => ({ ...x })),
     })),
@@ -1192,7 +1286,15 @@ export function leisureVisits(
 export function finishLeisure(
   input: GameState,
   bookings: readonly Booking[],
-): { state: GameState; voucherRedeemedCents: number; reviewPenalty: number } {
+  rng?: Rng,
+  money?: VenueMoney,
+): {
+  state: GameState
+  voucherRedeemedCents: number
+  reviewPenalty: number
+  extraCostsCents?: number
+  extraRevenueCents?: number
+} {
   const c = cfgOf(input)
   const original = input.bookings?.leisure
   if (!c || !original) return { state: input, voucherRedeemedCents: 0, reviewPenalty: 0 }
@@ -1215,13 +1317,34 @@ export function finishLeisure(
   const month = Math.floor((week - 1) / 52) * 12 + monthOf(input, week)
   const served = bookings.filter((b) => b.week === week && b.status === 'served')
   const totalServed = served.reduce((n, b) => n + b.units, 0)
+  const turnaroundCents = Object.fromEntries(
+    entries(c.slotUpgrades ?? {}).map(([id, upgrade]) => {
+      const active = readyAt(input, id, week)
+      const units = served
+        .filter(
+          (b) =>
+            b.slotId === upgrade.slot &&
+            (input.scenario.bookings!.products[b.productId]?.capacityOf ?? b.productId) ===
+              upgrade.product,
+        )
+        .reduce((sum, b) => sum + b.units, 0)
+      const baseline = Math.max(
+        0,
+        leisureCapacity(input, upgrade.product, upgrade.slot, week) -
+          (active ? upgrade.additional : 0),
+      )
+      return [id, active ? Math.max(0, units - baseline) * upgrade.unitCostCents : 0]
+    }),
+  )
+  const extraCostsCents = Object.values(turnaroundCents).reduce((sum, cost) => sum + cost, 0)
   for (const b of served) {
     const slotId = b.slotId
     if (!slotId) continue
-    let slot = slots.find((x) => x.productId === b.productId && x.slotId === slotId)
+    const productId = input.scenario.bookings!.products[b.productId]?.capacityOf ?? b.productId
+    let slot = slots.find((x) => x.productId === productId && x.slotId === slotId)
     if (!slot) {
       slot = {
-        productId: b.productId,
+        productId,
         slotId,
         visits: 0,
         turnedAway: 0,
@@ -1231,13 +1354,13 @@ export function finishLeisure(
       slots.push(slot)
     }
     slot.visits += b.units
-    const f = c.freshness?.[b.productId]
-    const now = freshness[b.productId]
+    const f = c.freshness?.[productId]
+    const now = freshness[productId]
     if (f && now) {
       now.value = Math.max(0, now.value - b.units * f.useLoss)
       now.served += b.units
       if (f.localSegments.includes(b.segmentId)) now.localGroups += b.units
-      const pool = input.hidden.bookings?.leisure?.localPools[b.productId]
+      const pool = input.hidden.bookings?.leisure?.localPools[productId]
       if (pool !== undefined)
         now.value = Math.min(now.value, 100 * Math.max(0, 1 - now.localGroups / pool))
       reviewPenalty +=
@@ -1285,7 +1408,8 @@ export function finishLeisure(
   for (const b of bookings.filter(
     (b) => b.week === week && b.status === 'company_cancelled' && b.slotId,
   )) {
-    const slot = slots.find((x) => x.productId === b.productId && x.slotId === b.slotId)
+    const pool = input.scenario.bookings!.products[b.productId]?.capacityOf ?? b.productId
+    const slot = slots.find((x) => x.productId === pool && x.slotId === b.slotId)
     if (slot) slot.turnedAway += b.units
   }
   const cancelled = bookings.filter(
@@ -1304,20 +1428,26 @@ export function finishLeisure(
           ...w,
           slots,
           aggregatorPayoutCents: payout,
+          ...(c.slotUpgrades ? { turnaroundCents } : {}),
           active: members.filter((m) => m.endedWeek === null && !m.inactive).length,
         }
       : w,
   )
-  return {
-    state: {
-      ...input,
-      bookings: {
-        ...input.bookings!,
-        leisure: { ...original, members, freshness, aggregator, weeks },
-      },
+  const completed: GameState = {
+    ...input,
+    bookings: {
+      ...input.bookings!,
+      ...(c.noise ? { bookings: [...bookings] } : {}),
+      leisure: { ...original, members, freshness, aggregator, weeks },
     },
+  }
+  const venue = finishVenue(completed, bookings, rng, money, turnaroundCents)
+  return {
+    state: venue.state,
     voucherRedeemedCents,
     reviewPenalty,
+    ...(c.slotUpgrades || c.extras ? { extraCostsCents: extraCostsCents + venue.costsCents } : {}),
+    ...(c.extras || c.noise ? { extraRevenueCents: venue.receiptsCents } : {}),
   }
 }
 

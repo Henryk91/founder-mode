@@ -82,3 +82,9 @@ Targets that do not apply as written: Leinen los T9, T14, T15 to T18; every abro
 |---|---|
 | Stale worktree records | Four agent scratch worktrees under `/private/tmp` whose folders are gone. `git worktree prune` clears them when no agent is running |
 | `packages/bots/scratch/` | Six local debug scripts, excluded in `.git/info/exclude`, so never committed. Delete when no longer useful |
+
+## Plan 5 venue first-pass adaptations
+
+- Fabriketage: collect guest balances before service (weddings four weeks, private one week) with cancellation/refund accounting; currently on-service settlement.
+- Fabriketage: separately book the smaller 60-person room; currently the lower floor is conference breakout space only.
+- Fabriketage: supplier quality/choice beyond authored incidents, and capital cost/refund timing beyond the existing cash-basis ending window.

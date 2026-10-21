@@ -15,7 +15,7 @@ import {
 } from './report'
 import { combined, fmtMargin, rateMargin } from './margin'
 import { diveTargets, guletTargets, watersportsTargets } from './abroadTargets'
-import { escapeTargets } from './leisureTargets'
+import { escapeTargets, venueTargets } from './leisureTargets'
 import type { RunResult } from './simulate'
 import { PACING_WEEKS, YEAR2_WEEK } from './simulate'
 
@@ -290,6 +290,7 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     ...diveTargets(careful, s, all),
     ...guletTargets(careful, s, all),
     ...escapeTargets(careful, s, all),
+    ...venueTargets(careful, s, all),
   ]
 }
 
@@ -306,7 +307,12 @@ function loanTargets(
 ): Target[] {
   if (!careful.results.some((x) => x.loan !== null)) return []
   const indoor = careful.results.some((x) => x.tourism?.leisure)
-  const refit = indoor ? s('leisure_no_later_loan') : s('tourism_refit_loan')
+  const venue = careful.results.some((x) => x.tourism?.leisure?.venue)
+  const refit = venue
+    ? s('venue_no_later_loan')
+    : indoor
+      ? s('leisure_no_later_loan')
+      : s('tourism_refit_loan')
   const over = s('tourism_overborrow')
   const reckless = s('tourism_reckless')
   const optional = refit ? pairedOn(careful, refit, all) : null
@@ -346,9 +352,11 @@ function loanTargets(
   return [
     {
       id: 15,
-      text: indoor
-        ? 'L1. An optional loan for later rooms is a real choice: borrowing and funding later rooms from retained cash are within 5 points of each other'
-        : 'L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other',
+      text: venue
+        ? 'L1. Optional borrowing and retained-cash funding of later venue investments are within 5 points of each other'
+        : indoor
+          ? 'L1. An optional loan for later rooms is a real choice: borrowing and funding later rooms from retained cash are within 5 points of each other'
+          : 'L1. An optional loan (a second loan for the own fit-out) is a real choice: borrowing and not borrowing are within 5 points of each other',
       value: optional
         ? `second loan ${signed(indoor ? -optional.change : optional.change)} against none (second loan taken in ${fmtPct(second)} of runs)`
         : '-',

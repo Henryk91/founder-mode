@@ -1,0 +1,995 @@
+id: fabriketage
+name: Fabriketage
+longOnly: true
+maxWeeks: 104
+win:
+  profitableMonths: 3
+  overMonths: 13
+start:
+  cashCents: 4000000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  priceCentsPerMonth: 600000
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: lease
+      name: Factory-floor lease
+      monthlyCents: 1100000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 40000
+    - id: utilities
+      name: Electricity and heating
+      monthlyCents: 120000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 25000
+    - id: software
+      name: Software and website
+      monthlyCents: 15000
+    - id: cleaning
+      name: Base cleaning contract
+      monthlyCents: 60000
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  livingSteps:
+    - week: 53
+      centsPerWeek: 74250
+finance:
+  weeksPerMonth: 4
+  invoiceDueDays: 30
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    budgetSmallStepCents: 50000
+    buckets:
+      - id: not_a_problem
+        name: Not a problem
+        below: 0.2
+      - id: mild
+        name: Mild
+        below: 0.4
+      - id: noticeable
+        name: Noticeable
+        below: 0.6
+      - id: painful
+        name: Painful
+        below: 0.9
+      - id: urgent
+        name: Urgent
+  landing:
+    hours: 6
+    budgetsCents:
+      - 20000
+      - 50000
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+product:
+  startQuality: 90
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  price:
+    midpoint: 1.35
+    steepness: 10
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    priceFrom: 1
+    perPrice: 0.15
+    cap: 0.6
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - id: weak
+      name: Weak
+      below: 0.7
+    - id: solid
+      name: Solid
+      below: 0.95
+    - id: strong
+      name: Strong
+      below: 1.1
+    - id: outstanding
+      name: Outstanding
+  roles:
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill:
+        min: 0.5
+        max: 1.2
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill:
+        min: 0.5
+        max: 1.2
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+  freelance:
+    hoursOptions:
+      - 10
+      - 20
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.55
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+roles:
+  - id: viable
+    pain:
+      min: 0.6
+      max: 0.85
+    politeness:
+      min: 0.05
+      max: 0.15
+  - id: mediocre
+    pain:
+      min: 0.35
+      max: 0.55
+    politeness:
+      min: 0.25
+      max: 0.4
+  - id: trap
+    pain:
+      min: 0.1
+      max: 0.25
+    politeness:
+      min: 0.5
+      max: 0.65
+segments:
+  - id: companies
+    name: Companies
+    description: Firms booking weekday conferences, launches, workshops and parties.
+    size:
+      min: 500
+      max: 2500
+    wtpCents:
+      min: 400000
+      max: 900000
+    mustHave:
+      - av_tech
+      - conference_package
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.03
+        max: 0.06
+      in_person:
+        min: 0.03
+        max: 0.06
+    paymentDelayDaysMean: 30
+    neverPaysShare: 0.01
+    waitsForChaseShare: 0.15
+    budgetQuotes:
+      - Our total venue budget is {amount}. Please make the extras visible before the quotation is
+        approved.
+      - We can spend about {amount} on the date. A photograph of a window is not a price list.
+      - For {amount}, we need a real booking and somebody who knows the floor.
+      - The last room cost {amount}. The final invoice thought differently.
+      - Something around {amount} could work. Send the terms before we organise everybody.
+  - id: weddings
+    name: Wedding couples
+    description: Couples planning a summer Saturday with dinner and coordination.
+    size:
+      min: 500
+      max: 2500
+    wtpCents:
+      min: 350000
+      max: 700000
+    mustHave:
+      - furniture
+      - caterer_list
+      - wedding_package
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.03
+        max: 0.06
+      in_person:
+        min: 0.03
+        max: 0.06
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - Our total venue budget is {amount}. Please make the extras visible before the quotation is
+        approved.
+      - We can spend about {amount} on the date. A photograph of a window is not a price list.
+      - For {amount}, we need a real booking and somebody who knows the floor.
+      - The last room cost {amount}. The final invoice thought differently.
+      - Something around {amount} could work. Send the terms before we organise everybody.
+  - id: private_parties
+    name: Private parties
+    description: Birthdays, anniversaries, club nights, shoots and markets.
+    size:
+      min: 500
+      max: 2500
+    wtpCents:
+      min: 150000
+      max: 350000
+    mustHave:
+      - caterer_list
+      - late_licence
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.03
+        max: 0.06
+      in_person:
+        min: 0.03
+        max: 0.06
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - Our total venue budget is {amount}. Please make the extras visible before the quotation is
+        approved.
+      - We can spend about {amount} on the date. A photograph of a window is not a price list.
+      - For {amount}, we need a real booking and somebody who knows the floor.
+      - The last room cost {amount}. The final invoice thought differently.
+      - Something around {amount} could work. Send the terms before we organise everybody.
+milestones:
+  - id: first_interview
+    name: First interview
+    kind: count
+    of: interviews
+    target: 1
+  - id: first_deposit
+    name: First deposit
+    kind: count
+    of: deposits
+    target: 1
+  - id: first_customer
+    name: First paying event
+    kind: count
+    of: guests
+    target: 1
+  - id: covers_company_costs
+    name: A month of events covers company costs
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: A month of events covers all costs, you included
+    kind: revenue
+    covers: all
+  - id: weeks_26
+    name: 26 weeks survived
+    kind: weeks
+    target: 26
+  - id: weeks_52
+    name: 52 weeks survived
+    kind: weeks
+    target: 52
+  - id: weeks_78
+    name: 78 weeks survived
+    kind: weeks
+    target: 78
+  - id: weeks_104
+    name: 104 weeks survived
+    kind: weeks
+    target: 104
+officeStages:
+  - id: factory_floor
+    name: The top floor
+    monthlyCents: 0
+  - id: factory_lower_floor
+    name: Conference breakout rooms below
+    monthlyCents: 550000
+    oneOffCents: 3500000
+    moveWeeks: 6
+    qualityBonus: 0.1
+    segmentFactors:
+      companies: 1.45
+office:
+  noticeWeeks: 13
+  moveHoursPerWeek: 4
+organisedAt:
+  - covers_all_costs
+establishedAt:
+  monthsCoveringAll: 8
+loan:
+  bankName: Isartal Savings Bank
+  bridgeMonthsHint: 4
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  ownShare: 0.2
+  unprovenMaxCents: 18000000
+  revenueMultiple: 1
+  minCents: 1000000
+  maxCents: 30000000
+  stepCents: 500000
+  rateBp:
+    min: 450
+    max: 750
+  leverageSpreadBp: 100
+  termMonths:
+    - 60
+    - 84
+    - 120
+  graceMonths:
+    - 0
+    - 6
+    - 12
+  missedFeeCents: 5000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+  items:
+    - fit_out
+    - furniture
+    - av_tech
+    - sound_insulation
+    - late_licence
+    - roof_terrace
+  workingCapitalMonths: 3
+bookings:
+  startWeekOfYear: 9
+  seasonNoise: 0.15
+  peakMonths:
+    - 3
+    - 4
+    - 5
+    - 6
+    - 9
+    - 10
+    - 11
+    - 12
+  policyWeeks: 4
+  platform:
+    name: Raumkalender
+    commission: 0.15
+  website:
+    product: online_enquiries
+    repeatsFull: 25
+  partnershipHours: 6
+  partnershipCut: 0.1
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor:
+    viable: 1
+    mediocre: 0.45
+    trap: 0.15
+  fitBase: 0.35
+  segments:
+    companies:
+      base:
+        min: 1
+        max: 4
+      unit: group
+      price:
+        peak: 650000
+        off: 520000
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 4
+        max: 20
+      season:
+        - 0.35
+        - 0.45
+        - 0.8
+        - 0.85
+        - 0.9
+        - 0.75
+        - 0.35
+        - 0.25
+        - 0.95
+        - 1
+        - 1
+        - 0.95
+      response:
+        platform: 0.45
+        website: 0.55
+        partnership: 0.95
+        outreach: 0.95
+        walkIn: 0
+      cancel: 0.04
+      strictConversion: 0.995
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.65
+    weddings:
+      base:
+        min: 0.5
+        max: 2
+      unit: group
+      price:
+        peak: 550000
+        off: 440000
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 26
+        max: 70
+      season:
+        - 0.2
+        - 0.2
+        - 0.35
+        - 0.5
+        - 0.85
+        - 1
+        - 1
+        - 1
+        - 0.9
+        - 0.5
+        - 0.25
+        - 0.3
+      response:
+        platform: 0.9
+        website: 0.7
+        partnership: 0.8
+        outreach: 0.1
+        walkIn: 0
+      cancel: 0.03
+      strictConversion: 0.65
+      depositShare: 0.3
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.85
+    private_parties:
+      base:
+        min: 1
+        max: 4
+      unit: group
+      price:
+        peak: 280000
+        off: 230000
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 2
+        max: 12
+      season:
+        - 0.55
+        - 0.65
+        - 0.7
+        - 0.75
+        - 0.8
+        - 0.85
+        - 0.8
+        - 0.75
+        - 0.8
+        - 0.85
+        - 0.9
+        - 1
+      response:
+        platform: 0.9
+        website: 0.65
+        partnership: 0.1
+        outreach: 0.05
+        walkIn: 0.1
+      cancel: 0.1
+      strictConversion: 0.97
+      depositShare: 0.5
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.75
+  products:
+    fit_out:
+      capacity: 7
+      oneOffCents: 9000000
+      serves:
+        - private_parties
+      unitCostCents: 35000
+    furniture:
+      capacity: 0
+      oneOffCents: 1800000
+      serves: []
+      unitCostCents: 0
+    av_tech:
+      capacity: 0
+      oneOffCents: 2500000
+      serves: []
+      unitCostCents: 0
+    caterer_list:
+      capacity: 0
+      oneOffCents: 0
+      serves: []
+      unitCostCents: 0
+    conference_package:
+      capacity: 7
+      oneOffCents: 0
+      serves:
+        - companies
+      unitCostCents: 35000
+      capacityOf: fit_out
+      requires: av_tech
+    wedding_package:
+      capacity: 7
+      oneOffCents: 0
+      serves:
+        - weddings
+      unitCostCents: 35000
+      capacityOf: fit_out
+      requires: furniture
+    split_days:
+      capacity: 0
+      oneOffCents: 0
+      serves: []
+      unitCostCents: 0
+    sound_insulation:
+      capacity: 0
+      oneOffCents: 3000000
+      serves: []
+      unitCostCents: 0
+    late_licence:
+      capacity: 0
+      oneOffCents: 150000
+      serves: []
+      unitCostCents: 0
+    online_enquiries:
+      capacity: 0
+      oneOffCents: 0
+      serves: []
+      unitCostCents: 0
+      monthlyCents: 5000
+    late_events:
+      capacity: 7
+      oneOffCents: 0
+      serves:
+        - private_parties
+      unitCostCents: 35000
+      capacityOf: fit_out
+      requires: late_licence
+      priceFactor: 1.25
+      ownDemand: 0.6
+    roof_terrace:
+      capacity: 0
+      oneOffCents: 12000000
+      serves: []
+      unitCostCents: 0
+      wtpFactor:
+        companies: 1.03
+        weddings: 1.06
+        private_parties: 1.04
+  roles:
+    event_host:
+      name: Event host
+      centsPerShift: 25000
+      units:
+        fit_out: 1
+        conference_package: 1
+        wedding_package: 1
+        late_events: 1
+      available:
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+      founderHours: 10
+      contracts:
+        permanent:
+          centsPerWeek: 105000
+          shifts: 5
+          noticeWeeks: 4
+          quality: 0.2
+          max: 1
+        part_time:
+          centsPerWeek: 45000
+          shifts: 2
+          noticeWeeks: 4
+          quality: 0.15
+          max: 2
+        seasonal:
+          centsPerWeek: 110000
+          shifts: 5
+          months:
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
+          quality: 0.15
+          max: 1
+    event_technician:
+      name: Event technician
+      centsPerShift: 30000
+      units:
+        conference_package: 1
+        late_events: 1
+      available:
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+        - 12
+  hosting:
+    hoursPerUnit: 1
+    maxHours: 12
+  trials:
+    test_listing:
+      name: Venue-platform test listing
+      hours: 4
+      cents: 30000
+      weeks: 2
+      people: 50
+      reach:
+        companies: 0.15
+        weddings: 0.45
+        private_parties: 0.4
+      rate:
+        base: 0.01
+        perPain: 0.12
+      max: 3
+    open_evening:
+      name: Agency open evening
+      hours: 10
+      cents: 150000
+      weeks: 1
+      people: 20
+      reach:
+        companies: 0.6
+        weddings: 0.4
+      rate:
+        base: 0
+        perPain: 0.35
+      repeat: true
+      max: 3
+    wedding_fair:
+      name: Wedding fair stand
+      hours: 12
+      cents: 120000
+      weeks: 1
+      people: 80
+      reach:
+        weddings: 1
+      rate:
+        base: 0.01
+        perPain: 0.15
+      max: 3
+  reviews:
+    qualityBase: 4.3
+    noiseSd: 0.3
+    understaffPenalty: 2.5
+    tiredPenalty: 0.5
+    cancelPenalty: 1.5
+    snagPenalty: 0.5
+    valueWeight: 1.5
+    reviewsPerUnit: 2
+    reviewsFull: 20
+  leisure:
+    slots:
+      - id: weekday
+        name: Monday to Thursday
+        hours: 48
+      - id: friday
+        name: Friday
+        hours: 12
+      - id: saturday
+        name: Saturday
+        hours: 12
+      - id: sunday
+        name: Sunday
+        hours: 12
+    segments:
+      companies:
+        slotShare:
+          weekday: 0.8
+          friday: 0.15
+          saturday: 0.03
+          sunday: 0.02
+        visitsPerWeek: 0
+        memberShare: 0
+        churn: 0
+        crowdingChurn: 0
+        freshnessChurn: 0
+        priceChurn: 0
+        januaryFade: 0
+        waitlistAt: 100
+      weddings:
+        slotShare:
+          weekday: 0
+          friday: 0.05
+          saturday: 0.9
+          sunday: 0.05
+        visitsPerWeek: 0
+        memberShare: 0
+        churn: 0
+        crowdingChurn: 0
+        freshnessChurn: 0
+        priceChurn: 0
+        januaryFade: 0
+        waitlistAt: 100
+      private_parties:
+        slotShare:
+          weekday: 0.1
+          friday: 0.35
+          saturday: 0.35
+          sunday: 0.2
+        visitsPerWeek: 0
+        memberShare: 0
+        churn: 0
+        crowdingChurn: 0
+        freshnessChurn: 0
+        priceChurn: 0
+        januaryFade: 0
+        waitlistAt: 100
+    products:
+      fit_out:
+        capacity:
+          weekday: 4
+          friday: 1
+          saturday: 1
+          sunday: 1
+    buildOut:
+      fit_out:
+        weeks: 10
+      sound_insulation:
+        weeks: 2
+        closes:
+          - fit_out
+      late_licence:
+        weeks: 8
+      roof_terrace:
+        weeks: 12
+    opening:
+      areas:
+        - fit_out
+      requires: []
+    holds:
+      feeCents: 50000
+      weeks:
+        min: 2
+        max: 4
+      lateReleaseShare: 0.2
+      segments:
+        companies:
+          ask: 0.65
+          convert: 0.5
+          feeConversion: 0.95
+          noHoldConversion: 0.35
+        weddings:
+          ask: 1
+          convert: 0.33
+          feeConversion: 0.9
+          noHoldConversion: 0.15
+        private_parties:
+          ask: 0.15
+          convert: 0.65
+          feeConversion: 0.95
+          noHoldConversion: 0.9
+    crowdingPenalty: 0
+    quietBelow: 0.4
+    packedFrom: 0.85
+    slotPrices:
+      companies:
+        weekday:
+          peak: 650000
+          off: 520000
+        friday:
+          peak: 650000
+          off: 520000
+        saturday:
+          peak: 650000
+          off: 520000
+        sunday:
+          peak: 650000
+          off: 520000
+      weddings:
+        weekday:
+          peak: 550000
+          off: 440000
+        friday:
+          peak: 550000
+          off: 440000
+        saturday:
+          peak: 550000
+          off: 440000
+        sunday:
+          peak: 550000
+          off: 440000
+      private_parties:
+        weekday:
+          peak: 280000
+          off: 230000
+        friday:
+          peak: 280000
+          off: 230000
+        saturday:
+          peak: 280000
+          off: 230000
+        sunday:
+          peak: 280000
+          off: 230000
+    strictKeepsDeposit: true
+    slotUpgrades:
+      split_days:
+        product: fit_out
+        slot: weekday
+        additional: 4
+        unitCostCents: 40000
+    noise:
+      products:
+        - late_events
+      insulation: sound_insulation
+      setupProducts:
+        - late_licence
+        - late_events
+        - sound_insulation
+      complaint: 0.24
+      insulatedComplaint: 0.02
+      warningAt: 3
+      restrictAt: 4
+      windowWeeks: 52
+      restrictionWeeks: 26
+    extras:
+      caterer_list:
+        segments:
+          weddings:
+            grossCents: 400000
+            revenueShare: 0.1
+            unitCostCents: 0
+          private_parties:
+            grossCents: 200000
+            revenueShare: 0.1
+            unitCostCents: 0
+    permits:
+      roof_terrace:
+        approval: 0.65
+        refundCents: 11700000
+  requestsAhead: true
+  assets:
+    dinner_furniture:
+      name: Dinner tables and chairs
+      products:
+        - wedding_package
+      buy:
+        product: furniture
+        upkeepMonthlyCents: 0
+        crewWeekCents: 0
+        breakdown:
+          weekly: 0
+          perYear: 0
+          weeks:
+            min: 1
+            max: 1
+          repairCents: 0
+        ageYears: 0
+        valueLossPerYear: 0.1
+      share:
+        capacity: 1
+        unitCents: 90000
+        revenueShare: 0
+modes:
+  long: {}

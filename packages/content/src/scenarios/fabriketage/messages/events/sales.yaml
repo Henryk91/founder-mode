@@ -1,0 +1,316 @@
+events:
+  - id: three_saturdays
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text:
+      A couple asks to hold three Saturdays while they talk to both sets of parents. The parents are
+      abroad and return next month. Your calendar is very good at displaying uncertainty.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Apply the normal hold terms
+        hours: 2
+        effects:
+          - type: guests
+            segment: weddings
+            count: 1
+      - id: leave
+        label: Hold all three freely
+        hours: 0
+        effects: []
+  - id: christmas_exclusivity
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text:
+      An agency offers to sell your whole December if it gets an exclusive rate. Its forecast has
+      six events and no deposit. December itself has not agreed to wait.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Ask for guaranteed paid dates
+        hours: 3
+        effects:
+          - type: guests
+            segment: companies
+            count: 2
+      - id: leave
+        label: Accept the forecast
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_empty_tuesday
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text:
+      A film crew wants three quiet weekdays. They need a bare brick background and permission to
+      move the furniture. For once, the building’s unfinished appearance is in the brief.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Price the dates and the reset
+        hours: 3
+        effects:
+          - type: guests
+            segment: private_parties
+            count: 2
+      - id: leave
+        label: Offer the floor free for a credit
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -40000
+  - id: eleven_days
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text: A launch organiser has lost their venue and needs a floor next week. They have a budget, a
+      stage plan and very little sleep. Your enquiries form has never looked more useful.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the crew and take a deposit
+        hours: 4
+        effects:
+          - type: guests
+            segment: companies
+            count: 1
+      - id: leave
+        label: Promise everything immediately
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: the_planner_s_commission
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text: A wedding planner can send couples, provided the referral fee is clear. She also asks how
+      quickly a held date expires. These are more useful questions than whether you like weddings.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Agree written terms
+        hours: 3
+        effects:
+          - type: guests
+            segment: weddings
+            count: 1
+      - id: leave
+        label: Offer an indefinite free hold
+        hours: 0
+        effects: []
+  - id: the_weekday_package
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text:
+      An HR manager wants a day rate covering the screen, coffee and somebody who can find the light
+      switches. Your quotation currently prices each switch separately.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Send one clear conference offer
+        hours: 3
+        effects:
+          - type: guests
+            segment: companies
+            count: 1
+      - id: leave
+        label: Send the equipment list again
+        hours: 0
+        effects: []
+  - id: the_winter_cancellation
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text: A firm cuts its Christmas party after a difficult quarter. Its organiser asks whether the
+      deposit can move to a spring workshop. The cancelled Friday is now six weeks away.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Apply the stated terms
+        hours: 2
+        effects: []
+      - id: leave
+        label: Promise a full refund and no replacement date
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -80000
+  - id: the_fair_stand
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text: A wedding fair offers a free stand if you host its after-party. The after-party wants a
+      Saturday you can still sell. Free has brought a contract.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Price the Saturday before agreeing
+        hours: 3
+        effects:
+          - type: guests
+            segment: weddings
+            count: 1
+      - id: leave
+        label: Accept the stand at once
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -100000
+  - id: the_price_screenshot
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text: A couple sends a screenshot of a cheaper Sunday and asks for the same Saturday price. The
+      screenshot is accurate. So is the day of the week.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Explain the date prices
+        hours: 2
+        effects: []
+      - id: leave
+        label: Match every date to Sunday
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -60000
+  - id: a_quiet_sunday
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text:
+      A makers’ market wants the floor on a Sunday. It pays less than a wedding and arrives with its
+      own audience. No wedding has asked about that Sunday.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the costs and quote
+        hours: 2
+        effects:
+          - type: guests
+            segment: private_parties
+            count: 1
+      - id: leave
+        label: Hold out for a wedding
+        hours: 0
+        effects: []
+  - id: the_agency_tasting
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text:
+      Two agency organisers will attend a short open evening. One asks for access times, the other
+      for your cancellation terms. The caterer asks whether there will be paying work afterwards.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Show the service and ask for dates
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -30000
+          - type: guests
+            segment: companies
+            count: 2
+      - id: leave
+        label: Spend the evening on terrace sketches
+        hours: 0
+        effects: []
+  - id: the_six_month_enquiry
+    area: sales
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The booking desk
+    look: letter
+    text:
+      A couple likes the room but will not decide until they have visited four more venues. They ask
+      you to keep the date meanwhile. You also have an enquiry with a headcount and a deposit
+      question.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Give the hold a clear expiry
+        hours: 2
+        effects: []
+      - id: leave
+        label: Keep it open until they decide
+        hours: 0
+        effects: []

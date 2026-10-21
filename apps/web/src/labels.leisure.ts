@@ -1,4 +1,45 @@
 export const LEISURE_LABELS = {
+  'leisure.roofLesson':
+    '{name} costs {amount} and creates no extra event dates. Requests for outdoor space still need paying bookings; the bank cannot collect compliments.',
+  'leisure.productPrices': '{name}: {peak} peak, {off} off season in this slot.',
+  'leisure.holdPolicy': 'Date holds',
+  'leisure.hold.free': 'Grant freely',
+  'leisure.hold.fee': 'Require a hold fee',
+  'leisure.hold.none': 'No holds',
+  'leisure.holdTerms':
+    'A paid hold costs {amount}, credited against the event if it converts. Held capacity cannot be sold to another client.',
+  'leisure.holdHint':
+    'New hold terms apply to new enquiries. Existing holds keep their dates and expiry.',
+  'leisure.holdDate': 'Week {week}, {slot}, {segment}: {status}; decision due in week {release}.',
+  'leisure.holdRefund': 'Advance returned: {amount}.',
+  'leisure.hold.status.held': 'held',
+  'leisure.hold.status.converted': 'converted to a booking',
+  'leisure.hold.status.released': 'released',
+  'leisure.permitTerms':
+    '{name}: {amount} of the build price is refundable if the decision is a refusal.',
+  'leisure.permitRefused':
+    '{name}: refused in week {week}; {amount} returned. This application cannot be restarted.',
+  'leisure.buildClosure':
+    '{name}: closes {areas} during the construction wait. Accepted dates in the closure are refunded.',
+  'leisure.upgradeTerms':
+    '{name}: adds {n} events to {slot}; {amount} per actual event beyond the original capacity.',
+  'leisure.upgradePaid': 'Extra turnaround work paid so far: {amount}.',
+  'leisure.extraTerms':
+    '{name}, {segment}: {share}% of a {gross} package per served event, less {cost} in service costs.',
+  'leisure.extraPaid': '{name}: {units} served, {revenue} received and {cost} paid so far.',
+  'leisure.extraLast4': 'Last four weeks: {revenue} received, {cost} paid.',
+  'leisure.noiseTitle': 'Late events and neighbours',
+  'leisure.noiseCounts':
+    '{events} late events served; {complaints} complaints in the current window, {total} in all.',
+  'leisure.noiseWarning':
+    'A warning has been issued. Review insulation, finish times and the forward calendar.',
+  'leisure.noiseRestricted':
+    'Late events restricted from week {from} until week {until}, exclusive. Other hall bookings remain available.',
+  'leisure.noiseRefunds':
+    'Restrictions released {bookings} bookings and {holds} holds; {amount} in advances returned.',
+  'leisure.noiseMoney': 'Late receipts {revenue}; attributable costs {cost}; net {net}.',
+  'leisure.noiseCosts':
+    'Costs include service {variable}, staff {staff}, equipment {asset}, turnarounds {turnaround} and dedicated setup {setup}. Shared rent is in the company ledger.',
   'leisure.space': '{used} of {max} physical spaces reserved by rooms or meeting space.',
   'leisure.spaceFull': 'No unreserved space for this build.',
   'leisure.minimumAreas': '{name}: at least {n} rooms must be ready for the requested date.',
