@@ -210,6 +210,8 @@ export type Booking = {
   status: BookingStatus
   /** Paid when booked (a deposit, step 7); the rest is due at the stay. Absent: none. */
   depositCents?: number
+  /** Advance already returned following a venue restriction. */
+  refundedCents?: number
   /** Plan 2: a voucher redeemed for this booking; it was paid when the voucher was sold. */
   voucherId?: string
   /** Plan 4: a trip guest who waited a week for a group already (absent otherwise). */
@@ -2562,8 +2564,27 @@ export type HireEconomicsView = {
   lifetimeValueCents: number | null
 }
 
+export type LeisureExtraTotals = { units: number; receiptsCents: number; costsCents: number }
+export type LeisureNoiseState = {
+  complaintWeeks: number[]
+  restrictions: { fromWeek: number; untilWeek: number }[]
+  lateEvents: number
+  cancelledBookings: number
+  releasedHolds: number
+  refundsCents: number
+  receiptsCents: number
+  variableCents: number
+  staffCents: number
+  assetCents: number
+  turnaroundCents: number
+  setupCents: number
+  setupPaid: FeatureId[]
+}
+
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
 export type LeisureState = {
+  noise?: LeisureNoiseState
+  extras?: Record<FeatureId, LeisureExtraTotals>
   slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
   salesSlots?: Record<SegmentId, string[]>
   openingWeek: number | null
@@ -2626,8 +2647,10 @@ export type LeisureHold = {
   releaseWeek: number
   status: 'held' | 'converted' | 'released'
   feeCents: number
+  refundedCents?: number
 }
 export type LeisureWeek = {
+  extras?: Record<FeatureId, LeisureExtraTotals>
   turnaroundCents?: Record<FeatureId, number>
   turnedAway: Record<string, number>
   week: number
@@ -2667,6 +2690,43 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  noise?: {
+    complaints: number
+    totalComplaints: number
+    warning: boolean
+    restricted: boolean
+    restrictedFrom: number | null
+    restrictedUntil: number | null
+    restrictions: number
+    lateEvents: number
+    cancelledBookings: number
+    releasedHolds: number
+    refundsCents: number
+    receiptsCents: number
+    variableCents: number
+    staffCents: number
+    assetCents: number
+    turnaroundCents: number
+    setupCents: number
+    costsCents: number
+    netCents: number
+  }
+  extras?: {
+    productId: FeatureId
+    name: string
+    active: boolean
+    terms: {
+      segmentId: SegmentId
+      grossCents: number
+      revenueShare: number
+      unitCostCents: number
+    }[]
+    units: number
+    receiptsCents: number
+    costsCents: number
+    receiptsLast4Cents: number
+    costsLast4Cents: number
+  }[]
   upgrades?: {
     productId: FeatureId
     name: string
@@ -2768,6 +2828,7 @@ export type LeisureView = {
       segmentId: SegmentId
       releaseWeek: number
       status: LeisureHold['status']
+      refundedCents?: number
     }[]
     granted: number
     converted: number

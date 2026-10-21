@@ -76,3 +76,8 @@ seeds. Event table once at the end. Full report exactly once in step 6, never be
   repair passes. Alias load/freshness aggregate into physical pools, and lease
   calendar dates are checked individually. All61 focused tests plus lint/typechecks
   pass. Full old-game/Ausgesperrt comparison remains pending at the phase gate.
+
+- Noise/ancillary draft complete: observed complaints, date restrictions, immediate
+  refunds for future bookings/holds, real service commissions and attributable late
+  contribution. All71 focused engine tests and lint/typechecks pass. Formula/value
+  tuning budgets remain zero: no venue has been registered or measured.

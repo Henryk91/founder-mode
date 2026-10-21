@@ -1,5 +1,6 @@
 import { stageInEffect } from './bookings'
 import { assetFactor, assetOf, leisureAssetSupplies } from './assets'
+import { finishVenue, initVenue, venueOpen, venueView, type VenueMoney } from './venue'
 import type { Scenario } from '@founder-mode/content'
 import type { Rng } from '../rng'
 import { priceCurve } from './market'
@@ -90,6 +91,7 @@ export function initLeisure(
       ),
     },
     state: {
+      ...initVenue(c),
       ...(c.slotPrices
         ? {
             slotPrices: mergeSlotPrices(c.slotPrices),
@@ -280,6 +282,7 @@ export function leisureOpen(s: GameState, id: string, week: number): boolean {
   const c = cfgOf(s)
   const l = s.bookings?.leisure
   if (!c || !l) return true
+  if (!venueOpen(s, id, week)) return false
   if (c.opening && l.openingWeek === null) {
     if (
       !c.opening.areas.some((p) => readyAt(s, p, week)) ||
@@ -687,6 +690,7 @@ export function leisureView(s: GameState): LeisureView | null {
     { students: 0, sameStay: 0, returnedDirect: 0, returnedPlatform: 0 },
   )
   return {
+    ...venueView(s),
     ...(c.slotUpgrades
       ? {
           upgrades: entries(c.slotUpgrades).map(([id, upgrade]) => ({
@@ -851,6 +855,7 @@ export function leisureView(s: GameState): LeisureView | null {
             segmentId: h.booking.segmentId,
             releaseWeek: h.releaseWeek,
             status: h.status,
+            ...(h.refundedCents !== undefined ? { refundedCents: h.refundedCents } : {}),
           })),
           granted: l.holds.length,
           converted: l.holds.filter((h) => h.status === 'converted').length,
@@ -870,6 +875,9 @@ export function leisureView(s: GameState): LeisureView | null {
     history: l.weeks.map((w) => ({
       ...w,
       ...(w.turnaroundCents ? { turnaroundCents: { ...w.turnaroundCents } } : {}),
+      ...(w.extras
+        ? { extras: Object.fromEntries(entries(w.extras).map(([id, total]) => [id, { ...total }])) }
+        : {}),
       turnedAway: { ...w.turnedAway },
       slots: w.slots.map((x) => ({ ...x })),
     })),
@@ -1249,11 +1257,14 @@ export function leisureVisits(
 export function finishLeisure(
   input: GameState,
   bookings: readonly Booking[],
+  rng?: Rng,
+  money?: VenueMoney,
 ): {
   state: GameState
   voucherRedeemedCents: number
   reviewPenalty: number
   extraCostsCents?: number
+  extraRevenueCents?: number
 } {
   const c = cfgOf(input)
   const original = input.bookings?.leisure
@@ -1393,17 +1404,21 @@ export function finishLeisure(
         }
       : w,
   )
-  return {
-    state: {
-      ...input,
-      bookings: {
-        ...input.bookings!,
-        leisure: { ...original, members, freshness, aggregator, weeks },
-      },
+  const completed: GameState = {
+    ...input,
+    bookings: {
+      ...input.bookings!,
+      ...(c.noise ? { bookings: [...bookings] } : {}),
+      leisure: { ...original, members, freshness, aggregator, weeks },
     },
+  }
+  const venue = finishVenue(completed, bookings, rng, money, turnaroundCents)
+  return {
+    state: venue.state,
     voucherRedeemedCents,
     reviewPenalty,
-    ...(c.slotUpgrades ? { extraCostsCents } : {}),
+    ...(c.slotUpgrades || c.extras ? { extraCostsCents: extraCostsCents + venue.costsCents } : {}),
+    ...(c.extras || c.noise ? { extraRevenueCents: venue.receiptsCents } : {}),
   }
 }
 

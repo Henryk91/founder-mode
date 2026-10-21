@@ -861,6 +861,34 @@ export const LeisureSchema = z
         }),
       )
       .optional(),
+    noise: z
+      .object({
+        products: z.array(Id).min(1),
+        insulation: Id,
+        setupProducts: z.array(Id),
+        complaint: Share,
+        insulatedComplaint: Share,
+        warningAt: z.number().int().positive(),
+        restrictAt: z.number().int().positive(),
+        windowWeeks: z.number().int().positive(),
+        restrictionWeeks: z.number().int().positive(),
+      })
+      .optional(),
+    extras: z
+      .record(
+        Id,
+        z.object({
+          segments: z.record(
+            Id,
+            z.object({
+              grossCents: Cents.positive(),
+              revenueShare: Share,
+              unitCostCents: Cents.nonnegative(),
+            }),
+          ),
+        }),
+      )
+      .optional(),
     // Any one of these completed areas opens the business; optional extra prerequisites.
     opening: z.object({ areas: z.array(Id).min(1), requires: z.array(Id) }).optional(),
     holds: z
@@ -883,6 +911,11 @@ export const LeisureSchema = z
     const issue = (message: string) => ctx.addIssue({ code: 'custom', message })
     if (slots.size !== l.slots.length) issue('duplicate leisure slot')
     if (l.quietBelow >= l.packedFrom) issue('quiet threshold must be below packed threshold')
+    if (l.noise) {
+      if (l.noise.warningAt >= l.noise.restrictAt) issue('noise warning must precede restriction')
+      if (l.noise.insulatedComplaint > l.noise.complaint)
+        issue('insulation must not increase complaints')
+    }
     const upgraded = new Set<string>()
     for (const upgrade of Object.values(l.slotUpgrades ?? {})) {
       if (!l.products[upgrade.product]) issue(`unknown upgraded product ${upgrade.product}`)
@@ -1129,6 +1162,8 @@ export const CONDITION_PATHS = [
   'leisure.holds',
   'leisure.tired',
   'leisure.instructorLosses',
+  'leisure.complaints',
+  'leisure.restricted',
 
   // Plan 4: the scenario's first asset: 1 when it is owned, leased, shared, none of them, or
   // broken down this week; 0 otherwise or without assets.
@@ -1695,6 +1730,18 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         if (!bk.segments[id]) issue(`unknown leisure segment ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.slotPrices ?? {}))
         if (!bk.segments[id]) issue(`unknown priced segment ${id}`, ['bookings', 'leisure'])
+      for (const id of Object.keys(leisure.extras ?? {}))
+        if (!featureIds.has(id)) issue(`unknown ancillary feature ${id}`, ['bookings', 'leisure'])
+      for (const extra of Object.values(leisure.extras ?? {}))
+        for (const id of Object.keys(extra.segments))
+          if (!bk.segments[id]) issue(`unknown ancillary segment ${id}`, ['bookings', 'leisure'])
+      if (leisure.noise)
+        for (const id of [
+          ...leisure.noise.products,
+          leisure.noise.insulation,
+          ...leisure.noise.setupProducts,
+        ])
+          if (!bk.products[id]) issue(`unknown noise product ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.slotUpgrades ?? {}))
         if (!featureIds.has(id)) issue(`unknown capacity upgrade ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.space?.uses ?? {}))

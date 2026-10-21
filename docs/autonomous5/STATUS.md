@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.2 Isolated venue engine draft: closures, upgrades and equipment supply complete.
-Last commit: HEAD, Plan 5: honour hired equipment in leisure sales and service.
-Next action: Implement gated noise/restriction counters, permit decisions/refunds and ancillary catering receipts with fixture tests and schema docs; then integrate venue content/bots/UI. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge after main tags plan5-escape. No venue measurement yet; protect nine old games plus Ausgesperrt after all shared changes.
+Step: 3.2 Isolated venue engine draft: complaints/restrictions and real ancillary receipts complete.
+Last commit: HEAD, Plan 5: account for venue restrictions refunds and catering receipts.
+Next action: Implement content-gated permit decisions/refunds and venue deposit-only strict cancellation, with fixture tests/schema docs; then integrate venue content/bots/UI. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge after main tags plan5-escape. No venue measurement yet; prove nine protected games plus Ausgesperrt unchanged after shared work.
 
 ## Checklist
 
@@ -17,6 +17,8 @@ Next action: Implement gated noise/restriction counters, permit decisions/refund
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks and open issues
+
+- Current worktree:71 engine tests pass (10 noise/receipts+17 venue+44 leisure), including immediate/single refunds, real contribution, date restrictions, fee attribution, public conditions and replay. /tmp/plan5-venue-noise-tests-4.log; lint/typechecks green at /tmp/plan5-venue-noise-lint-ready.log. Replay fixture needed matched budgets and its distinct late route; all assertions now pass. No unresolved test failure.
 
 - Equipment draft:61 focused engine tests pass (17 venue+44 leisure), including purity, refunds, hire/own costs, aliases, lease-date calendar and replay. /tmp/plan5-venue-assets-tests-2.log; lint/typechecks pass at /tmp/plan5-venue-assets-lint-2.log. First withdrawal test failed once; first service-capacity repair passed. No unresolved test failure.
 
