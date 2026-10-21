@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.7 phase-test repairs verified;corrected measurement running.
-Last commit: HEAD, Plan 5: add venue ending examples and roof lesson.
-Next action: Measure corrected venue main on1,000 test seeds(all29 strategies),seed regeneration and190 replay/coverage checks pass,then tune within the untouched budget. Protected main proof continues(session99011). Heading matrix80/80 and109 focused gap tests pass;lint passes. No venue event table/full report yet.
+Step: 3.8 corrected venue baseline complete;first value round next.
+Last commit: HEAD, Plan 5: record corrected venue baseline and tuning contributions.
+Next action: Apply the first venue value/content round recorded in venue/BUDGET.md,then measure affected main targets on1,000 test seeds. Corrected baseline:all29 strategies,careful41.5%,top50.5%. Nine targets remain open. Protected proof continues(session99011);do not rerun matched games. Venue event table once after tuning;full report only step6.
 
 ## Checklist
 
@@ -82,3 +82,7 @@ The freelancer failure is repaired on its first attempt:equipment belongs to ser
 ## Ending examples and lesson
 
 189 seed examples are generated,including18 for the venue. All190 checks pass,/tmp/plan5-venue-seed-tests.log;every earlier row is byte-identical. The public post-mortem explicitly explains that the roof quote creates no new dates and states any actual refusal/refund. Venue Help/results/post-mortem word checks pass at390/1440px,/tmp/plan5-venue-roof-words.log;lint passes,/tmp/plan5-roof-lesson-lint.log. Final full suite follows final tuning values.
+
+## Corrected baseline complete
+
+All29 strategies,main only,1,000 test seeds;409 seconds wall. Careful41.5%±3.1,top no-holds50.5%. T3,T5,T6,T10,T11,T13,T14,T15,V1 fail;all targets are measured,with T7 at the limit. Contributions and exact budget(0/2 values,0/1 formula) are in venue/BUDGET.md. No new playability stop applies.

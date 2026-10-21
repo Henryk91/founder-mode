@@ -938,3 +938,7 @@ AUTONOMOUS: the full-suite freelancer failure exposed a physical-equipment depen
 AUTONOMOUS: add a venue-only retained-cash variant for T15,leaving the earlier-games report paths/text intact. Venue readers permit useful no-cost work without an arbitrary cash threshold and preserve one month of fixed costs for paid choices. These are sensible-bot/mechanic repairs before any value tuning;measure a corrected main baseline before changing estimates.
 
 AUTONOMOUS: generate18 venue ending examples(189 total) and prove all earlier rows byte-identical;all190 replay/coverage checks pass. The post-mortem names the roof lesson using its public quote and actual refusal/refund. Venue Help/results/post-mortem words at390/1440 and lint pass. No game values changed.
+
+### Plan 5 step 3: corrected measurement and value plan
+
+AUTONOMOUS: complete the corrected venue main(all29 strategies,1,000 test seeds):careful41.5%,top50.5%,nine open targets,T7 at the limit. Record actual contributions in venue/BUDGET.md before changing values. First round will correct hold/cancellation acceptance estimates,pre-opening message availability and unresolved-snag reviews;keep money/lead times unchanged and do not invent bot-specific penalties. Value/formula budget remains0/2 and0/1 until applied.
