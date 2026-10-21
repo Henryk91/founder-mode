@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.2 Isolated venue engine draft: closures and weekday upgrades complete.
-Last commit: HEAD, Plan 5: add gated venue closures and weekday turnaround costs.
-Next action: Integrate leisure asset availability and supplied must-haves for hired furniture, then remaining noise/permit/ancillary gaps and fixture tests. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main's step2 full tests pass (79 files/1,542 tests); event table/session14569 still running. Merge only after main tags plan5-escape. No venue measurement yet; protect old games and Ausgesperrt after all shared changes.
+Step: 3.2 Isolated venue engine draft: closures, upgrades and equipment supply complete.
+Last commit: HEAD, Plan 5: honour hired equipment in leisure sales and service.
+Next action: Implement gated noise/restriction counters, permit decisions/refunds and ancillary catering receipts with fixture tests and schema docs; then integrate venue content/bots/UI. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge after main tags plan5-escape. No venue measurement yet; protect nine old games plus Ausgesperrt after all shared changes.
 
 ## Checklist
 
@@ -17,6 +17,8 @@ Next action: Integrate leisure asset availability and supplied must-haves for hi
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks and open issues
+
+- Equipment draft:61 focused engine tests pass (17 venue+44 leisure), including purity, refunds, hire/own costs, aliases, lease-date calendar and replay. /tmp/plan5-venue-assets-tests-2.log; lint/typechecks pass at /tmp/plan5-venue-assets-lint-2.log. First withdrawal test failed once; first service-capacity repair passed. No unresolved test failure.
 
 - Worktree draft:52 engine tests pass (8 venue+44 leisure), lint/typechecks green; /tmp/plan5-venue-capacity-tests.log and /tmp/plan5-venue-capacity-lint.log. Types and schema docs updated together. New closures/upgrades are off unless YAML enables them. Full phase/protected checks remain pending after all shared changes.
 

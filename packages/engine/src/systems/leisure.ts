@@ -1,4 +1,5 @@
 import { stageInEffect } from './bookings'
+import { assetFactor, assetOf, leisureAssetSupplies } from './assets'
 import type { Scenario } from '@founder-mode/content'
 import type { Rng } from '../rng'
 import { priceCurve } from './market'
@@ -18,6 +19,7 @@ const cfgOf = (s: Pick<GameState, 'scenario'>) => s.scenario.bookings?.leisure
 const shipped = (s: GameState, id: string) =>
   s.product.features.some((f) => f.id === id && f.shippedWeek !== null)
 const readyAt = (s: GameState, id: string, week: number) =>
+  leisureAssetSupplies(s, id, week) ||
   s.product.features.some(
     (f) =>
       f.id === id && (f.shippedWeek !== null || (f.readyWeek !== undefined && f.readyWeek <= week)),
@@ -320,7 +322,33 @@ export function leisureCapacity(s: GameState, id: string, slot: string, week: nu
         : 0),
     0,
   )
-  return Math.max(0, base + (total > 0 ? Math.floor((bonus * base) / total) : 0) + extra - loss)
+  const capacity = Math.max(
+    0,
+    base + (total > 0 ? Math.floor((bonus * base) / total) : 0) + extra - loss,
+  )
+  return s.scenario.bookings?.assets ? Math.floor(capacity * assetFactor(s, id, week)) : capacity
+}
+
+/** Actual sale/visit capacity, including a shared-pool alias's own equipment. */
+export function leisureProductCapacity(
+  s: GameState,
+  product: string,
+  slot: string,
+  week: number,
+): number {
+  const cfg = s.scenario.bookings!
+  const required = cfg.products[product]?.requires
+  if (
+    !readyAt(s, product, week) ||
+    !leisureOpen(s, product, week) ||
+    (required && !readyAt(s, required, week))
+  )
+    return 0
+  const pool = cfg.products[product]?.capacityOf ?? product
+  const capacity = leisureCapacity(s, pool, slot, week)
+  return product !== pool && assetOf(cfg, product)
+    ? Math.floor(capacity * assetFactor(s, product, week))
+    : capacity
 }
 
 export function leisureRoom(
@@ -363,7 +391,7 @@ export function leisureRoom(
             (cfg.products[h.booking.productId]?.capacityOf ?? h.booking.productId) === pool,
         )
         .reduce((t, h) => t + h.booking.units, 0)
-  const free = Math.max(0, leisureCapacity(s, pool, slot, week) - booked - held)
+  const free = Math.max(0, leisureProductCapacity(s, product, slot, week) - booked - held)
   const f = cfg.leisure?.freshness?.[pool]
   const live = s.bookings?.leisure?.freshness[pool]
   const groups = s.hidden.bookings?.leisure?.localPools[pool]
@@ -639,8 +667,8 @@ export function leisureView(s: GameState): LeisureView | null {
   const dates = [...changes].sort((a, b) => a - b)
   const capacities = new Map<string, number>()
   const calendarCapacity = (product: string, slot: string, week: number) => {
-    let at = s.week
-    for (const date of dates) {
+    let at = cfg.assets ? week : s.week
+    for (const date of cfg.assets ? [] : dates) {
       if (date > week) break
       at = date
     }
@@ -1272,10 +1300,11 @@ export function finishLeisure(
   for (const b of served) {
     const slotId = b.slotId
     if (!slotId) continue
-    let slot = slots.find((x) => x.productId === b.productId && x.slotId === slotId)
+    const productId = input.scenario.bookings!.products[b.productId]?.capacityOf ?? b.productId
+    let slot = slots.find((x) => x.productId === productId && x.slotId === slotId)
     if (!slot) {
       slot = {
-        productId: b.productId,
+        productId,
         slotId,
         visits: 0,
         turnedAway: 0,
@@ -1285,13 +1314,13 @@ export function finishLeisure(
       slots.push(slot)
     }
     slot.visits += b.units
-    const f = c.freshness?.[b.productId]
-    const now = freshness[b.productId]
+    const f = c.freshness?.[productId]
+    const now = freshness[productId]
     if (f && now) {
       now.value = Math.max(0, now.value - b.units * f.useLoss)
       now.served += b.units
       if (f.localSegments.includes(b.segmentId)) now.localGroups += b.units
-      const pool = input.hidden.bookings?.leisure?.localPools[b.productId]
+      const pool = input.hidden.bookings?.leisure?.localPools[productId]
       if (pool !== undefined)
         now.value = Math.min(now.value, 100 * Math.max(0, 1 - now.localGroups / pool))
       reviewPenalty +=
@@ -1339,7 +1368,8 @@ export function finishLeisure(
   for (const b of bookings.filter(
     (b) => b.week === week && b.status === 'company_cancelled' && b.slotId,
   )) {
-    const slot = slots.find((x) => x.productId === b.productId && x.slotId === b.slotId)
+    const pool = input.scenario.bookings!.products[b.productId]?.capacityOf ?? b.productId
+    const slot = slots.find((x) => x.productId === pool && x.slotId === b.slotId)
     if (slot) slot.turnedAway += b.units
   }
   const cancelled = bookings.filter(
