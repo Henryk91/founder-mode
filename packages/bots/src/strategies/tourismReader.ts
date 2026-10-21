@@ -42,6 +42,68 @@ const quietRestaurant = (view: PlayerView) => {
 }
 
 export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> = {
+  fabriketage: {
+    start_fit_out: () => 'prepare',
+    the_roof_brochure: () => 'act',
+    the_permanent_manager: () => 'act',
+    ...Object.fromEntries(
+      [
+        'the_sunday_tour',
+        'the_agency_reunion',
+        'the_flattering_award',
+        'the_quiet_walk',
+        'the_family_weekend',
+        'the_empty_floor_photograph',
+        'three_saturdays',
+        'christmas_exclusivity',
+        'the_empty_tuesday',
+        'eleven_days',
+        'the_planner_s_commission',
+        'the_weekday_package',
+        'the_winter_cancellation',
+        'the_fair_stand',
+        'the_price_screenshot',
+        'a_quiet_sunday',
+        'the_agency_tasting',
+        'the_six_month_enquiry',
+        'invoice_reference',
+        'heating_adjustment',
+        'the_wet_stair',
+        'the_security_deposit',
+        'the_accountant_s_dates',
+        'the_insurance_renewal',
+        'the_host_s_notebook',
+        'technician_elsewhere',
+        'last_train',
+        'the_carrying_favour',
+        'the_late_handover',
+        'the_fire_plan',
+        'lift_dimensions',
+        'brick_dust',
+        'the_prep_kitchen',
+        'the_sample_dinner',
+        'the_calendar_promise',
+        'insurance_inventory',
+        'the_goods_lift',
+        'cold_plates',
+        'the_turnaround',
+        'projector_silence',
+        'the_coat_queue',
+        'the_quiet_limiter',
+        'three_complaints',
+        'the_early_finish',
+        'blocked_exit',
+        'the_kitchen_list',
+      ].map((id) => [
+        id,
+        (v: PlayerView) => {
+          const card = v.inbox.find((m) => m.eventId === id && m.answeredChoiceId === null)
+          const act = card?.choices.find((c) => c.id === 'act')
+          return act && v.company.cashCents > 2 * v.company.monthlyFixedCostsCents ? 'act' : null
+        },
+      ]),
+    ),
+  },
   ausgesperrt: {
     ...Object.fromEntries(
       [

@@ -1101,3 +1101,12 @@ fee is settled immediately even for normally invoiced customers, without creatin
 a negative invoice. Served bookings still settle their full price, and flexible
 or company cancellations still return the advance. Without the flag, strict
 cancellations keep the full agreed payment as before, including Ausgesperrt.
+
+### Venue bot observations
+
+Bot `RunResult.tourism.leisure.venue` is optional and present only with the noise
+configuration. It records actual late service, restriction count, late receipts,
+attributable costs/net and observed hold/converted/late-release counts. V3 uses
+no-insulation runs with actual late events as its restriction denominator; late
+contribution includes setup even in runs with no late sales. Ordinary player views
+and earlier bot results gain no new fields.

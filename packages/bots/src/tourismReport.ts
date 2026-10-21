@@ -15,7 +15,7 @@ import {
 } from './report'
 import { combined, fmtMargin, rateMargin } from './margin'
 import { diveTargets, guletTargets, watersportsTargets } from './abroadTargets'
-import { escapeTargets } from './leisureTargets'
+import { escapeTargets, venueTargets } from './leisureTargets'
 import type { RunResult } from './simulate'
 import { PACING_WEEKS, YEAR2_WEEK } from './simulate'
 
@@ -290,6 +290,7 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     ...diveTargets(careful, s, all),
     ...guletTargets(careful, s, all),
     ...escapeTargets(careful, s, all),
+    ...venueTargets(careful, s, all),
   ]
 }
 
