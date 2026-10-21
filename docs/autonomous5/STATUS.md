@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.8 venue values frozen;main,protected proof and event table running.
-Last commit: HEAD, Plan 5: freeze venue values and record once-only event budget.
-Next action: Continue at /private/tmp/founder-mode-plan5-venue. Round2 main runs(session3413),all29 strategies on1,000 test seeds;values2/2,formula0/1 deliberately unused. Required events-only table starts once on frozen source. Finish protected proof(session99011);then final seeds/full tests and step3 report/merge/tag after event table completes. Full report only step6.
+Step: isolated step4 preparation while frozen step3 completes its gate.
+Last commit: HEAD, Plan 5: record isolated fitness gaps and target applicability.
+Next action: In /private/tmp/founder-mode-plan5-fitness,prepare optional membership pricing/access/room conversion/cohort mechanics with fixtures and schema docs. Do not merge until venue phase gate/tag. Venue worktree runs main3413,protected99011,event95560,full tests63848 on frozen4b03bd2. Monitor all;full report only step6.
 
 ## Checklist
 
@@ -43,3 +43,5 @@ The three-attempt WebKit heading stop is historical. Resumed repairs reserve log
 Round1 complete:careful42.7%±3.1,top45.0%. T5 now passes;T13 at limit. Open:T3,T6,T10,T11,T14,T15,V1. Round2 changes only paid-hold acceptance,wedding strict acceptance and snag review penalty. Seeds regenerated for round1;regenerate after final values.
 
 Event table authorised by CLAUDE event-content budget and plan1.6 despite expected duration over15 minutes. Frozen round2 source;no restart or full report.
+
+Fitness preparation:targets/gaps/file list in fitness/IMPLEMENTATION.md. No registered fitness content or measurement. Turnsaldo naming,showers-in-fitout and employee membership units recorded for review.
