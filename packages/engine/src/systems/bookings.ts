@@ -7,6 +7,7 @@ import {
   leisureSellsSlot,
   leisureOpen,
   leisureCapacity,
+  leisureClassPlaces,
   leisureProductCapacity,
   leisureRoomReader,
   leisureSlot,
@@ -1410,7 +1411,40 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
     b = { ...b, abroad: { ...b.abroad, trips, lost } }
   }
+  // Configured class studios spend one qualified shift per scheduled class,not per
+  // pooled guest count. Empty classes still consume rostered shifts in the timetable.
+  const classLimits = cfg.leisure?.classStaffing ? new Map<string, number>() : null
+  if (classLimits && cfg.leisure && b.leisure) {
+    const coverage: Record<string, Record<string, number>> = {}
+    for (const id of Object.keys(cfg.leisure.products).sort()) {
+      if (!cfg.leisure.products[id]?.classPlaces) continue
+      coverage[id] = {}
+      let total = 0
+      for (const slot of cfg.leisure.slots) {
+        const scheduled = b.leisure.timetable[id]?.[slot.id] ?? 0
+        const capacity = leisureProductCapacity(state, id, slot.id, week)
+        let covered = 0
+        if (capacity > 0) {
+          for (const [role, r] of Object.entries(cfg.roles)) {
+            if (kindOf(role) === 'floor' || (r.units[id] ?? 0) <= 0) continue
+            const take = Math.min(scheduled - covered, pool[role] ?? 0)
+            pool[role] = (pool[role] ?? 0) - take
+            covered += take
+          }
+        }
+        coverage[id]![slot.id] = covered
+        const limit = Math.min(capacity, covered * leisureClassPlaces(state, id, week))
+        classLimits.set(`${id}|${slot.id}`, limit)
+        total += limit
+      }
+      staffed.set(id, total)
+      why.set(id, 'staff')
+    }
+    b = { ...b, leisure: { ...b.leisure, classCoverage: coverage } }
+    state = { ...state, bookings: b }
+  }
   for (const [id, units] of [...booked.entries()].sort((a, z) => z[1] - a[1])) {
+    if (classLimits && cfg.leisure?.products[id]?.classPlaces) continue
     let covered = 0
     for (const [role, r] of Object.entries(cfg.roles)) {
       if (kindOf(role) === 'floor') continue
@@ -1479,7 +1513,13 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
               (usedSlots.get(slotKey) ?? 0),
           )
         : Infinity
-    const room2 = Math.min(left.get(x.productId) ?? 0, slotRoom)
+    const classKey = `${x.productId}|${x.slotId ?? ''}`
+    const classRoom = classLimits?.has(classKey)
+      ? Math.max(0, classLimits.get(classKey)! - (usedSlots.get(slotKey) ?? 0))
+      : classLimits && cfg.leisure?.products[x.productId]?.classPlaces
+        ? 0
+        : Infinity
+    const room2 = Math.min(left.get(x.productId) ?? 0, slotRoom, classRoom)
     if (room2 >= x.units) {
       left.set(x.productId, (left.get(x.productId) ?? 0) - x.units)
       if (cfg.leisure && x.slotId) usedSlots.set(slotKey, (usedSlots.get(slotKey) ?? 0) + x.units)
@@ -1499,7 +1539,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           ? unavailableAsset
             ? 'asset'
             : 'works'
-          : (why.get(x.productId) ?? 'staff')
+          : classRoom < x.units
+            ? 'staff'
+            : (why.get(x.productId) ?? 'staff')
       if (reason === 'sold_out') soldOut += x.units
       else if (reason === 'works') closedForWorks += x.units
       else if (reason === 'conditions') conditionsCancelled += x.units

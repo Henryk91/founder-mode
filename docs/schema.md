@@ -1139,3 +1139,17 @@ that class's normal seat count once the named feature is ready. Capacity remains
 class count times actual seats;shared room/timetable hours do not increase. The
 public timetable's `places` reports the actual installed seat count. Before the
 conversion,and without this block,the original capacity and view are unchanged.
+
+### Optional timetable-aware staffing
+
+`leisure.classStaffing: true` consumes one eligible serve-role shift for each
+scheduled class,in configured slot order and sorted product order. Instructor
+coverage is per class/slot,not pooled weekly guests. Empty rostered classes use
+their shift;uncovered classes cannot serve. Existing explicit shift wages are
+paid once,including empty classes,and contract/founder cover uses the same pool.
+The existing physical-room hour limit remains in force.
+
+Optional `LeisureState.classCoverage[product][slot]` records actual covered class
+counts for the week. Public `LeisureView.timetable[].coveredClasses` is a copied
+map of those counts. Original games without the switch receive no new fields
+and keep the original guest-based staffing path.
