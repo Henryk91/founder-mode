@@ -280,3 +280,9 @@ costs 138 EUR/week for four such shifts. The founder otherwise spends up to eigh
 hours on administration from visits actually served. Paid cover reduces the
 following week's administration once and never supplies an instructor.
 
+
+The initial native360×170 shop/annex drawings are integrated in the existing
+scene format. White on the established accent#B0284F measures6.44:1,so the
+specified shade is retained. Catalogue/static/lazy loading now register the
+long-only scenario in the isolated branch;bots and membership/timetable UI
+remain unfinished before the phase gate.

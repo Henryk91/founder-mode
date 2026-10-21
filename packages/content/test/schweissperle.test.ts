@@ -1,13 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { parseScenario } from '../src/parse'
-import { sources } from '../src/sources/schweissperle'
+import { loadScenario, scenarioCatalogue } from '../src/index'
 
-describe('Schweißperle first-pass draft content', () => {
-  const s = parseScenario(sources, 'long')
+describe('Schweißperle first-pass content', () => {
+  const s = loadScenario('schweissperle', 'long')
   const b = s.bookings!
   const l = b.leisure!
   it('provides a complete long-game draft with authored interviews and decisions', () => {
     expect(s.id).toBe('schweissperle')
+    expect(scenarioCatalogue().find((x) => x.id === s.id)).toMatchObject({
+      category: 'leisure',
+      tags: ['Members', 'Classes'],
+      modes: ['long'],
+    })
     expect(s.maxWeeks).toBe(104)
     expect(s.intro.cards).toHaveLength(4)
     expect(s.events.length).toBeGreaterThanOrEqual(40)

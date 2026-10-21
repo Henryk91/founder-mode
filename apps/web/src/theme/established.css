@@ -116,3 +116,8 @@
 [data-scenario='fabriketage'] {
   --scenario-accent: #7a3e1d;
 }
+
+/* Plan 5: white on #b0284f is 6.44:1. */
+[data-scenario='schweissperle'] {
+  --scenario-accent: #b0284f;
+}

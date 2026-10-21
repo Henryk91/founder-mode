@@ -12,6 +12,7 @@ export const SCENARIO_IDS = [
   'leinenlos',
   'ausgesperrt',
   'fabriketage',
+  'schweissperle',
 ] as const
 export type ScenarioId = (typeof SCENARIO_IDS)[number]
 
@@ -33,4 +34,5 @@ export const SCENARIO_MODES: Record<ScenarioId, GameMode[]> = {
   leinenlos: ['long'],
   ausgesperrt: ['long'],
   fabriketage: ['long'],
+  schweissperle: ['long'],
 }
