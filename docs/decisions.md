@@ -914,3 +914,9 @@ AUTONOMOUS: Fabriketage enables deposit-only strict cancellations; platform fees
 AUTONOMOUS: use on-service guest balances and 30-day post-service company invoices; defer early wedding/private balances. The lower floor is solely an office breakout upgrade, with estimated company benefit and full rent. Source corrections and all initial estimates are in scenario-event-venue.md section 15; these are not tuning rounds.
 
 AUTONOMOUS: use actual per-event furniture hire, service-only catering commission, distinct late-only requests through existing ownDemand, five hours of late-launch preparation and a small roof WTP benefit. Part-time host cost starts at 450 EUR/two shifts so it is not an unnamed dominated option. Permit refunds retain the existing expense-window limitation. All outcomes remain unmeasured until bots and UI are complete.
+
+### Plan 5 step 3: sensible venue bots
+
+AUTONOMOUS: venue bots prepare the common fit-out loan in week 1 while spreading interviews across markets, request the allowed startup working capital and keep three months of company/founder costs before spending unfunded capital. Waiting late approval no longer blocks independent fit-out work. These repairs follow traces with idle construction and unaffordable AV spend, before any value tuning. Old games retain their paths.
+
+AUTONOMOUS: venue hold terms start with a fee and adapt after eight observed decisions; hire furniture until observed use projects a purchase payback, add insulation after a complaint only over visibly empty closure dates, and diversify from actual interview mentions. Six variants measure V1–V4. The roof variant prioritises its named temptation in the startup bank plan so it actually funds the trap instead of silently dropping it. V3 reports late-active restriction runs and actual contribution including setup, with margins. 68 focused bot tests and lint/typechecks pass, including a full action-log replay.

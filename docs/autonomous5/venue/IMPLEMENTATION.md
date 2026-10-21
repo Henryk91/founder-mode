@@ -94,3 +94,7 @@ seeds. Event table once at the end. Full report exactly once in step 6, never be
 - Content integrated:51 events, four intro cards,150 interview quotes and actual
   gated venue switches. All221 content tests pass (24 skips), lint/typechecks
   pass. Drawings/UI and sensible venue bots are pending; no measurement yet.
+
+- Venue bots/targets integrated:68 focused tests and lint/typechecks pass, real
+  opening/replay included. Initial main measurement next; no values changed and
+  no tuning rounds used. Drawings/UI and protected comparisons remain pending.
