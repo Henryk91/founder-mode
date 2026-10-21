@@ -802,6 +802,14 @@ export function leisureView(s: GameState): LeisureView | null {
       stopped: d.stopped,
       pending: d.pending,
     })),
+    ...(c.instructorWorkload
+      ? {
+          instructorWork: {
+            maxClasses: c.instructorWorkload.maxClasses,
+            loads: (l.instructorLoads ?? []).map((x) => ({ ...x })),
+          },
+        }
+      : {}),
     ...(l.foundingFollowing ? { foundingFollowing: { ...l.foundingFollowing } } : {}),
     openingWeek: l.openingWeek,
     buildChoice: [...l.buildChoice],

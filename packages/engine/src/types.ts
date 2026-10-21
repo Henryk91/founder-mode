@@ -2592,6 +2592,7 @@ export type LeisureNoiseState = {
 
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
 export type LeisureState = {
+  instructorLoads?: { id: string; kind: 'founder' | 'contract'; name?: string; classes: number }[]
   foundingFollowing?: { invited: number; joined: number }
   permitRefunds?: Record<FeatureId, { week: number; cents: number }>
   noise?: LeisureNoiseState
@@ -2704,6 +2705,7 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  instructorWork?: { maxClasses: number; loads: NonNullable<LeisureState['instructorLoads']> }
   foundingFollowing?: { invited: number; joined: number }
   noise?: {
     complaints: number

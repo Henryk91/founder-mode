@@ -762,6 +762,12 @@ export const LeisureSchema = z
     strictKeepsDeposit: z.literal(true).optional(),
     wtpBasis: z.literal('monthly').optional(),
     classStaffing: z.literal(true).optional(),
+    instructorWorkload: z
+      .object({
+        maxClasses: z.number().int().positive(),
+        penaltyPerOverloadedClass: z.number().nonnegative(),
+      })
+      .optional(),
     respectSlotPreferences: z.literal(true).optional(),
     slots: z
       .array(z.object({ id: Id, name: z.string().min(1), hours: z.number().positive() }))
@@ -977,6 +983,7 @@ export const LeisureSchema = z
     for (const f of Object.values(l.freshness ?? {}))
       for (const id of Object.keys(f.refresh.lostCapacity ?? {}))
         if (!slots.has(id)) issue(`unknown maintenance slot ${id}`)
+    if (l.instructorWorkload && !l.classStaffing) issue('instructor workload needs class staffing')
     for (const id of l.premiumNiche?.offers ?? [])
       if (!l.memberships?.[id]) issue(`unknown premium offer ${id}`)
     for (const id of l.premiumNiche?.segments ?? [])

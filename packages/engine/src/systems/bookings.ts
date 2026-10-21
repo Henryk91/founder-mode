@@ -1,3 +1,4 @@
+import { classWorkload } from './classWorkload'
 import { leisurePriceBasis, leisureReviewPrice } from './membership'
 import { beginVenue } from './venue'
 import {
@@ -1413,9 +1414,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   // Configured class studios spend one qualified shift per scheduled class,not per
   // pooled guest count. Empty classes still consume rostered shifts in the timetable.
+  let classFatiguePenalty = 0
   const classLimits = cfg.leisure?.classStaffing ? new Map<string, number>() : null
   if (classLimits && cfg.leisure && b.leisure) {
     const coverage: Record<string, Record<string, number>> = {}
+    const classesByRole: Record<string, number> = {}
     for (const id of Object.keys(cfg.leisure.products).sort()) {
       if (!cfg.leisure.products[id]?.classPlaces) continue
       coverage[id] = {}
@@ -1430,6 +1433,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
             const take = Math.min(scheduled - covered, pool[role] ?? 0)
             pool[role] = (pool[role] ?? 0) - take
             covered += take
+            classesByRole[role] = (classesByRole[role] ?? 0) + take
           }
         }
         coverage[id]![slot.id] = covered
@@ -1440,7 +1444,16 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       staffed.set(id, total)
       why.set(id, 'staff')
     }
-    b = { ...b, leisure: { ...b.leisure, classCoverage: coverage } }
+    const workload = classWorkload(state, p.founderShifts, classesByRole)
+    classFatiguePenalty = workload?.penalty ?? 0
+    b = {
+      ...b,
+      leisure: {
+        ...b.leisure,
+        classCoverage: coverage,
+        ...(workload ? { instructorLoads: workload.loads } : {}),
+      },
+    }
     state = { ...state, bookings: b }
   }
   for (const [id, units] of [...booked.entries()].sort((a, z) => z[1] - a[1])) {
@@ -1930,6 +1943,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           r.understaffPenalty * shortfall -
           r.cancelPenalty * windShare -
           (tired ? r.tiredPenalty : 0) -
+          classFatiguePenalty -
           r.snagPenalty * state.product.bugs -
           r.valueWeight * Math.max(0, value - 1) +
           contractBonus +

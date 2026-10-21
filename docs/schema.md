@@ -1176,3 +1176,18 @@ or guaranteed signed members. Optional `LeisureState.foundingFollowing` and
 `LeisureView.foundingFollowing` record only actual introductions and paid joins.
 The total estimate and premium share never enter the public view. Unconfigured
 games draw nothing extra and receive no fields.
+
+### Identified class-instructor workload
+
+Optional `leisure.instructorWorkload: {maxClasses,penaltyPerOverloadedClass}`
+requires class-aware staffing. Actual covered classes use the founder first,
+then working named contracts in their stable signing order,then anonymous
+per-class cover. Founder classes across roles count as one person's workload;
+contracts count individually. A review penalty weights excess classes over the
+stated limit by all covered classes. Flexible anonymous shifts are a pool of
+people,and do not pretend that all cover is one person.
+
+`LeisureState.instructorLoads` optionally records actual founder/contract identities
+and class counts. Public `LeisureView.instructorWork` copies those loads and the
+stated maximum;the review coefficient is not public. These optional fields and
+calculations do not exist for earlier games without the content block.
