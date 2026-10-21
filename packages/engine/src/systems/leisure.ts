@@ -1,4 +1,9 @@
-import { membershipMonthlyCost, membershipUsable } from './membership'
+import {
+  chooseMembershipOffer,
+  membershipMonthlyCost,
+  membershipUsable,
+  membershipWtp,
+} from './membership'
 import { stageInEffect } from './bookings'
 import { assetFactor, assetOf, leisureAssetSupplies } from './assets'
 import { finishVenue, initVenue, venueOpen, venueView, type VenueMoney } from './venue'
@@ -91,9 +96,21 @@ export function initLeisure(
       instructorFollowing: Object.fromEntries(
         entries(c.instructors ?? {}).map(([id, f]) => [id, rng.range(f.min, f.max)]),
       ),
+      ...(c.premiumNiche
+        ? { premiumInterest: rng.range(c.premiumNiche.share.min, c.premiumNiche.share.max) }
+        : {}),
+      ...(c.foundingFollowing
+        ? {
+            foundingFollowing: rng.int(
+              c.foundingFollowing.count.min,
+              c.foundingFollowing.count.max,
+            ),
+          }
+        : {}),
     },
     state: {
       ...initVenue(c),
+      ...(c.foundingFollowing ? { foundingFollowing: { invited: 0, joined: 0 } } : {}),
       ...(c.slotPrices
         ? {
             slotPrices: mergeSlotPrices(c.slotPrices),
@@ -785,6 +802,7 @@ export function leisureView(s: GameState): LeisureView | null {
       stopped: d.stopped,
       pending: d.pending,
     })),
+    ...(l.foundingFollowing ? { foundingFollowing: { ...l.foundingFollowing } } : {}),
     openingWeek: l.openingWeek,
     buildChoice: [...l.buildChoice],
     slots: c.slots.map((x) => ({ ...x })),
@@ -946,14 +964,33 @@ export function joinLeisure(
   const migration = original.aggregator?.joined
     ? (c.aggregator?.cannibalisation[segmentId] ?? 0)
     : 0
-  const n = round(demand * segment.memberShare * (1 - migration), rng)
+  const normal = round(demand * segment.memberShare * (1 - migration), rng)
+  const following = c.foundingFollowing
+  const elapsed = original.openingWeek === null ? 0 : input.week - original.openingWeek + 1
+  const introductions =
+    following?.segment === segmentId && elapsed > 0 && elapsed <= following.weeks
+      ? Math.max(
+          0,
+          Math.floor(
+            ((input.hidden.bookings?.leisure?.foundingFollowing ?? 0) * elapsed) / following.weeks,
+          ) - (original.foundingFollowing?.invited ?? 0),
+        )
+      : 0
+  const n = normal + introductions
   const members = [...original.members]
+  let followingJoined = 0
   for (let i = 0; i < n; i++) {
-    const [offerId, offer] = rng.pick(offers)
+    const [offerId, offer] = chooseMembershipOffer(input, segmentId, offers, rng)
     const priceCents = original.offers[offerId]!.priceCents
     const monthlyCost = membershipMonthlyCost(input, segmentId, offer, priceCents)
-    const wtp = input.hidden.segments[segmentId]?.wtpCents ?? monthlyCost
+    const wtp = membershipWtp(
+      input,
+      segmentId,
+      offerId,
+      input.hidden.segments[segmentId]?.wtpCents ?? monthlyCost,
+    )
     if (!rng.chance(priceCurve(input.scenario, monthlyCost / wtp))) continue
+    if (i >= normal) followingJoined++
     members.push({
       id: `member_${members.length + 1}`,
       segmentId,
@@ -980,7 +1017,25 @@ export function joinLeisure(
         }
       : w,
   )
-  return { ...input, bookings: { ...input.bookings!, leisure: { ...original, members, weeks } } }
+  return {
+    ...input,
+    bookings: {
+      ...input.bookings!,
+      leisure: {
+        ...original,
+        members,
+        weeks,
+        ...(original.foundingFollowing
+          ? {
+              foundingFollowing: {
+                invited: original.foundingFollowing.invited + introductions,
+                joined: original.foundingFollowing.joined + followingJoined,
+              },
+            }
+          : {}),
+      },
+    },
+  }
 }
 
 /** Churn and billing before service; returns money separately for the existing ledger. */
@@ -1037,7 +1092,7 @@ export function billLeisure(
         end('expired')
         continue
       }
-      const [id, o] = rng.pick(next)
+      const [id, o] = chooseMembershipOffer(input, m.segmentId, next, rng)
       m.offerId = id
       m.priceCents = original.offers[id]!.priceCents
       m.termUntil = week + o.termWeeks
@@ -1065,7 +1120,12 @@ export function billLeisure(
             (1 - (original.freshness[id]?.value ?? 100) / 100) * (f.sensitivity[m.segmentId] ?? 0),
         )
       const stale = fresh.length ? fresh.reduce((t, x) => t + x, 0) / fresh.length : 0
-      const wtp = input.hidden.segments[m.segmentId]?.wtpCents ?? m.priceCents
+      const wtp = membershipWtp(
+        input,
+        m.segmentId,
+        m.offerId,
+        input.hidden.segments[m.segmentId]?.wtpCents ?? m.priceCents,
+      )
       const drivers = [
         {
           reason: 'price' as const,
