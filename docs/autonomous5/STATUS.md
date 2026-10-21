@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.6 heading repair passes;phase tests and protected proof running.
-Last commit: HEAD, Plan 5: record passing venue heading and running phase checks.
-Next action: Continue isolated venue work at /private/tmp/founder-mode-plan5-venue,branch plan5-venue-work,heading repair5690510. Full tests(session75399) and ten-game protected main proof(/tmp/plan5-protected-step3.log) are running. Add the missing T15 comparison,then venue tuning. Full report only once in step6.
+Step: 3.7 phase-test gaps repaired;corrected venue baseline and protected proof running.
+Last commit: HEAD, Plan 5: record repaired venue phase checks and corrected measurement.
+Next action: Continue isolated venue branch at /private/tmp/founder-mode-plan5-venue,engine/bot repair8edfcae. Corrected venue main(session20573,all29 strategies,1,000 test seeds) and protected proof(session99011) run. Heading matrix80/80,focused109 tests and seed190 checks pass;prepare value tuning after the corrected report. Full report only in step6.
 
 ## Checklist
 
