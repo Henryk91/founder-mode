@@ -7,11 +7,29 @@ import { TOURISM_STRATEGIES, CAREFUL_TOURISM } from '../src/strategies/tourism'
 import { planLeisure } from '../src/strategies/leisure'
 import { venueWanted } from '../src/strategies/venue'
 import { evaluateTourismTargets } from '../src/tourismReport'
+import { TOURISM_READER } from '../src/strategies/tourismReader'
 
 const spec = loadScenario('fabriketage', 'long')
 const strategies = TOURISM_STRATEGIES.filter((s) => playsIn(s, spec))
 
 describe('venue players', () => {
+  it('does not require spare cash for useful no-cost inbox work', () => {
+    const view = getView(createGame(spec, 'venue-reader'))
+    const first = view.inbox[0]!
+    view.inbox = [
+      {
+        ...first,
+        eventId: 'the_accountant_s_dates',
+        choices: [{ ...first.choices[0]!, id: 'act', costCents: 0 }],
+      },
+    ]
+    view.company.cashCents = 0
+    const read = TOURISM_READER.fabriketage!.the_accountant_s_dates!
+    expect(read(view, { target: null })).toBe('act')
+    view.inbox[0]!.choices[0]!.costCents = 100000
+    expect(read(view, { target: null })).toBeNull()
+  })
+
   it('prepares the common fit-out loan while interviewing and replays a real opening', () => {
     const strategy = strategies.find((s) => s.id === 'tourism_careful')!
     const player = strategy.create(spec, 'test-1')
@@ -100,6 +118,7 @@ describe('venue players', () => {
         seconds: 0,
       })),
     })
+    expect(rows.find((r) => r.id === 15)!.value).not.toBe('-')
     for (const id of ['V1', 'V2', 'V3', 'V4']) expect(rows.some((r) => r.id === id)).toBe(true)
   })
 })

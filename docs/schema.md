@@ -1110,3 +1110,8 @@ attributable costs/net and observed hold/converted/late-release counts. V3 uses
 no-insulation runs with actual late events as its restriction denominator; late
 contribution includes setup even in runs with no late sales. Ordinary player views
 and earlier bot results gain no new fields.
+
+Leisure offers may finish preparation before equipment is acquired; actual sale/service
+still requires available equipment. This does not relax an asset purchase’s own company
+prerequisite or the existing non-leisure preparation rules. Venue bots recognise hired
+equipment when expanding dependencies,without marking its purchase feature shipped.

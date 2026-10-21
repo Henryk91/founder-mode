@@ -99,7 +99,11 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
         (v: PlayerView) => {
           const card = v.inbox.find((m) => m.eventId === id && m.answeredChoiceId === null)
           const act = card?.choices.find((c) => c.id === 'act')
-          return act && v.company.cashCents > 2 * v.company.monthlyFixedCostsCents ? 'act' : null
+          return act &&
+            (act.costCents === 0 ||
+              v.company.cashCents >= act.costCents + v.company.monthlyFixedCostsCents)
+            ? 'act'
+            : null
         },
       ]),
     ),

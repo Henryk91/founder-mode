@@ -3,7 +3,8 @@ import { LeisureSchema } from '@founder-mode/content'
 import { createGame, endWeek, getView, replay, toSave } from '../src/index'
 import { Rng, seedRng } from '../src/rng'
 import { applyBookings, mustHaveMet } from '../src/systems/bookings'
-import { assetsBought, assetsUsed, chooseAsset } from '../src/systems/assets'
+import { assetsBought, assetsUsed, chooseAsset, waitsForCompany } from '../src/systems/assets'
+import { validatePlan } from '../src/plan'
 import { beginLeisure, finishLeisure, leisureCapacity, leisureRoom } from '../src/systems/leisure'
 import type { Booking, GameState } from '../src/types'
 import { plan } from './helpers'
@@ -236,6 +237,27 @@ function equipmentGame(alias = false): GameState {
 }
 
 describe('leisure equipment supply', () => {
+  it('prepares an offer before equipment is owned while still requiring equipment for service', () => {
+    const s = equipmentGame(true)
+    const feature = s.product.features.find((f) => f.id === 'allergy_filter')!
+    feature.shippedWeek = null
+    const hours = s.scenario.features.find((f) => f.id === feature.id)!.buildHours
+    const work = plan({ build: { [feature.id]: hours } })
+    expect(waitsForCompany(s, feature.id)).toBe(false)
+    expect(validatePlan(s, work)).toEqual([])
+    const built = endWeek(s, work).state
+    expect(built.product.features.find((f) => f.id === feature.id)!.shippedWeek).toBe(1)
+    expect(leisureRoom(built, [], feature.id, 'daytime', 2)).toBe(0)
+    const hired = chooseAsset(built, 'equipment', 'share').state
+    expect(leisureRoom(hired, [], feature.id, 'daytime', 2)).toBe(4)
+    expect(hired.product.features.find((f) => f.id === 'member_billing')!.shippedWeek).toBeNull()
+  })
+  it('preserves the existing non-leisure preparation prerequisite', () => {
+    const s = equipmentGame(true)
+    delete s.scenario.bookings!.leisure
+    expect(waitsForCompany(s, 'allergy_filter')).toBe(true)
+  })
+
   it('requires available equipment for a pool, with hire fulfilling the physical must-have', () => {
     const initial = equipmentGame()
     expect(leisureCapacity(initial, 'basic_ordering', 'daytime', 1)).toBe(0)
