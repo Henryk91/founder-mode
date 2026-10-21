@@ -274,6 +274,9 @@ Four intro cards,49 authored cards including offers and 150 interview quotes are
 present. Inbox incidents handle conversations/one-off service consequences; lasting
 timetable, offer and aggregator changes use their explicit controls. Trial listings
 measure interest; actual paid check-ins come from the enabled aggregator pool.
-Source notes distinguish all estimates from published comparisons. Front-desk
-administrative relief remains an engine follow-up before this phase is complete.
+Source notes distinguish all estimates from published comparisons. Front-desk cover now provides real administrative relief: a two-hour weekly shift
+costs 36 EUR (18 EUR/hour employer-inclusive estimate); regular part-time cover
+costs 138 EUR/week for four such shifts. The founder otherwise spends up to eight
+hours on administration from visits actually served. Paid cover reduces the
+following week's administration once and never supplies an instructor.
 

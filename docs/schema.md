@@ -1201,3 +1201,13 @@ share an annex room-hour budget and need their own instructor coverage.
 Instructor following eligibility also honours a membership's optional product
 list. A departing mat teacher cannot take members whose paid offer permits only
 premium classes taught by somebody else. Unrestricted offers keep their old path.
+
+### Optional paid administrative relief
+
+`bookings.hosting.relief: {role,hoursPerShift}` lets paid weekly/contract desk
+cover reduce the following week's automatic founder administration from actual
+served visits. It never supplies instructor coverage. Optional
+`BookingsState.hostingReliefHours` records that week's paid cover,capped by the
+hosting maximum and reset each week. Public `BookingsView.hostingReliefHours`
+shows actual cover;`hostingHours` shows the remaining founder hours,never negative.
+Unconfigured games retain their previous hosting path and get no fields.

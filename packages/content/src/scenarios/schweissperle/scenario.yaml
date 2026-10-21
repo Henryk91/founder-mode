@@ -941,6 +941,31 @@ bookings:
           noticeWeeks: 4
           quality: 0.08
           max: 3
+    front_desk:
+      name: Front desk, two-hour shift
+      kind: floor
+      centsPerShift: 3600
+      units: {}
+      available:
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+        - 8
+      contracts:
+        part_time:
+          centsPerWeek: 13800
+          shifts: 4
+          noticeWeeks: 2
+          quality: 0
+          max: 1
   reviews:
     qualityBase: 4.5
     noiseSd: 0.2
@@ -1365,5 +1390,11 @@ bookings:
           - 12
         minMonths: 12
         crewWeekCents: 0
+  hosting:
+    hoursPerUnit: 0.04
+    maxHours: 8
+    relief:
+      role: front_desk
+      hoursPerShift: 2
 modes:
   long: {}

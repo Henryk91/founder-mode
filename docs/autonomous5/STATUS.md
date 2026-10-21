@@ -3,8 +3,8 @@
 ## Current
 
 Step:4 isolated engine groundwork and unregistered content pass.
-Last commit:HEAD,Plan5:bring completed venue history into fitness work.
-Next action:Implement front-desk administrative relief,register content/drawings and finish sensible bots/UI. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
+Last commit:HEAD,Plan5:make paid desk cover relieve actual administration.
+Next action:Register validated fitness content/drawings,then finish sensible bots/UI and the phase4 protected proof. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
 
 ## Checklist
 
@@ -19,7 +19,7 @@ Next action:Implement front-desk administrative relief,register content/drawings
 ## Checks and open issues
 
 - Fitness engine:monthly pricing/offer access,premium/founding cohort with real opening replay,class seat conversion/qualified coverage,identified workloads and stage-gated annex.64 focused engine checks/lint pass;earlier300 content/engine checks passed,24 skips.
-- Fitness content:20 features,49 authored cards,150 quotes,four intro cards;unregistered.231 focused content/access checks pass,24 skips;lint passes. Sources/estimates/adaptations in scenario-fitness.md section15. Front-desk relief still pending. Fitness budget values0/2,formula0/1;no measurement/event table.
+- Fitness content:20 features,49 authored cards,150 quotes,four intro cards;unregistered.231 focused content/access checks pass,24 skips;lint passes. Sources/estimates/adaptations in scenario-fitness.md section15. Front-desk relief implemented and tested. Fitness budget values0/2,formula0/1;no measurement/event table.
 - Venue complete:careful46.6%±3.1(at limit),top47.6%;all V targets pass,V2 at limit. T3,T6,T11,T13,T14,T15 open for step6. Both value rounds used,formula deliberately unused. Full86 files/1,691 pass,24 skips;lint passes.189 seeds,earlier rows unchanged.
 - Venue proof all ten older/protected/Ausgesperrt main reports and fingerprints match,1,000 test seeds. Once-only events complete:111 strategies,86,203/111,000 played,remainder reused;54 judged,21 cheapest/33 other point leaders,no significance claim;turnaround unseen. Never rerun.
 - Ausgesperrt complete:careful42.8%±3.1,top48.4%;X1 at limit,X2–X4 pass. T2,T3,T6,T10,T11,T14,T15,T17 open for step6. Both value rounds used,formula unused;event table already ran once,never rerun.
@@ -38,3 +38,5 @@ Next action:Implement front-desk administrative relief,register content/drawings
 User resumed historical WebKit heading stop;all80 cases and final full suite pass. No current stop applies.
 
 ## Stopped
+
+Front-desk relief:293 focused checks pass,24 skips;lint passes. Actual paid cover,weekly reset,non-negative founder hours and no teacher substitution are tested. Source estimates updated. No fitness report/event table/tuning round.

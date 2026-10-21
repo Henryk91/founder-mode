@@ -318,7 +318,12 @@ export function hostingHours(
     .filter((x) => x.week === state.week - 1 && x.status === 'served')
     .reduce((t, x) => t + x.units, 0)
   const less = stageInEffect(state).hostingHoursLess ?? 0
-  return Math.max(0, Math.min(h.maxHours, Math.round(units * h.hoursPerUnit)) - less)
+  return Math.max(
+    0,
+    Math.min(h.maxHours, Math.round(units * h.hoursPerUnit)) -
+      less -
+      (h.relief ? (state.bookings.hostingReliefHours ?? 0) : 0),
+  )
 }
 
 /** Founder hours the bookings part of a plan takes: own shifts, outreach, new partnerships. */
@@ -1272,6 +1277,18 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   state = contracts.state
   b = state.bookings!
   out.entries.push(...contracts.entries)
+  if (cfg.hosting?.relief) {
+    const relief = cfg.hosting.relief
+    b = {
+      ...b,
+      hostingReliefHours: Math.min(
+        cfg.hosting.maxHours,
+        ((p.shifts[relief.role] ?? 0) + (contracts.shifts[relief.role] ?? 0)) *
+          relief.hoursPerShift,
+      ),
+    }
+    state = { ...state, bookings: b }
+  }
   const pool: Record<string, number> = {}
   for (const role of Object.keys(cfg.roles)) {
     pool[role] =
@@ -2284,6 +2301,7 @@ export function bookingsView(state: GameState): BookingsView | null {
         })()
       : null,
     hostingHours: hostingHours(state),
+    ...(b.hostingReliefHours !== undefined ? { hostingReliefHours: b.hostingReliefHours } : {}),
     lastWeek: Object.keys(cfg.products).flatMap((id) => {
       const served = servedLast.get(id) ?? 0
       const came = cameLast.get(id) ?? 0
