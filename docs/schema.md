@@ -1005,3 +1005,19 @@ Optional `leisure.slotPrices` defines initial per-segment, per-slot peak/off-sea
 Optional `leisure.space` defines physical spaces and the features using them. Started design work, construction and shipped features reserve their space; plans cannot start more than fits. The view exposes capacity, used space and stated feature requirements. A segment's optional `minimumAreas` requires that many opening areas to be ready on its requested date; this public prerequisite is copied into the leisure view.
 
 Bot results optionally record indoor `openingWeek`, rooms built and completed refreshes under `tourism.leisure`. Leisure T4 subtracts the actual opening week, while earlier reports keep absolute weeks. Leisure reports omit the out-of-scope office expansion targets and retain E1 and their scenario's named targets.
+
+### Venue capacity and temporary closures
+
+Optional `leisure.buildOut.<id>.closes` lists physical leisure pools closed from
+completed preparation until `readyWeek`. Other pools stay open; dates on/after
+readiness remain available. Public build rows copy `closes` only when configured.
+
+Optional `leisure.slotUpgrades.<feature>` names one pool/slot, additional weekly
+units and integer-cent cost per served unit beyond that pool's ordinary capacity.
+At most one upgrade covers a pool/slot. An installed feature adds capacity only
+to its named slot. Cancelled/held units do not earn a turnaround charge; aliases
+sharing the pool are counted together. `LeisureWeek.turnaroundCents` records the
+actual cost by upgrade, only when configured; the normal operating-cost ledger
+pays it once. Public optional `LeisureView.upgrades` gives stated capacity/cost,
+installation status and observed cumulative paid cents. View history copies these
+maps; no new fields or random draws occur in earlier games without these blocks.

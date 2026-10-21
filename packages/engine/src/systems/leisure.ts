@@ -285,6 +285,11 @@ export function leisureOpen(s: GameState, id: string, week: number): boolean {
     )
       return false
   }
+  for (const [buildId, build] of entries(c.buildOut ?? {})) {
+    if (!build.closes?.includes(id)) continue
+    const f = s.product.features.find((p) => p.id === buildId)
+    if (f?.shippedWeek === null && f.readyWeek !== undefined && week < f.readyWeek) return false
+  }
   const until = l.freshness[id]?.refreshUntil
   return until === undefined || until === null || week >= until
 }
@@ -307,7 +312,15 @@ export function leisureCapacity(s: GameState, id: string, slot: string, week: nu
   const f = s.bookings?.leisure?.freshness[id]
   const loss =
     f?.lastRefreshWeek === week ? (cfgOf(s)?.freshness?.[id]?.refresh.lostCapacity?.[slot] ?? 0) : 0
-  return Math.max(0, base + (total > 0 ? Math.floor((bonus * base) / total) : 0) - loss)
+  const extra = entries(cfgOf(s)?.slotUpgrades ?? {}).reduce(
+    (sum, [feature, upgrade]) =>
+      sum +
+      (upgrade.product === id && upgrade.slot === slot && readyAt(s, feature, week)
+        ? upgrade.additional
+        : 0),
+    0,
+  )
+  return Math.max(0, base + (total > 0 ? Math.floor((bonus * base) / total) : 0) + extra - loss)
 }
 
 export function leisureRoom(
@@ -646,6 +659,20 @@ export function leisureView(s: GameState): LeisureView | null {
     { students: 0, sameStay: 0, returnedDirect: 0, returnedPlatform: 0 },
   )
   return {
+    ...(c.slotUpgrades
+      ? {
+          upgrades: entries(c.slotUpgrades).map(([id, upgrade]) => ({
+            productId: id,
+            name: name(id),
+            poolId: upgrade.product,
+            slotId: upgrade.slot,
+            additional: upgrade.additional,
+            unitCostCents: upgrade.unitCostCents,
+            active: readyAt(s, id, s.week),
+            paidCents: l.weeks.reduce((sum, w) => sum + (w.turnaroundCents?.[id] ?? 0), 0),
+          })),
+        }
+      : {}),
     minimumAreas: Object.fromEntries(
       entries(c.segments).flatMap(([id, seg]) =>
         seg.minimumAreas ? [[id, seg.minimumAreas]] : [],
@@ -777,6 +804,7 @@ export function leisureView(s: GameState): LeisureView | null {
       return {
         productId: id,
         name: name(id),
+        ...(build.closes ? { closes: [...build.closes] } : {}),
         readyWeek: f?.readyWeek ?? null,
         weeks: build.weeks,
         started: l.buildPaid.includes(id),
@@ -813,6 +841,7 @@ export function leisureView(s: GameState): LeisureView | null {
       })),
     history: l.weeks.map((w) => ({
       ...w,
+      ...(w.turnaroundCents ? { turnaroundCents: { ...w.turnaroundCents } } : {}),
       turnedAway: { ...w.turnedAway },
       slots: w.slots.map((x) => ({ ...x })),
     })),
@@ -1192,7 +1221,12 @@ export function leisureVisits(
 export function finishLeisure(
   input: GameState,
   bookings: readonly Booking[],
-): { state: GameState; voucherRedeemedCents: number; reviewPenalty: number } {
+): {
+  state: GameState
+  voucherRedeemedCents: number
+  reviewPenalty: number
+  extraCostsCents?: number
+} {
   const c = cfgOf(input)
   const original = input.bookings?.leisure
   if (!c || !original) return { state: input, voucherRedeemedCents: 0, reviewPenalty: 0 }
@@ -1215,6 +1249,26 @@ export function finishLeisure(
   const month = Math.floor((week - 1) / 52) * 12 + monthOf(input, week)
   const served = bookings.filter((b) => b.week === week && b.status === 'served')
   const totalServed = served.reduce((n, b) => n + b.units, 0)
+  const turnaroundCents = Object.fromEntries(
+    entries(c.slotUpgrades ?? {}).map(([id, upgrade]) => {
+      const active = readyAt(input, id, week)
+      const units = served
+        .filter(
+          (b) =>
+            b.slotId === upgrade.slot &&
+            (input.scenario.bookings!.products[b.productId]?.capacityOf ?? b.productId) ===
+              upgrade.product,
+        )
+        .reduce((sum, b) => sum + b.units, 0)
+      const baseline = Math.max(
+        0,
+        leisureCapacity(input, upgrade.product, upgrade.slot, week) -
+          (active ? upgrade.additional : 0),
+      )
+      return [id, active ? Math.max(0, units - baseline) * upgrade.unitCostCents : 0]
+    }),
+  )
+  const extraCostsCents = Object.values(turnaroundCents).reduce((sum, cost) => sum + cost, 0)
   for (const b of served) {
     const slotId = b.slotId
     if (!slotId) continue
@@ -1304,6 +1358,7 @@ export function finishLeisure(
           ...w,
           slots,
           aggregatorPayoutCents: payout,
+          ...(c.slotUpgrades ? { turnaroundCents } : {}),
           active: members.filter((m) => m.endedWeek === null && !m.inactive).length,
         }
       : w,
@@ -1318,6 +1373,7 @@ export function finishLeisure(
     },
     voucherRedeemedCents,
     reviewPenalty,
+    ...(c.slotUpgrades ? { extraCostsCents } : {}),
   }
 }
 

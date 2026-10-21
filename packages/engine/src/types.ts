@@ -2628,6 +2628,7 @@ export type LeisureHold = {
   feeCents: number
 }
 export type LeisureWeek = {
+  turnaroundCents?: Record<FeatureId, number>
   turnedAway: Record<string, number>
   week: number
   joined: number
@@ -2666,6 +2667,16 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  upgrades?: {
+    productId: FeatureId
+    name: string
+    poolId: FeatureId
+    slotId: string
+    additional: number
+    unitCostCents: number
+    active: boolean
+    paidCents: number
+  }[]
   slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
   salesSlots?: Record<SegmentId, string[]>
   space?: { max: number; used: number; uses: Record<FeatureId, number> }
@@ -2738,6 +2749,7 @@ export type LeisureView = {
     refreshingUntil: number | null
   }[]
   builds: {
+    closes?: FeatureId[]
     productId: FeatureId
     name: string
     readyWeek: number | null
