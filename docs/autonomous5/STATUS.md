@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.5 Final values measured; event table and full phase checks running.
-Last commit: HEAD, Plan 5: record final Ausgesperrt targets and start phase checks.
-Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesperrt-events.log) and full tests (session 8519, /tmp/plan5-step2-final-full-tests.log). Update reports/step2-escape.md, commit/tag plan5-escape when green, then begin step 3 from a clean tree. Formula allowance deliberately unused; eight targets remain open for step 6. Never rerun the event table or full report to reconfirm.
+Step: 3.1 Isolated venue preparation; step 2 gate pending on main.
+Last commit: HEAD, Plan 5: draft venue targets and gated implementation scope.
+Next action: Implement the venue-only engine gaps and fixture tests listed in venue/IMPLEMENTATION.md, updating schema docs with types. This is branch plan5-venue-work at /private/tmp/founder-mode-plan5-venue. Do not merge until main's step 2 event table/session 14569 and full tests/session 8519 pass; main must tag plan5-escape first. No venue bot measurement yet.
 
 ## Checklist
 
@@ -34,6 +34,8 @@ Later-step preparation only, outside repo; integrate in order after the current 
 These drafts do not implement their pending mechanics. Current repo content/UI remain authoritative.
 
 ## For Henry to review (non-blocking)
+
+- Step 3 draft: targets/gaps and lower-floor/catering/late-condition adaptations are recorded before coding; see venue/IMPLEMENTATION.md and docs/decisions.md.
 
 - Step 2: playable final values, eight open tourism targets, formula allowance deliberately unused; demand-unit prose corrected. See reports/step2-escape.md and docs/decisions.md.
 
