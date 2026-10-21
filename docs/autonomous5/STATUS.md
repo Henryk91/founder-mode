@@ -3,8 +3,8 @@
 ## Current
 
 Step: 3.9 venue final main/full tests pass;Ausgesperrt proof and event table running.
-Last commit: HEAD, Plan 5: keep final venue results and isolated fitness progress visible.
-Next action: Finish protected Ausgesperrt main(session99011 controller) and once-only venue event table(session95560) in /private/tmp/founder-mode-plan5-venue. All nine older reports match;final main3413 complete. Record both remaining results,then merge/tag plan5-venue. Fitness groundwork is isolated at /private/tmp/founder-mode-plan5-fitness,603ece3;no merge until step3 gate. Full report only step6.
+Last commit: HEAD, Plan 5: track tested fitness groundwork while venue checks finish.
+Next action: Finish protected Ausgesperrt main(session99011 controller) and once-only venue event table(session95560) in /private/tmp/founder-mode-plan5-venue. All nine older reports match;final main3413 complete. Record both remaining results,then merge/tag plan5-venue. Fitness groundwork is isolated at /private/tmp/founder-mode-plan5-fitness,branch plan5-fitness-work;no merge until step3 gate. Full report only step6.
 
 ## Checklist
 
@@ -47,3 +47,5 @@ Event table authorised by CLAUDE event-content budget and plan1.6 despite expect
 Final frozen-source suite passes86 files/1,691 tests,24 skips,/tmp/plan5-venue-final-full-tests.log. Lint passes.189 seed examples regenerated;all earlier rows byte-identical. Venue fingerprint c042cb5934228e6b,engine0.14.0. Fitness preparation is isolated at /private/tmp/founder-mode-plan5-fitness,branch plan5-fitness-work;no merge until step3 gate.
 
 Final venue main:careful46.6%±3.1(at limit),top47.6%;all V targets pass,V2 at limit. T3,T6,T11,T13,T14,T15 remain open;closest evidence/options in reports/step3-venue.md. Values2/2,formula0/1 deliberately unused. Baseline/fingerprint frozen for step4.
+
+Fitness preparation now includes tested monthly pricing/offer access,class-seat conversion,class/slot staffing,premium interest/founding cohort with real opening replay,and identified-instructor workload. Latest branch63 engine checks and lint pass;prior content/engine300 pass,24 skips. Next:fitness content/source integration. No fitness scenario registration/measurement or value rounds;no merge until venue gate.
