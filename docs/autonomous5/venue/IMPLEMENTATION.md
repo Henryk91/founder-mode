@@ -1,4 +1,7 @@
-# Fabriketage implementation draft
+# Fabriketage implementation history
+
+Current:implementation,tuning,full suite,protected proof and once-only event table complete.
+See ../reports/step3-venue.md;local merge/tag next. The sections below preserve preparation history.
 
 Prepared on branch plan5-venue-work in an isolated worktree while the frozen step 2
 source finishes its event table/full tests. Merge only after the step 2 gate passes.

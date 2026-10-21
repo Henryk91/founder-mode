@@ -1,6 +1,6 @@
 # Step 2: Ausgesperrt
 
-Final values measured; event table and full phase checks are running. The milestone is not yet tagged.
+Step complete: final values, protected proof, full tests and the once-only event table are recorded. Local milestone: plan5-escape. Eight tourism targets remain open for step 6.
 
 ## Built
 
@@ -123,13 +123,15 @@ gaps are preparation for the venue, not concealed changes to this game.
   including a complete game per strategy. Existing leisure engine coverage has 44 tests.
 - Seed regeneration: 171 examples ; 172 coverage/replay tests pass. Eight Ausgesperrt
   rows changed, all protected-game seed rows byte identical.
-- Full suite running: session 8519, /tmp/plan5-step2-final-full-tests.log. Before final
-  bot/value changes, 79 files/1,539 passed/21 skipped; this is historical evidence.
-- Once-only step 2 event table running: session 14569, /tmp/plan5-ausgesperrt-events.log;
-  parts events, 1,000 `test` seeds, two workers. Its automatic careful baseline supports
-  forced-answer reuse; use the main-only table above for the full target judgement.
+- Full suite passes: 79 files/1,542 passed/21 skipped; /tmp/plan5-step2-final-full-tests.log,
+  two workers. This includes the final bot and value changes.
+- Once-only step 2 event table complete: [raw report](../tuning/ausgesperrt-events.md),
+  parts events, 1,000 `test` seeds, two workers. Its 115 forced-answer strategy runs
+  played 101,267 of 115,000 games; unchanged seeds were reused. Event work took
+  6,492 seconds wall time. Its automatic careful baseline supports reuse; use the
+  main-only table above for the full target judgement, including isolated T12 timing.
 - Axe, word/cut checks cover three stages, 375/390/430/1440 px, Chromium/WebKit;
-  Help/results/post-mortem words at 390/1440. The complete rerun refreshes them.
+  Help/results/post-mortem words at 390/1440. The full suite refreshed them.
   Screenshots outside repo: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 
 All nine protected games match baseline exactly apart from timings: **main only,
@@ -138,3 +140,19 @@ are in [the protected proof](step2-protected.md). No engine/shared-bot changes o
 in either value round; only Ausgesperrt values changed. Engine version stays 0.14.0.
 
 The full bot report has **not** run; exactly once in step 6. No push was made.
+
+
+## Once-only event observations
+
+The table judges 47 events seen on at least 150 seeds:24 have a cheapest fixed
+answer with the highest point estimate,23 a more effortful one. Those are rankings,
+not significance claims; small differences must not drive another tuning round.
+First-theme estimates are heist42.8%, horror38.7%, Munich history44.0% and family43.2%.
+The VR headset event and late-finish/sick-shift events were unseen by this careful
+policy and are unjudged, rather than proof that they never fire for other players.
+
+Careful receives114.6 messages per run, with63.2% encountering at least one dry
+eligible-inbox week (mean1.04); outcome news still passes T5. There are no unintended
+repeat arrivals. The event table is evidence for the step6 T6 revisit, especially
+where effort substitutes for reading. It does not replace the paired main result
+and will not be rerun merely to reconfirm these findings.

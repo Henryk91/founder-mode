@@ -82,3 +82,19 @@ Do not disguise a third value round or a strategy-specific penalty as a formula.
 Final main is running;retain all failures/closest results for step6. Event table
 starts once on this frozen source:events only,1,000 test seeds,two workers.
 This is the event-content budget item,not a full report. Never restart/reconfirm it.
+
+## Final main complete
+
+Round2:29 strategies,main only,1,000 test seeds,two workers,691 seconds wall.
+Careful46.6%±3.1(at limit),top47.6%,no-tests0.0%. T1,T7,T10,V2 at limit;
+all V targets pass. Six open:T3,T6,T11,T13,T14,T15. Exact results/closest evidence
+and options:reports/step3-venue.md. Values2/2,formula0/1 deliberately unused.
+Frozen fingerprint c042cb5934228e6b. Event95560 runs once;full report never run.
+
+## Event table complete,do not rerun
+
+Events only,1,000 test seeds,111 forced-answer strategies,two workers. Event
+part2,113s wall/4,217s play;automatic careful baseline44s wall separately.
+86,203/111,000 played,remainder reused.55 listed,54 judged:21 cheapest point
+leaders,33 other point leaders;turnaround unseen/unjudged. No significance claim.
+Both value rounds complete,formula deliberately unused. Full report never run.
