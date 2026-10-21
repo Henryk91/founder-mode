@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.4 First value round complete; second round next.
-Last commit: HEAD, Plan 5: record complete first value-round target results.
-Next action: Apply the second bounded value round based on tuning/ausgesperrt-values-1.md and the budget ledger, then measure main only on 1,000 test seeds. Event table still not run; full report remains reserved for step 6.
+Step: 2.4 Second and last scenario-value round applied.
+Last commit: HEAD, Plan 5: apply the final Ausgesperrt scenario-value round.
+Next action: Finish the second value-round measurement (session 79279) at /tmp/plan5-ausgesperrt-values-2.log and tuning/ausgesperrt-values-2.md; evaluate every target before considering the single formula allowance. Refresh seeds/full tests after final outcome changes, then the once-only step 2 event table. Full report remains reserved for step 6.
 
 ## Checklist
 
@@ -17,6 +17,8 @@ Next action: Apply the second bounded value round based on tuning/ausgesperrt-va
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks
+
+- Value round 2: lint/typechecks pass; 235 focused content and bot tests pass (21 skipped). Main measurement running with two workers; /tmp/plan5-ausgesperrt-values-2.log. No engine/shared-bot changes in either value round.
 
 - Value round 1 complete: all 28 main strategies, 1,000 `test` seeds; tuning/ausgesperrt-values-1.md. Careful 55.7% ±3.1; top 62.0% ±3.0; no-tests 43.1% ±3.1. Market spread 43.5 ±6.7 points. T16/X2 pass at the limit; twelve targets fail. See tuning/BUDGET.md.
 - Value round 1 lint/typechecks and focused checks pass (235 tests, 21 skipped). Refresh seeds and the full suite at the phase gate after the final outcome changes.
@@ -33,7 +35,7 @@ Next action: Apply the second bounded value round based on tuning/ausgesperrt-va
 
 ## Open issues
 
-First value round complete: careful 55.7%, top 62.0%, no-tests 43.1%; careful and the market spread still need tuning. One of two value rounds assigned to every applicable target; no formula rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
+First value round complete: careful 55.7%, top 62.0%, no-tests 43.1%; careful and the market spread still need tuning. Both value rounds assigned to every applicable target; no formula rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
 
 Latest focused checks: 44 leisure engine and 36 bot tests pass. The full suite also passes after the unfinished-room bot repair: 79 files / 1,539 tests (21 skipped), with lint/typechecks green. Browser coverage includes Help/results/post-mortem words and 24 cases over three stages, four widths, Chromium/WebKit and axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 
@@ -42,10 +44,12 @@ Runtime caches previously proved byte-identical on 30 careful diagnostic runs. M
 Later-step preparation only, outside repo; integrate only in the corresponding step:
 - Venue: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 quotes), /tmp/plan5-venue-scenes-draft.json (two SVG scenes), /tmp/plan5-venue-content-draft/ (catalogue/intro/features).
 - Fitness: /tmp/plan5-membership-prep.md (engine gaps), /tmp/plan5-fitness-events-draft.md (48 events), /tmp/plan5-fitness-quotes-draft.json (150 quotes), /tmp/plan5-fitness-scenes-draft.json (two SVG scenes), /tmp/plan5-fitness-content-draft/ (catalogue/intro/features).
-- Climbing: /tmp/plan5-climbing-events-draft.md (48 events), /tmp/plan5-climbing-quotes-draft.json (150 quotes), /tmp/plan5-climbing-scenes-draft.json (two SVG scenes).
+- Climbing: /tmp/plan5-climbing-events-draft.md (48 events), /tmp/plan5-climbing-quotes-draft.json (150 quotes), /tmp/plan5-climbing-scenes-draft.json (two SVG scenes), /tmp/plan5-climbing-content-draft/ (catalogue/intro/features).
 These are copy/design drafts, not implemented mechanics or completed phase gates. Current repo content/UI remain authoritative; do not recopy old Ausgesperrt drafts.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: second and last value round adjusts upkeep, temporary staffing, demand, fault reviews, budget signals and cancellation trade-offs; estimates are in spec section 15 and docs/decisions.md.
 
 - Step 2: first value round uses estimated room upkeep, flexible staffing premium and market-specific demand; see spec section 15 and docs/decisions.md.
 

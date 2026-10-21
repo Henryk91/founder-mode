@@ -10,9 +10,9 @@ its changed values in the spec and decisions log.
 
 | Targets | Value rounds used / allowed | Formula rounds used / allowed |
 |---|---:|---:|
-| T1–T18 | 1 / 2 | 0 / 1 |
-| E1 | 1 / 2 | 0 / 1 |
-| X1–X4 | 1 / 2 | 0 / 1 |
+| T1–T18 | 2 / 2 | 0 / 1 |
+| E1 | 2 / 2 | 0 / 1 |
+| X1–X4 | 2 / 2 | 0 / 1 |
 
 Round 1 is assigned to all applicable targets conservatively because recurring
 costs and market opportunity can move every outcome. Formula budget is untouched.
@@ -62,3 +62,13 @@ T2's top-strategy cap is within its margin, but its no-tests component fails.
 T12 is 156.0 seconds per 1,000 runs in the slowest concurrent worker. No hard
 stop applies: tuning remains available. Full target values and margins are in
 [the round 1 report](ausgesperrt-values-1.md).
+
+## Round 2 assignment
+
+Second and last scenario-value round assigned conservatively to every applicable
+target. Changed estimates and reasons are in spec section 15, second-round table.
+Main only, all 28 strategies, 1,000 `test` seeds each, two workers; output
+`tuning/ausgesperrt-values-2.md`, log `/tmp/plan5-ausgesperrt-values-2.log`.
+No further value rounds are available before step 6. Formula allowance is unused;
+assess a justified formula candidate only after the complete second-round table.
+Do not assume remaining failures require inventing a new mechanic.

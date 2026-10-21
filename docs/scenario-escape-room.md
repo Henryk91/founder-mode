@@ -255,3 +255,28 @@ precede the following first value round.
 
 This consumes the first of two scenario-value rounds. Measure all 28 main
 strategies on 1,000 `test` seeds; no other report parts are needed for these values.
+
+### Second value round, 21 October 2026
+
+Round 1 measured all 28 main strategies on 1,000 `test` seeds. Careful wins 55.7%;
+market wins are companies 33.2%, locals 76.7%, visitors 57.5%. The top strategy is
+review-blind at 62.0%. Full paired results and margins are in
+`autonomous5/tuning/ausgesperrt-values-1.md`. The following are the second and last
+scenario-value adjustments of this first pass; each is a simulation estimate.
+
+| Value | Round 1 | Round 2 | Reason |
+|---|---|---|---|
+| Ordinary-room monthly upkeep | EUR250 | EUR350 | Ongoing specialist support and prop maintenance; reduces the value of unused rooms |
+| Flexible five-hour shift | EUR105 | EUR120 | Estimated EUR20 gross/hour plus 20% employer costs, a premium for intermittent cover; fixed contracts stay EUR720/370/750 a week |
+| Local weekly reachable enquiries | 30–90 | 24–72 | Local viable market wins remain far above the other markets |
+| Visitor weekly reachable enquiries | 9–34 | 8–30 | Moderate reduction relative to the weaker company market |
+| Company weekly reachable enquiries | 3–12 | 4–14 | More reachable weekday work for the least successful market; still two to four room-games per enquiry |
+| Snag penalty per unresolved fault | 0.15 stars | 0.25 stars | Makes noticeably broken props more consequential in reviews; also costs careful when one fault remains |
+| Interview budget-hint chance / noise | 0.20 / 0.25 | 0.30 / 0.15 | A clearer but still noisy learnable signal; these hidden parameters are never displayed |
+| Strict conversion, visitors / companies | 0.80 / 0.95 | 0.65 / 0.99 | Firm corporate dates tolerate commitment; visitors value flexibility. Round 1 strict terms were slightly ahead in every market |
+
+No price, capacity, capital charge, loan term or target threshold changes. These
+figures are not supplier quotes, wage statistics or measured Munich conversion
+rates. The hourly staff estimate includes employer cost; permanent wages retain
+the initial EUR15 gross/hour assumption. Measure main only, 1,000 `test` seeds per
+strategy, with two workers to reduce contention. Formula allowance remains unused.

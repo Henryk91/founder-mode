@@ -59,8 +59,8 @@ experiments:
     skillCap: 0.8
     mentionBase: 0.3
     mentionPerPain: 0.3
-    budgetChance: 0.2
-    budgetNoiseSd: 0.25
+    budgetChance: 0.3
+    budgetNoiseSd: 0.15
     budgetSmallStepCents: 1000
     buckets:
       - id: not_a_problem
@@ -463,8 +463,8 @@ bookings:
   segments:
     locals:
       base:
-        min: 30
-        max: 90
+        min: 24
+        max: 72
       unit: group
       price:
         peak: 12500
@@ -502,8 +502,8 @@ bookings:
       reviewWeight: 0.8
     tourists:
       base:
-        min: 9
-        max: 34
+        min: 8
+        max: 30
       unit: group
       price:
         peak: 14000
@@ -534,15 +534,15 @@ bookings:
         outreach: 0
         walkIn: 0.1
       cancel: 0.09
-      strictConversion: 0.8
+      strictConversion: 0.65
       depositShare: 1
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.7
     companies:
       base:
-        min: 3
-        max: 12
+        min: 4
+        max: 14
       unit: group
       price:
         peak: 18000
@@ -573,7 +573,7 @@ bookings:
         outreach: 0.9
         walkIn: 0
       cancel: 0.08
-      strictConversion: 0.95
+      strictConversion: 0.99
       depositShare: 0.3
       weatherSensitive: false
       invoiced: true
@@ -587,14 +587,14 @@ bookings:
         - companies
       oneOffCents: 3000000
       unitCostCents: 600
-      monthlyCents: 25000
+      monthlyCents: 35000
     horror:
       capacity: 49
       serves:
         - locals
       oneOffCents: 3000000
       unitCostCents: 600
-      monthlyCents: 25000
+      monthlyCents: 35000
     munich_history:
       capacity: 49
       serves:
@@ -603,7 +603,7 @@ bookings:
         - companies
       oneOffCents: 3200000
       unitCostCents: 600
-      monthlyCents: 25000
+      monthlyCents: 35000
     kids_adventure:
       capacity: 49
       serves:
@@ -611,7 +611,7 @@ bookings:
         - tourists
       oneOffCents: 2800000
       unitCostCents: 600
-      monthlyCents: 25000
+      monthlyCents: 35000
     vr_room:
       capacity: 49
       serves:
@@ -640,7 +640,7 @@ bookings:
   roles:
     game_master:
       name: Game master
-      centsPerShift: 10500
+      centsPerShift: 12000
       units:
         heist: 3
         horror: 3
@@ -739,7 +739,7 @@ bookings:
     understaffPenalty: 2.5
     tiredPenalty: 0.5
     cancelPenalty: 1
-    snagPenalty: 0.15
+    snagPenalty: 0.25
     valueWeight: 1.5
     reviewsPerUnit: 0.4
     reviewsFull: 60
