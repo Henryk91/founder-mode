@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.2 Isolated venue engine draft: permit decisions/refunds complete.
-Last commit: HEAD, Plan 5: implement waited permit decisions and one-time refunds.
-Next action: Add venue deposit-only strict cancellation with fixture tests/schema docs, then integrate venue content/bots/UI. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge only after main tags plan5-escape. No venue measurement yet; prove nine protected games plus Ausgesperrt unchanged after shared work.
+Step: 3.2 Isolated venue engine draft: deposit-only terms complete.
+Last commit: HEAD, Plan 5: settle venue cancellations from retained deposits.
+Next action: Integrate venue content and source notes, then bots/UI. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main step2 tests pass; event table/session14569 still running. Merge only after main tags plan5-escape. No venue measurement yet; prove nine protected games plus Ausgesperrt unchanged after shared work.
 
 ## Checklist
 
@@ -17,6 +17,8 @@ Next action: Add venue deposit-only strict cancellation with fixture tests/schem
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks and open issues
+
+- Deposit-only terms:87 focused engine tests and lint/typechecks pass, /tmp/plan5-venue-deposit-tests-2.log and /tmp/plan5-venue-deposit-lint-2.log. First test assertion used the wrong invoice field; corrected once. No unresolved failure.
 
 - Current worktree:78 engine tests pass (7 permits+10 noise/receipts+17 venue+44 leisure), including public refund terms, approval/refusal, no retry, one refund and replay. /tmp/plan5-venue-permit-tests.log; lint/typechecks pass at /tmp/plan5-venue-permit-lint.log. Report refusal text uses labels and existing Results styling; new scenario UI/browser checks remain pending.
 
@@ -42,6 +44,8 @@ Later-step preparation only, outside repo; integrate in order after the current 
 These drafts do not implement their pending mechanics. Current repo content/UI remain authoritative.
 
 ## For Henry to review (non-blocking)
+
+- Step 3 draft: strict cancellations keep deposits, including correct platform/invoiced settlement; optional switch leaves old games intact. See docs/decisions.md.
 
 - Step 3 draft: targets/gaps and lower-floor/catering/late-condition adaptations are recorded before coding; see venue/IMPLEMENTATION.md and docs/decisions.md.
 

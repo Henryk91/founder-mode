@@ -1557,7 +1557,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   // Money: paid on the day (net of commission), or invoiced.
   // Leisure advances are liabilities until service. Flexible guest cancellations and every
-  // company cancellation return them; strict guest cancellations keep the agreed payment.
+  // company cancellation return them. Strict cancellations keep the agreed payment,
+  // or only the advance when the venue explicitly enables deposit-only terms.
   if (cfg.leisure) {
     for (const x of due) {
       if (x.status === 'cancelled' || x.status === 'company_cancelled') {
@@ -1580,7 +1581,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const share = cfg.tender ? hotelShare(state) : 0
   for (const x of [...served, ...due.filter((y) => y.status === 'cancelled_paid')]) {
     const s = cfg.segments[x.segmentId]!
-    const gross = x.units * x.priceCents
+    const depositOnly = cfg.leisure?.strictKeepsDeposit && x.status === 'cancelled_paid'
+    const gross = depositOnly ? (x.depositCents ?? 0) : x.units * x.priceCents
     if (x.voucherId) {
       // Paid when the voucher was sold: only the food and laundry cost now.
       const prod = cfg.products[x.productId]
@@ -1615,7 +1617,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
     // What each product earns, for the post-mortem's loan lines (plan 2 step 2).
     earned[x.productId] = (earned[x.productId] ?? 0) + gross - cut - cost
-    if (!s.invoiced) {
+    if (!s.invoiced || depositOnly) {
       out.revenueCents += owed
       continue
     }
