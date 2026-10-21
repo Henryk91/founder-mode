@@ -543,7 +543,7 @@ bookings:
         outreach: 0.1
         walkIn: 0
       cancel: 0.03
-      strictConversion: 0.82
+      strictConversion: 0.65
       depositShare: 0.3
       weatherSensitive: false
       invoiced: false
@@ -784,7 +784,7 @@ bookings:
     understaffPenalty: 2.5
     tiredPenalty: 0.5
     cancelPenalty: 1.5
-    snagPenalty: 0.3
+    snagPenalty: 0.5
     valueWeight: 1.5
     reviewsPerUnit: 2
     reviewsFull: 20
@@ -877,17 +877,17 @@ bookings:
         companies:
           ask: 0.65
           convert: 0.5
-          feeConversion: 0.8
+          feeConversion: 0.95
           noHoldConversion: 0.35
         weddings:
           ask: 1
           convert: 0.33
-          feeConversion: 0.85
+          feeConversion: 0.9
           noHoldConversion: 0.15
         private_parties:
           ask: 0.15
           convert: 0.65
-          feeConversion: 0.9
+          feeConversion: 0.95
           noHoldConversion: 0.9
     crowdingPenalty: 0
     quietBelow: 0.4

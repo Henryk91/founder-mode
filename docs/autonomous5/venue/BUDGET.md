@@ -16,7 +16,7 @@ Fail:T3,T5,T6,T10,T11,T13,T14,T15,V1. Raw unrounded margins govern the flags.
 
 | Targets | Value rounds used / allowed | Formula rounds used / allowed |
 |---|---:|---:|
-| T1–T18,E1,V1–V4 | 1 / 2 | 0 / 1 |
+| T1–T18,E1,V1–V4 | 2 / 2 | 0 / 1 |
 
 ## Contributions before values
 
@@ -60,3 +60,16 @@ conditional real snag and enquiry effects. Full rationale in spec section15.
 otherwise unchanged. One value round and one formula allowance remain.
 Measurement:main only,all29 strategies,1,000 test seeds,two workers,
 venue/fabriketage-values-1.md. No event table/full report yet.
+
+## Round1 results and round2
+
+Round1 main:29 strategies,1,000 test seeds,two workers,427 seconds wall.
+Careful42.7%±3.1,top strict45.0%. T5 now passes90.9%/98.1%;T13 at limit
+31.2%±2.9,gap−11.5±2.1. T7 and V2 also pass at their limits.
+Open:T3,T6,T10,T11,T14,T15,V1. All target rows retained in the raw report.
+
+Round2 conservatively charged to all targets:paid-hold acceptance.95/.90/.95,
+wedding strict acceptance.65,snag penalty.50. Actual round1 contributions and
+rationale:spec section15. No quoted money/demand/lead/loan changes. Values2/2,
+formula0/1. Focused checks then main-only1,000 test seeds before deciding whether
+any formula is justified. Event table still unrun;full report never run.

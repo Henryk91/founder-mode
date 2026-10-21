@@ -946,3 +946,7 @@ AUTONOMOUS: complete the corrected venue main(all29 strategies,1,000 test seeds)
 ### Plan 5 step 3: first value round
 
 AUTONOMOUS: after corrected contributions,calibrate no-hold acceptance(.35/.15/.90),wedding fee acceptance(.85),strict acceptance(.995/.82/.97) and unresolved snag penalty(.30). Four recurring,conditional construction decisions address pre-opening gaps;content now55 events. Quotes/demand/lead times stay fixed. Spec section15 records every estimate;255 focused tests and lint pass. Conservatively use round1 for all targets,leaving one value round and one formula allowance. Main only,29 strategies,1,000 test seeds;no event/full report.
+
+### Plan5 step3: second value round
+
+AUTONOMOUS: round1 is playable(careful42.7%,top45.0%),with T5 and T13 now passing. Use the second value allowance on paid-hold acceptance(.95/.90/.95),wedding strict acceptance(.65) and unresolved snag penalty(.50). Paired round1 contributions precede these estimates;spec section15 records rationale. Keep quoted costs,demand,lead times and financing unchanged. Conservatively debit round2 to all targets;formula0/1.
