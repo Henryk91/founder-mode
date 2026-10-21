@@ -3,8 +3,8 @@
 ## Current
 
 Step: 2.5 Final values measured; event table and full phase checks running.
-Last commit: HEAD, Plan 5: record final Ausgesperrt targets and start phase checks.
-Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesperrt-events.log) and full tests (session 8519, /tmp/plan5-step2-final-full-tests.log). Update reports/step2-escape.md, commit/tag plan5-escape when green, then begin step 3 from a clean tree. Formula allowance deliberately unused; eight targets remain open for step 6. Never rerun the event table or full report to reconfirm.
+Last commit: HEAD, Plan 5: record complete phase tests and isolated venue preparation.
+Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesperrt-events.log) ; full tests pass (79 files/1,542 tests, 21 skipped). Update reports/step2-escape.md, commit/tag plan5-escape when green, then begin step 3 from a clean tree. Formula allowance deliberately unused; eight targets remain open for step 6. Never rerun the event table or full report to reconfirm.
 
 ## Checklist
 
@@ -21,11 +21,13 @@ Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesp
 - Final main measurement complete: all 28 strategies, 1,000 `test` seeds. Careful 42.8% ±3.1; top 48.4%; slowest 128 seconds. Every escape target passes; X1 at the limit. Main result: tuning/ausgesperrt-values-2.md; raw later-step baseline: baseline/ausgesperrt-long.md, fingerprint alongside it.
 - Open: T2 no-tests 22.1%, T3 market spread 32.5 ±7.0, T6 blind effort too helpful, T10 review-blind +4.7, T11 policy split inconclusive, T14 seasonal +1.9 ±2.2, T15 borrowing +16.5, T17 owing gap 3.9. Full values, closest results and options: reports/step2-escape.md. Two value rounds used; formula allowance unused by decision, not claimed exhausted. Revisit all eight once in step 6.
 - Event table running once, parts events, 1,000 `test` seeds, two workers: session 14569, /tmp/plan5-ausgesperrt-events.log. Full report has not run; reserved for step 6.
-- Full tests running with two workers: session 8519, /tmp/plan5-step2-final-full-tests.log. Final-value lint/typechecks pass; 235 focused tests pass, 21 skipped. Existing leisure engine 44 and bot 36 tests pass. Before final bot/value changes, full suite 79 files/1,539 passed/21 skipped.
+- Full tests pass: 79 files, 1,542 passed, 21 skipped; /tmp/plan5-step2-final-full-tests.log, two workers. Final-value lint/typechecks pass; 235 focused tests pass, 21 skipped. Screenshots and all browser checks refreshed.
 - Seed regeneration complete: 171 examples; 172 checks pass. Eight Ausgesperrt rows changed; protected rows byte identical.
 - All nine protected main comparisons and fingerprints match baseline exactly apart from timings, 1,000 `test` seeds per strategy; reports/step2-protected.md and protected-step2/. Neither value round changed engine/shared bots.
 - UI checks: three stages, 375/390/430/1440 px, Chromium/WebKit/axe/cut/words. Help/results/post-mortem words 390/1440. Screenshot refresh in the full suite: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 - Corrected company demand prose: base 4–14 counts room-games, roughly 1.3–4.7 requests at mean three games. Measured values remain intact; this was a documentation error.
+
+Isolated venue implementation draft: /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work, first planning commit (resolve via git log). Source/dependencies are isolated; merge only after the event table finishes and main tags plan5-escape. Its venue/IMPLEMENTATION.md records targets/gaps/adaptations. Code review found existing forward sales already work for prepared readyWeek builds; reuse and test them.
 
 Later-step preparation only, outside repo; integrate in order after the current phase gate:
 - Venue: /tmp/plan5-venue-prep.md (gaps incl forward sales, assets and ancillary receipts), /tmp/plan5-venue-content-draft/ (PENDING.md), /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 quotes), /tmp/plan5-venue-scenes-draft.json (two SVG scenes). Primary permission sources: /tmp/plan5-research-notes.md, 21 October entry.

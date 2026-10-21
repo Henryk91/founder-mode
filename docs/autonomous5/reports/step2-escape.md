@@ -123,8 +123,8 @@ gaps are preparation for the venue, not concealed changes to this game.
   including a complete game per strategy. Existing leisure engine coverage has 44 tests.
 - Seed regeneration: 171 examples ; 172 coverage/replay tests pass. Eight Ausgesperrt
   rows changed, all protected-game seed rows byte identical.
-- Full suite running: session 8519, /tmp/plan5-step2-final-full-tests.log. Before final
-  bot/value changes, 79 files/1,539 passed/21 skipped; this is historical evidence.
+- Full suite passes: 79 files/1,542 passed/21 skipped; /tmp/plan5-step2-final-full-tests.log,
+  two workers. This includes the final bot and value changes.
 - Once-only step 2 event table running: session 14569, /tmp/plan5-ausgesperrt-events.log;
   parts events, 1,000 `test` seeds, two workers. Its automatic careful baseline supports
   forced-answer reuse; use the main-only table above for the full target judgement.
