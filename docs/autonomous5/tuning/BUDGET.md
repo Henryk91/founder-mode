@@ -1,5 +1,7 @@
 # Ausgesperrt tuning budget
 
+Current:step2 is complete and tagged plan5-escape. Its event table ran once;do not rerun it. Both value rounds are used,the formula allowance was deliberately unused,and the full report has not run(reserved for step6). Earlier round notes below are historical.
+
 The plan permits **up to two scenario-value rounds, then one formula round per
 failing target**. A result within its own 95% margin of a target boundary passes
 at the limit. Paired effects smaller than their margins are not evidence of a
@@ -39,11 +41,9 @@ scenario balance, and none consumed a game-value/formula round.
 
 - Protected proof: complete, main only, nine games, 1,000 `test` seeds per strategy;
   every outcome and content/save fingerprint matches baseline.
-- Ausgesperrt event table: **not run**; run once after its tuning.
+- Ausgesperrt event table: **complete once**;raw ausgesperrt-events.md. No rerun.
 - Full bot report: **not run**; exactly once in step 6.
-- Seed examples and full test suite: refresh after outcome changes before completing
-  step 2. Latest 36 leisure bot tests and lint/typechecks pass; the earlier complete
-  suite passed 79 files / 1,539 tests, 21 skipped, before the final bot corrections.
+- Seed examples and full suite:step2 complete,171 examples/172 seed checks and79 files/1,542 tests passing,21 skipped. Earlier outcomes and seed rows remain unchanged.
 
 After the full tuning budget, apply the plan's playability stop: careful under 15%
 or over 55%, or any strategy over 70%. Other remaining target failures become open

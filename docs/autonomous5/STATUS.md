@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.7 phase-test gaps repaired;corrected venue baseline and protected proof running.
-Last commit: HEAD, Plan 5: record repaired venue phase checks and corrected measurement.
-Next action: Continue isolated venue branch at /private/tmp/founder-mode-plan5-venue,engine/bot repair8edfcae. Corrected venue main(session20573,all29 strategies,1,000 test seeds) and protected proof(session99011) run. Heading matrix80/80,focused109 tests and seed190 checks pass;prepare value tuning after the corrected report. Full report only in step6.
+Step: 3.7 phase-test repairs pass;corrected baseline and protected proof running.
+Last commit: HEAD, Plan 5: keep completed budget and resumed venue reports current.
+Next action: Continue isolated venue branch at /private/tmp/founder-mode-plan5-venue,engine/bot repair8edfcae. Corrected venue main(session20573,all29 strategies,1,000 test seeds) and protected proof(session99011) run. Heading matrix80/80,focused109 tests and seed190 checks pass;the roof lesson is committed at f5da60c. Prepare value tuning after the corrected report. Full report only in step6.
 
 ## Checklist
 
