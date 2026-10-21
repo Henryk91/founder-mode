@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.4 First scenario-value tuning round applied.
-Last commit: HEAD, Plan 5: record first value-round progress and later content drafts.
-Next action: Read the first value-round measurement (session 38254) at /tmp/plan5-ausgesperrt-values-1.log and tuning/ausgesperrt-values-1.md when complete; assess every target before the second value round. Main only, 1,000 test seeds; full report remains reserved for step 6.
+Step: 2.4 First value round complete; second round next.
+Last commit: HEAD, Plan 5: record complete first value-round target results.
+Next action: Apply the second bounded value round based on tuning/ausgesperrt-values-1.md and the budget ledger, then measure main only on 1,000 test seeds. Event table still not run; full report remains reserved for step 6.
 
 ## Checklist
 
@@ -18,9 +18,8 @@ Next action: Read the first value-round measurement (session 38254) at /tmp/plan
 
 ## Running checks
 
-- Value-round partial counts (not the completed target judgement): careful 55.7%, quarterly 59.1%, themes 56.1%, no daytime 39.5%, VR 43.7%, cash-only 43.0%, no tests 43.1%, fixed prices 58.5%, review-blind 62.0%. Each completed strategy has 1,000 `test` seeds. Wait for all paired target results before round 2.
-
-- Value round 1: lint/typechecks pass; focused content and leisure-bot checks pass (235 tests, 21 skipped). Measurement is running, main only, 1,000 `test` seeds, 28 strategies; /tmp/plan5-ausgesperrt-values-1.log.
+- Value round 1 complete: all 28 main strategies, 1,000 `test` seeds; tuning/ausgesperrt-values-1.md. Careful 55.7% ±3.1; top 62.0% ±3.0; no-tests 43.1% ±3.1. Market spread 43.5 ±6.7 points. T16/X2 pass at the limit; twelve targets fail. See tuning/BUDGET.md.
+- Value round 1 lint/typechecks and focused checks pass (235 tests, 21 skipped). Refresh seeds and the full suite at the phase gate after the final outcome changes.
 
 - Main-3 completed: all 28 strategies, main only, 1,000 `test` seeds. Intermediate complete target table in tuning/ausgesperrt-main-3.md, before the horizon/portfolio/contract-coverage corrections. Do not tune from its old bot verdicts.
 - Protected proof complete: all nine main-only, 1,000-`test` comparisons and fingerprints match exactly apart from timings. See reports/step2-protected.md and protected-step2/. Session 17724 completed successfully.
@@ -34,7 +33,7 @@ Next action: Read the first value-round measurement (session 38254) at /tmp/plan
 
 ## Open issues
 
-Main-4 is complete: careful 75.8%, top 79.6%, no-tests 68.6%; the initial economy is too generous. One of two value rounds assigned to every applicable target; no formula rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
+First value round complete: careful 55.7%, top 62.0%, no-tests 43.1%; careful and the market spread still need tuning. One of two value rounds assigned to every applicable target; no formula rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
 
 Latest focused checks: 44 leisure engine and 36 bot tests pass. The full suite also passes after the unfinished-room bot repair: 79 files / 1,539 tests (21 skipped), with lint/typechecks green. Browser coverage includes Help/results/post-mortem words and 24 cases over three stages, four widths, Chromium/WebKit and axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 
