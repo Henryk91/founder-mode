@@ -889,3 +889,7 @@ Bots and content:
 
 - AUTONOMOUS: both Ausgesperrt value rounds are complete: main only, 1,000 test seeds, all 28 strategies. Careful 42.8% ±3.1; highest 48.4%; all four escape targets pass, X1 at the limit. Keep eight tourism targets open for step 6. The formula allowance is an upper bound and stays unused by decision: no justified formula is required for playability, and adding a borrowing penalty or magnifying tiny rating differences would distort the lesson. The report preserves every failed target and its options.
 - AUTONOMOUS: corrected demand-unit documentation. Booking base counts room-game units, so company 4–14 means roughly 1.3–4.7 requests at the mean three games per request. Earlier prose incorrectly called those counts enquiries. YAML outcomes stay as measured; do not disguise another value round as a unit repair.
+
+### Plan 5 step 2: phase complete
+
+AUTONOMOUS: complete the once-only event table (events only,1,000 test seeds,115 forced-answer strategies;101,267 games played with unchanged seeds reused). Its47 judged events split24 cheapest/23 more-effort point leaders; small differences are not significant. Three unseen events remain unjudged for this policy. Final targets come from the main-only round2 report; eight issues remain for step6. Protected proof, lint and79 files/1,542 tests pass; tag plan5-escape locally and continue the isolated venue draft. Full report has not run.
