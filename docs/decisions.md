@@ -897,3 +897,74 @@ AUTONOMOUS: complete the once-only event table (events only,1,000 test seeds,115
 ### Plan 5 step 3: mandatory stop in isolated draft
 
 AUTONOMOUS: preserve venue UI/source separately at5c8abf2 and stop under section1.2.1 after three repairs still leave the established375px WebKit heading clipped.23/24 browser cases,all16 terminology checks and lint pass;full phase/protected proof remain pending. Initial main(28 strategies,1,000 test seeds) has25.8% careful/32.8% top;no venue value/formula rounds or event table used. Main stays at completed plan5-escape;see reports/step3-venue.md and STATUS.md for evidence/options. Full report has never run.
+
+## Plan 5, step 3: Fabriketage
+
+- AUTONOMOUS: prepare venue changes in an isolated local worktree while the frozen step 2 event table and full tests run. No merge until the step 2 gate passes; no branch deletion, rewrite or push. Applicable targets are T1–T18, E1 and V1–V4; office targets T19–T22 remain outside scope. The initial gap/adaptation plan is autonomous5/venue/IMPLEMENTATION.md.
+- AUTONOMOUS: venue stage 2 uses the smaller floor in the same building as conference breakout space. Independent 60-person simultaneous event bookings remain a documented first-pass limitation, rather than falsely doubling the 120-person hall. Catering commission must be actual service revenue; supplier quality is represented through authored incidents/reviews, without claiming a hidden supplier roster. Late permission represents agreed operating/noise conditions, with estimated fee/delay; it is not a real universal licence.
+
+- AUTONOMOUS: code review confirms existing leisure fit recognises a prepared readyWeek and sales check the requested date, so venue forward deposits reuse that path with fixture tests. Do not add an unnecessary forward-sales switch from the earlier preparation hypothesis. The frozen main source passes all 79 files/1,542 tests, 21 skipped; this planning branch changes documentation only and its lint/typechecks pass.
+
+- AUTONOMOUS: venue construction can close named pools after preparation until readiness, preserving future dates after reopening and refunding cancelled reservations. A built weekday upgrade adds only its stated slot capacity; actual served units beyond the original weekly block pay the turnaround charge once, including shared-pool aliases and excluding cancellations. Intraday scheduling is not simulated. Optional view/history fields show stated terms and actual paid cost; old content without these blocks gets no fields/draws. All 52 engine tests and lint/typechecks pass; full protected-plus-Ausgesperrt main proof follows after all venue shared changes.
+
+- AUTONOMOUS: leisure now honours existing asset availability for both physical pools and sale aliases. Hired equipment meets the physical must-have without marking its purchase feature shipped; returned hire cancels/refunds affected accepted events while other hall uses remain available. Alias service/load/freshness belongs to the shared pool, and seasonal lease calendars evaluate actual dates. The first new withdrawal test failed because service checked only pool capacity; the first repair adds actual-product service checks. All 61 focused tests now pass, including real action-log replay, with lint/typechecks green. Old boat code and leisure games without assets retain their paths; full protected proof is pending at the venue phase gate.
+
+- AUTONOMOUS: gated venue noise records actual complaint dates, a rolling warning count and exclusive-end restrictions. Restriction notices release/refund affected future bookings and paid holds immediately, once; other hall uses remain sellable. Ancillary commission is paid only on served units. Late contribution uses actual booking receipts/variable costs, attributable asset fees, due-event payroll allocation, turnaround share and dedicated setup; returned advances are liabilities, not new contribution costs. All 71 focused tests and lint/typechecks pass, including real noise/receipt replay. Its first fixture had no late sales: event budgets and a distinct late-market route were corrected without changing the game formula.
+
+- AUTONOMOUS: optional venue permits decide once at the stated readiness week. Refusal prevents shipping/reapplying, returns the stated refundable component once as a construction-cost reversal, and leaves the application cost paid. Public build/result text gives actual decision/refund amounts without the approval chance. This retains the engine's cash-basis capital-expense window; capital/refund timing is a documented first-pass limitation, not a new financing/accounting subsystem. All 78 focused tests and lint/typechecks pass, including approved/refused replay and no duplicate refund.
+
+### Plan 5 step 3: cancellation settlement
+
+AUTONOMOUS: Fabriketage enables deposit-only strict cancellations; platform fees apply only to retained advances and settle in cash even for invoiced customers. Ausgesperrt and unconfigured games retain full agreed-price terms. Nine focused cases cover deposits, commission, invoices, refunds and old behaviour; 87 leisure/venue tests and lint pass.
+
+### Plan 5 step 3: initial venue content
+
+AUTONOMOUS: use on-service guest balances and 30-day post-service company invoices; defer early wedding/private balances. The lower floor is solely an office breakout upgrade, with estimated company benefit and full rent. Source corrections and all initial estimates are in scenario-event-venue.md section 15; these are not tuning rounds.
+
+AUTONOMOUS: use actual per-event furniture hire, service-only catering commission, distinct late-only requests through existing ownDemand, five hours of late-launch preparation and a small roof WTP benefit. Part-time host cost starts at 450 EUR/two shifts so it is not an unnamed dominated option. Permit refunds retain the existing expense-window limitation. All outcomes remain unmeasured until bots and UI are complete.
+
+### Plan 5 step 3: sensible venue bots
+
+AUTONOMOUS: venue bots prepare the common fit-out loan in week 1 while spreading interviews across markets, request the allowed startup working capital and keep three months of company/founder costs before spending unfunded capital. Waiting late approval no longer blocks independent fit-out work. These repairs follow traces with idle construction and unaffordable AV spend, before any value tuning. Old games retain their paths.
+
+AUTONOMOUS: venue hold terms start with a fee and adapt after eight observed decisions; hire furniture until observed use projects a purchase payback, add insulation after a complaint only over visibly empty closure dates, and diversify from actual interview mentions. Six variants measure V1–V4. The roof variant prioritises its named temptation in the startup bank plan so it actually funds the trap instead of silently dropping it. V3 reports late-active restriction runs and actual contribution including setup, with margins. 68 focused bot tests and lint/typechecks pass, including a full action-log replay.
+
+### Plan 5 step 3: mandatory UI hard stop
+
+AUTONOMOUS: stop under section1.2.1 after three honest repairs of the same WebKit company-heading cutoff. Font loading hooks, stable flex/post-layout measurement and text-range scaling leave the established375px case failing;23/24 venue browser cases, all16 terminology cases and lint pass. Save the isolated UI draft without merging, record evidence/options in STATUS.md, and stop before a fourth repair. Initial main remains25.8% careful/32.8% top on1,000 test seeds; no value/formula rounds, venue event table or full report used.
+
+### Plan 5 step 3: resumed heading repair
+
+AUTONOMOUS: the user requested continuation after the recorded three-attempt stop. Reserve a long name’s logo space before shrinking,and include both glyph and block overflow in the fit check;this preserves the full name,minimum12px and existing tests. All24 venue browser cases and lint/typechecks pass on the first resumed repair;full phase suite is running. No game values or bot reports changed.
+
+AUTONOMOUS: the complete suite exposed seven earlier WebKit heading cutoffs beyond the passing venue matrix. Correct the painted text size over successive frames without resetting between corrections;all80 venue/earlier established cases and lint now pass. The initial full suite retains two unrelated follow-ups:venue seed examples and hired-equipment offer preparation. No test was weakened.
+
+### Plan 5 step 3: equipment preparation and missing comparison
+
+AUTONOMOUS: the full-suite freelancer failure exposed a physical-equipment dependency incorrectly treated like a legal company prerequisite. Leisure offers may be prepared before acquiring equipment; actual date/service gating still requires it. Asset purchases and non-leisure preparation keep their prior prerequisites. The careful venue bot does not reinsert an already hired purchase dependency. All109 focused engine/bot/freelancer checks and lint pass.
+
+AUTONOMOUS: add a venue-only retained-cash variant for T15,leaving the earlier-games report paths/text intact. Venue readers permit useful no-cost work without an arbitrary cash threshold and preserve one month of fixed costs for paid choices. These are sensible-bot/mechanic repairs before any value tuning;measure a corrected main baseline before changing estimates.
+
+AUTONOMOUS: generate18 venue ending examples(189 total) and prove all earlier rows byte-identical;all190 replay/coverage checks pass. The post-mortem names the roof lesson using its public quote and actual refusal/refund. Venue Help/results/post-mortem words at390/1440 and lint pass. No game values changed.
+
+### Plan 5 step 3: corrected measurement and value plan
+
+AUTONOMOUS: complete the corrected venue main(all29 strategies,1,000 test seeds):careful41.5%,top50.5%,nine open targets,T7 at the limit. Record actual contributions in venue/BUDGET.md before changing values. First round will correct hold/cancellation acceptance estimates,pre-opening message availability and unresolved-snag reviews;keep money/lead times unchanged and do not invent bot-specific penalties. Value/formula budget remains0/2 and0/1 until applied.
+
+### Plan 5 step 3: first value round
+
+AUTONOMOUS: after corrected contributions,calibrate no-hold acceptance(.35/.15/.90),wedding fee acceptance(.85),strict acceptance(.995/.82/.97) and unresolved snag penalty(.30). Four recurring,conditional construction decisions address pre-opening gaps;content now55 events. Quotes/demand/lead times stay fixed. Spec section15 records every estimate;255 focused tests and lint pass. Conservatively use round1 for all targets,leaving one value round and one formula allowance. Main only,29 strategies,1,000 test seeds;no event/full report.
+
+### Plan5 step3: second value round
+
+AUTONOMOUS: round1 is playable(careful42.7%,top45.0%),with T5 and T13 now passing. Use the second value allowance on paid-hold acceptance(.95/.90/.95),wedding strict acceptance(.65) and unresolved snag penalty(.50). Paired round1 contributions precede these estimates;spec section15 records rationale. Keep quoted costs,demand,lead times and financing unchanged. Conservatively debit round2 to all targets;formula0/1.
+
+AUTONOMOUS: freeze venue round2 values and leave the formula allowance unused by decision,as an upper bound rather than a quota. No justified formula addresses long-lead wedding cash,contract utilisation or startup/later-loan dependency without changing the intended lesson. Main round2 still measures every target;retain failures and closest results for step6. Start the required once-only venue event table on this frozen source,events only,1,000 test seeds,two workers. It can exceed15 minutes;CLAUDE's event-content budget and plan section1.6 explicitly require this run. No full report.
+
+AUTONOMOUS: frozen venue round2 source passes all86 test files/1,691 tests,24 skipped,including both-browser cutoff/axe matrices;lint/typechecks pass. Regenerate189 ending examples and prove every earlier row byte-identical. Record venue fingerprint c042cb5934228e6b at engine0.14.0. The protected proof,final main and once-only event table still run;do not claim the phase complete yet. Fitness preparation stays isolated until the venue gate.
+
+AUTONOMOUS: final venue main(all29 strategies,1,000 test seeds,main only) is46.6%±3.1 careful/47.6% top. All V targets pass;T1,T7,T10,V2 at limit. Six tourism targets remain open with closest evidence/options in reports/step3-venue.md. Both value rounds used;formula deliberately unused. All nine older protected reports match apart from timings;Ausgesperrt and once-only event table continue. No playability stop,no full report. Freeze raw venue baseline/fingerprint for the next step.
+
+AUTONOMOUS: all ten step3 protected/earlier-leisure main comparisons match raw baselines exactly apart from timings,on1,000 test seeds per strategy. Nine old fingerprints and Ausgesperrt ea908900d9f19996 match;engine0.14.0. Retain earlier workers whose only later repair is provably unreachable for these games;report records this gating rationale. Proof raw/compare/json files are committed,logs preserved under /tmp. Event95560 is the remaining phase gate;no full report.
+
+AUTONOMOUS: venue event table completes once:events only,1,000 test seeds,111 strategies,two workers;86,203/111,000 games played,remainder reused;2,113s event wall plus44s automatic baseline.54 judged cards have21 cheapest/33 other point leaders,without significance claims;turnaround unseen. Breakout answer ties staying on its observed subset,so expansion benefit remains a review question. All phase gates pass;merge locally and tag plan5-venue. Full report never run.

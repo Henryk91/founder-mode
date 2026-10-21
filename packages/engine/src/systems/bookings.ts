@@ -1,3 +1,4 @@
+import { beginVenue } from './venue'
 import {
   initLeisure,
   cloneLeisurePlan,
@@ -5,6 +6,7 @@ import {
   leisureSellsSlot,
   leisureOpen,
   leisureCapacity,
+  leisureProductCapacity,
   leisureRoomReader,
   leisureSlot,
   leisureAppeal,
@@ -60,6 +62,7 @@ import {
   assetFactor,
   assetOf,
   assetsBought,
+  leisureAssetSupplies,
   assetsUsed,
   assetsView,
   assetsWeek,
@@ -336,7 +339,7 @@ const isShipped = (state: GameState, id: FeatureId) =>
  * step 1d).
  */
 export function mustHaveMet(state: GameState, id: FeatureId): boolean {
-  if (!isShipped(state, id)) return false
+  if (!isShipped(state, id)) return leisureAssetSupplies(state, id, state.week)
   const r = state.scenario.bookings?.renovation
   if (r && r.feature === id) return (state.bookings?.renovated ?? 0) >= r.mustHaveRooms
   return true
@@ -365,9 +368,13 @@ export function capacityAt(state: GameState, pool: FeatureId, week: number): num
 /** Leisure can sell future dates after a prepared build will be ready. */
 function cfgLeisureReady(state: GameState, id: FeatureId, week: number): boolean {
   if (!state.scenario.bookings?.leisure) return isShipped(state, id)
-  return state.product.features.some(
-    (f) =>
-      f.id === id && (f.shippedWeek !== null || (f.readyWeek !== undefined && f.readyWeek <= week)),
+  return (
+    leisureAssetSupplies(state, id, week) ||
+    state.product.features.some(
+      (f) =>
+        f.id === id &&
+        (f.shippedWeek !== null || (f.readyWeek !== undefined && f.readyWeek <= week)),
+    )
   )
 }
 
@@ -642,11 +649,16 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
 
   if (cfg.leisure) {
+    const venue = beginVenue({ ...state, bookings: b })
+    state = venue.state
+    b = state.bookings!
+    out.revenueCents -= venue.refundCents
     const leisure = beginLeisure({ ...state, bookings: b }, plan, rng)
     state = leisure.state
     b = state.bookings!
     out.costsCents += leisure.costsCents
     out.revenueCents += leisure.revenueCents
+    out.entries.push(...(leisure.entries ?? []))
   }
 
   // 2. Weather, or (plan 4) this week's day conditions and next week's forecast.
@@ -1455,7 +1467,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       cfg.leisure && x.slotId
         ? Math.max(
             0,
-            leisureCapacity(state, poolOf(cfg, x.productId), x.slotId, week) -
+            leisureProductCapacity(state, x.productId, x.slotId, week) -
               (usedSlots.get(slotKey) ?? 0),
           )
         : Infinity
@@ -1468,7 +1480,18 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       served.push(x)
     } else {
       x.status = 'company_cancelled'
-      const reason = cfg.leisure && slotRoom < x.units ? 'works' : (why.get(x.productId) ?? 'staff')
+      const unavailableAsset =
+        cfg.leisure &&
+        cfg.assets &&
+        [x.productId, poolOf(cfg, x.productId)].some(
+          (id) => assetOf(cfg, id) && assetFactor(state, id, week) < 1,
+        )
+      const reason =
+        cfg.leisure && slotRoom < x.units
+          ? unavailableAsset
+            ? 'asset'
+            : 'works'
+          : (why.get(x.productId) ?? 'staff')
       if (reason === 'sold_out') soldOut += x.units
       else if (reason === 'works') closedForWorks += x.units
       else if (reason === 'conditions') conditionsCancelled += x.units
@@ -1534,13 +1557,20 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   // Money: paid on the day (net of commission), or invoiced.
   // Leisure advances are liabilities until service. Flexible guest cancellations and every
-  // company cancellation return them; strict guest cancellations keep the agreed payment.
+  // company cancellation return them. Strict cancellations keep the agreed payment,
+  // or only the advance when the venue explicitly enables deposit-only terms.
   if (cfg.leisure) {
     for (const x of due) {
-      if (x.status === 'cancelled' || x.status === 'company_cancelled')
-        out.revenueCents -= x.depositCents ?? 0
+      if (x.status === 'cancelled' || x.status === 'company_cancelled') {
+        const refund = Math.max(0, (x.depositCents ?? 0) - (x.refundedCents ?? 0))
+        out.revenueCents -= refund
+      }
     }
   }
+  const noise = cfg.leisure?.noise
+  let lateReceiptsCents = 0
+  let lateVariableCents = 0
+  let lateAssetCents = 0
   const invoices: Invoice[] = []
   const earned = { ...(b.earned ?? {}) }
   const payWeeks = { ...state.hidden.payWeeks }
@@ -1551,14 +1581,21 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   const share = cfg.tender ? hotelShare(state) : 0
   for (const x of [...served, ...due.filter((y) => y.status === 'cancelled_paid')]) {
     const s = cfg.segments[x.segmentId]!
-    const gross = x.units * x.priceCents
+    const depositOnly = cfg.leisure?.strictKeepsDeposit && x.status === 'cancelled_paid'
+    const gross = depositOnly ? (x.depositCents ?? 0) : x.units * x.priceCents
     if (x.voucherId) {
       // Paid when the voucher was sold: only the food and laundry cost now.
       const prod = cfg.products[x.productId]
-      if (x.status === 'served')
-        unitCosts +=
-          Math.round(x.units * (prod?.unitCostCents ?? 0) * unitF) +
-          Math.round(gross * (prod?.unitCostShare ?? 0))
+      const variable =
+        x.status === 'served'
+          ? Math.round(x.units * (prod?.unitCostCents ?? 0) * unitF) +
+            Math.round(gross * (prod?.unitCostShare ?? 0))
+          : 0
+      unitCosts += variable
+      if (noise?.products.includes(x.productId)) {
+        lateReceiptsCents += vouchers.find((v) => v.id === x.voucherId)?.valueCents ?? 0
+        lateVariableCents += variable
+      }
       continue
     }
     const cut = x.channel === 'platform' ? Math.round(gross * cfg.platform.commission) : 0
@@ -1574,9 +1611,13 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         (share > 0 ? Math.round(gross * share) : 0)
       unitCosts += cost
     }
+    if (noise?.products.includes(x.productId)) {
+      lateReceiptsCents += gross - cut
+      lateVariableCents += cost
+    }
     // What each product earns, for the post-mortem's loan lines (plan 2 step 2).
     earned[x.productId] = (earned[x.productId] ?? 0) + gross - cut - cost
-    if (!s.invoiced) {
+    if (!s.invoiced || depositOnly) {
       out.revenueCents += owed
       continue
     }
@@ -1611,6 +1652,17 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       used.set(x.productId, { units: u.units + x.units, grossCents: u.grossCents + gross - cut })
     }
     const assetCosts = assetsUsed({ ...state, bookings: b }, used)
+    if (noise)
+      for (const [id, asset] of Object.entries(cfg.assets)) {
+        const units = asset.products.reduce((sum, p) => sum + (used.get(p)?.units ?? 0), 0)
+        const lateUnits = asset.products
+          .filter((p) => noise.products.includes(p))
+          .reduce((sum, p) => sum + (used.get(p)?.units ?? 0), 0)
+        const cost =
+          (assetCosts.state.bookings!.assets?.[id]?.costCents ?? 0) -
+          (b.assets?.[id]?.costCents ?? 0)
+        if (units) lateAssetCents += Math.round((cost * lateUnits) / units)
+      }
     b = assetCosts.state.bookings!
     unitCosts += assetCosts.costsCents
   }
@@ -1734,9 +1786,26 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   if (shifts > 0) out.entries.push({ kind: 'shifts_paid', shifts, amountCents: wages })
   out.costsCents += wages + unitCosts + Math.round(contracts.wagesCents * roleF) + tripCosts
 
-  const leisureFinished = finishLeisure({ ...state, bookings: b }, bookings)
+  const leisureFinished = finishLeisure(
+    { ...state, bookings: b },
+    bookings,
+    rng,
+    noise
+      ? {
+          receiptsCents: lateReceiptsCents,
+          variableCents: lateVariableCents,
+          assetCents: lateAssetCents,
+          payrollCents: wages + Math.round(contracts.wagesCents * roleF),
+        }
+      : undefined,
+  )
   state = leisureFinished.state
+  out.costsCents += leisureFinished.extraCostsCents ?? 0
+  out.revenueCents += leisureFinished.extraRevenueCents ?? 0
   b = state.bookings!
+  if (cfg.leisure?.extras)
+    for (const [id, total] of Object.entries(b.leisure?.weeks.at(-1)?.extras ?? {}))
+      earned[id] = (earned[id] ?? 0) + total.receiptsCents - total.costsCents
   out.voucherRedeemedCents += leisureFinished.voucherRedeemedCents
 
   // 7. Reviews.
@@ -1859,7 +1928,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       ...b,
       ...(b.vouchers ? { vouchers } : {}),
       ...(Object.keys(earned).length ? { earned } : {}),
-      ...archiveOld(bookings, b.archived, week),
+      ...archiveOld(cfg.leisure?.noise ? b.bookings : bookings, b.archived, week),
       repeatGuests,
       turnedAway,
       rating,

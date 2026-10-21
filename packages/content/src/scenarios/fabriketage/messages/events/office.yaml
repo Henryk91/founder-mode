@@ -1,0 +1,30 @@
+events:
+  - id: breakout_floor
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 26
+      - office.stage == 1
+      - months.coveringAll >= 2
+    trigger:
+      - tour.turnedAwayWeeks >= 3
+    from: none
+    sender: Your landlord
+    look: official
+    text: 'The floor below can become conference breakout rooms: 35,000 EUR to fit out, six weeks of
+      work and another 5,500 EUR a month. Company organisers can split their workshops into smaller
+      groups. It does not create a second independently bookable event hall.'
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Add conference breakout rooms
+        hours: 4
+        effects:
+          - type: officeMove
+            stage: factory_lower_floor
+      - id: stay
+        label: Keep the top floor
+        hours: 0
+        effects: []

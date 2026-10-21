@@ -674,6 +674,8 @@ const labels = {
   'results.entry.graduates_returned.other':
     '{n} former students came back for more, {direct} of them directly.',
   'results.entry.licence_applied': '{name}: applied. The answer comes in week {week}.',
+  'results.entry.permit_refused':
+    '{name}: permission refused. {refund} returned; {fee} application cost remains.',
   'results.entry.costs_rose': 'Local costs rose by {pct}%: wages, food, fuel and fees.',
   'results.entry.tender.higher': 'You bid higher and kept the spot. It costs more from now on.',
   'results.entry.tender.same.kept': 'You bid as before, and the town kept you on the spot.',

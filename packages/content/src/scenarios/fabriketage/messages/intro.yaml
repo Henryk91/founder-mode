@@ -1,0 +1,31 @@
+intro:
+  cards:
+    - id: you
+      title: The agency years
+      body:
+        You planned other people’s events for eight years. Now you have {cash:eur} in the company,
+        {savings:eur} in savings and living costs of {living:eur} a week. The clients have your
+        number; the suppliers have kept it too.
+    - id: idea
+      title: The floor
+      body: 'An empty print-works floor in Obersendling: brick, tall windows and a goods lift with
+        opinions. It is March. The fit-out costs EUR90,000 and takes ten weeks after preparation and
+        payment; talk to the bank before buying tablecloths.'
+    - id: problem
+      title: Two calendars
+      body: Companies want autumn weekdays, couples want summer Saturdays, and party hosts want more
+        evening than the neighbours do. A held date is not a paid date. An empty Saturday cannot be
+        sold again on Monday. Guest balances are collected on the event date; company balances are
+        invoiced after it.
+    - id: goal
+      title: The goal
+      body:
+        Last {maxWeeks} weeks. The last thirteen months together must pay for the floor, the staff,
+        the bank and you. Leave the roof terrace in the brochure until the actual floor earns its
+        rent.
+founderNotes:
+  first_week: Week 1. A floor, a lift and a quotation. Speak to people and prepare the bank plan.
+  no_evidence: Week {week}. Nobody has asked about the dates yet. The landlord has asked about the rent.
+  only_interviews: You have {n} conversations. A preference for exposed brick is not a deposit.
+  built_unseen: The floor is ready. It needs people who know which door to use.
+  leads_only: You have {n} enquiries. The calendar is still mostly pencil.

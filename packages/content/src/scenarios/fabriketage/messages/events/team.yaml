@@ -1,0 +1,174 @@
+events:
+  - id: the_host_s_notebook
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your regular crew
+    look: note
+    text:
+      Your host keeps a notebook containing the lift code, every supplier’s phone number and which
+      plug starts the projector. He is away next week. The notebook is going with him.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Make the handover now
+        hours: 4
+        effects:
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Ask him to stay near his phone
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: technician_elsewhere
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your regular crew
+    look: note
+    text: The regular technician gets a better-paid offer on your busiest Friday. A replacement is
+      available but needs an induction. The equipment has not become simpler because it is Friday.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for trained cover
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -30000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Ask the DJ to run the screen
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: last_train
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your regular crew
+    look: note
+    text:
+      The cleaning crew asks how it should get home after a late event. Its quote assumes a normal
+      finish. Your quotation to the client assumes somebody will clean.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Agree the late shift and transport
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -18000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Keep the old quote
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: the_permanent_manager
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your regular crew
+    look: note
+    text: A good event manager wants predictable work rather than separate invoices. You have steady
+      autumn bookings and an empty January. Her monthly pay will attend both.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review the forward calendar
+        hours: 3
+        effects: []
+      - id: leave
+        label: Sign at once
+        hours: 0
+        effects: []
+  - id: the_carrying_favour
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your regular crew
+    look: note
+    text:
+      A friend offers to move the furniture for free. He can bring one car and three people who have
+      never carried a banquet table. The wedding planner has asked for proof of insurance.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Hire the proper crew
+        hours: 1
+        effects:
+          - type: cash
+            amountCents: -40000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Accept the favour
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: the_late_handover
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your regular crew
+    look: note
+    text:
+      The afternoon host leaves before the evening host arrives. Each believes the other checked the
+      exits and the toilets. There is a useful half hour between beliefs.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for overlap
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12500
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Send both the same message
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1

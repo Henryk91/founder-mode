@@ -178,7 +178,21 @@ export type RunResult = {
     turnedAway: number
     companyCancelled: number
     firstViableWeek: number | null
-    leisure?: { openingWeek: number | null; roomsBuilt: number; refreshes: number }
+    leisure?: {
+      openingWeek: number | null
+      roomsBuilt: number
+      refreshes: number
+      venue?: {
+        lateEvents: number
+        restrictions: number
+        receiptsCents: number
+        costsCents: number
+        netCents: number
+        holds: number
+        converted: number
+        lateReleased: number
+      }
+    }
     /** Staff contracts signed over the run, by kind (plan 2 target T14). */
     contracts: { permanent: number; seasonal: number; partTime: number }
     /**
@@ -643,6 +657,31 @@ function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
       ? {
           leisure: {
             openingWeek: b.leisure.openingWeek,
+            ...(b.leisure.noise
+              ? {
+                  venue: {
+                    lateEvents: b.leisure.noise.lateEvents,
+                    restrictions: b.leisure.noise.restrictions.length,
+                    receiptsCents: b.leisure.noise.receiptsCents,
+                    costsCents:
+                      b.leisure.noise.variableCents +
+                      b.leisure.noise.staffCents +
+                      b.leisure.noise.assetCents +
+                      b.leisure.noise.turnaroundCents +
+                      b.leisure.noise.setupCents,
+                    netCents:
+                      b.leisure.noise.receiptsCents -
+                      b.leisure.noise.variableCents -
+                      b.leisure.noise.staffCents -
+                      b.leisure.noise.assetCents -
+                      b.leisure.noise.turnaroundCents -
+                      b.leisure.noise.setupCents,
+                    holds: b.leisure.weeks.reduce((sum, w) => sum + w.held, 0),
+                    converted: b.leisure.weeks.reduce((sum, w) => sum + w.converted, 0),
+                    lateReleased: b.leisure.weeks.reduce((sum, w) => sum + w.lateReleased, 0),
+                  },
+                }
+              : {}),
             roomsBuilt: (state.scenario.bookings?.leisure?.opening?.areas ?? []).filter((id) =>
               state.product.features.some((f) => f.id === id && f.shippedWeek !== null),
             ).length,

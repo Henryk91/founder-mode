@@ -125,30 +125,67 @@ function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | 
     if (!el || text === null) return
     // The name's column; without the logo square a long name has 42 px more.
     const who = el.parentElement?.parentElement ?? null
-    const shrink = () => {
-      el.style.fontSize = ''
+    const shrink = (reset = true) => {
+      if (reset) el.style.fontSize = ''
       let size = parseFloat(getComputedStyle(el).fontSize)
-      while (el.scrollWidth > el.clientWidth + 0.5 && size > MIN_NAME_PX) {
+      const range = document.createRange()
+      range.selectNodeContents(el)
+      // Measure the glyphs themselves: WebKit can cache a block's scroll width across a
+      // font-size write. Scale once from the actual text bounds, then check the final fit.
+      const available = Math.max(0, el.getBoundingClientRect().width - 1)
+      const width = () => range.getBoundingClientRect().width
+      const measured = width()
+      if (measured > available && measured > 0 && size > MIN_NAME_PX) {
+        size = Math.max(MIN_NAME_PX, Math.floor(((size * available) / measured) * 2) / 2)
+        el.style.fontSize = `${size}px`
+      }
+      while ((width() > available || el.scrollWidth > el.clientWidth) && size > MIN_NAME_PX) {
         size = Math.max(MIN_NAME_PX, size - 0.5)
         el.style.fontSize = `${size}px`
       }
-      return el.scrollWidth <= el.clientWidth + 0.5
+      return width() <= available
     }
+    let live = true
+    let frame = 0
     const fit = () => {
       if (who) delete who.dataset['tight']
-      if (!shrink() && who) {
+      el.style.fontSize = ''
+      // Give a long name the logo's space before reducing its type size. This also
+      // avoids sizing against a flex column that changes as the heading face arrives.
+      const range = document.createRange()
+      range.selectNodeContents(el)
+      if (who && Math.max(range.getBoundingClientRect().width, el.scrollWidth) > el.clientWidth - 1)
         who.dataset['tight'] = 'true'
-        shrink()
+      shrink()
+      // WebKit can settle flex widths after the font-size write; finish against that layout.
+      cancelAnimationFrame(frame)
+      let quietFrames = 0
+      const settle = () => {
+        if (!live) return
+        const size = parseFloat(getComputedStyle(el).fontSize)
+        const overflow =
+          Math.max(range.getBoundingClientRect().width, el.scrollWidth) > el.clientWidth
+        if (overflow && size > MIN_NAME_PX) {
+          el.style.fontSize = `${Math.max(MIN_NAME_PX, size - 0.5)}px`
+          quietFrames = 0
+        } else quietFrames++
+        // Font shaping can finish after the size write. Require two stable painted
+        // layouts; further corrections only shrink, so no reset/resize oscillation.
+        if (quietFrames < 2) frame = requestAnimationFrame(settle)
       }
+      frame = requestAnimationFrame(settle)
     }
     fit()
-    let live = true
     void document.fonts?.ready.then(() => live && fit())
+    // A stage can first request its heading face after the initial ready promise resolved.
+    document.fonts?.addEventListener('loadingdone', fit)
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(fit)
     observer?.observe(el.parentElement ?? el)
     return () => {
       live = false
+      cancelAnimationFrame(frame)
       observer?.disconnect()
+      document.fonts?.removeEventListener('loadingdone', fit)
       el.style.fontSize = ''
       if (who) delete who.dataset['tight']
     }

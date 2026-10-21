@@ -36,7 +36,7 @@ export function LeisureUpkeep() {
         <Writing>{label('leisure.space', stage, { used: l.space.used, max: l.space.max })}</Writing>
       )}
       {l.builds
-        .filter((b) => b.started && !b.complete)
+        .filter((b) => b.started && !b.complete && b.permit?.refusedWeek == null)
         .map((b) => (
           <Writing key={b.productId}>
             {label(b.readyWeek === null ? 'leisure.buildPrep' : 'leisure.buildProgress', stage, {
@@ -47,6 +47,36 @@ export function LeisureUpkeep() {
             })}
           </Writing>
         ))}
+      {l.builds.flatMap((b) => [
+        ...(b.closes
+          ? [
+              <Writing key={`${b.productId}-closes`}>
+                {label('leisure.buildClosure', stage, {
+                  name: b.name,
+                  areas: b.closes
+                    .map((id) => view.product.features.find((f) => f.id === id)?.name ?? id)
+                    .join(', '),
+                })}
+              </Writing>,
+            ]
+          : []),
+        ...(b.permit
+          ? [
+              <Writing key={`${b.productId}-permit`}>
+                {b.permit.refusedWeek === null
+                  ? label('leisure.permitTerms', stage, {
+                      name: b.name,
+                      amount: formatEuro(b.permit.refundableCents),
+                    })
+                  : label('leisure.permitRefused', stage, {
+                      name: b.name,
+                      week: b.permit.refusedWeek,
+                      amount: formatEuro(b.permit.returnedCents),
+                    })}
+              </Writing>,
+            ]
+          : []),
+      ])}
       {l.freshness
         .filter((f) => view.product.features.some((p) => p.id === f.productId && p.shipped))
         .map((f) => {
@@ -158,6 +188,38 @@ export function LeisureCalendar({ view }: { view: PlayerView }) {
           })}
         </p>
       ))}
+      <VenueFacts leisure={l} view={view} />
+      {l.holds && (
+        <>
+          <h3 className={ui.title}>{label('leisure.holdPolicy', stage)}</h3>
+          <p>
+            {label('leisure.holdsHistory', stage, {
+              granted: l.holds.granted,
+              converted: l.holds.converted,
+              lost: l.holds.lateReleased,
+            })}
+          </p>
+          <ul className={ui.list}>
+            {l.holds.calendar.map((h) => (
+              <li key={h.id}>
+                {label('leisure.holdDate', stage, {
+                  week: h.week,
+                  slot: l.slots.find((s) => s.id === h.slotId)?.name ?? '',
+                  segment: view.segments.find((s) => s.id === h.segmentId)?.name ?? h.segmentId,
+                  status: label(`leisure.hold.status.${h.status}`, stage),
+                  release: h.releaseWeek,
+                })}
+                {h.refundedCents !== undefined && (
+                  <>
+                    {' '}
+                    {label('leisure.holdRefund', stage, { amount: formatEuro(h.refundedCents) })}
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
       {l.slots.map((slot) => {
         const visits = l.load.filter((x) => x.slotId === slot.id)
         return (
@@ -257,6 +319,19 @@ export function LeisurePrices() {
                       {label('leisure.salesSlot', stage, { name: slot.name })}
                     </button>
                   </Choices>
+                  {view
+                    .bookings!.products.filter(
+                      (p) => p.serves.includes(segment) && p.priceFactor !== 1,
+                    )
+                    .map((p) => (
+                      <Writing key={p.id}>
+                        {label('leisure.productPrices', stage, {
+                          name: p.name,
+                          peak: formatEuro(Math.round(now.peak * p.priceFactor)),
+                          off: formatEuro(Math.round(now.off * p.priceFactor)),
+                        })}
+                      </Writing>
+                    ))}
                   {(['peak', 'off'] as const).map((season) => (
                     <Market
                       key={season}
@@ -310,6 +385,29 @@ export function LeisureSummary({ leisure: l, view }: { leisure: LeisureView; vie
   return (
     <section className={ui.card}>
       <h2 className={ui.title}>{label('leisure.lessons', stage)}</h2>
+      <VenueFacts leisure={l} view={view} />
+      {l.noise &&
+        l.builds
+          .filter((b) => b.productId === 'roof_terrace')
+          .map((b) => (
+            <div key={b.productId}>
+              <p>
+                {label('leisure.roofLesson', stage, {
+                  name: b.name,
+                  amount: formatEuro(b.costCents),
+                })}
+              </p>
+              {b.permit?.refusedWeek != null && (
+                <p>
+                  {label('leisure.permitRefused', stage, {
+                    name: b.name,
+                    week: b.permit.refusedWeek,
+                    amount: formatEuro(b.permit.returnedCents),
+                  })}
+                </p>
+              )}
+            </div>
+          ))}
       {l.slots.map((slot) => {
         const rows = l.history.flatMap((w) => w.slots.filter((s) => s.slotId === slot.id))
         return (
@@ -357,5 +455,133 @@ export function LeisureSummary({ leisure: l, view }: { leisure: LeisureView; vie
           </p>
         ))}
     </section>
+  )
+}
+
+/** Public venue terms and actual settlements; no demand, chances or private state. */
+function VenueFacts({ leisure: l, view }: { leisure: LeisureView; view: PlayerView }) {
+  const stage = voiceOf(view)
+  const n = l.noise
+  return (
+    <>
+      {l.upgrades?.map((u) => (
+        <div key={u.productId}>
+          <p>
+            {label('leisure.upgradeTerms', stage, {
+              name: u.name,
+              n: u.additional,
+              slot: l.slots.find((s) => s.id === u.slotId)?.name ?? u.slotId,
+              amount: formatEuro(u.unitCostCents),
+            })}
+          </p>
+          <p>{label('leisure.upgradePaid', stage, { amount: formatEuro(u.paidCents) })}</p>
+        </div>
+      ))}
+      {l.extras?.map((e) => (
+        <div key={e.productId}>
+          {e.terms.map((t) => (
+            <p key={t.segmentId}>
+              {label('leisure.extraTerms', stage, {
+                name: e.name,
+                segment: view.segments.find((s) => s.id === t.segmentId)?.name ?? t.segmentId,
+                share: Math.round(t.revenueShare * 100),
+                gross: formatEuro(t.grossCents),
+                cost: formatEuro(t.unitCostCents),
+              })}
+            </p>
+          ))}
+          <p>
+            {label('leisure.extraPaid', stage, {
+              name: e.name,
+              units: e.units,
+              revenue: formatEuro(e.receiptsCents),
+              cost: formatEuro(e.costsCents),
+            })}
+          </p>
+          <p>
+            {label('leisure.extraLast4', stage, {
+              revenue: formatEuro(e.receiptsLast4Cents),
+              cost: formatEuro(e.costsLast4Cents),
+            })}
+          </p>
+        </div>
+      ))}
+      {n && (
+        <div>
+          <h3 className={ui.title}>{label('leisure.noiseTitle', stage)}</h3>
+          <p>
+            {label('leisure.noiseCounts', stage, {
+              events: n.lateEvents,
+              complaints: n.complaints,
+              total: n.totalComplaints,
+            })}
+          </p>
+          {n.warning && <p>{label('leisure.noiseWarning', stage)}</p>}
+          {n.restricted && (
+            <p>
+              {label('leisure.noiseRestricted', stage, {
+                from: n.restrictedFrom ?? view.week,
+                until: n.restrictedUntil ?? view.week,
+              })}
+            </p>
+          )}
+          <p>
+            {label('leisure.noiseRefunds', stage, {
+              bookings: n.cancelledBookings,
+              holds: n.releasedHolds,
+              amount: formatEuro(n.refundsCents),
+            })}
+          </p>
+          <p>
+            {label('leisure.noiseMoney', stage, {
+              revenue: formatEuro(n.receiptsCents),
+              cost: formatEuro(n.costsCents),
+              net: formatEuro(n.netCents),
+            })}
+          </p>
+          <p>
+            {label('leisure.noiseCosts', stage, {
+              variable: formatEuro(n.variableCents),
+              staff: formatEuro(n.staffCents),
+              asset: formatEuro(n.assetCents),
+              turnaround: formatEuro(n.turnaroundCents),
+              setup: formatEuro(n.setupCents),
+            })}
+          </p>
+        </div>
+      )}
+    </>
+  )
+}
+
+/** Three hold policies are tap controls on the existing pricing paper. */
+export function LeisureHolds() {
+  const view = useGame((s) => s.view)
+  const plan = useGame((s) => s.plan.bookings)
+  const set = useGame((s) => s.setBookings)
+  const holds = view?.bookings?.leisure?.holds
+  if (!view || !holds) return null
+  const stage = voiceOf(view),
+    draft = plan?.leisure ?? {},
+    policy = draft.holdPolicy ?? holds.policy
+  return (
+    <>
+      <SubHeading>{label('leisure.holdPolicy', stage)}</SubHeading>
+      <Writing>{label('leisure.holdTerms', stage, { amount: formatEuro(holds.feeCents) })}</Writing>
+      <Choices>
+        {(['free', 'fee', 'none'] as const).map((id) => (
+          <button
+            key={id}
+            type="button"
+            className={`${ui.chip} ${policy === id ? ui.chipOn : ''}`}
+            aria-pressed={policy === id}
+            onClick={() => set({ leisure: { ...draft, holdPolicy: id } })}
+          >
+            {label(`leisure.hold.${id}`, stage)}
+          </button>
+        ))}
+      </Choices>
+      <Writing>{label('leisure.holdHint', stage)}</Writing>
+    </>
   )
 }

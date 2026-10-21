@@ -210,6 +210,8 @@ export type Booking = {
   status: BookingStatus
   /** Paid when booked (a deposit, step 7); the rest is due at the stay. Absent: none. */
   depositCents?: number
+  /** Advance already returned following a venue restriction. */
+  refundedCents?: number
   /** Plan 2: a voucher redeemed for this booking; it was paid when the voucher was sold. */
   voucherId?: string
   /** Plan 4: a trip guest who waited a week for a group already (absent otherwise). */
@@ -608,6 +610,8 @@ export type FeatureProgress = {
   shippedWeek: number | null
   /** Plan 4: a licence applied for, which ships in this week (absent otherwise). */
   readyWeek?: number
+  /** A venue permit refused after its wait; it cannot be rebuilt on the same application. */
+  refusedWeek?: number
 }
 
 export type ProductState = {
@@ -2018,6 +2022,13 @@ export type ReportEntry =
   | { kind: 'graduates_returned'; units: number; direct: number }
   /** Plan 4: a licence applied for; it arrives in `readyWeek`. */
   | { kind: 'licence_applied'; featureId: FeatureId; name: string; readyWeek: number }
+  | {
+      kind: 'permit_refused'
+      featureId: FeatureId
+      name: string
+      refundCents: number
+      feeCents: number
+    }
   /** Plan 4: local costs rose by a factor this week. */
   | { kind: 'costs_rose'; factor: number }
   /** Plan 4: the concession's tender decided. */
@@ -2562,8 +2573,28 @@ export type HireEconomicsView = {
   lifetimeValueCents: number | null
 }
 
+export type LeisureExtraTotals = { units: number; receiptsCents: number; costsCents: number }
+export type LeisureNoiseState = {
+  complaintWeeks: number[]
+  restrictions: { fromWeek: number; untilWeek: number }[]
+  lateEvents: number
+  cancelledBookings: number
+  releasedHolds: number
+  refundsCents: number
+  receiptsCents: number
+  variableCents: number
+  staffCents: number
+  assetCents: number
+  turnaroundCents: number
+  setupCents: number
+  setupPaid: FeatureId[]
+}
+
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
 export type LeisureState = {
+  permitRefunds?: Record<FeatureId, { week: number; cents: number }>
+  noise?: LeisureNoiseState
+  extras?: Record<FeatureId, LeisureExtraTotals>
   slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
   salesSlots?: Record<SegmentId, string[]>
   openingWeek: number | null
@@ -2626,8 +2657,11 @@ export type LeisureHold = {
   releaseWeek: number
   status: 'held' | 'converted' | 'released'
   feeCents: number
+  refundedCents?: number
 }
 export type LeisureWeek = {
+  extras?: Record<FeatureId, LeisureExtraTotals>
+  turnaroundCents?: Record<FeatureId, number>
   turnedAway: Record<string, number>
   week: number
   joined: number
@@ -2666,6 +2700,53 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  noise?: {
+    complaints: number
+    totalComplaints: number
+    warning: boolean
+    restricted: boolean
+    restrictedFrom: number | null
+    restrictedUntil: number | null
+    restrictions: number
+    lateEvents: number
+    cancelledBookings: number
+    releasedHolds: number
+    refundsCents: number
+    receiptsCents: number
+    variableCents: number
+    staffCents: number
+    assetCents: number
+    turnaroundCents: number
+    setupCents: number
+    costsCents: number
+    netCents: number
+  }
+  extras?: {
+    productId: FeatureId
+    name: string
+    active: boolean
+    terms: {
+      segmentId: SegmentId
+      grossCents: number
+      revenueShare: number
+      unitCostCents: number
+    }[]
+    units: number
+    receiptsCents: number
+    costsCents: number
+    receiptsLast4Cents: number
+    costsLast4Cents: number
+  }[]
+  upgrades?: {
+    productId: FeatureId
+    name: string
+    poolId: FeatureId
+    slotId: string
+    additional: number
+    unitCostCents: number
+    active: boolean
+    paidCents: number
+  }[]
   slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
   salesSlots?: Record<SegmentId, string[]>
   space?: { max: number; used: number; uses: Record<FeatureId, number> }
@@ -2738,6 +2819,8 @@ export type LeisureView = {
     refreshingUntil: number | null
   }[]
   builds: {
+    permit?: { refundableCents: number; refusedWeek: number | null; returnedCents: number }
+    closes?: FeatureId[]
     productId: FeatureId
     name: string
     readyWeek: number | null
@@ -2756,6 +2839,7 @@ export type LeisureView = {
       segmentId: SegmentId
       releaseWeek: number
       status: LeisureHold['status']
+      refundedCents?: number
     }[]
     granted: number
     converted: number

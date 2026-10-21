@@ -1,4 +1,4 @@
-import { fmtMargin } from './margin'
+import { fmtMargin, rateMargin } from './margin'
 import { pairedOn, type StrategyRuns, type Target } from './report'
 
 const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
@@ -51,6 +51,72 @@ export function escapeTargets(
       value: value(vr),
       margin: margin(vr),
       pass: loses(vr, 3),
+    },
+  ]
+}
+
+/** Venue comparisons use the same seeds; V3 counts runs with real late service. */
+export function venueTargets(
+  careful: StrategyRuns,
+  s: (id: string) => StrategyRuns | undefined,
+  all: number[],
+): Target[] {
+  const noisy = s('venue_no_insulation')
+  if (!noisy) return []
+  const pair = (id: string) => {
+    const other = s(id)
+    return other ? pairedOn(careful, other, all) : null
+  }
+  const free = pair('venue_free_holds'),
+    none = pair('venue_no_holds')
+  const company = pair('venue_companies_only'),
+    wedding = pair('venue_weddings_only')
+  const roof = pair('venue_roof_first_year')
+  const loses = (p: { change: number; margin: number } | null, n: number) =>
+    p !== null && p.change - p.margin <= -n
+  const value = (p: { change: number } | null) => (p ? signed(p.change) : '-')
+  const margin = (p: { margin: number } | null) => (p ? fmtMargin(p.margin) : '')
+  const late = noisy.results.filter((r) => (r.tourism?.leisure?.venue?.lateEvents ?? 0) > 0)
+  const restrictions = late.filter((r) => (r.tourism?.leisure?.venue?.restrictions ?? 0) > 0).length
+  const rate = late.length ? (100 * restrictions) / late.length : 0
+  const rateError = rateMargin(restrictions, late.length)
+  const nets = careful.results.flatMap((r) =>
+    r.tourism?.leisure?.venue ? [r.tourism.leisure.venue.netCents / 100] : [],
+  )
+  const mean = nets.length ? nets.reduce((a, b) => a + b, 0) / nets.length : 0
+  const error =
+    nets.length > 1
+      ? 1.96 *
+        Math.sqrt(nets.reduce((a, b) => a + (b - mean) ** 2, 0) / (nets.length * (nets.length - 1)))
+      : 0
+  return [
+    {
+      id: 'V1',
+      text: 'Holds are a decision: granting every hold freely and granting none each lose at least 2 points to careful',
+      value: `free ${value(free)}; none ${value(none)}`,
+      margin: `${margin(free)}; ${margin(none)}`,
+      pass: loses(free, 2) && loses(none, 2),
+    },
+    {
+      id: 'V2',
+      text: 'The calendar has two businesses: careful beats companies-only and weddings-only by at least 3 points each',
+      value: `companies ${value(company)}; weddings ${value(wedding)}`,
+      margin: `${margin(company)}; ${margin(wedding)}`,
+      pass: loses(company, 3) && loses(wedding, 3),
+    },
+    {
+      id: 'V3',
+      text: 'Late events without insulation restrict at least 20% of runs that hold them; careful late events pay more than their attributable costs',
+      value: `restricted ${rate.toFixed(1)}% (${restrictions}/${late.length}); careful mean net ${mean.toFixed(0)} EUR/run`,
+      margin: `${fmtMargin(rateError)}; ${fmtMargin(error, 0)} EUR`,
+      pass: late.length > 0 && nets.length > 0 && rate + rateError >= 20 && mean + error > 0,
+    },
+    {
+      id: 'V4',
+      text: 'The roof terrace is a trap: building it in the first year loses at least 3 points',
+      value: value(roof),
+      margin: margin(roof),
+      pass: loses(roof, 3),
     },
   ]
 }

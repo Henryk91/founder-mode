@@ -1,0 +1,87 @@
+companies:
+  distinct: second
+  first:
+    - Birken
+    - Sonnen
+    - Kupfer
+    - Nord
+    - Bogen
+  second:
+    - Feldmann
+    - Waldner
+    - Steinbach
+    - Kessler
+    - Bachmann
+    - Lindner
+    - Sommerfeld
+    - Riedel
+    - Hagenauer
+    - Bergmann
+    - Kornfeld
+    - Tannberger
+    - Auenbach
+    - Wiesenegger
+    - Sternthal
+    - Kirchberger
+    - Eichenwald
+    - Falkenried
+    - Kastner
+    - Talheimer
+weddings:
+  distinct: second
+  first:
+    - Mara and Jonas
+    - Lena and Emil
+    - Nora and Felix
+    - Ida and Theo
+    - Clara and Anton
+  second:
+    - Feldmann
+    - Waldner
+    - Steinbach
+    - Kessler
+    - Bachmann
+    - Lindner
+    - Sommerfeld
+    - Riedel
+    - Hagenauer
+    - Bergmann
+    - Kornfeld
+    - Tannberger
+    - Auenbach
+    - Wiesenegger
+    - Sternthal
+    - Kirchberger
+    - Eichenwald
+    - Falkenried
+    - Kastner
+    - Talheimer
+private_parties:
+  distinct: second
+  first:
+    - Birthday group
+    - Anniversary party
+    - Film crew
+    - Makers market
+    - Club social
+  second:
+    - Feldmann
+    - Waldner
+    - Steinbach
+    - Kessler
+    - Bachmann
+    - Lindner
+    - Sommerfeld
+    - Riedel
+    - Hagenauer
+    - Bergmann
+    - Kornfeld
+    - Tannberger
+    - Auenbach
+    - Wiesenegger
+    - Sternthal
+    - Kirchberger
+    - Eichenwald
+    - Falkenried
+    - Kastner
+    - Talheimer

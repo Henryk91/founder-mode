@@ -456,7 +456,9 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           ? 0
           : greedy
             ? plan.workingCapitalMaxCents
-            : Math.max(0, need - itemsCents())
+            : cfg.leisure?.noise && runningLoans.length === 0
+              ? plan.workingCapitalMaxCents
+              : Math.max(0, need - itemsCents())
       let wc = Math.floor(Math.min(plan.workingCapitalMaxCents, roundUp(wcNeed)) / step) * step
       // Within the own-money rule and below the last refused amount: less working capital
       // first, then the items listed last.
@@ -527,11 +529,14 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
   }
 
   /** Products and what they require, the required first (a restaurant's fit-out). */
-  const withRequired = (ids: string[]) => {
+  const withRequired = (ids: string[], view: PlayerView) => {
     const out: string[] = []
     for (const id of ids) {
       const req = cfg.products[id]?.requires
-      if (req && !out.includes(req)) out.push(req)
+      const supplied =
+        cfg.leisure?.noise &&
+        view.bookings?.assets.some((a) => a.buyProduct === req && a.option !== 'none' && !a.broken)
+      if (req && !supplied && !out.includes(req)) out.push(req)
       if (!out.includes(id)) out.push(id)
     }
     return out
@@ -998,6 +1003,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       outreach: {},
     }
     b.chase(Math.max(3, view.invoices.filter((i) => i.canChase).length))
+    // Venue fit-out is common to every market: finance it while interviewing, not afterwards.
+    if (cfg.leisure?.noise && view.week <= 2)
+      planLoan(view, b, [
+        ...(rule.temptationEarly ? [rule.temptationEarly] : []),
+        ...cfg.leisure.opening!.areas,
+      ])
 
     // This week's guests come first: the roster.
     const pool: Record<string, number> = {}
@@ -1153,7 +1164,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     planContracts(view, plan)
 
     // Week 1: listen to everyone. Week 2: a test listing and a pilot where it points.
-    if (rule.tests && view.week === 1) {
+    if (rule.tests && cfg.leisure?.noise && view.week <= 2) {
+      const each = Math.min(
+        FIRST_WEEK_INTERVIEWS,
+        Math.floor(b.free / (ids.length * scenario.experiments.interview.hours)),
+      )
+      for (const id of ids) b.interviews(id, each)
+    } else if (rule.tests && view.week === 1) {
       for (const id of ids) b.interviews(id, FIRST_WEEK_INTERVIEWS)
     }
     if (rule.tests && view.week === 2) {
@@ -1227,7 +1244,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           : []),
       ]
       const baseBuilding = view.loan
-        ? withRequired([...new Set([...toBuild, ...bought, ...early])])
+        ? withRequired([...new Set([...toBuild, ...bought, ...early])], view)
         : toBuild
       const building = cfg.leisure
         ? leisureBuildOrder(view, baseBuilding, rule.buildAll)
@@ -1237,12 +1254,21 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         const leadMonths = rule.naive ? 0 : Math.ceil((cfg.segments[seg]?.leadWeeks.max ?? 0) / 4)
         const visibleBridge = view.loan?.bridgeMonthsHint ?? 0
         const bridge = Math.max(0, Math.max(leadMonths, visibleBridge) - LOAN_BUFFER_MONTHS)
-        const reserve = (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
+        const reserve = cfg.leisure?.noise
+          ? Math.max(3, RESERVE_MONTHS + bridge) *
+            (view.company.monthlyFixedCostsCents + view.founder.livingCostCentsPerMonth)
+          : (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
         const shipped = (id: string) => !!view.product.features.find((x) => x.id === id)?.shipped
-        planLoan(view, b, building)
+        if (!b.plan.loan) planLoan(view, b, building)
         // What others require comes first, on its own: nothing sells without it.
         const required = building.filter(
-          (f) => !shipped(f) && building.some((g) => cfg.products[g]?.requires === f),
+          (f) =>
+            !shipped(f) &&
+            !(
+              cfg.leisure?.noise &&
+              view.product.features.find((x) => x.id === f)?.readyWeek !== null
+            ) &&
+            building.some((g) => cfg.products[g]?.requires === f),
         )
         const now = required.length > 0 ? required : building
         // Plan 4 (day conditions only): products started this week count against the money too.
@@ -1252,7 +1278,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
             bought.includes(f) || bv.leisure?.builds.some((x) => x.productId === f && x.started)
               ? 0
               : (cfg.products[f]?.oneOffCents ?? 0)
-          const keep = required.length > 0 ? 0 : reserve
+          const keep = required.length > 0 && !cfg.leisure?.noise ? 0 : reserve
           if (cost > 0 && view.company.cashCents - keep - committed < cost) continue
           if ((bv.abroad || bv.leisure) && !shipped(f)) committed += cost
           b.build(f, 40 - (b.plan.build[f] ?? 0))
@@ -1414,6 +1440,48 @@ export const tourismForced = (eventId: string, choiceId: string): Strategy =>
   )
 
 export const TOURISM_STRATEGIES: Strategy[] = [
+  tourism(
+    'venue_no_later_loan',
+    'Keeps the venue startup loan but funds later investments from retained cash.',
+    { ...CAREFUL_TOURISM, leisure: { laterLoans: false } },
+    ['fabriketage'],
+  ),
+  tourism(
+    'venue_free_holds',
+    'Grants every date hold freely.',
+    { ...CAREFUL_TOURISM, leisure: { holdPolicy: 'free' } },
+    ['fabriketage'],
+  ),
+  tourism(
+    'venue_no_holds',
+    'Grants no date holds.',
+    { ...CAREFUL_TOURISM, leisure: { holdPolicy: 'none' } },
+    ['fabriketage'],
+  ),
+  tourism(
+    'venue_companies_only',
+    'Sells only company event packages.',
+    { ...CAREFUL_TOURISM, segment: 'companies' },
+    ['fabriketage'],
+  ),
+  tourism(
+    'venue_weddings_only',
+    'Sells only wedding packages.',
+    { ...CAREFUL_TOURISM, segment: 'weddings' },
+    ['fabriketage'],
+  ),
+  tourism(
+    'venue_no_insulation',
+    'Offers late events but never installs sound insulation.',
+    { ...CAREFUL_TOURISM, leisure: { venueInsulation: false } },
+    ['fabriketage'],
+  ),
+  tourism(
+    'venue_roof_first_year',
+    'Builds the roof terrace in the first year.',
+    { ...CAREFUL_TOURISM, temptationEarly: 'roof_terrace' },
+    ['fabriketage'],
+  ),
   tourism(
     'leisure_one_room',
     'Never builds a second room; still maintains the first.',

@@ -6,6 +6,7 @@ import { moodLevel } from './funding'
 import { openLeadCount } from './experiments'
 import { isOverdue, isUnpaid, maxOverdueDays } from './invoices'
 import { monthOf } from './bookings'
+import { venueComplaints } from './venue'
 import { monthsCovering, runwayWeeks } from './finance'
 import { desksFree, officeBusy, stageNumber } from './office'
 import { occupancyPct, turnedAwayWeeks } from './bookings'
@@ -99,6 +100,15 @@ const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSe
       ([id, f]) => f.value <= (s.scenario.bookings?.leisure?.freshness?.[id]?.knownAbove ?? -1),
     ).length,
   'leisure.instructorLosses': (s) => s.bookings?.leisure?.instructorDepartures.length ?? 0,
+  'leisure.complaints': venueComplaints,
+  'leisure.permitRefusals': (s) =>
+    s.product.features.filter((f) => f.refusedWeek !== undefined).length,
+  'leisure.restricted': (s) =>
+    s.bookings?.leisure?.noise?.restrictions.some(
+      (r) => r.fromWeek <= s.week && s.week < r.untilWeek,
+    )
+      ? 1
+      : 0,
   // Plan 4: the scenario's first asset.
   'asset.owned': (s) => (firstAsset(s)?.option === 'buy' ? 1 : 0),
   'asset.leased': (s) => (firstAsset(s)?.option === 'lease' ? 1 : 0),

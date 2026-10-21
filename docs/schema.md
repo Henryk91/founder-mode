@@ -1005,3 +1005,113 @@ Optional `leisure.slotPrices` defines initial per-segment, per-slot peak/off-sea
 Optional `leisure.space` defines physical spaces and the features using them. Started design work, construction and shipped features reserve their space; plans cannot start more than fits. The view exposes capacity, used space and stated feature requirements. A segment's optional `minimumAreas` requires that many opening areas to be ready on its requested date; this public prerequisite is copied into the leisure view.
 
 Bot results optionally record indoor `openingWeek`, rooms built and completed refreshes under `tourism.leisure`. Leisure T4 subtracts the actual opening week, while earlier reports keep absolute weeks. Leisure reports omit the out-of-scope office expansion targets and retain E1 and their scenario's named targets.
+
+### Venue capacity and temporary closures
+
+Optional `leisure.buildOut.<id>.closes` lists physical leisure pools closed from
+completed preparation until `readyWeek`. Other pools stay open; dates on/after
+readiness remain available. Public build rows copy `closes` only when configured.
+
+Optional `leisure.slotUpgrades.<feature>` names one pool/slot, additional weekly
+units and integer-cent cost per served unit beyond that pool's ordinary capacity.
+At most one upgrade covers a pool/slot. An installed feature adds capacity only
+to its named slot. Cancelled/held units do not earn a turnaround charge; aliases
+sharing the pool are counted together. `LeisureWeek.turnaroundCents` records the
+actual cost by upgrade, only when configured; the normal operating-cost ledger
+pays it once. Public optional `LeisureView.upgrades` gives stated capacity/cost,
+installation status and observed cumulative paid cents. View history copies these
+maps; no new fields or random draws occur in earlier games without these blocks.
+
+Leisure pools now honour the existing asset modes: unavailable equipment gives
+zero capacity; owned/leased/shared equipment follows its actual availability at
+the requested date. An alias's own required products and asset must also be ready,
+even when it shares another pool. Hired equipment supplies the same physical
+must-have as the purchase feature without pretending that purchase has shipped.
+The ordinary asset ledger charges per served unit; returning hire does not destroy
+the pool for other products. Slot history/load and freshness aggregate aliases into
+their physical pool. Asset calendars evaluate each date because seasonal leases or
+maintenance may change availability inside the twelve-week view. These adaptations
+are limited to leisure; boat behaviour and fields are unchanged.
+
+### Venue complaints and ancillary receipts
+
+Optional `leisure.noise` lists late products, an insulation feature, dedicated setup
+products, hidden complaint chances, warning/restriction counts, a rolling week
+window and restriction duration. `LeisureState.noise` records observed complaint
+weeks, restrictions with inclusive start/exclusive end, served late events, actual
+net receipts and attributable variable/staff/asset/turnaround/setup costs. Setup
+items count once whether financed or bridged. A restriction blocks new late dates
+and cancels/refunds previously accepted events falling inside it; other products
+stay available. State/view condition paths `leisure.complaints` (rolling count) and
+`leisure.restricted` read identical observable facts.
+
+Optional `leisure.extras.<feature>.segments` specifies an agreed gross basis, known
+venue revenue share and unit cost per served booking unit. For example,10% of an
+estimated catering package is earned only when the event is served. Enabled
+features earn integer cents in the ordinary ledger once, including on member
+visits; enquiries, holds and cancellations earn nothing. `LeisureState.extras` and
+optional `LeisureWeek.extras` store actual units/receipts/costs by feature.
+
+Public optional `LeisureView.noise` shows complaint counts, real restriction dates
+and late-event contribution with its cost breakdown, never complaint chances.
+`LeisureView.extras` shows stated financial terms, installation status and observed
+cumulative/last-four-week receipts and costs. Paid weekly staff is attributed to
+late events in proportion to due booking units, including current service cancellations but excluding dates already released in
+advance; asset
+use fees follow actual asset product usage. Turnaround cost is allocated over the
+served units in that pool/slot. Dedicated setup is charged in full; shared rent and
+other fixed overhead remain in the business ledger rather than this incremental
+contribution. Optional maps are copied into the view. Without these blocks, no
+fields or random draws are added.
+
+Known restrictions release affected future late bookings and paid holds at the
+restriction is recorded, returning their advances immediately. The beginning of
+a booking step also releases any affected reservation already present in a save. Optional
+`Booking.refundedCents` / `LeisureHold.refundedCents` mark returned advances so they
+are not refunded again on the original event date. Noise state/view count those
+cancellations, released holds and actual restriction refunds. Public held-date
+rows include the returned fee when present. These are returned liabilities, not a
+new cost subtracted from the late-event contribution. Normal client-decided hold
+releases remain in the ordinary weekly hold counts; restriction releases have
+their separate observed counter. No markers are added to earlier games.
+
+### Permit decisions
+
+Optional `leisure.permits.<build>` supplies a hidden approval chance and a stated
+refundable component no larger than its price. It requires a build-out wait. At
+readiness, the PRNG decides once: approval ships normally; refusal stores optional
+`FeatureProgress.refusedWeek`, removes readiness and prevents retrying that same
+application. The construction charge was paid once at the wait's start (or through
+the existing bank item settlement). A refusal reverses the stated cost once,
+recorded in optional `LeisureState.permitRefunds` by product/week/cents. It is a cost
+refund, not new venue sales. This follows the existing cash-basis expense window;
+capital timing remains part of the plan's documented ending-window limitation.
+
+The optional public build `permit` exposes refundable cents, actual refusal week
+and returned cents, never approval chance. `permit_refused` report entries state
+the returned amount and remaining application cost. Observable condition
+`leisure.permitRefusals` counts actual refusals identically in state and view.
+Unconfigured builds, fields and random draws remain as before.
+
+### Deposit-only cancellation terms
+
+Optional `leisure.strictKeepsDeposit: true` makes strict guest cancellations keep
+only the paid advance. Platform commission applies to that retained amount; its
+fee is settled immediately even for normally invoiced customers, without creating
+a negative invoice. Served bookings still settle their full price, and flexible
+or company cancellations still return the advance. Without the flag, strict
+cancellations keep the full agreed payment as before, including Ausgesperrt.
+
+### Venue bot observations
+
+Bot `RunResult.tourism.leisure.venue` is optional and present only with the noise
+configuration. It records actual late service, restriction count, late receipts,
+attributable costs/net and observed hold/converted/late-release counts. V3 uses
+no-insulation runs with actual late events as its restriction denominator; late
+contribution includes setup even in runs with no late sales. Ordinary player views
+and earlier bot results gain no new fields.
+
+Leisure offers may finish preparation before equipment is acquired; actual sale/service
+still requires available equipment. This does not relax an asset purchase’s own company
+prerequisite or the existing non-leisure preparation rules. Venue bots recognise hired
+equipment when expanding dependencies,without marking its purchase feature shipped.
