@@ -247,7 +247,7 @@ precede the following first value round.
   per hour plus the assumed 20% employer cost. Contract prices stay unchanged,
   reflecting steadier work in return for paying idle shifts. The EUR15 gross
   assumption above describes the initial baseline, not this revised flexible rate.
-- Reachable enquiries per week change from local 40–120 to 30–90, visitors 10–40
+- Reachable room-game units per week change from local 40–120 to 30–90, visitors 10–40
   to 9–34 and companies 2–10 to 3–12. Company enquiries still contain two to four
   room-games. These are simulation estimates for balancing market opportunity,
   not a census or a claim about real operator occupancy. Prices, seasons, room
@@ -268,9 +268,9 @@ scenario-value adjustments of this first pass; each is a simulation estimate.
 |---|---|---|---|
 | Ordinary-room monthly upkeep | EUR250 | EUR350 | Ongoing specialist support and prop maintenance; reduces the value of unused rooms |
 | Flexible five-hour shift | EUR105 | EUR120 | Estimated EUR20 gross/hour plus 20% employer costs, a premium for intermittent cover; fixed contracts stay EUR720/370/750 a week |
-| Local weekly reachable enquiries | 30–90 | 24–72 | Local viable market wins remain far above the other markets |
-| Visitor weekly reachable enquiries | 9–34 | 8–30 | Moderate reduction relative to the weaker company market |
-| Company weekly reachable enquiries | 3–12 | 4–14 | More reachable weekday work for the least successful market; still two to four room-games per enquiry |
+| Local weekly reachable room-games | 30–90 | 24–72 | Local viable market wins remain far above the other markets |
+| Visitor weekly reachable room-games | 9–34 | 8–30 | Moderate reduction relative to the weaker company market |
+| Company weekly reachable room-game units | 3–12 | 4–14 | More reachable weekday room-game units for the least successful market; requests still contain two to four units |
 | Snag penalty per unresolved fault | 0.15 stars | 0.25 stars | Makes noticeably broken props more consequential in reviews; also costs careful when one fault remains |
 | Interview budget-hint chance / noise | 0.20 / 0.25 | 0.30 / 0.15 | A clearer but still noisy learnable signal; these hidden parameters are never displayed |
 | Strict conversion, visitors / companies | 0.80 / 0.95 | 0.65 / 0.99 | Firm corporate dates tolerate commitment; visitors value flexibility. Round 1 strict terms were slightly ahead in every market |
@@ -280,3 +280,18 @@ figures are not supplier quotes, wage statistics or measured Munich conversion
 rates. The hourly staff estimate includes employer cost; permanent wages retain
 the initial EUR15 gross/hour assumption. Measure main only, 1,000 `test` seeds per
 strategy, with two workers to reduce contention. Formula allowance remains unused.
+
+### Demand-unit clarification
+
+`bookings.segments.<id>.base` counts booking units, not requests. For Ausgesperrt
+a unit is one room-game. Local and visitor requests each contain one unit; a
+company request contains two to four. Thus the final company base of 4–14 means
+room-game units per peak week before channel/fit/review/role factors, roughly
+1.3–4.7 company requests at the mean three games per request. Earlier notes called
+these enquiry counts, which overstated the number of team enquiries. The measured
+YAML values and outcomes are preserved; this correction changes documentation.
+
+Both value rounds are complete. Careful wins 42.8% ±3.1 and no strategy exceeds 48.4%
+on main only, 1,000 `test` seeds. Eight tourism targets remain open. The formula
+allowance is deliberately unused: the review in the step report identifies options
+for step 6, without inventing a formula penalty or exceeding the two value rounds.

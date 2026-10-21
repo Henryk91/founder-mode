@@ -18,7 +18,7 @@ Round 1 is assigned to all applicable targets conservatively because recurring
 costs and market opportunity can move every outcome. Formula budget is untouched.
 
 Changed values: ordinary-room monthly upkeep EUR250 (was zero); flexible shift
-EUR105 (was EUR90); weekly reachable enquiries locals 30–90 (was 40–120), visitors
+EUR105 (was EUR90); weekly reachable room-game units locals 30–90 (was 40–120), visitors
 9–34 (was 10–40), companies 3–12 (was 2–10). Spec section 15 labels each estimate.
 The baseline contribution comparisons are preserved in main-4.
 
@@ -72,3 +72,25 @@ Main only, all 28 strategies, 1,000 `test` seeds each, two workers; output
 No further value rounds are available before step 6. Formula allowance is unused;
 assess a justified formula candidate only after the complete second-round table.
 Do not assume remaining failures require inventing a new mechanic.
+
+## Round 2 result and formula review
+
+Main only, all 28 strategies, 1,000 `test` seeds each, two workers: 1,434 seconds
+wall time. Careful 42.8% ±3.1, top part-time 48.4% ±3.1, no-tests 22.1% ±2.6.
+Pass: T1, T4, T5, T7, T8, T9, T12, T13, T16, T18, E1, X2, X3, X4.
+At the limit: X1 (quarterly -1.4 ±2.6 against a three-point required loss).
+Fail/open: T2, T3, T6, T10, T11, T14, T15, T17. Full values/margins are in
+[round 2](ausgesperrt-values-2.md). T14's seasonal gain 1.9 ±2.2 is inconclusive;
+its criterion explicitly requires a gain beyond the paired margin. T11 likewise
+needs demonstrated opposite segment advantages, not just noisy opposite signs.
+
+Formula allowance: **unused by decision**, not exhausted. The scenario is playable.
+The budget is an upper bound; no formula candidate is necessary for playability or
+justified by the remaining evidence without changing a lesson. Do not manufacture
+a borrowing penalty, amplify tiny rating differences or change a target's statistical
+criterion to make it pass. Remaining issues and candidate investigations are recorded
+in the step report for the mandatory step 6 revisit with its fresh budget.
+
+Company base values count room-games, not team requests. At the final 4–14 units
+and mean three per request, this is roughly 1.3–4.7 requests before demand factors.
+Documentation is corrected to match the measured units; no third value round occurred.
