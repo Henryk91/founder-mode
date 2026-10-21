@@ -759,6 +759,7 @@ const SlotShares = z
   )
 export const LeisureSchema = z
   .object({
+    strictKeepsDeposit: z.literal(true).optional(),
     slots: z
       .array(z.object({ id: Id, name: z.string().min(1), hours: z.number().positive() }))
       .min(1),

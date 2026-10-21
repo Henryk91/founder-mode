@@ -86,3 +86,7 @@ seeds. Event table once at the end. Full report exactly once in step 6, never be
   cost reversal/refund once, public terms/decision and labelled result entry.
   All78 focused engine tests and lint/typechecks pass. The existing cash-basis
   capital-expense window is retained and its timing limitation documented.
+
+- Deposit-only strict settlement complete behind a venue switch; nine new cases
+  cover cash/invoiced/platform/zero advances, refunds, service and unchanged old
+  behaviour. All87 focused tests and lint/typechecks pass.

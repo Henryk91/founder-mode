@@ -1092,3 +1092,12 @@ and returned cents, never approval chance. `permit_refused` report entries state
 the returned amount and remaining application cost. Observable condition
 `leisure.permitRefusals` counts actual refusals identically in state and view.
 Unconfigured builds, fields and random draws remain as before.
+
+### Deposit-only cancellation terms
+
+Optional `leisure.strictKeepsDeposit: true` makes strict guest cancellations keep
+only the paid advance. Platform commission applies to that retained amount; its
+fee is settled immediately even for normally invoiced customers, without creating
+a negative invoice. Served bookings still settle their full price, and flexible
+or company cancellations still return the advance. Without the flag, strict
+cancellations keep the full agreed payment as before, including Ausgesperrt.
