@@ -1,6 +1,6 @@
 # Step3: Fabriketage
 
-Status: implementation/tuning/full tests complete;protected proof complete;event table still running. Phase gate incomplete.
+Status: phase gate complete;local merge and plan5-venue milestone next.
 
 Fabriketage is a104-week event-venue game with a single shared hall,company,
 wedding and private-party calendars,forward sales and refundable advances.
@@ -126,9 +126,24 @@ actual late net22,839 EUR/run±1,856 including dedicated setup. V1 free/no holds
 each lose4.5±1.8/1.9. Roof first-year loses38.5±3.0. These are paired main
 contributions,not rankings from the event-only table.
 
-## Remaining gate
+## Once-only event table
 
-The once-only venue event table is running:events only,1,000 test seeds,two
-workers,session95560. Do not restart or rerun. Main snapshots above stay the
-target judgement. All ten protected/earlier-leisure comparisons match;see [proof](step3-protected.md).
-Finish and record the event table before merging/tagging plan5-venue. Full report NEVER run;step6 only.
+[Raw event table](../venue/fabriketage-events.md):events only,1,000 test seeds,
+111 forced-answer strategies,two workers. Event part2,113 seconds wall/4,217
+seconds of play;automatic careful baseline44 seconds wall/85.3 seconds of play.
+86,203 of111,000 games were played,the rest reused. No rerun.
+
+All55 cards are listed:54 judged,21 cheapest point leaders(including ties),
+33 other point leaders. The turnaround card is unseen and unjudged. These are
+point rankings without a significance claim;do not infer advantages inside
+uncertainty. Several no-cost/rest/repair responses tie or differ only slightly.
+The breakout-room answer ties staying on the observed554-seed subset;this does
+not establish an expansion win-rate benefit. Keep that option-design question
+and the unseen turnaround card for review,without retuning after the frozen
+once-only table. The complete main table above governs target status;missing
+strategies in an event-only report are not newly failed targets.
+
+All ten protected/earlier-leisure comparisons and fingerprints match;see
+[proof](step3-protected.md). Full tests86 files/1,691 passed,24 skipped;lint
+passes.189 seed examples generated,earlier rows unchanged. The phase gate is
+complete. Merge locally and tag plan5-venue;no push. Full report NEVER run;step6 only.

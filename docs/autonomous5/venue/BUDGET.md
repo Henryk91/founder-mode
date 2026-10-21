@@ -90,3 +90,11 @@ Careful46.6%±3.1(at limit),top47.6%,no-tests0.0%. T1,T7,T10,V2 at limit;
 all V targets pass. Six open:T3,T6,T11,T13,T14,T15. Exact results/closest evidence
 and options:reports/step3-venue.md. Values2/2,formula0/1 deliberately unused.
 Frozen fingerprint c042cb5934228e6b. Event95560 runs once;full report never run.
+
+## Event table complete,do not rerun
+
+Events only,1,000 test seeds,111 forced-answer strategies,two workers. Event
+part2,113s wall/4,217s play;automatic careful baseline44s wall separately.
+86,203/111,000 played,remainder reused.55 listed,54 judged:21 cheapest point
+leaders,33 other point leaders;turnaround unseen/unjudged. No significance claim.
+Both value rounds complete,formula deliberately unused. Full report never run.
