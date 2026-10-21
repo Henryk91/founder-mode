@@ -585,3 +585,32 @@ events:
           - type: asset
             id: dinner_furniture
             option: none
+  - weight: 1
+    once: false
+    cooldownWeeks: 4
+    when:
+      - week >= 3
+      - leisure.open == 0
+    from: none
+    look: note
+    area: product
+    id: drawing_revision
+    sender: Your fit-out supervisor
+    text:
+      The supervisor has a fresh copy of the drawings and time for a snag review. It helps if the
+      product list shows unresolved snags; otherwise you will mostly compare identical pages. The
+      pages have already been paid for.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review the unresolved snags
+        hours: 3
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the agreed drawings
+        hours: 0
+        effects: []

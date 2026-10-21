@@ -942,3 +942,7 @@ AUTONOMOUS: generate18 venue ending examples(189 total) and prove all earlier ro
 ### Plan 5 step 3: corrected measurement and value plan
 
 AUTONOMOUS: complete the corrected venue main(all29 strategies,1,000 test seeds):careful41.5%,top50.5%,nine open targets,T7 at the limit. Record actual contributions in venue/BUDGET.md before changing values. First round will correct hold/cancellation acceptance estimates,pre-opening message availability and unresolved-snag reviews;keep money/lead times unchanged and do not invent bot-specific penalties. Value/formula budget remains0/2 and0/1 until applied.
+
+### Plan 5 step 3: first value round
+
+AUTONOMOUS: after corrected contributions,calibrate no-hold acceptance(.35/.15/.90),wedding fee acceptance(.85),strict acceptance(.995/.82/.97) and unresolved snag penalty(.30). Four recurring,conditional construction decisions address pre-opening gaps;content now55 events. Quotes/demand/lead times stay fixed. Spec section15 records every estimate;255 focused tests and lint pass. Conservatively use round1 for all targets,leaving one value round and one formula allowance. Main only,29 strategies,1,000 test seeds;no event/full report.

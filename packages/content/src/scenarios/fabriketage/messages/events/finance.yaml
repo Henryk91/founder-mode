@@ -162,3 +162,29 @@ events:
           - type: review
             rating: 2
             count: 1
+  - weight: 1
+    once: false
+    cooldownWeeks: 4
+    when:
+      - week >= 3
+      - leisure.open == 0
+    from: none
+    look: note
+    area: finance
+    id: monthly_cost_sheet
+    sender: Your supplier accounts desk
+    text: This month’s cost sheet contains an 80 EUR duplicate delivery charge. The two entries use
+      different fonts, which has fooled the spreadsheet. A short reconciliation can remove it before
+      payment.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Reconcile the delivery entries
+        hours: 2
+        effects: []
+      - id: leave
+        label: Pay the unexamined sheet
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -8000

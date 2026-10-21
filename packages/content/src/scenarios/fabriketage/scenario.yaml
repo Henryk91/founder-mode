@@ -504,7 +504,7 @@ bookings:
         outreach: 0.95
         walkIn: 0
       cancel: 0.04
-      strictConversion: 0.98
+      strictConversion: 0.995
       depositShare: 0.3
       weatherSensitive: false
       invoiced: true
@@ -543,7 +543,7 @@ bookings:
         outreach: 0.1
         walkIn: 0
       cancel: 0.03
-      strictConversion: 0.75
+      strictConversion: 0.82
       depositShare: 0.3
       weatherSensitive: false
       invoiced: false
@@ -582,7 +582,7 @@ bookings:
         outreach: 0.05
         walkIn: 0.1
       cancel: 0.1
-      strictConversion: 0.85
+      strictConversion: 0.97
       depositShare: 0.5
       weatherSensitive: false
       invoiced: false
@@ -784,7 +784,7 @@ bookings:
     understaffPenalty: 2.5
     tiredPenalty: 0.5
     cancelPenalty: 1.5
-    snagPenalty: 0.15
+    snagPenalty: 0.3
     valueWeight: 1.5
     reviewsPerUnit: 2
     reviewsFull: 20
@@ -878,17 +878,17 @@ bookings:
           ask: 0.65
           convert: 0.5
           feeConversion: 0.8
-          noHoldConversion: 0.65
+          noHoldConversion: 0.35
         weddings:
           ask: 1
           convert: 0.33
-          feeConversion: 0.5
-          noHoldConversion: 0.4
+          feeConversion: 0.85
+          noHoldConversion: 0.15
         private_parties:
           ask: 0.15
           convert: 0.65
           feeConversion: 0.9
-          noHoldConversion: 0.95
+          noHoldConversion: 0.9
     crowdingPenalty: 0
     quietBelow: 0.4
     packedFrom: 0.85

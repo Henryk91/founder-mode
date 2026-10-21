@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.8 corrected venue baseline complete;first value round next.
-Last commit: HEAD, Plan 5: record corrected venue baseline and tuning contributions.
-Next action: Apply the first venue value/content round recorded in venue/BUDGET.md,then measure affected main targets on1,000 test seeds. Corrected baseline:all29 strategies,careful41.5%,top50.5%. Nine targets remain open. Protected proof continues(session99011);do not rerun matched games. Venue event table once after tuning;full report only step6.
+Step: 3.8 first venue value/content round validated;measurement next.
+Last commit: HEAD, Plan 5: calibrate venue commitments and construction decisions.
+Next action: Run venue round1 main(all29 strategies,1,000 test seeds,two workers),then inspect every target and remaining value/formula budget.255 focused checks and lint pass. Protected proof continues(session99011);earlier matched games stay unchanged. Venue event table once after final values;full report only step6.
 
 ## Checklist
 
@@ -86,3 +86,7 @@ The freelancer failure is repaired on its first attempt:equipment belongs to ser
 ## Corrected baseline complete
 
 All29 strategies,main only,1,000 test seeds;409 seconds wall. Careful41.5%±3.1,top no-holds50.5%. T3,T5,T6,T10,T11,T13,T14,T15,V1 fail;all targets are measured,with T7 at the limit. Contributions and exact budget(0/2 values,0/1 formula) are in venue/BUDGET.md. No new playability stop applies.
+
+## Value round1 applied
+
+Changes and reasons:spec section15 and venue/BUDGET.md. Hold/cancellation acceptance,snag reviews and four recurring pre-opening decisions;55 events now.255 focused checks pass,24 skips;lint passes. Value rounds1/2,formula0/1;money quotes,demand and lead times unchanged.

@@ -1,1 +1,34 @@
-events: []
+events:
+  - weight: 1
+    once: false
+    cooldownWeeks: 4
+    when:
+      - week >= 3
+      - leisure.open == 0
+    from: none
+    look: letter
+    area: validation
+    id: agency_progress_tour
+    sender: A local event agency
+    text:
+      An agency can tour the unfinished floor and discuss future company dates. The visit costs 150
+      EUR in catering and needs the conference package and installed AV ready to turn interest into
+      enquiries. Bare brick alone has already been photographed.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Host the agency progress tour
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -15000
+          - type: guests
+            segment: companies
+            count: 2
+            when:
+              - shipped.conference_package == 1
+              - shipped.av_tech == 1
+      - id: leave
+        label: Wait until the offer is ready
+        hours: 0
+        effects: []
