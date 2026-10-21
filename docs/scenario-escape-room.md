@@ -230,3 +230,28 @@ Room prices, rebuilds, local pools, demand, seasonal curves and platform commiss
 
 
 Advance payments are refunded if the company cancels a game or the guest cancels under flexible terms. Strict guest cancellations retain the agreed charge. This accounting repair was found by tracing the initial understaffing bot result; it changes no price or demand estimate.
+
+### First value round, 21 October 2026
+
+The corrected baseline is main only, 1,000 `test` seeds per strategy: careful
+75.8%, local viable market 93.2%, visitors 80.8%, companies 53.9%. Paired contract
+comparisons lose 2.1 to 2.7 points against flexible shifts at effectively the same
+hourly cost; quarterly rooms outperform careful by 3.5 points. These contributions
+precede the following first value round.
+
+- Ordinary themes now cost an estimated EUR250 per operating room per month for
+  controller support, small prop replacements and periodic checks. This is separate
+  from EUR6 per game for consumables, the founder's repair hours and a complete
+  EUR25,000 rebuild. No supplier quote is claimed. VR retains EUR600 per month.
+- Flexible five-hour shifts cost an estimated EUR105, equivalent to EUR17.50 gross
+  per hour plus the assumed 20% employer cost. Contract prices stay unchanged,
+  reflecting steadier work in return for paying idle shifts. The EUR15 gross
+  assumption above describes the initial baseline, not this revised flexible rate.
+- Reachable enquiries per week change from local 40–120 to 30–90, visitors 10–40
+  to 9–34 and companies 2–10 to 3–12. Company enquiries still contain two to four
+  room-games. These are simulation estimates for balancing market opportunity,
+  not a census or a claim about real operator occupancy. Prices, seasons, room
+  capacity and construction charges stay at their baseline estimates.
+
+This consumes the first of two scenario-value rounds. Measure all 28 main
+strategies on 1,000 `test` seeds; no other report parts are needed for these values.
