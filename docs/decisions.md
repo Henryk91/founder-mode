@@ -924,3 +924,7 @@ AUTONOMOUS: venue hold terms start with a fee and adapt after eight observed dec
 ### Plan 5 step 3: mandatory UI hard stop
 
 AUTONOMOUS: stop under section1.2.1 after three honest repairs of the same WebKit company-heading cutoff. Font loading hooks, stable flex/post-layout measurement and text-range scaling leave the established375px case failing;23/24 venue browser cases, all16 terminology cases and lint pass. Save the isolated UI draft without merging, record evidence/options in STATUS.md, and stop before a fourth repair. Initial main remains25.8% careful/32.8% top on1,000 test seeds; no value/formula rounds, venue event table or full report used.
+
+### Plan 5 step 3: resumed heading repair
+
+AUTONOMOUS: the user requested continuation after the recorded three-attempt stop. Reserve a long name’s logo space before shrinking,and include both glyph and block overflow in the fit check;this preserves the full name,minimum12px and existing tests. All24 venue browser cases and lint/typechecks pass on the first resumed repair;full phase suite is running. No game values or bot reports changed.

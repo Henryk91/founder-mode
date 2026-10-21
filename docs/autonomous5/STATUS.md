@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.6 HARD STOP under plan section1.2.1: WebKit heading test still fails after three repairs.
-Last commit: HEAD, Plan 5: synchronise stopped status with completed phase2 milestone.
-Next action: Stopped. Review the375px WebKit heading and recorded attempts/options before explicitly authorising further repairs. Venue draft is isolated at /private/tmp/founder-mode-plan5-venue,branch plan5-venue-work,UI commit5c8abf2. Do not merge it or run more bots/full reports. Main's completed milestone is plan5-escape(d9381dc).
+Step: 3.6 resumed heading repair passes; complete phase tests running.
+Last commit: HEAD, Plan 5: reserve logo space before shrinking long company names.
+Next action: Finish full tests(session75399,/tmp/plan5-venue-full-tests-resumed.log),then add the venue T15 cash-funded variant and run the missing comparison. Complete protected main proof and venue tuning before its once-only event table. Work remains on plan5-venue-work in /private/tmp/founder-mode-plan5-venue;full report once in step6.
 
 ## Checklist
 
@@ -22,19 +22,19 @@ Next action: Stopped. Review the375px WebKit heading and recorded attempts/optio
 - Step2 proof:all nine protected main reports/fingerprints match baseline apart from timings,1,000 test seeds. Full suite79 files/1,542 passed/21 skipped;lint passes. Seeds171 examples/172 checks;protected seed rows unchanged.
 - Step2 event table complete once:events only,1,000 test seeds,115 forced-answer strategies;101,267/115,000 played,remainder reused;6,492 seconds wall.47 judged rankings:24 cheapest/23 more-effort point leaders(no significance claim);three unseen/unjudged. Do not rerun.
 - Venue initial main:28 strategies,1,000 test seeds,main only,506 seconds wall. Careful25.8%±2.7,top32.8%. Raw venue/fabriketage-main-initial.md;incomplete report on main at docs/autonomous5/reports/step3-venue.md. T3,T5,T6,T7,T10,T11,T14,V1,V2 fail;T15 not measured. No value/formula rounds used. Venue event table has not run.
-- Isolated venue draft:87 engine,221 content(24 skips),68 bot/replay checks pass;lint/typechecks pass.23/24 venue browser cases pass;all16 terminology/Help/results/post-mortem checks pass. Whole-phase suite and fresh protected/Ausgesperrt proof remain pending;draft is unmerged.
+- Isolated venue draft:87 engine,221 content(24 skips),68 bot/replay checks pass;lint/typechecks pass.24/24 venue browser cases pass after the resumed repair;all16 terminology/Help/results/post-mortem checks passed previously. Whole-phase suite is running and fresh protected/Ausgesperrt proof remains pending;draft is unmerged.
 - Screenshots outside repo:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue and founder-mode-leisure.
 - Full bot report has NEVER run;reserved for step6,once. Steps4/5 have preparation drafts only under /tmp/plan5-fitness-* and /tmp/plan5-climbing-*;do not treat them as implementation.
 
 ## For Henry to review (non-blocking)
 
-- Required stop:375px WebKit heading remains cut off after three repairs;details/options below. Venue UI/source saved separately in commit5c8abf2.
+- Resumed by user:venue heading repair now passes all24 browser cases and lint. Long names receive the logo space before shrinking;no test/name weakening. See docs/decisions.md.
 - Venue first pass:early guest balances deferred;lower floor is breakout rooms,not a separately booked hall;authored caterer incidents replace supplier selection. Estimates/source corrections and finance/hold/noise decisions are in the draft spec and decisions log;reports/step3-venue.md summarises them.
 - Venue tuning:initial hold values favour no holds in every market;T15 comparison missing. Inspect contributions before using the untouched tuning budget.
 - Ausgesperrt:eight tourism targets remain open despite playable final values;formula allowance deliberately unused. See reports/step2-escape.md and docs/decisions.md.
 - Prior autonomous decisions are preserved in docs/decisions.md,including physical-room limits,deposits,bank/refit timing,contracts and company room-game demand units.
 
-## Stopped
+## Previous stop (resumed by user)
 
 Plan section1.2.1 requires stopping after three honest repairs of the same failure.
 The established venue company heading clips in WebKit; final reproduction is375px
@@ -64,3 +64,9 @@ inspect contributions before value tuning (0/2 rounds,0/1 formula used), fix the
 hold-value dominance (no-hold conversion currently exceeds free-hold conversion in all
 markets), then finish phase tests/protected proof and the once-only venue event table.
 Steps4,5 and6 remain unfinished. Full report has never run in this plan. No push.
+
+## Resumed result
+
+User requested continuation. The isolated375px diagnosis fit at15px while the earlier full matrix failed, indicating layout/font sensitivity. Reserve logo space before reducing the type size and check glyph plus block overflow. All24 venue cases pass,/tmp/plan5-heading-resume-browser-1.log;lint/typechecks pass,/tmp/plan5-heading-resume-lint.log. First resumed repair succeeds.
+
+## Stopped

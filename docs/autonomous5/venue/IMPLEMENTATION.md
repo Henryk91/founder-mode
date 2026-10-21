@@ -106,3 +106,10 @@ name.23/24 browser cases and16 terminology cases pass;lint passes. See STATUS.md
 Stopped for attempts/logs/options. Draft is committed but not merged; protected
 comparison and complete phase tests remain pending. Initial main is recorded in
 fabriketage-main-initial.md;careful25.8%,top32.8%. No tuning rounds used.
+
+## Resumed UI repair
+
+The user resumed the run. Giving the full company name the logo space before
+shrinking resolves the complete matrix:24/24 cases pass in Chromium/WebKit at
+375,390,430 and1440px. Lint/typechecks pass. Full phase tests are running;the
+previous stop is retained above as history. No values changed.
