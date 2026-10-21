@@ -3,7 +3,7 @@
 ## Current
 
 Step: 2.4 First scenario-value tuning round applied.
-Last commit: HEAD, Plan 5: tune Ausgesperrt upkeep staffing and market opportunity.
+Last commit: HEAD, Plan 5: record first value-round progress and later content drafts.
 Next action: Read the first value-round measurement (session 38254) at /tmp/plan5-ausgesperrt-values-1.log and tuning/ausgesperrt-values-1.md when complete; assess every target before the second value round. Main only, 1,000 test seeds; full report remains reserved for step 6.
 
 ## Checklist
@@ -17,6 +17,8 @@ Next action: Read the first value-round measurement (session 38254) at /tmp/plan
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks
+
+- Value-round partial counts (not the completed target judgement): careful 55.7%, quarterly 59.1%, themes 56.1%, no daytime 39.5%, VR 43.7%, cash-only 43.0%, no tests 43.1%, fixed prices 58.5%, review-blind 62.0%. Each completed strategy has 1,000 `test` seeds. Wait for all paired target results before round 2.
 
 - Value round 1: lint/typechecks pass; focused content and leisure-bot checks pass (235 tests, 21 skipped). Measurement is running, main only, 1,000 `test` seeds, 28 strategies; /tmp/plan5-ausgesperrt-values-1.log.
 
@@ -38,7 +40,11 @@ Latest focused checks: 44 leisure engine and 36 bot tests pass. The full suite a
 
 Runtime caches previously proved byte-identical on 30 careful diagnostic runs. Main-3 timings overlap full tests and protected runs; note contention when judging T12. Diagnostic traces are behaviour checks, not target measurements.
 
-Later-step preparation only, outside repo: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 lines), /tmp/plan5-venue-scenes-draft.json (two native SVG scenes). Integrate only after step 2 passes. Current repo content/UI are authoritative; do not recopy old Ausgesperrt /tmp drafts.
+Later-step preparation only, outside repo; integrate only in the corresponding step:
+- Venue: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 quotes), /tmp/plan5-venue-scenes-draft.json (two SVG scenes), /tmp/plan5-venue-content-draft/ (catalogue/intro/features).
+- Fitness: /tmp/plan5-membership-prep.md (engine gaps), /tmp/plan5-fitness-events-draft.md (48 events), /tmp/plan5-fitness-quotes-draft.json (150 quotes), /tmp/plan5-fitness-scenes-draft.json (two SVG scenes), /tmp/plan5-fitness-content-draft/ (catalogue/intro/features).
+- Climbing: /tmp/plan5-climbing-events-draft.md (48 events), /tmp/plan5-climbing-quotes-draft.json (150 quotes), /tmp/plan5-climbing-scenes-draft.json (two SVG scenes).
+These are copy/design drafts, not implemented mechanics or completed phase gates. Current repo content/UI remain authoritative; do not recopy old Ausgesperrt drafts.
 
 ## For Henry to review (non-blocking)
 
