@@ -1,0 +1,164 @@
+events:
+  - id: invoice_reference
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+      - invoices.overdueDays >= 1
+    from: none
+    sender: The office post
+    look: note
+    text:
+      A company says it cannot pay without a purchase-order number. The number was in the booking
+      email, underneath a very large logo. Finding it takes less time than waiting another month.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Correct and resend the invoice
+        hours: 2
+        effects:
+          - type: skill
+            skill: selling
+            delta: 0.02
+      - id: leave
+        label: Chase the unchanged invoice
+        hours: 0
+        effects: []
+  - id: heating_adjustment
+    area: finance
+    weight: 2
+    once: true
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The office post
+    look: official
+    text: The utility supplier recalculates the advance payment after the first winter events. Brick
+      walls retain character better than heat. The new figure comes into effect next month.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the meter and budget
+        hours: 3
+        effects:
+          - type: fixedCost
+            id: heating_adjustment
+            name: Heating advance adjustment
+            monthlyCents: 45000
+      - id: leave
+        label: File the letter for spring
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -65000
+  - id: the_wet_stair
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The office post
+    look: note
+    text:
+      A guest slips on the entrance stairs. She is bruised, the organiser is angry and the insurer
+      wants a report. A warning cone is available at a price that now looks modest.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Report, document and fix the entrance
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -30000
+          - type: review
+            rating: 4
+            count: 1
+      - id: leave
+        label: Send a voucher without a report
+        hours: 0
+        effects:
+          - type: review
+            rating: 1
+            count: 1
+  - id: the_security_deposit
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The office post
+    look: note
+    text:
+      A private party returns the hall with a damaged table and a missing microphone. Its organiser
+      says both were like that already. Your handover photographs have become a financial product.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Use the signed inventory
+        hours: 2
+        effects: []
+      - id: leave
+        label: Split the loss without checking
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -45000
+  - id: the_accountant_s_dates
+    area: finance
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The office post
+    look: note
+    text:
+      The accountant asks which deposits belong to events not yet held. Your bank balance contains
+      both earned money and future Saturdays. Only one of those can be spent twice in a spreadsheet.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Reconcile the advance payments
+        hours: 3
+        effects:
+          - type: skill
+            skill: selling
+            delta: 0.02
+      - id: leave
+        label: Send the bank balance alone
+        hours: 0
+        effects: []
+  - id: the_insurance_renewal
+    area: finance
+    weight: 2
+    once: true
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The office post
+    look: official
+    text:
+      The insurer asks about late events and maximum headcount again. Both have changed since the
+      first quote. The renewal reminder is less decorative than the agency brochures.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Update the actual use
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -40000
+      - id: leave
+        label: Renew the old description
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1

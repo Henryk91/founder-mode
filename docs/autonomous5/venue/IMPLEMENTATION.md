@@ -2,7 +2,7 @@
 
 Prepared on branch plan5-venue-work in an isolated worktree while the frozen step 2
 source finishes its event table/full tests. Merge only after the step 2 gate passes.
-No scenario has been registered and no venue measurement has run.
+Fabriketage is registered only in this isolated branch; no venue measurement has run.
 
 ## Targets
 
@@ -90,3 +90,7 @@ seeds. Event table once at the end. Full report exactly once in step 6, never be
 - Deposit-only strict settlement complete behind a venue switch; nine new cases
   cover cash/invoiced/platform/zero advances, refunds, service and unchanged old
   behaviour. All87 focused tests and lint/typechecks pass.
+
+- Content integrated:51 events, four intro cards,150 interview quotes and actual
+  gated venue switches. All221 content tests pass (24 skips), lint/typechecks
+  pass. Drawings/UI and sensible venue bots are pending; no measurement yet.

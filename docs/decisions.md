@@ -908,3 +908,9 @@ Bots and content:
 ### Plan 5 step 3: cancellation settlement
 
 AUTONOMOUS: Fabriketage enables deposit-only strict cancellations; platform fees apply only to retained advances and settle in cash even for invoiced customers. Ausgesperrt and unconfigured games retain full agreed-price terms. Nine focused cases cover deposits, commission, invoices, refunds and old behaviour; 87 leisure/venue tests and lint pass.
+
+### Plan 5 step 3: initial venue content
+
+AUTONOMOUS: use on-service guest balances and 30-day post-service company invoices; defer early wedding/private balances. The lower floor is solely an office breakout upgrade, with estimated company benefit and full rent. Source corrections and all initial estimates are in scenario-event-venue.md section 15; these are not tuning rounds.
+
+AUTONOMOUS: use actual per-event furniture hire, service-only catering commission, distinct late-only requests through existing ownDemand, five hours of late-launch preparation and a small roof WTP benefit. Part-time host cost starts at 450 EUR/two shifts so it is not an unnamed dominated option. Permit refunds retain the existing expense-window limitation. All outcomes remain unmeasured until bots and UI are complete.

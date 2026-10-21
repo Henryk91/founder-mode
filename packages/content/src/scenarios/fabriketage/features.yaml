@@ -1,0 +1,87 @@
+- id: fit_out
+  name: The fit-out
+  buildHours: 40
+  bugsOnShip:
+    min: 0
+    max: 1
+  mention:
+    A floor with toilets, safe exits and somewhere for the caterer to work. Brick walls cannot
+    do every job.
+- id: furniture
+  name: Tables and chairs for dinner
+  buildHours: 5
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Enough proper chairs for dinner. We prefer not to explain stacking stools to the grandparents.
+- id: av_tech
+  name: Installed sound, lights and projector
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 1
+  mention: A screen, a working microphone and someone who knows the plugs. The keynote is already
+    complicated enough.
+- id: caterer_list
+  name: Approved caterers
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: We want a caterer who has seen the room before arriving with dinner.
+- id: conference_package
+  name: Conference package
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: One price for the room, the coffee, the equipment and a person who can find everything.
+- id: wedding_package
+  name: Wedding coordination
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Somebody else should run the dinner. Our parents would like to be guests.
+- id: split_days
+  name: Daytime and evening on one weekday
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 1
+  mention: We finish at four. A party starts at seven, provided somebody moves all the chairs.
+- id: sound_insulation
+  name: Insulation and sound limiter
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: We need the music to reach the dancers more clearly than the neighbours.
+- id: late_licence
+  name: Agreed late-event conditions
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Please put the actual finish time in writing. The band’s definition of late is flexible.
+- id: online_enquiries
+  name: Enquiries and date calendar
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A calendar and one useful form would be more helpful than six photographs of the windows.
+- id: late_events
+  name: Late evening bookings
+  buildHours: 5
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: We need a proper late event, with trained cover and the agreed finish time.
+- id: roof_terrace
+  name: The roof terrace
+  buildHours: 30
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Everybody asks about outside space. Nobody asks who pays for the roof.

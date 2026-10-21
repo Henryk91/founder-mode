@@ -1,0 +1,587 @@
+events:
+  - id: start_fit_out
+    area: product
+    weight: 1
+    once: true
+    when:
+      - week == 1
+    from: none
+    sender: Your fit-out contractor
+    look: official
+    text:
+      The floor needs toilets, safe exits, lighting and a prep kitchen. Preparation takes 40 hours;
+      the builders need ten weeks after payment of the quote in the product list. The bank can fund
+      the work; asking it first is allowed.
+    defaultChoice: prepare
+    choices:
+      - id: prepare
+        label: Prepare the fit-out and bank plan
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - fit_out
+      - id: later
+        label: Research the market before preparing
+        hours: 0
+        effects: []
+  - id: the_fire_plan
+    area: product
+    weight: 2
+    once: true
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: The floor manager
+    look: official
+    text:
+      The authority wants a drawing that shows how 220 people leave the floor. Your current drawing
+      shows how they arrive at the bar. A qualified planner can repair this imbalance.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for the plan
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -180000
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Submit the sketch
+        hours: 0
+        effects:
+          - type: bugs
+            delta: 2
+  - id: lift_dimensions
+    area: product
+    weight: 2
+    once: true
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: The floor manager
+    look: note
+    text: The hired tables fit the goods lift if nobody also enters it. The hire firm has supplied a
+      photograph of a very optimistic man. Measuring the doorway now would be cheaper than measuring
+      it on a wedding morning.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the delivery route
+        hours: 3
+        effects:
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Trust the photograph
+        hours: 0
+        effects:
+          - type: bugs
+            delta: 1
+  - id: brick_dust
+    area: product
+    weight: 2
+    once: true
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: The floor manager
+    look: note
+    text: Your first agency tour is tomorrow. The builders have made excellent progress distributing
+      dust to every surface. An empty floor still needs to look as though it intends to open.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Clean and rehearse the tour
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -18000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Call it industrial character
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_prep_kitchen
+    area: product
+    weight: 2
+    once: true
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: The floor manager
+    look: note
+    text: A caterer asks where the sinks will go. Your electrician asks the same question about the
+      sockets. Both are looking at you, which is not a technical answer.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Bring them together before installation
+        hours: 4
+        effects:
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Forward the emails separately
+        hours: 0
+        effects:
+          - type: bugs
+            delta: 1
+  - id: the_roof_brochure
+    area: product
+    weight: 2
+    once: true
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: The floor manager
+    look: note
+    text:
+      The terrace contractor sends an illustration with evening sun, champagne and no neighbours.
+      The price includes none of the champagne. Permission remains a separate question.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: File it for later
+        hours: 0
+        effects: []
+      - id: leave
+        label: Commission the terrace now
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - roof_terrace
+  - id: the_sample_dinner
+    area: product
+    weight: 2
+    once: true
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: The floor manager
+    look: note
+    text: A wedding planner offers to bring three caterers to a tasting. They all call the building
+      distinctive. Only one asks where to unload.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Test the whole service
+        hours: 4
+        effects:
+          - type: cash
+            amountCents: -35000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Judge the menu photographs
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_calendar_promise
+    area: product
+    weight: 2
+    once: true
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: The floor manager
+    look: note
+    text:
+      An agency wants a date two weeks before your announced opening. The builders say it might be
+      possible if everything goes well. Their invoice does not contain that phrase.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Offer a later date
+        hours: 2
+        effects:
+          - type: guests
+            segment: companies
+            count: 1
+      - id: leave
+        label: Promise the earlier one
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: insurance_inventory
+    area: product
+    weight: 2
+    once: true
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: The floor manager
+    look: official
+    text:
+      The insurer asks what the sound equipment is worth and whether the floor hosts dancing. Your
+      answer currently says conferences. People have been known to dance after a conference.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Declare the actual use
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -45000
+          - type: fixedCost
+            id: actual_use_cover
+            name: Declared event-use insurance
+            monthlyCents: 10000
+      - id: leave
+        label: Leave the cheaper description
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: the_goods_lift
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The floor manager
+    look: note
+    text:
+      The lift stops between floors two days before a launch. The technician can come tonight for a
+      surcharge. Your chairs are on the wrong side of the problem.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for the repair
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -85000
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Hire extra carrying hands
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: cold_plates
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The floor manager
+    look: note
+    text: A wedding guest posts a photograph of a main course that has stopped steaming. The caterer
+      blames the service door. The service door has declined to comment.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Refund and review the caterer
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -65000
+          - type: review
+            rating: 4
+            count: 1
+      - id: leave
+        label: Defend the supplier
+        hours: 0
+        effects:
+          - type: review
+            rating: 1
+            count: 2
+  - id: the_turnaround
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+      - shipped.split_days == 1
+    from: none
+    sender: The floor manager
+    look: note
+    text: A workshop finishes late and the evening decorations arrive early. The crew now has forty
+      minutes to turn a classroom into a birthday. The birthday has considerably more balloons.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay the extra crew
+        hours: 1
+        effects:
+          - type: cash
+            amountCents: -40000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Help with the reset
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: projector_silence
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The floor manager
+    look: note
+    text:
+      The keynote begins with a blank screen. The speaker says the slides are essential and has 86
+      of them. Your technician has a spare cable in the van.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Send for the spare
+        hours: 1
+        effects:
+          - type: cash
+            amountCents: -15000
+          - type: review
+            rating: 4
+            count: 1
+      - id: leave
+        label: Let the speaker improvise
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: the_coat_queue
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The floor manager
+    look: note
+    text:
+      Rain brings 180 wet coats and one rail. The host has started assigning names to the umbrellas.
+      A second cloakroom station would clear the stairs.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Add staffed coat space
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -25000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Ask guests to keep their coats
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_quiet_limiter
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+      - shipped.late_licence == 1
+    from: none
+    sender: The floor manager
+    look: note
+    text:
+      An engineer offers to test the sound limiter before the next late event. The party organiser
+      says their DJ understands volume. Your neighbour says the same about the authority.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Commission the test
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -35000
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Accept the organiser’s assurance
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: three_complaints
+    area: product
+    weight: 2
+    once: true
+    when:
+      - leisure.complaints >= 3
+      - leisure.restricted == 0
+    from: none
+    sender: The floor manager
+    look: official
+    text:
+      The authority has received three noise complaints within a year. Its letter lists dates rather
+      than adjectives. Your next late booking is already in the calendar.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review sound and finish times
+        hours: 5
+        effects:
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Send a courteous denial
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+  - id: the_early_finish
+    area: product
+    weight: 2
+    once: true
+    when:
+      - leisure.restricted == 1
+    from: none
+    sender: The floor manager
+    look: official
+    text: A restriction now requires the party to finish at 22:00. The organiser sold tickets for an
+      evening with rather more evening in it. They need an answer before their guests do.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Explain and refund the lost service
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -50000
+          - type: review
+            rating: 3
+            count: 1
+      - id: leave
+        label: Let the host discover it on the night
+        hours: 0
+        effects:
+          - type: review
+            rating: 1
+            count: 2
+  - id: blocked_exit
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The floor manager
+    look: note
+    text: A florist has made the emergency door disappear behind an arch. The arch is beautiful. The
+      door remains part of the fire plan.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Move the arrangement
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Move the exit sign
+        hours: 0
+        effects:
+          - type: review
+            rating: 1
+            count: 1
+  - id: the_kitchen_list
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: The floor manager
+    look: note
+    text: Two approved caterers arrive with different ideas about who supplies ice. Neither idea
+      includes them. The drinks reception starts in an hour.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Set written handover responsibilities
+        hours: 3
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: bugs
+            delta: -1
+      - id: leave
+        label: Buy the ice and leave the list alone
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: dinner_furniture
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 2
+    from: none
+    sender: Stuhlwerk event hire
+    look: letter
+    text:
+      Dinner tables and chairs can be hired for 900 EUR per event, or bought for 18,000 EUR through
+      the product list. Hire includes the full dinner capacity and costs nothing on an empty date.
+      Owning becomes cheaper after enough dinners; it also becomes yours on the empty dates.
+    defaultChoice: later
+    choices:
+      - id: hire
+        label: Hire dinner furniture per event
+        hours: 1
+        effects:
+          - type: asset
+            id: dinner_furniture
+            option: share
+      - id: later
+        label: Keep the current furniture plan
+        hours: 0
+        effects: []
+      - id: return
+        label: Return the hired furniture
+        hours: 1
+        effects:
+          - type: asset
+            id: dinner_furniture
+            option: none
