@@ -139,7 +139,7 @@ function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | 
         size = Math.max(MIN_NAME_PX, Math.floor(((size * available) / measured) * 2) / 2)
         el.style.fontSize = `${size}px`
       }
-      while (width() > available && size > MIN_NAME_PX) {
+      while ((width() > available || el.scrollWidth > el.clientWidth) && size > MIN_NAME_PX) {
         size = Math.max(MIN_NAME_PX, size - 0.5)
         el.style.fontSize = `${size}px`
       }
@@ -149,10 +149,14 @@ function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | 
     let frame = 0
     const fit = () => {
       if (who) delete who.dataset['tight']
-      if (!shrink() && who) {
+      el.style.fontSize = ''
+      // Give a long name the logo's space before reducing its type size. This also
+      // avoids sizing against a flex column that changes as the heading face arrives.
+      const range = document.createRange()
+      range.selectNodeContents(el)
+      if (who && Math.max(range.getBoundingClientRect().width, el.scrollWidth) > el.clientWidth - 1)
         who.dataset['tight'] = 'true'
-        shrink()
-      }
+      shrink()
       // WebKit can settle flex widths after the font-size write; finish against that layout.
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(() => {
