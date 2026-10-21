@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: isolated step4 preparation while frozen step3 completes its gate.
-Last commit: HEAD, Plan 5: record isolated fitness gaps and target applicability.
-Next action: In /private/tmp/founder-mode-plan5-fitness,prepare optional membership pricing/access/room conversion/cohort mechanics with fixtures and schema docs. Do not merge until venue phase gate/tag. Venue worktree runs main3413,protected99011,event95560,full tests63848 on frozen4b03bd2. Monitor all;full report only step6.
+Step: isolated step4 membership pricing/access fixtures pass;venue gate still running.
+Last commit: HEAD, Plan 5: align monthly budgets and paid membership access.
+Next action: In /private/tmp/founder-mode-plan5-fitness,Continue optional room conversion/premium niche/founding cohort mechanics with fixtures and schema docs;monthly pricing/access passes68 tests and lint. Do not merge until venue phase gate/tag. Venue worktree runs main3413,protected99011,event95560,full tests63848 on frozen4b03bd2. Monitor all;full report only step6.
 
 ## Checklist
 
@@ -45,3 +45,5 @@ Round1 complete:careful42.7%±3.1,top45.0%. T5 now passes;T13 at limit. Open:T3,
 Event table authorised by CLAUDE event-content budget and plan1.6 despite expected duration over15 minutes. Frozen round2 source;no restart or full report.
 
 Fitness preparation:targets/gaps/file list in fitness/IMPLEMENTATION.md. No registered fitness content or measurement. Turnsaldo naming,showers-in-fitout and employee membership units recorded for review.
+
+Fitness membership groundwork:5 new meaningful fixtures plus63 existing checks pass;schema/types/public offer products updated together. No fitness scenario registered or measured. Venue frozen suite passes86 files/1,691 tests,24 skips;all nine old protected reports match,Ausgesperrt still running.

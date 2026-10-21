@@ -760,6 +760,8 @@ const SlotShares = z
 export const LeisureSchema = z
   .object({
     strictKeepsDeposit: z.literal(true).optional(),
+    wtpBasis: z.literal('monthly').optional(),
+    respectSlotPreferences: z.literal(true).optional(),
     slots: z
       .array(z.object({ id: Id, name: z.string().min(1), hours: z.number().positive() }))
       .min(1),
@@ -802,6 +804,7 @@ export const LeisureSchema = z
         Id,
         z.object({
           kind: z.enum(['monthly', 'annual', 'off_peak', 'pack', 'intro']),
+          products: z.array(Id).min(1).optional(),
           priceCents: Cents.positive(),
           serves: z.array(Id).min(1),
           slots: z.array(Id).min(1),
@@ -956,6 +959,8 @@ export const LeisureSchema = z
         if (!slots.has(id)) issue(`unknown maintenance slot ${id}`)
     for (const offer of Object.values(l.memberships ?? {})) {
       for (const id of offer.slots) if (!slots.has(id)) issue(`unknown slot ${id}`)
+      for (const id of offer.products ?? [])
+        if (!l.products[id]) issue(`unknown membership product ${id}`)
       if (offer.kind === 'pack' && (!offer.visits || !offer.validWeeks))
         issue('packs need visits and validity')
       if (offer.kind === 'intro' && (!offer.validWeeks || offer.convert === undefined))
