@@ -49,3 +49,16 @@ After the full tuning budget, apply the plan's playability stop: careful under 1
 or over 55%, or any strategy over 70%. Other remaining target failures become open
 issues with closest results and options. Step6 revisits open issues with its own
 fresh two-round budget before the single full report.
+
+## Round 1 result
+
+Main only, all 28 strategies, 1,000 `test` seeds each; 1,196 seconds wall time,
+three workers. Careful 55.7% ±3.1, top review-blind 62.0% ±3.0, no-tests 43.1% ±3.1.
+Market wins companies 33.2%, locals 76.7%, tourists 57.5%; spread 43.5 ±6.7 points.
+
+Pass: T4, T5, T8, T9, T13, T18, E1, X3, X4. At the limit: T16 and X2.
+Fail: T1, T2, T3, T6, T7, T10, T11, T12, T14, T15, T17, X1.
+T2's top-strategy cap is within its margin, but its no-tests component fails.
+T12 is 156.0 seconds per 1,000 runs in the slowest concurrent worker. No hard
+stop applies: tuning remains available. Full target values and margins are in
+[the round 1 report](ausgesperrt-values-1.md).
