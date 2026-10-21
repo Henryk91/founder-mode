@@ -1,4 +1,6 @@
 export const LEISURE_LABELS = {
+  'leisure.roofLesson':
+    '{name} costs {amount} and creates no extra event dates. Requests for outdoor space still need paying bookings; the bank cannot collect compliments.',
   'leisure.productPrices': '{name}: {peak} peak, {off} off season in this slot.',
   'leisure.holdPolicy': 'Date holds',
   'leisure.hold.free': 'Grant freely',
