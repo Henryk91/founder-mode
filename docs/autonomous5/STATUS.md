@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.4 Complete intermediate measurement recorded; corrected bot baseline running.
-Last commit: HEAD, Plan 5: record complete bot diagnosis before value tuning.
-Next action: Finish main-4 (session 67784, /tmp/plan5-ausgesperrt-main-4.log), all corrected bots on main only with 1,000 test seeds, then judge every target and begin the bounded value budget. Keep the completed protected proof; run the Ausgesperrt event table once after tuning and reserve the full report for step 6.
+Step: 2.4 Corrected bot baseline complete; first value round next.
+Last commit: HEAD, Plan 5: preserve corrected Ausgesperrt baseline and tuning budget.
+Next action: Apply the first bounded scenario-value round using main-4's paired contributions; measure main only on 1,000 test seeds. Keep the completed protected proof, run the event table once after tuning, and reserve the full report for step 6.
 
 ## Checklist
 
@@ -26,11 +26,11 @@ Next action: Finish main-4 (session 67784, /tmp/plan5-ausgesperrt-main-4.log), a
 - Corrected no-tests strategy finished: 29.5% on main only, 1,000 `test` seeds, one process; tuning/ausgesperrt-no-tests-corrected.md. This predates the horizon guard and is diagnostic.
 - Horizon guard: 35 leisure bot tests and lint/typechecks pass. The 30-seed behaviour trace has zero unusable rebuilds after the guard (/tmp/plan5-rebuild-horizon-fixed.json), versus four before. Refresh seed examples and full tests after the next outcome changes; neither is a new balance measurement.
 
-- Final bot baseline is running: session 67784, /tmp/plan5-final-bot-baseline-progress.log; writes tuning/ausgesperrt-main-4.md and /tmp/plan5-ausgesperrt-main-4.log. No values changed. Current bot correction prevents seasonal hires from covering work already covered by permanent/part-time staff; all 36 bot tests and lint/typechecks pass.
+- Final bot baseline completed successfully: session 67784, /tmp/plan5-final-bot-baseline-progress.log; writes tuning/ausgesperrt-main-4.md and /tmp/plan5-ausgesperrt-main-4.log. No values changed. Current bot correction prevents seasonal hires from covering work already covered by permanent/part-time staff; all 36 bot tests and lint/typechecks pass.
 
 ## Open issues
 
-No complete final target measurement yet. No scenario-value/formula tuning rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
+Main-4 is complete: careful 75.8%, top 79.6%, no-tests 68.6%; the initial economy is too generous. No scenario-value/formula tuning rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
 
 Latest focused checks: 44 leisure engine and 36 bot tests pass. The full suite also passes after the unfinished-room bot repair: 79 files / 1,539 tests (21 skipped), with lint/typechecks green. Browser coverage includes Help/results/post-mortem words and 24 cases over three stages, four widths, Chromium/WebKit and axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 
