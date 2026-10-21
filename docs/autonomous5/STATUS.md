@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.6 HARD STOP under plan section1.2.1: WebKit heading test still fails after three repairs.
-Last commit: HEAD, Plan 5: record mandatory venue browser stop and initial results.
-Next action: Stopped. Review the375px WebKit heading and recorded attempts/options before explicitly authorising further repairs. Venue draft is isolated at /private/tmp/founder-mode-plan5-venue,branch plan5-venue-work,UI commit5c8abf2. Do not merge it or run more bots/full reports. Main's completed milestone is plan5-escape(d9381dc).
+Step: 3.6 resumed by user: diagnose and repair the375px WebKit heading.
+Last commit: HEAD, Plan 5: resume authorised venue heading repair.
+Next action: Continue the authorised heading repair in /private/tmp/founder-mode-plan5-venue,branch plan5-venue-work. Keep the full name/no-cut test,record outcomes,then continue venue tests,tuning and protected proof. Full report remains reserved for step6.
 
 ## Checklist
 
@@ -34,7 +34,7 @@ Next action: Stopped. Review the375px WebKit heading and recorded attempts/optio
 - Ausgesperrt:eight tourism targets remain open despite playable final values;formula allowance deliberately unused. See reports/step2-escape.md and docs/decisions.md.
 - Prior autonomous decisions are preserved in docs/decisions.md,including physical-room limits,deposits,bank/refit timing,contracts and company room-game demand units.
 
-## Stopped
+## Previous stop (resumed by user)
 
 Plan section1.2.1 requires stopping after three honest repairs of the same failure.
 The established venue company heading clips in WebKit; final reproduction is375px
@@ -64,3 +64,5 @@ inspect contributions before value tuning (0/2 rounds,0/1 formula used), fix the
 hold-value dominance (no-hold conversion currently exceeds free-hold conversion in all
 markets), then finish phase tests/protected proof and the once-only venue event table.
 Steps4,5 and6 remain unfinished. Full report has never run in this plan. No push.
+
+## Stopped
