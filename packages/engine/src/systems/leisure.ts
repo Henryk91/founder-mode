@@ -908,6 +908,7 @@ export function leisureView(s: GameState): LeisureView | null {
         name: name(id),
         room: p.room ?? null,
         places: leisureClassPlaces(s, id, s.week),
+        ...(l.classCoverage?.[id] ? { coveredClasses: { ...l.classCoverage[id] } } : {}),
         classes: { ...l.timetable[id] },
       })),
     history: l.weeks.map((w) => ({

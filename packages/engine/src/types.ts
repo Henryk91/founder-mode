@@ -2602,6 +2602,7 @@ export type LeisureState = {
   instructorDepartures: { week: number; roleId: string; stopped: number; pending: number }[]
   members: LeisureMember[]
   offers: Record<FeatureId, { enabled: boolean; priceCents: number }>
+  classCoverage?: Record<FeatureId, Record<string, number>>
   timetable: Record<FeatureId, Record<string, number>>
   settingHours: Record<FeatureId, number>
   freshness: Record<
@@ -2852,6 +2853,7 @@ export type LeisureView = {
     name: string
     room: string | null
     places: number
+    coveredClasses?: Record<string, number>
     classes: Record<string, number>
   }[]
   history: LeisureWeek[]

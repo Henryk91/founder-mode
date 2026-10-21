@@ -761,6 +761,7 @@ export const LeisureSchema = z
   .object({
     strictKeepsDeposit: z.literal(true).optional(),
     wtpBasis: z.literal('monthly').optional(),
+    classStaffing: z.literal(true).optional(),
     respectSlotPreferences: z.literal(true).optional(),
     slots: z
       .array(z.object({ id: Id, name: z.string().min(1), hours: z.number().positive() }))
