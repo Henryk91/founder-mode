@@ -1021,3 +1021,14 @@ actual cost by upgrade, only when configured; the normal operating-cost ledger
 pays it once. Public optional `LeisureView.upgrades` gives stated capacity/cost,
 installation status and observed cumulative paid cents. View history copies these
 maps; no new fields or random draws occur in earlier games without these blocks.
+
+Leisure pools now honour the existing asset modes: unavailable equipment gives
+zero capacity; owned/leased/shared equipment follows its actual availability at
+the requested date. An alias's own required products and asset must also be ready,
+even when it shares another pool. Hired equipment supplies the same physical
+must-have as the purchase feature without pretending that purchase has shipped.
+The ordinary asset ledger charges per served unit; returning hire does not destroy
+the pool for other products. Slot history/load and freshness aggregate aliases into
+their physical pool. Asset calendars evaluate each date because seasonal leases or
+maintenance may change availability inside the twelve-week view. These adaptations
+are limited to leisure; boat behaviour and fields are unchanged.

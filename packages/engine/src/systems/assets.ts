@@ -115,6 +115,15 @@ export function assetFactor(state: GameState, product: FeatureId, week: number):
   }
 }
 
+/** Rented leisure equipment fulfils the same physical need as its purchase feature. */
+export function leisureAssetSupplies(state: GameState, feature: FeatureId, week: number): boolean {
+  const cfg = state.scenario.bookings
+  if (!cfg?.leisure || !cfg.assets) return false
+  return Object.values(cfg.assets).some(
+    (a) => a.buy?.product === feature && a.products.some((id) => assetFactor(state, id, week) > 0),
+  )
+}
+
 /** What an owned asset would sell for in a week: its price, less its yearly loss of value. */
 export function assetValue(state: GameState, id: string, week: number): number | null {
   const cfg = state.scenario.bookings

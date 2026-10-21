@@ -5,6 +5,7 @@ import {
   leisureSellsSlot,
   leisureOpen,
   leisureCapacity,
+  leisureProductCapacity,
   leisureRoomReader,
   leisureSlot,
   leisureAppeal,
@@ -60,6 +61,7 @@ import {
   assetFactor,
   assetOf,
   assetsBought,
+  leisureAssetSupplies,
   assetsUsed,
   assetsView,
   assetsWeek,
@@ -336,7 +338,7 @@ const isShipped = (state: GameState, id: FeatureId) =>
  * step 1d).
  */
 export function mustHaveMet(state: GameState, id: FeatureId): boolean {
-  if (!isShipped(state, id)) return false
+  if (!isShipped(state, id)) return leisureAssetSupplies(state, id, state.week)
   const r = state.scenario.bookings?.renovation
   if (r && r.feature === id) return (state.bookings?.renovated ?? 0) >= r.mustHaveRooms
   return true
@@ -365,9 +367,13 @@ export function capacityAt(state: GameState, pool: FeatureId, week: number): num
 /** Leisure can sell future dates after a prepared build will be ready. */
 function cfgLeisureReady(state: GameState, id: FeatureId, week: number): boolean {
   if (!state.scenario.bookings?.leisure) return isShipped(state, id)
-  return state.product.features.some(
-    (f) =>
-      f.id === id && (f.shippedWeek !== null || (f.readyWeek !== undefined && f.readyWeek <= week)),
+  return (
+    leisureAssetSupplies(state, id, week) ||
+    state.product.features.some(
+      (f) =>
+        f.id === id &&
+        (f.shippedWeek !== null || (f.readyWeek !== undefined && f.readyWeek <= week)),
+    )
   )
 }
 
@@ -1455,7 +1461,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       cfg.leisure && x.slotId
         ? Math.max(
             0,
-            leisureCapacity(state, poolOf(cfg, x.productId), x.slotId, week) -
+            leisureProductCapacity(state, x.productId, x.slotId, week) -
               (usedSlots.get(slotKey) ?? 0),
           )
         : Infinity
@@ -1468,7 +1474,18 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       served.push(x)
     } else {
       x.status = 'company_cancelled'
-      const reason = cfg.leisure && slotRoom < x.units ? 'works' : (why.get(x.productId) ?? 'staff')
+      const unavailableAsset =
+        cfg.leisure &&
+        cfg.assets &&
+        [x.productId, poolOf(cfg, x.productId)].some(
+          (id) => assetOf(cfg, id) && assetFactor(state, id, week) < 1,
+        )
+      const reason =
+        cfg.leisure && slotRoom < x.units
+          ? unavailableAsset
+            ? 'asset'
+            : 'works'
+          : (why.get(x.productId) ?? 'staff')
       if (reason === 'sold_out') soldOut += x.units
       else if (reason === 'works') closedForWorks += x.units
       else if (reason === 'conditions') conditionsCancelled += x.units
