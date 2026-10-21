@@ -193,12 +193,12 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | fabriketage (long) | sustainable | `tourism_careful` | `ending-3` | 104 |
 | fabriketage (long) | sustainable | `tourism_careful` | `ending-14` | 104 |
 | fabriketage (long) | sustainable | `tourism_careful` | `ending-15` | 104 |
-| fabriketage (long) | still_searching | `tourism_careful` | `ending-22` | 104 |
+| fabriketage (long) | still_searching | `tourism_careful` | `ending-34` | 104 |
 | fabriketage (long) | still_searching | `tourism_careful` | `ending-48` | 104 |
 | fabriketage (long) | still_searching | `tourism_careful` | `ending-70` | 104 |
-| fabriketage (long) | bankrupt | `tourism_overstaffing` | `ending-1` | 22 |
-| fabriketage (long) | bankrupt | `tourism_overstaffing` | `ending-3` | 25 |
-| fabriketage (long) | bankrupt | `tourism_overstaffing` | `ending-8` | 22 |
+| fabriketage (long) | bankrupt | `tourism_overstaffing` | `ending-2` | 21 |
+| fabriketage (long) | bankrupt | `tourism_overstaffing` | `ending-6` | 23 |
+| fabriketage (long) | bankrupt | `tourism_overstaffing` | `ending-25` | 23 |
 | fabriketage (long) | burnout | `tourism_overworker` | `ending-1` | 10 |
 | fabriketage (long) | burnout | `tourism_overworker` | `ending-2` | 9 |
 | fabriketage (long) | burnout | `tourism_overworker` | `ending-3` | 9 |
