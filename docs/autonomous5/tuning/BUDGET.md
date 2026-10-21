@@ -10,15 +10,20 @@ its changed values in the spec and decisions log.
 
 | Targets | Value rounds used / allowed | Formula rounds used / allowed |
 |---|---:|---:|
-| T1–T18 | 0 / 2 | 0 / 1 |
-| E1 | 0 / 2 | 0 / 1 |
-| X1–X4 | 0 / 2 | 0 / 1 |
+| T1–T18 | 1 / 2 | 0 / 1 |
+| E1 | 1 / 2 | 0 / 1 |
+| X1–X4 | 1 / 2 | 0 / 1 |
 
-No game-value or formula tuning round has run yet. Main-4 measures the corrected
-bot baseline on main only, all 28 strategies, 1,000 seeds each, prefix `test`.
-Expand this table per failing target when the complete baseline is available,
-then log each attempted change and its result. Do not treat new target failures
-as a reason to exceed the assigned budget.
+Round 1 is assigned to all applicable targets conservatively because recurring
+costs and market opportunity can move every outcome. Formula budget is untouched.
+
+Changed values: ordinary-room monthly upkeep EUR250 (was zero); flexible shift
+EUR105 (was EUR90); weekly reachable enquiries locals 30–90 (was 40–120), visitors
+9–34 (was 10–40), companies 3–12 (was 2–10). Spec section 15 labels each estimate.
+The baseline contribution comparisons are preserved in main-4.
+
+Measurement: main only, all 28 strategies, 1,000 `test` seeds, three workers,
+`tuning/ausgesperrt-values-1.md`. No wide seeds, event table or full report.
 
 ## Corrections before tuning
 

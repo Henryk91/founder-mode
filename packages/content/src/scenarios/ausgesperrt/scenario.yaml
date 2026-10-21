@@ -463,8 +463,8 @@ bookings:
   segments:
     locals:
       base:
-        min: 40
-        max: 120
+        min: 30
+        max: 90
       unit: group
       price:
         peak: 12500
@@ -502,8 +502,8 @@ bookings:
       reviewWeight: 0.8
     tourists:
       base:
-        min: 10
-        max: 40
+        min: 9
+        max: 34
       unit: group
       price:
         peak: 14000
@@ -541,8 +541,8 @@ bookings:
       reviewWeight: 0.7
     companies:
       base:
-        min: 2
-        max: 10
+        min: 3
+        max: 12
       unit: group
       price:
         peak: 18000
@@ -587,12 +587,14 @@ bookings:
         - companies
       oneOffCents: 3000000
       unitCostCents: 600
+      monthlyCents: 25000
     horror:
       capacity: 49
       serves:
         - locals
       oneOffCents: 3000000
       unitCostCents: 600
+      monthlyCents: 25000
     munich_history:
       capacity: 49
       serves:
@@ -601,6 +603,7 @@ bookings:
         - companies
       oneOffCents: 3200000
       unitCostCents: 600
+      monthlyCents: 25000
     kids_adventure:
       capacity: 49
       serves:
@@ -608,6 +611,7 @@ bookings:
         - tourists
       oneOffCents: 2800000
       unitCostCents: 600
+      monthlyCents: 25000
     vr_room:
       capacity: 49
       serves:
@@ -636,7 +640,7 @@ bookings:
   roles:
     game_master:
       name: Game master
-      centsPerShift: 9000
+      centsPerShift: 10500
       units:
         heist: 3
         horror: 3

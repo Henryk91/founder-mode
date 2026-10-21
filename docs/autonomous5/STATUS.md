@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.4 Corrected bot baseline complete; first value round next.
-Last commit: HEAD, Plan 5: preserve corrected Ausgesperrt baseline and tuning budget.
-Next action: Apply the first bounded scenario-value round using main-4's paired contributions; measure main only on 1,000 test seeds. Keep the completed protected proof, run the event table once after tuning, and reserve the full report for step 6.
+Step: 2.4 First scenario-value tuning round applied.
+Last commit: HEAD, Plan 5: tune Ausgesperrt upkeep staffing and market opportunity.
+Next action: Read the first value-round measurement (session 38254) at /tmp/plan5-ausgesperrt-values-1.log and tuning/ausgesperrt-values-1.md when complete; assess every target before the second value round. Main only, 1,000 test seeds; full report remains reserved for step 6.
 
 ## Checklist
 
@@ -18,6 +18,8 @@ Next action: Apply the first bounded scenario-value round using main-4's paired 
 
 ## Running checks
 
+- Value round 1: lint/typechecks pass; focused content and leisure-bot checks pass (235 tests, 21 skipped). Measurement is running, main only, 1,000 `test` seeds, 28 strategies; /tmp/plan5-ausgesperrt-values-1.log.
+
 - Main-3 completed: all 28 strategies, main only, 1,000 `test` seeds. Intermediate complete target table in tuning/ausgesperrt-main-3.md, before the horizon/portfolio/contract-coverage corrections. Do not tune from its old bot verdicts.
 - Protected proof complete: all nine main-only, 1,000-`test` comparisons and fingerprints match exactly apart from timings. See reports/step2-protected.md and protected-step2/. Session 17724 completed successfully.
 - Full tests are green: 79 files, 1,539 passed, 21 skipped; /tmp/plan5-step2-finished-rooms-full-test-2.log, two workers. Browser teardown passed after the first repair (new leisure port 5202 plus lower test concurrency). Lint/typechecks pass; /tmp/plan5-step2-test-port-lint.log.
@@ -30,7 +32,7 @@ Next action: Apply the first bounded scenario-value round using main-4's paired 
 
 ## Open issues
 
-Main-4 is complete: careful 75.8%, top 79.6%, no-tests 68.6%; the initial economy is too generous. No scenario-value/formula tuning rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
+Main-4 is complete: careful 75.8%, top 79.6%, no-tests 68.6%; the initial economy is too generous. One of two value rounds assigned to every applicable target; no formula rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
 
 Latest focused checks: 44 leisure engine and 36 bot tests pass. The full suite also passes after the unfinished-room bot repair: 79 files / 1,539 tests (21 skipped), with lint/typechecks green. Browser coverage includes Help/results/post-mortem words and 24 cases over three stages, four widths, Chromium/WebKit and axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 
@@ -39,6 +41,8 @@ Runtime caches previously proved byte-identical on 30 careful diagnostic runs. M
 Later-step preparation only, outside repo: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 lines), /tmp/plan5-venue-scenes-draft.json (two native SVG scenes). Integrate only after step 2 passes. Current repo content/UI are authoritative; do not recopy old Ausgesperrt /tmp drafts.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: first value round uses estimated room upkeep, flexible staffing premium and market-specific demand; see spec section 15 and docs/decisions.md.
 
 - Step 2: all nine protected main comparisons and content/save fingerprints match baseline; see reports/step2-protected.md.
 
