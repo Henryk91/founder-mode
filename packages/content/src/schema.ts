@@ -1097,7 +1097,11 @@ export const BookingsConfigSchema = z.object({
   // Plan 2 step 3: guests take the founder's time (welcoming, the phone, the bookings, a word at
   // the table): this many hours per unit served last week, at most maxHours a week.
   hosting: z
-    .object({ hoursPerUnit: z.number().nonnegative(), maxHours: z.number().int().nonnegative() })
+    .object({
+      hoursPerUnit: z.number().nonnegative(),
+      maxHours: z.number().int().nonnegative(),
+      relief: z.object({ role: Id, hoursPerShift: z.number().positive() }).optional(),
+    })
     .optional(),
   vouchers: VoucherConfigSchema.optional(),
   renovation: RenovationSchema.optional(),
@@ -1728,6 +1732,8 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       }
     }
     const bk = s.bookings
+    if (bk.hosting?.relief && !bk.roles[bk.hosting.relief.role])
+      issue('unknown hosting relief role', ['bookings', 'hosting', 'relief'])
     for (const id of s.loan?.items ?? []) {
       if (!bk.products[id]) issue(`unknown product ${id}`, ['loan', 'items'])
     }

@@ -337,6 +337,7 @@ export type BookingTotal = {
 }
 
 export type BookingsState = {
+  hostingReliefHours?: number
   leisure?: LeisureState
   bookings: Booking[]
   /** Price per unit per segment, for peak and off season months. */
@@ -1549,6 +1550,7 @@ export type BookingsView = {
   vouchers: VouchersView | null
   /** Plan 2 step 3: founder hours this week's guests take (from last week's), before planning. */
   hostingHours: number
+  hostingReliefHours?: number
   /** Plan 2 step 1c: units prepared per service product, or null to prepare what the roster can cook. */
   prep: { productId: FeatureId; units: number | null }[]
   /**
