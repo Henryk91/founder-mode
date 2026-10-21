@@ -8,7 +8,7 @@ wide parts or full report ran. Existing failures in those games remain unchanged
 The comparison helper retains engine version and every outcome row, removing only
 strategy durations and their timing targets. Engine version remains 0.14.0. All nine
 content/save fingerprints also match baseline/content-fingerprints.json, verified
-against /tmp/plan5-step 2-fingerprints.json. The new leisure branches are off in these
+against /tmp/plan5-step2-fingerprints.json. The new leisure branches are off in these
 games; scoped leisure strategies are filtered out and preserve the old strategy order.
 
 Snapshots are in protected-step2/. The raw progress/result records are
