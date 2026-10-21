@@ -1,3 +1,4 @@
+import { membershipMonthlyCost, membershipUsable } from './membership'
 import { stageInEffect } from './bookings'
 import { assetFactor, assetOf, leisureAssetSupplies } from './assets'
 import { finishVenue, initVenue, venueOpen, venueView, type VenueMoney } from './venue'
@@ -786,6 +787,7 @@ export function leisureView(s: GameState): LeisureView | null {
       const members = active.filter((m) => m.offerId === id)
       return {
         offerId: id,
+        ...(offer.products ? { products: [...offer.products] } : {}),
         name: name(id),
         active: members.filter((m) => !m.inactive).length,
         inactive: members.filter((m) => m.inactive).length,
@@ -928,6 +930,7 @@ export function joinLeisure(
     ([id, o]) =>
       original.offers[id]?.enabled &&
       o.serves.includes(segmentId) &&
+      membershipUsable(input, segmentId, o) &&
       shipped(input, id) &&
       (leisureOpen(input, '', input.week) || o.kind === 'pack'),
   )
@@ -940,14 +943,7 @@ export function joinLeisure(
   for (let i = 0; i < n; i++) {
     const [offerId, offer] = rng.pick(offers)
     const priceCents = original.offers[offerId]!.priceCents
-    const monthlyCost =
-      offer.kind === 'pack'
-        ? (priceCents / offer.visits!) *
-          segment.visitsPerWeek *
-          input.scenario.finance.weeksPerMonth
-        : offer.kind === 'intro'
-          ? (priceCents / offer.validWeeks!) * input.scenario.finance.weeksPerMonth
-          : priceCents
+    const monthlyCost = membershipMonthlyCost(input, segmentId, offer, priceCents)
     const wtp = input.hidden.segments[segmentId]?.wtpCents ?? monthlyCost
     if (!rng.chance(priceCurve(input.scenario, monthlyCost / wtp))) continue
     members.push({
@@ -1025,6 +1021,7 @@ export function billLeisure(
           o.kind !== 'intro' &&
           o.kind !== 'pack' &&
           o.serves.includes(m.segmentId) &&
+          membershipUsable(input, m.segmentId, o) &&
           original.offers[id]?.enabled &&
           shipped(input, id),
       )
@@ -1177,11 +1174,12 @@ export function leisureVisits(
   const added: Booking[] = []
   const denied: { productId: string; slotId: string; units: number }[] = []
   const week = input.week
-  const pickProduct = (segmentId: string, slot: string) =>
+  const pickProduct = (segmentId: string, slot: string, products?: readonly string[]) =>
     Object.keys(c.products)
       .sort()
       .filter(
         (id) =>
+          (!products || products.includes(id)) &&
           input.scenario.bookings!.products[id]?.serves.includes(segmentId) &&
           room(input, id, slot, week, segmentId) > 0 &&
           leisureOpen(input, id, week),
@@ -1189,12 +1187,20 @@ export function leisureVisits(
       .sort(
         (a, b) => room(input, b, slot, week, segmentId) - room(input, a, slot, week, segmentId),
       )[0]
-  const add = (segmentId: string, slotId: string, memberId?: string, aggregatorUser?: number) => {
-    const productId = pickProduct(segmentId, slotId)
+  const add = (
+    segmentId: string,
+    slotId: string,
+    memberId?: string,
+    aggregatorUser?: number,
+    products?: readonly string[],
+  ) => {
+    const productId = pickProduct(segmentId, slotId, products)
     if (!productId) {
       const productId = Object.keys(c.products).find(
         (id) =>
-          input.scenario.bookings!.products[id]?.serves.includes(segmentId) && shipped(input, id),
+          (!products || products.includes(id)) &&
+          input.scenario.bookings!.products[id]?.serves.includes(segmentId) &&
+          shipped(input, id),
       )
       if (productId) denied.push({ productId, slotId, units: 1 })
       return false
@@ -1234,7 +1240,7 @@ export function leisureVisits(
           r -= share
           return r < 0
         })?.[0] ?? slots.at(-1)![0]
-      if (!add(m.segmentId, slot, m.id)) m.waitlist.push(week)
+      if (!add(m.segmentId, slot, m.id, undefined, offer.products)) m.waitlist.push(week)
     }
   }
   const a = original.aggregator

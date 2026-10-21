@@ -1115,3 +1115,21 @@ Leisure offers may finish preparation before equipment is acquired; actual sale/
 still requires available equipment. This does not relax an asset purchase’s own company
 prerequisite or the existing non-leisure preparation rules. Venue bots recognise hired
 equipment when expanding dependencies,without marking its purchase feature shipped.
+
+### Optional monthly leisure pricing and offer access
+
+`leisure.wtpBasis: monthly` means hidden segment budgets and interview hints are
+monthly. Joining tests the actual monthly-equivalent offer fee once. Direct ticket
+requests test ticket price times segment visits/week times weeks/month,once after
+choosing their date. Member service reviews use the paid monthly-equivalent offer
+fee;direct ticket reviews use the same normalisation. No such block retains the
+earlier price paths and draw order.
+
+`leisure.respectSlotPreferences: true` excludes membership offers with no positive
+preferred-slot overlap,including intro migration. Optional `memberships[id].products`
+restricts member visits to the named leisure products,including waiting-list
+failures;ordinary/unrestricted offers retain their earlier product routing. Premium
+offers therefore need an explicit paid product restriction rather than giving
+every unlimited membership free premium equipment access. No hidden fields
+are introduced by these config additions,apart from optional public
+`LeisureView.members[].products`,a copied list of the stated allowed class products.

@@ -2767,6 +2767,7 @@ export type LeisureView = {
   load: LeisureWeek['slots']
   turnedAwayBySlot: Record<string, number>
   members: {
+    products?: FeatureId[]
     offerId: FeatureId
     name: string
     active: number

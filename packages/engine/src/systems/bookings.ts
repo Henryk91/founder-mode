@@ -1,3 +1,4 @@
+import { leisurePriceBasis, leisureReviewPrice } from './membership'
 import { beginVenue } from './venue'
 import {
   initLeisure,
@@ -852,7 +853,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       (ahead ? aheadSum / ahead.length : seasonAt(curve, woy)) *
       reach.total *
       fitOf(state, seg.id) *
-      (cfg.leisure?.slotPrices ? 1 : priceCurve(state.scenario, price / wtp)) *
+      (cfg.leisure?.slotPrices || cfg.leisure?.wtpBasis === 'monthly'
+        ? 1
+        : priceCurve(state.scenario, price / wtp)) *
       reviewFactor(state, seg.id) *
       weatherF *
       roleFactor(seg.id) *
@@ -895,11 +898,16 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       const slot = leisureSlot(state, seg.id, rng)
       const platform = reach.total > 0 && rng.chance(reach.platform / reach.total)
       if (target > state.scenario.maxWeeks) continue
-      if (cfg.leisure?.slotPrices) {
+      if (cfg.leisure?.slotPrices || cfg.leisure?.wtpBasis === 'monthly') {
         if (!leisureSellsSlot(state, seg.id, slot)) continue
         if (
           asOwn &&
-          !rng.chance(priceCurve(state.scenario, priceFor(state, seg.id, target, slot) / wtp))
+          !rng.chance(
+            priceCurve(
+              state.scenario,
+              leisurePriceBasis(state, seg.id, priceFor(state, seg.id, target, slot)) / wtp,
+            ),
+          )
         )
           continue
       }
@@ -1865,7 +1873,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         (t, x) =>
           t +
           // Plan 4: a product priced at a multiple of the segment's price is judged at its base.
-          x.priceCents /
+          leisureReviewPrice(state, x) /
             (cfg.products[x.productId]?.priceFactor ?? 1) /
             (state.hidden.segments[x.segmentId]?.wtpCents ?? x.priceCents),
         0,
