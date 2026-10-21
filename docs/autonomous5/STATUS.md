@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.6 resumed heading repair passes; complete phase tests running.
-Last commit: HEAD, Plan 5: reserve logo space before shrinking long company names.
-Next action: Finish full tests(session75399,/tmp/plan5-venue-full-tests-resumed.log),then add the venue T15 cash-funded variant and run the missing comparison. Complete protected main proof and venue tuning before its once-only event table. Work remains on plan5-venue-work in /private/tmp/founder-mode-plan5-venue;full report once in step6.
+Step: 3.6 heading regression matrix passes; repair two phase-test gaps.
+Last commit: HEAD, Plan 5: settle shaped heading text across painted layouts.
+Next action: Fix venue equipment preparation in the freelancer diagnostic and add its T15 cash-funded comparison,then regenerate seeds and finish phase checks/tuning. Protected main proof is running(session99011,/tmp/plan5-protected-step3.log);three games already match. Full report only once in step6.
 
 ## Checklist
 
@@ -70,3 +70,7 @@ Steps4,5 and6 remain unfinished. Full report has never run in this plan. No push
 User requested continuation. The isolated375px diagnosis fit at15px while the earlier full matrix failed, indicating layout/font sensitivity. Reserve logo space before reducing the type size and check glyph plus block overflow. All24 venue cases pass,/tmp/plan5-heading-resume-browser-1.log;lint/typechecks pass,/tmp/plan5-heading-resume-lint.log. First resumed repair succeeds.
 
 ## Stopped
+
+## Phase-test follow-up
+
+Initial full suite:83 files passed,3 failed;1,660 tests passed,9 failed,24 skipped,/tmp/plan5-venue-full-tests-resumed.log. Seven heading failures are now repaired:all80 established/venue browser cases pass,/tmp/plan5-heading-settle-browser.log;lint passes,/tmp/plan5-heading-settle-lint.log. Two remaining failures are missing venue seed examples and a freelancer diagnostic preparing wedding coordination before owned furniture. No unexplained protected outcome change.
