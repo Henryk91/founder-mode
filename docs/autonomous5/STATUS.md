@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.6 resumed by user: diagnose and repair the375px WebKit heading.
-Last commit: HEAD, Plan 5: resume authorised venue heading repair.
-Next action: Continue the authorised heading repair in /private/tmp/founder-mode-plan5-venue,branch plan5-venue-work. Keep the full name/no-cut test,record outcomes,then continue venue tests,tuning and protected proof. Full report remains reserved for step6.
+Step: 3.6 heading repair passes;phase tests and protected proof running.
+Last commit: HEAD, Plan 5: record passing venue heading and running phase checks.
+Next action: Continue isolated venue work at /private/tmp/founder-mode-plan5-venue,branch plan5-venue-work,heading repair5690510. Full tests(session75399) and ten-game protected main proof(/tmp/plan5-protected-step3.log) are running. Add the missing T15 comparison,then venue tuning. Full report only once in step6.
 
 ## Checklist
 
@@ -28,7 +28,7 @@ Next action: Continue the authorised heading repair in /private/tmp/founder-mode
 
 ## For Henry to review (non-blocking)
 
-- Required stop:375px WebKit heading remains cut off after three repairs;details/options below. Venue UI/source saved separately in commit5c8abf2.
+- User resumed the stop:first resumed repair passes all24 venue cases and lint. Full names receive the logo space before shrinking. See branch commit5690510 and docs/decisions.md.
 - Venue first pass:early guest balances deferred;lower floor is breakout rooms,not a separately booked hall;authored caterer incidents replace supplier selection. Estimates/source corrections and finance/hold/noise decisions are in the draft spec and decisions log;reports/step3-venue.md summarises them.
 - Venue tuning:initial hold values favour no holds in every market;T15 comparison missing. Inspect contributions before using the untouched tuning budget.
 - Ausgesperrt:eight tourism targets remain open despite playable final values;formula allowance deliberately unused. See reports/step2-escape.md and docs/decisions.md.
