@@ -2,8 +2,8 @@
 
 ## Current
 
-Step: 2.5 Final values measured; event table and full phase checks running.
-Last commit: HEAD, Plan 5: record complete phase tests and isolated venue preparation.
+Step: 2.5 Final values and full phase tests complete; once-only event table running.
+Last commit: HEAD, Plan 5: record isolated venue engine and content progress.
 Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesperrt-events.log) ; full tests pass (79 files/1,542 tests, 21 skipped). Update reports/step2-escape.md, commit/tag plan5-escape when green, then begin step 3 from a clean tree. Formula allowance deliberately unused; eight targets remain open for step 6. Never rerun the event table or full report to reconfirm.
 
 ## Checklist
@@ -27,7 +27,7 @@ Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesp
 - UI checks: three stages, 375/390/430/1440 px, Chromium/WebKit/axe/cut/words. Help/results/post-mortem words 390/1440. Screenshot refresh in the full suite: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
 - Corrected company demand prose: base 4–14 counts room-games, roughly 1.3–4.7 requests at mean three games. Measured values remain intact; this was a documentation error.
 
-Isolated venue implementation draft: /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work, first planning commit (resolve via git log). Source/dependencies are isolated; merge only after the event table finishes and main tags plan5-escape. Its venue/IMPLEMENTATION.md records targets/gaps/adaptations. Code review found existing forward sales already work for prepared readyWeek builds; reuse and test them.
+Isolated venue implementation draft: /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work, latest content commit 203a314 (tested engine/content; venue bots/UI pending). Source/dependencies are isolated; merge only after the event table finishes and main tags plan5-escape. Its venue/IMPLEMENTATION.md records targets/gaps/adaptations. Code review found existing forward sales already work for prepared readyWeek builds; reuse and test them.
 
 Later-step preparation only, outside repo; integrate in order after the current phase gate:
 - Venue: /tmp/plan5-venue-prep.md (gaps incl forward sales, assets and ancillary receipts), /tmp/plan5-venue-content-draft/ (PENDING.md), /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 quotes), /tmp/plan5-venue-scenes-draft.json (two SVG scenes). Primary permission sources: /tmp/plan5-research-notes.md, 21 October entry.
