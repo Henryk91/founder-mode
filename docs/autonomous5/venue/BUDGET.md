@@ -73,3 +73,12 @@ wedding strict acceptance.65,snag penalty.50. Actual round1 contributions and
 rationale:spec section15. No quoted money/demand/lead/loan changes. Values2/2,
 formula0/1. Focused checks then main-only1,000 test seeds before deciding whether
 any formula is justified. Event table still unrun;full report never run.
+
+## Frozen round2 source
+
+The formula allowance stays0/1,deliberately unused:no justified formula correction
+for finance/market/contract design is needed to preserve the intended first pass.
+Do not disguise a third value round or a strategy-specific penalty as a formula.
+Final main is running;retain all failures/closest results for step6. Event table
+starts once on this frozen source:events only,1,000 test seeds,two workers.
+This is the event-content budget item,not a full report. Never restart/reconfirm it.

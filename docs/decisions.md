@@ -950,3 +950,5 @@ AUTONOMOUS: after corrected contributions,calibrate no-hold acceptance(.35/.15/.
 ### Plan5 step3: second value round
 
 AUTONOMOUS: round1 is playable(careful42.7%,top45.0%),with T5 and T13 now passing. Use the second value allowance on paid-hold acceptance(.95/.90/.95),wedding strict acceptance(.65) and unresolved snag penalty(.50). Paired round1 contributions precede these estimates;spec section15 records rationale. Keep quoted costs,demand,lead times and financing unchanged. Conservatively debit round2 to all targets;formula0/1.
+
+AUTONOMOUS: freeze venue round2 values and leave the formula allowance unused by decision,as an upper bound rather than a quota. No justified formula addresses long-lead wedding cash,contract utilisation or startup/later-loan dependency without changing the intended lesson. Main round2 still measures every target;retain failures and closest results for step6. Start the required once-only venue event table on this frozen source,events only,1,000 test seeds,two workers. It can exceed15 minutes;CLAUDE's event-content budget and plan section1.6 explicitly require this run. No full report.
