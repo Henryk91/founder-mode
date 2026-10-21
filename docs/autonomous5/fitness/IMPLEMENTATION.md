@@ -1,7 +1,8 @@
-# Schweißperle isolated preparation
+# Schweißperle implementation notes
 
-Draft only. Do not claim implementation or register the scenario before the venue
-source/tests are frozen. Any isolated preparation must merge only after step3's gate.
+Current:venue completed/tagged on main75f180b. Fitness engine groundwork and
+unregistered content pass their focused checks. Merge that history before
+continuing;front-desk relief,registration,drawings,bots and UI remain unfinished.
 
 Touch list when step4 starts:content/schema.ts;engine/types.ts and systems/leisure.ts,
 bookings.ts,experiments.ts (only where needed);schema.md;fixture tests;then scenario,

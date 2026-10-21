@@ -1197,3 +1197,7 @@ to those actually occupied office stages. Prepared classes cannot use an annex
 before the move completes. The public timetable optionally reports `available`;
 without the block,no field or restriction is added. Distinct annex class aliases
 share an annex room-hour budget and need their own instructor coverage.
+
+Instructor following eligibility also honours a membership's optional product
+list. A departing mat teacher cannot take members whose paid offer permits only
+premium classes taught by somebody else. Unrestricted offers keep their old path.

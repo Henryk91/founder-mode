@@ -1590,7 +1590,10 @@ export function loseLeisureInstructor(input: GameState, chosen: string, rng: Rng
     m.noticeUntil === null &&
     Object.keys(input.scenario.bookings!.roles[role]?.units ?? {}).some(
       (id) =>
-        input.scenario.bookings!.products[id]?.serves.includes(m.segmentId) && shipped(input, id),
+        (!c.memberships?.[m.offerId]?.products ||
+          c.memberships[m.offerId]!.products!.includes(id)) &&
+        input.scenario.bookings!.products[id]?.serves.includes(m.segmentId) &&
+        shipped(input, id),
     )
   const roles = Object.keys(c.instructors).sort()
   const role =

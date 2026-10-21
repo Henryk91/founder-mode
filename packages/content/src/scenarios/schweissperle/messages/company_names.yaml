@@ -1,0 +1,81 @@
+young_professionals:
+  distinct: second
+  first:
+    - Early group
+    - Evening group
+    - Training group
+  second:
+    - Feldmann
+    - Waldner
+    - Steinbach
+    - Kessler
+    - Bachmann
+    - Lindner
+    - Sommerfeld
+    - Riedel
+    - Hagenauer
+    - Bergmann
+    - Kornfeld
+    - Tannberger
+    - Auenbach
+    - Wiesenegger
+    - Sternthal
+    - Kirchberger
+    - Eichenwald
+    - Falkenried
+    - Kastner
+    - Talheimer
+yoga_crowd:
+  distinct: second
+  first:
+    - Calm group
+    - Morning group
+    - Weekend group
+  second:
+    - Feldmann
+    - Waldner
+    - Steinbach
+    - Kessler
+    - Bachmann
+    - Lindner
+    - Sommerfeld
+    - Riedel
+    - Hagenauer
+    - Bergmann
+    - Kornfeld
+    - Tannberger
+    - Auenbach
+    - Wiesenegger
+    - Sternthal
+    - Kirchberger
+    - Eichenwald
+    - Falkenried
+    - Kastner
+    - Talheimer
+corporate:
+  distinct: second
+  first:
+    - Birken
+    - Kupfer
+    - Sonnen
+  second:
+    - Feldmann
+    - Waldner
+    - Steinbach
+    - Kessler
+    - Bachmann
+    - Lindner
+    - Sommerfeld
+    - Riedel
+    - Hagenauer
+    - Bergmann
+    - Kornfeld
+    - Tannberger
+    - Auenbach
+    - Wiesenegger
+    - Sternthal
+    - Kirchberger
+    - Eichenwald
+    - Falkenried
+    - Kastner
+    - Talheimer

@@ -1,0 +1,1369 @@
+id: schweissperle
+name: Schweißperle
+longOnly: true
+maxWeeks: 104
+win:
+  profitableMonths: 3
+  overMonths: 13
+start:
+  cashCents: 4500000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  priceCentsPerMonth: 13900
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: lease
+      name: Studio lease
+      monthlyCents: 580000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 20000
+    - id: software
+      name: Booking app
+      monthlyCents: 25000
+    - id: music
+      name: Music licences
+      monthlyCents: 12000
+    - id: utilities
+      name: Electricity and heating
+      monthlyCents: 50000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 22500
+    - id: cleaning
+      name: Cleaning
+      monthlyCents: 80000
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  livingSteps:
+    - week: 53
+      centsPerWeek: 74250
+finance:
+  weeksPerMonth: 4
+  invoiceDueDays: 30
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    budgetSmallStepCents: 50000
+    buckets:
+      - id: not_a_problem
+        name: Not a problem
+        below: 0.2
+      - id: mild
+        name: Mild
+        below: 0.4
+      - id: noticeable
+        name: Noticeable
+        below: 0.6
+      - id: painful
+        name: Painful
+        below: 0.9
+      - id: urgent
+        name: Urgent
+  landing:
+    hours: 6
+    budgetsCents:
+      - 20000
+      - 50000
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+product:
+  startQuality: 90
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  price:
+    midpoint: 1.35
+    steepness: 10
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    priceFrom: 1
+    perPrice: 0.15
+    cap: 0.6
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - id: weak
+      name: Weak
+      below: 0.7
+    - id: solid
+      name: Solid
+      below: 0.95
+    - id: strong
+      name: Strong
+      below: 1.1
+    - id: outstanding
+      name: Outstanding
+  roles:
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill:
+        min: 0.5
+        max: 1.2
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill:
+        min: 0.5
+        max: 1.2
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+  freelance:
+    hoursOptions:
+      - 10
+      - 20
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.55
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+roles:
+  - id: viable
+    pain:
+      min: 0.6
+      max: 0.85
+    politeness:
+      min: 0.05
+      max: 0.15
+  - id: mediocre
+    pain:
+      min: 0.35
+      max: 0.55
+    politeness:
+      min: 0.25
+      max: 0.4
+  - id: trap
+    pain:
+      min: 0.1
+      max: 0.25
+    politeness:
+      min: 0.5
+      max: 0.65
+segments:
+  - id: young_professionals
+    name: Young professionals
+    description: People training before or after work.
+    mustHave:
+      - booking_app
+      - fit_out
+    size:
+      min: 600
+      max: 3000
+    wtpCents:
+      min: 11000
+      max: 16000
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.02
+        max: 0.05
+      in_person:
+        min: 0.03
+        max: 0.07
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - About {amount} a month is possible if I can attend the classes.
+      - I would compare {amount} a month with the times I can actually use.
+      - My monthly budget is around {amount}. Unlimited is a large word for a small diary.
+      - Something near {amount} could work. Show the term and the usable slots.
+      - The last membership cost {amount} a month. It did not include a place at six.
+  - id: yoga_crowd
+    name: Yoga regulars
+    description: Regulars looking for calm, steady practice.
+    mustHave:
+      - yoga_classes
+      - quiet_studio
+    size:
+      min: 600
+      max: 3000
+    wtpCents:
+      min: 9000
+      max: 14000
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.02
+        max: 0.05
+      in_person:
+        min: 0.03
+        max: 0.07
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - About {amount} a month is possible if I can attend the classes.
+      - I would compare {amount} a month with the times I can actually use.
+      - My monthly budget is around {amount}. Unlimited is a large word for a small diary.
+      - Something near {amount} could work. Show the term and the usable slots.
+      - The last membership cost {amount} a month. It did not include a place at six.
+  - id: corporate
+    name: Company members
+    description: Employees whose company pays an agreed membership invoice.
+    mustHave:
+      - corporate_plans
+      - lunch_classes
+      - fit_out
+    size:
+      min: 600
+      max: 3000
+    wtpCents:
+      min: 6000
+      max: 10000
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.02
+        max: 0.05
+      in_person:
+        min: 0.03
+        max: 0.07
+    paymentDelayDaysMean: 30
+    neverPaysShare: 0.01
+    waitsForChaseShare: 0.1
+    budgetQuotes:
+      - About {amount} a month is possible if I can attend the classes.
+      - I would compare {amount} a month with the times I can actually use.
+      - My monthly budget is around {amount}. Unlimited is a large word for a small diary.
+      - Something near {amount} could work. Show the term and the usable slots.
+      - The last membership cost {amount} a month. It did not include a place at six.
+milestones:
+  - id: first_interview
+    name: First interview
+    kind: count
+    of: interviews
+    target: 1
+  - id: first_customer
+    name: First paid class
+    kind: count
+    of: guests
+    target: 1
+  - id: covers_company_costs
+    name: A month of classes and memberships covers company costs
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: A month of classes and memberships covers all costs, you included
+    kind: revenue
+    covers: all
+  - id: weeks_26
+    name: 26 weeks survived
+    kind: weeks
+    target: 26
+  - id: weeks_52
+    name: 52 weeks survived
+    kind: weeks
+    target: 52
+  - id: weeks_78
+    name: 78 weeks survived
+    kind: weeks
+    target: 78
+  - id: weeks_104
+    name: 104 weeks survived
+    kind: weeks
+    target: 104
+officeStages:
+  - id: class_shop
+    name: The two-room shop
+    monthlyCents: 0
+  - id: wider_class_shop
+    name: The adjoining mat-class room
+    monthlyCents: 380000
+    oneOffCents: 3000000
+    moveWeeks: 6
+    qualityBonus: 0.1
+office:
+  noticeWeeks: 13
+  moveHoursPerWeek: 4
+organisedAt:
+  - covers_all_costs
+establishedAt:
+  monthsCoveringAll: 8
+loan:
+  bankName: Isartal Savings Bank
+  bridgeMonthsHint: 4
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  ownShare: 0.2
+  unprovenMaxCents: 15000000
+  revenueMultiple: 1
+  minCents: 1000000
+  maxCents: 25000000
+  stepCents: 500000
+  rateBp:
+    min: 450
+    max: 750
+  leverageSpreadBp: 100
+  termMonths:
+    - 60
+    - 84
+    - 120
+  graceMonths:
+    - 0
+    - 6
+    - 12
+  missedFeeCents: 5000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+  items:
+    - fit_out
+    - spin_bikes
+    - quiet_studio
+    - reformer_pilates
+    - recovery_room
+  workingCapitalMonths: 3
+bookings:
+  startWeekOfYear: 27
+  seasonNoise: 0.15
+  peakMonths:
+    - 1
+    - 9
+    - 10
+    - 11
+  policyWeeks: 4
+  platform:
+    name: Turnsaldo
+    commission: 0.15
+  website:
+    product: booking_app
+    repeatsFull: 100
+  partnershipHours: 6
+  partnershipCut: 0.1
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor:
+    viable: 1
+    mediocre: 0.7
+    trap: 0.35
+  fitBase: 0.35
+  segments:
+    young_professionals:
+      base:
+        min: 6
+        max: 20
+      unit: person
+      price:
+        peak: 2600
+        off: 2400
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 0
+        max: 0
+      season:
+        - 1.5
+        - 1.05
+        - 1
+        - 0.95
+        - 0.9
+        - 0.8
+        - 0.75
+        - 0.45
+        - 1.35
+        - 1.15
+        - 1
+        - 0.75
+      response:
+        platform: 0.15
+        website: 0.65
+        partnership: 0.05
+        outreach: 0.15
+        walkIn: 0.25
+      cancel: 0.03
+      strictConversion: 0.8
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.8
+    yoga_crowd:
+      base:
+        min: 3
+        max: 10
+      unit: person
+      price:
+        peak: 2600
+        off: 2400
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 0
+        max: 0
+      season:
+        - 1.05
+        - 1
+        - 1
+        - 1
+        - 1
+        - 1
+        - 0.9
+        - 0.65
+        - 1.15
+        - 1.1
+        - 1
+        - 0.9
+      response:
+        platform: 0.05
+        website: 0.55
+        partnership: 0.5
+        outreach: 0.1
+        walkIn: 0.25
+      cancel: 0.03
+      strictConversion: 0.8
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.8
+    corporate:
+      base:
+        min: 4
+        max: 18
+      unit: person
+      price:
+        peak: 2600
+        off: 2400
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 0
+        max: 0
+      season:
+        - 1.5
+        - 1.05
+        - 1
+        - 0.95
+        - 0.9
+        - 0.8
+        - 0.75
+        - 0.45
+        - 1.35
+        - 1.15
+        - 1
+        - 0.75
+      response:
+        platform: 0.1
+        website: 0.1
+        partnership: 0.7
+        outreach: 0.8
+        walkIn: 0
+      cancel: 0.03
+      strictConversion: 0.8
+      weatherSensitive: false
+      invoiced: true
+      reviewWeight: 0.8
+  products:
+    fit_out:
+      capacity: 0
+      serves: []
+      oneOffCents: 6000000
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    spin_bikes:
+      capacity: 0
+      serves: []
+      oneOffCents: 3000000
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+    spin_classes:
+      capacity: 0
+      serves:
+        - young_professionals
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+    strength_classes:
+      capacity: 0
+      serves:
+        - young_professionals
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+    yoga_classes:
+      capacity: 0
+      serves:
+        - yoga_crowd
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+    lunch_classes:
+      capacity: 0
+      serves:
+        - corporate
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+    reformer_pilates:
+      capacity: 0
+      serves:
+        - young_professionals
+        - yoga_crowd
+      oneOffCents: 3600000
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+      priceFactor: 1.4
+    booking_app:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    quiet_studio:
+      capacity: 0
+      serves: []
+      oneOffCents: 1200000
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+    corporate_plans:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    recovery_room:
+      capacity: 0
+      serves: []
+      oneOffCents: 3500000
+      monthlyCents: 18000
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+      wtpFactor:
+        young_professionals: 1.02
+        yoga_crowd: 1.01
+        corporate: 1.01
+    monthly_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    annual_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    off_peak_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    class_pack:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    intro_offer:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    premium_pack:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    annex_strength:
+      capacity: 0
+      serves:
+        - young_professionals
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+    annex_yoga:
+      capacity: 0
+      serves:
+        - yoga_crowd
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+    annex_lunch:
+      capacity: 0
+      serves:
+        - corporate
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: fit_out
+  roles:
+    spin:
+      name: Spin instructor
+      centsPerShift: 4000
+      units:
+        spin_classes: 20
+      available:
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+      founderHours: 2
+      contracts:
+        permanent:
+          centsPerWeek: 40000
+          shifts: 12
+          noticeWeeks: 4
+          quality: 0.1
+          max: 3
+        part_time:
+          centsPerWeek: 16000
+          shifts: 5
+          noticeWeeks: 2
+          quality: 0.05
+          max: 3
+        seasonal:
+          centsPerWeek: 44000
+          shifts: 12
+          months:
+            - 1
+            - 2
+            - 3
+            - 9
+            - 10
+            - 11
+          noticeWeeks: 4
+          quality: 0.08
+          max: 3
+    strength:
+      name: Strength instructor
+      centsPerShift: 4000
+      units:
+        strength_classes: 18
+        lunch_classes: 18
+        annex_strength: 18
+        annex_lunch: 18
+      available:
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+      founderHours: 2
+      contracts:
+        permanent:
+          centsPerWeek: 40000
+          shifts: 12
+          noticeWeeks: 4
+          quality: 0.1
+          max: 3
+        part_time:
+          centsPerWeek: 16000
+          shifts: 5
+          noticeWeeks: 2
+          quality: 0.05
+          max: 3
+        seasonal:
+          centsPerWeek: 44000
+          shifts: 12
+          months:
+            - 1
+            - 2
+            - 3
+            - 9
+            - 10
+            - 11
+          noticeWeeks: 4
+          quality: 0.08
+          max: 3
+    yoga:
+      name: Yoga teacher
+      centsPerShift: 4500
+      units:
+        yoga_classes: 18
+        annex_yoga: 18
+      available:
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+        - 30
+      contracts:
+        permanent:
+          centsPerWeek: 45000
+          shifts: 12
+          noticeWeeks: 4
+          quality: 0.1
+          max: 3
+        part_time:
+          centsPerWeek: 18000
+          shifts: 5
+          noticeWeeks: 2
+          quality: 0.05
+          max: 3
+        seasonal:
+          centsPerWeek: 49500
+          shifts: 12
+          months:
+            - 1
+            - 2
+            - 3
+            - 9
+            - 10
+            - 11
+          noticeWeeks: 4
+          quality: 0.08
+          max: 3
+    pilates:
+      name: Pilates instructor
+      centsPerShift: 5000
+      units:
+        reformer_pilates: 8
+      available:
+        - 14
+        - 14
+        - 14
+        - 14
+        - 14
+        - 14
+        - 14
+        - 14
+        - 14
+        - 14
+        - 14
+        - 14
+      contracts:
+        permanent:
+          centsPerWeek: 50000
+          shifts: 12
+          noticeWeeks: 4
+          quality: 0.1
+          max: 3
+        part_time:
+          centsPerWeek: 20000
+          shifts: 5
+          noticeWeeks: 2
+          quality: 0.05
+          max: 3
+        seasonal:
+          centsPerWeek: 55000
+          shifts: 12
+          months:
+            - 1
+            - 2
+            - 3
+            - 9
+            - 10
+            - 11
+          noticeWeeks: 4
+          quality: 0.08
+          max: 3
+  reviews:
+    qualityBase: 4.5
+    noiseSd: 0.2
+    understaffPenalty: 2
+    tiredPenalty: 0.5
+    cancelPenalty: 1
+    snagPenalty: 0.25
+    valueWeight: 1
+    reviewsPerUnit: 0.08
+    reviewsFull: 100
+  trials:
+    test_listing:
+      name: Quiet-slot listing trial
+      hours: 4
+      cents: 20000
+      weeks: 2
+      people: 60
+      reach:
+        young_professionals: 0.6
+        yoga_crowd: 0.15
+        corporate: 0.25
+      rate:
+        base: 0.01
+        perPain: 0.15
+      max: 3
+    free_week:
+      name: Trial-class week
+      hours: 8
+      cents: 30000
+      weeks: 1
+      people: 30
+      reach:
+        young_professionals: 0.4
+        yoga_crowd: 0.35
+        corporate: 0.25
+      rate:
+        base: 0.02
+        perPain: 0.25
+      repeat: true
+      max: 3
+  leisure:
+    wtpBasis: monthly
+    respectSlotPreferences: true
+    classStaffing: true
+    instructorWorkload:
+      maxClasses: 12
+      penaltyPerOverloadedClass: 0.5
+    slots:
+      - id: early
+        name: Early
+        hours: 12.5
+      - id: midday
+        name: Midday
+        hours: 10
+      - id: afternoon
+        name: Afternoon
+        hours: 15
+      - id: evening
+        name: Evening
+        hours: 20
+      - id: weekend
+        name: Weekend mornings
+        hours: 8
+    segments:
+      young_professionals:
+        slotShare:
+          early: 0.35
+          evening: 0.6
+          weekend: 0.05
+        visitsPerWeek: 2.5
+        memberShare: 0.85
+        churn: 0.012
+        crowdingChurn: 0.04
+        freshnessChurn: 0
+        priceChurn: 0.04
+        januaryFade: 0.08
+        waitlistAt: 3
+      yoga_crowd:
+        slotShare:
+          early: 0.25
+          midday: 0.2
+          weekend: 0.55
+        visitsPerWeek: 3
+        memberShare: 0.85
+        churn: 0.005
+        crowdingChurn: 0.04
+        freshnessChurn: 0
+        priceChurn: 0.04
+        januaryFade: 0.02
+        waitlistAt: 3
+      corporate:
+        slotShare:
+          midday: 0.65
+          evening: 0.3
+          afternoon: 0.05
+        visitsPerWeek: 1.5
+        memberShare: 0.95
+        churn: 0.005
+        crowdingChurn: 0.04
+        freshnessChurn: 0
+        priceChurn: 0.04
+        januaryFade: 0.02
+        waitlistAt: 3
+    products:
+      spin_classes:
+        capacity: {}
+        classPlaces: 20
+        classHours: 1
+        room: spin
+      strength_classes:
+        capacity: {}
+        classPlaces: 18
+        classHours: 1
+        room: studio
+        classPlacesWhen:
+          feature: reformer_pilates
+          places: 8
+      yoga_classes:
+        capacity: {}
+        classPlaces: 18
+        classHours: 1
+        room: studio
+        classPlacesWhen:
+          feature: reformer_pilates
+          places: 8
+      lunch_classes:
+        capacity: {}
+        classPlaces: 18
+        classHours: 0.5
+        room: studio
+        classPlacesWhen:
+          feature: reformer_pilates
+          places: 8
+      reformer_pilates:
+        capacity: {}
+        classPlaces: 8
+        classHours: 1
+        room: studio
+      annex_strength:
+        capacity: {}
+        classPlaces: 18
+        classHours: 1
+        room: annex
+        availableStages:
+          - wider_class_shop
+      annex_yoga:
+        capacity: {}
+        classPlaces: 18
+        classHours: 1
+        room: annex
+        availableStages:
+          - wider_class_shop
+      annex_lunch:
+        capacity: {}
+        classPlaces: 18
+        classHours: 0.5
+        room: annex
+        availableStages:
+          - wider_class_shop
+    crowdingPenalty: 0.6
+    quietBelow: 0.4
+    packedFrom: 0.85
+    opening:
+      areas:
+        - fit_out
+      requires: []
+    buildOut:
+      fit_out:
+        weeks: 8
+      quiet_studio:
+        weeks: 1
+        closes:
+          - strength_classes
+          - yoga_classes
+          - lunch_classes
+          - reformer_pilates
+      reformer_pilates:
+        weeks: 2
+        closes:
+          - strength_classes
+          - yoga_classes
+          - lunch_classes
+      recovery_room:
+        weeks: 3
+    instructors:
+      spin:
+        min: 0.15
+        max: 0.35
+      strength:
+        min: 0.1
+        max: 0.3
+      yoga:
+        min: 0.2
+        max: 0.45
+      pilates:
+        min: 0.1
+        max: 0.3
+    foundingFollowing:
+      segment: young_professionals
+      count:
+        min: 30
+        max: 60
+      weeks: 4
+    premiumNiche:
+      feature: reformer_pilates
+      offers:
+        - premium_pack
+      segments:
+        - young_professionals
+        - yoga_crowd
+      share:
+        min: 0.05
+        max: 0.65
+      wtpFactor: 1.5
+    aggregator:
+      name: Turnsaldo
+      payoutCents:
+        min: 900
+        max: 1300
+      capPerMonth: 8
+      noticeWeeks: 4
+      users:
+        young_professionals:
+          min: 80
+          max: 180
+        yoga_crowd:
+          min: 15
+          max: 45
+        corporate:
+          min: 30
+          max: 90
+      visitsPerWeek: 0.6
+      cannibalisation:
+        young_professionals: 0.15
+        yoga_crowd: 0.04
+        corporate: 0.12
+    memberships:
+      monthly_membership:
+        kind: monthly
+        priceCents: 13900
+        serves:
+          - young_professionals
+          - yoga_crowd
+        slots:
+          - early
+          - midday
+          - afternoon
+          - evening
+          - weekend
+        termWeeks: 0
+        noticeWeeks: 4
+        products:
+          - spin_classes
+          - strength_classes
+          - yoga_classes
+          - lunch_classes
+          - annex_strength
+          - annex_yoga
+          - annex_lunch
+      annual_membership:
+        kind: annual
+        priceCents: 11500
+        serves:
+          - young_professionals
+          - yoga_crowd
+        slots:
+          - early
+          - midday
+          - afternoon
+          - evening
+          - weekend
+        termWeeks: 52
+        noticeWeeks: 4
+        products:
+          - spin_classes
+          - strength_classes
+          - yoga_classes
+          - lunch_classes
+          - annex_strength
+          - annex_yoga
+          - annex_lunch
+      off_peak_membership:
+        kind: off_peak
+        priceCents: 7900
+        serves:
+          - young_professionals
+          - yoga_crowd
+        slots:
+          - early
+          - midday
+          - afternoon
+        termWeeks: 0
+        noticeWeeks: 4
+        products:
+          - spin_classes
+          - strength_classes
+          - yoga_classes
+          - lunch_classes
+          - annex_strength
+          - annex_yoga
+          - annex_lunch
+      class_pack:
+        kind: pack
+        priceCents: 23000
+        serves:
+          - young_professionals
+          - yoga_crowd
+        slots:
+          - early
+          - midday
+          - afternoon
+          - evening
+          - weekend
+        termWeeks: 0
+        noticeWeeks: 0
+        products:
+          - spin_classes
+          - strength_classes
+          - yoga_classes
+          - lunch_classes
+          - annex_strength
+          - annex_yoga
+          - annex_lunch
+        visits: 10
+        validWeeks: 26
+      intro_offer:
+        kind: intro
+        priceCents: 4900
+        serves:
+          - young_professionals
+          - yoga_crowd
+        slots:
+          - early
+          - midday
+          - afternoon
+          - evening
+          - weekend
+        termWeeks: 0
+        noticeWeeks: 0
+        products:
+          - spin_classes
+          - strength_classes
+          - yoga_classes
+          - lunch_classes
+          - annex_strength
+          - annex_yoga
+          - annex_lunch
+        validWeeks: 3
+        convert: 0.5
+      corporate_plans:
+        kind: monthly
+        priceCents: 8000
+        serves:
+          - corporate
+        slots:
+          - early
+          - midday
+          - afternoon
+          - evening
+          - weekend
+        termWeeks: 0
+        noticeWeeks: 4
+        products:
+          - spin_classes
+          - strength_classes
+          - yoga_classes
+          - lunch_classes
+          - annex_strength
+          - annex_yoga
+          - annex_lunch
+      premium_pack:
+        kind: pack
+        priceCents: 32000
+        serves:
+          - young_professionals
+          - yoga_crowd
+        slots:
+          - early
+          - midday
+          - afternoon
+          - evening
+          - weekend
+        termWeeks: 0
+        noticeWeeks: 0
+        products:
+          - reformer_pilates
+        visits: 10
+        validWeeks: 26
+  assets:
+    spin_bikes:
+      name: Twenty spin bikes
+      products:
+        - spin_classes
+      buy:
+        product: spin_bikes
+        upkeepMonthlyCents: 10000
+        crewWeekCents: 0
+        breakdown:
+          weekly: 0
+          perYear: 0
+          weeks:
+            min: 1
+            max: 1
+          repairCents: 0
+        ageYears: 0
+        valueLossPerYear: 0.1
+      lease:
+        seasonCents: 1200000
+        upfrontShare: 0
+        months:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        minMonths: 12
+        crewWeekCents: 0
+modes:
+  long: {}
