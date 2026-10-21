@@ -3,7 +3,7 @@
 ## Current
 
 Step: 2.4 Second and last scenario-value round applied.
-Last commit: HEAD, Plan 5: apply the final Ausgesperrt scenario-value round.
+Last commit: HEAD, Plan 5: refresh seed examples after the final value round.
 Next action: Finish the second value-round measurement (session 79279) at /tmp/plan5-ausgesperrt-values-2.log and tuning/ausgesperrt-values-2.md; evaluate every target before considering the single formula allowance. Refresh seeds/full tests after final outcome changes, then the once-only step 2 event table. Full report remains reserved for step 6.
 
 ## Checklist
@@ -17,6 +17,8 @@ Next action: Finish the second value-round measurement (session 79279) at /tmp/p
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks
+
+- Final value-round seed regeneration complete: 171 examples, all 172 coverage/replay tests pass; /tmp/plan5-values-2-seeds.log and /tmp/plan5-values-2-seed-tests.log. Eight Ausgesperrt examples changed; every protected seed row is byte identical. Full tests remain pending at the phase gate.
 
 - Value round 2: lint/typechecks pass; 235 focused content and bot tests pass (21 skipped). Main measurement running with two workers; /tmp/plan5-ausgesperrt-values-2.log. No engine/shared-bot changes in either value round.
 
