@@ -798,6 +798,7 @@ export const LeisureSchema = z
         classPlacesWhen: z.object({ feature: Id, places: z.number().int().positive() }).optional(),
         classHours: z.number().positive().optional(),
         room: Id.optional(),
+        availableStages: z.array(Id).min(1).optional(),
       }),
     ),
     instructors: z.record(Id, ShareRange).optional(),
@@ -1796,6 +1797,10 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         if (!featureIds.has(id)) issue(`unknown capacity upgrade ${id}`, ['bookings', 'leisure'])
       if (leisure.premiumNiche && !featureIds.has(leisure.premiumNiche.feature))
         issue('unknown premium niche feature', ['bookings', 'leisure'])
+      for (const product of Object.values(leisure.products))
+        for (const id of product.availableStages ?? [])
+          if (!s.officeStages.some((stage) => stage.id === id))
+            issue(`unknown class stage ${id}`, ['bookings', 'leisure'])
       for (const product of Object.values(leisure.products))
         if (product.classPlacesWhen && !featureIds.has(product.classPlacesWhen.feature))
           issue(`unknown class conversion ${product.classPlacesWhen.feature}`, [

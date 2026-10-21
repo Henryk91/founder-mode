@@ -1191,3 +1191,9 @@ people,and do not pretend that all cover is one person.
 and class counts. Public `LeisureView.instructorWork` copies those loads and the
 stated maximum;the review coefficient is not public. These optional fields and
 calculations do not exist for earlier games without the content block.
+
+Optional `leisure.products[id].availableStages` restricts its physical capacity
+to those actually occupied office stages. Prepared classes cannot use an annex
+before the move completes. The public timetable optionally reports `available`;
+without the block,no field or restriction is added. Distinct annex class aliases
+share an annex room-hour budget and need their own instructor coverage.

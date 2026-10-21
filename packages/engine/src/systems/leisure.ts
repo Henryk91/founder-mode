@@ -331,6 +331,7 @@ export function leisureClassPlaces(s: GameState, id: string, week: number): numb
 export function leisureCapacity(s: GameState, id: string, slot: string, week: number): number {
   const p = cfgOf(s)?.products[id]
   if (!p || !readyAt(s, id, week) || !leisureOpen(s, id, week)) return 0
+  if (p.availableStages && !p.availableStages.includes(stageInEffect(s).id)) return 0
   const required = s.scenario.bookings?.products[id]?.requires
   if (required && !readyAt(s, required, week)) return 0
   const places = leisureClassPlaces(s, id, week)
@@ -934,6 +935,9 @@ export function leisureView(s: GameState): LeisureView | null {
         name: name(id),
         room: p.room ?? null,
         places: leisureClassPlaces(s, id, s.week),
+        ...(p.availableStages
+          ? { available: p.availableStages.includes(stageInEffect(s).id) }
+          : {}),
         ...(l.classCoverage?.[id] ? { coveredClasses: { ...l.classCoverage[id] } } : {}),
         classes: { ...l.timetable[id] },
       })),

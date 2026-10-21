@@ -3,7 +3,7 @@
 ## Current
 
 Step: isolated step4 engine groundwork passes;fitness content/source integration next.
-Last commit: HEAD, Plan 5: track identified instructor class workloads.
+Last commit: HEAD, Plan 5: gate adjoining-room classes on actual occupancy.
 Next action: In /private/tmp/founder-mode-plan5-fitness,Integrate fitness content/source estimates,next bots/UI;engine groundwork now includes identified-instructor fatigue(63 focused checks and lint pass),alongside300 content/engine checks and real opening replay. Do not merge until venue phase gate/tag. Venue worktree runs main3413,protected99011,event95560,full tests63848 on frozen4b03bd2. Monitor all;full report only step6.
 
 ## Checklist
@@ -55,3 +55,5 @@ Class-aware staffing passes74 focused checks and lint. Coverage is public;empty 
 Premium/following groundwork committed with schema/types:actual paid preference,interview signal,finite first-month enquiries,public actual cohort counts.300 focused checks pass,24 skips;lint passes. Founding30–60 is adapted as enquiries subject to paid-offer conversion,not guaranteed free members. No scenario registration or fitness report yet.
 
 Instructor workload:founder across roles,named contracts individually;flexible cover is a per-class pool.63 focused engine tests and lint pass. No fitness content registered,values/formula0/2 and0/1,no report. Venue final/proof/event source is isolated and unchanged.
+
+Annex capacity now waits for its actual occupied stage;public availability is explicit.64 focused engine checks pass;lint/typechecks pass after fixing the fixture to inherit parsed stage defaults. Stage2 mat classes share one annex room;extra spin equipment deferred. Next:integrate fitness content with these real limits.
