@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.8 Fabriketage value round2 validated;measurement next.
-Last commit: HEAD, Plan 5: track venue second-round measurement.
-Next action: Continue at /private/tmp/founder-mode-plan5-venue. Round2 passes255 focused checks(24 skips) and lint;all29 main strategies run(session3413), on1,000 test seeds;budget values2/2,formula0/1 in venue/BUDGET.md. Finish protected proof(session99011);then final venue tuning,seeds,full tests,once-only venue event table and step3 report/merge/tag. Full report only step6.
+Step: 3.9 venue final main/full tests pass;Ausgesperrt proof and event table running.
+Last commit: HEAD, Plan 5: keep final venue results and isolated fitness progress visible.
+Next action: Finish protected Ausgesperrt main(session99011 controller) and once-only venue event table(session95560) in /private/tmp/founder-mode-plan5-venue. All nine older reports match;final main3413 complete. Record both remaining results,then merge/tag plan5-venue. Fitness groundwork is isolated at /private/tmp/founder-mode-plan5-fitness,603ece3;no merge until step3 gate. Full report only step6.
 
 ## Checklist
 
@@ -41,3 +41,9 @@ The three-attempt WebKit heading stop is historical. Resumed repairs reserve log
 ## Stopped
 
 Round1 complete:careful42.7%±3.1,top45.0%. T5 now passes;T13 at limit. Open:T3,T6,T10,T11,T14,T15,V1. Round2 changes only paid-hold acceptance,wedding strict acceptance and snag review penalty. Seeds regenerated for round1;regenerate after final values.
+
+Event table authorised by CLAUDE event-content budget and plan1.6 despite expected duration over15 minutes. Frozen round2 source;no restart or full report.
+
+Final frozen-source suite passes86 files/1,691 tests,24 skips,/tmp/plan5-venue-final-full-tests.log. Lint passes.189 seed examples regenerated;all earlier rows byte-identical. Venue fingerprint c042cb5934228e6b,engine0.14.0. Fitness preparation is isolated at /private/tmp/founder-mode-plan5-fitness,branch plan5-fitness-work;no merge until step3 gate.
+
+Final venue main:careful46.6%±3.1(at limit),top47.6%;all V targets pass,V2 at limit. T3,T6,T11,T13,T14,T15 remain open;closest evidence/options in reports/step3-venue.md. Values2/2,formula0/1 deliberately unused. Baseline/fingerprint frozen for step4.

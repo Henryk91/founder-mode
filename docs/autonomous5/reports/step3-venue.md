@@ -1,6 +1,6 @@
 # Step3: Fabriketage
 
-Status: isolated branch plan5-venue-work;second tuning round running,phase gate incomplete.
+Status: implementation/tuning/full tests complete;protected Ausgesperrt proof and event table still running. Phase gate incomplete.
 
 Fabriketage is a104-week event-venue game with a single shared hall,company,
 wedding and private-party calendars,forward sales and refundable advances.
@@ -52,26 +52,83 @@ WebKit and375/390/430/1440px,with no cutoff-test weakening. All16 leisure termin
 checks passed;the explicit roof lesson then passed both venue390/1440px cases.
 Equipment/bot repairs pass109 focused checks. Round1 content/bot checks pass255,
 with24 skipped,and lint/typechecks pass. Before round1,189 generated ending examples
-passed190 checks and every earlier scenario row was byte-identical. Final seed/full
-suite checks are pending.
+passed190 checks and every earlier scenario row was byte-identical. Final frozen-source suite passes86 files/1,691 tests,24 skips;lint/typechecks
+pass.189 ending examples are regenerated and every earlier row is unchanged.
 
 Screenshots remain outside the repository at
 /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue
 and founder-mode-leisure. The historical browser stop was explicitly resumed by
 the user and is resolved;logs and decisions remain recorded.
 
-The protected main-only proof is still running on1,000 test seeds per strategy,
-one scenario per process. All nine old content fingerprints match the baseline;
+The protected main-only proof uses1,000 test seeds per strategy,one scenario per
+process. All nine older main reports match exactly apart from timings. Ausgesperrt
+is still running. All nine old content fingerprints match the baseline;
 Ausgesperrt also matches ea908900d9f19996. Full proof report follows completion.
 
-## Round1 results
+## Final main targets
 
-Main only,29 strategies,1,000 test seeds,two workers,427 seconds wall. Careful
-42.7%±3.1;top strict45.0%. T5 passes90.9%/98.1% and T13 passes at the limit
-31.2%±2.9,gap−11.5±2.1. T7 and V2 also pass at their limits. Open targets are
-T3,T6,T10,T11,T14,T15,V1. Full raw rows remain in the isolated branch.
+[Final raw report](../venue/fabriketage-values-2.md):29 strategies,main only,
+1,000 test seeds,two workers,691 seconds wall/1,379 seconds total play under
+concurrent proof/test load. Slowest100.5 seconds per1,000. Careful46.6%±3.1;
+top strict47.6%±3.1,no-tests0.0%. T1,T7,T10,V2 pass at the limit,not by a
+claimed advantage smaller than their margin. All four venue targets pass.
 
-Round2 uses the remaining value allowance on paid-hold acceptance,wedding strict
-acceptance and unresolved-snag reviews. No formula used. Money,demand,lead times
-and financing unchanged.255 focused checks and lint pass. Measurement running;
-no venue event table or full report has run.
+| Target | Final result | 95% margin | Status |
+|---|---|---|---|
+| T1 | 46.6% | ±3.1 | at limit |
+| T2 | top tourism_always_strict 47.6%; no tests 0.0% | ±3.1; ±0.0 | pass |
+| T3 | 62.2 points (companies 72.0%, private_parties 55.7%, weddings 9.7%) | ±5.8 | fail |
+| T4 | week 2.0 from opening | n/a | pass |
+| T5 | 90.9%; year 2 98.0% | n/a | pass |
+| T6 | reading +15.4, blind effort +15.9 | ±2.3 | fail |
+| T7 | +1.6 | ±1.6 | at limit |
+| T8 | -37.2 | ±3.0 | pass |
+| T9 | over -35.2, under -5.6 | ±3.0, ±1.7 | pass |
+| T10 | -1.8 | ±1.4 | at limit |
+| T11 | strict ahead by +1.0 overall; companies +0.0, private_parties +3.2, weddings -0.3 | ±1.5 | fail |
+| T12 | 100.5 s per 1000 runs | n/a | pass |
+| T13 | 32.4%; gap -14.2 | ±2.9; ±2.2 | fail |
+| T14 | permanent +0.0 (signed in 12.1%); seasonal -0.3 (signed in 39.7%); part time -0.4 (signed in 45.1%) | ±0.0; ±0.9; ±1.2 | fail |
+| T15 | second loan +40.6 against none (second loan taken in 100.0% of runs) | ±3.1 | fail |
+| T16 | -46.6 | ±3.1 | pass |
+| T17 | ending owing: reckless 100.0%, careful 50.3% (gap +49.7); careful loan-caused misses 2.2% | ±3.1; ±0.9 | pass |
+| T18 | 100.0% borrowed; median interest and fees 21137 EUR | n/a | pass |
+| E1 | 94.0% of 466 wins, 3.2% of 534 losses; median week 55 | ±2.2, ±1.5; ±1.0 | pass |
+| V1 | free -4.5; none -4.5 | ±1.8; ±1.9 | pass |
+| V2 | companies -2.4; weddings -46.5 | ±2.7; ±3.1 | at limit |
+| V3 | restricted 69.6% (397/570); careful mean net 22839 EUR/run | ±3.8; ±1856 EUR | pass |
+| V4 | -38.5 | ±3.0 | pass |
+
+T11 does not pass:strict's wedding−0.3 is inside its uncertainty and does not
+establish a flexible advantage. T14 requires a gain beyond the paired margin;
+zero permanent effect does not pass. T6 reading/blind gains both compare with
+default answers,not with each other. No threshold was restated to hide a miss.
+
+## Budget and open issues
+
+Both value rounds used conservatively for every target. Formula allowance0/1 is
+deliberately unused:an allowance is a cap,not a quota,and no justified formula
+repair was identified. No playability stop applies. Revisit the six failures once
+in step6 with its fresh budget. Keep real prices/long lead times and avoid an
+arbitrary loan or strategy penalty.
+
+| Open target | Closest corrected evidence | Options for step6 |
+|---|---|---|
+| T3 | Round1 spread58.8±5.8;final62.2±5.8,markets72.0/55.7/9.7 | Wedding long-lead cash,forward deposits and viable mixed calendar;do not exclude weddings from the target |
+| T6 | Final reading+15.4/blind+15.9±2.3;blind still exceeds one-third of reading | More contextual real choices with observable consequences;review reader decisions before changing values |
+| T11 | Final strict+1.0±1.5 overall;company0.0/private+3.2/wedding−0.3 | Genuine cancellation frequency/deposit/commitment trade-offs;small split signs are inconclusive |
+| T13 | Round1 passes at limit31.2%±2.9,gap−11.5±2.1;final32.4%±2.9,gap−14.2±2.2 | Teach bridge costs/forward calendars through the public UI;inspect default-reader/channel behaviour |
+| T14 | Permanent0 throughout;round1 seasonal−0.3±1.4/part-time−0.2±1.2 on signed seeds | Contract utilisation/idle periods and founder cover;do not label insignificant savings a win |
+| T15 | Closest corrected later loan+35.9±3.0;final+40.6±3.1,100% take it | Initial financing scope and timing of AV/working capital;retain actual borrowing costs instead of adding a penalty |
+
+Final V3:uninsulated restriction397/570 late-active runs,69.6%±3.8;careful mean
+actual late net22,839 EUR/run±1,856 including dedicated setup. V1 free/no holds
+each lose4.5±1.8/1.9. Roof first-year loses38.5±3.0. These are paired main
+contributions,not rankings from the event-only table.
+
+## Remaining gate
+
+The once-only venue event table is running:events only,1,000 test seeds,two
+workers,session95560. Do not restart or rerun. Main snapshots above stay the
+target judgement. Protected Ausgesperrt comparison is also running;finish and
+record both before merging/tagging plan5-venue. Full report NEVER run;step6 only.
