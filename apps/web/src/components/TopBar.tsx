@@ -159,9 +159,21 @@ function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | 
       shrink()
       // WebKit can settle flex widths after the font-size write; finish against that layout.
       cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(() => {
-        if (live) shrink(false)
-      })
+      let quietFrames = 0
+      const settle = () => {
+        if (!live) return
+        const size = parseFloat(getComputedStyle(el).fontSize)
+        const overflow =
+          Math.max(range.getBoundingClientRect().width, el.scrollWidth) > el.clientWidth
+        if (overflow && size > MIN_NAME_PX) {
+          el.style.fontSize = `${Math.max(MIN_NAME_PX, size - 0.5)}px`
+          quietFrames = 0
+        } else quietFrames++
+        // Font shaping can finish after the size write. Require two stable painted
+        // layouts; further corrections only shrink, so no reset/resize oscillation.
+        if (quietFrames < 2) frame = requestAnimationFrame(settle)
+      }
+      frame = requestAnimationFrame(settle)
     }
     fit()
     void document.fonts?.ready.then(() => live && fit())

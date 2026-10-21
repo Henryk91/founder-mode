@@ -928,3 +928,5 @@ AUTONOMOUS: stop under section1.2.1 after three honest repairs of the same WebKi
 ### Plan 5 step 3: resumed heading repair
 
 AUTONOMOUS: the user requested continuation after the recorded three-attempt stop. Reserve a long name’s logo space before shrinking,and include both glyph and block overflow in the fit check;this preserves the full name,minimum12px and existing tests. All24 venue browser cases and lint/typechecks pass on the first resumed repair;full phase suite is running. No game values or bot reports changed.
+
+AUTONOMOUS: the complete suite exposed seven earlier WebKit heading cutoffs beyond the passing venue matrix. Correct the painted text size over successive frames without resetting between corrections;all80 venue/earlier established cases and lint now pass. The initial full suite retains two unrelated follow-ups:venue seed examples and hired-equipment offer preparation. No test was weakened.
