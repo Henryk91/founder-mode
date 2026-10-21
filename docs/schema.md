@@ -1133,3 +1133,9 @@ offers therefore need an explicit paid product restriction rather than giving
 every unlimited membership free premium equipment access. No hidden fields
 are introduced by these config additions,apart from optional public
 `LeisureView.members[].products`,a copied list of the stated allowed class products.
+
+Optional `leisure.products[id].classPlacesWhen: { feature, places }` replaces
+that class's normal seat count once the named feature is ready. Capacity remains
+class count times actual seats;shared room/timetable hours do not increase. The
+public timetable's `places` reports the actual installed seat count. Before the
+conversion,and without this block,the original capacity and view are unchanged.

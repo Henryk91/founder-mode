@@ -788,6 +788,7 @@ export const LeisureSchema = z
         comfort: z.record(Id, z.number().int().positive()).optional(),
         // A class has these places, multiplied by the timetable's class count.
         classPlaces: z.number().int().positive().optional(),
+        classPlacesWhen: z.object({ feature: Id, places: z.number().int().positive() }).optional(),
         classHours: z.number().positive().optional(),
         room: Id.optional(),
       }),
@@ -946,6 +947,8 @@ export const LeisureSchema = z
         issue('minimum areas exceeds configured opening areas')
     for (const product of Object.values(l.products)) {
       if (product.classPlaces && !product.classHours) issue('classes need their hours')
+      if (product.classPlacesWhen && !product.classPlaces)
+        issue('class conversion needs base places')
       for (const id of [...Object.keys(product.capacity), ...Object.keys(product.comfort ?? {})]) {
         if (!slots.has(id)) issue(`unknown slot ${id}`)
         if ((product.comfort?.[id] ?? 0) > (product.capacity[id] ?? 0))
@@ -1761,6 +1764,12 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
           if (!bk.products[id]) issue(`unknown noise product ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.slotUpgrades ?? {}))
         if (!featureIds.has(id)) issue(`unknown capacity upgrade ${id}`, ['bookings', 'leisure'])
+      for (const product of Object.values(leisure.products))
+        if (product.classPlacesWhen && !featureIds.has(product.classPlacesWhen.feature))
+          issue(`unknown class conversion ${product.classPlacesWhen.feature}`, [
+            'bookings',
+            'leisure',
+          ])
       for (const id of Object.keys(leisure.space?.uses ?? {}))
         if (!featureIds.has(id)) issue(`unknown space product ${id}`, ['bookings', 'leisure'])
       for (const map of [

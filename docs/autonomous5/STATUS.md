@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: isolated step4 membership pricing/access fixtures pass;venue gate still running.
-Last commit: HEAD, Plan 5: align monthly budgets and paid membership access.
-Next action: In /private/tmp/founder-mode-plan5-fitness,Continue optional room conversion/premium niche/founding cohort mechanics with fixtures and schema docs;monthly pricing/access passes68 tests and lint. Do not merge until venue phase gate/tag. Venue worktree runs main3413,protected99011,event95560,full tests63848 on frozen4b03bd2. Monitor all;full report only step6.
+Step: isolated step4 room conversion fixtures pass;class-aware staffing next.
+Last commit: HEAD, Plan 5: convert class seats within existing room hours.
+Next action: In /private/tmp/founder-mode-plan5-fitness,Repair optional class/slot staffing before premium niche/founding cohort work;71 pricing/access/conversion tests and lint pass. Do not merge until venue phase gate/tag. Venue worktree runs main3413,protected99011,event95560,full tests63848 on frozen4b03bd2. Monitor all;full report only step6.
 
 ## Checklist
 
@@ -47,3 +47,5 @@ Event table authorised by CLAUDE event-content budget and plan1.6 despite expect
 Fitness preparation:targets/gaps/file list in fitness/IMPLEMENTATION.md. No registered fitness content or measurement. Turnsaldo naming,showers-in-fitout and employee membership units recorded for review.
 
 Fitness membership groundwork:5 new meaningful fixtures plus63 existing checks pass;schema/types/public offer products updated together. No fitness scenario registered or measured. Venue frozen suite passes86 files/1,691 tests,24 skips;all nine old protected reports match,Ausgesperrt still running.
+
+Room conversion:3 new cases plus68 existing pass;actual public seats18to8,no extra room hours. Staffing gap and fatigue identity constraint documented in fitness/IMPLEMENTATION.md. Venue main final46.6%±3.1,top47.6%,all V targets pass;event95560/protected Ausgesperrt proof99011 remain running.
