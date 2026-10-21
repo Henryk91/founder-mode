@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.8 Fabriketage value round2 validated;measurement next.
-Last commit: HEAD, Plan 5: calibrate paid options and wedding flexibility.
-Next action: Continue at /private/tmp/founder-mode-plan5-venue. Round2 passes255 focused checks(24 skips) and lint;run all29 main strategies on1,000 test seeds;budget values2/2,formula0/1 in venue/BUDGET.md. Finish protected proof(session99011);then final venue tuning,seeds,full tests,once-only venue event table and step3 report/merge/tag. Full report only step6.
+Step: 3.8 venue values frozen;main,protected proof and event table running.
+Last commit: HEAD, Plan 5: freeze venue values and record once-only event budget.
+Next action: Continue at /private/tmp/founder-mode-plan5-venue. Round2 main runs(session3413),all29 strategies on1,000 test seeds;values2/2,formula0/1 deliberately unused. Required events-only table starts once on frozen source. Finish protected proof(session99011);then final seeds/full tests and step3 report/merge/tag after event table completes. Full report only step6.
 
 ## Checklist
 
@@ -41,3 +41,5 @@ The three-attempt WebKit heading stop is historical. Resumed repairs reserve log
 ## Stopped
 
 Round1 complete:careful42.7%±3.1,top45.0%. T5 now passes;T13 at limit. Open:T3,T6,T10,T11,T14,T15,V1. Round2 changes only paid-hold acceptance,wedding strict acceptance and snag review penalty. Seeds regenerated for round1;regenerate after final values.
+
+Event table authorised by CLAUDE event-content budget and plan1.6 despite expected duration over15 minutes. Frozen round2 source;no restart or full report.
