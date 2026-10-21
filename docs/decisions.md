@@ -930,3 +930,9 @@ AUTONOMOUS: stop under section1.2.1 after three honest repairs of the same WebKi
 AUTONOMOUS: the user requested continuation after the recorded three-attempt stop. Reserve a long name’s logo space before shrinking,and include both glyph and block overflow in the fit check;this preserves the full name,minimum12px and existing tests. All24 venue browser cases and lint/typechecks pass on the first resumed repair;full phase suite is running. No game values or bot reports changed.
 
 AUTONOMOUS: the complete suite exposed seven earlier WebKit heading cutoffs beyond the passing venue matrix. Correct the painted text size over successive frames without resetting between corrections;all80 venue/earlier established cases and lint now pass. The initial full suite retains two unrelated follow-ups:venue seed examples and hired-equipment offer preparation. No test was weakened.
+
+### Plan 5 step 3: equipment preparation and missing comparison
+
+AUTONOMOUS: the full-suite freelancer failure exposed a physical-equipment dependency incorrectly treated like a legal company prerequisite. Leisure offers may be prepared before acquiring equipment; actual date/service gating still requires it. Asset purchases and non-leisure preparation keep their prior prerequisites. The careful venue bot does not reinsert an already hired purchase dependency. All109 focused engine/bot/freelancer checks and lint pass.
+
+AUTONOMOUS: add a venue-only retained-cash variant for T15,leaving the earlier-games report paths/text intact. Venue readers permit useful no-cost work without an arbitrary cash threshold and preserve one month of fixed costs for paid choices. These are sensible-bot/mechanic repairs before any value tuning;measure a corrected main baseline before changing estimates.

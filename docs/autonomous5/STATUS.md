@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.6 heading regression matrix passes; repair two phase-test gaps.
-Last commit: HEAD, Plan 5: settle shaped heading text across painted layouts.
-Next action: Fix venue equipment preparation in the freelancer diagnostic and add its T15 cash-funded comparison,then regenerate seeds and finish phase checks/tuning. Protected main proof is running(session99011,/tmp/plan5-protected-step3.log);three games already match. Full report only once in step6.
+Step: 3.7 equipment/freelancer repair and T15 comparison implemented.
+Last commit: HEAD, Plan 5: respect hired equipment and add venue financing comparison.
+Next action: Measure corrected venue main on1,000 test seeds(all29 strategies),finish seed regeneration(session51958) and replay checks,then tune within the untouched budget. Protected main proof continues(session99011). Heading matrix80/80 and109 focused gap tests pass;lint passes. No venue event table/full report yet.
 
 ## Checklist
 
@@ -74,3 +74,7 @@ User requested continuation. The isolated375px diagnosis fit at15px while the ea
 ## Phase-test follow-up
 
 Initial full suite:83 files passed,3 failed;1,660 tests passed,9 failed,24 skipped,/tmp/plan5-venue-full-tests-resumed.log. Seven heading failures are now repaired:all80 established/venue browser cases pass,/tmp/plan5-heading-settle-browser.log;lint passes,/tmp/plan5-heading-settle-lint.log. Two remaining failures are missing venue seed examples and a freelancer diagnostic preparing wedding coordination before owned furniture. No unexplained protected outcome change.
+
+## Equipment follow-up
+
+The freelancer failure is repaired on its first attempt:equipment belongs to service readiness,not preparation of a leisure offer.109 focused tests pass,/tmp/plan5-venue-gaps-tests.log;lint passes,/tmp/plan5-venue-gaps-lint.log. Venue-only T15 variant and no-cost reader correction are ready. No scenario values or tuning rounds used. Earlier unconfigured paths are retained;proof is in progress.

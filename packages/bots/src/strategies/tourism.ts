@@ -529,11 +529,14 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
   }
 
   /** Products and what they require, the required first (a restaurant's fit-out). */
-  const withRequired = (ids: string[]) => {
+  const withRequired = (ids: string[], view: PlayerView) => {
     const out: string[] = []
     for (const id of ids) {
       const req = cfg.products[id]?.requires
-      if (req && !out.includes(req)) out.push(req)
+      const supplied =
+        cfg.leisure?.noise &&
+        view.bookings?.assets.some((a) => a.buyProduct === req && a.option !== 'none' && !a.broken)
+      if (req && !supplied && !out.includes(req)) out.push(req)
       if (!out.includes(id)) out.push(id)
     }
     return out
@@ -1241,7 +1244,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           : []),
       ]
       const baseBuilding = view.loan
-        ? withRequired([...new Set([...toBuild, ...bought, ...early])])
+        ? withRequired([...new Set([...toBuild, ...bought, ...early])], view)
         : toBuild
       const building = cfg.leisure
         ? leisureBuildOrder(view, baseBuilding, rule.buildAll)
@@ -1437,6 +1440,12 @@ export const tourismForced = (eventId: string, choiceId: string): Strategy =>
   )
 
 export const TOURISM_STRATEGIES: Strategy[] = [
+  tourism(
+    'venue_no_later_loan',
+    'Keeps the venue startup loan but funds later investments from retained cash.',
+    { ...CAREFUL_TOURISM, leisure: { laterLoans: false } },
+    ['fabriketage'],
+  ),
   tourism(
     'venue_free_holds',
     'Grants every date hold freely.',

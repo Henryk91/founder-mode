@@ -445,6 +445,10 @@ export function waitsForCompany(state: GameState, product: FeatureId): boolean {
   const buys = Object.values(cfg.assets).flatMap((a) => (a.buy ? [a.buy.product] : []))
   const p = cfg.products[product]
   if (!p?.requires) return false
+  // A leisure offer can be prepared before its physical equipment is bought or hired.
+  // Equipment availability is checked on the actual service date instead. Purchasing
+  // an asset still honours its own legal/company prerequisite, as do the boat games.
+  if (cfg.leisure && !buys.includes(product) && buys.includes(p.requires)) return false
   if (!buys.includes(product) && !buys.includes(p.requires)) return false
   return !state.product.features.some((f) => f.id === p.requires && f.shippedWeek !== null)
 }
