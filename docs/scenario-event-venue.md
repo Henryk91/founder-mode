@@ -275,3 +275,20 @@ These are real time/cash/rest choices,not empty pacing messages. Other prices,
 lease/build/staff costs,demand and lead times stay at the corrected baseline.
 Conservatively charge round1 to all targets;one value round and one formula allowance
 remain. Measure all29 strategies,main only,1,000 test seeds. Event table once at end.
+
+### Value round2, commitment and repairs
+
+Round1 careful42.7%,top45.0%;T5 passes90.9% early decision coverage and T13
+passes at the limit. V1 remains free+0.0±1.7/none−1.0±1.8;strict terms lead
+in every market(+2.5±1.8 overall),and review-blind loses only0.5±1.3.
+
+| Estimate | Round1 | Round2 | Reason |
+|---|---:|---:|---|
+| Paid-hold acceptance,company/wedding/private | .80/.85/.90 | .95/.90/.95 | A credited500 EUR payment is a smaller obstacle than the earlier acceptance estimates imply;free dates still attract everyone and can block the calendar |
+| Wedding strict-term acceptance | .82 | .65 | Couples planning26–70 weeks ahead value a refundable option more than short-lead corporate/private bookings;strict retains the deposit |
+| Unresolved snag review penalty | .30 | .50 stars per snag | A visible unresolved venue fault should affect reviews materially;fixing it keeps its existing hours and cost |
+
+These are gameplay estimates,not research claims. Quoted money,market demand,
+lead times,payroll,deposit shares and loan terms stay fixed. Conservatively debit
+round2 to all targets. No formula allowance used;all29 main strategies measured
+on1,000 test seeds. The event table remains once-only after final values.
