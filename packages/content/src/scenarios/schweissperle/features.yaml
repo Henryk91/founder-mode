@@ -1,0 +1,140 @@
+- id: fit_out
+  name: The studio fit-out
+  buildHours: 40
+  bugsOnShip:
+    min: 0
+    max: 1
+  mention: Safe floors, changing rooms and working showers before the first class.
+- id: spin_classes
+  name: Spin classes
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A reliable early or evening class, with a bike I can actually book.
+- id: strength_classes
+  name: Strength and HIIT classes
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Proper strength classes, taught by someone who knows what the weights are for.
+- id: yoga_classes
+  name: Yoga classes
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A calm room and a teacher I can hear without the spin class joining in.
+- id: reformer_pilates
+  name: Reformer pilates
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: I would try a paid reformer class. Please show the price before counting my interest.
+- id: lunch_classes
+  name: Short lunch classes
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A class that fits inside a lunch break, including the walk back to work.
+- id: booking_app
+  name: Booking app and waitlists
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 1
+  mention: Let me see a real place, book it and cancel it without sending three messages.
+- id: quiet_studio
+  name: Sound insulation between rooms
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: The quiet part should not contain somebody else’s sprint interval.
+- id: corporate_plans
+  name: Company plans and invoices
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: One company invoice, clear places and a joining list that HR can understand.
+- id: recovery_room
+  name: Recovery room
+  buildHours: 20
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: The sauna looks lovely in photographs. I would still join for the classes.
+- id: spin_bikes
+  name: Twenty spin bikes
+  buildHours: 8
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Show the price, the included classes and the term before I agree.
+- id: monthly_membership
+  name: Monthly unlimited
+  buildHours: 1
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Show the price, the included classes and the term before I agree.
+- id: annual_membership
+  name: 12-month unlimited
+  buildHours: 1
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Show the price, the included classes and the term before I agree.
+- id: off_peak_membership
+  name: Off-peak unlimited
+  buildHours: 1
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Show the price, the included classes and the term before I agree.
+- id: class_pack
+  name: Ten-class pack
+  buildHours: 1
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Show the price, the included classes and the term before I agree.
+- id: intro_offer
+  name: Three-week intro
+  buildHours: 1
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Show the price, the included classes and the term before I agree.
+- id: premium_pack
+  name: Ten premium reformer classes
+  buildHours: 1
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Show the price, the included classes and the term before I agree.
+- id: annex_strength
+  name: Strength in the adjoining room
+  buildHours: 5
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: This class needs the adjoining room open. It shares the annex timetable.
+- id: annex_yoga
+  name: Yoga in the adjoining room
+  buildHours: 5
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: This class needs the adjoining room open. It shares the annex timetable.
+- id: annex_lunch
+  name: Lunch classes in the adjoining room
+  buildHours: 5
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: This class needs the adjoining room open. It shares the annex timetable.

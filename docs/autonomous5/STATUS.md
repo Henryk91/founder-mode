@@ -1,59 +1,40 @@
-# Autonomous run 5 status
+# Autonomous run5 status
 
 ## Current
 
-Step: isolated step4 engine groundwork passes;fitness content/source integration next.
-Last commit: HEAD, Plan 5: gate adjoining-room classes on actual occupancy.
-Next action: In /private/tmp/founder-mode-plan5-fitness,Integrate fitness content/source estimates,next bots/UI;engine groundwork now includes identified-instructor fatigue(63 focused checks and lint pass),alongside300 content/engine checks and real opening replay. Do not merge until venue phase gate/tag. Venue worktree runs main3413,protected99011,event95560,full tests63848 on frozen4b03bd2. Monitor all;full report only step6.
+Step:4 isolated engine groundwork and unregistered content pass.
+Last commit:HEAD,Plan5:prepare researched fitness content and paid-offer contracts.
+Next action:Merge main75f180b(completed/tagged venue) into this fitness branch,then implement front-desk administrative relief,register content/drawings and finish sensible bots/UI. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
 
 ## Checklist
 
-- [x] Step0: baseline(tag plan5-baseline)
-- [x] Step1: engine(tag plan5-engine)
-- [x] Step2: Ausgesperrt(tag plan5-escape)
-- [ ] Step3: Fabriketage
-- [ ] Step4: Schweißperle
-- [ ] Step5: Griffig
-- [ ] Step6: wrap up
+- [x] Step0:baseline(tag plan5-baseline)
+- [x] Step1:engine(tag plan5-engine)
+- [x] Step2:Ausgesperrt(tag plan5-escape)
+- [x] Step3:Fabriketage(tag plan5-venue,main75f180b)
+- [ ] Step4:Schweißperle
+- [ ] Step5:Griffig
+- [ ] Step6:wrap up
 
 ## Checks and open issues
 
-- Ausgesperrt complete:careful42.8%±3.1,top48.4%;X1 at limit,X2–X4 pass. T2,T3,T6,T10,T11,T14,T15,T17 open for step6. Two value rounds used;formula deliberately unused. Report:reports/step2-escape.md.
-- Ausgesperrt event table ran once:1,000 test seeds,events only,115 strategies;47 judged rankings,three unseen. Never rerun. Protected main reports/fingerprints match;1,542 full tests pass,21 skips;lint passes.
-- Venue corrected baseline:29 strategies,1,000 test seeds,main only;careful41.5%±3.1,top50.5%. T3,T5,T6,T10,T11,T13,T14,T15,V1 fail;T7 at limit. Raw venue/fabriketage-main-corrected.md;contributions/budget venue/BUDGET.md.
-- Venue value round1:hold/cancellation acceptance,snag reviews,four conditional pre-opening cards;55 events. Values2/2,formula0/1.255 focused checks pass,24 skips;lint passes. No event table yet.
-- Resumed heading repairs pass all80 established/venue browser cases. Equipment-preparation repair passes109 focused tests.189 seed examples/190 checks passed before round1;all earlier rows unchanged. Regenerate after final values. Final full suite still pending;earlier suite failures have focused repairs.
-- Protected step3 proof:Kantino standard/long,Zollstock,Gratwanderung,Hinterhof,Seeblick match. Rückenwind/Tiefgang running;Leinenlos/Ausgesperrt queued. All nine old fingerprints match. Do not repeat matched games.
-- Full bot report NEVER run;reserved once for step6. Steps4/5 have preparation files only under /tmp/plan5-fitness-* and /tmp/plan5-climbing-*.
-- Screenshots outside repo:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue and founder-mode-leisure.
+- Fitness engine:monthly pricing/offer access,premium/founding cohort with real opening replay,class seat conversion/qualified coverage,identified workloads and stage-gated annex.64 focused engine checks/lint pass;earlier300 content/engine checks passed,24 skips.
+- Fitness content:20 features,49 authored cards,150 quotes,four intro cards;unregistered.231 focused content/access checks pass,24 skips;lint passes. Sources/estimates/adaptations in scenario-fitness.md section15. Front-desk relief still pending. Fitness budget values0/2,formula0/1;no measurement/event table.
+- Venue complete:careful46.6%±3.1(at limit),top47.6%;all V targets pass,V2 at limit. T3,T6,T11,T13,T14,T15 open for step6. Both value rounds used,formula deliberately unused. Full86 files/1,691 pass,24 skips;lint passes.189 seeds,earlier rows unchanged.
+- Venue proof all ten older/protected/Ausgesperrt main reports and fingerprints match,1,000 test seeds. Once-only events complete:111 strategies,86,203/111,000 played,remainder reused;54 judged,21 cheapest/33 other point leaders,no significance claim;turnaround unseen. Never rerun.
+- Ausgesperrt complete:careful42.8%±3.1,top48.4%;X1 at limit,X2–X4 pass. T2,T3,T6,T10,T11,T14,T15,T17 open for step6. Both value rounds used,formula unused;event table already ran once,never rerun.
+- Fitness requires fresh protected/earlier-leisure main proof after all shared changes. No earlier values changed. Climbing has preparation only under /tmp/plan5-climbing-*.
+- Full bot report NEVER run;step6 only,once. No push/history rewrite/branch deletion.
 
-## For Henry to review (non-blocking)
+## For Henry to review(non-blocking)
 
-- Venue round1 decisions and source estimates:docs/scenario-event-venue.md section15,docs/decisions.md,venue/BUDGET.md in isolated branch. Remaining finance/market/contracts issues are measured,not hidden.
-- Venue adaptations:guest balances on event day;lower-floor breakout rooms share the hall;authored caterer incidents replace supplier selection. Roof post-mortem explains no extra dates and actual refusal/refund.
-- User resumed the historical browser stop. All80 heading cases now pass;no test weakening. Equipment preparation now permits hiring at service time;non-leisure guards unchanged.
-- Ausgesperrt eight open targets and deferred options:reports/step2-escape.md. Prior autonomous decisions remain in docs/decisions.md.
+- Fitness:Turnsaldo name,showers in fit-out,employee membership units,following as paid-offer enquiries,annex mat classes without extra spin bikes,recovery alternative-room exclusion deferred. Sources/estimates and instructor identity limits are explicit.
+- Venue:six open tourism targets,unseen turnaround and breakout benefit not established by the event-only tie;reports/step3-venue.md. Early guest balances,supplier selection and cash-basis capital window remain first-pass limits.
+- Ausgesperrt:eight open targets and deferred options;reports/step2-escape.md.
+- Screenshots outside repo:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue and founder-mode-leisure. Fitness screenshots not taken yet.
 
-## Previous stop, resolved after user continuation
+## Previous stop,resolved
 
-The three-attempt WebKit heading stop is historical. Resumed repairs reserve logo space and converge across painted frames. All80 browser cases pass in /tmp/plan5-heading-settle-browser.log. Original attempts and decisions remain in git history and docs/decisions.md. No current stop applies.
+User resumed historical WebKit heading stop;all80 cases and final full suite pass. No current stop applies.
 
 ## Stopped
-
-Round1 complete:careful42.7%±3.1,top45.0%. T5 now passes;T13 at limit. Open:T3,T6,T10,T11,T14,T15,V1. Round2 changes only paid-hold acceptance,wedding strict acceptance and snag review penalty. Seeds regenerated for round1;regenerate after final values.
-
-Event table authorised by CLAUDE event-content budget and plan1.6 despite expected duration over15 minutes. Frozen round2 source;no restart or full report.
-
-Fitness preparation:targets/gaps/file list in fitness/IMPLEMENTATION.md. No registered fitness content or measurement. Turnsaldo naming,showers-in-fitout and employee membership units recorded for review.
-
-Fitness membership groundwork:5 new meaningful fixtures plus63 existing checks pass;schema/types/public offer products updated together. No fitness scenario registered or measured. Venue frozen suite passes86 files/1,691 tests,24 skips;all nine old protected reports match,Ausgesperrt still running.
-
-Room conversion:3 new cases plus68 existing pass;actual public seats18to8,no extra room hours. Staffing gap and fatigue identity constraint documented in fitness/IMPLEMENTATION.md. Venue main final46.6%±3.1,top47.6%,all V targets pass;event95560/protected Ausgesperrt proof99011 remain running.
-
-Class-aware staffing passes74 focused checks and lint. Coverage is public;empty classes use paid rostered shifts,and one shift cannot stretch across slots. No fitness content registration/measurements. Full protected proof for fitness follows all shared additions.
-
-Premium/following groundwork committed with schema/types:actual paid preference,interview signal,finite first-month enquiries,public actual cohort counts.300 focused checks pass,24 skips;lint passes. Founding30–60 is adapted as enquiries subject to paid-offer conversion,not guaranteed free members. No scenario registration or fitness report yet.
-
-Instructor workload:founder across roles,named contracts individually;flexible cover is a per-class pool.63 focused engine tests and lint pass. No fitness content registered,values/formula0/2 and0/1,no report. Venue final/proof/event source is isolated and unchanged.
-
-Annex capacity now waits for its actual occupied stage;public availability is explicit.64 focused engine checks pass;lint/typechecks pass after fixing the fixture to inherit parsed stage defaults. Stage2 mat classes share one annex room;extra spin equipment deferred. Next:integrate fitness content with these real limits.

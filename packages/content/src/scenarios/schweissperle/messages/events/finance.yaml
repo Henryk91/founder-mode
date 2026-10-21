@@ -1,0 +1,201 @@
+events:
+  - id: the_cold_showers
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio accounts
+    look: official
+    text: The hot water fails before the early class. A repair is available today at a price that
+      understands urgency. Several members are going straight to work. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for checks and handle the fault
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the current maintenance budget
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - bugs >= 1
+  - id: cleaning_count
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio accounts
+    look: official
+    text: The cleaner's quote assumed fewer visits. The floor is now busy and the shower drains have
+      kept a record. She asks to change the contract before changing the mop. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for checks and handle the fault
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the current maintenance budget
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - bugs >= 1
+  - id: music_invoice
+    area: finance
+    weight: 1
+    once: true
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio accounts
+    look: official
+    text: A music licence invoice covers uses you did not include in the original estimate. The
+      instructor cannot replace every playlist with counting aloud. The accountant asks for the
+      licence details. Use the Calendar or membership controls for any lasting change; this
+      follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Correct the licence budget
+        hours: 2
+        effects:
+          - type: fixedCost
+            id: music
+            name: Music licences
+            monthlyCents: 18000
+      - id: leave
+        label: File the bill without checking
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -24000
+  - id: bike_service
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio accounts
+    look: official
+    text: Several bikes need service before the next busy month. Their noises are not part of the
+      playlist. The technician offers a weekday block while bookings are light. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for checks and handle the fault
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the current maintenance budget
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - bugs >= 1
+  - id: the_electricity_advance
+    area: finance
+    weight: 1
+    once: true
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio accounts
+    look: official
+    text:
+      The supplier recalculates your advance after winter. Hot showers have used electricity without
+      purchasing memberships. The new monthly figure is less theoretical. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the readings and advance
+        hours: 2
+        effects:
+          - type: fixedCost
+            id: utilities
+            name: Electricity and heating
+            monthlyCents: 65000
+      - id: leave
+        label: Pay the estimated adjustment
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -40000
+  - id: the_recovery_bill
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+      - shipped.recovery_room == 1
+    from: none
+    sender: Your studio accounts
+    look: official
+    text:
+      The recovery equipment needs cleaning, electricity and another service visit. Members still
+      describe it as a lovely extra. Lovely has sent three invoices. Use the Calendar or membership
+      controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay the scheduled service
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -10000
+          - type: review
+            rating: 4
+            count: 1
+      - id: leave
+        label: Pay for the urgent visit
+        hours: 0
+        effects:
+          - type: cash
+            amountCents: -25000

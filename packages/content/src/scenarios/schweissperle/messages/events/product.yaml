@@ -1,0 +1,264 @@
+events:
+  - id: start_fit_out
+    area: product
+    weight: 1
+    once: true
+    when:
+      - week == 1
+    from: none
+    sender: Your fit-out contractor
+    look: official
+    text:
+      The studio needs safe floors, showers and changing rooms. Preparation takes 40 hours and the
+      builders need eight weeks after payment. The bank can fund the work; it does not need to
+      attend the spin class.
+    defaultChoice: prepare
+    choices:
+      - id: prepare
+        label: Prepare the fit-out and bank plan
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - fit_out
+      - id: later
+        label: Research before preparing
+        hours: 0
+        effects: []
+  - id: the_shower_drawing
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      The plumber asks where forty people will put their towels. The architect has drawn two elegant
+      hooks. Neither hook has a budget for expansion. Use the Calendar or membership controls for
+      any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the unresolved snags
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the agreed preparation
+        hours: 0
+        effects: []
+  - id: the_founding_list
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      People from your old classes want to know when they can join. Several ask whether their usual
+      instructor is coming. Nobody has asked about the infrared sauna. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the unresolved snags
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the agreed preparation
+        hours: 0
+        effects: []
+  - id: the_first_timetable
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      An early class and an evening class both look sensible on paper. You have written your name
+      beside both, every day. The paper has not requested a day off. Use the Calendar or membership
+      controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the unresolved snags
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the agreed preparation
+        hours: 0
+        effects: []
+  - id: the_music_wall
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      The first sound test reaches the yoga room before the yoga teacher does. The lease does not
+      describe this as a shared experience. The contractor can still reach the wall. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the unresolved snags
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the agreed preparation
+        hours: 0
+        effects: []
+  - id: app_rehearsal
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      A friend books a class, cancels it and books it again. The app sends three welcome messages
+      and no cancellation. Your friend is now your most informed customer. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the unresolved snags
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the agreed preparation
+        hours: 0
+        effects: []
+  - id: changing_room_mirrors
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      The installer offers larger mirrors for the changing rooms. The shower drainage still needs a
+      test. Both items can be photographed; only one can flood. Use the Calendar or membership
+      controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the unresolved snags
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the agreed preparation
+        hours: 0
+        effects: []
+  - id: recovery_brochure
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      A supplier brings photographs of a sauna and a plunge pool. Every person in the photographs
+      looks rested. None appears to be repaying the equipment loan. Use the Calendar or membership
+      controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the unresolved snags
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the agreed preparation
+        hours: 0
+        effects: []
+  - id: bike_terms
+    area: product
+    weight: 2
+    once: false
+    cooldownWeeks: 8
+    when:
+      - week >= 3
+    from: none
+    sender: Your cycle supplier
+    look: official
+    text: Twenty spin bikes cost 30,000 EUR to buy or 1,000 EUR a month on a twelve-month lease. The
+      lease supplies real class capacity and includes a minimum commitment. Owning them is available
+      through the product list; the room still needs to be ready.
+    defaultChoice: wait
+    choices:
+      - id: lease
+        label: Lease the twenty bikes
+        hours: 1
+        effects:
+          - type: asset
+            id: spin_bikes
+            option: lease
+      - id: return
+        label: End the lease and settle any minimum
+        hours: 1
+        effects:
+          - type: asset
+            id: spin_bikes
+            option: none
+      - id: wait
+        label: Keep the current arrangement
+        hours: 0
+        effects: []

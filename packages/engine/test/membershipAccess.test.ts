@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { createGame, getView } from '../src/index'
 import { Rng, seedRng } from '../src/rng'
 import { applyBookings } from '../src/systems/bookings'
-import { beginLeisure, joinLeisure, leisureVisits } from '../src/systems/leisure'
+import {
+  beginLeisure,
+  joinLeisure,
+  leisureVisits,
+  loseLeisureInstructor,
+} from '../src/systems/leisure'
 import { leisurePriceBasis, leisureReviewPrice } from '../src/systems/membership'
 import type { LeisureMember } from '../src/types'
 import { plan } from './helpers'
@@ -121,6 +126,31 @@ describe('optional membership pricing and access', () => {
     expect(ordinary.length).toBeGreaterThan(0)
     expect(run(1000000000, true)).toEqual(ordinary)
     expect(run(1000000000, false)).toHaveLength(0)
+  })
+
+  it('does not take premium-only members away with a teacher outside their offer', () => {
+    const s = game()
+    s.scenario.bookings!.leisure!.memberships!.member_billing!.products = ['allergy_filter']
+    s.scenario.bookings!.leisure!.instructors = {
+      mat: { min: 1, max: 1 },
+      premium: { min: 1, max: 1 },
+    }
+    s.hidden.bookings!.leisure!.instructorFollowing = { mat: 1, premium: 1 }
+    s.scenario.bookings!.roles.mat = {
+      ...s.scenario.bookings!.roles.guide!,
+      units: { basic_ordering: 18 },
+    }
+    s.scenario.bookings!.roles.premium = {
+      ...s.scenario.bookings!.roles.guide!,
+      units: { allergy_filter: 8 },
+    }
+    s.bookings!.leisure!.members = [activeMember()]
+    expect(loseLeisureInstructor(s, 'mat', rng()).bookings!.leisure!.members[0]!.inactive).toBe(
+      false,
+    )
+    expect(loseLeisureInstructor(s, 'premium', rng()).bookings!.leisure!.members[0]!.inactive).toBe(
+      true,
+    )
   })
 
   it('rejects unknown restricted membership products in content validation', async () => {
