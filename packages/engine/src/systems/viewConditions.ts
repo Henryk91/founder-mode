@@ -72,6 +72,8 @@ const VIEW_METRICS: Record<FixedConditionPath, (v: PlayerView, m: MessageView | 
   'leisure.tired': (v) =>
     v.bookings?.leisure?.freshness.filter((f) => f.word === 'tired').length ?? 0,
   'leisure.instructorLosses': (v) => v.bookings?.leisure?.instructorDepartures.length ?? 0,
+  'leisure.complaints': (v) => v.bookings?.leisure?.noise?.complaints ?? 0,
+  'leisure.restricted': (v) => (v.bookings?.leisure?.noise?.restricted ? 1 : 0),
   // Plan 4: the scenario's first asset.
   'asset.owned': (v) => (v.bookings?.assets[0]?.option === 'buy' ? 1 : 0),
   'asset.leased': (v) => (v.bookings?.assets[0]?.option === 'lease' ? 1 : 0),
