@@ -16,7 +16,7 @@ Fail:T3,T5,T6,T10,T11,T13,T14,T15,V1. Raw unrounded margins govern the flags.
 
 | Targets | Value rounds used / allowed | Formula rounds used / allowed |
 |---|---:|---:|
-| T1–T18,E1,V1–V4 | 0 / 2 | 0 / 1 |
+| T1–T18,E1,V1–V4 | 1 / 2 | 0 / 1 |
 
 ## Contributions before values
 
@@ -48,3 +48,15 @@ acceptance,pre-opening eligible messages,unresolved repairs and cancellation
 acceptance estimates. Preserve quoted Munich costs and original lead times in
 this round. Record exact changes in the spec and decisions before measurement.
 No formula allowance is used by these value/content estimates.
+
+
+## Round1 applied
+
+All targets charged conservatively. No-hold acceptance .35/.15/.90;wedding paid-hold
+acceptance .85;strict acceptance .995/.82/.97;snag penalty .30. Four recurring
+pre-opening decisions bring content to55 events;cost/tour estimates80/150 EUR,
+conditional real snag and enquiry effects. Full rationale in spec section15.
+255 focused content/bot checks pass,24 skips;lint passes. Values/money/lead times
+otherwise unchanged. One value round and one formula allowance remain.
+Measurement:main only,all29 strategies,1,000 test seeds,two workers,
+venue/fabriketage-values-1.md. No event table/full report yet.

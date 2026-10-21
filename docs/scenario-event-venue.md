@@ -250,6 +250,28 @@ once immediately. The paid roof build returns its refundable component once if
 refused; refunds reverse costs in the existing cash-basis accounting. Capital
 purchase/refund timing in the ending window remains a first-pass limitation.
 
-Content currently has four intro cards, 51 authored events including the fit-out,
+Content currently has four intro cards, 55 authored events including the fit-out,
 furniture and breakout offers, and 150 interview quotes. Sources support only what
 is explicitly attributed above; all other figures remain estimates.
+
+
+### Value round1, initial calibration
+
+All changes below are gameplay estimates,no new market-price claim. Both the initial
+and corrected main contribution reports are retained in autonomous5/venue/.
+
+| Value | Before | Round1 | Reason |
+|---|---:|---:|---|
+| No-hold acceptance,company/wedding/private | .65/.40/.95 | .35/.15/.90 | Clients who ask for an option do not all accept an immediate commitment;previous values dominated free holds in every market |
+| Wedding acceptance of a paid hold | .50 | .85 | A credited hold fee should remain possible for serious couples,while a free hold retains broader acceptance |
+| Strict-term acceptance,company/wedding/private | .98/.75/.85 | .995/.82/.97 | Retaining only the deposit gives much less cancellation compensation than full-price charging;company/private commitment needs a smaller conversion loss to form a trade-off |
+| Unresolved snag review penalty | .15 | .30 stars per snag | Make actual unresolved faults matter without changing repair costs or inventing a bot-specific charge |
+| Pre-opening eligible cards |8 once-only cards |8 originals plus4 recurring cards | Monthly cost reconciliation,conditional snag review,an agency progress tour and a rest/inspection choice provide decisions during construction |
+
+The new cards recur no more than once per four weeks while closed. Their quoted
+80 EUR duplicate charge and150 EUR tour catering are estimates. Tour enquiries
+require the public conference/AV features;snag work helps only with actual snags.
+These are real time/cash/rest choices,not empty pacing messages. Other prices,
+lease/build/staff costs,demand and lead times stay at the corrected baseline.
+Conservatively charge round1 to all targets;one value round and one formula allowance
+remain. Measure all29 strategies,main only,1,000 test seeds. Event table once at end.

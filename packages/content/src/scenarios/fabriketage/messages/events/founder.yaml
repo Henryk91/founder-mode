@@ -161,3 +161,33 @@ events:
         effects:
           - type: energy
             delta: -5
+  - weight: 1
+    once: false
+    cooldownWeeks: 4
+    when:
+      - week >= 3
+      - leisure.open == 0
+    from: none
+    look: note
+    area: founder
+    id: waiting_weekend
+    sender: Your weekend notebook
+    text: The floor is still waiting and so is your weekend. A walk restores some energy; another
+      inspection is useful only while the product list has unresolved snags. The brickwork will
+      survive either decision.
+    defaultChoice: walk
+    choices:
+      - id: walk
+        label: Take the walk
+        hours: 0
+        effects:
+          - type: energy
+            delta: 5
+      - id: check
+        label: Inspect the unresolved snags
+        hours: 4
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
