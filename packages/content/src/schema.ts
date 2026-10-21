@@ -844,7 +844,23 @@ export const LeisureSchema = z
         }),
       )
       .optional(),
-    buildOut: z.record(Id, z.object({ weeks: z.number().int().positive() })).optional(),
+    buildOut: z
+      .record(
+        Id,
+        z.object({ weeks: z.number().int().positive(), closes: z.array(Id).min(1).optional() }),
+      )
+      .optional(),
+    slotUpgrades: z
+      .record(
+        Id,
+        z.object({
+          product: Id,
+          slot: Id,
+          additional: z.number().int().positive(),
+          unitCostCents: Cents.nonnegative(),
+        }),
+      )
+      .optional(),
     // Any one of these completed areas opens the business; optional extra prerequisites.
     opening: z.object({ areas: z.array(Id).min(1), requires: z.array(Id) }).optional(),
     holds: z
@@ -867,6 +883,16 @@ export const LeisureSchema = z
     const issue = (message: string) => ctx.addIssue({ code: 'custom', message })
     if (slots.size !== l.slots.length) issue('duplicate leisure slot')
     if (l.quietBelow >= l.packedFrom) issue('quiet threshold must be below packed threshold')
+    const upgraded = new Set<string>()
+    for (const upgrade of Object.values(l.slotUpgrades ?? {})) {
+      if (!l.products[upgrade.product]) issue(`unknown upgraded product ${upgrade.product}`)
+      if (!slots.has(upgrade.slot)) issue(`unknown upgraded slot ${upgrade.slot}`)
+      const key = `${upgrade.product}:${upgrade.slot}`
+      if (upgraded.has(key)) issue('only one upgrade per product and slot')
+      upgraded.add(key)
+    }
+    for (const build of Object.values(l.buildOut ?? {}))
+      for (const id of build.closes ?? []) if (!l.products[id]) issue(`unknown closed area ${id}`)
     for (const segment of Object.values(l.segments)) {
       for (const id of Object.keys(segment.slotShare))
         if (!slots.has(id)) issue(`unknown slot ${id}`)
@@ -1669,6 +1695,8 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         if (!bk.segments[id]) issue(`unknown leisure segment ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.slotPrices ?? {}))
         if (!bk.segments[id]) issue(`unknown priced segment ${id}`, ['bookings', 'leisure'])
+      for (const id of Object.keys(leisure.slotUpgrades ?? {}))
+        if (!featureIds.has(id)) issue(`unknown capacity upgrade ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.space?.uses ?? {}))
         if (!featureIds.has(id)) issue(`unknown space product ${id}`, ['bookings', 'leisure'])
       for (const map of [

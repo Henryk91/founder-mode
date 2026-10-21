@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 3.1 Isolated venue preparation; step 2 gate pending on main.
-Last commit: HEAD, Plan 5: draft venue targets and gated implementation scope.
-Next action: Implement the venue-only engine gaps and fixture tests listed in venue/IMPLEMENTATION.md, updating schema docs with types. This is branch plan5-venue-work at /private/tmp/founder-mode-plan5-venue. Do not merge until main's step 2 event table/session 14569 and full tests/session 8519 pass; main must tag plan5-escape first. No venue bot measurement yet.
+Step: 3.2 Isolated venue engine draft: closures and weekday upgrades complete.
+Last commit: HEAD, Plan 5: add gated venue closures and weekday turnaround costs.
+Next action: Integrate leisure asset availability and supplied must-haves for hired furniture, then remaining noise/permit/ancillary gaps and fixture tests. Worktree /private/tmp/founder-mode-plan5-venue, branch plan5-venue-work. Main's step2 full tests pass (79 files/1,542 tests); event table/session14569 still running. Merge only after main tags plan5-escape. No venue measurement yet; protect old games and Ausgesperrt after all shared changes.
 
 ## Checklist
 
@@ -17,6 +17,8 @@ Next action: Implement the venue-only engine gaps and fixture tests listed in ve
 - [ ] Step 6: wrap up (tag plan5-complete)
 
 ## Running checks and open issues
+
+- Worktree draft:52 engine tests pass (8 venue+44 leisure), lint/typechecks green; /tmp/plan5-venue-capacity-tests.log and /tmp/plan5-venue-capacity-lint.log. Types and schema docs updated together. New closures/upgrades are off unless YAML enables them. Full phase/protected checks remain pending after all shared changes.
 
 - Final main measurement complete: all 28 strategies, 1,000 `test` seeds. Careful 42.8% ±3.1; top 48.4%; slowest 128 seconds. Every escape target passes; X1 at the limit. Main result: tuning/ausgesperrt-values-2.md; raw later-step baseline: baseline/ausgesperrt-long.md, fingerprint alongside it.
 - Open: T2 no-tests 22.1%, T3 market spread 32.5 ±7.0, T6 blind effort too helpful, T10 review-blind +4.7, T11 policy split inconclusive, T14 seasonal +1.9 ±2.2, T15 borrowing +16.5, T17 owing gap 3.9. Full values, closest results and options: reports/step2-escape.md. Two value rounds used; formula allowance unused by decision, not claimed exhausted. Revisit all eight once in step 6.

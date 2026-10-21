@@ -1736,6 +1736,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
 
   const leisureFinished = finishLeisure({ ...state, bookings: b }, bookings)
   state = leisureFinished.state
+  out.costsCents += leisureFinished.extraCostsCents ?? 0
   b = state.bookings!
   out.voucherRedeemedCents += leisureFinished.voucherRedeemedCents
 

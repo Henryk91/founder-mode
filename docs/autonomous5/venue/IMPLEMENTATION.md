@@ -63,3 +63,10 @@ comparison; tuning/ausgesperrt-values-2.md is the annotated target report.
 Venue tuning: up to two value rounds then one formula allowance per failing target;
 zero used. First sensible bots, then contributions. Main/affected parts only, 1,000
 seeds. Event table once at the end. Full report exactly once in step 6, never before.
+
+## Draft progress
+
+- Closures and slot upgrades implemented behind optional blocks;8 new fixture tests
+  plus44 existing leisure tests pass, with lint/typechecks green. Public schema docs
+  updated. Proof against all nine protected games and Ausgesperrt remains pending
+  until all shared venue changes are in place. No real venue content registered yet.
