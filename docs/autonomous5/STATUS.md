@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 2.4 Second and last scenario-value round applied.
-Last commit: HEAD, Plan 5: record playable careful result and remaining measurements.
-Next action: Finish the second value-round measurement (session 79279) at /tmp/plan5-ausgesperrt-values-2.log and tuning/ausgesperrt-values-2.md; evaluate every target before considering the single formula allowance. Refresh seeds/full tests after final outcome changes, then the once-only step 2 event table. Full report remains reserved for step 6.
+Step: 2.5 Final values measured; event table and full phase checks running.
+Last commit: HEAD, Plan 5: record final Ausgesperrt targets and start phase checks.
+Next action: Finish the once-only event table (session 14569, /tmp/plan5-ausgesperrt-events.log) and full tests (session 8519, /tmp/plan5-step2-final-full-tests.log). Update reports/step2-escape.md, commit/tag plan5-escape when green, then begin step 3 from a clean tree. Formula allowance deliberately unused; eight targets remain open for step 6. Never rerun the event table or full report to reconfirm.
 
 ## Checklist
 
@@ -16,42 +16,26 @@ Next action: Finish the second value-round measurement (session 79279) at /tmp/p
 - [ ] Step 5: Griffig (tag plan5-climbing)
 - [ ] Step 6: wrap up (tag plan5-complete)
 
-## Running checks
+## Running checks and open issues
 
-- Round 2 partial result: careful 42.8% on 1,000 `test` seeds, 123.9 seconds; within T1 and the hard playability range. Quarterly 41.4%, themes 39.9%, no daytime 21.9%, VR 27.9%, cash-only 26.3%, no-tests 22.1%, fixed prices 40.2%, review-blind 47.5%, no-inbox 32.0%. Wait for the complete paired target table; all value rounds are used. A draft formula review is outside repo at /tmp/plan5-escape-formula-review.md; no formula decision/change yet.
+- Final main measurement complete: all 28 strategies, 1,000 `test` seeds. Careful 42.8% ±3.1; top 48.4%; slowest 128 seconds. Every escape target passes; X1 at the limit. Main result: tuning/ausgesperrt-values-2.md; raw later-step baseline: baseline/ausgesperrt-long.md, fingerprint alongside it.
+- Open: T2 no-tests 22.1%, T3 market spread 32.5 ±7.0, T6 blind effort too helpful, T10 review-blind +4.7, T11 policy split inconclusive, T14 seasonal +1.9 ±2.2, T15 borrowing +16.5, T17 owing gap 3.9. Full values, closest results and options: reports/step2-escape.md. Two value rounds used; formula allowance unused by decision, not claimed exhausted. Revisit all eight once in step 6.
+- Event table running once, parts events, 1,000 `test` seeds, two workers: session 14569, /tmp/plan5-ausgesperrt-events.log. Full report has not run; reserved for step 6.
+- Full tests running with two workers: session 8519, /tmp/plan5-step2-final-full-tests.log. Final-value lint/typechecks pass; 235 focused tests pass, 21 skipped. Existing leisure engine 44 and bot 36 tests pass. Before final bot/value changes, full suite 79 files/1,539 passed/21 skipped.
+- Seed regeneration complete: 171 examples; 172 checks pass. Eight Ausgesperrt rows changed; protected rows byte identical.
+- All nine protected main comparisons and fingerprints match baseline exactly apart from timings, 1,000 `test` seeds per strategy; reports/step2-protected.md and protected-step2/. Neither value round changed engine/shared bots.
+- UI checks: three stages, 375/390/430/1440 px, Chromium/WebKit/axe/cut/words. Help/results/post-mortem words 390/1440. Screenshot refresh in the full suite: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
+- Corrected company demand prose: base 4–14 counts room-games, roughly 1.3–4.7 requests at mean three games. Measured values remain intact; this was a documentation error.
 
-- Final value-round seed regeneration complete: 171 examples, all 172 coverage/replay tests pass; /tmp/plan5-values-2-seeds.log and /tmp/plan5-values-2-seed-tests.log. Eight Ausgesperrt examples changed; every protected seed row is byte identical. Full tests remain pending at the phase gate.
-
-- Value round 2: lint/typechecks pass; 235 focused content and bot tests pass (21 skipped). Main measurement running with two workers; /tmp/plan5-ausgesperrt-values-2.log. No engine/shared-bot changes in either value round.
-
-- Value round 1 complete: all 28 main strategies, 1,000 `test` seeds; tuning/ausgesperrt-values-1.md. Careful 55.7% ±3.1; top 62.0% ±3.0; no-tests 43.1% ±3.1. Market spread 43.5 ±6.7 points. T16/X2 pass at the limit; twelve targets fail. See tuning/BUDGET.md.
-- Value round 1 lint/typechecks and focused checks pass (235 tests, 21 skipped). Refresh seeds and the full suite at the phase gate after the final outcome changes.
-
-- Main-3 completed: all 28 strategies, main only, 1,000 `test` seeds. Intermediate complete target table in tuning/ausgesperrt-main-3.md, before the horizon/portfolio/contract-coverage corrections. Do not tune from its old bot verdicts.
-- Protected proof complete: all nine main-only, 1,000-`test` comparisons and fingerprints match exactly apart from timings. See reports/step2-protected.md and protected-step2/. Session 17724 completed successfully.
-- Full tests are green: 79 files, 1,539 passed, 21 skipped; /tmp/plan5-step2-finished-rooms-full-test-2.log, two workers. Browser teardown passed after the first repair (new leisure port 5202 plus lower test concurrency). Lint/typechecks pass; /tmp/plan5-step2-test-port-lint.log.
-- Seed regeneration finished; docs/seeds.md changes only Ausgesperrt. All nine protected snapshots and validation are committed.
-
-- Corrected no-tests strategy finished: 29.5% on main only, 1,000 `test` seeds, one process; tuning/ausgesperrt-no-tests-corrected.md. This predates the horizon guard and is diagnostic.
-- Horizon guard: 35 leisure bot tests and lint/typechecks pass. The 30-seed behaviour trace has zero unusable rebuilds after the guard (/tmp/plan5-rebuild-horizon-fixed.json), versus four before. Refresh seed examples and full tests after the next outcome changes; neither is a new balance measurement.
-
-- Final bot baseline completed successfully: session 67784, /tmp/plan5-final-bot-baseline-progress.log; writes tuning/ausgesperrt-main-4.md and /tmp/plan5-ausgesperrt-main-4.log. No values changed. Current bot correction prevents seasonal hires from covering work already covered by permanent/part-time staff; all 36 bot tests and lint/typechecks pass.
-
-## Open issues
-
-First value round complete: careful 55.7%, top 62.0%, no-tests 43.1%; careful and the market spread still need tuning. Both value rounds assigned to every applicable target; no formula rounds consumed. The diagnostic reports document interrupted measurements and corrected bot/accounting defects; do not use their target verdicts as final balance. Full report has not run.
-
-Latest focused checks: 44 leisure engine and 36 bot tests pass. The full suite also passes after the unfinished-room bot repair: 79 files / 1,539 tests (21 skipped), with lint/typechecks green. Browser coverage includes Help/results/post-mortem words and 24 cases over three stages, four widths, Chromium/WebKit and axe. Screenshots: /var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-leisure.
-
-Runtime caches previously proved byte-identical on 30 careful diagnostic runs. Main-3 timings overlap full tests and protected runs; note contention when judging T12. Diagnostic traces are behaviour checks, not target measurements.
-
-Later-step preparation only, outside repo; integrate only in the corresponding step:
-- Venue: /tmp/plan5-venue-prep.md, /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 quotes), /tmp/plan5-venue-scenes-draft.json (two SVG scenes), /tmp/plan5-venue-content-draft/ (catalogue/intro/features/scenario scaffold; PENDING.md lists unsupported mechanics). Primary-source permission research: /tmp/plan5-research-notes.md, 21 October entry.
-- Fitness: /tmp/plan5-membership-prep.md (engine gaps), /tmp/plan5-fitness-events-draft.md (48 events), /tmp/plan5-fitness-quotes-draft.json (150 quotes), /tmp/plan5-fitness-scenes-draft.json (two SVG scenes), /tmp/plan5-fitness-content-draft/ (catalogue/intro/features).
-- Climbing: /tmp/plan5-climbing-events-draft.md (48 events), /tmp/plan5-climbing-quotes-draft.json (150 quotes), /tmp/plan5-climbing-scenes-draft.json (two SVG scenes), /tmp/plan5-climbing-content-draft/ (catalogue/intro/features).
-These are copy/design drafts, not implemented mechanics or completed phase gates. Current repo content/UI remain authoritative; do not recopy old Ausgesperrt drafts.
+Later-step preparation only, outside repo; integrate in order after the current phase gate:
+- Venue: /tmp/plan5-venue-prep.md (gaps incl forward sales, assets and ancillary receipts), /tmp/plan5-venue-content-draft/ (PENDING.md), /tmp/plan5-venue-events-draft.md (48 events), /tmp/plan5-venue-quotes-draft.json (150 quotes), /tmp/plan5-venue-scenes-draft.json (two SVG scenes). Primary permission sources: /tmp/plan5-research-notes.md, 21 October entry.
+- Fitness: /tmp/plan5-membership-prep.md, /tmp/plan5-fitness-content-draft/, /tmp/plan5-fitness-events-draft.md (48 events), /tmp/plan5-fitness-quotes-draft.json (150 quotes), /tmp/plan5-fitness-scenes-draft.json (two SVG scenes).
+- Climbing: /tmp/plan5-climbing-content-draft/, /tmp/plan5-climbing-events-draft.md (48 events), /tmp/plan5-climbing-quotes-draft.json (150 quotes), /tmp/plan5-climbing-scenes-draft.json (two SVG scenes).
+These drafts do not implement their pending mechanics. Current repo content/UI remain authoritative.
 
 ## For Henry to review (non-blocking)
+
+- Step 2: playable final values, eight open tourism targets, formula allowance deliberately unused; demand-unit prose corrected. See reports/step2-escape.md and docs/decisions.md.
 
 - Step 2: second and last value round adjusts upkeep, temporary staffing, demand, fault reviews, budget signals and cancellation trade-offs; estimates are in spec section 15 and docs/decisions.md.
 
