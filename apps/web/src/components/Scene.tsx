@@ -10,6 +10,8 @@ import { STAGE_DRAWINGS } from './sceneStages'
  * scenario does.
  */
 export type OfficeStage =
+  | 'factory_floor'
+  | 'factory_lower_floor'
   | 'basement'
   | 'finished_basement'
   | 'kitchen_table'

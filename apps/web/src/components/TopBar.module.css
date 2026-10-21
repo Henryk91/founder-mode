@@ -64,6 +64,7 @@
 }
 
 :global([data-stage='established']) .who > div {
+  flex: 1 1 0;
   min-width: 0;
 }
 

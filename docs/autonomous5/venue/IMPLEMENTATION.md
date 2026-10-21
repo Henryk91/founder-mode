@@ -98,3 +98,11 @@ seeds. Event table once at the end. Full report exactly once in step 6, never be
 - Venue bots/targets integrated:68 focused tests and lint/typechecks pass, real
   opening/replay included. Initial main measurement next; no values changed and
   no tuning rounds used. Drawings/UI and protected comparisons remain pending.
+
+## Mandatory stop, UI draft not complete
+
+After three heading repairs, established375px WebKit still clips the full company
+name.23/24 browser cases and16 terminology cases pass;lint passes. See STATUS.md
+Stopped for attempts/logs/options. Draft is committed but not merged; protected
+comparison and complete phase tests remain pending. Initial main is recorded in
+fabriketage-main-initial.md;careful25.8%,top32.8%. No tuning rounds used.
