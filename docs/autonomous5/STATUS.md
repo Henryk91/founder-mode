@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.6 fitness UI verified;initial main measurement running.
-Last commit:HEAD,Plan5:add membership controls and studio timetable.
-Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-initial.log (session89679),review bots and contributions before values,then complete tuning. Protected proof is also running (session25269,/tmp/plan5-protected-step4.log):all eleven earlier games,main only,1,000 test seeds;two scenario processes/one worker each. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
+Step:4 fitness measurement resumed;5 isolated climbing preparation.
+Last commit:HEAD,Plan5:record fitness careful performance measurement.
+Next action:Resume only missing protected proof (Ausgesperrt main,1,000 test seeds);restart interrupted fitness initial main with durable task checkpoints because only summary counts survived. Preserve ten completed protected comparisons. Commit validated climbing alternatives,then prepare content while fitness runs. Full report remains step6 only,once.
 
 ## Checklist
 
@@ -23,7 +23,7 @@ Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-ini
 - Venue complete:careful46.6%±3.1(at limit),top47.6%;all V targets pass,V2 at limit. T3,T6,T11,T13,T14,T15 open for step6. Both value rounds used,formula deliberately unused. Full86 files/1,691 pass,24 skips;lint passes.189 seeds,earlier rows unchanged.
 - Venue proof all ten older/protected/Ausgesperrt main reports and fingerprints match,1,000 test seeds. Once-only events complete:111 strategies,86,203/111,000 played,remainder reused;54 judged,21 cheapest/33 other point leaders,no significance claim;turnaround unseen. Never rerun.
 - Ausgesperrt complete:careful42.8%±3.1,top48.4%;X1 at limit,X2–X4 pass. T2,T3,T6,T10,T11,T14,T15,T17 open for step6. Both value rounds used,formula unused;event table already ran once,never rerun.
-- Fitness requires fresh protected/earlier-leisure main proof after all shared changes. No earlier values changed. Climbing has preparation only under /tmp/plan5-climbing-*.
+- Fitness requires fresh protected/earlier-leisure main proof after all shared changes. No earlier values changed. Climbing preparation is isolated in /private/tmp/founder-mode-plan5-climbing:optional skills/course conversion,hall/setting,group/club and staffed ancillary mechanics committed,743 engine/content checks and lint pass. No integration/registration before the fitness gate.
 - Full bot report NEVER run;step6 only,once. No push/history rewrite/branch deletion.
 
 ## For Henry to review(non-blocking)
@@ -35,11 +35,13 @@ Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-ini
 
 ## Previous stop,resolved
 
-User resumed historical WebKit heading stop;all80 cases and final full suite pass. No current stop applies.
+User resumed historical WebKit heading stop;all80 cases and final full suite pass. Superseded by the user-requested stop below.
 
 ## Recent validation
 
-Membership/timetable/aggregator UI:24 Chromium/WebKit cases pass across375/390/430/1440 and all three stages;axe/cut/words clean.14 focused UI/engine checks and lint pass. Five precise authored trial-class phrases are allowed by the studio word check. Initial main report runs on1,000 test seeds/two workers;no events/full report.
+Fitness performance bookkeeping:21 full diagnostic games across seven policies have exact results/public-view traces against f334fd7;763 focused engine/content/bot checks plus two archive fixtures pass,lint passes. No values/formulas changed. Initial report workers keep the original source;older proof games cannot enter the class-aware optimisation.
+
+Membership/timetable/aggregator UI:24 Chromium/WebKit cases pass across375/390/430/1440 and all three stages;axe/cut/words clean.14 focused UI/engine checks and lint pass. Five precise authored trial-class phrases are allowed by the studio word check. Initial main report runs on1,000 test seeds/two workers;partial careful86.4%,platform-only88.3%,overstaff6.9%,understaff84.6%,no-tests3.3%,fixed-price88.0%,review-blind86.4%. These are provisional;no value rounds/events/full report.
 
 Fitness bot policies and F1–F5 reporting implemented;all registered studio variants finish,and the careful saved run opens and replays exactly. Focused fitness/venue/escape checks and lint pass. Values0/2,formula0/1;no fitness report/event table yet.
 
@@ -47,4 +49,8 @@ Public class duration and existing cancellation/pack accounting:10 focused check
 
 ## Stopped
 
-None.
+2026-10-22:User requested stopping all background processes. Stopped initial fitness main measurement (session89679),protected-step4 controller (session25269),and remaining project Vite/esbuild development servers. No automatic restart. Completed reports,partial logs and uncommitted changes are preserved. The autonomous plan is unfinished. Earlier references to running workers are historical.
+
+## Resume,22 October2026
+
+User authorised continuing everything. The earlier process-stop request is resolved. Fitness initial matrix must be repeated because interrupted CLI results lived only in memory;summary counts cannot supply paired results. Add temporary disk checkpoints to the measurement runner. Values0/2,formula0/1. Ten protected comparisons are complete;only Ausgesperrt was interrupted. Climbing alternatives passed745 checks,27 skipped,and lint;preserve and commit.
