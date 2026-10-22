@@ -3,8 +3,8 @@
 ## Current
 
 Step:4.8 fitness sole formula round;5 isolated climbing preparation ready for integration after fitness.
-Last commit:fitnessa6060e0,sole formula round.782 broad checks pass,27 skips;lint/typechecks pass.
-Next action:Collect final fitness formula main matrix(session85086,/tmp/plan5-fitness-main-formula.log):30policies,1,000 paired test seeds,eight workers. Checkpoints:/tmp/plan5-fitness-formula-checkpoints-a6060e0. Browser24-case check running(session20487). Values2/2,formula1/1;no further first-pass tuning. After full results,obey the playability stop or finish protected proof/events/seeds/full tests/report/tag. Full report only step6,once.
+Last commit:fitness75dcae9 checkpoints final formula measurement;sourcea6060e0.782 broad checks pass,27 skips;lint/typechecks pass.
+Next action:Collect final fitness formula main matrix(session85086,/tmp/plan5-fitness-main-formula.log):30policies,1,000 paired test seeds,eight workers. Checkpoints:/tmp/plan5-fitness-formula-checkpoints-a6060e0. All24 Chromium/WebKit browser cases pass. Final protected proof runs in session28386,/tmp/plan5-protected-final-step4.log,two one-scenario processes,main only1,000test seeds;all eleven content fingerprints match. Values2/2,formula1/1;no further first-pass tuning. After full results,obey the playability stop or finish protected proof/events/seeds/full tests/report/tag. Full report only step6,once.
 
 ## Checklist
 
@@ -31,6 +31,7 @@ Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails
 Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
 Round1 complete:careful83.7%,platform-only57.7%,top88.8%,no-tests7.6%;median net wealth EUR30,149. Contributions:fitness/ROUND1_REVIEW.md.
 Round2 complete:careful65.6%,top73.9%,no-tests0.7%. Full contributions:fitness/ROUND2_REVIEW.md.
+Formula provisional:careful44.7% on1,000test seeds;remaining policies still running.
 Values2/2,formula1/1;fitness event table not run. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
@@ -39,7 +40,7 @@ Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s u
 All eleven earlier main reports match step0 apart from timings,on1,000test seeds each.
 All content fingerprints match at engine0.14.0. Raw proof:protected-step4/.
 Ten comparisons survived the stop;only interrupted Ausgesperrt was resumed.
-Later fixes are explicitly gated by class-aware/aggregator content;final step4 proof must cover the final shared source. Never change earlier values.
+Final sourcea6060e0 proof now running:protected-step4-final/,session28386. Two processes,main only1,000test seeds per earlier game,durable task checkpoints. All eleven content fingerprints match. Temporary packages/bots/src/plan5-protected-final.ts must remain until the controller finishes. Never change earlier values.
 
 ## Isolated climbing
 
