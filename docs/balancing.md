@@ -5325,3 +5325,6 @@ Plan5 fitness settled baseline: main only,30 policies on1,000 paired test seeds,
 
 
 Plan5 fitness value round1:main only,30policies on1,000 paired test seeds,sourcea0643aa,eight workers. Careful83.7%±2.3,top88.8%±2.0,no-tests7.6%±1.6. T8–T10 now pass;T1/T2 remain too easy. Full contributions:autonomous5/fitness/ROUND1_REVIEW.md. Values1/2,formula0/1;no fitness event table/full report.
+
+
+Plan5 fitness value round2:main only,30policies on1,000 paired test seeds,sourcea6a1c8c. Careful65.6%±2.9,top73.9%±2.7,no-tests0.7%±0.5. Values2/2 exhausted,formula0/1 remains. Full paired review:autonomous5/fitness/ROUND2_REVIEW.md. No event table/full report.
