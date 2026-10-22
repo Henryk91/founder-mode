@@ -1231,3 +1231,5 @@ recent occupancy and office visit counts read the compact history;future booking
 member credit,ledger and action logs retain their existing rules. Traffic records
 are not copied into PlayerView. Member lookup maps are local to a calculation.
 No compact records or shorter retention apply without class-aware content.
+
+Class-aware visit compaction retains the current service week as individual bookings and54weeks of product/week traffic aggregates. Lifetime status/segment/channel totals remain in the ordinary archive. Hosting hours use the aggregate previous-week served count too,including an ending shown before the week increments. No public fields or outcome formulas change.

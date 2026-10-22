@@ -10,6 +10,7 @@ it('compacts class visits while preserving last-year calendars and lifetime tota
     classStaffing: true,
     products: { basic_ordering: { capacity: {}, classPlaces: 8, classHours: 1, room: 'studio' } },
   })
+  spec.bookings.hosting = { hoursPerUnit: 0.5, maxHours: 8 }
   for (const s of Object.values(spec.bookings.segments)) s.base = { min: 0, max: 0 }
   let state = createGame(spec, 'visit-archive')
   state.product.features = state.product.features.map((f) => ({ ...f, shippedWeek: 0 }))
@@ -52,13 +53,15 @@ it('compacts class visits while preserving last-year calendars and lifetime tota
     state = applyBookings(state, roster, new Rng(seedRng(`visit-${week}`))).state
     expect(before.bookings!.bookings.at(-1)!.status).toBe('booked')
   }
-  expect(state.bookings!.bookings.map((b) => b.week)).toEqual([59, 60])
+  expect(state.bookings!.bookings.map((b) => b.week)).toEqual([60])
   expect(state.bookings!.leisure!.traffic).toHaveLength(54)
   expect(
     bookingTotals(state.bookings!)
       .filter((b) => b.status === 'served')
       .reduce((n, b) => n + b.units, 0),
   ).toBe(120)
+  // A finished run can still display the service week's view before the week increments.
+  expect(getView(state).bookings!.hostingHours).toBe(1)
   state = { ...state, week: 61 }
   const v = getView(state).bookings!
   expect(v.lastWeek.find((p) => p.productId === 'basic_ordering')).toEqual({

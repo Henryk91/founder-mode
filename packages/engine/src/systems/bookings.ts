@@ -314,9 +314,14 @@ export function hostingHours(
 ): number {
   const h = state.scenario.bookings?.hosting
   if (!h || !state.bookings) return 0
-  const units = state.bookings.bookings
-    .filter((x) => x.week === state.week - 1 && x.status === 'served')
-    .reduce((t, x) => t + x.units, 0)
+  const traffic = state.scenario.bookings?.leisure?.classStaffing
+    ? state.bookings.leisure?.traffic?.find((r) => r.week === state.week - 1)
+    : undefined
+  const units = traffic
+    ? Object.values(traffic.served).reduce((n, units) => n + units, 0)
+    : state.bookings.bookings
+        .filter((x) => x.week === state.week - 1 && x.status === 'served')
+        .reduce((t, x) => t + x.units, 0)
   const less = stageInEffect(state).hostingHoursLess ?? 0
   return Math.max(
     0,
@@ -2016,7 +2021,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         cfg.leisure?.noise ? b.bookings : bookings,
         b.archived,
         week,
-        cfg.leisure?.classStaffing ? 1 : KEEP_WEEKS,
+        cfg.leisure?.classStaffing ? 0 : KEEP_WEEKS,
       ),
       repeatGuests,
       turnedAway,

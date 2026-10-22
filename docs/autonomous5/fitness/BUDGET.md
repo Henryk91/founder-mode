@@ -20,3 +20,7 @@ seven policies have exact RunResult and public-view trace matches.
 
 The original all-policy matrix remains running;do not tune from provisional
 counts. Values0/2,formula0/1. No fitness event table or full report.
+
+## Resumed after user-requested process stop
+
+The original matrix was interrupted before the report writer ran;its thirteen completed policies survive as summary counts only. Restart main only,1,000 test seeds,two workers,with durable task results under the path recorded in checkpoint-location.txt. This repeats lost detailed results out of necessity,not to reconfirm them. No tuning budget spent. Ten protected comparisons are preserved;only interrupted Ausgesperrt is resumed. Full report still never run.

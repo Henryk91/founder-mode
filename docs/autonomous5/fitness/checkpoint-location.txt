@@ -1,0 +1,2 @@
+/tmp/plan5-fitness-checkpoints-2b02d11069f9a5d7
+Runner backup:/tmp/plan5-fitness-resume-runner.ts. It was loaded from packages/bots/src/plan5-resume.ts,then removed from the source tree while the loaded process continues. Restore that exact backup only when resuming this original matrix;its cache is tied to the original source snapshot.
