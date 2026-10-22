@@ -643,6 +643,7 @@ bookings:
       priceFactor: 1.75
       course:
         level: boulder_intro
+      capacityOf: boulder_area
     belay_course:
       oneOffCents: 0
       monthlyCents: 0
@@ -662,6 +663,7 @@ bookings:
           share: 0.2
           products:
             - lead_course
+      capacityOf: rope_walls
     lead_course:
       oneOffCents: 0
       monthlyCents: 0
@@ -676,6 +678,7 @@ bookings:
       course:
         level: lead
       needsLevel: belay
+      capacityOf: rope_walls
     kids_club:
       oneOffCents: 0
       monthlyCents: 0
@@ -686,6 +689,7 @@ bookings:
       months: []
       weatherClosed: false
       requires: kids_area
+      capacityOf: kids_area
     birthday_parties:
       oneOffCents: 0
       monthlyCents: 0
@@ -700,6 +704,7 @@ bookings:
         min: 10
         max: 10
       priceFactor: 0.9949999999999999
+      capacityOf: kids_area
     student_prices:
       oneOffCents: 0
       monthlyCents: 0
@@ -1253,20 +1258,34 @@ bookings:
           midday: 40
           evening: 40
           weekend: 40
+        availableSlots:
+          - midday
+          - evening
+          - weekend
       belay_course:
         capacity:
           evening: 24
           weekend: 24
+        availableSlots:
+          - evening
+          - weekend
       lead_course:
         capacity:
           evening: 12
           weekend: 12
+        availableSlots:
+          - evening
+          - weekend
       kids_club:
         capacity:
           weekend: 32
+        availableSlots:
+          - weekend
       birthday_parties:
         capacity:
           weekend: 40
+        availableSlots:
+          - weekend
     crowdingPenalty: 0.8
     quietBelow: 0.4
     packedFrom: 0.85

@@ -810,6 +810,7 @@ export const LeisureSchema = z
     products: z.record(
       Id,
       z.object({
+        availableSlots: z.array(Id).min(1).optional(),
         simultaneous: z
           .object({ hard: z.number().int().positive(), comfort: z.number().int().positive() })
           .optional(),
@@ -996,6 +997,8 @@ export const LeisureSchema = z
       if (segment.minimumAreas && segment.minimumAreas > (l.opening?.areas.length ?? 0))
         issue('minimum areas exceeds configured opening areas')
     for (const product of Object.values(l.products)) {
+      for (const id of product.availableSlots ?? [])
+        if (!slots.has(id)) issue(`unknown available slot ${id}`)
       if (product.classPlaces && !product.classHours) issue('classes need their hours')
       if (product.classPlacesWhen && !product.classPlaces)
         issue('class conversion needs base places')

@@ -349,6 +349,7 @@ export function leisureClassPlaces(s: GameState, id: string, week: number): numb
 export function leisureCapacity(s: GameState, id: string, slot: string, week: number): number {
   const p = cfgOf(s)?.products[id]
   if (!p || !readyAt(s, id, week) || !leisureOpen(s, id, week)) return 0
+  if (p.availableSlots && !p.availableSlots.includes(slot)) return 0
   if (p.availableStages && !p.availableStages.includes(stageInEffect(s).id)) return 0
   const required = s.scenario.bookings?.products[id]?.requires
   if (required && !readyAt(s, required, week)) return 0
@@ -388,6 +389,8 @@ export function leisureProductCapacity(
 ): number {
   const cfg = s.scenario.bookings!
   const required = cfg.products[product]?.requires
+  const allowedSlots = cfg.leisure?.products[product]?.availableSlots
+  if (allowedSlots && !allowedSlots.includes(slot)) return 0
   if (
     !readyAt(s, product, week) ||
     !leisureOpen(s, product, week) ||
