@@ -3,7 +3,7 @@
 ## Current
 
 Step:4.8 fitness settlement measurement;5 isolated climbing preparation ready for integration after fitness.
-Last commit:fitness85d9b2b,settle studio aggregator visits without employer invoices.
+Last commit: fitness 8d91c16 records measurement checkpoints and tuning budget; settled matrix source 85d9b2b.
 Next action:Collect fitness settled main matrix (session9418,/tmp/plan5-fitness-main-settled.log),then review contributions and use the limited tuning budget. Main only,1,000 test seeds,four workers,durable checkpoints. No value round has been used. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
 
 ## Checklist
@@ -29,6 +29,7 @@ Content now explicitly enables direct aggregator payment. Company membership inv
 Two archival optimisations preserve21complete results/public-view traces exactly.
 Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails.
 Values0/2,formula0/1;fitness event table not run. No full report.
+Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
 ## Protected proof
 
@@ -39,12 +40,13 @@ Later fixes are explicitly gated by class-aware/aggregator content;final step4 p
 
 ## Isolated climbing
 
-Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD eb95488.
+Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD ea54cfa.
 Unregistered Griffig:24features,49events,150quotes,four intros,two native scenes.
 Optional personal qualifications/course conversions,staffed hall hours,paid setting,groups,weekly club,café/rentals,alternative requirements,shared wall pools and allowed slots implemented.
 Hall UI,first-wall/setting/aggregator/course/speed bots,K1–K5 reporting and real mezzanine offer prepared.
 Careful opens through real actions and saves replay exactly. Latest shared-pool change:29focused checks/lint pass. Earlier core preparation:748checks,27skips.
 Browser fixture renders the real app without catalogue registration:24Chromium/WebKit cases pass across375/390/430/1440 and all3stages;two additional390px opening-hour tap checks pass.
+Small-budget quotes now round to EUR10 before first measurement;22 content/bot checks and lint pass.
 No climbing measurements/events/tuning yet. After merging fitness,enable its direct aggregator settlement flag in Griffig too;preserve the child branch's weekly-offer field and available slots when resolving overlapping additions.
 
 ## Completed scenario results
