@@ -183,6 +183,12 @@ export type RunResult = {
       roomsBuilt: number
       refreshes: number
       fitness?: { instructorDepartures: number; followersStopped: number }
+      climbing?: {
+        ropeOpened: boolean
+        firstWalls: string[]
+        speedWallWeek: number | null
+        courseGraduates: number
+      }
       venue?: {
         lateEvents: number
         restrictions: number
@@ -658,6 +664,20 @@ function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
       ? {
           leisure: {
             openingWeek: b.leisure.openingWeek,
+            ...(state.scenario.bookings?.leisure?.hall
+              ? {
+                  climbing: {
+                    ropeOpened: state.product.features.some(
+                      (f) => f.id === 'rope_walls' && f.shippedWeek !== null,
+                    ),
+                    firstWalls: [...b.leisure.buildChoice],
+                    speedWallWeek:
+                      state.product.features.find((f) => f.id === 'speed_wall')?.shippedWeek ??
+                      null,
+                    courseGraduates: b.leisure.courseConversion?.graduates ?? 0,
+                  },
+                }
+              : {}),
             ...(state.scenario.bookings?.leisure?.classStaffing
               ? {
                   fitness: {

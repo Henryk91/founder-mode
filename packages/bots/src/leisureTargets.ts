@@ -197,3 +197,87 @@ export function fitnessTargets(
     },
   ]
 }
+
+/** Climbing compares binary endings on identical seeds;all-win/all-loss ties are explicit. */
+export function climbingTargets(
+  careful: StrategyRuns,
+  s: (id: string) => StrategyRuns | undefined,
+  all: number[],
+): Target[] {
+  const boulder = s('climbing_boulder_first'),
+    rope = s('climbing_rope_first'),
+    both = s('climbing_both_first')
+  if (!boulder || !rope || !both) return []
+  const first = [boulder, rope, both]
+  const differing = all.filter((i) => new Set(first.map((x) => isWin(x.results[i]!))).size > 1)
+  const shares = first.map((x) => {
+    const wins = differing.filter((i) => isWin(x.results[i]!)).length
+    const sole = differing.filter(
+      (i) => isWin(x.results[i]!) && first.filter((y) => isWin(y.results[i]!)).length === 1,
+    ).length
+    return {
+      id: x.id.replace('climbing_', ''),
+      wins,
+      sole,
+      rate: differing.length ? (100 * wins) / differing.length : 0,
+      margin: rateMargin(wins, differing.length),
+    }
+  })
+  const pair = (id: string) => {
+    const other = s(id)
+    return other ? pairedOn(careful, other, all) : null
+  }
+  const half = pair('climbing_setting_half'),
+    double = pair('climbing_setting_double')
+  const allSlots = pair('climbing_aggregator_all'),
+    none = pair('climbing_aggregator_none')
+  const speed = pair('climbing_speed_early')
+  const noCourses = s('climbing_rope_no_courses')
+  const ropeSeeds = all.filter((i) => rope.results[i]!.tourism?.leisure?.climbing?.ropeOpened)
+  const courses = noCourses && ropeSeeds.length ? pairedOn(rope, noCourses, ropeSeeds) : null
+  const loses = (p: { change: number; margin: number } | null, n: number) =>
+    p !== null && p.change - p.margin <= -n
+  const value = (p: { change: number } | null) => (p ? signed(p.change) : '-')
+  const margin = (p: { margin: number } | null) => (p ? fmtMargin(p.margin) : '')
+  return [
+    {
+      id: 'K1',
+      text: 'Each first-wall policy wins or jointly wins on at least15%of paired seeds with different win/loss outcomes',
+      value:
+        shares
+          .map((x) => `${x.id} ${x.rate.toFixed(1)}% (${x.sole} sole,${x.wins - x.sole} joint)`)
+          .join('; ') +
+        `; differing ${differing.length},all-outcome ties ${all.length - differing.length}`,
+      margin: shares.map((x) => fmtMargin(x.margin)).join('; '),
+      pass: differing.length > 0 && shares.every((x) => x.rate + x.margin >= 15),
+    },
+    {
+      id: 'K2',
+      text: 'Half the careful route-setting hours loses at least3points;twice the hours loses at least2',
+      value: `half ${value(half)}; double ${value(double)}`,
+      margin: `${margin(half)}; ${margin(double)}`,
+      pass: loses(half, 3) && loses(double, 2),
+    },
+    {
+      id: 'K3',
+      text: 'Quiet-slot aggregator access beats all slots and no aggregator by at least2points each',
+      value: `all ${value(allSlots)}; none ${value(none)}`,
+      margin: `${margin(allSlots)}; ${margin(none)}`,
+      pass: loses(allSlots, 2) && loses(none, 2),
+    },
+    {
+      id: 'K4',
+      text: 'On seeds where rope-first opens rope walls,omitting belay and lead courses loses at least3points',
+      value: `${value(courses)}; rope-opened ${ropeSeeds.length},no-rope baseline ${all.length - ropeSeeds.length}`,
+      margin: margin(courses),
+      pass: loses(courses, 3),
+    },
+    {
+      id: 'K5',
+      text: 'Building the speed wall in year one loses at least3points',
+      value: value(speed),
+      margin: margin(speed),
+      pass: loses(speed, 3),
+    },
+  ]
+}
