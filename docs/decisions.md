@@ -1038,3 +1038,5 @@ AUTONOMOUS:Validate the unregistered climbing draft through a browser-test entry
 AUTONOMOUS:The internal mezzanine needs a real offer,not only an office-stage definition. Offer it after two months covering costs;careful play looks for repeated observed packed slots rather than waiting for safety refusals. Existing non-hall office heuristics stay unchanged.
 
 AUTONOMOUS:Connect Griffig coached products to existing capacityOf wall pools. Add optional leisure availableSlots so a shared-pool alias can be weekend-only without a second capacity pool. Ordinary visitors and coached participants reserve the same safety places;weekly two-hour average wall occupancy is explicit in the spec. Earlier content omits this field.
+
+AUTONOMOUS: Step5 unmeasured Griffig draft uses EUR10 small-budget quote rounding. The inherited EUR500 step made low-price interviews uninformative and forced hint pricing to its upper bound; correct the content before registration/first measurement. Fitness will count the same numeric correction in its first value round.

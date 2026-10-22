@@ -242,3 +242,5 @@ scenario estimates,not a tuned or measured economy.
 - The real internal mezzanine offer appears after week26 and two months covering all costs. It costsEUR40,000,takes six weeks and adds no rent or safety places. Careful play uses repeated observed crowding before considering it;the normal cash and whole-year surplus checks still apply.
 
 - Courses,clubs and parties share the actual boulder/rope/children’s wall pool with ordinary visitors. Explicit allowed slots keep clubs and parties on weekends and courses in their stated periods. Coaching pay covers the full two/four/six-hour course;the first pass reserves one estimated two-hour wall visit per participant,with remaining coached time for demonstrations and off-wall practice. This is a weekly average,not an exact session timetable. Coaches still limit actual served participants;no extra wall places are created by a course product.
+
+- Interview budgets below EUR200 round to EUR10, rather than the inherited EUR500 step. This preserves useful on-screen evidence at ticket and membership prices. Corrected before the first climbing measurement; no tuning round is spent.

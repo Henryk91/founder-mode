@@ -64,7 +64,7 @@ experiments:
     mentionPerPain: 0.3
     budgetChance: 0.2
     budgetNoiseSd: 0.25
-    budgetSmallStepCents: 50000
+    budgetSmallStepCents: 1000
     buckets:
       - id: not_a_problem
         name: Not a problem

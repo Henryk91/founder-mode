@@ -2,8 +2,10 @@
 
 ## Current
 
+Current sub-step: small-budget quote rounding corrected to EUR10 before first climbing measurement;22 content/bot checks and lint pass. Retain the fitness integration gate.
+
 Step:5 isolated preparation:shared wall pools and allowed slots validated;4 remains the primary gate.
-Last commit:HEAD,Plan5:validate climbing screens and offer the internal mezzanine.
+Previous commit:HEAD,Plan5:reserve shared climbing walls for courses and parties.
 Next action:Commit shared-wall capacity audit (29 focused checks and lint pass),then wait for fitness settlement/tuning milestone before registration. Fitness corrected matrix was stopped after finding aggregator check-ins incorrectly invoiced to employers;direct settlement is being fixed in its worktree. Full report step6 only,once.
 
 ## Checklist
@@ -58,3 +60,5 @@ Climbing policy checkpoint:24features now include four separate discounted stude
 Climbing report preparation:K1–K5 now implemented with explicit ties and rope-opened eligibility.18 focused report/policy fixtures and lint pass. Three synthetic report fixtures cover joint/sole leaders,all-outcome ties,no-rope exclusions and inapplicable T11. No climbing target has been measured yet.
 
 Climbing browser/offer checkpoint:24 full browser cases pass and two focused opening-hour tap cases pass. Screenshots at /private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-climbing;390/1440 reviewed.49events include a real internal mezzanine offer;24 focused content/policy/hall checks and lint pass. Still unregistered. Next audit shared coached/ordinary wall capacity before integration.
+
+Final unregistered climbing UI after shared-wall/allowed-slot changes:24 Chromium/WebKit cases pass again,all3stages/four widths,including the opening-hour interaction. Mezzanine native drawing inspected through WebKit;standalone Chrome capture showed a renderer artifact,not malformed SVG. No production catalogue registration or climbing measurement.
