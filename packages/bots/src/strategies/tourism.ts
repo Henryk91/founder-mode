@@ -828,6 +828,15 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           answers.push({ messageId: message.id, choiceId: 'leave' })
         }
       }
+      if (cfg.leisure?.classStaffing && !rule.reviews) {
+        for (let i = answers.length - 1; i >= 0; i--) {
+          const answer = answers[i]!
+          const message = view.inbox.find((m) => m.id === answer.messageId)
+          const event = scenario.events.find((e) => e.id === message?.eventId)
+          const choice = event?.choices.find((c) => c.id === answer.choiceId)
+          if (choice?.effects.some((fx) => fx.type === 'bugs' && fx.delta < 0)) answers.splice(i, 1)
+        }
+      }
       if (!rule.forced) return answers
       // Every arrival of the forced event gets the forced answer; the rest as the bot reads them.
       const { eventId, choiceId } = rule.forced
