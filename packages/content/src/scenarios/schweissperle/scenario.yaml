@@ -460,8 +460,8 @@ bookings:
   segments:
     young_professionals:
       base:
-        min: 3
-        max: 10
+        min: 2
+        max: 7
       unit: person
       price:
         peak: 2600
@@ -498,8 +498,8 @@ bookings:
       reviewWeight: 0.8
     yoga_crowd:
       base:
-        min: 1.5
-        max: 5
+        min: 1
+        max: 4
       unit: person
       price:
         peak: 2600
@@ -536,8 +536,8 @@ bookings:
       reviewWeight: 0.8
     corporate:
       base:
-        min: 2
-        max: 9
+        min: 1
+        max: 5.5
       unit: person
       price:
         peak: 2600
@@ -1170,6 +1170,7 @@ bookings:
         max: 60
       weeks: 4
     premiumNiche:
+      requirePreferredOffer: true
       feature: reformer_pilates
       offers:
         - premium_pack
@@ -1182,6 +1183,7 @@ bookings:
       wtpFactor: 1.5
     aggregator:
       name: Turnsaldo
+      sharedQueue: true
       payOnVisit: true
       payoutCents:
         min: 900
@@ -1339,7 +1341,7 @@ bookings:
           - annex_lunch
       premium_pack:
         kind: pack
-        visitsPerWeek: 1
+        visitsPerWeek: 1.5
         priceCents: 32000
         serves:
           - young_professionals

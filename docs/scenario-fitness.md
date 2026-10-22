@@ -332,3 +332,71 @@ real pack consumption and its monthly price basis,not just a report label.
 These are value changes,not formula changes. Budget after application:1/2 value
 rounds,0/1 formula rounds. Measure main only on1,000 paired test seeds;the event
 table remains reserved for once at the end of the step. No full report.
+
+
+### Value round two,22 October2026
+
+Round one measured30 policies on1,000 paired test seeds (main only,sourcea0643aa).
+Careful83.7%±2.3 and top88.8%±2.0 remain too easy. Median net wealth is
+EUR30,149,with viable-market medians EUR89,499 corporate,EUR23,578 young and
+EUR797 yoga. Reduce estimated reachable peak-week enquiries from3–10 to2–7
+for young professionals,1.5–5 to1–4 for yoga,and2–9 to1–5.5 for employee
+memberships. Corporate receives the larger proportional adjustment because
+its measured receipts/wealth buffer are larger. No counterfactual sweep ran.
+
+Premium usage changes from1 to an estimated1.5 visits/week,or three visits per
+fortnight on average. The EUR320 ten-class pack then has a EUR192 monthly
+equivalent,versus EUR128 at once weekly and EUR320–384 at the original general
+studio usage. This preserves a genuine specialist revenue premium while
+retaining the EUR36,000 purchase,eight seats and paid teacher. Actual whole
+visits use the existing deterministic fractional-demand sampling.
+
+The forced reformer buyer now waits eight open weeks before requesting the
+conversion. Previously it changed the initial bank/fit-out plan before any
+regular studio could open,confounding the buy/keep decision with start-up
+sequencing. It still ignores hidden niche values and funds the requested
+conversion through the normal bank/cash controls. Careful's evidence/cash
+checks and already committed conversions retain their existing rules.
+
+All other prices,costs and formulas remain unchanged. This correction is
+recorded within round two and does not reset the budget:values2/2,formula0/1.
+Measure affected main only on1,000 paired test seeds. Event table once at the
+end of the step;full report only step6,once.
+
+
+### Sole formula round,22 October2026
+
+Both value rounds are spent. The second30-policy,1,000-paired-test-seed main
+report measures careful65.6%±2.9,top73.9%±2.7,no-tests0.7%±0.5. F1 still
+finds all slots +0.1±2.0 versus careful. F3 still finds buying−46.4±3.1,
+with only3buy-only wins versus467no-buy-only wins. See ROUND2_REVIEW.md.
+
+- Explicit `aggregator.sharedQueue:true` models member and platform reservation
+  arrivals competing for the same real class places. The existing member-first
+  allocator only let platform users take leftovers,so opening busy classes
+  could not displace those reservations. Seeded ordering remains deterministic;
+  slot choices,paid cover and hard limits still apply. The public contract card
+  states the shared queue rule,without showing probabilities.
+- Failed member reservation attempts now affect class reviews through the
+  existing cancellation penalty and the actual refused-attempt fraction.
+  Previously hard allocation prevented attendance exceeding hard capacity,
+  leaving these waitlist failures out of the direct crowding review effect.
+- Explicit `premiumNiche.requirePreferredOffer:true` makes latent specialist
+  demand capable of declining an ordinary offer when its desired paid class
+  is unavailable. Previously every such enquiry automatically substituted an
+  ordinary offer,so installing equipment mostly redirected existing revenue.
+  The founder's original spin/strength following and accepted ordinary intro
+  renewals keep their existing fallback. They still pay normal fees and face
+  ordinary conversion;there is no free founding membership or whole-market
+  premium must-have. Existing interview mentions reveal specialist interest.
+
+All demand ranges,fees,rents,wages,niche shares,payouts and usage frequencies
+remain exactly as round two. These are optional mechanic/formula corrections,
+not a third value round. Earlier content omits the new switches and class-aware
+review path. Fitness's changed content fingerprint covers its debug-save notice;
+the engine version remains0.14.0 because earlier games must replay identically.
+
+Budget after application:values2/2,formula1/1. Measure affected main only on
+1,000 paired test seeds. If playability still violates the plan's hard bounds,
+record the stop and end;otherwise retain remaining failed targets as open issues.
+The fitness event table is still unrun;full report remains step6 only,once.

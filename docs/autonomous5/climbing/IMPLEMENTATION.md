@@ -164,3 +164,10 @@ Integrated final browser check:24 Chromium/WebKit cases pass across all three
 stages and375/390/430/1440px after traffic compaction and offer-frequency UI
 integration. Log:/tmp/plan5-climbing-integrated-browser.log. Griffig remains
 unregistered;next import the completed fitness milestone before measurement.
+
+Frozen formula importa6060e0 preserves qualified offer filtering,per-person
+levels in direct/queued visits and compact hall traffic.829 checks pass,27 skips,
+and lint/typechecks pass. All21 ordinary plus six funded104-week results/public
+traces remain exact against the integrated baseline. Griffig stays unregistered
+and omits the optional specialist/shared-queue flags. Import the completed
+fitness milestone before registration/measurement.

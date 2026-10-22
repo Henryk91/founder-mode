@@ -8,13 +8,13 @@ ties. K4 separates seeds where the rope-first baseline never opened rope walls.
 No registered climbing main report,event table or tuning round has run.
 The27 full-game/replay diagnostics are correctness tests,including six funded
 104-week course stress cases;they are not target measurements or seed sweeps.
-822 core/content/bot/UI checks pass,27 skips;lint/typechecks pass. All24 integrated
+829 core/content/bot/UI checks pass,27 skips;lint/typechecks pass. All24 integrated
 Chromium/WebKit width/stage cases pass axe,cut and word checks. Screenshots remain
 outside the repo in the temporary founder-mode-climbing directory.
 
-Fitness shared mechanics througha0643aa are imported;hall traffic compaction is
+Fitness shared mechanics througha6060e0 are imported;hall traffic compaction is
 f4a4759. Before registration,import the completed fitness milestone,including
-its later values/bot correction and any formula round. Retain hall/qualification/
+its completed reports/proof and any final phase-gate changes. Retain hall/qualification/
 shared-slot fields,one weekly offer-frequency field and direct aggregator payout.
 
 After the fitness gate:initial affected main only,1,000 paired test seeds. Check

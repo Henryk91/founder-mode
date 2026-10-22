@@ -3,8 +3,8 @@
 ## Current
 
 Step:4.8 fitness sole formula round;5 isolated climbing preparation ready for integration after fitness.
-Last commit:HEAD,prepare import of frozen fitness formula source.
-Next action:Merge fitnessa6060e0 into unregistered climbing preparation,preserving qualification-aware visits and compact hall history,then verify exact replay/core checks. Fitness final matrix85086 and protected proof28386 continue separately. Registration/measurement and merge into main wait for the completed fitness milestone. Full report only step6,once.
+Last commit:HEAD,merge frozen fitness formulas with qualified climbing reservations.
+Next action:Fitness final matrix complete(careful44.7%,top51.8%);its event table,final protected proof and full phase gate remain. Climbing imports frozen fitnessa6060e0 and passes829 checks/27 skips,lint,and27 exact full replay/view diagnostics. Wait for the completed fitness milestone before Griffig registration or measurement. Full report only step6,once.
 
 ## Checklist
 
@@ -31,6 +31,7 @@ Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails
 Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
 Round1 complete:careful83.7%,platform-only57.7%,top88.8%,no-tests7.6%;median net wealth EUR30,149. Contributions:fitness/ROUND1_REVIEW.md.
 Round2 complete:careful65.6%,top73.9%,no-tests0.7%. Full contributions:fitness/ROUND2_REVIEW.md.
+Formula provisional:careful44.7%,naive51.8% on1,000test seeds each;remaining policies still running.
 Values2/2,formula1/1;fitness event table not run. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
@@ -39,9 +40,11 @@ Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s u
 All eleven earlier main reports match step0 apart from timings,on1,000test seeds each.
 All content fingerprints match at engine0.14.0. Raw proof:protected-step4/.
 Ten comparisons survived the stop;only interrupted Ausgesperrt was resumed.
-Later fixes are explicitly gated by class-aware/aggregator content;final step4 proof must cover the final shared source. Never change earlier values.
+Final sourcea6060e0 proof now running:protected-step4-final/,session28386. Kantino/Zollstock standard already match exactly apart from timings(2/11 complete). Two processes,main only1,000test seeds per earlier game,durable task checkpoints. All eleven content fingerprints match. Temporary packages/bots/src/plan5-protected-final.ts must remain until the controller finishes. Never change earlier values.
 
 ## Isolated climbing
+
+Frozen import complete:fitnessa6060e0,preserving qualification-aware direct/queued requests and compact hall history.829 checks pass,27 skips;lint passes. All27 full results/public traces remain exact. Griffig remains unregistered.
 
 Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD578fcb8 (hall compaction sourcef4a4759).
 Unregistered Griffig:24features,49events,150quotes,four intros,two native scenes.

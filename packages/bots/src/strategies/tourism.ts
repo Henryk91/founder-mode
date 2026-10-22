@@ -1802,7 +1802,7 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     ],
     [
       'fitness_reformer_always',
-      'Funds and builds reformers regardless of interview interest.',
+      'Funds and builds reformers after eight open weeks regardless of interview interest.',
       { leisure: { reformer: 'always' } },
     ],
     [
