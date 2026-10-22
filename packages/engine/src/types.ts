@@ -2596,6 +2596,12 @@ export type LeisureNoiseState = {
 }
 
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
+export type LeisureTraffic = {
+  week: number
+  served: Record<FeatureId, number>
+  came: Record<FeatureId, number>
+  nonCancelled: Record<FeatureId, number>
+}
 export type LeisureState = {
   hall?: {
     week: number
@@ -2614,6 +2620,7 @@ export type LeisureState = {
     levels: string[]
   }[]
   courseConversion?: { graduates: number; enquiries: number; joined: number }
+  traffic?: LeisureTraffic[]
 
   instructorLoads?: { id: string; kind: 'founder' | 'contract'; name?: string; classes: number }[]
   foundingFollowing?: { invited: number; joined: number }

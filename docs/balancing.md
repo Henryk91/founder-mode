@@ -5300,3 +5300,25 @@ played,remainder reused;2,113s event wall plus44s automatic baseline.55 cards,
 54 judged:21 cheapest/33 other point leaders,without significance claims;
 turnaround unseen. Full suite86 files/1,691 pass,24 skips;lint passes.
 The full bot report has NEVER run;reserved once for step6. No push.
+
+## Plan5 Schweißperle initial measurement,in progress
+
+Fitness long,main only,1,000 test seeds:the careful-only bookkeeping/performance
+check records86.4%±2.1 wins,matching864 wins in the original all-policy matrix.
+The latter is still running;paired targets and policy rankings remain provisional.
+Recorded play time371.3s(T12 fails),against628.9s before compaction under
+concurrent load. No value/formula tuning,event table or full report yet.
+Raw partial report:autonomous5/fitness/schweissperle-main-compact-careful.md.
+
+## Plan5 fitness initial main,22October2026
+
+Main only,1,000 paired test seeds,30policies;no fitness events,wide parts or full
+report. Raw table:autonomous5/fitness/schweissperle-main-initial.md. Careful86.4%±2.1,
+all-slot aggregator95.7%±1.3,no-tests3.3%±1.1. T1/T2,T5–T8,T10,T12,T14,F1,F3,F4
+remain open;T11 is inapplicable. T9 is at its limit. Contributions and required
+bot corrections are in autonomous5/fitness/INITIAL_REVIEW.md. Values0/2,formula0/1.
+Current-week archive careful-only(main,1,000test seeds)reproduces864wins in301s;
+T12still fails. All eleven protected main reports match baseline on1,000test seeds.
+
+
+Plan5 fitness settled baseline: main only,30 policies on1,000 paired test seeds,source85d9b2b. Careful93.7%±1.5,top99.0%±0.6,no-tests27.4%±2.8. Contributions and all targets are in autonomous5/fitness/schweissperle-main-settled.md and SETTLED_REVIEW.md. Values0/2,formula0/1 at this baseline;no fitness event table or full report.

@@ -142,15 +142,27 @@ export function officeEconomics(state: GameState): OfficeEconomics[] {
     const rentCents = Math.round(
       ((until - stay.acceptedWeek + 1) * stage.monthlyCents) / weeksPerMonth,
     )
-    const guests = (state.bookings?.bookings ?? [])
-      .filter(
-        (b) =>
-          b.status === 'served' &&
-          stay.movedWeek !== null &&
-          b.week >= stay.movedWeek &&
-          b.week <= until,
-      )
-      .reduce((t, b) => t + b.units, 0)
+    const traffic = state.scenario.bookings?.leisure?.classStaffing
+      ? state.bookings?.leisure?.traffic
+      : undefined
+    const guests = traffic?.length
+      ? traffic
+          .filter(
+            (row) => stay.movedWeek !== null && row.week >= stay.movedWeek && row.week <= until,
+          )
+          .reduce(
+            (sum, row) => sum + Object.values(row.served).reduce((n, units) => n + units, 0),
+            0,
+          )
+      : (state.bookings?.bookings ?? [])
+          .filter(
+            (b) =>
+              b.status === 'served' &&
+              stay.movedWeek !== null &&
+              b.week >= stay.movedWeek &&
+              b.week <= until,
+          )
+          .reduce((t, b) => t + b.units, 0)
     const loanPaid = (state.loan?.loans ?? []).some((l) => l.stage === stay.stage)
     return {
       place: stage.name,

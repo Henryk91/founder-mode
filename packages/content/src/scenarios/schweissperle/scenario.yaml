@@ -67,7 +67,7 @@ experiments:
     mentionPerPain: 0.3
     budgetChance: 0.2
     budgetNoiseSd: 0.25
-    budgetSmallStepCents: 50000
+    budgetSmallStepCents: 1000
     buckets:
       - id: not_a_problem
         name: Not a problem
@@ -460,8 +460,8 @@ bookings:
   segments:
     young_professionals:
       base:
-        min: 6
-        max: 20
+        min: 3
+        max: 10
       unit: person
       price:
         peak: 2600
@@ -498,8 +498,8 @@ bookings:
       reviewWeight: 0.8
     yoga_crowd:
       base:
-        min: 3
-        max: 10
+        min: 1.5
+        max: 5
       unit: person
       price:
         peak: 2600
@@ -536,8 +536,8 @@ bookings:
       reviewWeight: 0.8
     corporate:
       base:
-        min: 4
-        max: 18
+        min: 2
+        max: 9
       unit: person
       price:
         peak: 2600
@@ -1182,6 +1182,7 @@ bookings:
       wtpFactor: 1.5
     aggregator:
       name: Turnsaldo
+      payOnVisit: true
       payoutCents:
         min: 900
         max: 1300
@@ -1338,6 +1339,7 @@ bookings:
           - annex_lunch
       premium_pack:
         kind: pack
+        visitsPerWeek: 1
         priceCents: 32000
         serves:
           - young_professionals

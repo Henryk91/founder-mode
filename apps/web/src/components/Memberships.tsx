@@ -41,6 +41,11 @@ export function MembershipPrices() {
                 })}
               </Writing>
             )}
+            {offer.visitsPerWeek !== undefined && (
+              <Writing>
+                {label('leisure.offerFrequency', stage, { n: offer.visitsPerWeek })}
+              </Writing>
+            )}
             {offer.products && (
               <Writing>
                 {label('leisure.offerProducts', stage, {

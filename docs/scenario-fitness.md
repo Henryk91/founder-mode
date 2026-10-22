@@ -286,3 +286,49 @@ scene format. White on the established accent#B0284F measures6.44:1,so the
 specified shade is retained. Catalogue/static/lazy loading now register the
 long-only scenario in the isolated branch;bots and membership/timetable UI
 remain unfinished before the phase gate.
+
+### Aggregator settlement correction before tuning
+
+The initial report exposed corporate-labelled aggregator check-ins entering the
+ordinary employer invoice path. The platform contract pays actual check-ins;
+it does not sell a newEUR11class invoice to each visitor's employer. Fitness
+now explicitly enables `aggregator.payOnVisit:true`. This removes those false
+invoices,credit-risk rolls and chase work;company membership invoices remain
+normal invoices. Older scenarios omit the switch and retain their exact path.
+The corrected-policy matrix was stopped as superseded after its careful count
+(951/1,000);its checkpoints remain available. Measure the settled game before
+changing values. Value rounds0/2,formula0/1.
+
+Optional per-offer weekly usage is now supported and displayed. This is needed
+for products such as a once-weekly premium pack or a weekly children's club;
+without it,the segment's general studio usage is applied to every offer. No
+fitness offer frequency has been changed in this mechanics correction.
+
+
+### Value round one,22 October2026
+
+The settled main-only matrix (30 policies,1,000 paired test seeds,source85d9b2b)
+measures careful93.7%±1.5 and never-reformer99.0%±0.6. Median two-year net
+wealth is EUR253,107. Contributions were reviewed before changing values.
+
+| Value | Before | Round one | Basis |
+|---|---|---|---|
+| Young-professional reachable enquiries/week at peak |6–20|3–10|Halve estimated reachable demand to bring the studio towards break-even|
+| Yoga reachable enquiries/week at peak |3–10|1.5–5|Same estimate adjustment; fractional demand is sampled by the existing engine|
+| Employee membership enquiries/week at peak |4–18|2–9|Same adjustment; units remain employees,not companies|
+| Small interview budget step |EUR500|EUR10|Correct inherited coarse rounding for EUR60–160 monthly budgets|
+| Premium pack usage |Segment default2.5–3/week|1/week|Estimate for once-weekly specialist classes,shown in public offer terms;EUR320/ten remains unchanged|
+| Urgent shower repair call-out |EUR120|EUR650|Explicit emergency plumbing estimate,not a verified supplier quote|
+| Extra deep-cleaning call-out |EUR120|EUR300|Explicit one-off cleaning estimate;the regular EUR800/month contract remains|
+| Bike service block |EUR120|EUR480|Explicit equipment-service estimate;no quoted manufacturer tariff|
+
+The original starting tables above remain the proposal,not a claim that those
+unmeasured demand ranges produced the target difficulty. Rents,published price
+comparisons,ordinary membership fees,contract tariffs,January behaviour and
+recovery costs are unchanged in this round. Reformer equipment still costs
+EUR36,000 and converts18 mat seats to8. The weekly usage assumption changes
+real pack consumption and its monthly price basis,not just a report label.
+
+These are value changes,not formula changes. Budget after application:1/2 value
+rounds,0/1 formula rounds. Measure main only on1,000 paired test seeds;the event
+table remains reserved for once at the end of the step. No full report.
