@@ -3,7 +3,7 @@
 ## Current
 
 Step:4 fitness measurement resumed;5 isolated climbing preparation.
-Last commit:HEAD,Plan5:expose staffed hall hours and paid setting controls.
+Last commit:HEAD,Plan5:teach climbing policies to fund and staff their first walls.
 Next action:Resume only missing protected proof (Ausgesperrt main,1,000 test seeds);restart interrupted fitness initial main with durable task checkpoints because only summary counts survived. Preserve ten completed protected comparisons. Unregistered Griffig content is prepared;review admission/student prices,then build hall UI and bots while fitness runs. Full report remains step6 only,once.
 
 ## Checklist
@@ -54,3 +54,5 @@ Climbing content checkpoint:48events,150quotes,20features,four intro cards and t
 Hall interface preparation:opening-hour steppers,desk-cover requirements,paid setter allocations,individual skill counts and qualified course-to-membership totals use public view only. Seven focused hall/membership UI checks and lint pass. Café terms use served visits and show paid staff throughput. Browser checks remain due after registration.
 
 Climbing policy checkpoint:24features now include four separate discounted student agreements. Added first-wall,setting,aggregator,course/speed and later-loan policies,all gated to hall content/unregistered Griffig.57 focused climbing/fitness/content checks and lint pass. Careful opens with actual actions and replay matches exactly. No climbing balancing/event table/full report. Next add K1–K5 reporting before registration.
+
+Climbing report preparation:K1–K5 now implemented with explicit ties and rope-opened eligibility.18 focused report/policy fixtures and lint pass. Three synthetic report fixtures cover joint/sole leaders,all-outcome ties,no-rope exclusions and inapplicable T11. No climbing target has been measured yet.

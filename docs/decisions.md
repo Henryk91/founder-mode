@@ -1030,3 +1030,5 @@ AUTONOMOUS:Use staffed two-hour hall visits,individual earned qualifications,ten
 AUTONOMOUS:Put hall opening and paid-setting controls in the existing Calendar card style. Founder setting stays in the notebook;paid setting allocates purchased shifts. Show required desk cover and actual previous opening hours,never hidden comfort limits or qualification chances.
 
 AUTONOMOUS:Climbing bot financing waits for first interviews before committing a first-wall loan. Single-wall variants cannot open a cheaper second area first. Paid memberships start only after opening;an unjoined aggregator cannot be requested with no usable slots. Initial student ticket/membership/card prices are80%of corresponding regular prices,with separate offers preserving terms.
+
+AUTONOMOUS:Before any Griffig measurement,K1 compares differing paired win/loss outcomes and reports sole/joint leaders plus all-outcome ties. K4 compares rope-first against rope-first-without-courses only on seeds where the baseline opens rope walls;other seeds are reported separately. T11 is omitted and T15 uses the dedicated no-later-loan policy. No target limit changes.
