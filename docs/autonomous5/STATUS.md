@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.8 fitness value round2;5 isolated climbing preparation ready for integration after fitness.
-Last commit:HEAD,record integrated climbing preparation checks. Fitness sourcea6a1c8c validates separately.
-Next action:Collect fitness round2 main matrix(session66616,/tmp/plan5-fitness-main-round2.log):30policies,1,000 paired test seeds,eight workers. Checkpoints:/tmp/plan5-fitness-round2-checkpoints-a6a1c8c. Values2/2,formula0/1. Review all contributions before the sole formula round. Finish fitness report/tag before Griffig registration or merge into main. Full report only step6,once.
+Step:4.8 fitness sole formula round;5 isolated climbing preparation ready for integration after fitness.
+Last commit:HEAD,prepare import of frozen fitness formula source.
+Next action:Merge fitnessa6060e0 into unregistered climbing preparation,preserving qualification-aware visits and compact hall history,then verify exact replay/core checks. Fitness final matrix85086 and protected proof28386 continue separately. Registration/measurement and merge into main wait for the completed fitness milestone. Full report only step6,once.
 
 ## Checklist
 
@@ -30,7 +30,8 @@ Two archival optimisations preserve21complete results/public-view traces exactly
 Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails.
 Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
 Round1 complete:careful83.7%,platform-only57.7%,top88.8%,no-tests7.6%;median net wealth EUR30,149. Contributions:fitness/ROUND1_REVIEW.md.
-Values2/2,formula0/1;fitness event table not run. No full report.
+Round2 complete:careful65.6%,top73.9%,no-tests0.7%. Full contributions:fitness/ROUND2_REVIEW.md.
+Values2/2,formula1/1;fitness event table not run. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
 ## Protected proof
@@ -42,7 +43,7 @@ Later fixes are explicitly gated by class-aware/aggregator content;final step4 p
 
 ## Isolated climbing
 
-Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD f4a4759.
+Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD578fcb8 (hall compaction sourcef4a4759).
 Unregistered Griffig:24features,49events,150quotes,four intros,two native scenes.
 Optional personal qualifications/course conversions,staffed hall hours,paid setting,groups,weekly club,café/rentals,alternative requirements,shared wall pools and allowed slots implemented.
 Hall UI,first-wall/setting/aggregator/course/speed bots,K1–K5 reporting and real mezzanine offer prepared.
