@@ -3,7 +3,7 @@
 Applicable targets: T1–T10, T12–T18, E1 and F1–F5. T4 starts at actual opening;
 T8 concerns the aggregator. T11 does not measure membership terms and is inapplicable.
 
-Values: **2/2 rounds**. Formulas: **0/1 round** for every failing target.
+Values: **2/2 rounds**. Formulas: **1/1 round** for every failing target.
 First make the bots sensible, then measure contributions, then change values.
 A result within its own 95% margin of a limit passes at the limit.
 
@@ -63,3 +63,17 @@ conversion. No further value round remains. Formula0/1 remains;choose it only
 after this matrix is reviewed. No event table/full report.
 
 Round-two validation:47 focused content/engine/bot checks and lint/typechecks pass.
+
+## Sole formula round
+
+Round2 complete:careful65.6%,top73.9%,no-tests0.7%;ROUND2_REVIEW.md records
+all contributions. Apply optional shared reservation arrivals,actual refused
+member reservation reviews and strict specialist preference for prospective
+enquiries. Original founder/ordinary-intro fallbacks remain. All numeric values
+are fixed.57 focused checks pass after one missed nullable intro caller was fixed.
+Both value rounds and the formula round are now spent. After the full affected
+main matrix,obey the playability hard stop if required;otherwise record open
+targets and complete the phase gate. No event table/full report has run.
+
+Formula validation:782 broad engine/content/fitness/UI checks pass,27 skips;
+lint/typechecks pass after fixing one optional-property queue typing issue.

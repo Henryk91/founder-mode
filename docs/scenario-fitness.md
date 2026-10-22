@@ -362,3 +362,41 @@ All other prices,costs and formulas remain unchanged. This correction is
 recorded within round two and does not reset the budget:values2/2,formula0/1.
 Measure affected main only on1,000 paired test seeds. Event table once at the
 end of the step;full report only step6,once.
+
+
+### Sole formula round,22 October2026
+
+Both value rounds are spent. The second30-policy,1,000-paired-test-seed main
+report measures careful65.6%±2.9,top73.9%±2.7,no-tests0.7%±0.5. F1 still
+finds all slots +0.1±2.0 versus careful. F3 still finds buying−46.4±3.1,
+with only3buy-only wins versus467no-buy-only wins. See ROUND2_REVIEW.md.
+
+- Explicit `aggregator.sharedQueue:true` models member and platform reservation
+  arrivals competing for the same real class places. The existing member-first
+  allocator only let platform users take leftovers,so opening busy classes
+  could not displace those reservations. Seeded ordering remains deterministic;
+  slot choices,paid cover and hard limits still apply. The public contract card
+  states the shared queue rule,without showing probabilities.
+- Failed member reservation attempts now affect class reviews through the
+  existing cancellation penalty and the actual refused-attempt fraction.
+  Previously hard allocation prevented attendance exceeding hard capacity,
+  leaving these waitlist failures out of the direct crowding review effect.
+- Explicit `premiumNiche.requirePreferredOffer:true` makes latent specialist
+  demand capable of declining an ordinary offer when its desired paid class
+  is unavailable. Previously every such enquiry automatically substituted an
+  ordinary offer,so installing equipment mostly redirected existing revenue.
+  The founder's original spin/strength following and accepted ordinary intro
+  renewals keep their existing fallback. They still pay normal fees and face
+  ordinary conversion;there is no free founding membership or whole-market
+  premium must-have. Existing interview mentions reveal specialist interest.
+
+All demand ranges,fees,rents,wages,niche shares,payouts and usage frequencies
+remain exactly as round two. These are optional mechanic/formula corrections,
+not a third value round. Earlier content omits the new switches and class-aware
+review path. Fitness's changed content fingerprint covers its debug-save notice;
+the engine version remains0.14.0 because earlier games must replay identically.
+
+Budget after application:values2/2,formula1/1. Measure affected main only on
+1,000 paired test seeds. If playability still violates the plan's hard bounds,
+record the stop and end;otherwise retain remaining failed targets as open issues.
+The fitness event table is still unrun;full report remains step6 only,once.
