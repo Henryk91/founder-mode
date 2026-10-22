@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createGame, getView } from '../src/index'
 import { Rng, seedRng } from '../src/rng'
 import { applyBookings } from '../src/systems/bookings'
+import { beginLeisure, finishLeisure } from '../src/systems/leisure'
 import type { Booking } from '../src/types'
 import { plan } from './helpers'
 import { leisureScenario } from './leisure'
@@ -63,6 +64,41 @@ describe('optional class-aware staffing', () => {
     const old = applyBookings(game(false), roster(1), rng())
     expect(old.state.bookings!.bookings.every((b) => b.status === 'served')).toBe(true)
     expect(old.state.bookings!.leisure!.classCoverage).toBeUndefined()
+  })
+
+  it('records cancelled member visits without redeeming their prepaid pack', () => {
+    const s = game()
+    s.bookings!.leisure!.members = [
+      {
+        id: 'pack-member',
+        segmentId: 'small_offices',
+        offerId: 'member_billing',
+        joinedWeek: 1,
+        termUntil: 1,
+        noticeUntil: null,
+        endedWeek: null,
+        inactive: false,
+        priceCents: 10000,
+        owedVisits: 10,
+        owedCents: 10000,
+        expiresWeek: null,
+        waitlist: [],
+        reason: null,
+      },
+    ]
+    s.bookings!.bookings[1]!.memberId = 'pack-member'
+    const original = structuredClone(s)
+    const cancelled = { ...s.bookings!.bookings[1]!, status: 'company_cancelled' as const }
+    const begun = beginLeisure(s, plan(), rng()).state
+    const result = finishLeisure(begun, [cancelled]).state
+    expect(result.bookings!.leisure!.members[0]).toMatchObject({
+      waitlist: [1],
+      owedVisits: 10,
+      owedCents: 10000,
+    })
+    expect(getView(result).bookings!.leisure!.timetable[0]!.classHours).toBe(1)
+    expect(getView(game(false)).bookings!.leisure!.timetable[0]!.classHours).toBeUndefined()
+    expect(s).toEqual(original)
   })
 
   it('covers separate classes with separate qualified shifts and pays each once', () => {

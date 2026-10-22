@@ -1211,3 +1211,7 @@ served visits. It never supplies instructor coverage. Optional
 hosting maximum and reset each week. Public `BookingsView.hostingReliefHours`
 shows actual cover;`hostingHours` shows the remaining founder hours,never negative.
 Unconfigured games retain their previous hosting path and get no fields.
+
+Class-aware timetables additionally expose optional `classHours`, the stated duration
+of one class. Existing member bookings cancelled at service add a failed visit to waitlist
+history without redeeming pack visits or value; this behaviour is unchanged.
