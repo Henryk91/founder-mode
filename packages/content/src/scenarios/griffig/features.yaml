@@ -138,3 +138,39 @@
   bugsOnShip:
     min: 0
     max: 0
+- id: student_monthly_membership
+  name: Student monthly membership
+  buildHours: 2
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention:
+    The student agreement is one fifth below the corresponding regular price. It keeps the same
+    slots and term.
+- id: student_annual_membership
+  name: Student twelve-month membership
+  buildHours: 2
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention:
+    The student agreement is one fifth below the corresponding regular price. It keeps the same
+    slots and term.
+- id: student_off_peak_membership
+  name: Student off-peak membership
+  buildHours: 2
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention:
+    The student agreement is one fifth below the corresponding regular price. It keeps the same
+    slots and term.
+- id: student_visit_card
+  name: Student ten-visit card
+  buildHours: 2
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention:
+    The student agreement is one fifth below the corresponding regular price. It keeps the same
+    slots and term.
