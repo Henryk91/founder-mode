@@ -3,8 +3,8 @@
 ## Current
 
 Step:4.6 fitness UI verified;initial main measurement running.
-Last commit:HEAD,Plan5:compact class visit history without changing player views.
-Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-initial.log (session89679),review bots and contributions before values,then complete tuning. Protected proof is also running (session25269,/tmp/plan5-protected-step4.log):all eleven earlier games,main only,1,000 test seeds;two scenario processes/one worker each. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
+Last commit:HEAD,Plan5:record fitness careful performance measurement.
+Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-initial.log (session89679),review bots and contributions before values,then complete tuning. Fitness compact-careful main is complete (session30421,/tmp/plan5-fitness-compact-careful.log):864/1,000 wins unchanged,371.3s(T12 still fails). Raw report:fitness/schweissperle-main-compact-careful.md. Protected proof is also running (session25269,/tmp/plan5-protected-step4.log):all eleven earlier games,main only,1,000 test seeds;two scenario processes/one worker each. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
 
 ## Checklist
 

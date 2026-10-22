@@ -5300,3 +5300,12 @@ played,remainder reused;2,113s event wall plus44s automatic baseline.55 cards,
 54 judged:21 cheapest/33 other point leaders,without significance claims;
 turnaround unseen. Full suite86 files/1,691 pass,24 skips;lint passes.
 The full bot report has NEVER run;reserved once for step6. No push.
+
+## Plan5 Schweißperle initial measurement,in progress
+
+Fitness long,main only,1,000 test seeds:the careful-only bookkeeping/performance
+check records86.4%±2.1 wins,matching864 wins in the original all-policy matrix.
+The latter is still running;paired targets and policy rankings remain provisional.
+Recorded play time371.3s(T12 fails),against628.9s before compaction under
+concurrent load. No value/formula tuning,event table or full report yet.
+Raw partial report:autonomous5/fitness/schweissperle-main-compact-careful.md.
