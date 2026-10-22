@@ -1182,6 +1182,7 @@ bookings:
       wtpFactor: 1.5
     aggregator:
       name: Turnsaldo
+      payOnVisit: true
       payoutCents:
         min: 900
         max: 1300

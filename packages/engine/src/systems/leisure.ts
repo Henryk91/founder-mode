@@ -834,6 +834,7 @@ export function leisureView(s: GameState): LeisureView | null {
         enabled: l.offers[id]?.enabled ?? false,
         priceCents: l.offers[id]?.priceCents ?? offer.priceCents,
         kind: offer.kind,
+        ...(offer.visitsPerWeek !== undefined ? { visitsPerWeek: offer.visitsPerWeek } : {}),
         termWeeks: offer.termWeeks,
         noticeWeeks: offer.noticeWeeks,
         slots: [...offer.slots],
@@ -1312,7 +1313,10 @@ export function leisureVisits(
     const offer = c.memberships?.[m.offerId]
     const segment = c.segments[m.segmentId]
     if (!offer || !segment) continue
-    const n = Math.min(round(segment.visitsPerWeek, rng), m.owedVisits ?? Infinity)
+    const n = Math.min(
+      round(offer.visitsPerWeek ?? segment.visitsPerWeek, rng),
+      m.owedVisits ?? Infinity,
+    )
     const slots = entries(segment.slotShare).filter(([id]) => offer.slots.includes(id))
     const sum = slots.reduce((t, [, share]) => t + share, 0)
     if (sum <= 0) continue

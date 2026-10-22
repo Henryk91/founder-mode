@@ -829,6 +829,7 @@ export const LeisureSchema = z
         Id,
         z.object({
           kind: z.enum(['monthly', 'annual', 'off_peak', 'pack', 'intro']),
+          visitsPerWeek: z.number().nonnegative().optional(),
           products: z.array(Id).min(1).optional(),
           priceCents: Cents.positive(),
           serves: z.array(Id).min(1),
@@ -844,6 +845,7 @@ export const LeisureSchema = z
     aggregator: z
       .object({
         name: z.string().min(1),
+        payOnVisit: z.literal(true).optional(),
         payoutCents: rangeOf(Cents.positive()),
         capPerMonth: z.number().int().positive(),
         noticeWeeks: z.number().int().positive(),

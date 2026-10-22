@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.8 fitness bot corrections validated;corrected main measurement next.
-Last commit:HEAD,Plan5:record initial fitness targets and policy contributions.
-Next action:Run corrected fitness main only on1,000 test seeds with durable checkpoints/four workers;compare policy contributions before the first value round.40 focused checks and lint pass. All eleven earlier main comparisons match. Climbing remains isolated/unregistered;finish its shared-wall capacity audit. Full report step6 only,once.
+Step:4.8 fitness aggregator settlement corrected;fresh main measurement next.
+Last commit:HEAD,Plan5:correct fitness budget and quiet-slot policy decisions.
+Next action:Measure fitness after explicit direct aggregator settlement (main only,1,000 test seeds,four workers,durable checkpoints),then review before value round1. Superseded corrected-policy matrix stopped with checkpoints intact.770 engine/content/fitness checks,eight focused payment/UI checks and lint pass. Climbing eb95488 has shared wall pools/slots,unregistered;merge only after the fitness gate. Full report step6 only,once.
 
 ## Checklist
 
