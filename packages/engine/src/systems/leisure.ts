@@ -1,4 +1,10 @@
 import {
+  qualificationRates,
+  drawLevels,
+  personLevels,
+  finishQualifications,
+} from './qualifications'
+import {
   chooseMembershipOffer,
   membershipMonthlyCost,
   membershipUsable,
@@ -89,8 +95,10 @@ export function initLeisure(
   const payoutCents = c.aggregator
     ? rng.int(c.aggregator.payoutCents.min, c.aggregator.payoutCents.max)
     : null
+  const rates = qualificationRates(c.qualifications, rng)
   return {
     hidden: {
+      ...(rates ? { qualificationRates: rates } : {}),
       localPools,
       payoutCents,
       instructorFollowing: Object.fromEntries(
@@ -110,6 +118,9 @@ export function initLeisure(
     },
     state: {
       ...initVenue(c),
+      ...(c.qualifications
+        ? { qualifiedEnquiries: [], courseConversion: { graduates: 0, enquiries: 0, joined: 0 } }
+        : {}),
       ...(c.foundingFollowing ? { foundingFollowing: { invited: 0, joined: 0 } } : {}),
       ...(c.slotPrices
         ? {
@@ -162,6 +173,9 @@ export function initLeisure(
             users: entries(c.aggregator.users).flatMap(([segmentId, n]) =>
               Array.from({ length: rng.int(n.min, n.max) }, () => ({
                 segmentId,
+                ...(c.qualifications
+                  ? { levels: drawLevels(c.qualifications, rates?.[segmentId], rng)! }
+                  : {}),
                 month: 0,
                 visits: 0,
               })),
@@ -667,7 +681,47 @@ export function beginLeisure(
   )
     l.openingWeek = week
   l.weeks.push(row)
-  const state = { ...input, loan, bookings: { ...input.bookings!, bookings, leisure: l } }
+  let state: GameState = { ...input, loan, bookings: { ...input.bookings!, bookings, leisure: l } }
+  if (c.qualifications) {
+    const enquiries = (l.qualifiedEnquiries ?? []).filter((e) => e.week === week)
+    const before = l.members.length
+    for (const e of enquiries) {
+      const before = state.bookings!.leisure!.members.length
+      state = joinLeisure(state, e.segmentId, e.units, rng, e.levels)
+      const now = state.bookings!.leisure!
+      if (e.personId && now.members.length > before) {
+        state = {
+          ...state,
+          bookings: {
+            ...state.bookings!,
+            leisure: {
+              ...now,
+              coursePeople: (now.coursePeople ?? []).map((person) =>
+                person.id === e.personId
+                  ? { ...person, memberId: now.members[before]!.id }
+                  : person,
+              ),
+            },
+          },
+        }
+      }
+    }
+    const now = state.bookings!.leisure!
+    state = {
+      ...state,
+      bookings: {
+        ...state.bookings!,
+        leisure: {
+          ...now,
+          qualifiedEnquiries: (now.qualifiedEnquiries ?? []).filter((e) => e.week > week),
+          courseConversion: {
+            ...now.courseConversion!,
+            joined: now.courseConversion!.joined + now.members.length - before,
+          },
+        },
+      },
+    }
+  }
   return {
     state,
     costsCents,
@@ -797,6 +851,19 @@ export function leisureView(s: GameState): LeisureView | null {
     courses: Object.values(cfg.products).some((p) => p.course)
       ? { ...totals, byYear: ladder.map((y) => ({ ...y })) }
       : null,
+    ...(c.qualifications
+      ? {
+          qualifications: {
+            levels: entries(c.qualifications.levels).map(([id, level]) => ({
+              id,
+              name: level.name,
+              members: active.filter((m) => m.levels?.includes(id)).length,
+              aggregatorUsers: a?.users.filter((u) => u.levels?.includes(id)).length ?? 0,
+            })),
+            ...(l.courseConversion ?? { graduates: 0, enquiries: 0, joined: 0 }),
+          },
+        }
+      : {}),
     instructorDepartures: l.instructorDepartures.map((d) => ({
       week: d.week,
       name: s.scenario.bookings!.roles[d.roleId]?.name ?? d.roleId,
@@ -961,6 +1028,7 @@ export function joinLeisure(
   segmentId: string,
   demand: number,
   rng: Rng,
+  earned?: readonly string[],
 ): GameState {
   const c = cfgOf(input)
   const original = input.bookings?.leisure
@@ -978,7 +1046,7 @@ export function joinLeisure(
   const migration = original.aggregator?.joined
     ? (c.aggregator?.cannibalisation[segmentId] ?? 0)
     : 0
-  const normal = round(demand * segment.memberShare * (1 - migration), rng)
+  const normal = round(demand * (earned ? 1 : segment.memberShare) * (1 - migration), rng)
   const following = c.foundingFollowing
   const elapsed = original.openingWeek === null ? 0 : input.week - original.openingWeek + 1
   const introductions =
@@ -994,7 +1062,25 @@ export function joinLeisure(
   const members = [...original.members]
   let followingJoined = 0
   for (let i = 0; i < n; i++) {
-    const [offerId, offer] = chooseMembershipOffer(input, segmentId, offers, rng)
+    const levels = c.qualifications
+      ? earned
+        ? [...earned]
+        : personLevels(input, segmentId, rng)!
+      : undefined
+    const usableOffers = c.qualifications
+      ? offers.filter(([, offer]) =>
+          (offer.products ?? Object.keys(c.products)).some((id) => {
+            const product = input.scenario.bookings!.products[id]
+            return (
+              product?.serves.includes(segmentId) &&
+              !product.course &&
+              (!product.needsLevel || levels!.includes(product.needsLevel))
+            )
+          }),
+        )
+      : offers
+    if (!usableOffers.length) continue
+    const [offerId, offer] = chooseMembershipOffer(input, segmentId, usableOffers, rng)
     const priceCents = original.offers[offerId]!.priceCents
     const monthlyCost = membershipMonthlyCost(input, segmentId, offer, priceCents)
     const wtp = membershipWtp(
@@ -1019,6 +1105,7 @@ export function joinLeisure(
       expiresWeek: offer.validWeeks ? input.week + offer.validWeeks : null,
       waitlist: [],
       reason: null,
+      ...(levels ? { levels } : {}),
       ...(offer.kind === 'pack' ? { owedCents: priceCents } : {}),
     })
   }
@@ -1256,12 +1343,21 @@ export function leisureVisits(
   const added: Booking[] = []
   const denied: { productId: string; slotId: string; units: number }[] = []
   const week = input.week
-  const pickProduct = (segmentId: string, slot: string, products?: readonly string[]) =>
+  const pickProduct = (
+    segmentId: string,
+    slot: string,
+    products?: readonly string[],
+    levels?: readonly string[],
+  ) =>
     Object.keys(c.products)
       .sort()
       .filter(
         (id) =>
           (!products || products.includes(id)) &&
+          (!c.qualifications || !input.scenario.bookings!.products[id]?.course) &&
+          (!c.qualifications ||
+            !input.scenario.bookings!.products[id]?.needsLevel ||
+            levels?.includes(input.scenario.bookings!.products[id]!.needsLevel!)) &&
           input.scenario.bookings!.products[id]?.serves.includes(segmentId) &&
           room(input, id, slot, week, segmentId) > 0 &&
           leisureOpen(input, id, week),
@@ -1275,8 +1371,9 @@ export function leisureVisits(
     memberId?: string,
     aggregatorUser?: number,
     products?: readonly string[],
+    levels?: readonly string[],
   ) => {
-    const productId = pickProduct(segmentId, slotId, products)
+    const productId = pickProduct(segmentId, slotId, products, levels)
     if (!productId) {
       const productId = Object.keys(c.products).find(
         (id) =>
@@ -1299,6 +1396,7 @@ export function leisureVisits(
       bookedWeek: week,
       status: 'booked',
       slotId,
+      ...(levels ? { levels: [...levels] } : {}),
       ...(memberId !== undefined ? { memberId } : {}),
       ...(aggregatorUser !== undefined ? { aggregatorUser } : {}),
     }
@@ -1322,7 +1420,7 @@ export function leisureVisits(
           r -= share
           return r < 0
         })?.[0] ?? slots.at(-1)![0]
-      if (!add(m.segmentId, slot, m.id, undefined, offer.products)) m.waitlist.push(week)
+      if (!add(m.segmentId, slot, m.id, undefined, offer.products, m.levels)) m.waitlist.push(week)
     }
   }
   const a = original.aggregator
@@ -1332,7 +1430,8 @@ export function leisureVisits(
       const used = user.month === month ? user.visits : 0
       if (used >= c.aggregator.capPerMonth || !rng.chance(c.aggregator.visitsPerWeek)) continue
       const slot = leisureSlot(input, user.segmentId, rng)
-      if (slot && a.slots.includes(slot)) add(user.segmentId, slot, undefined, index)
+      if (slot && a.slots.includes(slot))
+        add(user.segmentId, slot, undefined, index, undefined, user.levels)
     }
   }
   return {
@@ -1529,7 +1628,8 @@ export function finishLeisure(
       leisure: { ...original, members, freshness, aggregator, weeks },
     },
   }
-  const venue = finishVenue(completed, bookings, rng, money, turnaroundCents)
+  const qualified = finishQualifications(completed, served, rng)
+  const venue = finishVenue(qualified, bookings, rng, money, turnaroundCents)
   return {
     state: venue.state,
     voucherRedeemedCents,

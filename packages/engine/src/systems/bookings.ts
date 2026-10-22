@@ -1,3 +1,4 @@
+import { personLevels, earnedLevels } from './qualifications'
 import { classWorkload } from './classWorkload'
 import { leisurePriceBasis, leisureReviewPrice } from './membership'
 import { beginVenue } from './venue'
@@ -898,6 +899,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       // The segment's own guests and those who come for one product alone (not sent by a partner).
       const asOwn = i < ownRequests || only !== null
       let size = rng.int(s.size.min, s.size.max)
+      const levels = personLevels(state, seg.id, rng)
       const lead = ahead
         ? s.leadWeeks.min + drawIndex(ahead, aheadSum, rng)
         : rng.int(s.leadWeeks.min, s.leadWeeks.max)
@@ -942,7 +944,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
               prod.serves.includes(seg.id) &&
               sells(state, id, w) &&
               // Plan 4: a product for a level only sells to guests who hold it.
-              (!prod.needsLevel || (s.levels ?? []).includes(prod.needsLevel)) &&
+              (!prod.needsLevel ||
+                (cfg.leisure?.qualifications ? (levels ?? []) : (s.levels ?? [])).includes(
+                  prod.needsLevel,
+                )) &&
               // Plan 4: a week held for whole-boat bookings sells no cabins.
               !(cfg.hold && heldFor(cfg, b.held, id, w)) &&
               // Tuning 1: a product with guests of its own sells only to them.
@@ -996,6 +1001,15 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         channel: platform ? 'platform' : 'direct',
         bookedWeek: week,
         status: 'booked',
+        ...(levels ? { levels } : {}),
+        ...(cfg.leisure?.qualifications && cfg.products[pick.id]?.course
+          ? {
+              coursePeople: Array.from(
+                { length: size },
+                (_, unit) => `learner_${week}_${seg.id}_${i}_${unit}`,
+              ),
+            }
+          : {}),
         ...(deposit > 0 ? { depositCents: deposit } : {}),
         ...(slot ? { slotId: slot } : {}),
       }
@@ -1783,6 +1797,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
             bookedWeek: week,
             status: 'booked',
             ...(slot ? { slotId: slot } : {}),
+            ...(x.coursePeople ? { coursePeople: x.coursePeople.slice(0, n) } : {}),
+            ...(cfg.leisure?.qualifications
+              ? { levels: earnedLevels(cfg.leisure.qualifications, x.levels ?? [], course.level) }
+              : {}),
           })
           held.set(heldKey(pick, w), (held.get(heldKey(pick, w)) ?? 0) + n)
           sameStay += n

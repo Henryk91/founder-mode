@@ -1002,3 +1002,11 @@ AUTONOMOUS: F3 reports paired discordant wins and ties for forced buy/never-buy,
 AUTONOMOUS: Add membership/pack pricing with published terms,quiet-slot aggregator controls and a shared-room timetable using only PlayerView. Fitness hides the separate commission listing and unrelated strict/flexible cancellation control. Public pack visit counts distinguish one purchase from total visits owed. Existing ruled rows and all three voices are retained.
 
 AUTONOMOUS: The fitness word check permits only five exact authored trial-class labels/quotes;software subscription terms remain checked. All24 Chromium/WebKit width/stage cases pass axe/cut/words;14 focused membership/engine checks and lint pass. Screenshots are outside the repo under the temporary founder-mode-fitness directory. Initial fitness measurement is main only,1,000 test seeds;no value/formula rounds,event table or full report.
+
+## Plan5 step5: isolated climbing preparation
+
+AUTONOMOUS: Prepare unregistered Griffig mechanics in a separate worktree from fitness f334fd7 while its1,000-seed reports run. No integration before fitness's gate. Touch list and unit/qualification gaps are in autonomous5/climbing/IMPLEMENTATION.md. T1–T10,T12–T18,E1,K1–K5 apply;T11 is inapplicable to same-day admission/membership notice,T4 begins at opening.
+
+AUTONOMOUS: Belay skills belong to actual members/check-in users. Earned skills from served courses persist;anonymous graduates become qualified paid-offer enquiries next week at the stated conversion rate,then still face normal prices. No segment-wide free qualification or guaranteed paid conversion. All additions are optional and no registered content enables them yet.
+
+AUTONOMOUS: Stable course learner IDs link next-step courses to an eventual paid membership. Later courses teach that member rather than creating another paid contract for the same learner.733 engine/content checks pass,27 skips,and lint passes;registration and runtime integration still wait for the fitness milestone.

@@ -220,6 +220,8 @@ export type Booking = {
   slotId?: string
   memberId?: string
   aggregatorUser?: number
+  coursePeople?: string[]
+  levels?: string[]
 }
 
 /** Plan 2 step 1a: a voucher sold; a liability until it is redeemed. */
@@ -2594,6 +2596,16 @@ export type LeisureNoiseState = {
 
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
 export type LeisureState = {
+  coursePeople?: { id: string; memberId: string | null; levels: string[] }[]
+  qualifiedEnquiries?: {
+    personId?: string
+    week: number
+    segmentId: SegmentId
+    units: number
+    levels: string[]
+  }[]
+  courseConversion?: { graduates: number; enquiries: number; joined: number }
+
   instructorLoads?: { id: string; kind: 'founder' | 'contract'; name?: string; classes: number }[]
   foundingFollowing?: { invited: number; joined: number }
   permitRefunds?: Record<FeatureId, { week: number; cents: number }>
@@ -2634,11 +2646,12 @@ export type LeisureState = {
     checkins: number
     payoutCents: number
     cancellations: number
-    users: { segmentId: SegmentId; month: number; visits: number }[]
+    users: { segmentId: SegmentId; month: number; visits: number; levels?: string[] }[]
   } | null
   weeks: LeisureWeek[]
 }
 export type LeisureMember = {
+  levels?: string[]
   billingWeek?: number
   id: string
   segmentId: SegmentId
@@ -2689,6 +2702,7 @@ export type LeisureWeek = {
   }[]
 }
 export type HiddenLeisure = {
+  qualificationRates?: Record<SegmentId, Record<string, number>>
   premiumInterest?: number
   foundingFollowing?: number
   instructorFollowing: Record<string, number>
@@ -2707,6 +2721,13 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  qualifications?: {
+    levels: { id: string; name: string; members: number; aggregatorUsers: number }[]
+    graduates: number
+    enquiries: number
+    joined: number
+  }
+
   instructorWork?: { maxClasses: number; loads: NonNullable<LeisureState['instructorLoads']> }
   foundingFollowing?: { invited: number; joined: number }
   noise?: {
