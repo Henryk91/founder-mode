@@ -4,8 +4,12 @@ import type { PlanBuilder } from '../strategy'
 import type { TourismRule } from './tourism'
 import { venueWanted } from './venue'
 import { fitnessWanted } from './fitness'
+import { climbingWanted } from './climbing'
 
 export type LeisureRule = {
+  climbingFirst?: 'boulder' | 'rope' | 'both'
+  climbingSetting?: number
+  climbingCourses?: boolean
   aggregator?: 'all' | 'none'
   reformer?: 'always' | 'never'
   januaryPeak?: boolean
@@ -50,6 +54,7 @@ export function leisureWanted(
   const l = view.bookings?.leisure
   const c = scenario.bookings?.leisure
   if (!l || !c?.opening) return requested
+  if (c.hall) return climbingWanted(scenario, view, rule, requested, segment)
   if (c.classStaffing) return fitnessWanted(scenario, view, rule, requested)
   if (c.noise) return venueWanted(scenario, view, rule, requested)
   const areas = c.opening.areas

@@ -1,27 +1,8 @@
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseScenario, type ScenarioSources } from '../src/parse'
-import { EVENT_AREAS } from '../src/schema'
+import { parseScenario } from '../src/parse'
+import { sources } from '../src/sources/griffig'
 import { scenarioCatalogue } from '../src/catalogue'
 
-const root = resolve(import.meta.dirname, '../src/scenarios/griffig')
-const read = (p: string) => readFileSync(resolve(root, p), 'utf8')
-const sources: ScenarioSources = {
-  scenario: read('scenario.yaml'),
-  features: read('features.yaml'),
-  interviewQuotes: read('messages/interview_quotes.yaml'),
-  companyNames: read('messages/company_names.yaml'),
-  intro: read('messages/intro.yaml'),
-  events: Object.fromEntries(
-    EVENT_AREAS.map((a) => [a, read(`messages/events/${a}.yaml`)]),
-  ) as ScenarioSources['events'],
-  sharedEvents: Object.fromEntries(
-    EVENT_AREAS.map((a) => [a, 'events: []']),
-  ) as ScenarioSources['sharedEvents'],
-  longEvents: 'events: []',
-  officeEvents: read('messages/events/office.yaml'),
-}
 describe('unregistered Griffig content', () => {
   const s = parseScenario(sources, 'long')
   it('provides authored long-game content without entering the catalogue', () => {
@@ -69,5 +50,17 @@ describe('unregistered Griffig content', () => {
       areas: ['boulder_area', 'rope_walls', 'kids_area'],
       requires: ['basic_fit_out'],
     })
+  })
+  it('prices bouldering,all-area access and student agreements explicitly', () => {
+    const b = s.bookings!,
+      l = b.leisure!
+    expect(b.products.boulder_area!.priceFactor).toBe(0.75)
+    expect(b.segments.students!.price.peak).toBe(1600)
+    expect(l.memberships!.student_monthly_membership).toMatchObject({
+      priceCents: 5520,
+      serves: ['students'],
+    })
+    expect(l.memberships!.monthly_membership!.serves).not.toContain('students')
+    expect(b.products.student_monthly_membership!.requires).toBe('student_prices')
   })
 })

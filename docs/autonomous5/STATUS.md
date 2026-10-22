@@ -3,7 +3,7 @@
 ## Current
 
 Step:4 fitness measurement resumed;5 isolated climbing preparation.
-Last commit:106cad9,Plan5:prepare unregistered Griffig scenario content.
+Last commit:HEAD,Plan5:expose staffed hall hours and paid setting controls.
 Next action:Resume only missing protected proof (Ausgesperrt main,1,000 test seeds);restart interrupted fitness initial main with durable task checkpoints because only summary counts survived. Preserve ten completed protected comparisons. Unregistered Griffig content is prepared;review admission/student prices,then build hall UI and bots while fitness runs. Full report remains step6 only,once.
 
 ## Checklist
@@ -52,3 +52,5 @@ User authorised continuing everything. The earlier process-stop request is resol
 Climbing content checkpoint:48events,150quotes,20features,four intro cards and two native scene drafts.748 engine/content checks pass,27 skips;lint passes. Three draft-content fixtures parse without registering the scenario and check wall/qualification/group/club/staffing units. Initial prices remain estimates.
 
 Hall interface preparation:opening-hour steppers,desk-cover requirements,paid setter allocations,individual skill counts and qualified course-to-membership totals use public view only. Seven focused hall/membership UI checks and lint pass. Café terms use served visits and show paid staff throughput. Browser checks remain due after registration.
+
+Climbing policy checkpoint:24features now include four separate discounted student agreements. Added first-wall,setting,aggregator,course/speed and later-loan policies,all gated to hall content/unregistered Griffig.57 focused climbing/fitness/content checks and lint pass. Careful opens with actual actions and replay matches exactly. No climbing balancing/event table/full report. Next add K1–K5 reporting before registration.

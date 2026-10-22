@@ -1028,3 +1028,5 @@ AUTONOMOUS:Prepare Griffig without catalogue registration while fitness validate
 AUTONOMOUS:Use staffed two-hour hall visits,individual earned qualifications,ten actual party places and weekly club attendance. Café/rental income uses explicit estimated baskets per actual visitor;no shop or inventory. Initial costs,demand and course-price linkage are estimates in scenario-climbing.md section15;no tuning round or event-table run is spent during unregistered preparation.
 
 AUTONOMOUS:Put hall opening and paid-setting controls in the existing Calendar card style. Founder setting stays in the notebook;paid setting allocates purchased shifts. Show required desk cover and actual previous opening hours,never hidden comfort limits or qualification chances.
+
+AUTONOMOUS:Climbing bot financing waits for first interviews before committing a first-wall loan. Single-wall variants cannot open a cheaper second area first. Paid memberships start only after opening;an unjoined aggregator cannot be requested with no usable slots. Initial student ticket/membership/card prices are80%of corresponding regular prices,with separate offers preserving terms.

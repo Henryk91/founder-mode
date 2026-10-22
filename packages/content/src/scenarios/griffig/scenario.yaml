@@ -462,8 +462,8 @@ bookings:
         max: 500
       unit: person
       price:
-        peak: 1500
-        off: 1350
+        peak: 1600
+        off: 1440
       size:
         min: 1
         max: 1
@@ -567,6 +567,7 @@ bookings:
       months: []
       weatherClosed: false
       requires: basic_fit_out
+      priceFactor: 0.75
     rope_walls:
       oneOffCents: 26000000
       monthlyCents: 0
@@ -639,7 +640,7 @@ bookings:
       months: []
       weatherClosed: false
       requires: boulder_area
-      priceFactor: 2.3333333333333335
+      priceFactor: 1.75
       course:
         level: boulder_intro
     belay_course:
@@ -756,6 +757,42 @@ bookings:
       unitCostCents: 0
       months: []
       weatherClosed: false
+    student_monthly_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: student_prices
+    student_annual_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: student_prices
+    student_off_peak_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: student_prices
+    student_visit_card:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: student_prices
   roles:
     desk:
       name: Front desk, four-hour shift
@@ -1338,7 +1375,6 @@ bookings:
           - weekend
         noticeWeeks: 4
         serves:
-          - students
           - committed
           - families
         products: &a3
@@ -1354,7 +1390,6 @@ bookings:
         slots: *a2
         noticeWeeks: 4
         serves:
-          - students
           - committed
           - families
         products: *a3
@@ -1367,7 +1402,6 @@ bookings:
           - midday
         noticeWeeks: 4
         serves:
-          - students
           - committed
           - families
         products: *a3
@@ -1378,7 +1412,6 @@ bookings:
         slots: *a2
         noticeWeeks: 0
         serves:
-          - students
           - committed
           - families
         products: *a3
@@ -1396,6 +1429,78 @@ bookings:
         products:
           - kids_club
         visitsPerWeek: 1
+      student_monthly_membership:
+        kind: monthly
+        priceCents: 5520
+        termWeeks: 0
+        slots:
+          - early
+          - midday
+          - evening
+          - weekend
+        noticeWeeks: 4
+        serves:
+          - students
+        products:
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+      student_annual_membership:
+        kind: annual
+        priceCents: 4720
+        termWeeks: 52
+        slots:
+          - early
+          - midday
+          - evening
+          - weekend
+        noticeWeeks: 4
+        serves:
+          - students
+        products:
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+      student_off_peak_membership:
+        kind: off_peak
+        priceCents: 3600
+        termWeeks: 0
+        slots:
+          - early
+          - midday
+        noticeWeeks: 4
+        serves:
+          - students
+        products:
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+      student_visit_card:
+        kind: pack
+        priceCents: 11200
+        termWeeks: 0
+        slots:
+          - early
+          - midday
+          - evening
+          - weekend
+        noticeWeeks: 0
+        serves:
+          - students
+        products:
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+        visits: 10
+        validWeeks: 52
     qualifications:
       levels:
         boulder_intro:
