@@ -332,3 +332,33 @@ real pack consumption and its monthly price basis,not just a report label.
 These are value changes,not formula changes. Budget after application:1/2 value
 rounds,0/1 formula rounds. Measure main only on1,000 paired test seeds;the event
 table remains reserved for once at the end of the step. No full report.
+
+
+### Value round two,22 October2026
+
+Round one measured30 policies on1,000 paired test seeds (main only,sourcea0643aa).
+Careful83.7%±2.3 and top88.8%±2.0 remain too easy. Median net wealth is
+EUR30,149,with viable-market medians EUR89,499 corporate,EUR23,578 young and
+EUR797 yoga. Reduce estimated reachable peak-week enquiries from3–10 to2–7
+for young professionals,1.5–5 to1–4 for yoga,and2–9 to1–5.5 for employee
+memberships. Corporate receives the larger proportional adjustment because
+its measured receipts/wealth buffer are larger. No counterfactual sweep ran.
+
+Premium usage changes from1 to an estimated1.5 visits/week,or three visits per
+fortnight on average. The EUR320 ten-class pack then has a EUR192 monthly
+equivalent,versus EUR128 at once weekly and EUR320–384 at the original general
+studio usage. This preserves a genuine specialist revenue premium while
+retaining the EUR36,000 purchase,eight seats and paid teacher. Actual whole
+visits use the existing deterministic fractional-demand sampling.
+
+The forced reformer buyer now waits eight open weeks before requesting the
+conversion. Previously it changed the initial bank/fit-out plan before any
+regular studio could open,confounding the buy/keep decision with start-up
+sequencing. It still ignores hidden niche values and funds the requested
+conversion through the normal bank/cash controls. Careful's evidence/cash
+checks and already committed conversions retain their existing rules.
+
+All other prices,costs and formulas remain unchanged. This correction is
+recorded within round two and does not reset the budget:values2/2,formula0/1.
+Measure affected main only on1,000 paired test seeds. Event table once at the
+end of the step;full report only step6,once.

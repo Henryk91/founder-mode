@@ -30,15 +30,15 @@ export function fitnessWanted(
     .reduce((n, [, count]) => n + count, 0)
   const cost = view.bookings!.products.find((p) => p.id === 'reformer_pilates')!.oneOffCents
   const affordable = view.company.cashCents >= cost + 3 * view.company.monthlyFixedCostsCents
+  const considering = l.openingWeek !== null && view.week >= l.openingWeek + 8
   const premium =
-    rule.leisure?.reformer === 'always' ||
     committed ||
-    (rule.leisure?.reformer !== 'never' &&
-      l.openingWeek !== null &&
-      view.week >= l.openingWeek + 8 &&
-      interviewCount >= 8 &&
-      interest >= Math.max(2, interviewCount / 3) &&
-      affordable)
+    (considering &&
+      (rule.leisure?.reformer === 'always' ||
+        (rule.leisure?.reformer !== 'never' &&
+          interviewCount >= 8 &&
+          interest >= Math.max(2, interviewCount / 3) &&
+          affordable)))
   const readyRooms = l.timetable.filter((p) => p.available !== false)
   const ids = requested.filter((id) => {
     if (id === 'reformer_pilates' || id === 'premium_pack') return premium
