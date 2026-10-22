@@ -1289,3 +1289,9 @@ ancillary receipts;cancelled visitors earn nothing. Roles cannot simultaneously
 coach,staff admission,set routes or cover another ancillary. Existing extras
 without staffing retain their previous per-served-unit settlement. The view
 copies role name and throughput with actual income/costs,never invented sales.
+
+Optional `leisure.alternatives` maps a named must-have feature to alternative
+shipped features accepted for market-fit coverage. Alternatives must have their
+actual build prerequisites ready. It applies equally to paid demand and experiment
+fit. It neither copies physical capacity nor grants a rope qualification. Earlier
+scenarios without the block keep their exact feature-coverage calculation.

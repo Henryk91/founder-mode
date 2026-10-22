@@ -1018,3 +1018,5 @@ AUTONOMOUS: Hall and qualification preparation passes739 engine/content checks,2
 AUTONOMOUS: Griffig's birthday cohorts reserve ten actual places at a per-person fee summing to199 EUR;weekly club offers override family day-visit frequency. Reuse existing extras for estimated rental/café baskets per actual visit,not a shop simulation. Café receipts need dedicated paid visitor-throughput cover;cancelled visits earn nothing. Source section will distinguish the5/3 EUR rental quotes from the averaged basket adaptation and weekly staffing abstraction.
 
 AUTONOMOUS: Group/club/ancillary preparation passes743 engine/content checks,27 skips,and lint. Dedicated café cover caps income from served visits,and a199 EUR birthday request consumes ten places. Griffig stays unregistered and unmeasured until the fitness gate.
+
+AUTONOMOUS: Use optional market-fit alternatives for the spec’s rope-or-boulder and family-area/offer choices. Both experiment and paid-demand coverage recognise ready alternatives;physical pools and belay access stay unchanged. First-pass coached clubs/parties use the actual children’s area;auto-belays provide casual beginner access.
