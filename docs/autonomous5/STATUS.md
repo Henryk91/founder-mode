@@ -3,8 +3,8 @@
 ## Current
 
 Step:4.8 fitness value round1;5 isolated climbing preparation ready for integration after fitness.
-Last commit: fitnessa0643aa, value round1; settled baseline source85d9b2b.
-Next action:Settled fitness main matrix complete:30 policies,1,000 paired test seeds. Value round1 applied;47 focused checks and lint pass. Collect round1 main matrix(session99787,/tmp/plan5-fitness-main-round1.log):30policies,1,000 paired test seeds,eight workers. Durable checkpoints:/tmp/plan5-fitness-round1-checkpoints-a0643aa. Review every paired contribution before the second value round. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
+Last commit: fitness15feb30 records tuning checkpoints; value-round1 sourcea0643aa,settled baseline85d9b2b.
+Next action:Round1 complete(main only,30policies,1,000 paired seeds):careful83.7%,top88.8%,no-tests7.6%. Review ROUND1_REVIEW.md,then apply the recorded second value round and forced-reformer sequencing correction. Values1/2,formula0/1. Finish fitness validation/report/tag before Griffig registration or merge into main. Full report only step6,once.
 
 ## Checklist
 
@@ -29,7 +29,7 @@ Content now explicitly enables direct aggregator payment. Company membership inv
 Two archival optimisations preserve21complete results/public-view traces exactly.
 Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails.
 Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
-Round1 provisional:careful837/1,000,platform-only577/1,000;careful median net wealth EUR30,149. Wait for the full paired matrix before round2.
+Round1 complete:careful83.7%,platform-only57.7%,top88.8%,no-tests7.6%;median net wealth EUR30,149. Contributions:fitness/ROUND1_REVIEW.md.
 Values1/2,formula0/1;fitness event table not run. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
@@ -42,14 +42,15 @@ Later fixes are explicitly gated by class-aware/aggregator content;final step4 p
 
 ## Isolated climbing
 
-Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD ea54cfa.
+Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD a148737.
 Unregistered Griffig:24features,49events,150quotes,four intros,two native scenes.
 Optional personal qualifications/course conversions,staffed hall hours,paid setting,groups,weekly club,café/rentals,alternative requirements,shared wall pools and allowed slots implemented.
 Hall UI,first-wall/setting/aggregator/course/speed bots,K1–K5 reporting and real mezzanine offer prepared.
 Careful opens through real actions and saves replay exactly. Latest shared-pool change:29focused checks/lint pass. Earlier core preparation:748checks,27skips.
 Browser fixture renders the real app without catalogue registration:24Chromium/WebKit cases pass across375/390/430/1440 and all3stages;two additional390px opening-hour tap checks pass.
 Small-budget quotes now round to EUR10 before first measurement;22 content/bot checks and lint pass.
-No climbing measurements/events/tuning yet. After merging fitness,enable its direct aggregator settlement flag in Griffig too;preserve the child branch's weekly-offer field and available slots when resolving overlapping additions.
+Fitnessa0643aa imported into isolated climbing;hall/qualification/shared-slot fields and traffic history retained,direct aggregator payout enabled.821 checks pass,27 skips;lint/typechecks pass.
+No climbing measurements/events/tuning yet. Import the completed fitness milestone before registration or merge into main.
 
 ## Completed scenario results
 

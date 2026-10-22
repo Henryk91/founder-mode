@@ -5322,3 +5322,6 @@ T12still fails. All eleven protected main reports match baseline on1,000test see
 
 
 Plan5 fitness settled baseline: main only,30 policies on1,000 paired test seeds,source85d9b2b. Careful93.7%±1.5,top99.0%±0.6,no-tests27.4%±2.8. Contributions and all targets are in autonomous5/fitness/schweissperle-main-settled.md and SETTLED_REVIEW.md. Values0/2,formula0/1 at this baseline;no fitness event table or full report.
+
+
+Plan5 fitness value round1:main only,30policies on1,000 paired test seeds,sourcea0643aa,eight workers. Careful83.7%±2.3,top88.8%±2.0,no-tests7.6%±1.6. T8–T10 now pass;T1/T2 remain too easy. Full contributions:autonomous5/fitness/ROUND1_REVIEW.md. Values1/2,formula0/1;no fitness event table/full report.
