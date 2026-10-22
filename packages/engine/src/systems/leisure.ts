@@ -935,6 +935,7 @@ export function leisureView(s: GameState): LeisureView | null {
         name: name(id),
         room: p.room ?? null,
         places: leisureClassPlaces(s, id, s.week),
+        ...(c.classStaffing ? { classHours: p.classHours ?? 1 } : {}),
         ...(p.availableStages
           ? { available: p.availableStages.includes(stageInEffect(s).id) }
           : {}),

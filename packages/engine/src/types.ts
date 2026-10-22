@@ -2861,6 +2861,7 @@ export type LeisureView = {
     name: string
     room: string | null
     places: number
+    classHours?: number
     available?: boolean
     coveredClasses?: Record<string, number>
     classes: Record<string, number>

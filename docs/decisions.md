@@ -992,3 +992,5 @@ AUTONOMOUS: initial unregistered fitness content parses20 features/49 authored c
 AUTONOMOUS: optional paid front-desk relief now subtracts actual weekly/contract cover from next week's automatic administration based on served visits,with an eight-hour cap and weekly reset. It never teaches a class.293 focused content/engine checks pass,24 skips;lint passes. Initial estimates:36 EUR/two-hour shift and138 EUR/week for four regular shifts;all employer-inclusive estimates. No fitness measurement/tuning yet.
 
 AUTONOMOUS: register Schweißperle in the isolated static/lazy catalogue and add both native shop/annex scenes. White/accent contrast6.44:1 preserves#B0284F.243 content checks pass,27 skips;lint passes after adding its required reader-map entry. No fitness measurement/tuning yet;membership/timetable labels/UI and sensible class-aware bots are next.
+
+AUTONOMOUS: Expose class duration only for class-aware timetables so bots/UI share observable room-hour constraints. Confirm existing failed-member-visit accounting with a regression test; no change to cancellation or prepaid-credit outcomes.
