@@ -1,6 +1,6 @@
 import type { Rng } from '../rng'
 import type { LeisureConfig } from '@founder-mode/content'
-import type { Booking, GameState } from '../types'
+import type { Booking, GameState, LeisureMember } from '../types'
 
 type Offer = NonNullable<LeisureConfig['memberships']>[string]
 
@@ -37,11 +37,17 @@ export function membershipUsable(s: GameState, segmentId: string, offer: Offer):
 }
 
 /** Visits on a paid membership are judged against its monthly fee, not a zero-price ticket. */
-export function leisureReviewPrice(s: GameState, booking: Booking): number {
+export function leisureReviewPrice(
+  s: GameState,
+  booking: Booking,
+  index?: ReadonlyMap<string, LeisureMember>,
+): number {
   const c = s.scenario.bookings?.leisure
   if (c?.wtpBasis !== 'monthly') return booking.priceCents
   const member = booking.memberId
-    ? s.bookings?.leisure?.members.find((m) => m.id === booking.memberId)
+    ? index
+      ? index.get(booking.memberId)
+      : s.bookings?.leisure?.members.find((m) => m.id === booking.memberId)
     : undefined
   const offer = member ? c.memberships?.[member.offerId] : undefined
   return member && offer

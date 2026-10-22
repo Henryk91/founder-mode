@@ -1222,3 +1222,12 @@ is absent without class-aware staffing and does not enter player decisions.
 
 For class-aware membership offers, `LeisureView.members[].visits` optionally
 exposes the stated visits per purchased pack, distinct from aggregate owed visits.
+
+Class-aware leisure keeps optional `LeisureState.traffic`:one product-count row
+per week for served,arrived and non-cancelled visits,retaining the same54-week
+window as the earlier individual history. Finished individual class visits older
+than one week fold into existing lifetime archive totals. Calendar year comparisons,
+recent occupancy and office visit counts read the compact history;future bookings,
+member credit,ledger and action logs retain their existing rules. Traffic records
+are not copied into PlayerView. Member lookup maps are local to a calculation.
+No compact records or shorter retention apply without class-aware content.
