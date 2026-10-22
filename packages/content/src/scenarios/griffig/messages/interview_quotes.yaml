@@ -1,0 +1,168 @@
+students:
+  not_a_problem:
+    - Our university group already has a regular hall.
+    - I climb outside when I can and train at home otherwise.
+    - My current student ticket is affordable and the hall is nearby.
+    - I go with friends. They are not looking for somewhere new.
+    - I have a membership elsewhere and enough unfinished problems there.
+    - I do not climb often enough to need another offer.
+    - The big hall works for us. We know which tram to miss.
+    - I mostly run. It requires fewer rental shoes.
+    - My friends have a regular evening that suits everyone.
+    - I am away most of the semester break.
+  mild:
+    - A smaller hall could be nice if my friends came too.
+    - I might try it once if the student price were clear.
+    - The current place is busy, but we usually find something.
+    - Somewhere nearer campus would save part of the evening.
+    - I like new problems, though I have plenty left at the old hall.
+    - An off-peak ticket might work when lectures finish early.
+    - I would visit an open day before thinking about membership.
+    - Rental shoes included in a trial would make it easier to bring friends.
+    - The photographs look good. I would want to see the grades.
+    - We might change our group evening if the tram were convenient.
+  noticeable:
+    - On Tuesday I wait longer for a problem than I spend climbing it.
+    - Student prices stop just before the time students can actually go.
+    - The same problems have been on our corner for weeks.
+    - I need a clear price for a visit without an annual contract.
+    - We want to bring beginners without losing them in a huge hall.
+    - The busy evenings make it difficult to climb as a group.
+    - I can afford a ticket or the journey home, depending on the offer.
+    - The aggregator gets us in, but all the useful places feel crowded.
+    - I would use a midday offer between lectures if it were nearby.
+    - The training area is full of people waiting for the boulders.
+  painful:
+    - We stopped going on Tuesdays because the queues take the whole evening.
+    - I bought a pack and then lost the student discount I expected.
+    - I cannot justify a membership for routes that never seem to change.
+    - We need somewhere beginners can learn the basics without blocking everyone.
+    - The hall sells more evening visits while the mats stay the same size.
+    - My friends and I want a regular place we can actually afford.
+    - The quiet ticket ends before our lectures do. It is cheap in theory.
+    - I would switch for fresh problems and less waiting after lectures.
+    - Our group has had two sessions ruined by overcrowding.
+    - I need clear entry and rental prices before asking friends to join.
+  urgent:
+    - Our group slot has ended. Can we book a trial next week?
+    - I have moved to Freimann and need somewhere reachable after lectures.
+    - My old membership ends tomorrow. What are your student terms?
+    - We have six beginners ready to visit if an induction is available.
+    - The university organiser wants a quotation for a quiet weekly slot.
+    - My friends are trying your hall this weekend. Can I join the same session?
+    - I have a free afternoon tomorrow and want a paid trial visit.
+    - Our regular hall closes for work next month. We need an alternative.
+    - I am ready to buy a pack if the opening date is confirmed.
+    - The semester timetable is out. I can commit to a midday session now.
+committed:
+  not_a_problem:
+    - My existing membership covers the training I need.
+    - I climb outside most weeks and have a board at home.
+    - The big club hall has my partners and my unfinished routes.
+    - I am happy with the setting where I train now.
+    - My current hall is close to work and rarely full when I go.
+    - I do not need another monthly payment.
+    - I train with the same group and they are staying put.
+    - I already have access through work.
+    - There is enough variety at the hall I use.
+    - I am away climbing for much of the indoor season.
+  mild:
+    - I might visit to see the setting style.
+    - A quieter training area would be pleasant occasionally.
+    - Fresh problems are always interesting, without requiring a new membership.
+    - I would try an early session if the opening hours were dependable.
+    - Your rope-wall plan looks useful. I would wait until it opens.
+    - A board session near work could fit some weeks.
+    - I sometimes want a change from the big hall.
+    - The route setter's approach interests me more than the café.
+    - I could buy a day ticket before deciding anything else.
+    - A clear reset schedule would help me plan visits.
+  noticeable:
+    - I finish the interesting problems before the next reset arrives.
+    - The training area is crowded at the only time I can attend.
+    - I need fresh routes, not more photographs of the reception desk.
+    - The early hours change without much warning.
+    - My partner and I spend too long waiting for a rope line.
+    - I would pay for consistent setting across grades.
+    - The evening is busy enough that a planned training session becomes a queue.
+    - I need somewhere to practise movement without crossing a birthday group.
+    - The existing membership is fine, but the route variety is getting thin.
+    - A useful board and reliable opening hours would make a difference.
+  painful:
+    - I cancelled because the routes I train on barely changed for two months.
+    - My training session now takes twice as long because of the evening queues.
+    - The wall I joined for is regularly closed without notice.
+    - I need proper rope access, fresh routes and a usable training area.
+    - I am paying for membership while doing most of my training elsewhere.
+    - The reset schedule always seems to favour the grades I do not climb.
+    - My partner and I cannot find a reliable evening rope session.
+    - I would switch for a hall that manages crowding instead of apologising for it.
+    - The summer pause terms changed after I signed the annual contract.
+    - I need a predictable place to prepare for an outdoor trip.
+  urgent:
+    - My climbing trip is in six weeks and I need a lead course before it.
+    - My training hall closes next week. Are the rope walls open?
+    - I have a new partner and we need a booked assessment this month.
+    - My membership ends today. Can I pay for an early trial session?
+    - Our course was cancelled. Can qualified participants join your next level?
+    - I need a training area for a specific programme starting Monday.
+    - We have booked the trip and now need to complete the progression course.
+    - I am ready to join if the early opening hours are confirmed.
+    - My partner and I can visit tonight. Which walls are available?
+    - I want a paid trial of the fresh set before renewing elsewhere.
+families:
+  not_a_problem:
+    - The children prefer swimming, which already fills the weekend.
+    - We have a regular club session and it works for us.
+    - Our children are not interested in climbing at present.
+    - We use a playground. The booking process is excellent.
+    - The local family class has places and familiar coaches.
+    - We go climbing only on holiday.
+    - Our weekends are full without another subscription.
+    - A birthday at home is cheaper and already booked.
+    - We have equipment and climb with relatives elsewhere.
+    - The current children's group is near school.
+  mild:
+    - A weekend taster could be a nice change.
+    - The children have asked about climbing after seeing a video.
+    - I would need to understand the age rules and supervision.
+    - A small family area sounds less daunting than a huge hall.
+    - We might try a birthday visit if the whole price were clear.
+    - Sunday mornings would be convenient occasionally.
+    - A course could work after the football season ends.
+    - I would bring them to an open day before signing anything.
+    - A simple rental package would make a first visit easier.
+    - We like the idea, though the children like several ideas this week.
+  noticeable:
+    - I cannot find a Sunday session for children without a long course first.
+    - The family area is busiest when our children can attend.
+    - I need a clear answer about who supervises each part of the visit.
+    - Birthday prices seem to grow once shoes and extra children are mentioned.
+    - The beginners' area shares space with people training very seriously.
+    - A weekly group with the same coach would help the younger one settle.
+    - We want a safe introduction before buying equipment.
+    - I need somewhere both children can use without two separate journeys.
+    - The booking sites explain wall height more clearly than the family rules.
+    - A short introductory course and a clear next step would be useful.
+  painful:
+    - Our last birthday booking did not include the supervision I expected.
+    - The children waited most of the session because the group was too large.
+    - I need a dependable weekend class with proper cover.
+    - We arrived for a family session and found the area closed for setting.
+    - The price was manageable until every rental item appeared separately.
+    - One child wants to continue, but there is no clear course after the taster.
+    - I will change places for a calm induction and transparent safety rules.
+    - The birthday organiser asked me to supervise things I have never learned.
+    - We need a family area that does not feel like an obstacle to adult climbers.
+    - I cannot keep paying for cancelled classes and rearranged weekends.
+  urgent:
+    - The birthday venue cancelled. Do you have a supervised slot next month?
+    - We have a weekend free now and would like to book a family induction.
+    - Our children's group has ended. Is there a weekly club place available?
+    - I need a quotation for ten children with rentals and coaching included.
+    - The school wants a confirmed taster date before sending the consent forms.
+    - Both children want to continue after their trial. What can we book next?
+    - We have moved nearby and need a Sunday group starting soon.
+    - I can pay a deposit today if the coach and family area are confirmed.
+    - Our holiday trip includes climbing and we want an introduction before leaving.
+    - The invitations are printed. Please tell me the actual supervised capacity.

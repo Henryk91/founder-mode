@@ -1,0 +1,230 @@
+events:
+  - id: the_roof_drip
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Water falls near the rope wall after heavy rain. The landlord asks for photographs and the
+      duty manager asks for a barrier. The wall does not need another kind of hold. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Close the affected section and arrange repair
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Put out a bucket and keep access
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2
+  - id: the_incident_report
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      A child lands badly and needs medical attention. The family wants help and the insurer wants a
+      factual report. Guessing the cause will not improve either conversation. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Follow the incident procedure
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Send a voucher before documenting anything
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2
+  - id: heating_adjustment
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      The first cold month produces a bill appropriate to a fifteen-metre hall. Most of your members
+      spend their visits below the warmest air. The supplier proposes a larger advance. Use the
+      weekly wall,access and staff controls for lasting changes;this follow-up pays for the
+      conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check use and revise the budget
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Treat the bill as exceptional
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2
+  - id: the_caf_queue
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Climbers want coffee while reception deals with rentals. The coffee margin looks good until
+      both queues need staff. A café counter is not an extra desk worker. Use the weekly wall,access
+      and staff controls for lasting changes;this follow-up pays for the conversation and immediate
+      cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review café cover and contribution
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Ask reception to do everything
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2
+  - id: the_competition_weekend
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      An organiser offers a fee and attention for a competition. Regular members would lose much of
+      the weekend access. Fame has requested two days of capacity. Use the weekly wall,access and
+      staff controls for lasting changes;this follow-up pays for the conversation and immediate
+      cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Compare the fee with displaced visits
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Agree for the publicity alone
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2
+  - id: the_mezzanine_plan
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: A designer shows a mezzanine within the existing hall. Training and café space would move
+      above reception. Construction money would move out of the account first. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review sustained space pressure
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Leave it for later
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2
+  - id: the_neighbouring_hall
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: The landlord mentions the empty building next door. Your current hall still contains
+      unfinished ideas. The second lease is outside this business plan. Use the weekly wall,access
+      and staff controls for lasting changes;this follow-up pays for the conversation and immediate
+      cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Decline the extra location
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Ask about improvements inside the current hall
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2
+  - id: the_family_reminder
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Your relative asks how the interest-free loan is recorded. The bank report is detailed; the
+      family agreement is in a message thread. Generosity has not removed the liability. Use the
+      weekly wall,access and staff controls for lasting changes;this follow-up pays for the
+      conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Reconcile and record it
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -15000
+      - id: leave
+        label: Discuss only the bank balance
+        hours: 0
+        effects:
+          - type: energy
+            delta: -2

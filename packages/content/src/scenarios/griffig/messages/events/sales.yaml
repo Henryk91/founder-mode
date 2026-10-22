@@ -1,0 +1,301 @@
+events:
+  - id: first_snow
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Outdoor climbers come back indoors on the same wet evening. The hall looks successful from
+      reception and crowded from the mats. Members ask whether next Tuesday will be similar. Use the
+      weekly wall,access and staff controls for lasting changes;this follow-up pays for the
+      conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review busy-slot access
+        hours: 2
+        effects:
+          - type: guests
+            segment: students
+            count: 3
+      - id: leave
+        label: Sell every available visit
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: tuesday_waiting
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Climbers spend more time waiting for problems than climbing them. The visit counter still
+      calls every arrival a success. The cancellation inbox is beginning to disagree. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Protect comfortable space
+        hours: 2
+        effects:
+          - type: guests
+            segment: families
+            count: 3
+      - id: leave
+        label: Count the extra check-ins
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_university_group
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      A university sports organiser wants a discounted weekly group. Tuesday evening is convenient
+      for everyone, which is the problem. Thursday afternoon has more room than friends. Use the
+      weekly wall,access and staff controls for lasting changes;this follow-up pays for the
+      conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Quote a quiet-slot group
+        hours: 2
+        effects:
+          - type: guests
+            segment: students
+            count: 3
+      - id: leave
+        label: Discount the busy evening
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: weekend_families
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Parents ask for somewhere children can climb without crossing a hard training area. The
+      children have already found the training area. A clear family slot would save several
+      conversations. Use the weekly wall,access and staff controls for lasting changes;this
+      follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review the family area and cover
+        hours: 2
+        effects:
+          - type: guests
+            segment: families
+            count: 3
+      - id: leave
+        label: Open every area to the party
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_outdoor_forecast
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: A warm weekend sends members to real rock. The desk rota has not read the forecast. Summer
+      does not cancel wages automatically. Use the weekly wall,access and staff controls for lasting
+      changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review the quiet-slot cover
+        hours: 2
+        effects:
+          - type: guests
+            segment: students
+            count: 3
+      - id: leave
+        label: Keep the winter rota
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: june_pauses
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Members ask to freeze subscriptions while climbing outside. Several plan to return in autumn.
+      Your rent is committed to staying indoors. Use the weekly wall,access and staff controls for
+      lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Apply clear pause terms
+        hours: 2
+        effects:
+          - type: guests
+            segment: families
+            count: 3
+      - id: leave
+        label: Promise free months to everybody
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: aggregator_tuesday
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: The aggregator supplies a large share of the evening visitors. Members say the hall is
+      crowded; the platform says the listing performs well. Both have evidence. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Restrict full slots and review caps
+        hours: 2
+        effects:
+          - type: guests
+            segment: students
+            count: 3
+      - id: leave
+        label: Open more evening access
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_empty_morning
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: The early slot has a few regulars and a full desk shift. One regular says she would be
+      disappointed if it closed. The accountant has expressed a different emotion. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check the morning contribution
+        hours: 2
+        effects:
+          - type: guests
+            segment: families
+            count: 3
+      - id: leave
+        label: Keep every hour from habit
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: a_shared_visit
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Friends arrive together on day tickets, memberships and the aggregator. All want the same
+      fresh wall. Their payment methods do not create extra space. Use the weekly wall,access and
+      staff controls for lasting changes;this follow-up pays for the conversation and immediate
+      cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Apply the same capacity rules
+        hours: 2
+        effects:
+          - type: guests
+            segment: students
+            count: 3
+      - id: leave
+        label: Add places for the group
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_rival_discount
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      A big club hall lowers student prices. Your members ask whether you will match them. They also
+      ask when the next reset is planned. Use the weekly wall,access and staff controls for lasting
+      changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Explain the offer and compare costs
+        hours: 2
+        effects:
+          - type: guests
+            segment: families
+            count: 3
+      - id: leave
+        label: Match every advertised discount
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1

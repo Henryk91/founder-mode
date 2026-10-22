@@ -1,0 +1,62 @@
+events:
+  - id: the_founder_s_setting_night
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      You plan to reset after closing, then coach early tomorrow. The hours fit on the page because
+      the page does not sleep. A freelance setter is available. Use the weekly wall,access and staff
+      controls for lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for cover and rest
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -25000
+          - type: energy
+            delta: 4
+      - id: leave
+        label: Keep both shifts yourself
+        hours: 0
+        effects:
+          - type: energy
+            delta: -3
+  - id: the_next_winter
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+      - week >= 53
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Staff bring a year of attendance, setting logs and member cancellations. You can see which
+      walls earned their space and which hours stayed quiet. The next supplier brochure can wait
+      until after this meeting. Use the weekly wall,access and staff controls for lasting
+      changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Plan from the observed year
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -25000
+          - type: energy
+            delta: 4
+      - id: leave
+        label: Repeat the opening plan
+        hours: 0
+        effects:
+          - type: energy
+            delta: -3

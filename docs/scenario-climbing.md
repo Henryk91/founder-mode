@@ -215,3 +215,26 @@ Established accent `#2F6B3A` (check white text reaches 4.5:1).
 ## 15. Sources and values as built
 
 The agent fills this in.
+
+### Initial content preparation,22 October2026
+
+Griffig remains unregistered until the fitness milestone. These are initial
+scenario estimates,not a tuned or measured economy.
+
+- [Einstein Munich prices and hours](https://muenchenwisesystem.einstein-boulder.com/preise-zeiten/),checked22October2026:adult dayEUR15.50,reducedEUR12.90,twelve visitsEUR155,monthlyEUR39 with a three-month initial term,annualEUR420,and shoe hireEUR4.50. This is a boulder-only comparator. Our mixed-hallEUR69/59/45 monthly fees remain estimates;the comparator does not establish them.
+- [BMAS minimum-wage questions](https://www.bmas.de/EN/Labour/Minimum-Wage/the-minimum-wage-questions-and-answers.html),checked22October2026:EUR13.90 gross/hour in2026,EUR14.60 fromJanuary2027;employer contributions are additional. Desk/café shifts use an estimated employer costEUR18/hour,four hours per shift. CoachingEUR30/hour and settingEUR250/eight-hour day remain freelance estimates. Contract shifts quote the whole weekly bill.
+- Prisma's website timed out on refresh. Its earlier preparatory prices are not used as verified current figures.
+- Hall lease,build-out prices,utilities,insurance,cleaning,equipment,the platform payout and all demand/usage/churn ranges remain estimates. No supplier quotation or local rent evidence was found for this particular fictional hall. The bank'sEUR650,000 unproven ceiling and six-month working-capital allowance are fictional estimates sized to let the player propose any first-wall plan;approval and the player's repayment ability still matter.
+
+### Units and adaptations before measurement
+
+- Simultaneous capacities are converted to weekly visits using actual staffed slot hours and an estimated two-hour average visit. The four slots total75hours/week;closing hours removes capacity and saves desk cover. Comfort remains hidden;the mezzanine increases comfort15% without changing safety capacity.
+- Common fit-out takes ten builder weeks after40preparation hours;the first wall takes its stated12/16weeks. Both must finish before opening. Course preparation and wall preparation are distinct. The children’s area can also open the business after common fit-out.
+- TheEUR120,000 opening cash includes the family loan;it is not counted twice. Repayment after week104 is contextual,not simulated bank debt. The win condition uses the existing tourism rule:three profitable months in the last thirteen,including living costs and scheduled bank repayments. The rough spec wording did not change that inherited rule.
+- Personal belay/lead skills gate independent access. Actual coached completion awards skills and may create a qualified paid-membership enquiry next week;35%/50% is not a guaranteed free membership. Two/three course sessions fit within one game week;the coach's four/six-hour shift covers the entire course. Course prices follow the segment ticket ratio,so student discounts also affect them.
+- The initial student ticket basis isEUR15 versusEUR20 for other segments. The student-price feature is required for their full fit. A later content review must make the boulder-only/admission and discounted membership distinctions explicit before registration;these are not yet promised as separate checkout products.
+- Children’s parties reserve ten real places atEUR19.90 each for theEUR199party. The club billsEUR55monthly and reserves one actual coached visit each week. Its coaches also cover parties;the roster cannot spend the same shift twice.
+- Regular memberships admit available ordinary areas,not courses or parties. The ten-visit card owes ten visits for52weeks. Off-peak access is restricted to early/daytime slots.
+- Paid route-setting hours supplement separately budgeted founder setting. A reset takes25hours and closes four daytime hours only in the reset week. Dedicated desk,setter and café roles do not produce free coaching.
+- Café contribution is an estimatedEUR5average receipt lessEUR2service costs per served visitor,limited to50visitors per paid four-hour staff shift. Rental stock costsEUR2,500;an estimated average rental basket,not a shop or equipment inventory,earnsEUR1.50per casual visitor orEUR0.50per committed visit,lessEUR0.30cost. NominalEUR5/3rental prices remain background context.
+- Follow-up event cards pay for immediate conversations,cover and their stated small effects. Persistent wall,staff,access and opening-hour changes remain weekly controls. Events do not silently award unearned qualifications or override safe capacity.
