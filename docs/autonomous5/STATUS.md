@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:5 preparation only,qualifications/hall/group/ancillary engine gaps implemented.
+Step:4 fitness measurement resumed;5 isolated climbing preparation.
 Last commit:HEAD,Plan5:account for staffed extras and real group places.
-Next action:Prepare complete unregistered Griffig content using the implemented group/club/café adaptations and researched source estimates;merge the completed fitness milestone before registering Griffig. Primary run stays in /private/tmp/founder-mode-plan5-fitness,with its initial main and protected reports running. No Griffig measurement/event table/full report.
+Next action:Resume only missing protected proof (Ausgesperrt main,1,000 test seeds);restart interrupted fitness initial main with durable task checkpoints because only summary counts survived. Preserve ten completed protected comparisons. Commit validated climbing alternatives,then prepare content while fitness runs. Full report remains step6 only,once.
 
 ## Checklist
 
@@ -35,7 +35,7 @@ Next action:Prepare complete unregistered Griffig content using the implemented 
 
 ## Previous stop,resolved
 
-User resumed historical WebKit heading stop;all80 cases and final full suite pass. No current stop applies.
+User resumed historical WebKit heading stop;all80 cases and final full suite pass. Superseded by the user-requested stop below.
 
 ## Recent validation
 
@@ -43,4 +43,8 @@ Climbing engine preparation:743 engine/content checks pass,27 skips;lint passes.
 
 ## Stopped
 
-None.
+2026-10-22:User requested stopping all background processes. Stopped initial fitness main measurement (session89679),protected-step4 controller (session25269),and remaining project Vite/esbuild development servers. No automatic restart. Completed reports,partial logs and uncommitted changes are preserved. The autonomous plan is unfinished. Earlier references to running workers are historical.
+
+## Resume,22 October2026
+
+User authorised continuing everything. The earlier process-stop request is resolved. Fitness initial matrix must be repeated because interrupted CLI results lived only in memory;summary counts cannot supply paired results. Add temporary disk checkpoints to the measurement runner. Values0/2,formula0/1. Ten protected comparisons are complete;only Ausgesperrt was interrupted. Climbing alternatives passed745 checks,27 skipped,and lint;preserve and commit.

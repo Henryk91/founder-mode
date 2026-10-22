@@ -1,3 +1,4 @@
+import { leisureAlternativeMet } from './requirements'
 import { personLevels, earnedLevels } from './qualifications'
 import { classWorkload } from './classWorkload'
 import { leisurePriceBasis, leisureReviewPrice } from './membership'
@@ -348,7 +349,8 @@ const isShipped = (state: GameState, id: FeatureId) =>
  * step 1d).
  */
 export function mustHaveMet(state: GameState, id: FeatureId): boolean {
-  if (!isShipped(state, id)) return leisureAssetSupplies(state, id, state.week)
+  if (!isShipped(state, id))
+    return leisureAssetSupplies(state, id, state.week) || leisureAlternativeMet(state, id)
   const r = state.scenario.bookings?.renovation
   if (r && r.feature === id) return (state.bookings?.renovated ?? 0) >= r.mustHaveRooms
   return true

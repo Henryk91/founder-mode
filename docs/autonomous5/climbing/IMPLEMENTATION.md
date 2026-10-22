@@ -117,3 +117,11 @@ visits;membership.ts pack basis;venue.ts optional staffed extras;fixtures and sc
 decisions/status docs. Reuse the existing weekly accounting rather than adding a
 shop or inventory simulation. Shares are contractual receipt allocations,not
 hidden purchase chances shown to players.
+
+## Alternative wall requirements
+
+Touch:schema.ts;new requirements.ts;market.ts/bookings.ts coverage;fixture;schema/
+decisions/status. Use optional leisure alternatives for rope-or-boulder and family
+area/offer alternatives. This changes market-fit coverage,not physical capacity
+pools or rope qualifications. Coached club/party space still uses the actual
+children's area in the first pass;auto-belays serve casual beginner visits.

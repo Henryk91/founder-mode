@@ -760,6 +760,7 @@ const SlotShares = z
   )
 export const LeisureSchema = z
   .object({
+    alternatives: z.record(Id, z.array(Id).min(1)).optional(),
     hall: z
       .object({
         visitHours: z.number().positive(),
@@ -1831,6 +1832,10 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       for (const extra of Object.values(leisure.extras ?? {}))
         for (const id of Object.keys(extra.segments))
           if (!bk.segments[id]) issue(`unknown ancillary segment ${id}`, ['bookings', 'leisure'])
+      for (const [required, alternatives] of Object.entries(leisure.alternatives ?? {}))
+        for (const id of [required, ...alternatives])
+          if (!featureIds.has(id))
+            issue(`unknown alternative feature ${id}`, ['bookings', 'leisure'])
       if (leisure.hall) {
         const hall = leisure.hall
         for (const role of [hall.desk.role, ...(hall.setting ? [hall.setting.role] : [])])
