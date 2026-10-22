@@ -759,6 +759,14 @@ const SlotShares = z
   )
 export const LeisureSchema = z
   .object({
+    hall: z
+      .object({
+        visitHours: z.number().positive(),
+        desk: z.object({ role: Id, hoursPerShift: z.number().int().positive() }),
+        comfortByStage: z.record(Id, z.number().min(1)).optional(),
+        setting: z.object({ role: Id, hoursPerShift: z.number().int().positive() }).optional(),
+      })
+      .optional(),
     qualifications: z
       .object({
         levels: z.record(
@@ -800,6 +808,9 @@ export const LeisureSchema = z
     products: z.record(
       Id,
       z.object({
+        simultaneous: z
+          .object({ hard: z.number().int().positive(), comfort: z.number().int().positive() })
+          .optional(),
         // Hard capacity per slot; comfort below it makes crowding a soft limit.
         capacity: z.record(Id, z.number().int().nonnegative()),
         comfort: z.record(Id, z.number().int().positive()).optional(),
@@ -879,6 +890,7 @@ export const LeisureSchema = z
             cents: Cents.nonnegative(),
             weeks: z.number().int().nonnegative(),
             lostCapacity: z.record(Id, z.number().int().nonnegative()).optional(),
+            closedHours: z.record(Id, z.number().nonnegative()).optional(),
           }),
         }),
       )
@@ -1802,6 +1814,41 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       for (const extra of Object.values(leisure.extras ?? {}))
         for (const id of Object.keys(extra.segments))
           if (!bk.segments[id]) issue(`unknown ancillary segment ${id}`, ['bookings', 'leisure'])
+      if (leisure.hall) {
+        const hall = leisure.hall
+        for (const role of [hall.desk.role, ...(hall.setting ? [hall.setting.role] : [])])
+          if (!bk.roles[role]) issue(`unknown hall role ${role}`, ['bookings', 'leisure'])
+        const desk = bk.roles[hall.desk.role]
+        if (desk?.founderHours !== undefined && desk.founderHours !== hall.desk.hoursPerShift)
+          issue('hall founder desk hours must match actual cover', ['bookings', 'leisure'])
+        for (const role of [hall.desk.role, ...(hall.setting ? [hall.setting.role] : [])])
+          if (Object.values(bk.roles[role]?.units ?? {}).some((n) => n > 0))
+            issue('hall desk/setting roles cannot also coach services', ['bookings', 'leisure'])
+        if (hall.setting && bk.roles[hall.setting.role]?.founderHours !== undefined)
+          issue('founder setting uses settingHours, not paid setter shifts', [
+            'bookings',
+            'leisure',
+          ])
+        if (hall.setting?.role === hall.desk.role)
+          issue('hall desk and setting need separate roles', ['bookings', 'leisure'])
+        for (const id of Object.keys(hall.comfortByStage ?? {}))
+          if (!s.officeStages.some((stage) => stage.id === id))
+            issue(`unknown hall stage ${id}`, ['bookings', 'leisure'])
+      }
+      for (const p of Object.values(leisure.products))
+        if (p.simultaneous) {
+          if (!leisure.hall || p.classPlaces)
+            issue('simultaneous hall places need hall mode and cannot be classes', [
+              'bookings',
+              'leisure',
+            ])
+          if (p.simultaneous.comfort > p.simultaneous.hard)
+            issue('hall comfort exceeds safety limit', ['bookings', 'leisure'])
+        }
+      for (const f of Object.values(leisure.freshness ?? {}))
+        for (const [id, hours] of Object.entries(f.refresh.closedHours ?? {}))
+          if (!leisure.hall || !leisure.slots.some((slot) => slot.id === id && hours <= slot.hours))
+            issue(`invalid reset closure ${id}`, ['bookings', 'leisure'])
       if (leisure.qualifications) {
         const q = leisure.qualifications
         for (const [segment, levels] of Object.entries(q.initial)) {

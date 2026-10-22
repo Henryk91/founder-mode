@@ -1248,3 +1248,30 @@ paid membership;qualified enquiries optionally carry `personId`. A later course
 by the same learner teaches that membership instead of creating a second one.
 The existing next-step course booking keeps those IDs. These records are absent
 without qualifications and are never passed individually to the UI.
+
+### Optional staffed hall hours
+
+`leisure.hall` defines visit duration,front-desk hours per shift,optional paid
+setter hours per shift and comfort factors by office stage. Hall products state
+`simultaneous` hard/comfortable people. Actual weekly visits are people times
+staffed opening hours divided by visit duration. Office comfort never raises the
+safety limit. Comfort counts/factors remain absent from the player view.
+
+`LeisurePlan.openHours` chooses weekly slot hours up to the content maximum.
+`LeisureState.hall` records requested and actually staffed hours,desk cover and
+this week's paid setting allocations. New hall contracts take effect before
+admissions;the same contract result is settled once at normal payroll. Uncoached
+hall visits consume admission capacity rather than an instructor per visitor.
+Coached services keep their normal qualified roster requirement.
+
+`LeisurePlan.paidSettingHours` allocates actual purchased setter cover across
+walls,without consuming founder setting hours again. Founder setting remains in
+`settingHours`. Allocations cannot exceed paid/contract setter hours and do not
+persist into a week without a new allocation. `freshness.refresh.closedHours`
+removes only the reset wall's stated slot hours during its reset week. Existing
+static `lostCapacity` continues to apply to earlier scenarios.
+
+Optional `LeisureView.hall` copies chosen/actual hours and public role/shift terms.
+Hall desk and setter roles cannot also coach services. Founder desk hours must
+match actual cover;founder setting uses its separate hour allocation. All hall
+fields are absent without the content block.
