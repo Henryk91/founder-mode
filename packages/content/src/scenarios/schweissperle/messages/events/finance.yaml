@@ -20,7 +20,7 @@ events:
         hours: 2
         effects:
           - type: cash
-            amountCents: -12000
+            amountCents: -65000
           - type: bugs
             delta: -1
             when:
@@ -55,7 +55,7 @@ events:
         hours: 2
         effects:
           - type: cash
-            amountCents: -12000
+            amountCents: -30000
           - type: bugs
             delta: -1
             when:
@@ -121,7 +121,7 @@ events:
         hours: 2
         effects:
           - type: cash
-            amountCents: -12000
+            amountCents: -48000
           - type: bugs
             delta: -1
             when:

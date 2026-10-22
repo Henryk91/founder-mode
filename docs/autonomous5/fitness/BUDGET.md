@@ -3,7 +3,7 @@
 Applicable targets: T1–T10, T12–T18, E1 and F1–F5. T4 starts at actual opening;
 T8 concerns the aggregator. T11 does not measure membership terms and is inapplicable.
 
-Values: **0/2 rounds**. Formulas: **0/1 round** for every failing target.
+Values: **1/2 rounds**. Formulas: **0/1 round** for every failing target.
 First make the bots sensible, then measure contributions, then change values.
 A result within its own 95% margin of a limit passes at the limit.
 
@@ -29,16 +29,27 @@ completed checkpoints are preserved; do not resume or treat them as final eviden
 
 Fitness now explicitly enables direct aggregator payment. Company membership
 invoices remain normal invoices. Optional per-offer weekly use is supported and
-publicly displayed, but no fitness offer has an override yet. These complete the
+publicly displayed; no fitness offer had an override at that correction source. These complete the
 stated mechanics before value tuning. 770 core/fitness checks, eight focused
 payment/UI checks and lint pass.
 
-## Current measurement
+## Settled baseline measurement
 
 Settled source: **85d9b2b**. Main only, 30 policies, 1,000 paired `test` seeds,
 four workers, with durable completed-task checkpoints. See
-`settled-checkpoint-location.txt`. Review its complete contributions before
-starting value round one. Current policy counts are provisional, not a report.
+`settled-checkpoint-location.txt`. Complete; see `SETTLED_REVIEW.md`. Its contributions were reviewed before
+value round one. The report is preserved at `schweissperle-main-settled.md`.
 
 No fitness event table has run. Run it once at the end of the step.
 The full report has never run and is reserved for step 6, once.
+
+## Value round one
+
+Reachable enquiry ranges halved; small budgets round to EUR10; premium pack
+use is once weekly; shower/cleaning/bike call-outs cost estimated EUR650/300/480.
+Exact values and rationale: scenario-fitness.md section15 and SETTLED_REVIEW.md.
+All affected main comparisons will run on1,000 paired test seeds,eight workers.
+This is scenario-value tuning under CLAUDE.md,not the full report.
+One further value round and one formula round remain for failing targets.
+
+Round-one validation:47 focused content/engine/bot checks and lint/typechecks pass.

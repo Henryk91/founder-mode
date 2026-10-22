@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.8 fitness settlement measurement;5 isolated climbing preparation ready for integration after fitness.
-Last commit: fitness afd4e55 records the discarded cache experiment; settled matrix source 85d9b2b.
-Next action:Settled fitness main matrix complete:30 policies,1,000 paired test seeds. Review committed contributions,then implement value round1 as SETTLED_REVIEW.md describes. No value round has been used yet. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
+Step:4.8 fitness value round1;5 isolated climbing preparation ready for integration after fitness.
+Last commit: fitness60d87db, settled main contribution review; matrix source85d9b2b.
+Next action:Settled fitness main matrix complete:30 policies,1,000 paired test seeds. Value round1 applied;47 focused checks and lint pass. Start affected fitness main on1,000 paired seeds,eight workers,with durable checkpoints. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
 
 ## Checklist
 
@@ -29,7 +29,7 @@ Content now explicitly enables direct aggregator payment. Company membership inv
 Two archival optimisations preserve21complete results/public-view traces exactly.
 Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails.
 Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
-Values0/2,formula0/1;fitness event table not run. No full report.
+Values1/2,formula0/1;fitness event table not run. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
 ## Protected proof
@@ -58,7 +58,7 @@ Step6 has the plan's fresh revisit budget and the only full report. Full report 
 
 ## For Henry to review(non-blocking)
 
-- Fitness:studio and aggregator naming,paid instructor following,annex mat classes,recovery-room exclusion deferred;scenario-fitness.md section15.
+- Fitness:value round1 halves reachable enquiries,uses EUR10 budget rounding/once-weekly premium packs and explicit maintenance estimates;scenario-fitness.md section15. Studio/aggregator naming,paid instructor following,annex mat classes,recovery-room exclusion remain for review.
 - Climbing:weekly two-hour average wall occupancy during longer coached courses;average café/rental baskets instead of a shop;family-loan repayment after the run;explicit estimates and source limits in scenario-climbing.md section15.
 - Venue/Ausgesperrt:first-pass open targets and deferred options in their step reports.
 - Screenshots outside repo:/private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-fitness and founder-mode-climbing;390/1440 reviewed. Earlier venue/leisure shots preserved alongside.
