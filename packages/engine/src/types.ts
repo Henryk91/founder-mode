@@ -2778,6 +2778,7 @@ export type LeisureView = {
   members: {
     products?: FeatureId[]
     offerId: FeatureId
+    visits?: number
     name: string
     active: number
     inactive: number

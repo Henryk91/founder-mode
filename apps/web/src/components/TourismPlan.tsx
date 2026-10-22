@@ -5,6 +5,7 @@ import { noBookings } from '../store'
 import { useGame } from '../useGame'
 import { Choices, HintLine, Market, SubHeading, Writing } from './Ruled'
 import { Stepper } from './Stepper'
+import { MembershipPrices, AggregatorPlan } from './Memberships'
 import { LeisurePrices, LeisureHolds } from './Leisure'
 import styles from './ui.module.css'
 
@@ -203,17 +204,20 @@ export function GuestsPlan() {
   const listed = draft.platform ?? b.platform.listed
   return (
     <>
-      <Market
-        label={b.platform.name}
-        note={label('tour.platform.note', stage, {
-          share: Math.round(b.platform.commission * 100),
-        })}
-        choices={chip(
-          listed,
-          listed ? label('tour.platform.listed', stage) : label('tour.platform.list', stage),
-          () => set({ platform: listed === b.platform.listed ? !listed : null }),
-        )}
-      />
+      <AggregatorPlan />
+      {!b.leisure?.aggregator && (
+        <Market
+          label={b.platform.name}
+          note={label('tour.platform.note', stage, {
+            share: Math.round(b.platform.commission * 100),
+          })}
+          choices={chip(
+            listed,
+            listed ? label('tour.platform.listed', stage) : label('tour.platform.list', stage),
+            () => set({ platform: listed === b.platform.listed ? !listed : null }),
+          )}
+        />
+      )}
       <SubHeading>{label('tour.partners', stage)}</SubHeading>
       {b.segments.map((s) => {
         const has = b.partnerships.includes(s.id)
@@ -302,6 +306,7 @@ export function PricesPlan() {
   const policy = draft.policy ?? b.policy
   return (
     <>
+      <MembershipPrices />
       <LeisurePrices />
       <LeisureHolds />
       <Writing>{label(b.peak ? 'tour.prices.peakNow' : 'tour.prices.offNow', stage)}</Writing>
@@ -365,17 +370,21 @@ export function PricesPlan() {
             }),
           ]
         })}
-      <SubHeading>{label('tour.policy', stage)}</SubHeading>
-      {b.policyLocked ? (
-        <Writing>{label('tour.policy.locked', stage)}</Writing>
-      ) : (
-        <Choices>
-          {(['flexible', 'strict'] as const).map((x) =>
-            chip(policy === x, label(`tour.policy.${x}`, stage), () =>
-              set({ policy: x === b.policy ? null : x }),
-            ),
+      {!b.leisure?.members.length && (
+        <>
+          <SubHeading>{label('tour.policy', stage)}</SubHeading>
+          {b.policyLocked ? (
+            <Writing>{label('tour.policy.locked', stage)}</Writing>
+          ) : (
+            <Choices>
+              {(['flexible', 'strict'] as const).map((x) =>
+                chip(policy === x, label(`tour.policy.${x}`, stage), () =>
+                  set({ policy: x === b.policy ? null : x }),
+                ),
+              )}
+            </Choices>
           )}
-        </Choices>
+        </>
       )}
       <MinStayPlan />
       <HintLine term="prices" hint={label('plan.hint.prices', stage)} />

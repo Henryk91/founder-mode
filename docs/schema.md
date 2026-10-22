@@ -1219,3 +1219,6 @@ history without redeeming pack visits or value; this behaviour is unchanged.
 Fitness bot results optionally record `tourism.leisure.fitness` with counts of
 actual instructor departures and followers stopped. This report-only aggregate
 is absent without class-aware staffing and does not enter player decisions.
+
+For class-aware membership offers, `LeisureView.members[].visits` optionally
+exposes the stated visits per purchased pack, distinct from aggregate owed visits.
