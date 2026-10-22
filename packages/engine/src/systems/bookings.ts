@@ -1702,7 +1702,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
     // What each product earns, for the post-mortem's loan lines (plan 2 step 2).
     earned[x.productId] = (earned[x.productId] ?? 0) + gross - cut - cost
-    if (!s.invoiced || depositOnly) {
+    if (
+      !s.invoiced ||
+      depositOnly ||
+      (cfg.leisure?.aggregator?.payOnVisit && x.aggregatorUser !== undefined)
+    ) {
       out.revenueCents += owed
       continue
     }

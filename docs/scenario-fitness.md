@@ -286,3 +286,20 @@ scene format. White on the established accent#B0284F measures6.44:1,so the
 specified shade is retained. Catalogue/static/lazy loading now register the
 long-only scenario in the isolated branch;bots and membership/timetable UI
 remain unfinished before the phase gate.
+
+### Aggregator settlement correction before tuning
+
+The initial report exposed corporate-labelled aggregator check-ins entering the
+ordinary employer invoice path. The platform contract pays actual check-ins;
+it does not sell a newEUR11class invoice to each visitor's employer. Fitness
+now explicitly enables `aggregator.payOnVisit:true`. This removes those false
+invoices,credit-risk rolls and chase work;company membership invoices remain
+normal invoices. Older scenarios omit the switch and retain their exact path.
+The corrected-policy matrix was stopped as superseded after its careful count
+(951/1,000);its checkpoints remain available. Measure the settled game before
+changing values. Value rounds0/2,formula0/1.
+
+Optional per-offer weekly usage is now supported and displayed. This is needed
+for products such as a once-weekly premium pack or a weekly children's club;
+without it,the segment's general studio usage is applied to every offer. No
+fitness offer frequency has been changed in this mechanics correction.

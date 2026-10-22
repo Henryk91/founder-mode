@@ -31,3 +31,7 @@ The original matrix was interrupted before the report writer ran;its thirteen co
 before any value change. Careful86.4%,top95.7%;fix bot pricing/slot/repair policies
 first. Values0/2,formula0/1. Current-week archive timing:careful301s/1,000,
 864wins unchanged. T12still fails. Protected-step4:all eleven main reports match.
+
+## Settlement correction
+
+Stop the corrected-policy matrix as superseded after corporate aggregator check-ins were found being invoiced to employers. Preserve its951/1,000careful count and task checkpoints;do not resume it for tuning. Explicit direct payout completes the stated platform mechanic before values.770 core/fitness checks,eight focused payment/UI checks and lint pass. Values0/2,formula0/1. A new1,000-test-seed main matrix is needed because outcomes and cash timing legitimately change.
