@@ -1036,3 +1036,5 @@ AUTONOMOUS:Before any Griffig measurement,K1 compares differing paired win/loss 
 AUTONOMOUS:Validate the unregistered climbing draft through a browser-test entry that renders the real app with a memory store;the production entry and catalogue never import it.24 Chromium/WebKit cases pass across all three stages and375/390/430/1440px;two extra390px checks verify an enabled opening-hour tap. Keep only discipline-specific lead-climbing word exceptions. Native scenes use the existing360x170format;white/accent contrast6.39:1.
 
 AUTONOMOUS:The internal mezzanine needs a real offer,not only an office-stage definition. Offer it after two months covering costs;careful play looks for repeated observed packed slots rather than waiting for safety refusals. Existing non-hall office heuristics stay unchanged.
+
+AUTONOMOUS:Connect Griffig coached products to existing capacityOf wall pools. Add optional leisure availableSlots so a shared-pool alias can be weekend-only without a second capacity pool. Ordinary visitors and coached participants reserve the same safety places;weekly two-hour average wall occupancy is explicit in the spec. Earlier content omits this field.

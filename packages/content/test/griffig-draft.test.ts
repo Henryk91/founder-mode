@@ -75,4 +75,13 @@ describe('unregistered Griffig content', () => {
       expect.objectContaining({ type: 'officeMove', stage: 'climbing_mezzanine' }),
     )
   })
+  it('keeps parties and courses in their real wall pool and allowed slots', () => {
+    const b = s.bookings!,
+      l = b.leisure!
+    expect(b.products.birthday_parties!.capacityOf).toBe('kids_area')
+    expect(b.products.kids_club!.capacityOf).toBe('kids_area')
+    expect(b.products.belay_course!.capacityOf).toBe('rope_walls')
+    expect(l.products.birthday_parties!.availableSlots).toEqual(['weekend'])
+    expect(l.products.lead_course!.availableSlots).toEqual(['evening', 'weekend'])
+  })
 })

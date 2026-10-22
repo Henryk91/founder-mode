@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4 fitness measurement resumed;5 isolated climbing preparation.
-Last commit:HEAD,Plan5:report paired climbing targets and course eligibility.
-Next action:Resume only missing protected proof (Ausgesperrt main,1,000 test seeds);restart interrupted fitness initial main with durable task checkpoints because only summary counts survived. Preserve ten completed protected comparisons. Unregistered Griffig content is prepared;review admission/student prices,then build hall UI and bots while fitness runs. Full report remains step6 only,once.
+Step:5 isolated preparation:shared wall pools and allowed slots validated;4 remains the primary gate.
+Last commit:HEAD,Plan5:validate climbing screens and offer the internal mezzanine.
+Next action:Commit shared-wall capacity audit (29 focused checks and lint pass),then wait for fitness settlement/tuning milestone before registration. Fitness corrected matrix was stopped after finding aggregator check-ins incorrectly invoiced to employers;direct settlement is being fixed in its worktree. Full report step6 only,once.
 
 ## Checklist
 

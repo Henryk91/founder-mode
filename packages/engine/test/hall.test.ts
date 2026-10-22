@@ -5,6 +5,8 @@ import { applyBookings, bookingsHours } from '../src/systems/bookings'
 import {
   beginLeisure,
   leisureCapacity,
+  leisureProductCapacity,
+  leisureRoom,
   leisureHours,
   leisureValid,
   cloneLeisurePlan,
@@ -173,5 +175,33 @@ describe('optional hall opening hours and setting crews', () => {
     const r = beginLeisure(s, plan({ bookings: roster(10) }), rng()).state
     expect(hallCapacity(r, 'basic_ordering', 'daytime', 1, true)).toBe(920)
     expect(leisureCapacity(r, 'basic_ordering', 'daytime', 1)).toBe(1400)
+  })
+  it('shares real wall places between coaching and ordinary visitors while respecting coached slots', () => {
+    const s = game()
+    s.scenario.bookings!.products.allergy_filter!.capacityOf = 'basic_ordering'
+    s.scenario.bookings!.leisure!.products.allergy_filter = {
+      capacity: {},
+      availableSlots: ['evening'],
+    }
+    const r = beginLeisure(s, plan({ bookings: roster(10) }), rng()).state
+    expect(leisureProductCapacity(r, 'allergy_filter', 'daytime', 1)).toBe(0)
+    expect(leisureProductCapacity(r, 'allergy_filter', 'evening', 1)).toBe(1400)
+    const bookings = [
+      {
+        id: 'ordinary',
+        productId: 'basic_ordering',
+        segmentId: 'small_offices',
+        week: 1,
+        units: 1392,
+        priceCents: 1500,
+        channel: 'direct' as const,
+        bookedWeek: 1,
+        status: 'booked' as const,
+        slotId: 'evening',
+      },
+    ]
+    expect(leisureRoom(r, bookings, 'allergy_filter', 'evening', 1)).toBe(8)
+    bookings.push({ ...bookings[0]!, id: 'coached', productId: 'allergy_filter', units: 8 })
+    expect(leisureRoom(r, bookings, 'basic_ordering', 'evening', 1)).toBe(0)
   })
 })

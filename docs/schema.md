@@ -1295,3 +1295,8 @@ shipped features accepted for market-fit coverage. Alternatives must have their
 actual build prerequisites ready. It applies equally to paid demand and experiment
 fit. It neither copies physical capacity nor grants a rope qualification. Earlier
 scenarios without the block keep their exact feature-coverage calculation.
+
+Leisure products may declare optional `availableSlots`,validated against the
+leisure slot IDs. This gates sale and member access even when `capacityOf`
+borrows a physical wall's pool. Courses/parties and ordinary visitors then reserve
+the same pool;the alias's allowed slots do not create extra safety places.
