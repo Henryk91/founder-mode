@@ -123,6 +123,7 @@ export function initLeisure(
       ...(c.qualifications
         ? { qualifiedEnquiries: [], courseConversion: { graduates: 0, enquiries: 0, joined: 0 } }
         : {}),
+      ...(c.classStaffing ? { traffic: [] } : {}),
       ...(c.foundingFollowing ? { foundingFollowing: { invited: 0, joined: 0 } } : {}),
       ...(c.slotPrices
         ? {
@@ -1511,6 +1512,7 @@ export function finishLeisure(
     (input.scenario.bookings!.reviews.cancelPenalty * contracts.filter((m) => m.inactive).length) /
     Math.max(1, contracts.length)
   const members = original.members.map((m) => ({ ...m, waitlist: [...m.waitlist] }))
+  const memberIndex = c.classStaffing ? new Map(members.map((m) => [m.id, m])) : null
   const freshness = Object.fromEntries(
     Object.entries(original.freshness).map(([id, f]) => [id, { ...f }]),
   )
@@ -1576,7 +1578,9 @@ export function finishLeisure(
         Math.max(1, totalServed)
     }
     if (b.memberId) {
-      const m = members.find((x) => x.id === b.memberId)
+      const m = memberIndex
+        ? memberIndex.get(b.memberId!)
+        : members.find((x) => x.id === b.memberId)
       if (m?.owedVisits !== null && m?.owedVisits !== undefined && m.owedVisits > 0) {
         const value =
           m.owedVisits === 1 ? (m.owedCents ?? 0) : Math.floor((m.owedCents ?? 0) / m.owedVisits)
@@ -1622,7 +1626,7 @@ export function finishLeisure(
     (b) => b.week === week && b.status === 'company_cancelled' && b.memberId,
   )
   for (const b of cancelled) {
-    const m = members.find((x) => x.id === b.memberId)
+    const m = memberIndex ? memberIndex.get(b.memberId!) : members.find((x) => x.id === b.memberId)
     if (m) m.waitlist.push(week)
   }
   const payout = served
@@ -1639,12 +1643,45 @@ export function finishLeisure(
         }
       : w,
   )
+  const traffic = c.classStaffing
+    ? {
+        week,
+        served: {} as Record<string, number>,
+        came: {} as Record<string, number>,
+        nonCancelled: {} as Record<string, number>,
+      }
+    : null
+  if (traffic)
+    for (const booking of bookings) {
+      if (booking.week !== week) continue
+      if (booking.status === 'served')
+        traffic.served[booking.productId] = (traffic.served[booking.productId] ?? 0) + booking.units
+      if (booking.status === 'served' || booking.status === 'company_cancelled')
+        traffic.came[booking.productId] = (traffic.came[booking.productId] ?? 0) + booking.units
+      if (booking.status !== 'cancelled')
+        traffic.nonCancelled[booking.productId] =
+          (traffic.nonCancelled[booking.productId] ?? 0) + booking.units
+    }
   const completed: GameState = {
     ...input,
     bookings: {
       ...input.bookings!,
       ...(c.noise ? { bookings: [...bookings] } : {}),
-      leisure: { ...original, members, freshness, aggregator, weeks },
+      leisure: {
+        ...original,
+        members,
+        freshness,
+        aggregator,
+        weeks,
+        ...(traffic
+          ? {
+              traffic: [
+                ...(original.traffic ?? []).filter((r) => r.week >= week - 53 && r.week !== week),
+                traffic,
+              ],
+            }
+          : {}),
+      },
     },
   }
   const qualified = finishQualifications(completed, served, rng)

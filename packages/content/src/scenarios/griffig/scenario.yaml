@@ -1552,6 +1552,7 @@ bookings:
         belay_course: 0.35
         lead_course: 0.5
     aggregator:
+      payOnVisit: true
       name: Turnsaldo
       payoutCents:
         min: 800

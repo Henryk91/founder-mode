@@ -1003,6 +1003,20 @@ AUTONOMOUS: Add membership/pack pricing with published terms,quiet-slot aggregat
 
 AUTONOMOUS: The fitness word check permits only five exact authored trial-class labels/quotes;software subscription terms remain checked. All24 Chromium/WebKit width/stage cases pass axe/cut/words;14 focused membership/engine checks and lint pass. Screenshots are outside the repo under the temporary founder-mode-fitness directory. Initial fitness measurement is main only,1,000 test seeds;no value/formula rounds,event table or full report.
 
+AUTONOMOUS: Profiled high-volume fitness runs before tuning. Compact finished class visits into the existing lifetime archive plus the same54-week product-count history,and index members locally.21 complete games across seven policies preserve exact RunResult and hashed public-view traces;60-week fixture preserves lifetime/last-year/recent counts. This is bookkeeping only,not a value/formula round.
+
+AUTONOMOUS: The initial fitness workers loaded f334fd7 before this optimisation and continue that baseline. Earlier-game proof workers cannot enter the class-aware branch;their protected comparisons remain applicable. A new fitness careful main measurement on1,000 test seeds will check performance and unchanged baseline outcomes. Engine version remains0.14.0.
+
+AUTONOMOUS:Retain only the current service week of individual class visits;use the existing traffic aggregates for prior-week hosting as well as calendars/occupancy. Twenty-one complete games across seven policies match the original results and public-view traces exactly. Earlier scenarios cannot enter the class-aware path;no values/formulas changed.
+
+AUTONOMOUS:Before fitness value tuning,price each offer from hints of the segments it serves,using the employee plan's own monthly basis. Open aggregator slots from spare proposed timetable places versus observed direct visits,rather than closing every room after one full class. Keep review-blind replies from clearing snags through the inbox.40 focused checks and lint pass;values0/2,formula0/1.
+
+AUTONOMOUS:Stop the corrected fitness matrix after identifying corporate-labelled aggregator check-ins being invoiced to employers. Preserve completed task checkpoints and the951/1,000careful count as superseded evidence. Enable direct per-check-in settlement explicitly in fitness content;earlier games omit the switch. This completes the stated aggregator payment mechanic before value tuning. Add optional per-offer usage frequency,already needed by climbing's weekly club;no fitness frequency value is changed yet.
+
+AUTONOMOUS: Step4 profiled a class-capacity cache.21 complete results/public traces and all1,000 careful results match source85d9b2b exactly,but353s versus348s under different loads demonstrates no speed gain. Discard the uncommitted candidate and retain the simpler existing reader;T12 remains open,no value/formula budget spent.
+
+AUTONOMOUS: Step4 value round1 follows the settled30-policy/1,000-seed contribution review. Halve reachable enquiry ranges (young3–10,yoga1.5–5,employees2–9),correct small-budget rounding to EUR10,set premium-pack use to one weekly visit,and price shower/cleaning/bike call-outs at estimated EUR650/300/480. Preserve quoted fees,rent,contract tariffs and real reformer conversion costs. Values1/2,formula0/1;measure affected main only on1,000 paired seeds before another change.
+
 ## Plan5 step5: isolated climbing preparation
 
 AUTONOMOUS: Prepare unregistered Griffig mechanics in a separate worktree from fitness f334fd7 while its1,000-seed reports run. No integration before fitness's gate. Touch list and unit/qualification gaps are in autonomous5/climbing/IMPLEMENTATION.md. T1–T10,T12–T18,E1,K1–K5 apply;T11 is inapplicable to same-day admission/membership notice,T4 begins at opening.
@@ -1040,3 +1054,5 @@ AUTONOMOUS:The internal mezzanine needs a real offer,not only an office-stage de
 AUTONOMOUS:Connect Griffig coached products to existing capacityOf wall pools. Add optional leisure availableSlots so a shared-pool alias can be weekend-only without a second capacity pool. Ordinary visitors and coached participants reserve the same safety places;weekly two-hour average wall occupancy is explicit in the spec. Earlier content omits this field.
 
 AUTONOMOUS: Step5 unmeasured Griffig draft uses EUR10 small-budget quote rounding. The inherited EUR500 step made low-price interviews uninformative and forced hint pricing to its upper bound; correct the content before registration/first measurement. Fitness will count the same numeric correction in its first value round.
+
+AUTONOMOUS: Continue the user-approved parallel climbing preparation while fitness round1 validates. Merge validated fitness sourcea0643aa into the isolated unregistered branch,retaining optional hall/qualification/shared-slot fields alongside fitness traffic archives and public offer frequency. Enable explicit direct aggregator payout in Griffig. Catalogue registration,measurements and integration into main still wait for the fitness milestone.

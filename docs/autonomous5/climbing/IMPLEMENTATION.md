@@ -135,3 +135,12 @@ Source estimates and units are recorded in scenario-climbing.md section15.
 Before registration:resolve explicit student membership/day-product discounts,
 review course request shares and first-build bot plans,then add labels/UI/bots.
 Do not measure this draft as completed content.
+
+## Shared-mechanic import during fitness validation
+
+Validated fitness sourcea0643aa is merged into the isolated climbing branch. Keep
+hall/qualification/shared-slot fields alongside traffic history and one public
+weekly-offer frequency field. Griffig explicitly enables direct aggregator
+payment.821 checks pass,27 skips,including engine/content,fitness/climbing bots
+and membership UI;lint/typechecks pass. No registration,climbing report or tuning.
+The completed fitness milestone must still be imported before the runtime gate.

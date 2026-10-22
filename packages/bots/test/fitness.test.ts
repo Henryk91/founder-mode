@@ -75,6 +75,47 @@ describe('fitness players', () => {
     expect(p.leisure!.offers!.monthly_membership).toEqual({ enabled: true, priceCents: 13900 })
     expect(p.leisure!.offers!.premium_pack!.enabled).toBe(false)
   })
+  it('prices employee agreements from employee budgets instead of the individual unlimited fee', () => {
+    const v = opened(),
+      p = empty()
+    for (const seg of v.segments)
+      seg.interviews = Array.from({ length: 4 }, () => ({
+        week: 1,
+        segmentId: seg.id,
+        bucketId: 'painful',
+        bucketName: 'Painful',
+        quote: 'A usable membership.',
+        mentionedFeature: null,
+        budget: { quote: 'Monthly budget.', amountCents: seg.id === 'corporate' ? 8000 : 13900 },
+      }))
+    priceFitness(spec, v, p, CAREFUL_TOURISM)
+    expect(p.leisure!.offers!.corporate_plans!.priceCents).toBe(8000)
+    expect(p.leisure!.offers!.monthly_membership!.priceCents).toBe(13900)
+    expect(p.prices.corporate!.peak).toBe(2600)
+  })
+  it('uses spare proposed class places even when a previous class was packed', () => {
+    const v = opened(),
+      p = empty()
+    const l = v.bookings!.leisure!
+    l.history = [
+      {
+        week: 1,
+        turnedAway: {},
+        slots: [
+          {
+            productId: 'strength_classes',
+            slotId: 'evening',
+            visits: 18,
+            turnedAway: 1,
+            aggregator: 0,
+            load: 'packed',
+          },
+        ],
+      },
+    ] as typeof l.history
+    planFitness(spec, v, new PlanBuilder(v, 50), p, CAREFUL_TOURISM, {})
+    expect(p.leisure!.aggregator!.slots).toContain('evening')
+  })
   it('uses real quiet-slot observations for aggregator access and isolates all/none variants', () => {
     const v = opened()
     const sample = {

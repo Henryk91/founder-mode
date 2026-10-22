@@ -244,3 +244,5 @@ scenario estimates,not a tuned or measured economy.
 - Courses,clubs and parties share the actual boulder/rope/children’s wall pool with ordinary visitors. Explicit allowed slots keep clubs and parties on weekends and courses in their stated periods. Coaching pay covers the full two/four/six-hour course;the first pass reserves one estimated two-hour wall visit per participant,with remaining coached time for demonstrations and off-wall practice. This is a weekly average,not an exact session timetable. Coaches still limit actual served participants;no extra wall places are created by a course product.
 
 - Interview budgets below EUR200 round to EUR10, rather than the inherited EUR500 step. This preserves useful on-screen evidence at ticket and membership prices. Corrected before the first climbing measurement; no tuning round is spent.
+
+- The aggregator explicitly settles actual check-ins directly via payOnVisit. It does not issue employer invoices. Fitness shared-mechanic fixes are integrated into the isolated preparation branch before Griffig registration;no climbing measurement or tuning round is implied.

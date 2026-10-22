@@ -42,6 +42,23 @@ describe('membership and timetable interface', () => {
       s.getState().view!.bookings!.leisure!.members.find((m) => m.offerId === 'class_pack')!.visits,
     ).toBe(10)
   })
+  it('shows an explicitly stated offer frequency alongside its prepaid terms', () => {
+    const scenario = structuredClone(spec)
+    scenario.bookings!.leisure!.memberships!.premium_pack!.visitsPerWeek = 1
+    const s = createGameStore({
+      storage: memoryStorage(),
+      makeSeed: () => 'weekly-premium-ui',
+      scenario: () => scenario,
+    })
+    s.getState().startRun()
+    const html = text(
+      <StoreProvider value={s}>
+        <MembershipPrices />
+      </StoreProvider>,
+    )
+    expect(html).toContain('Typical weekly visits: 1.')
+    expect(html).toContain('10 visits per pack, valid for 26 weeks')
+  })
   it('uses aggregator check-ins instead of a commission listing control', () => {
     const s = store()
     const html = text(

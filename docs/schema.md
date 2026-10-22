@@ -1223,6 +1223,24 @@ is absent without class-aware staffing and does not enter player decisions.
 For class-aware membership offers, `LeisureView.members[].visits` optionally
 exposes the stated visits per purchased pack, distinct from aggregate owed visits.
 
+Class-aware leisure keeps optional `LeisureState.traffic`:one product-count row
+per week for served,arrived and non-cancelled visits,retaining the same54-week
+window as the earlier individual history. Finished individual class visits older
+than one week fold into existing lifetime archive totals. Calendar year comparisons,
+recent occupancy and office visit counts read the compact history;future bookings,
+member credit,ledger and action logs retain their existing rules. Traffic records
+are not copied into PlayerView. Member lookup maps are local to a calculation.
+No compact records or shorter retention apply without class-aware content.
+
+Class-aware visit compaction retains the current service week as individual bookings and54weeks of product/week traffic aggregates. Lifetime status/segment/channel totals remain in the ordinary archive. Hosting hours use the aggregate previous-week served count too,including an ending shown before the week increments. No public fields or outcome formulas change.
+
+Optional leisure aggregator `payOnVisit:true` settles actual check-ins directly,
+even when the visitor's segment ordinarily receives invoices. It never creates
+an invoice to that visitor's employer. Omitted retains the earlier payment path.
+Optional membership `visitsPerWeek` overrides the segment's usage for that offer
+and the pack's monthly-equivalent budget basis;the public offer repeats this
+stated frequency. Omitted retains the segment rate exactly.
+
 ### Optional personal qualifications
 
 `leisure.qualifications` names earned levels/prerequisites,initial segment skill

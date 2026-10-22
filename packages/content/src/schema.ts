@@ -869,6 +869,7 @@ export const LeisureSchema = z
     aggregator: z
       .object({
         name: z.string().min(1),
+        payOnVisit: z.literal(true).optional(),
         payoutCents: rangeOf(Cents.positive()),
         capPerMonth: z.number().int().positive(),
         noticeWeeks: z.number().int().positive(),
