@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.5 fitness bots implemented;UI/measurement next.
-Last commit:HEAD,Plan5:add class-aware fitness policies and paired targets.
-Next action:Build membership/timetable/aggregator UI and fitness labels,then initial main measurement/contributions and phase4 protected proof. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
+Step:4.6 fitness UI verified;initial main measurement running.
+Last commit:HEAD,Plan5:add membership controls and studio timetable.
+Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-initial.log (session89679),review bots and contributions before values,then complete tuning and protected proof. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
 
 ## Checklist
 
@@ -31,13 +31,15 @@ Next action:Build membership/timetable/aggregator UI and fitness labels,then ini
 - Fitness:Turnsaldo name,showers in fit-out,employee membership units,following as paid-offer enquiries,annex mat classes without extra spin bikes,recovery alternative-room exclusion deferred. Sources/estimates and instructor identity limits are explicit.
 - Venue:six open tourism targets,unseen turnaround and breakout benefit not established by the event-only tie;reports/step3-venue.md. Early guest balances,supplier selection and cash-basis capital window remain first-pass limits.
 - Ausgesperrt:eight open targets and deferred options;reports/step2-escape.md.
-- Screenshots outside repo:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue and founder-mode-leisure. Fitness screenshots not taken yet.
+- Screenshots outside repo:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue and founder-mode-leisure. Fitness screenshots:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-fitness;390/1440 checked.
 
 ## Previous stop,resolved
 
 User resumed historical WebKit heading stop;all80 cases and final full suite pass. No current stop applies.
 
 ## Recent validation
+
+Membership/timetable/aggregator UI:24 Chromium/WebKit cases pass across375/390/430/1440 and all three stages;axe/cut/words clean.14 focused UI/engine checks and lint pass. Five precise authored trial-class phrases are allowed by the studio word check. Initial main report runs on1,000 test seeds/two workers;no events/full report.
 
 Fitness bot policies and F1–F5 reporting implemented;all registered studio variants finish,and the careful saved run opens and replays exactly. Focused fitness/venue/escape checks and lint pass. Values0/2,formula0/1;no fitness report/event table yet.
 

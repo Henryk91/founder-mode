@@ -837,6 +837,7 @@ export function leisureView(s: GameState): LeisureView | null {
         noticeWeeks: offer.noticeWeeks,
         slots: [...offer.slots],
         validWeeks: offer.validWeeks ?? null,
+        ...(c.classStaffing && offer.visits !== undefined ? { visits: offer.visits } : {}),
       }
     }),
     joinsLast4: recent.reduce((t, w) => t + w.joined, 0),
