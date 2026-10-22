@@ -1222,3 +1222,29 @@ is absent without class-aware staffing and does not enter player decisions.
 
 For class-aware membership offers, `LeisureView.members[].visits` optionally
 exposes the stated visits per purchased pack, distinct from aggregate owed visits.
+
+### Optional personal qualifications
+
+`leisure.qualifications` names earned levels/prerequisites,initial segment skill
+ranges and course-to-membership enquiry shares. Validation rejects missing levels,
+segments,courses and prerequisite cycles. No registered scenario enables it during
+isolated preparation. `HiddenLeisure.qualificationRates` stores the sampled ranges;
+optional `LeisureMember.levels`,aggregator-user `levels` and `Booking.levels` store
+actual held skills. Uncoached products with `needsLevel` require that person's skill.
+Ordinary check-ins do not silently enrol users on coached courses.
+
+Served courses teach their actual member or user. Anonymous graduates create
+`LeisureState.qualifiedEnquiries` for the following week,carrying actual earned
+levels;`beginLeisure` offers them normal paid memberships before billing. The
+course enquiry share does not guarantee a paid sale. Packs and notice retain their
+existing obligations. `courseConversion` records actual graduates,enquiries and
+paid joins. Optional `LeisureView.qualifications` copies earned-level attendance
+counts and conversion totals only;initial rates and probabilities stay hidden.
+All fields and RNG draws are absent without the content block.
+
+Qualification-enabled course bookings carry stable `Booking.coursePeople` IDs.
+`LeisureState.coursePeople` links actual learners,earned skills and an eventual
+paid membership;qualified enquiries optionally carry `personId`. A later course
+by the same learner teaches that membership instead of creating a second one.
+The existing next-step course booking keeps those IDs. These records are absent
+without qualifications and are never passed individually to the UI.

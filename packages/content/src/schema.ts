@@ -759,6 +759,16 @@ const SlotShares = z
   )
 export const LeisureSchema = z
   .object({
+    qualifications: z
+      .object({
+        levels: z.record(
+          Id,
+          z.object({ name: z.string().min(1), requires: z.array(Id).default([]) }),
+        ),
+        initial: z.record(Id, z.record(Id, ShareRange)),
+        courseMembership: z.record(Id, Share),
+      })
+      .optional(),
     strictKeepsDeposit: z.literal(true).optional(),
     wtpBasis: z.literal('monthly').optional(),
     classStaffing: z.literal(true).optional(),
@@ -1792,6 +1802,36 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       for (const extra of Object.values(leisure.extras ?? {}))
         for (const id of Object.keys(extra.segments))
           if (!bk.segments[id]) issue(`unknown ancillary segment ${id}`, ['bookings', 'leisure'])
+      if (leisure.qualifications) {
+        const q = leisure.qualifications
+        for (const [segment, levels] of Object.entries(q.initial)) {
+          if (!bk.segments[segment])
+            issue(`unknown qualification segment ${segment}`, ['bookings', 'leisure'])
+          for (const level of Object.keys(levels))
+            if (!q.levels[level])
+              issue(`unknown initial qualification ${level}`, ['bookings', 'leisure'])
+        }
+        for (const [id, level] of Object.entries(q.levels)) {
+          for (const required of level.requires)
+            if (!q.levels[required] || required === id)
+              issue(`invalid qualification prerequisite ${required}`, ['bookings', 'leisure'])
+        }
+        const cycle = (id: string, seen: Set<string>): boolean =>
+          seen.has(id) ||
+          (q.levels[id]?.requires.some((next) => cycle(next, new Set([...seen, id]))) ?? false)
+        for (const id of Object.keys(q.levels))
+          if (cycle(id, new Set()))
+            issue('qualification prerequisite cycle', ['bookings', 'leisure'])
+        for (const id of Object.keys(q.courseMembership))
+          if (!bk.products[id]?.course)
+            issue(`membership conversion needs a course: ${id}`, ['bookings', 'leisure'])
+        for (const p of Object.values(bk.products)) {
+          if (p.needsLevel && !q.levels[p.needsLevel])
+            issue(`unknown personal qualification ${p.needsLevel}`, ['bookings', 'leisure'])
+          if (p.course && !q.levels[p.course.level])
+            issue(`unknown course qualification ${p.course.level}`, ['bookings', 'leisure'])
+        }
+      }
       if (leisure.noise)
         for (const id of [
           ...leisure.noise.products,
@@ -1875,9 +1915,10 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     if (c?.review?.shelter && !bk.products[c.review.shelter]) {
       issue('unknown shelter product', ['bookings', 'conditions', 'review'])
     }
-    const levels = new Set(
-      Object.values(bk.products).flatMap((p) => (p.course ? [p.course.level] : [])),
-    )
+    const levels = new Set([
+      ...Object.values(bk.products).flatMap((p) => (p.course ? [p.course.level] : [])),
+      ...Object.keys(bk.leisure?.qualifications?.levels ?? {}),
+    ])
     for (const seg of Object.values(bk.segments)) for (const l of seg.levels ?? []) levels.add(l)
     for (const [id, p] of Object.entries(bk.products)) {
       const at = ['bookings', 'products', id]

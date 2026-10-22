@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.6 fitness UI verified;initial main measurement running.
-Last commit:HEAD,Plan5:add membership controls and studio timetable.
-Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-initial.log (session89679),review bots and contributions before values,then complete tuning and protected proof. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
+Step:5 preparation only,personal qualifications implemented in isolation.
+Last commit:HEAD,Plan5:track individual climbing skills and course conversions.
+Next action:Implement optional staffed hall opening hours/capacity and paid route setting in this worktree;merge the completed fitness milestone before registering Griffig. Primary run stays in /private/tmp/founder-mode-plan5-fitness,with its initial main and protected reports running. No Griffig measurement/event table/full report.
 
 ## Checklist
 
@@ -39,11 +39,7 @@ User resumed historical WebKit heading stop;all80 cases and final full suite pas
 
 ## Recent validation
 
-Membership/timetable/aggregator UI:24 Chromium/WebKit cases pass across375/390/430/1440 and all three stages;axe/cut/words clean.14 focused UI/engine checks and lint pass. Five precise authored trial-class phrases are allowed by the studio word check. Initial main report runs on1,000 test seeds/two workers;no events/full report.
-
-Fitness bot policies and F1–F5 reporting implemented;all registered studio variants finish,and the careful saved run opens and replays exactly. Focused fitness/venue/escape checks and lint pass. Values0/2,formula0/1;no fitness report/event table yet.
-
-Public class duration and existing cancellation/pack accounting:10 focused checks pass;lint passes. The proposed failed-visit change was unnecessary and removed after inspecting the existing implementation. No fitness measurement or tuning yet.
+Qualification preparation:733 engine/content checks pass,27 skips;lint passes. Eight focused fixtures cover per-person rope access,initial skills,unusable offers,actual staffed course completion/cancellation,paid next-week joining and stable learner identities through later courses. No registered content enables this block.
 
 ## Stopped
 
