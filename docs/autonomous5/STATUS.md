@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4 fitness measurement resumed;5 isolated climbing preparation.
-Last commit:HEAD,Plan5:record fitness careful performance measurement.
-Next action:Resume only missing protected proof (Ausgesperrt main,1,000 test seeds);restart interrupted fitness initial main with durable task checkpoints because only summary counts survived. Preserve ten completed protected comparisons. Commit validated climbing alternatives,then prepare content while fitness runs. Full report remains step6 only,once.
+Step:4.8 fitness settlement measurement;5 isolated climbing preparation ready for integration after fitness.
+Last commit:fitness85d9b2b,settle studio aggregator visits without employer invoices.
+Next action:Collect fitness settled main matrix (session9418,/tmp/plan5-fitness-main-settled.log),then review contributions and use the limited tuning budget. Main only,1,000 test seeds,four workers,durable checkpoints. No value round has been used. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
 
 ## Checklist
 
@@ -16,41 +16,51 @@ Next action:Resume only missing protected proof (Ausgesperrt main,1,000 test see
 - [ ] Step5:Griffig
 - [ ] Step6:wrap up
 
-## Checks and open issues
+## Fitness
 
-- Fitness engine:monthly pricing/offer access,premium/founding cohort with real opening replay,class seat conversion/qualified coverage,identified workloads and stage-gated annex.64 focused engine checks/lint pass;earlier300 content/engine checks passed,24 skips.
-- Fitness content:20 features,49 authored cards,150 quotes,four intro cards;registered in isolated branch with two native scenes.231 focused content/access checks pass,24 skips;lint passes. Sources/estimates/adaptations in scenario-fitness.md section15. Front-desk relief implemented and tested. Fitness budget values0/2,formula0/1;no measurement/event table.
-- Venue complete:careful46.6%±3.1(at limit),top47.6%;all V targets pass,V2 at limit. T3,T6,T11,T13,T14,T15 open for step6. Both value rounds used,formula deliberately unused. Full86 files/1,691 pass,24 skips;lint passes.189 seeds,earlier rows unchanged.
-- Venue proof all ten older/protected/Ausgesperrt main reports and fingerprints match,1,000 test seeds. Once-only events complete:111 strategies,86,203/111,000 played,remainder reused;54 judged,21 cheapest/33 other point leaders,no significance claim;turnaround unseen. Never rerun.
-- Ausgesperrt complete:careful42.8%±3.1,top48.4%;X1 at limit,X2–X4 pass. T2,T3,T6,T10,T11,T14,T15,T17 open for step6. Both value rounds used,formula unused;event table already ran once,never rerun.
-- Fitness requires fresh protected/earlier-leisure main proof after all shared changes. No earlier values changed. Climbing preparation is isolated in /private/tmp/founder-mode-plan5-climbing:optional skills/course conversion,hall/setting,group/club and staffed ancillary mechanics committed,743 engine/content checks and lint pass. No integration/registration before the fitness gate.
-- Full bot report NEVER run;step6 only,once. No push/history rewrite/branch deletion.
+Worktree:/private/tmp/founder-mode-plan5-fitness,branch plan5-fitness-work.
+Engine/content/UI/bots implemented;membership/timetable browser checks passed24cases.
+Initial main complete:30policies on1,000 test seeds. Careful86.4%,top95.7%;T1/T2 too easy.
+Full initial table:fitness/schweissperle-main-initial.md;review:fitness/INITIAL_REVIEW.md.
+Bot fixes:offer-specific budget hints,aggregate spare timetable capacity,honest review-blind replies.
+Their matrix was stopped as superseded after finding corporate aggregator check-ins being invoiced to employers;951/1,000careful and completed task checkpoints are preserved,not final tuning evidence.
+Content now explicitly enables direct aggregator payment. Company membership invoices remain normal invoices. Optional per-offer weekly use is implemented/displayed but not yet enabled on any fitness offer.
+770 engine/content/fitness checks and eight focused payment/UI checks pass;lint passes.
+Two archival optimisations preserve21complete results/public-view traces exactly.
+Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails.
+Values0/2,formula0/1;fitness event table not run. No full report.
+
+## Protected proof
+
+All eleven earlier main reports match step0 apart from timings,on1,000test seeds each.
+All content fingerprints match at engine0.14.0. Raw proof:protected-step4/.
+Ten comparisons survived the stop;only interrupted Ausgesperrt was resumed.
+Later fixes are explicitly gated by class-aware/aggregator content;final step4 proof must cover the final shared source. Never change earlier values.
+
+## Isolated climbing
+
+Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD eb95488.
+Unregistered Griffig:24features,49events,150quotes,four intros,two native scenes.
+Optional personal qualifications/course conversions,staffed hall hours,paid setting,groups,weekly club,café/rentals,alternative requirements,shared wall pools and allowed slots implemented.
+Hall UI,first-wall/setting/aggregator/course/speed bots,K1–K5 reporting and real mezzanine offer prepared.
+Careful opens through real actions and saves replay exactly. Latest shared-pool change:29focused checks/lint pass. Earlier core preparation:748checks,27skips.
+Browser fixture renders the real app without catalogue registration:24Chromium/WebKit cases pass across375/390/430/1440 and all3stages;two additional390px opening-hour tap checks pass.
+No climbing measurements/events/tuning yet. After merging fitness,enable its direct aggregator settlement flag in Griffig too;preserve the child branch's weekly-offer field and available slots when resolving overlapping additions.
+
+## Completed scenario results
+
+Venue:careful46.6%±3.1(at limit),top47.6%;all V targets pass,V2 at limit. Open T3,T6,T11,T13,T14,T15. Values2/2,formula unused. Report:reports/step3-venue.md. Event table already complete once;never rerun.
+Ausgesperrt:careful42.8%±3.1,top48.4%;X1 at limit,X2–X4 pass. Open T2,T3,T6,T10,T11,T14,T15,T17. Values2/2,formula unused. Report:reports/step2-escape.md. Event table already complete once;never rerun.
+Step6 has the plan's fresh revisit budget and the only full report. Full report NEVER started.
 
 ## For Henry to review(non-blocking)
 
-- Fitness:Turnsaldo name,showers in fit-out,employee membership units,following as paid-offer enquiries,annex mat classes without extra spin bikes,recovery alternative-room exclusion deferred. Sources/estimates and instructor identity limits are explicit.
-- Venue:six open tourism targets,unseen turnaround and breakout benefit not established by the event-only tie;reports/step3-venue.md. Early guest balances,supplier selection and cash-basis capital window remain first-pass limits.
-- Ausgesperrt:eight open targets and deferred options;reports/step2-escape.md.
-- Screenshots outside repo:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-venue and founder-mode-leisure. Fitness screenshots:/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-fitness;390/1440 checked.
-
-## Previous stop,resolved
-
-User resumed historical WebKit heading stop;all80 cases and final full suite pass. Superseded by the user-requested stop below.
-
-## Recent validation
-
-Fitness performance bookkeeping:21 full diagnostic games across seven policies have exact results/public-view traces against f334fd7;763 focused engine/content/bot checks plus two archive fixtures pass,lint passes. No values/formulas changed. Initial report workers keep the original source;older proof games cannot enter the class-aware optimisation.
-
-Membership/timetable/aggregator UI:24 Chromium/WebKit cases pass across375/390/430/1440 and all three stages;axe/cut/words clean.14 focused UI/engine checks and lint pass. Five precise authored trial-class phrases are allowed by the studio word check. Initial main report runs on1,000 test seeds/two workers;partial careful86.4%,platform-only88.3%,overstaff6.9%,understaff84.6%,no-tests3.3%,fixed-price88.0%,review-blind86.4%. These are provisional;no value rounds/events/full report.
-
-Fitness bot policies and F1–F5 reporting implemented;all registered studio variants finish,and the careful saved run opens and replays exactly. Focused fitness/venue/escape checks and lint pass. Values0/2,formula0/1;no fitness report/event table yet.
-
-Public class duration and existing cancellation/pack accounting:10 focused checks pass;lint passes. The proposed failed-visit change was unnecessary and removed after inspecting the existing implementation. No fitness measurement or tuning yet.
+- Fitness:studio and aggregator naming,paid instructor following,annex mat classes,recovery-room exclusion deferred;scenario-fitness.md section15.
+- Climbing:weekly two-hour average wall occupancy during longer coached courses;average café/rental baskets instead of a shop;family-loan repayment after the run;explicit estimates and source limits in scenario-climbing.md section15.
+- Venue/Ausgesperrt:first-pass open targets and deferred options in their step reports.
+- Screenshots outside repo:/private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-fitness and founder-mode-climbing;390/1440 reviewed. Earlier venue/leisure shots preserved alongside.
 
 ## Stopped
 
-2026-10-22:User requested stopping all background processes. Stopped initial fitness main measurement (session89679),protected-step4 controller (session25269),and remaining project Vite/esbuild development servers. No automatic restart. Completed reports,partial logs and uncommitted changes are preserved. The autonomous plan is unfinished. Earlier references to running workers are historical.
-
-## Resume,22 October2026
-
-User authorised continuing everything. The earlier process-stop request is resolved. Fitness initial matrix must be repeated because interrupted CLI results lived only in memory;summary counts cannot supply paired results. Add temporary disk checkpoints to the measurement runner. Values0/2,formula0/1. Ten protected comparisons are complete;only Ausgesperrt was interrupted. Climbing alternatives passed745 checks,27 skipped,and lint;preserve and commit.
+None. User authorised continuing everything after the earlier process-stop request.
+Never push,rewrite history or delete branches. No external account/service is required so far.
