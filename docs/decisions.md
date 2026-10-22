@@ -1014,3 +1014,7 @@ AUTONOMOUS: Stable course learner IDs link next-step courses to an eventual paid
 AUTONOMOUS: Climbing hall capacity uses simultaneous people×actually staffed opening hours÷visit duration. Desk and setter roles are separate from coaches;contracts start before admission and settle once. Paid setting allocations add actual purchased hours to separately budgeted founder work;only the reset morning closes. Mezzanine comfort leaves the safety limit unchanged. All mechanics remain unregistered in the isolated climbing branch.
 
 AUTONOMOUS: Hall and qualification preparation passes739 engine/content checks,27 skips,and lint. Paid shifts/contracts are charged once;founder desk hours count once,and unstaffed hours close admission capacity. No Griffig catalogue entry,measurement or event table yet.
+
+AUTONOMOUS: Griffig's birthday cohorts reserve ten actual places at a per-person fee summing to199 EUR;weekly club offers override family day-visit frequency. Reuse existing extras for estimated rental/café baskets per actual visit,not a shop simulation. Café receipts need dedicated paid visitor-throughput cover;cancelled visits earn nothing. Source section will distinguish the5/3 EUR rental quotes from the averaged basket adaptation and weekly staffing abstraction.
+
+AUTONOMOUS: Group/club/ancillary preparation passes743 engine/content checks,27 skips,and lint. Dedicated café cover caps income from served visits,and a199 EUR birthday request consumes ten places. Griffig stays unregistered and unmeasured until the fitness gate.

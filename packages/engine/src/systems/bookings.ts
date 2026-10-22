@@ -888,7 +888,16 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     // Tuning 1: guests who come for one product alone (`ownDemand`), after the others.
     const alone = Object.entries(cfg.products).flatMap(([id, prod]) =>
       prod.ownDemand && prod.serves.includes(seg.id)
-        ? [{ id, n: randomRound((units * prod.ownDemand) / meanSize, rng) }]
+        ? [
+            {
+              id,
+              n: randomRound(
+                (units * prod.ownDemand) /
+                  (prod.requestSize ? (prod.requestSize.min + prod.requestSize.max) / 2 : meanSize),
+                rng,
+              ),
+            },
+          ]
         : [],
     )
     const aloneIds = alone.flatMap((x) => Array.from({ length: x.n }, () => x.id))
@@ -901,7 +910,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         i >= ownRequests + sentRequests ? aloneIds[i - ownRequests - sentRequests]! : null
       // The segment's own guests and those who come for one product alone (not sent by a partner).
       const asOwn = i < ownRequests || only !== null
-      let size = rng.int(s.size.min, s.size.max)
+      const requestSize = only ? (cfg.products[only]?.requestSize ?? s.size) : s.size
+      let size = rng.int(requestSize.min, requestSize.max)
       const levels = personLevels(state, seg.id, rng)
       const lead = ahead
         ? s.leadWeeks.min + drawIndex(ahead, aheadSum, rng)
@@ -1905,6 +1915,12 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           payrollCents: wages + Math.round(contracts.wagesCents * roleF),
         }
       : undefined,
+    Object.fromEntries(
+      Object.keys(cfg.roles).map((role) => [
+        role,
+        (p.shifts[role] ?? 0) + (p.founderShifts[role] ?? 0) + (contracts.shifts[role] ?? 0),
+      ]),
+    ),
   )
   state = leisureFinished.state
   out.costsCents += leisureFinished.extraCostsCents ?? 0
@@ -2222,6 +2238,7 @@ export function bookingsView(state: GameState): BookingsView | null {
       name: featureName(id),
       shipped: isShipped(state, id),
       capacity: prod.capacity,
+      ...(prod.requestSize ? { requestSize: { ...prod.requestSize } } : {}),
       serves: [...prod.serves],
       inSeason: prod.months.length === 0 || prod.months.includes(month),
       unitCostCents: prod.unitCostCents,

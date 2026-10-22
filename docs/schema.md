@@ -1275,3 +1275,17 @@ Optional `LeisureView.hall` copies chosen/actual hours and public role/shift ter
 Hall desk and setter roles cannot also coach services. Founder desk hours must
 match actual cover;founder setting uses its separate hour allocation. All hall
 fields are absent without the content block.
+
+Optional product `requestSize` reserves its actual group size and charges the
+per-person fee for each person. Own-demand enquiry counts divide by that group's
+mean size,so a party of ten consumes ten places and ten admission units.
+`BookingsView.products[].requestSize` exposes the stated group terms only where
+configured. Optional membership `visitsPerWeek` overrides the segment default
+for a weekly club and its pack monthly-cost basis;the public offer copies it.
+
+Optional `leisure.extras[].staffing` names a dedicated role and served-visitor
+throughput per paid shift. The actual weekly/founder/working-contract cover caps
+ancillary receipts;cancelled visitors earn nothing. Roles cannot simultaneously
+coach,staff admission,set routes or cover another ancillary. Existing extras
+without staffing retain their previous per-served-unit settlement. The view
+copies role name and throughput with actual income/costs,never invented sales.

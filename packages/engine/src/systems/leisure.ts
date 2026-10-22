@@ -908,11 +908,14 @@ export function leisureView(s: GameState): LeisureView | null {
         enabled: l.offers[id]?.enabled ?? false,
         priceCents: l.offers[id]?.priceCents ?? offer.priceCents,
         kind: offer.kind,
+        ...(offer.visitsPerWeek !== undefined ? { visitsPerWeek: offer.visitsPerWeek } : {}),
         termWeeks: offer.termWeeks,
         noticeWeeks: offer.noticeWeeks,
         slots: [...offer.slots],
         validWeeks: offer.validWeeks ?? null,
-        ...(c.classStaffing && offer.visits !== undefined ? { visits: offer.visits } : {}),
+        ...((c.classStaffing || c.hall) && offer.visits !== undefined
+          ? { visits: offer.visits }
+          : {}),
       }
     }),
     joinsLast4: recent.reduce((t, w) => t + w.joined, 0),
@@ -1417,7 +1420,10 @@ export function leisureVisits(
     const offer = c.memberships?.[m.offerId]
     const segment = c.segments[m.segmentId]
     if (!offer || !segment) continue
-    const n = Math.min(round(segment.visitsPerWeek, rng), m.owedVisits ?? Infinity)
+    const n = Math.min(
+      round(offer.visitsPerWeek ?? segment.visitsPerWeek, rng),
+      m.owedVisits ?? Infinity,
+    )
     const slots = entries(segment.slotShare).filter(([id]) => offer.slots.includes(id))
     const sum = slots.reduce((t, [, share]) => t + share, 0)
     if (sum <= 0) continue
@@ -1483,6 +1489,7 @@ export function finishLeisure(
   bookings: readonly Booking[],
   rng?: Rng,
   money?: VenueMoney,
+  extraCover?: Readonly<Record<string, number>>,
 ): {
   state: GameState
   voucherRedeemedCents: number
@@ -1638,7 +1645,7 @@ export function finishLeisure(
     },
   }
   const qualified = finishQualifications(completed, served, rng)
-  const venue = finishVenue(qualified, bookings, rng, money, turnaroundCents)
+  const venue = finishVenue(qualified, bookings, rng, money, turnaroundCents, extraCover)
   return {
     state: venue.state,
     voucherRedeemedCents,

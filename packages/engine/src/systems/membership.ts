@@ -21,7 +21,9 @@ export function membershipMonthlyCost(
 ): number {
   const segment = s.scenario.bookings!.leisure!.segments[segmentId]!
   return offer.kind === 'pack'
-    ? (priceCents / offer.visits!) * segment.visitsPerWeek * s.scenario.finance.weeksPerMonth
+    ? (priceCents / offer.visits!) *
+        (offer.visitsPerWeek ?? segment.visitsPerWeek) *
+        s.scenario.finance.weeksPerMonth
     : offer.kind === 'intro'
       ? (priceCents / offer.validWeeks!) * s.scenario.finance.weeksPerMonth
       : priceCents

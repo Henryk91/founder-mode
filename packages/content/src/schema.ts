@@ -378,6 +378,7 @@ export const BookingSegmentSchema = z.object({
 })
 
 export const BookingProductSchema = z.object({
+  requestSize: rangeOf(z.number().int().positive()).optional(),
   // Units a week it can sell when fully staffed (seats x seatings, rooms x nights).
   capacity: z.number().int().nonnegative(),
   // Segments it sells to.
@@ -850,6 +851,7 @@ export const LeisureSchema = z
         Id,
         z.object({
           kind: z.enum(['monthly', 'annual', 'off_peak', 'pack', 'intro']),
+          visitsPerWeek: z.number().nonnegative().optional(),
           products: z.array(Id).min(1).optional(),
           priceCents: Cents.positive(),
           serves: z.array(Id).min(1),
@@ -929,6 +931,7 @@ export const LeisureSchema = z
       .record(
         Id,
         z.object({
+          staffing: z.object({ role: Id, unitsPerShift: z.number().int().positive() }).optional(),
           segments: z.record(
             Id,
             z.object({
@@ -1808,6 +1811,20 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         if (!bk.products[id]) issue(`unknown permit product ${id}`, ['bookings', 'leisure'])
         else if (permit.refundCents > bk.products[id]!.oneOffCents)
           issue('permit refund cannot exceed its purchase', ['bookings', 'leisure'])
+      }
+      const extraRoles = Object.values(leisure.extras ?? {}).flatMap((e) =>
+        e.staffing ? [e.staffing.role] : [],
+      )
+      if (new Set(extraRoles).size !== extraRoles.length)
+        issue('staffed extras need separate roles', ['bookings', 'leisure'])
+      for (const role of extraRoles) {
+        if (
+          !bk.roles[role] ||
+          Object.values(bk.roles[role]!.units).some((n) => n > 0) ||
+          role === leisure.hall?.desk.role ||
+          role === leisure.hall?.setting?.role
+        )
+          issue(`extra needs a dedicated role: ${role}`, ['bookings', 'leisure'])
       }
       for (const id of Object.keys(leisure.extras ?? {}))
         if (!featureIds.has(id)) issue(`unknown ancillary feature ${id}`, ['bookings', 'leisure'])
