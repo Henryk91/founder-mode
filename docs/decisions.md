@@ -1026,3 +1026,5 @@ AUTONOMOUS: Use optional market-fit alternatives for the spec’s rope-or-boulde
 AUTONOMOUS:Prepare Griffig without catalogue registration while fitness validates. T1–T10,T12–T18,E1,K1–K5 apply;T11 is inapplicable because membership/admission notice is not the tourism cancellation-policy decision. K1 uses paired differing outcomes and sole/joint leaders;K4 separates no-rope seeds before comparing courses.
 
 AUTONOMOUS:Use staffed two-hour hall visits,individual earned qualifications,ten actual party places and weekly club attendance. Café/rental income uses explicit estimated baskets per actual visitor;no shop or inventory. Initial costs,demand and course-price linkage are estimates in scenario-climbing.md section15;no tuning round or event-table run is spent during unregistered preparation.
+
+AUTONOMOUS:Put hall opening and paid-setting controls in the existing Calendar card style. Founder setting stays in the notebook;paid setting allocates purchased shifts. Show required desk cover and actual previous opening hours,never hidden comfort limits or qualification chances.

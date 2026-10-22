@@ -1,4 +1,27 @@
 export const LEISURE_LABELS = {
+  'hall.title': 'Hall opening and setting',
+  'hall.hoursHint':
+    'Each open hour needs front-desk cover. A desk shift covers {shift} h; an average visit takes {visit} h. Close quiet hours here and change paid cover in the rota.',
+  'hall.cover':
+    '{requested} h requested; {covered} h of desk cover planned. Full cover needs {shifts} desk shifts. Uncovered hours close in the listed slot order.',
+  'hall.openWhat': 'opening hours for {slot}',
+  'hall.lastOpen': 'Last service: {hours} h actually open.',
+  'hall.settingTitle': 'Paid route setting',
+  'hall.settingHint':
+    '{paid} paid setter hours available; {allocated} h allocated. Buy shifts in the rota,then allocate them by wall. Founder setting uses separate hours in the building section. A reset closes the wall for its stated morning work.',
+  'hall.settingWhat': 'paid setting hours for {name}',
+  'hall.skillsTitle': 'Earned climbing skills',
+  'hall.skillsHint':
+    'Independent rope access needs the stated belay qualification. Only completed coached courses award new skills; a cancelled course does not qualify anyone.',
+  'hall.skillsCount':
+    '{name}: {members} members and {aggregatorUsers} aggregator visitors qualified.',
+  'hall.courseJoins':
+    '{graduates} course completions; {enquiries} qualified membership enquiries; {joined} paid joins from those enquiries.',
+  'hall.extraTerms':
+    '{name}, {segment}: {share}% of an estimated {gross} basket per served visit, less {cost} service costs.',
+  'hall.extraStaff':
+    '{name}: one paid shift serves up to {units} visitors. Extra counter capacity needs its own staff; reception cover cannot do both jobs.',
+
   'leisure.membersTitle': 'Memberships and class packs',
   'leisure.memberCounts':
     '{active} attending; {inactive} stopped attending; {owed} prepaid visits still owed.',
