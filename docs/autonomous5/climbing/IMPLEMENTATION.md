@@ -159,3 +159,8 @@ six funded104-week rope/both-wall/course cases.822 checks pass,27 skips,and
 lint/typechecks pass. Historical individual visits reduce to current service
 plus future bookings;54 weekly aggregates retain calendar/lifetime reporting.
 No controlled timing claim;measure runtime in the first registered main matrix.
+
+Integrated final browser check:24 Chromium/WebKit cases pass across all three
+stages and375/390/430/1440px after traffic compaction and offer-frequency UI
+integration. Log:/tmp/plan5-climbing-integrated-browser.log. Griffig remains
+unregistered;next import the completed fitness milestone before measurement.
