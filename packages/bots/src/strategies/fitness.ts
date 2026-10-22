@@ -200,10 +200,24 @@ export function planFitness(
       if (rule.channels === 'platform' || rule.leisure?.aggregator === 'all') return true
       if (rule.leisure?.aggregator === 'none') return false
       const rows = recent.flatMap((w) => w.slots.filter((r) => r.slotId === s.id))
-      return !rows.some((r) => r.load === 'packed' || r.turnedAway > 0)
+      const capacity = l.timetable.reduce(
+        (n, row) => n + (timetable[row.productId]?.[s.id] ?? 0) * row.places,
+        0,
+      )
+      const direct =
+        rows.reduce((n, row) => n + Math.max(0, row.visits - row.aggregator), 0) /
+        Math.max(1, recent.length)
+      // A full yoga class does not make an empty spin room full. Protect room for direct
+      // members across the actual proposed timetable,instead of reacting to one refused visit.
+      return capacity > 0 && direct < capacity * 0.7
     })
     .map((s) => s.id)
-  plan.leisure = { timetable, aggregator: { slots, leave: rule.leisure?.aggregator === 'none' } }
+  plan.leisure = {
+    timetable,
+    ...(slots.length > 0 || l.aggregator?.joined || rule.leisure?.aggregator === 'none'
+      ? { aggregator: { slots, leave: rule.leisure?.aggregator === 'none' } }
+      : {}),
+  }
   // The aggregator pays actual check-ins; the separate commission listing is not that contract.
   plan.platform = false
   if (rule.channels === 'platform') {
@@ -225,20 +239,27 @@ export function priceFitness(
   plan.leisure ??= {}
   plan.leisure.offers = {}
   const baseMonthly = cfg.leisure!.memberships!.monthly_membership!.priceCents
-  const hints = view.segments.flatMap((s) => budgetHints(view, s.id))
-  const median = [...hints].sort((a, z) => a - z)[Math.floor(hints.length / 2)]
-  const factor =
-    rule.pricing === 'hints' && hints.length >= 4 && median
-      ? Math.max(0.7, Math.min(1.2, median / baseMonthly))
+  const priceFactor = (segments: string[], basis: number) => {
+    const hints = segments.flatMap((id) => budgetHints(view, id)).sort((a, z) => a - z)
+    const median = hints[Math.floor(hints.length / 2)]
+    return rule.pricing === 'hints' && hints.length >= 4 && median
+      ? Math.max(0.7, Math.min(1.2, median / basis))
       : 1
+  }
   for (const offer of l.members) {
     const initial = cfg.leisure!.memberships![offer.offerId]!
+    const factor = priceFactor(
+      initial.serves,
+      offer.offerId === 'corporate_plans' ? initial.priceCents : baseMonthly,
+    )
     plan.leisure.offers[offer.offerId] = {
       enabled: view.product.features.some((f) => f.id === offer.offerId && f.shipped),
       priceCents: Math.round((initial.priceCents * factor) / 100) * 100,
     }
   }
   for (const [id, segment] of Object.entries(cfg.segments)) {
+    const monthly = cfg.leisure!.memberships!.corporate_plans!
+    const factor = priceFactor([id], monthly.serves.includes(id) ? monthly.priceCents : baseMonthly)
     plan.prices[id] = {
       peak: Math.round((segment.price.peak * factor) / 100) * 100,
       off: Math.round((segment.price.off * factor) / 100) * 100,
