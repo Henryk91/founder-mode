@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.6 fitness UI verified;initial main measurement running.
+Step:4.8 fitness initial measurements;5 isolated climbing content/UI/bot preparation.
 Last commit:HEAD,Plan5:record fitness careful performance measurement.
-Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-initial.log (session89679),review bots and contributions before values,then complete tuning. Fitness compact-careful main is complete (session30421,/tmp/plan5-fitness-compact-careful.log):864/1,000 wins unchanged,371.3s(T12 still fails). Raw report:fitness/schweissperle-main-compact-careful.md. Protected proof is also running (session25269,/tmp/plan5-protected-step4.log):all eleven earlier games,main only,1,000 test seeds;two scenario processes/one worker each. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
+Next action:Collect checkpointed fitness initial main matrix (session6279,/tmp/plan5-fitness-main-resumed.log),then review paired contributions before values. Finish only the interrupted Ausgesperrt protected comparison (session78522,/tmp/plan5-protected-step4-ausgesperrt-resumed.log);ten comparisons already match. Climbing branch has unregistered content and hall UI committed;validate its new policies next. Full report step6 only,once.
 
 ## Checklist
 
@@ -23,7 +23,7 @@ Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-ini
 - Venue complete:careful46.6%±3.1(at limit),top47.6%;all V targets pass,V2 at limit. T3,T6,T11,T13,T14,T15 open for step6. Both value rounds used,formula deliberately unused. Full86 files/1,691 pass,24 skips;lint passes.189 seeds,earlier rows unchanged.
 - Venue proof all ten older/protected/Ausgesperrt main reports and fingerprints match,1,000 test seeds. Once-only events complete:111 strategies,86,203/111,000 played,remainder reused;54 judged,21 cheapest/33 other point leaders,no significance claim;turnaround unseen. Never rerun.
 - Ausgesperrt complete:careful42.8%±3.1,top48.4%;X1 at limit,X2–X4 pass. T2,T3,T6,T10,T11,T14,T15,T17 open for step6. Both value rounds used,formula unused;event table already ran once,never rerun.
-- Fitness requires fresh protected/earlier-leisure main proof after all shared changes. No earlier values changed. Climbing preparation is isolated in /private/tmp/founder-mode-plan5-climbing:optional individual skills/course conversion and staffed hall/setting mechanics committed,739 engine/content checks and lint pass. No integration/registration before the fitness gate.
+- Fitness requires fresh protected/earlier-leisure main proof after all shared changes. No earlier values changed. Climbing preparation is isolated in /private/tmp/founder-mode-plan5-climbing:optional skills/course conversion,hall/setting,group/club and staffed ancillary mechanics committed,743 engine/content checks and lint pass. No integration/registration before the fitness gate.
 - Full bot report NEVER run;step6 only,once. No push/history rewrite/branch deletion.
 
 ## For Henry to review(non-blocking)
@@ -35,7 +35,7 @@ Next action:Collect initial fitness main report from /tmp/plan5-fitness-main-ini
 
 ## Previous stop,resolved
 
-User resumed historical WebKit heading stop;all80 cases and final full suite pass. No current stop applies.
+User resumed historical WebKit heading stop;all80 cases and final full suite pass. Superseded by the user-requested stop below.
 
 ## Recent validation
 
@@ -49,4 +49,14 @@ Public class duration and existing cancellation/pack accounting:10 focused check
 
 ## Stopped
 
-None.
+None. User authorised resuming everything after the earlier process-stop request.
+
+## Resume,22 October2026
+
+User authorised continuing everything. The earlier process-stop request is resolved. Fitness initial matrix must be repeated because interrupted CLI results lived only in memory;summary counts cannot supply paired results. Add temporary disk checkpoints to the measurement runner. Values0/2,formula0/1. Ten protected comparisons are complete;only Ausgesperrt was interrupted. Climbing alternatives passed745 checks,27 skipped,and lint;preserve and commit.
+
+## Latest isolated climbing checkpoints
+
+84a040c:feature alternatives,745 engine/content checks and lint.106cad9:unregistered Griffig content,48events/150quotes/20features/four intros/two scenes,748 checks and lint.b3d9c5d:hall hours/paid setting/qualification UI,seven focused UI checks and lint. Student offers and climbing bot policies are being validated after those commits;no climbing measurement or registration yet.
+
+Fitness current-week archive:21 complete diagnostic results/public-view traces match baseline exactly after preserving final-screen hosting through traffic totals.765 engine/content/fitness-bot checks pass,27 skips;lint passes. Careful-only T12 timing is running (session75049,/tmp/plan5-fitness-currentweek-careful.log),main only/1,000 test seeds. Original matrix workers retain the previous source. Values0/2,formula0/1.
