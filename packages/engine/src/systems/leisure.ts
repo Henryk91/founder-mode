@@ -1,3 +1,4 @@
+import { initHall, beginHall, hallValid, hallCapacity, hallView, cloneHallPlan } from './hall'
 import {
   qualificationRates,
   drawLevels,
@@ -118,6 +119,7 @@ export function initLeisure(
     },
     state: {
       ...initVenue(c),
+      ...(c.hall ? { hall: initHall(scenario)! } : {}),
       ...(c.qualifications
         ? { qualifiedEnquiries: [], courseConversion: { graduates: 0, enquiries: 0, joined: 0 } }
         : {}),
@@ -197,6 +199,7 @@ export function cloneLeisurePlan(p: LeisurePlan): LeisurePlan {
           ),
         }
       : {}),
+    ...cloneHallPlan(p),
     ...(p.offers
       ? { offers: Object.fromEntries(Object.entries(p.offers).map(([id, o]) => [id, { ...o }])) }
       : {}),
@@ -231,6 +234,7 @@ export function leisureValid(s: GameState, plan: WeekPlan): boolean {
   const l = s.bookings?.leisure
   const change = plan.bookings?.leisure
   if (!c || !l) return !change
+  if (!hallValid(s, plan)) return false
   if (c.space && leisureSpaceUsed(s, plan) > c.space.max) return false
   const p = change ?? {}
   const slots = new Set(c.slots.map((x) => x.id))
@@ -348,6 +352,8 @@ export function leisureCapacity(s: GameState, id: string, slot: string, week: nu
   if (p.availableStages && !p.availableStages.includes(stageInEffect(s).id)) return 0
   const required = s.scenario.bookings?.products[id]?.requires
   if (required && !readyAt(s, required, week)) return 0
+  const hall = hallCapacity(s, id, slot, week)
+  if (hall !== undefined) return hall
   const places = leisureClassPlaces(s, id, week)
   const classes = p.classPlaces ? (s.bookings?.leisure?.timetable[id]?.[slot] ?? 0) : 1
   const base = p.classPlaces ? classes * places : (p.capacity[slot] ?? 0)
@@ -582,6 +588,7 @@ export function beginLeisure(
     if (l.aggregator.leavingWeek !== null && l.aggregator.leavingWeek <= week)
       l.aggregator = { ...l.aggregator, slots: [], joined: false, leavingWeek: null }
   }
+  if (c.hall) l.hall = beginHall({ ...input, bookings: { ...input.bookings!, leisure: l } }, plan)!
   for (const [id, f] of entries(c.freshness ?? {})) {
     const now = l.freshness[id]!
     if (now.refreshUntil !== null && now.refreshUntil <= week) {
@@ -593,7 +600,7 @@ export function beginLeisure(
     if (!shipped(input, id)) continue
     if (now.openedWeek === null) now.openedWeek = week
     now.value = Math.max(0, now.value - f.weeklyLoss)
-    now.settingProgress += l.settingHours[id] ?? 0
+    now.settingProgress += (l.settingHours[id] ?? 0) + (l.hall?.paidSettingHours[id] ?? 0)
     if (now.settingProgress >= f.refresh.hours) {
       now.value = 100
       now.refreshes += Math.floor(now.settingProgress / f.refresh.hours)
@@ -848,6 +855,7 @@ export function leisureView(s: GameState): LeisureView | null {
           }),
         ),
       ),
+    ...(c.hall ? { hall: hallView(s)! } : {}),
     courses: Object.values(cfg.products).some((p) => p.course)
       ? { ...totals, byYear: ladder.map((y) => ({ ...y })) }
       : null,
@@ -1587,7 +1595,8 @@ export function finishLeisure(
         slots.push(slot)
       }
       const capacity = leisureCapacity(input, productId, slotId, week)
-      const comfort = p.comfort?.[slotId] ?? capacity
+      const comfort =
+        hallCapacity(input, productId, slotId, week, true) ?? p.comfort?.[slotId] ?? capacity
       const ratio = comfort > 0 ? slot.visits / comfort : 0
       slot.load = ratio >= c.packedFrom ? 'packed' : ratio < c.quietBelow ? 'quiet' : 'busy'
       reviewPenalty += c.crowdingPenalty * Math.max(0, ratio - 1)

@@ -599,8 +599,11 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   if (!cfg || !input.bookings || !input.hidden.bookings) return out
   const p = bookingsPlanOf(plan)
   const week = input.week
-  let state = input
-  let b: BookingsState = { ...input.bookings }
+  // Hall admissions need this week's actual contract cover before visits are offered.
+  // The same result is settled once at the normal payroll point below.
+  const hallContracts = cfg.leisure?.hall ? applyContracts(input, plan) : null
+  let state = hallContracts?.state ?? input
+  let b: BookingsState = { ...state.bookings! }
 
   // 1. Settings.
   b.prices = { ...b.prices }
@@ -1287,7 +1290,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
 
   // The roster: shifts go to products in order of what is booked, each role to what it staffs.
   // Contract staff (plan 2 step 1b) add their shifts to their role's.
-  const contracts = applyContracts(state, plan)
+  const contracts = hallContracts ? { ...hallContracts, state } : applyContracts(state, plan)
   state = contracts.state
   b = state.bookings!
   out.entries.push(...contracts.entries)
@@ -1488,6 +1491,12 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     state = { ...state, bookings: b }
   }
   for (const [id, units] of [...booked.entries()].sort((a, z) => z[1] - a[1])) {
+    if (cfg.leisure?.hall && cfg.leisure.products[id]?.simultaneous) {
+      // Uncoached hall visits need staffed admission hours, not one coach per visitor.
+      staffed.set(id, units)
+      kitchenCovers.set(id, units)
+      continue
+    }
     if (classLimits && cfg.leisure?.products[id]?.classPlaces) continue
     let covered = 0
     for (const [role, r] of Object.entries(cfg.roles)) {

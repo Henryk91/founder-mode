@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:5 preparation only,personal qualifications implemented in isolation.
-Last commit:HEAD,Plan5:track individual climbing skills and course conversions.
-Next action:Implement optional staffed hall opening hours/capacity and paid route setting in this worktree;merge the completed fitness milestone before registering Griffig. Primary run stays in /private/tmp/founder-mode-plan5-fitness,with its initial main and protected reports running. No Griffig measurement/event table/full report.
+Step:5 preparation only,personal qualifications and staffed hall mechanics implemented.
+Last commit:HEAD,Plan5:model staffed hall hours and paid route setting.
+Next action:Prepare unregistered Griffig content,including paid course/group ticket units,café/rental service and source estimates;merge the completed fitness milestone before registering Griffig. Primary run stays in /private/tmp/founder-mode-plan5-fitness,with its initial main and protected reports running. No Griffig measurement/event table/full report.
 
 ## Checklist
 
@@ -39,7 +39,7 @@ User resumed historical WebKit heading stop;all80 cases and final full suite pas
 
 ## Recent validation
 
-Qualification preparation:733 engine/content checks pass,27 skips;lint passes. Eight focused fixtures cover per-person rope access,initial skills,unusable offers,actual staffed course completion/cancellation,paid next-week joining and stable learner identities through later courses. No registered content enables this block.
+Hall/qualification preparation:739 engine/content checks pass,27 skips;lint passes. Hall fixtures cover staffed capacity,one-time wages/contracts,founder hours,paid setting allocation/reset-morning closure and comfort without extra safety capacity. Eight focused fixtures cover per-person rope access,initial skills,unusable offers,actual staffed course completion/cancellation,paid next-week joining and stable learner identities through later courses. No registered content enables this block.
 
 ## Stopped
 

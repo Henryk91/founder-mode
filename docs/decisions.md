@@ -1010,3 +1010,7 @@ AUTONOMOUS: Prepare unregistered Griffig mechanics in a separate worktree from f
 AUTONOMOUS: Belay skills belong to actual members/check-in users. Earned skills from served courses persist;anonymous graduates become qualified paid-offer enquiries next week at the stated conversion rate,then still face normal prices. No segment-wide free qualification or guaranteed paid conversion. All additions are optional and no registered content enables them yet.
 
 AUTONOMOUS: Stable course learner IDs link next-step courses to an eventual paid membership. Later courses teach that member rather than creating another paid contract for the same learner.733 engine/content checks pass,27 skips,and lint passes;registration and runtime integration still wait for the fitness milestone.
+
+AUTONOMOUS: Climbing hall capacity uses simultaneous people×actually staffed opening hours÷visit duration. Desk and setter roles are separate from coaches;contracts start before admission and settle once. Paid setting allocations add actual purchased hours to separately budgeted founder work;only the reset morning closes. Mezzanine comfort leaves the safety limit unchanged. All mechanics remain unregistered in the isolated climbing branch.
+
+AUTONOMOUS: Hall and qualification preparation passes739 engine/content checks,27 skips,and lint. Paid shifts/contracts are charged once;founder desk hours count once,and unstaffed hours close admission capacity. No Griffig catalogue entry,measurement or event table yet.

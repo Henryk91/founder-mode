@@ -2596,6 +2596,14 @@ export type LeisureNoiseState = {
 
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
 export type LeisureState = {
+  hall?: {
+    week: number
+    requestedHours: Record<string, number>
+    openHours: Record<string, number>
+    deskHours: number
+    paidSettingHours: Record<FeatureId, number>
+  }
+
   coursePeople?: { id: string; memberId: string | null; levels: string[] }[]
   qualifiedEnquiries?: {
     personId?: string
@@ -2710,6 +2718,9 @@ export type HiddenLeisure = {
   payoutCents: number | null
 }
 export type LeisurePlan = {
+  openHours?: Record<string, number>
+  paidSettingHours?: Record<FeatureId, number>
+
   slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
   salesSlots?: Record<SegmentId, string[]>
   offers?: Record<FeatureId, { enabled: boolean; priceCents: number }>
@@ -2721,6 +2732,14 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  hall?: NonNullable<LeisureState['hall']> & {
+    visitHours: number
+    deskRoleId: string
+    deskHoursPerShift: number
+    settingRoleId?: string
+    settingHoursPerShift?: number
+  }
+
   qualifications?: {
     levels: { id: string; name: string; members: number; aggregatorUsers: number }[]
     graduates: number

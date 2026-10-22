@@ -83,3 +83,11 @@ content/schema.ts;engine/types.ts;systems/qualifications.ts,leisure.ts,bookings.
 qualification fixture;schema/decisions/status docs. Resolve anonymous course
 graduates as next-week qualified paid-offer enquiries,not guaranteed members or
 segment-wide skill grants. Initial skills are per person,not per market.
+
+## Hall implementation touch list
+
+schema.ts;types.ts;new systems/hall.ts;leisure.ts capacity/reset/validation/view;
+bookings.ts early hall-only contract application and uncoached admission staffing;
+hall fixtures;schema/decisions/status docs. Opening hours are a weekly choice;actual
+desk cover caps them. Staff shifts are paid once. Setter shifts produce allocated
+setting hours once and founder setting remains separately budgeted.
