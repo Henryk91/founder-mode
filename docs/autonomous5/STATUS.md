@@ -3,7 +3,7 @@
 ## Current
 
 Step:4.8 fitness value round1;5 isolated climbing preparation ready for integration after fitness.
-Last commit:HEAD,merge validated fitness mechanics into isolated climbing preparation. Fitness value-round1 sourcea0643aa,checkpoint tracker15feb30.
+Last commit:HEAD,compact hall visit history with exact replay/view parity. Fitness round2 validates separately.
 Next action:Settled fitness main matrix complete:30 policies,1,000 paired test seeds. Value round1 applied;47 focused checks and lint pass. Collect round1 main matrix(session99787,/tmp/plan5-fitness-main-round1.log):30policies,1,000 paired test seeds,eight workers. Durable checkpoints:/tmp/plan5-fitness-round1-checkpoints-a0643aa. Review every paired contribution before the second value round. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
 
 ## Checklist
@@ -42,9 +42,9 @@ Later fixes are explicitly gated by class-aware/aggregator content;final step4 p
 
 ## Isolated climbing
 
-Isolated integration complete:fitnessa0643aa imported,with hall/qualifications/shared wall slots and traffic history preserved. Griffig enables direct aggregator payout.821 focused/core checks pass,27 skips;lint/typechecks pass. Registration/measurement and merge into main still wait for the fitness milestone.
+Isolated integration complete:fitnessa0643aa imported,with hall/qualifications/shared wall slots and traffic history preserved. Griffig enables direct aggregator payout.822 focused/core checks pass,27 skips;lint/typechecks pass. Hall compaction preserves27 full results/public traces,including six funded104-week course stress cases. Final integrated browser check pending. Registration/measurement and merge into main still wait for the fitness milestone.
 
-Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD(integration commit).
+Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD(hall compaction commit).
 Unregistered Griffig:24features,49events,150quotes,four intros,two native scenes.
 Optional personal qualifications/course conversions,staffed hall hours,paid setting,groups,weekly club,café/rentals,alternative requirements,shared wall pools and allowed slots implemented.
 Hall UI,first-wall/setting/aggregator/course/speed bots,K1–K5 reporting and real mezzanine offer prepared.

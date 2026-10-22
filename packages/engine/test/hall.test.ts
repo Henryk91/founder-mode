@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createGame, getView } from '../src/index'
 import { Rng, seedRng } from '../src/rng'
-import { applyBookings, bookingsHours } from '../src/systems/bookings'
+import { applyBookings, bookingTotals, bookingsHours } from '../src/systems/bookings'
 import {
   beginLeisure,
   leisureCapacity,
@@ -14,7 +14,7 @@ import {
 import { hallCapacity } from '../src/systems/hall'
 import { leisureScenario } from './leisure'
 import { plan } from './helpers'
-import type { BookingsPlan } from '../src/types'
+import type { Booking, BookingsPlan } from '../src/types'
 const rng = () => new Rng(seedRng('hall-hours'))
 function game() {
   const spec = leisureScenario({
@@ -71,6 +71,49 @@ const roster = (desk: number, setter = 0): BookingsPlan => ({
 })
 
 describe('optional hall opening hours and setting crews', () => {
+  it('keeps year-ago traffic and future course identities after sixty weeks of visits', () => {
+    let s = game()
+    const visit = (week: number): Booking => ({
+      id: `visit-${week}`,
+      productId: 'basic_ordering',
+      segmentId: 'small_offices',
+      week,
+      units: 2,
+      priceCents: 1000,
+      channel: 'direct',
+      bookedWeek: 1,
+      status: 'booked',
+      slotId: 'daytime',
+    })
+    const future = { ...visit(62), id: 'next-course', coursePeople: ['learner-1'] }
+    s.bookings!.bookings = [future]
+    for (let week = 1; week <= 60; week++) {
+      s = {
+        ...s,
+        week,
+        bookings: { ...s.bookings!, bookings: [...s.bookings!.bookings, visit(week)] },
+      }
+      s = applyBookings(s, plan({ bookings: roster(10) }), rng()).state
+    }
+    expect(s.bookings!.bookings).toEqual([
+      future,
+      expect.objectContaining({ id: 'visit-60', status: 'served' }),
+    ])
+    expect(s.bookings!.leisure!.traffic).toHaveLength(54)
+    expect(
+      bookingTotals(s.bookings!)
+        .filter((row) => row.status === 'served')
+        .reduce((n, row) => n + row.units, 0),
+    ).toBe(120)
+    const v = getView({ ...s, week: 61 }).bookings!
+    expect(v.servedByWeek).toEqual([2, 2, 2, 2, 2])
+    expect(
+      v.calendar
+        .find((p) => p.productId === 'basic_ordering')!
+        .cells.every((c) => c.lastYear === 2),
+    ).toBe(true)
+  })
+
   it('converts simultaneous places to weekly visits and limits hours by actual desk cover', () => {
     const s = game(),
       before = structuredClone(s)

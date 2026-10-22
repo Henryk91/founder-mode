@@ -316,9 +316,10 @@ export function hostingHours(
 ): number {
   const h = state.scenario.bookings?.hosting
   if (!h || !state.bookings) return 0
-  const traffic = state.scenario.bookings?.leisure?.classStaffing
-    ? state.bookings.leisure?.traffic?.find((r) => r.week === state.week - 1)
-    : undefined
+  const traffic =
+    state.scenario.bookings?.leisure?.classStaffing || state.scenario.bookings?.leisure?.hall
+      ? state.bookings.leisure?.traffic?.find((r) => r.week === state.week - 1)
+      : undefined
   const units = traffic
     ? Object.values(traffic.served).reduce((n, units) => n + units, 0)
     : state.bookings.bookings
@@ -1994,9 +1995,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
             bad * cr.perBadSlot * (sheltered ? (cr.shelterFactor ?? 1) : 1))
       }
     }
-    const memberIndex = cfg.leisure?.classStaffing
-      ? new Map(state.bookings!.leisure!.members.map((m) => [m.id, m]))
-      : undefined
+    const memberIndex =
+      cfg.leisure?.classStaffing || cfg.leisure?.hall
+        ? new Map(state.bookings!.leisure!.members.map((m) => [m.id, m]))
+        : undefined
     const value =
       served.reduce(
         (t, x) =>
@@ -2070,7 +2072,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         cfg.leisure?.noise ? b.bookings : bookings,
         b.archived,
         week,
-        cfg.leisure?.classStaffing ? 0 : KEEP_WEEKS,
+        cfg.leisure?.classStaffing || cfg.leisure?.hall ? 0 : KEEP_WEEKS,
       ),
       repeatGuests,
       turnedAway,
@@ -2175,7 +2177,9 @@ export function bookingsView(state: GameState): BookingsView | null {
   const b = state.bookings
   if (!cfg || !b) return null
   const traffic =
-    cfg.leisure?.classStaffing && b.leisure?.traffic?.length ? b.leisure.traffic : null
+    (cfg.leisure?.classStaffing || cfg.leisure?.hall) && b.leisure?.traffic?.length
+      ? b.leisure.traffic
+      : null
   const woy = weekOfYear(state.scenario, state.week)
   const month = monthOfWeek(woy)
   const featureName = (id: FeatureId) =>
@@ -2482,7 +2486,7 @@ export function occupancyPct(state: GameState): number {
     poolsIn.set(w, pools)
     for (const pool of pools) open += sellableCapacity(state, pool, w)
   }
-  if (cfg.leisure?.classStaffing && b.leisure?.traffic?.length) {
+  if ((cfg.leisure?.classStaffing || cfg.leisure?.hall) && b.leisure?.traffic?.length) {
     for (const row of b.leisure.traffic) {
       if (row.week < from || row.week >= state.week) continue
       for (const [id, units] of Object.entries(row.served))
