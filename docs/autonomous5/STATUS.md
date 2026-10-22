@@ -3,8 +3,8 @@
 ## Current
 
 Step:4.8 fitness sole formula round;5 isolated climbing preparation ready for integration after fitness.
-Last commit:HEAD,sole fitness formula round.782 broad checks pass,27 skips;lint/typechecks pass.
-Next action:Measure the committed sole formula round:affected main only,30policies on1,000 paired test seeds,eight workers with durable checkpoints. Values2/2,formula1/1. No further first-pass tuning. Apply the playability hard-stop rule after the full matrix,or finish fitness validation/report/tag before Griffig registration. Full report only step6,once.
+Last commit:fitnessa6060e0,sole formula round.782 broad checks pass,27 skips;lint/typechecks pass.
+Next action:Collect final fitness formula main matrix(session85086,/tmp/plan5-fitness-main-formula.log):30policies,1,000 paired test seeds,eight workers. Checkpoints:/tmp/plan5-fitness-formula-checkpoints-a6060e0. Browser24-case check running(session20487). Values2/2,formula1/1;no further first-pass tuning. After full results,obey the playability stop or finish protected proof/events/seeds/full tests/report/tag. Full report only step6,once.
 
 ## Checklist
 
