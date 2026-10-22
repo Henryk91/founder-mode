@@ -3,7 +3,7 @@
 Applicable targets: T1–T10, T12–T18, E1 and F1–F5. T4 starts at actual opening;
 T8 concerns the aggregator. T11 does not measure membership terms and is inapplicable.
 
-Values: **1/2 rounds**. Formulas: **0/1 round** for every failing target.
+Values: **2/2 rounds**. Formulas: **0/1 round** for every failing target.
 First make the bots sensible, then measure contributions, then change values.
 A result within its own 95% margin of a limit passes at the limit.
 
@@ -53,3 +53,13 @@ This is scenario-value tuning under CLAUDE.md,not the full report.
 One further value round and one formula round remain for failing targets.
 
 Round-one validation:47 focused content/engine/bot checks and lint/typechecks pass.
+
+## Value round two
+
+Round-one main complete:careful83.7%,top88.8%,no-tests7.6%. Paired contributions
+reviewed in ROUND1_REVIEW.md. New peak ranges:young2–7,yoga1–4,employees1–5.5.
+Premium usage1.5/week;forced buying waits eight open weeks before requesting
+conversion. No further value round remains. Formula0/1 remains;choose it only
+after this matrix is reviewed. No event table/full report.
+
+Round-two validation:47 focused content/engine/bot checks and lint/typechecks pass.
