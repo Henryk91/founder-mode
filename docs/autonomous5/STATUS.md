@@ -3,8 +3,8 @@
 ## Current
 
 Step:4.8 fitness value round1;5 isolated climbing preparation ready for integration after fitness.
-Last commit: fitness60d87db, settled main contribution review; matrix source85d9b2b.
-Next action:Settled fitness main matrix complete:30 policies,1,000 paired test seeds. Value round1 applied;47 focused checks and lint pass. Start affected fitness main on1,000 paired seeds,eight workers,with durable checkpoints. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
+Last commit: fitnessa0643aa, value round1; settled baseline source85d9b2b.
+Next action:Settled fitness main matrix complete:30 policies,1,000 paired test seeds. Value round1 applied;47 focused checks and lint pass. Collect round1 main matrix(session99787,/tmp/plan5-fitness-main-round1.log):30policies,1,000 paired test seeds,eight workers. Durable checkpoints:/tmp/plan5-fitness-round1-checkpoints-a0643aa. Review every paired contribution before the second value round. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
 
 ## Checklist
 
@@ -24,11 +24,12 @@ Initial main complete:30policies on1,000 test seeds. Careful86.4%,top95.7%;T1/T2
 Full initial table:fitness/schweissperle-main-initial.md;review:fitness/INITIAL_REVIEW.md.
 Bot fixes:offer-specific budget hints,aggregate spare timetable capacity,honest review-blind replies.
 Their matrix was stopped as superseded after finding corporate aggregator check-ins being invoiced to employers;951/1,000careful and completed task checkpoints are preserved,not final tuning evidence.
-Content now explicitly enables direct aggregator payment. Company membership invoices remain normal invoices. Optional per-offer weekly use is implemented/displayed but not yet enabled on any fitness offer.
+Content now explicitly enables direct aggregator payment. Company membership invoices remain normal invoices. Optional per-offer weekly use is implemented/displayed;round1 enables one visit/week for the premium pack.
 770 engine/content/fitness checks and eight focused payment/UI checks pass;lint passes.
 Two archival optimisations preserve21complete results/public-view traces exactly.
 Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails.
 Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
+Round1 provisional:careful837/1,000,platform-only577/1,000;careful median net wealth EUR30,149. Wait for the full paired matrix before round2.
 Values1/2,formula0/1;fitness event table not run. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
