@@ -1511,6 +1511,7 @@ export type BookingsView = {
     name: string
     shipped: boolean
     capacity: number
+    requestSize?: { min: number; max: number }
     serves: SegmentId[]
     inSeason: boolean
     unitCostCents: number
@@ -2771,6 +2772,7 @@ export type LeisureView = {
     netCents: number
   }
   extras?: {
+    staffing?: { roleId: string; name: string; unitsPerShift: number }
     productId: FeatureId
     name: string
     active: boolean
@@ -2819,6 +2821,7 @@ export type LeisureView = {
     products?: FeatureId[]
     offerId: FeatureId
     visits?: number
+    visitsPerWeek?: number
     name: string
     active: number
     inactive: number

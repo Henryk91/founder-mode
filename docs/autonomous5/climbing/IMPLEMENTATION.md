@@ -91,3 +91,29 @@ bookings.ts early hall-only contract application and uncoached admission staffin
 hall fixtures;schema/decisions/status docs. Opening hours are a weekly choice;actual
 desk cover caps them. Staff shifts are paid once. Setter shifts produce allocated
 setting hours once and founder setting remains separately budgeted.
+
+## Remaining content gaps and minimum adaptations
+
+- Party sales need optional per-product requestSize so a199 EUR party really
+  reserves ten people at19.90 each;individual admissions stay size1.
+- A weekly children's club needs an optional membership visitsPerWeek override;
+  family day visitors' lower visit rate must not turn a weekly club into monthly
+  attendance. Regular climbing offers retain segment defaults.
+- Reuse extras for the café and rentals. Rental stock is a paid feature;income is
+  an explicit estimated average basket per actual visit,not a full shop/inventory
+  system. Preserve nominal5/3 EUR source prices as context,not independently
+  simulated checkout promises. Café contribution requires real dedicated paid
+  roster cover,with a stated visitors-per-shift throughput. It is a weekly
+  staffing abstraction,not a claim that one shift opens the counter all week.
+- Courses use the existing sameStay ladder,with per-person earned IDs already
+  implemented. Two/three sessions fit in one game week;role founderHours and
+  quoted shift fee include the full course time. Course fee ratios follow the
+  segment's ticket base;record that first-pass linkage explicitly.
+
+## Ancillary/group touch list
+
+schema.ts;types.ts;bookings.ts request sizes/payroll cover;leisure.ts weekly offer
+visits;membership.ts pack basis;venue.ts optional staffed extras;fixtures and schema/
+decisions/status docs. Reuse the existing weekly accounting rather than adding a
+shop or inventory simulation. Shares are contractual receipt allocations,not
+hidden purchase chances shown to players.
