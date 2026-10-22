@@ -2848,6 +2848,7 @@ export type LeisureView = {
   retained: number
   aggregator: {
     name: string
+    sharedQueue?: true
     slots: string[]
     joined: boolean
     leavingWeek: number | null

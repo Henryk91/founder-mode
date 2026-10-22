@@ -833,6 +833,7 @@ export const LeisureSchema = z
         segments: z.array(Id).min(1),
         share: ShareRange,
         wtpFactor: z.number().positive(),
+        requirePreferredOffer: z.literal(true).optional(),
       })
       .optional(),
     foundingFollowing: z
@@ -870,6 +871,7 @@ export const LeisureSchema = z
       .object({
         name: z.string().min(1),
         payOnVisit: z.literal(true).optional(),
+        sharedQueue: z.literal(true).optional(),
         payoutCents: rangeOf(Cents.positive()),
         capPerMonth: z.number().int().positive(),
         noticeWeeks: z.number().int().positive(),

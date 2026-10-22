@@ -151,15 +151,21 @@ describe('fitness players', () => {
     expect(access('all').slots).toContain('evening')
     expect(access('none')).toEqual({ slots: [], leave: true })
   })
-  it('keeps forced reformer choices independent of hidden niche values', () => {
+  it('waits eight open weeks before forcing reformers without hidden niche values', () => {
     const v = opened()
     const needs = (reformer: 'always' | 'never') =>
       fitnessWanted(spec, v, { ...CAREFUL_TOURISM, leisure: { reformer } }, [
         'reformer_pilates',
         'premium_pack',
       ])
+    expect(needs('always')).not.toContain('premium_pack')
+    v.week = 8
+    expect(needs('always')).not.toContain('premium_pack')
+    v.week = 9
     expect(needs('always')).toContain('premium_pack')
     expect(needs('never')).not.toContain('reformer_pilates')
+    v.bookings!.leisure!.openingWeek = null
+    expect(needs('always')).not.toContain('premium_pack')
   })
   it('reports F1–F5, measures later loans, and excludes inapplicable T11', () => {
     const careful = strategies.find((s) => s.id === 'tourism_careful')!

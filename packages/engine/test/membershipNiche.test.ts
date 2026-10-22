@@ -31,6 +31,67 @@ function game(share: number) {
 }
 
 describe('optional premium demand and founding cohort', () => {
+  it('can leave specialist enquiries unmet without changing legacy fallback', () => {
+    const legacy = game(1)
+    legacy.bookings!.leisure!.offers.supplier_portal!.enabled = false
+    expect(
+      joinLeisure(legacy, 'medical', 100, rng()).bookings!.leisure!.members.length,
+    ).toBeGreaterThan(0)
+    const strict = structuredClone(legacy)
+    strict.scenario.bookings!.leisure!.premiumNiche!.requirePreferredOffer = true
+    const before = structuredClone(strict)
+    expect(joinLeisure(strict, 'medical', 100, rng()).bookings!.leisure!.members).toEqual([])
+    expect(strict).toEqual(before)
+    strict.bookings!.leisure!.offers.supplier_portal!.enabled = true
+    expect(
+      joinLeisure(strict, 'medical', 100, rng()).bookings!.leisure!.members.length,
+    ).toBeGreaterThan(0)
+  })
+
+  it('keeps the founder’s original following on its paid ordinary fallback', () => {
+    const s = game(1),
+      l = s.bookings!.leisure!
+    s.scenario.bookings!.leisure!.premiumNiche!.requirePreferredOffer = true
+    s.scenario.bookings!.leisure!.foundingFollowing = {
+      segment: 'medical',
+      count: { min: 8, max: 8 },
+      weeks: 4,
+    }
+    s.hidden.bookings!.leisure!.foundingFollowing = 8
+    l.foundingFollowing = { invited: 0, joined: 0 }
+    l.openingWeek = 1
+    l.offers.supplier_portal!.enabled = false
+    const joined = joinLeisure(s, 'medical', 0, rng())
+    expect(joined.bookings!.leisure!.foundingFollowing!.joined).toBeGreaterThan(0)
+    expect(joined.bookings!.leisure!.members.every((m) => m.offerId === 'member_billing')).toBe(
+      true,
+    )
+    expect(billLeisure(joined, rng()).revenueCents).toBe(
+      joined.bookings!.leisure!.members.length * 100,
+    )
+  })
+
+  it('renews an accepted ordinary intro without redrawing an unavailable specialist requirement', () => {
+    const s = joinLeisure(game(0), 'medical', 100, rng())
+    const l = s.bookings!.leisure!,
+      c = s.scenario.bookings!.leisure!
+    s.week = 2
+    c.premiumNiche!.requirePreferredOffer = true
+    s.hidden.bookings!.leisure!.premiumInterest = 1
+    l.offers.supplier_portal!.enabled = false
+    c.memberships!.shift_schedule = {
+      ...c.memberships!.shift_schedule!,
+      kind: 'intro',
+      validWeeks: 1,
+      convert: 1,
+    }
+    l.members = [{ ...l.members[0]!, offerId: 'shift_schedule', expiresWeek: 2 }]
+    const result = billLeisure(s, rng())
+    expect(result.state.bookings!.leisure!.members[0]!.offerId).toBe('member_billing')
+    expect(result.state.bookings!.leisure!.members[0]!.endedWeek).toBeNull()
+    expect(result.revenueCents).toBe(100)
+  })
+
   it('changes actual paid-offer preference by the drawn niche and signals it in interviews', () => {
     const interested = game(1)
     const original = structuredClone(interested)
