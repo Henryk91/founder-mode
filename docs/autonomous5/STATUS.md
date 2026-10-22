@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.8 fitness value round2;5 isolated climbing preparation ready for integration after fitness.
-Last commit:fitness4e99d8d records checkpoints;round2 sourcea6a1c8c.
-Next action:Round2 main complete:careful65.6%,top73.9%,no-tests0.7%. Review ROUND2_REVIEW.md,then implement the sole formula round:shared queue,actual member-refusal reviews and optional strict specialist preference for normal enquiries. Values2/2,formula0/1. No more numeric tuning. Finish fitness gate or obey its hard-stop rule. Full report only step6,once.
+Step:4.8 fitness sole formula round;5 isolated climbing preparation ready for integration after fitness.
+Last commit:HEAD,sole fitness formula round.782 broad checks pass,27 skips;lint/typechecks pass.
+Next action:Measure the committed sole formula round:affected main only,30policies on1,000 paired test seeds,eight workers with durable checkpoints. Values2/2,formula1/1. No further first-pass tuning. Apply the playability hard-stop rule after the full matrix,or finish fitness validation/report/tag before Griffig registration. Full report only step6,once.
 
 ## Checklist
 
@@ -31,7 +31,7 @@ Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails
 Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
 Round1 complete:careful83.7%,platform-only57.7%,top88.8%,no-tests7.6%;median net wealth EUR30,149. Contributions:fitness/ROUND1_REVIEW.md.
 Round2 complete:careful65.6%,top73.9%,no-tests0.7%. Full contributions:fitness/ROUND2_REVIEW.md.
-Values2/2,formula0/1;fitness event table not run. No full report.
+Values2/2,formula1/1;fitness event table not run. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
 ## Protected proof

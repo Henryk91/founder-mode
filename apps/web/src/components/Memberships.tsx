@@ -146,6 +146,7 @@ export function AggregatorPlan() {
           weeks: a.noticeWeeks,
         })}
       </Writing>
+      {a.sharedQueue && <Writing>{label('leisure.aggregatorQueue', stage)}</Writing>}
       {a.leavingWeek !== null && (
         <Writing>{label('leisure.aggregatorLeaving', stage, { week: a.leavingWeek })}</Writing>
       )}

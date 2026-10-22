@@ -64,11 +64,13 @@ export function chooseMembershipOffer(
   segmentId: string,
   offers: [string, Offer][],
   rng: Rng,
-): [string, Offer] {
+  allowFallback = false,
+): [string, Offer] | null {
   const niche = s.scenario.bookings!.leisure!.premiumNiche
   if (!niche?.segments.includes(segmentId)) return rng.pick(offers)
   const premium = rng.chance(s.hidden.bookings?.leisure?.premiumInterest ?? 0)
   const preferred = offers.filter(([id]) => niche.offers.includes(id) === premium)
+  if (!preferred.length && niche.requirePreferredOffer && !allowFallback) return null
   return rng.pick(preferred.length ? preferred : offers)
 }
 

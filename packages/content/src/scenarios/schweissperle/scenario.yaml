@@ -1170,6 +1170,7 @@ bookings:
         max: 60
       weeks: 4
     premiumNiche:
+      requirePreferredOffer: true
       feature: reformer_pilates
       offers:
         - premium_pack
@@ -1182,6 +1183,7 @@ bookings:
       wtpFactor: 1.5
     aggregator:
       name: Turnsaldo
+      sharedQueue: true
       payOnVisit: true
       payoutCents:
         min: 900

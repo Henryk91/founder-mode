@@ -44,6 +44,7 @@ export const LEISURE_LABELS = {
   'leisure.aggregatorTitle': 'Aggregator access',
   'leisure.aggregatorTerms':
     '{name}: up to {cap} check-ins per person each month; {weeks} weeks’ notice to leave. Payment follows actual check-ins.',
+  'leisure.aggregatorQueue': 'Members and platform visitors use the same booking queue.',
   'leisure.aggregatorJoin': 'Join with these slots',
   'leisure.aggregatorLeave': 'Give notice to leave',
   'leisure.aggregatorLeaving': 'Notice given; contract ends in week {week}.',

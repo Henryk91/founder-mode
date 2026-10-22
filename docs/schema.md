@@ -1240,3 +1240,27 @@ an invoice to that visitor's employer. Omitted retains the earlier payment path.
 Optional membership `visitsPerWeek` overrides the segment's usage for that offer
 and the pack's monthly-equivalent budget basis;the public offer repeats this
 stated frequency. Omitted retains the segment rate exactly.
+
+
+### Optional shared reservation queue and strict specialist preference
+
+`leisure.aggregator.sharedQueue:true` collects actual member/platform visit
+requests and applies a seeded arrival ordering before allocating the existing
+hard capacity. With no platform request,the existing member order is retained.
+Denied members receive the actual week in their existing waitlist;no reservation
+creates an extra place. Omitted retains the earlier member-first path and RNG.
+Optional `LeisureView.aggregator.sharedQueue:true` exposes only this published
+booking rule;the labels explain it without arrival probabilities.
+
+`premiumNiche.requirePreferredOffer:true` allows a normal prospective enquiry
+to decline when its sampled ordinary/specialist preference has no enabled usable
+offer. The finite founder following keeps its existing fallback,and members
+already on an ordinary intro retain their renewal fallback. Paid conversion,
+product/slot restrictions and budgets still apply. The optional switch draws no
+additional hidden parameter and is absent in earlier games.
+
+Class-aware service reviews now include the existing cancellation penalty times
+the fraction of actual member reservation attempts refused:current-week waitlist
+entries divided by those entries plus reserved member visits. Company-cancelled
+bookings remain the existing service penalty,not additional denied reservations.
+No new numeric coefficient or player-state field is introduced.
