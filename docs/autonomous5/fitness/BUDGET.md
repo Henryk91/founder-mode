@@ -24,3 +24,10 @@ counts. Values0/2,formula0/1. No fitness event table or full report.
 ## Resumed after user-requested process stop
 
 The original matrix was interrupted before the report writer ran;its thirteen completed policies survive as summary counts only. Restart main only,1,000 test seeds,two workers,with durable task results under the path recorded in checkpoint-location.txt. This repeats lost detailed results out of necessity,not to reconfirm them. No tuning budget spent. Ten protected comparisons are preserved;only interrupted Ausgesperrt is resumed. Full report still never run.
+
+## Initial matrix complete
+
+30policies,main only,1,000test seeds. Initial review records all contributions
+before any value change. Careful86.4%,top95.7%;fix bot pricing/slot/repair policies
+first. Values0/2,formula0/1. Current-week archive timing:careful301s/1,000,
+864wins unchanged. T12still fails. Protected-step4:all eleven main reports match.
