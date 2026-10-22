@@ -7,6 +7,7 @@ import {
   type WeekPlan,
   type WeekReport,
 } from '@founder-mode/engine'
+import { fitnessWanted, planFitness, priceFitness } from './fitness'
 import { budgetHints } from '../pricing'
 import { PlanBuilder, segmentNotes, type Player, type Strategy } from '../strategy'
 import { TOURISM_READER } from './tourismReader'
@@ -194,6 +195,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
   let cancelledRecent: number[] = []
   let servedRecent: number[] = []
   /** Plan 2: paid and contract shifts used per role in recent weeks, newest last. */
+  const januaryPeak: Record<string, number> = {}
   let shiftsUsed: Record<string, number>[] = []
 
   /** Plan 4: cash covers a lease's deposit, its first month and three months of costs. */
@@ -456,7 +458,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           ? 0
           : greedy
             ? plan.workingCapitalMaxCents
-            : cfg.leisure?.noise && runningLoans.length === 0
+            : (cfg.leisure?.noise || cfg.leisure?.classStaffing) && runningLoans.length === 0
               ? plan.workingCapitalMaxCents
               : Math.max(0, need - itemsCents())
       let wc = Math.floor(Math.min(plan.workingCapitalMaxCents, roundUp(wcNeed)) / step) * step
@@ -534,7 +536,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     for (const id of ids) {
       const req = cfg.products[id]?.requires
       const supplied =
-        cfg.leisure?.noise &&
+        (cfg.leisure?.noise || cfg.leisure?.classStaffing) &&
         view.bookings?.assets.some((a) => a.buyProduct === req && a.option !== 'none' && !a.broken)
       if (req && !supplied && !out.includes(req)) out.push(req)
       if (!out.includes(id)) out.push(id)
@@ -817,6 +819,15 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           answers.push(initial)
         }
       }
+      if (cfg.leisure?.classStaffing && rule.leisure?.neverMatch) {
+        for (const message of view.inbox.filter(
+          (m) => m.eventId === 'her_own_place' && m.answeredChoiceId === null,
+        )) {
+          const index = answers.findIndex((a) => a.messageId === message.id)
+          if (index >= 0) answers.splice(index, 1)
+          answers.push({ messageId: message.id, choiceId: 'leave' })
+        }
+      }
       if (!rule.forced) return answers
       // Every arrival of the forced event gets the forced answer; the rest as the bot reads them.
       const { eventId, choiceId } = rule.forced
@@ -863,6 +874,26 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         continue
       }
       if (!event.choices.some((c) => c.effects.some((fx) => fx.type === 'asset'))) continue
+      if (cfg.leisure?.classStaffing) {
+        const l = view.bookings!.leisure!
+        const needRoom =
+          l.history
+            .slice(-3)
+            .filter(
+              (w) =>
+                w.slots.some((s) => s.load === 'packed') ||
+                Object.values(w.turnedAway).some((n) => n > 0),
+            ).length >= 2
+        const asset = view.bookings!.assets[0]
+        const open = view.product.features.some((f) => f.id === 'fit_out' && f.shipped)
+        const affordable = view.company.cashCents > 3 * view.company.monthlyFixedCostsCents
+        const choice =
+          asset?.option === 'none' && open && needRoom && affordable ? pick('lease') : null
+        if (choice) out.push({ messageId: m.id, choiceId: choice.id })
+        else if (m.choices.some((c) => c.id === 'wait'))
+          out.push({ messageId: m.id, choiceId: 'wait' })
+        continue
+      }
       const now = view.bookings?.assets[0]?.option ?? 'none'
       let want: string | null = null
       if (mode === 'share' || mode === 'lease') want = mode
@@ -1004,7 +1035,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     }
     b.chase(Math.max(3, view.invoices.filter((i) => i.canChase).length))
     // Venue fit-out is common to every market: finance it while interviewing, not afterwards.
-    if (cfg.leisure?.noise && view.week <= 2)
+    if ((cfg.leisure?.noise || cfg.leisure?.classStaffing) && view.week <= 2)
       planLoan(view, b, [
         ...(rule.temptationEarly ? [rule.temptationEarly] : []),
         ...cfg.leisure.opening!.areas,
@@ -1060,7 +1091,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       0,
     )
     const prep: Record<string, number> = {}
-    for (const { productId, booked: bookedNow } of bv.thisWeek) {
+    for (const { productId, booked: bookedNow } of cfg.leisure?.classStaffing ? [] : bv.thisWeek) {
       const product = bv.products.find((p) => p.id === productId)
       // Walk-ins: this product's own recent weeks where the screen shows them (plan 2), else the
       // week's walk-ins shared over the open products by capacity (step 6).
@@ -1160,11 +1191,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     if (rule.roster !== 'over' && bv.prep.length > 0) {
       plan.prep = Object.fromEntries(bv.prep.map((x) => [x.productId, prep[x.productId] ?? 0]))
     }
+    if (cfg.leisure?.classStaffing)
+      Object.assign(used, planFitness(scenario, view, b, plan, rule, januaryPeak))
     shiftsUsed = [...shiftsUsed, used].slice(-Math.max(STEADY_WEEKS, IDLE_WEEKS))
     planContracts(view, plan)
 
     // Week 1: listen to everyone. Week 2: a test listing and a pilot where it points.
-    if (rule.tests && cfg.leisure?.noise && view.week <= 2) {
+    if (rule.tests && (cfg.leisure?.noise || cfg.leisure?.classStaffing) && view.week <= 2) {
       const each = Math.min(
         FIRST_WEEK_INTERVIEWS,
         Math.floor(b.free / (ids.length * scenario.experiments.interview.hours)),
@@ -1243,9 +1276,13 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           ? Object.values(cfg.assets ?? {}).flatMap((a) => (a.buy ? [a.buy.product] : []))
           : []),
       ]
+      const selected =
+        cfg.leisure?.classStaffing && !rule.buildAll
+          ? fitnessWanted(scenario, view, rule, toBuild)
+          : toBuild
       const baseBuilding = view.loan
-        ? withRequired([...new Set([...toBuild, ...bought, ...early])], view)
-        : toBuild
+        ? withRequired([...new Set([...selected, ...bought, ...early])], view)
+        : selected
       const building = cfg.leisure
         ? leisureBuildOrder(view, baseBuilding, rule.buildAll)
         : baseBuilding
@@ -1254,10 +1291,11 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         const leadMonths = rule.naive ? 0 : Math.ceil((cfg.segments[seg]?.leadWeeks.max ?? 0) / 4)
         const visibleBridge = view.loan?.bridgeMonthsHint ?? 0
         const bridge = Math.max(0, Math.max(leadMonths, visibleBridge) - LOAN_BUFFER_MONTHS)
-        const reserve = cfg.leisure?.noise
-          ? Math.max(3, RESERVE_MONTHS + bridge) *
-            (view.company.monthlyFixedCostsCents + view.founder.livingCostCentsPerMonth)
-          : (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
+        const reserve =
+          cfg.leisure?.noise || cfg.leisure?.classStaffing
+            ? Math.max(3, RESERVE_MONTHS + bridge) *
+              (view.company.monthlyFixedCostsCents + view.founder.livingCostCentsPerMonth)
+            : (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
         const shipped = (id: string) => !!view.product.features.find((x) => x.id === id)?.shipped
         if (!b.plan.loan) planLoan(view, b, building)
         // What others require comes first, on its own: nothing sells without it.
@@ -1265,7 +1303,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           (f) =>
             !shipped(f) &&
             !(
-              cfg.leisure?.noise &&
+              (cfg.leisure?.noise || cfg.leisure?.classStaffing) &&
               view.product.features.find((x) => x.id === f)?.readyWeek !== null
             ) &&
             building.some((g) => cfg.products[g]?.requires === f),
@@ -1278,7 +1316,8 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
             bought.includes(f) || bv.leisure?.builds.some((x) => x.productId === f && x.started)
               ? 0
               : (cfg.products[f]?.oneOffCents ?? 0)
-          const keep = required.length > 0 && !cfg.leisure?.noise ? 0 : reserve
+          const keep =
+            required.length > 0 && !(cfg.leisure?.noise || cfg.leisure?.classStaffing) ? 0 : reserve
           if (cost > 0 && view.company.cashCents - keep - committed < cost) continue
           if ((bv.abroad || bv.leisure) && !shipped(f)) committed += cost
           b.build(f, 40 - (b.plan.build[f] ?? 0))
@@ -1396,6 +1435,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       b.free = 0
     }
     if (cfg.leisure) planLeisure(view, b, plan, rule)
+    if (cfg.leisure?.classStaffing) priceFitness(scenario, view, plan, rule)
     b.plan.bookings = plan
     return b.plan
   }
@@ -1705,6 +1745,52 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     tourism(id as string, text as string, { ...CAREFUL_TOURISM, ...(rule as TourismRule) }, [
       'tiefgang',
     ]),
+  ),
+  // Plan 5: membership studio target policies, each changing one decision.
+  ...[
+    [
+      'fitness_aggregator_all',
+      'Opens every slot to aggregator check-ins.',
+      { leisure: { aggregator: 'all' } },
+    ],
+    ['fitness_aggregator_none', 'Never joins the aggregator.', { leisure: { aggregator: 'none' } }],
+    [
+      'fitness_january_peak',
+      'Keeps the extra classes bought for January waitlists.',
+      { leisure: { januaryPeak: true } },
+    ],
+    [
+      'fitness_reformer_always',
+      'Funds and builds reformers regardless of interview interest.',
+      { leisure: { reformer: 'always' } },
+    ],
+    [
+      'fitness_reformer_never',
+      'Keeps the regular mat studio and never buys reformers.',
+      { leisure: { reformer: 'never' } },
+    ],
+    [
+      'fitness_never_match',
+      'Never matches the most-followed instructor’s offer.',
+      { leisure: { neverMatch: true } },
+    ],
+    [
+      'fitness_recovery_early',
+      'Funds and builds the recovery room in the first year.',
+      { temptationEarly: 'recovery_room' },
+    ],
+    [
+      'fitness_no_later_loan',
+      'Uses the same initial financing and no later loan.',
+      { leisure: { laterLoans: false } },
+    ],
+  ].map(([id, text, rule]) =>
+    tourism(
+      id as string,
+      text as string,
+      { ...CAREFUL_TOURISM, ...(rule as Partial<TourismRule>) },
+      ['schweissperle'],
+    ),
   ),
   // Plan 4: Leinen los's own targets (G1 to G4).
   ...[

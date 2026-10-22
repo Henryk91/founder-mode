@@ -994,3 +994,7 @@ AUTONOMOUS: optional paid front-desk relief now subtracts actual weekly/contract
 AUTONOMOUS: register Schweißperle in the isolated static/lazy catalogue and add both native shop/annex scenes. White/accent contrast6.44:1 preserves#B0284F.243 content checks pass,27 skips;lint passes after adding its required reader-map entry. No fitness measurement/tuning yet;membership/timetable labels/UI and sensible class-aware bots are next.
 
 AUTONOMOUS: Expose class duration only for class-aware timetables so bots/UI share observable room-hour constraints. Confirm existing failed-member-visit accounting with a regression test; no change to cancellation or prepaid-credit outcomes.
+
+AUTONOMOUS: Fitness bots schedule qualified cover for actual classes and use interview budgets only in monthly offer units. Careful reformer conversion waits eight open weeks,one-third interview interest and quoted cost plus three months of cash;forced alternatives isolate the decision. Quiet-slot aggregator access uses actual recent loads;platform-only relies on check-ins with the separate commission listing disabled. January expansion persists only in its target variant.
+
+AUTONOMOUS: F3 reports paired discordant wins and ties for forced buy/never-buy,without hidden seed selection. F4 records actual followers stopped under the never-match careful variant. Omit T11 from fitness target evaluation as decided before measurement;T15 selects the fitness no-later-loan comparator. No scenario value/formula round or measurement has run.
