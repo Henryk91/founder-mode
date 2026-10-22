@@ -1,3 +1,4 @@
+import { moveIsReal } from '../src/office'
 import { describe, expect, it } from 'vitest'
 import { parseScenario } from '../../content/src/parse'
 import { sources } from '../../content/src/sources/griffig'
@@ -76,6 +77,41 @@ describe('unregistered climbing policies', () => {
     const p = empty()
     priceClimbing(spec, v, p, rule)
     expect(Object.values(p.leisure!.offers!).every((o) => !o.enabled)).toBe(true)
+  })
+  it('considers mezzanine relief from observed repeated crowding,not only safety refusals', () => {
+    const v = opened(),
+      l = v.bookings!.leisure!
+    l.history = [1, 2, 3].map((week) => ({
+      week,
+      joined: 0,
+      cancelled: 0,
+      active: 0,
+      signed: 0,
+      held: 0,
+      converted: 0,
+      released: 0,
+      lateReleased: 0,
+      aggregatorCancellations: 0,
+      aggregatorPayoutCents: 0,
+      turnedAway: {},
+      slots: [
+        {
+          productId: 'boulder_area',
+          slotId: 'evening',
+          visits: 10,
+          turnedAway: 0,
+          aggregator: 0,
+          load: 'packed' as const,
+        },
+      ],
+    }))
+    expect(moveIsReal(v, { stage: 'climbing_mezzanine', number: 2, choiceId: 'move' }, false)).toBe(
+      true,
+    )
+    l.history = []
+    expect(moveIsReal(v, { stage: 'climbing_mezzanine', number: 2, choiceId: 'move' }, false)).toBe(
+      false,
+    )
   })
   it('covers actual opening hours and purchases every allocated setter hour', () => {
     const v = opened(),

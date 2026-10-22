@@ -3,7 +3,7 @@
 ## Current
 
 Step:4 fitness measurement resumed;5 isolated climbing preparation.
-Last commit:HEAD,Plan5:teach climbing policies to fund and staff their first walls.
+Last commit:HEAD,Plan5:report paired climbing targets and course eligibility.
 Next action:Resume only missing protected proof (Ausgesperrt main,1,000 test seeds);restart interrupted fitness initial main with durable task checkpoints because only summary counts survived. Preserve ten completed protected comparisons. Unregistered Griffig content is prepared;review admission/student prices,then build hall UI and bots while fitness runs. Full report remains step6 only,once.
 
 ## Checklist
@@ -56,3 +56,5 @@ Hall interface preparation:opening-hour steppers,desk-cover requirements,paid se
 Climbing policy checkpoint:24features now include four separate discounted student agreements. Added first-wall,setting,aggregator,course/speed and later-loan policies,all gated to hall content/unregistered Griffig.57 focused climbing/fitness/content checks and lint pass. Careful opens with actual actions and replay matches exactly. No climbing balancing/event table/full report. Next add K1–K5 reporting before registration.
 
 Climbing report preparation:K1–K5 now implemented with explicit ties and rope-opened eligibility.18 focused report/policy fixtures and lint pass. Three synthetic report fixtures cover joint/sole leaders,all-outcome ties,no-rope exclusions and inapplicable T11. No climbing target has been measured yet.
+
+Climbing browser/offer checkpoint:24 full browser cases pass and two focused opening-hour tap cases pass. Screenshots at /private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-climbing;390/1440 reviewed.49events include a real internal mezzanine offer;24 focused content/policy/hall checks and lint pass. Still unregistered. Next audit shared coached/ordinary wall capacity before integration.

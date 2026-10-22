@@ -63,4 +63,16 @@ describe('unregistered Griffig content', () => {
     expect(l.memberships!.monthly_membership!.serves).not.toContain('students')
     expect(b.products.student_monthly_membership!.requires).toBe('student_prices')
   })
+  it('offers the internal mezzanine with real construction costs and no second lease', () => {
+    expect(s.officeStages[1]).toMatchObject({
+      id: 'climbing_mezzanine',
+      oneOffCents: 4000000,
+      monthlyCents: 0,
+      moveWeeks: 6,
+    })
+    const offer = s.events.find((e) => e.id === 'mezzanine_offer')!
+    expect(offer.choices.find((c) => c.id === 'move')!.effects).toContainEqual(
+      expect.objectContaining({ type: 'officeMove', stage: 'climbing_mezzanine' }),
+    )
+  })
 })
