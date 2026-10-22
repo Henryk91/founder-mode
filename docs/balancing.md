@@ -5328,3 +5328,6 @@ Plan5 fitness value round1:main only,30policies on1,000 paired test seeds,source
 
 
 Plan5 fitness value round2:main only,30policies on1,000 paired test seeds,sourcea6a1c8c. Careful65.6%±2.9,top73.9%±2.7,no-tests0.7%±0.5. Values2/2 exhausted,formula0/1 remains. Full paired review:autonomous5/fitness/ROUND2_REVIEW.md. No event table/full report.
+
+
+Plan5 fitness final first-pass main:30policies on1,000 paired test seeds,sourcea6060e0. Careful44.7%±3.1(at upper limit),top51.8%±3.1,no-tests0.3%±0.3;playability bounds met. Open T3,T5–T7,T12,T14,F3,F4. F1 at limit,not an established all-slot advantage. Full contributions:autonomous5/fitness/FINAL_REVIEW.md. Values2/2,formula1/1;event table runs once now,full report only step6.
