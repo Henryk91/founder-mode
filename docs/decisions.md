@@ -1020,3 +1020,9 @@ AUTONOMOUS: Griffig's birthday cohorts reserve ten actual places at a per-person
 AUTONOMOUS: Group/club/ancillary preparation passes743 engine/content checks,27 skips,and lint. Dedicated café cover caps income from served visits,and a199 EUR birthday request consumes ten places. Griffig stays unregistered and unmeasured until the fitness gate.
 
 AUTONOMOUS: Use optional market-fit alternatives for the spec’s rope-or-boulder and family-area/offer choices. Both experiment and paid-demand coverage recognise ready alternatives;physical pools and belay access stay unchanged. First-pass coached clubs/parties use the actual children’s area;auto-belays provide casual beginner access.
+
+### Plan5 climbing content preparation,resumed
+
+AUTONOMOUS:Prepare Griffig without catalogue registration while fitness validates. T1–T10,T12–T18,E1,K1–K5 apply;T11 is inapplicable because membership/admission notice is not the tourism cancellation-policy decision. K1 uses paired differing outcomes and sole/joint leaders;K4 separates no-rope seeds before comparing courses.
+
+AUTONOMOUS:Use staffed two-hour hall visits,individual earned qualifications,ten actual party places and weekly club attendance. Café/rental income uses explicit estimated baskets per actual visitor;no shop or inventory. Initial costs,demand and course-price linkage are estimates in scenario-climbing.md section15;no tuning round or event-table run is spent during unregistered preparation.

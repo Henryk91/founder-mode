@@ -125,3 +125,13 @@ decisions/status. Use optional leisure alternatives for rope-or-boulder and fami
 area/offer alternatives. This changes market-fit coverage,not physical capacity
 pools or rope qualifications. Coached club/party space still uses the actual
 children's area in the first pass;auto-belays serve casual beginner visits.
+
+## Content preparation after resumption
+
+Touch:unregistered scenarios/griffig YAML,content draft tests,scene artifact and
+spec/decisions/status docs.48events,150quotes,20features,four intros,two scenes.
+Draft parses separately without changing scenario IDs,catalogue or lazy loading.
+Source estimates and units are recorded in scenario-climbing.md section15.
+Before registration:resolve explicit student membership/day-product discounts,
+review course request shares and first-build bot plans,then add labels/UI/bots.
+Do not measure this draft as completed content.
