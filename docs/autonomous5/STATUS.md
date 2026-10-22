@@ -3,7 +3,7 @@
 ## Current
 
 Step:4.8 fitness initial measurements;5 isolated climbing content/UI/bot preparation.
-Last commit:HEAD,Plan5:record fitness careful performance measurement.
+Last commit:HEAD,Plan5:compact prior class visits without changing public traces.
 Next action:Collect checkpointed fitness initial main matrix (session6279,/tmp/plan5-fitness-main-resumed.log),then review paired contributions before values. Finish only the interrupted Ausgesperrt protected comparison (session78522,/tmp/plan5-protected-step4-ausgesperrt-resumed.log);ten comparisons already match. Climbing branch has unregistered content and hall UI committed;validate its new policies next. Full report step6 only,once.
 
 ## Checklist
@@ -60,3 +60,5 @@ User authorised continuing everything. The earlier process-stop request is resol
 84a040c:feature alternatives,745 engine/content checks and lint.106cad9:unregistered Griffig content,48events/150quotes/20features/four intros/two scenes,748 checks and lint.b3d9c5d:hall hours/paid setting/qualification UI,seven focused UI checks and lint. Student offers and climbing bot policies are being validated after those commits;no climbing measurement or registration yet.
 
 Fitness current-week archive:21 complete diagnostic results/public-view traces match baseline exactly after preserving final-screen hosting through traffic totals.765 engine/content/fitness-bot checks pass,27 skips;lint passes. Careful-only T12 timing is running (session75049,/tmp/plan5-fitness-currentweek-careful.log),main only/1,000 test seeds. Original matrix workers retain the previous source. Values0/2,formula0/1.
+
+Protected-step4 proof complete:all eleven main-only reports match baseline apart from timings,on1,000 test seeds each. Ten outputs survived the stop;only Ausgesperrt was resumed. All eleven content fingerprints match at engine0.14.0. No protected values changed;no event tables or wide seeds run. The later current-week archive change is class-aware only,so none of these games enter it.

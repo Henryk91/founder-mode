@@ -1,0 +1,1 @@
+IDENTICAL (timings aside): docs/autonomous5/protected-step4/gratwanderung-long.md
