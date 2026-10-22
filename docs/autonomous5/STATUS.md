@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.5 fitness bot implementation;public class duration ready.
-Last commit:HEAD,Plan5:expose public class duration and verify failed-member visits.
-Next action:Implement fitness bot policies/variants and target reporting from fitness/BOTS.md,then membership/timetable UI/labels and phase4 protected proof. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
+Step:4.5 fitness bots implemented;UI/measurement next.
+Last commit:HEAD,Plan5:add class-aware fitness policies and paired targets.
+Next action:Build membership/timetable/aggregator UI and fitness labels,then initial main measurement/contributions and phase4 protected proof. Completed venue/main history is merged here. Fitness worktree:/private/tmp/founder-mode-plan5-fitness. Full report only step6,once.
 
 ## Checklist
 
@@ -38,6 +38,8 @@ Next action:Implement fitness bot policies/variants and target reporting from fi
 User resumed historical WebKit heading stop;all80 cases and final full suite pass. No current stop applies.
 
 ## Recent validation
+
+Fitness bot policies and F1–F5 reporting implemented;all registered studio variants finish,and the careful saved run opens and replays exactly. Focused fitness/venue/escape checks and lint pass. Values0/2,formula0/1;no fitness report/event table yet.
 
 Public class duration and existing cancellation/pack accounting:10 focused checks pass;lint passes. The proposed failed-visit change was unnecessary and removed after inspecting the existing implementation. No fitness measurement or tuning yet.
 

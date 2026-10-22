@@ -3,8 +3,13 @@ import type { BookingsPlan, PlayerView } from '@founder-mode/engine'
 import type { PlanBuilder } from '../strategy'
 import type { TourismRule } from './tourism'
 import { venueWanted } from './venue'
+import { fitnessWanted } from './fitness'
 
 export type LeisureRule = {
+  aggregator?: 'all' | 'none'
+  reformer?: 'always' | 'never'
+  januaryPeak?: boolean
+  neverMatch?: boolean
   rooms?: 'careful' | 'one' | 'quarterly'
   themeBlind?: boolean
   noDaytime?: boolean
@@ -45,6 +50,7 @@ export function leisureWanted(
   const l = view.bookings?.leisure
   const c = scenario.bookings?.leisure
   if (!l || !c?.opening) return requested
+  if (c.classStaffing) return fitnessWanted(scenario, view, rule, requested)
   if (c.noise) return venueWanted(scenario, view, rule, requested)
   const areas = c.opening.areas
   const first = l.buildChoice.length ? l.buildChoice : [areas[0]!]
@@ -140,7 +146,7 @@ export function planLeisure(
 ): void {
   const l = view.bookings?.leisure
   if (!l) return
-  const leisure: NonNullable<BookingsPlan['leisure']> = {}
+  const leisure: NonNullable<BookingsPlan['leisure']> = { ...plan.leisure }
   if (l.holds) {
     const decided = l.holds.granted - l.holds.calendar.filter((h) => h.status === 'held').length
     const conversion = decided > 0 ? l.holds.converted / decided : 0

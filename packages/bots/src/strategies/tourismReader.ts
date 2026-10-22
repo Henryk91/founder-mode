@@ -42,6 +42,11 @@ const quietRestaurant = (view: PlayerView) => {
 }
 
 export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> = {
+  schweissperle: {
+    start_fit_out: () => 'prepare',
+    her_own_place: (v) =>
+      v.company.cashCents >= 3 * v.company.monthlyFixedCostsCents ? 'match' : 'leave',
+  },
   fabriketage: {
     start_fit_out: () => 'prepare',
     the_roof_brochure: () => 'act',

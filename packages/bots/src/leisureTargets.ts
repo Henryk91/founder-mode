@@ -1,5 +1,5 @@
 import { fmtMargin, rateMargin } from './margin'
-import { pairedOn, type StrategyRuns, type Target } from './report'
+import { isWin, pairedOn, type StrategyRuns, type Target } from './report'
 
 const signed = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`
 
@@ -117,6 +117,83 @@ export function venueTargets(
       value: value(roof),
       margin: margin(roof),
       pass: loses(roof, 3),
+    },
+  ]
+}
+
+/** Fitness comparisons use paid-service observations and paired outcomes. */
+export function fitnessTargets(
+  careful: StrategyRuns,
+  s: (id: string) => StrategyRuns | undefined,
+  all: number[],
+): Target[] {
+  if (!s('fitness_never_match')) return []
+  const pair = (id: string) => {
+    const other = s(id)
+    return other ? pairedOn(careful, other, all) : null
+  }
+  const allSlots = pair('fitness_aggregator_all'),
+    none = pair('fitness_aggregator_none')
+  const january = pair('fitness_january_peak'),
+    neverMatch = pair('fitness_never_match')
+  const recovery = pair('fitness_recovery_early')
+  const buy = s('fitness_reformer_always'),
+    noBuy = s('fitness_reformer_never')
+  const reformer = buy && noBuy ? pairedOn(noBuy, buy, all) : null
+  const buyOnly =
+    buy && noBuy ? all.filter((i) => isWin(buy.results[i]!) && !isWin(noBuy.results[i]!)).length : 0
+  const noBuyOnly =
+    buy && noBuy ? all.filter((i) => !isWin(buy.results[i]!) && isWin(noBuy.results[i]!)).length : 0
+  const departures = s('fitness_never_match')!.results.filter(
+    (r) => (r.tourism?.leisure?.fitness?.followersStopped ?? 0) > 0,
+  )
+  const stopped = departures.reduce(
+    (sum, r) => sum + r.tourism!.leisure!.fitness!.followersStopped,
+    0,
+  )
+  const value = (p: { change: number } | null) => (p ? signed(p.change) : '-')
+  const margin = (p: { margin: number } | null) => (p ? fmtMargin(p.margin) : '')
+  const loses = (p: { change: number; margin: number } | null, n: number) =>
+    p !== null && p.change - p.margin <= -n
+  return [
+    {
+      id: 'F1',
+      text: 'Quiet-slot aggregator access beats all slots and no aggregator by at least 2 points each',
+      value: `all ${value(allSlots)}; none ${value(none)}`,
+      margin: `${margin(allSlots)}; ${margin(none)}`,
+      pass: loses(allSlots, 2) && loses(none, 2),
+    },
+    {
+      id: 'F2',
+      text: 'Keeping the January waitlist class peak loses at least 2 points',
+      value: value(january),
+      margin: margin(january),
+      pass: loses(january, 2),
+    },
+    {
+      id: 'F3',
+      text: 'Buying reformers and keeping the regular studio are within 5 points, with wins unique to each policy',
+      value: `${value(reformer)}; buy-only ${buyOnly}, no-buy-only ${noBuyOnly}, ties ${all.length - buyOnly - noBuyOnly}`,
+      margin: margin(reformer),
+      pass:
+        !!reformer &&
+        Math.abs(reformer.change) - reformer.margin <= 5 &&
+        buyOnly > 0 &&
+        noBuyOnly > 0,
+    },
+    {
+      id: 'F4',
+      text: 'Instructor departure visibly stops followers; never matching loses at least 2 points',
+      value: `${value(neverMatch)}; ${stopped} followers stopped in ${departures.length} runs`,
+      margin: margin(neverMatch),
+      pass: loses(neverMatch, 2) && stopped > 0,
+    },
+    {
+      id: 'F5',
+      text: 'Building the recovery room in year one loses at least 3 points',
+      value: value(recovery),
+      margin: margin(recovery),
+      pass: loses(recovery, 3),
     },
   ]
 }
