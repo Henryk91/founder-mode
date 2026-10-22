@@ -832,12 +832,12 @@ bookings:
           quality: 0.03
           max: 3
           months:
-            - 1
-            - 2
-            - 3
             - 10
             - 11
             - 12
+            - 1
+            - 2
+            - 3
     setter:
       name: Route setter, eight-hour day
       centsPerShift: 25000
@@ -875,12 +875,12 @@ bookings:
           quality: 0.03
           max: 3
           months:
-            - 1
-            - 2
-            - 3
             - 10
             - 11
             - 12
+            - 1
+            - 2
+            - 3
     intro_coach:
       name: Bouldering coach, two-hour session
       centsPerShift: 6000
@@ -920,12 +920,12 @@ bookings:
           quality: 0.03
           max: 3
           months:
-            - 1
-            - 2
-            - 3
             - 10
             - 11
             - 12
+            - 1
+            - 2
+            - 3
     belay_coach:
       name: Belay coach, four-hour course
       centsPerShift: 12000
@@ -965,12 +965,12 @@ bookings:
           quality: 0.03
           max: 3
           months:
-            - 1
-            - 2
-            - 3
             - 10
             - 11
             - 12
+            - 1
+            - 2
+            - 3
     lead_coach:
       name: Lead coach, six-hour course
       centsPerShift: 18000
@@ -1010,12 +1010,12 @@ bookings:
           quality: 0.03
           max: 3
           months:
-            - 1
-            - 2
-            - 3
             - 10
             - 11
             - 12
+            - 1
+            - 2
+            - 3
     club_coach:
       name: Children’s coach, two-hour session
       centsPerShift: 6000
@@ -1056,12 +1056,12 @@ bookings:
           quality: 0.03
           max: 3
           months:
-            - 1
-            - 2
-            - 3
             - 10
             - 11
             - 12
+            - 1
+            - 2
+            - 3
     cafe_staff:
       name: Café staff, four-hour shift
       centsPerShift: 7200
@@ -1099,12 +1099,12 @@ bookings:
           quality: 0.03
           max: 3
           months:
-            - 1
-            - 2
-            - 3
             - 10
             - 11
             - 12
+            - 1
+            - 2
+            - 3
   reviews:
     qualityBase: 4.5
     noiseSd: 0.2
@@ -1117,7 +1117,7 @@ bookings:
     reviewsFull: 100
   trials:
     test_listing:
-      name: Quiet-slot listing trial
+      name: Quiet-slot listing
       hours: 4
       cents: 20000
       weeks: 2

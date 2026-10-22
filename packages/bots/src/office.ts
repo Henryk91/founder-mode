@@ -97,6 +97,12 @@ export function moveIsReal(view: PlayerView, offer: Offer, wantsHire: boolean): 
     )
     if (!staffed) return false
   }
+  if (view.bookings.leisure?.hall)
+    return (
+      view.bookings.leisure.history
+        .slice(-8)
+        .filter((w) => w.slots.some((s) => s.load === 'packed')).length >= 3
+    )
   if (offer.number >= 5) return o.peakTurnedAwayWeeks >= 2 || o.occupancyPct > 80
   return o.turnedAwayWeeks >= TURNED_AWAY_WEEKS
 }
