@@ -2,11 +2,9 @@
 
 ## Current
 
-Current sub-step: small-budget quote rounding corrected to EUR10 before first climbing measurement;22 content/bot checks and lint pass. Retain the fitness integration gate.
-
-Step:5 isolated preparation:shared wall pools and allowed slots validated;4 remains the primary gate.
-Previous commit:HEAD,Plan5:reserve shared climbing walls for courses and parties.
-Next action:Commit shared-wall capacity audit (29 focused checks and lint pass),then wait for fitness settlement/tuning milestone before registration. Fitness corrected matrix was stopped after finding aggregator check-ins incorrectly invoiced to employers;direct settlement is being fixed in its worktree. Full report step6 only,once.
+Step:5 isolated preparation;4 fitness value round1 is validating.
+Last commit:HEAD,record shared-mechanic integration preparation.
+Next action:Merge validated fitness sourcea0643aa into this unregistered climbing branch,resolve overlapping optional fields and class-history changes,enable direct aggregator settlement,then run focused integration checks. Griffig registration and measurements wait for the fitness milestone. Fitness round1 runs separately in session99787;full report only step6,once.
 
 ## Checklist
 
