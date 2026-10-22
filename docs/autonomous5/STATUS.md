@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.8 fitness initial measurements;5 isolated climbing content/UI/bot preparation.
-Last commit:HEAD,Plan5:compact prior class visits without changing public traces.
-Next action:Collect checkpointed fitness initial main matrix (session6279,/tmp/plan5-fitness-main-resumed.log),then review paired contributions before values. Finish only the interrupted Ausgesperrt protected comparison (session78522,/tmp/plan5-protected-step4-ausgesperrt-resumed.log);ten comparisons already match. Climbing branch has unregistered content and hall UI committed;validate its new policies next. Full report step6 only,once.
+Step:4.8 fitness initial matrix complete;bot/contribution review before values.
+Last commit:2914e1b,Plan5:preserve all eleven matching fitness-step regression reports.
+Next action:Fix fitness bot offer-specific pricing,aggregate quiet-slot access and honest review-blind replies per fitness/INITIAL_REVIEW.md,then measure affected policies on1,000 test seeds before values. All eleven protected main comparisons are complete and identical. Climbing remains isolated/unregistered with content,UI,policies and K targets prepared;shared wall capacity audit is next there. Full report step6 only,once.
 
 ## Checklist
 
