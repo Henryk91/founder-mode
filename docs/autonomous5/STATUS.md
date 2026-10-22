@@ -3,8 +3,8 @@
 ## Current
 
 Step:4.8 fitness settlement measurement;5 isolated climbing preparation ready for integration after fitness.
-Last commit: fitness 8d91c16 records measurement checkpoints and tuning budget; settled matrix source 85d9b2b.
-Next action:Collect fitness settled main matrix (session9418,/tmp/plan5-fitness-main-settled.log),then review contributions and use the limited tuning budget. Main only,1,000 test seeds,four workers,durable checkpoints. No value round has been used. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
+Last commit: fitness afd4e55 records the discarded cache experiment; settled matrix source 85d9b2b.
+Next action:Settled fitness main matrix complete:30 policies,1,000 paired test seeds. Review committed contributions,then implement value round1 as SETTLED_REVIEW.md describes. No value round has been used yet. Finish fitness validation/report/tag before merging climbing. Full report only step6,once.
 
 ## Checklist
 
@@ -28,6 +28,7 @@ Content now explicitly enables direct aggregator payment. Company membership inv
 770 engine/content/fitness checks and eight focused payment/UI checks pass;lint passes.
 Two archival optimisations preserve21complete results/public-view traces exactly.
 Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails.
+Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
 Values0/2,formula0/1;fitness event table not run. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 

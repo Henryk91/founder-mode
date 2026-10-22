@@ -5319,3 +5319,6 @@ remain open;T11 is inapplicable. T9 is at its limit. Contributions and required
 bot corrections are in autonomous5/fitness/INITIAL_REVIEW.md. Values0/2,formula0/1.
 Current-week archive careful-only(main,1,000test seeds)reproduces864wins in301s;
 T12still fails. All eleven protected main reports match baseline on1,000test seeds.
+
+
+Plan5 fitness settled baseline: main only,30 policies on1,000 paired test seeds,source85d9b2b. Careful93.7%±1.5,top99.0%±0.6,no-tests27.4%±2.8. Contributions and all targets are in autonomous5/fitness/schweissperle-main-settled.md and SETTLED_REVIEW.md. Values0/2,formula0/1 at this baseline;no fitness event table or full report.
