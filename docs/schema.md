@@ -1318,3 +1318,5 @@ Leisure products may declare optional `availableSlots`,validated against the
 leisure slot IDs. This gates sale and member access even when `capacityOf`
 borrows a physical wall's pool. Courses/parties and ordinary visitors then reserve
 the same pool;the alias's allowed slots do not create extra safety places.
+
+Optional hall content now uses the same54-week traffic aggregates and current-service-week individual retention as class-aware content. Qualifications,course learners,future reservations and lifetime totals remain distinct persistent records.27 complete diagnostic results/public-view traces match the pre-compaction hall representation,including six funded rope-course stress cases. No new shape or RNG draw is introduced;other earlier leisure scenarios retain individual history.

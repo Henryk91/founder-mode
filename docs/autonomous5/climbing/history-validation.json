@@ -1,0 +1,10 @@
+{
+  "beforeSource": "a148737",
+  "normalGames": 21,
+  "fundedRopeStressGames": 6,
+  "completeResultsIdentical": true,
+  "allPublicViewTracesIdentical": true,
+  "fundedDiagnosticStartCashCents": 100000000,
+  "noTargetMeasurement": true,
+  "controlledRuntimeClaim": false
+}

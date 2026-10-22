@@ -123,7 +123,7 @@ export function initLeisure(
       ...(c.qualifications
         ? { qualifiedEnquiries: [], courseConversion: { graduates: 0, enquiries: 0, joined: 0 } }
         : {}),
-      ...(c.classStaffing ? { traffic: [] } : {}),
+      ...(c.classStaffing || c.hall ? { traffic: [] } : {}),
       ...(c.foundingFollowing ? { foundingFollowing: { invited: 0, joined: 0 } } : {}),
       ...(c.slotPrices
         ? {
@@ -1512,7 +1512,7 @@ export function finishLeisure(
     (input.scenario.bookings!.reviews.cancelPenalty * contracts.filter((m) => m.inactive).length) /
     Math.max(1, contracts.length)
   const members = original.members.map((m) => ({ ...m, waitlist: [...m.waitlist] }))
-  const memberIndex = c.classStaffing ? new Map(members.map((m) => [m.id, m])) : null
+  const memberIndex = c.classStaffing || c.hall ? new Map(members.map((m) => [m.id, m])) : null
   const freshness = Object.fromEntries(
     Object.entries(original.freshness).map(([id, f]) => [id, { ...f }]),
   )
@@ -1643,14 +1643,15 @@ export function finishLeisure(
         }
       : w,
   )
-  const traffic = c.classStaffing
-    ? {
-        week,
-        served: {} as Record<string, number>,
-        came: {} as Record<string, number>,
-        nonCancelled: {} as Record<string, number>,
-      }
-    : null
+  const traffic =
+    c.classStaffing || c.hall
+      ? {
+          week,
+          served: {} as Record<string, number>,
+          came: {} as Record<string, number>,
+          nonCancelled: {} as Record<string, number>,
+        }
+      : null
   if (traffic)
     for (const booking of bookings) {
       if (booking.week !== week) continue

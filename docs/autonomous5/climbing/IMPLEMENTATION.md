@@ -144,3 +144,18 @@ weekly-offer frequency field. Griffig explicitly enables direct aggregator
 payment.821 checks pass,27 skips,including engine/content,fitness/climbing bots
 and membership UI;lint/typechecks pass. No registration,climbing report or tuning.
 The completed fitness milestone must still be imported before the runtime gate.
+
+## Hall history optimisation candidate
+
+Touch:engine leisure.ts,bookings.ts,postmortem.ts,hall/visit fixture,schema docs
+and status. Reuse the class traffic archive for optional halls,keeping current
+service/future bookings and earned qualifications. Compare complete results and
+all public-view traces to integrated sourcea148737 before retaining it. Normal
+booking IDs and course-learner identities are an explicit invariant to check.
+No new values,formula or registered climbing report.
+
+Retained candidate:27 complete results/public traces match exactly,including
+six funded104-week rope/both-wall/course cases.822 checks pass,27 skips,and
+lint/typechecks pass. Historical individual visits reduce to current service
+plus future bookings;54 weekly aggregates retain calendar/lifetime reporting.
+No controlled timing claim;measure runtime in the first registered main matrix.
