@@ -1,8 +1,8 @@
 # Step5: Griffig
 
-**Stopped under plan section1.2.1.** Three full-source attempts still leave an
-established WebKit heading-fit failure. Final main is complete,but the climbing
-phase gate and milestone are incomplete. See [hard-stop record](../climbing/HARD_STOP.md).
+**Complete first pass.** Final main, one event table, earlier-game proof and a green
+full test suite pass the phase gate. The run stopped on 23 October under plan section
+1.2.1 ([hard-stop record](../climbing/HARD_STOP.md)) and resumed on Henry's instruction.
 
 ## What was built
 
@@ -125,40 +125,49 @@ shop,personal training,physiotherapy or real integration was added.
 
 ## Validation and protected games
 
-- 48focused content/hall/qualification/queue/bot/target checks and lint/typechecks
-  pass on the final outcome source. The queue preserves each visitor's actual
-  belay skills,determinism and input immutability.
-- Final seed generation writes225rows;only Griffig changes. The full suite
-  replays every example successfully,but its complete result remains red.
-- All56established scenario/width/browser cases pass with actual one-time lazy
-  face loading and the original fit,one-line,minimum-size,cut and axe checks.
-  This test-only readiness change leaves product geometry and outcomes intact.
-  The focused suite passes56/56;the last full suite passes55/56. An earlier
-  progress claim of56/56inside the full suite was premature and is corrected.
-- The final full attempt passes the24Griffig Chromium/WebKit stage/width
-  cases at375/390/430/1440px,including the shared-queue/refund controls.
-  Screenshots at390/1440are outside the repo under
-  /private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-climbing.
-- All12earlier main comparisons are identical apart from timings,on1,000test
-  seeds each. Eleven earlier fingerprints match;fitness is recorded and its
-  complete30-policy main matches the final formula baseline. See
-  [proof provenance](../protected-step5/PROVENANCE.md). Griffig-only bot/values
-  and queue activation leave earlier content/executed paths unchanged.
+- 48 focused content, hall, qualification, queue, bot and target checks and lint/typechecks
+  pass on the final outcome source. The queue preserves each visitor's actual belay
+  skills, determinism and input immutability.
+- Final seed generation writes 225 rows; only Griffig changes, and every example replays.
+- Heading fit. After resuming, a full run with nothing else running still failed
+  (WebKit 375, Gratwanderung and Tiefgang), so the cause was code, not load. The lazy
+  established stylesheet supplies the heading face and letter spacing; with the face
+  cached no `loadingdone` fires and the bar keeps its width, so the fitter never refitted.
+  Fix 94047f1: in the established stage the name sits in its own inline-block span, and
+  a ResizeObserver refits on the next frame when the span's width differs from what the
+  fitter left. No test or assertion changed. The heading case passed in every full run
+  since; an A/B run with the old TopBar failed it again.
+- Test command. Every full run then ended with one vitest 3.2.7 "Timeout calling
+  onTaskUpdate" error although all tests passed, even on an idle machine; the web project
+  and the other projects each pass alone. Henry accepted the gate with `pnpm test` split
+  into two runs, web first, exiting 0 only if both pass (23013dd; decisions, backlog).
+- Gate run on 23013dd, idle machine: web 599 passed; all other projects 1,363 passed,
+  30 skipped; exit 0. `pnpm lint` passes.
+- All 24 Griffig Chromium/WebKit stage/width cases pass at 375/390/430/1440 px, including
+  the shared-queue and refund controls. Screenshots at 390/1440 are outside the repo
+  under /private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-climbing.
+- All 12 earlier main comparisons are identical apart from timings, on 1,000 test seeds
+  each. Eleven earlier fingerprints match; fitness is recorded and its complete 30-policy
+  main matches the final formula baseline. See
+  [proof provenance](../protected-step5/PROVENANCE.md). Changes after that proof are the
+  TopBar fix and the test command, which move no outcomes.
 
 ## Once-only event table
 
-Interrupted at the mandatory test hard stop:events only,1,000test seeds per
-forced answer,source27756b3,eight workers. Exact-source careful baseline reused,
-with zero baseline games replayed.48forced-answer task checkpoints preserve
-40,026actually played games;all32main task checkpoints also remain valid.
-There is no completed event markdown/table. Source/count/hash manifest:
-[EVENT_CHECKPOINTS.json](../climbing/EVENT_CHECKPOINTS.json). All run-owned
-processes are stopped. Resume only missing exact-source tasks after resolving
-validation;do not start a duplicate campaign or rerun completed tasks.
+Events part only, 100 policies, 1,000 paired test seeds each, source 27756b3, eight
+workers. 76,588 of 100,000 games played; the rest reuse the exact-source careful
+baseline. The campaign was interrupted at the hard stop and once more for a quiet test
+window, and resumed both times from its checkpoints; no completed task was replayed.
+Raw table: [griffig-events.md](../climbing/griffig-events.md). Its target rows lack the
+main policies; the main table above is authoritative.
 
-Latest full suite:107files pass,one fails;1,961tests pass,one fails,30skip.
-Failure:Rückenwind established WebKit375,header fit remains false after15seconds.
-Focused56established cases and lint/typechecks pass,but do not satisfy the
-whole-suite gate. Attempts/options/logs are in the hard-stop record.
+All 49 events were judged: 33 favour the cheapest answer, 16 a more effortful one.
+Apart from the first-wall choice (boulder 39.0%, research 27.2%, rope 13.4%, both 0.4%),
+every event's fixed answers sit within about 1.5 points of each other, inside noise at
+these seed counts. Events barely move outcomes in Griffig, which matches the open T6.
 
-Full report only in step6,once. No push.
+## Milestone
+
+Under Henry's resume instructions the open targets go to `docs/BACKLOG.md` for a later
+tuning plan instead of a step 6 revisit. Annotated milestone `plan5-climbing` follows
+this report. Full report only in step 6, once. No push.
