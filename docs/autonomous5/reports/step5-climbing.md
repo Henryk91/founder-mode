@@ -37,7 +37,8 @@ all three stages. Two390px opening-hour tap checks pass. Screenshots outside
 repo under /private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-climbing.
 
 Registration content checks259pass,30skip;16freelance checks pass with explicit
-working-capital fixtures;lint/typechecks pass. Seed generation is running.
+working-capital fixtures;lint/typechecks pass. Seed generation wrote225rows;
+only18Griffig rows were added. Registered full suite is running.
 Twelve earlier-game main comparisons on1,000test seeds each are running in
 protected-step5/. All eleven earlier fingerprints match;fitness recorded.
 Full phase tests and final event table remain. Full report only step6,once.
