@@ -3,8 +3,10 @@
 ## Current
 
 Step: 5.8 resumed after the hard stop (Henry authorised continuing, with a fresh count of three attempts for the browser test failure).
-Last commit: see the git log of main and of branch plan5-climbing-work. Outcome source 27756b3, hard-stop evidence d149f1b.
-Next action: step 3a of Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
+Last commit: climbing 94047f1, the TopBar fitter fix. Outcome source 27756b3, hard-stop evidence d149f1b.
+Next action: confirm the full suite is wholly green on 94047f1, then resume the interrupted climbing event campaign (missing tasks only).
+
+Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
 
 Henry's resume instructions override the plan where they differ:
 
@@ -46,7 +48,11 @@ Final main source 27756b3: careful 30.8% ± 2.9, top 39.0%, no-tests 0%; 32 poli
 
 Event campaign (first and only), interrupted at the hard stop: 32 complete main tasks and 48 complete forced-answer tasks (40,026 played games) preserved. Inventory: climbing/EVENT_CHECKPOINTS.json. Resume only the missing tasks.
 
-Validation gate: the three earlier full attempts each failed one WebKit established-heading fit case (last: Rückenwind WebKit 375, fit false after 15 seconds). Focused 56 cases, lint and typechecks pass. Evidence: climbing/HARD_STOP.md and climbing/TEST_FAILURES.txt in the climbing worktree. Fresh attempt count after the restart: 0 of 3.
+Validation gate: the three earlier full attempts each failed one WebKit established-heading fit case. After the restart:
+- 3a, full suite with nothing else running, unchanged code: still failed (WebKit 375, Gratwanderung and Tiefgang). So the cause is code, not load.
+- Fix attempt 1: the name in its own span with a ResizeObserver on its width. Every browser heading case passed; a jsdom a11y markup check failed because the span showed in every stage.
+- Fix attempt 2 (94047f1): the span only in the established stage. All 1,962 tests passed, 30 skipped, but the run exited 1 on one vitest "Timeout calling onTaskUpdate" worker error (no test failed). Rerunning unchanged to check whether that is transient.
+Logs: state folder, resume-full-tests-1.log, -fix1.log, -fix2.log, -fix2b.log.
 
 ## Completed results and open issues
 
