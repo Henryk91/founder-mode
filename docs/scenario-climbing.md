@@ -285,3 +285,22 @@ it. Halls now show the existing choices and a separate caption;member-only
 fitness is unchanged. T11 therefore applies to Griffig visitor bookings,with
 its original limits. Existing paired strict/flexible data supplies it;no
 extra bot games or outcome change accompanies the UI/report correction.
+
+### Final first-pass value round,23 October2026
+
+After corrected round1 (32policies,1,000paired seeds):careful24.0% at the
+lower limit;committed3.1%,families24.5%,students43.1%. The measured
+committed test5 trace opens normally but reaches only121members and
+EUR18,665monthly receipts byweek40,againstEUR21,200fixed costs plus
+staffing and bank payments. This is one diagnostic,not a target estimate.
+
+- Increase estimated reachable committed enquiries10–30→40–100/week so its
+  recurring cohort can build before the opening bridge runs out. Keep all
+  student/family ranges,fees,rent,equipment,wages and lending terms.
+- Increase estimated calendar freshness loss10→12/week across the four
+  configured wall sections. Half setting's eight-week reset cycle now leaves
+  more time with tired routes;normal setting still resets in four weeks.
+  Reset work remains32hours,the paid dayEUR250,and closure four daytime hours.
+
+Values2/2 exhausted,formula0/1. Main only,1,000paired test seeds before the
+sole formula decision. No extra first-pass numeric round is permitted.

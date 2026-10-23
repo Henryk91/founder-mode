@@ -1098,3 +1098,8 @@ AUTONOMOUS:Round1 showed that the overstaffing policy still closed quiet hall ho
 ### Step5 visitor refund visibility and target applicability
 
 AUTONOMOUS:Audit found that the shared membership form hid the visitor cancellation control in halls,although paid day/course bookings and bots still use its strict/flexible terms. Expose the existing control for optional halls with a caption separating visitor refunds from membership notice;member-only fitness remains unchanged. Correct the initial T11 exclusion:it applies to hall visitor bookings,with its original wording and limits. The old exclusion would have ignored an operative engine/bot choice hidden by a UI predicate. Re-evaluate existing cached strict/flexible results;no extra games or numeric/formula round.
+
+
+### Step5 final first-pass value round
+
+AUTONOMOUS:Use the last value round after corrected round1 contributions and an exact public-view committed-loss trace. Set committed enquiries10–30→40–100/week and calendar freshness loss10→12/week for the four configured wall sections. Preserve all other demand,fees,rent,equipment,wages,32-hour reset/four-hour closure and bank terms. This addresses cohort runway and half-setting's tired weeks. Values2/2 exhausted,formula0/1 remains;main only1,000paired seeds before deciding the sole formula round.
