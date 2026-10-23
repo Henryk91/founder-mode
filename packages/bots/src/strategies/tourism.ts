@@ -843,7 +843,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           answers.push({ messageId: message.id, choiceId: 'leave' })
         }
       }
-      if (cfg.leisure?.classStaffing && !rule.reviews) {
+      if ((cfg.leisure?.classStaffing || cfg.leisure?.hall) && !rule.reviews) {
         for (let i = answers.length - 1; i >= 0; i--) {
           const answer = answers[i]!
           const message = view.inbox.find((m) => m.id === answer.messageId)
