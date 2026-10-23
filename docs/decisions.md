@@ -1078,3 +1078,8 @@ AUTONOMOUS:The mezzanine offer is triggered at two cost-covering months from wee
 ### Step5 registered browser validation
 
 AUTONOMOUS:Full registered validation found three browser timing failures under concurrent bots:climbing cold preview readiness,Gratwanderung heading layout before font fitting settled,and a notebook opacity sampled at0.924899. Wait for app readiness (15seconds maximum),font readiness/two layout frames and final visible/hidden opacity rather than250ms sleeps. Keep all geometry,axe and transition-duration assertions;no product or simulation behaviour changes. Recheck the exact cases,then the full suite.
+### Step5 review-blind bot correction before values
+
+AUTONOMOUS:An actual visible-inbox regression reproduces the hall review-blind bot clearing service snags through event replies. Extend the existing fitness safeguard to hall opt-ins;careful and earlier scenarios retain their choices. This corrects the bot before values,not a tuning round. Measure only the corrected hall policy on1,000 paired test seeds and reuse unaffected initial results. Prepare this in a separate checkout while the original source8a3a423 reports/proof remain frozen.
+
+AUTONOMOUS:Import validated hall-only bot correctioneee2e74 after the initial32-policy matrix completes. Reuse31 unaffected policy tasks and substitute only corrected review-blind data. Earlier games omit hall and fitness already has classStaffing,so the safeguard predicate and all executed earlier-game policy choices are unchanged;the twelve-unit proof continues on their frozen engine/content. Subsequent numeric changes affect Griffig only.
