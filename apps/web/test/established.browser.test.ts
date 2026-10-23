@@ -133,42 +133,41 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 established screens', () => {
             expect(await page.evaluate(() => document.documentElement.dataset['stage'])).toBe(
               'established',
             )
-            // The stage attribute precedes its lazy stylesheet. Wait for that face and
-            // stable fitted glyphs,not an earlier font-ready promise for the Start screen.
-            let previous = ''
-            let stable = 0
+            // The stage attribute precedes its lazy stylesheet. Load the actual face
+            // once,then let the fitter settle without repeatedly requesting that face.
             await expect
               .poll(
-                async () => {
-                  const metrics = await page.evaluate(async () => {
+                () =>
+                  page.evaluate(() => {
                     const h = document.querySelector('header h1') as HTMLElement
-                    const css = getComputedStyle(h)
-                    const face = `${css.fontWeight} ${css.fontSize} ${css.fontFamily}`
-                    const established = css.fontFamily.includes('Bricolage Grotesque')
-                    if (established) await document.fonts.load(face, h.textContent ?? '')
-                    const range = document.createRange()
-                    range.selectNodeContents(h)
-                    return {
-                      ready: established && document.fonts.check(face, h.textContent ?? ''),
-                      size: getComputedStyle(h).fontSize,
-                      width: h.getBoundingClientRect().width,
-                      glyphs: range.getBoundingClientRect().width,
-                      scroll: h.scrollWidth,
-                      client: h.clientWidth,
-                    }
-                  })
-                  const fitted =
-                    metrics.ready &&
-                    metrics.scroll <= metrics.client + 1 &&
-                    metrics.glyphs <= metrics.width + 1
-                  const signature = JSON.stringify(metrics)
-                  stable = fitted && signature === previous ? stable + 1 : 0
-                  previous = signature
-                  return { ...metrics, stable: stable >= 2 }
-                },
+                    return getComputedStyle(h).fontFamily
+                  }),
                 { timeout: 15_000 },
               )
-              .toMatchObject({ ready: true, stable: true })
+              .toContain('Bricolage Grotesque')
+            await page.evaluate(async () => {
+              const h = document.querySelector('header h1') as HTMLElement
+              const css = getComputedStyle(h)
+              await document.fonts.load(
+                `${css.fontWeight} ${css.fontSize} ${css.fontFamily}`,
+                h.textContent ?? '',
+              )
+            })
+            await expect
+              .poll(
+                () =>
+                  page.evaluate(() => {
+                    const h = document.querySelector('header h1') as HTMLElement
+                    const size = parseFloat(getComputedStyle(h).fontSize)
+                    return {
+                      fits: h.scrollWidth <= h.clientWidth + 1,
+                      oneLine: h.getBoundingClientRect().height / (size * 1.25) <= 1.5,
+                      readable: size >= 12,
+                    }
+                  }),
+                { timeout: 15_000 },
+              )
+              .toEqual({ fits: true, oneLine: true, readable: true })
             const tourism = run.id !== 'kantino'
             const found: string[] = []
             // The company's name on one line, never below 12 px (Henry's review of plan 3).

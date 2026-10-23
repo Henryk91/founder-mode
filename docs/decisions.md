@@ -1118,3 +1118,6 @@ AUTONOMOUS:After the complete final value matrix and ROUND2_REVIEW.md,enable exi
 ### Step5 final established-font readiness
 
 AUTONOMOUS:Final full suite passes1,960checks/30skips but two Gratwanderung WebKit widths still sample a clipped heading. App sets data-stage before its lazy established stylesheet import,so the earlier fonts.ready/two-frame wait can resolve before the actual face is requested. In established.browser.test.ts wait for the declared Bricolage face and repeated stable fitted glyph geometry;keep every original cut,one-line,minimum-size and axe assertion. All8Gratwanderung width/browser cases and lint/typechecks pass. No product,engine,bot or outcome change;rerun the full suite.
+
+
+AUTONOMOUS:Full retry fixes the original Gratwanderung cuts but the added exact-subpixel stability assertion times out on Rückenwind390WebKit (1,961pass/30skip). Load the declared established face once outside polling,then poll the original fit/one-line/minimum-size criteria;retain all per-tab cut/axe checks. All56established width/scenario/browser cases and lint/typechecks pass. No product geometry or outcomes change;full suite runs again.
