@@ -400,3 +400,7 @@ Budget after application:values2/2,formula1/1. Measure affected main only on
 1,000 paired test seeds. If playability still violates the plan's hard bounds,
 record the stop and end;otherwise retain remaining failed targets as open issues.
 The fitness event table is still unrun;full report remains step6 only,once.
+
+### Final first pass
+
+The values above are those of outcome source a6060e0 (tag `plan5-fitness`), measured in `docs/autonomous5/reports/step4-fitness.md`. Plan 5 made no further value changes in its wrap up; the targets left open are in `docs/BACKLOG.md` for a later tuning plan.
