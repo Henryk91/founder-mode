@@ -1108,3 +1108,8 @@ AUTONOMOUS:Use the last value round after corrected round1 contributions and an 
 ### Step5 shared-arrival qualification validation
 
 AUTONOMOUS:Before deciding the sole formula round,extend qualifications.test.ts to exercise personal belay restrictions through the existing optional shared-arrival queue. Members and platform visitors keep their own skills;beginners retain the accessible alternative and courses are not ordinary admission.13 focused tests and lint/typechecks pass. No outcome code or content changed;the final numeric matrix continues on8c931a1.
+
+
+### Step5 sole formula round
+
+AUTONOMOUS:After the complete final value matrix and ROUND2_REVIEW.md,enable existing shared member/platform arrivals in Griffig only. Previously members always reserved before platform users,removing actual member displacement from the all-slot trade-off. Actual seeded requests share hard capacity and retain individual qualifications;existing UI explains the queue. No numeric or engine change. Values2/2,formula1/1 exhausted;measure main only1,000paired seeds,then events once and final checks.

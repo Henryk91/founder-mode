@@ -1,6 +1,6 @@
 # Griffig measurement and tuning budget
 
-Current:values2/2 exhausted,formulas0/1. Final value change passes27focused
+Current:values2/2 and formulas1/1 exhausted. Final value change passes27focused
 checks/lint;main-only measurement completed at8c931a1. No further first-pass numeric round. No climbing event table
 has run. Full report NEVER started;reserved for step6,once.
 
@@ -29,7 +29,7 @@ Earlier-game proof main only,1,000test seeds×12units is complete and identical
 apart from timings. Its temporary runner has been removed. Hall-only bot fixes
 and Griffig values leave earlier content and applicable paths unchanged.
 Final phase needs events once,seeds and full tests. Do not repeat completed
-reports. Only the sole formula round remains for unresolved first-pass targets.
+reports. No further first-pass tuning remains.
 Step6 has its own fresh budget.
 
 
@@ -40,3 +40,7 @@ Final value round source8c931a1:32main policies×1,000paired test seeds.
 All12 earlier-game comparisons complete,identical apart from timings.
 
 Round2 complete;ROUND2_REVIEW.md records every target and contribution. Next:sole formula round enables existing shared arrivals in Griffig only;no numeric/engine change.
+
+Sole formula round:sharedQueue true in Griffig;existing seeded actual arrivals,personal qualifications and UI. All numeric values fixed. Focused checks/lint and final main measurement follow before events once.
+
+Sole formula validation:48focused content/hall/qualification/queue/bot/target checks and lint/typechecks pass. Final main matrix follows on this frozen source.
