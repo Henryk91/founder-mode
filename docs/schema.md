@@ -1264,3 +1264,83 @@ the fraction of actual member reservation attempts refused:current-week waitlist
 entries divided by those entries plus reserved member visits. Company-cancelled
 bookings remain the existing service penalty,not additional denied reservations.
 No new numeric coefficient or player-state field is introduced.
+
+### Optional personal qualifications
+
+`leisure.qualifications` names earned levels/prerequisites,initial segment skill
+ranges and course-to-membership enquiry shares. Validation rejects missing levels,
+segments,courses and prerequisite cycles. No registered scenario enables it during
+isolated preparation. `HiddenLeisure.qualificationRates` stores the sampled ranges;
+optional `LeisureMember.levels`,aggregator-user `levels` and `Booking.levels` store
+actual held skills. Uncoached products with `needsLevel` require that person's skill.
+Ordinary check-ins do not silently enrol users on coached courses.
+
+Served courses teach their actual member or user. Anonymous graduates create
+`LeisureState.qualifiedEnquiries` for the following week,carrying actual earned
+levels;`beginLeisure` offers them normal paid memberships before billing. The
+course enquiry share does not guarantee a paid sale. Packs and notice retain their
+existing obligations. `courseConversion` records actual graduates,enquiries and
+paid joins. Optional `LeisureView.qualifications` copies earned-level attendance
+counts and conversion totals only;initial rates and probabilities stay hidden.
+All fields and RNG draws are absent without the content block.
+
+Qualification-enabled course bookings carry stable `Booking.coursePeople` IDs.
+`LeisureState.coursePeople` links actual learners,earned skills and an eventual
+paid membership;qualified enquiries optionally carry `personId`. A later course
+by the same learner teaches that membership instead of creating a second one.
+The existing next-step course booking keeps those IDs. These records are absent
+without qualifications and are never passed individually to the UI.
+
+### Optional staffed hall hours
+
+`leisure.hall` defines visit duration,front-desk hours per shift,optional paid
+setter hours per shift and comfort factors by office stage. Hall products state
+`simultaneous` hard/comfortable people. Actual weekly visits are people times
+staffed opening hours divided by visit duration. Office comfort never raises the
+safety limit. Comfort counts/factors remain absent from the player view.
+
+`LeisurePlan.openHours` chooses weekly slot hours up to the content maximum.
+`LeisureState.hall` records requested and actually staffed hours,desk cover and
+this week's paid setting allocations. New hall contracts take effect before
+admissions;the same contract result is settled once at normal payroll. Uncoached
+hall visits consume admission capacity rather than an instructor per visitor.
+Coached services keep their normal qualified roster requirement.
+
+`LeisurePlan.paidSettingHours` allocates actual purchased setter cover across
+walls,without consuming founder setting hours again. Founder setting remains in
+`settingHours`. Allocations cannot exceed paid/contract setter hours and do not
+persist into a week without a new allocation. `freshness.refresh.closedHours`
+removes only the reset wall's stated slot hours during its reset week. Existing
+static `lostCapacity` continues to apply to earlier scenarios.
+
+Optional `LeisureView.hall` copies chosen/actual hours and public role/shift terms.
+Hall desk and setter roles cannot also coach services. Founder desk hours must
+match actual cover;founder setting uses its separate hour allocation. All hall
+fields are absent without the content block.
+
+Optional product `requestSize` reserves its actual group size and charges the
+per-person fee for each person. Own-demand enquiry counts divide by that group's
+mean size,so a party of ten consumes ten places and ten admission units.
+`BookingsView.products[].requestSize` exposes the stated group terms only where
+configured. Optional membership `visitsPerWeek` overrides the segment default
+for a weekly club and its pack monthly-cost basis;the public offer copies it.
+
+Optional `leisure.extras[].staffing` names a dedicated role and served-visitor
+throughput per paid shift. The actual weekly/founder/working-contract cover caps
+ancillary receipts;cancelled visitors earn nothing. Roles cannot simultaneously
+coach,staff admission,set routes or cover another ancillary. Existing extras
+without staffing retain their previous per-served-unit settlement. The view
+copies role name and throughput with actual income/costs,never invented sales.
+
+Optional `leisure.alternatives` maps a named must-have feature to alternative
+shipped features accepted for market-fit coverage. Alternatives must have their
+actual build prerequisites ready. It applies equally to paid demand and experiment
+fit. It neither copies physical capacity nor grants a rope qualification. Earlier
+scenarios without the block keep their exact feature-coverage calculation.
+
+Leisure products may declare optional `availableSlots`,validated against the
+leisure slot IDs. This gates sale and member access even when `capacityOf`
+borrows a physical wall's pool. Courses/parties and ordinary visitors then reserve
+the same pool;the alias's allowed slots do not create extra safety places.
+
+Optional hall content now uses the same54-week traffic aggregates and current-service-week individual retention as class-aware content. Qualifications,course learners,future reservations and lifetime totals remain distinct persistent records.27 complete diagnostic results/public-view traces match the pre-compaction hall representation,including six funded rope-course stress cases. No new shape or RNG draw is introduced;other earlier leisure scenarios retain individual history.

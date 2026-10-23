@@ -121,3 +121,8 @@
 [data-scenario='schweissperle'] {
   --scenario-accent: #b0284f;
 }
+
+/* White on the climbing accent exceeds4.5:1. */
+[data-scenario='griffig'] {
+  --scenario-accent: #2f6b3a;
+}

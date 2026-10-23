@@ -220,6 +220,8 @@ export type Booking = {
   slotId?: string
   memberId?: string
   aggregatorUser?: number
+  coursePeople?: string[]
+  levels?: string[]
 }
 
 /** Plan 2 step 1a: a voucher sold; a liability until it is redeemed. */
@@ -1509,6 +1511,7 @@ export type BookingsView = {
     name: string
     shipped: boolean
     capacity: number
+    requestSize?: { min: number; max: number }
     serves: SegmentId[]
     inSeason: boolean
     unitCostCents: number
@@ -2600,6 +2603,23 @@ export type LeisureTraffic = {
   nonCancelled: Record<FeatureId, number>
 }
 export type LeisureState = {
+  hall?: {
+    week: number
+    requestedHours: Record<string, number>
+    openHours: Record<string, number>
+    deskHours: number
+    paidSettingHours: Record<FeatureId, number>
+  }
+
+  coursePeople?: { id: string; memberId: string | null; levels: string[] }[]
+  qualifiedEnquiries?: {
+    personId?: string
+    week: number
+    segmentId: SegmentId
+    units: number
+    levels: string[]
+  }[]
+  courseConversion?: { graduates: number; enquiries: number; joined: number }
   traffic?: LeisureTraffic[]
 
   instructorLoads?: { id: string; kind: 'founder' | 'contract'; name?: string; classes: number }[]
@@ -2642,11 +2662,12 @@ export type LeisureState = {
     checkins: number
     payoutCents: number
     cancellations: number
-    users: { segmentId: SegmentId; month: number; visits: number }[]
+    users: { segmentId: SegmentId; month: number; visits: number; levels?: string[] }[]
   } | null
   weeks: LeisureWeek[]
 }
 export type LeisureMember = {
+  levels?: string[]
   billingWeek?: number
   id: string
   segmentId: SegmentId
@@ -2697,6 +2718,7 @@ export type LeisureWeek = {
   }[]
 }
 export type HiddenLeisure = {
+  qualificationRates?: Record<SegmentId, Record<string, number>>
   premiumInterest?: number
   foundingFollowing?: number
   instructorFollowing: Record<string, number>
@@ -2704,6 +2726,9 @@ export type HiddenLeisure = {
   payoutCents: number | null
 }
 export type LeisurePlan = {
+  openHours?: Record<string, number>
+  paidSettingHours?: Record<FeatureId, number>
+
   slotPrices?: Record<SegmentId, Record<string, { peak: number; off: number }>>
   salesSlots?: Record<SegmentId, string[]>
   offers?: Record<FeatureId, { enabled: boolean; priceCents: number }>
@@ -2715,6 +2740,21 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  hall?: NonNullable<LeisureState['hall']> & {
+    visitHours: number
+    deskRoleId: string
+    deskHoursPerShift: number
+    settingRoleId?: string
+    settingHoursPerShift?: number
+  }
+
+  qualifications?: {
+    levels: { id: string; name: string; members: number; aggregatorUsers: number }[]
+    graduates: number
+    enquiries: number
+    joined: number
+  }
+
   instructorWork?: { maxClasses: number; loads: NonNullable<LeisureState['instructorLoads']> }
   foundingFollowing?: { invited: number; joined: number }
   noise?: {
@@ -2739,6 +2779,7 @@ export type LeisureView = {
     netCents: number
   }
   extras?: {
+    staffing?: { roleId: string; name: string; unitsPerShift: number }
     productId: FeatureId
     name: string
     active: boolean
@@ -2786,8 +2827,8 @@ export type LeisureView = {
   members: {
     products?: FeatureId[]
     offerId: FeatureId
-    visitsPerWeek?: number
     visits?: number
+    visitsPerWeek?: number
     name: string
     active: number
     inactive: number

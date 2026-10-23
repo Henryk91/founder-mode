@@ -1,0 +1,65 @@
+{
+  "engineVersion": "0.14.0",
+  "scenarios": [
+    {
+      "id": "kantino",
+      "mode": "standard",
+      "hash": "2dda4b4b1831c529"
+    },
+    {
+      "id": "zollstock",
+      "mode": "standard",
+      "hash": "7f5bf30195d531db"
+    },
+    {
+      "id": "kantino",
+      "mode": "long",
+      "hash": "cdfc94698f29274b"
+    },
+    {
+      "id": "gratwanderung",
+      "mode": "long",
+      "hash": "e3da9598d7b4bce2"
+    },
+    {
+      "id": "hinterhof",
+      "mode": "long",
+      "hash": "57453c04c480e3ba"
+    },
+    {
+      "id": "seeblick",
+      "mode": "long",
+      "hash": "396a4154f356ae1e"
+    },
+    {
+      "id": "rueckenwind",
+      "mode": "long",
+      "hash": "e8ba2a56c50b8730"
+    },
+    {
+      "id": "tiefgang",
+      "mode": "long",
+      "hash": "7cd81a64f22da5b2"
+    },
+    {
+      "id": "leinenlos",
+      "mode": "long",
+      "hash": "80b252c15577d423"
+    },
+    {
+      "id": "ausgesperrt",
+      "mode": "long",
+      "hash": "ea908900d9f19996"
+    },
+    {
+      "id": "fabriketage",
+      "mode": "long",
+      "hash": "c042cb5934228e6b"
+    },
+    {
+      "id": "schweissperle",
+      "mode": "long",
+      "hash": "56591d55af0a0a2f"
+    }
+  ]
+}

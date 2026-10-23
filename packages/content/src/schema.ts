@@ -378,6 +378,7 @@ export const BookingSegmentSchema = z.object({
 })
 
 export const BookingProductSchema = z.object({
+  requestSize: rangeOf(z.number().int().positive()).optional(),
   // Units a week it can sell when fully staffed (seats x seatings, rooms x nights).
   capacity: z.number().int().nonnegative(),
   // Segments it sells to.
@@ -759,6 +760,25 @@ const SlotShares = z
   )
 export const LeisureSchema = z
   .object({
+    alternatives: z.record(Id, z.array(Id).min(1)).optional(),
+    hall: z
+      .object({
+        visitHours: z.number().positive(),
+        desk: z.object({ role: Id, hoursPerShift: z.number().int().positive() }),
+        comfortByStage: z.record(Id, z.number().min(1)).optional(),
+        setting: z.object({ role: Id, hoursPerShift: z.number().int().positive() }).optional(),
+      })
+      .optional(),
+    qualifications: z
+      .object({
+        levels: z.record(
+          Id,
+          z.object({ name: z.string().min(1), requires: z.array(Id).default([]) }),
+        ),
+        initial: z.record(Id, z.record(Id, ShareRange)),
+        courseMembership: z.record(Id, Share),
+      })
+      .optional(),
     strictKeepsDeposit: z.literal(true).optional(),
     wtpBasis: z.literal('monthly').optional(),
     classStaffing: z.literal(true).optional(),
@@ -790,6 +810,10 @@ export const LeisureSchema = z
     products: z.record(
       Id,
       z.object({
+        availableSlots: z.array(Id).min(1).optional(),
+        simultaneous: z
+          .object({ hard: z.number().int().positive(), comfort: z.number().int().positive() })
+          .optional(),
         // Hard capacity per slot; comfort below it makes crowding a soft limit.
         capacity: z.record(Id, z.number().int().nonnegative()),
         comfort: z.record(Id, z.number().int().positive()).optional(),
@@ -873,6 +897,7 @@ export const LeisureSchema = z
             cents: Cents.nonnegative(),
             weeks: z.number().int().nonnegative(),
             lostCapacity: z.record(Id, z.number().int().nonnegative()).optional(),
+            closedHours: z.record(Id, z.number().nonnegative()).optional(),
           }),
         }),
       )
@@ -911,6 +936,7 @@ export const LeisureSchema = z
       .record(
         Id,
         z.object({
+          staffing: z.object({ role: Id, unitsPerShift: z.number().int().positive() }).optional(),
           segments: z.record(
             Id,
             z.object({
@@ -974,6 +1000,8 @@ export const LeisureSchema = z
       if (segment.minimumAreas && segment.minimumAreas > (l.opening?.areas.length ?? 0))
         issue('minimum areas exceeds configured opening areas')
     for (const product of Object.values(l.products)) {
+      for (const id of product.availableSlots ?? [])
+        if (!slots.has(id)) issue(`unknown available slot ${id}`)
       if (product.classPlaces && !product.classHours) issue('classes need their hours')
       if (product.classPlacesWhen && !product.classPlaces)
         issue('class conversion needs base places')
@@ -1791,11 +1819,94 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         else if (permit.refundCents > bk.products[id]!.oneOffCents)
           issue('permit refund cannot exceed its purchase', ['bookings', 'leisure'])
       }
+      const extraRoles = Object.values(leisure.extras ?? {}).flatMap((e) =>
+        e.staffing ? [e.staffing.role] : [],
+      )
+      if (new Set(extraRoles).size !== extraRoles.length)
+        issue('staffed extras need separate roles', ['bookings', 'leisure'])
+      for (const role of extraRoles) {
+        if (
+          !bk.roles[role] ||
+          Object.values(bk.roles[role]!.units).some((n) => n > 0) ||
+          role === leisure.hall?.desk.role ||
+          role === leisure.hall?.setting?.role
+        )
+          issue(`extra needs a dedicated role: ${role}`, ['bookings', 'leisure'])
+      }
       for (const id of Object.keys(leisure.extras ?? {}))
         if (!featureIds.has(id)) issue(`unknown ancillary feature ${id}`, ['bookings', 'leisure'])
       for (const extra of Object.values(leisure.extras ?? {}))
         for (const id of Object.keys(extra.segments))
           if (!bk.segments[id]) issue(`unknown ancillary segment ${id}`, ['bookings', 'leisure'])
+      for (const [required, alternatives] of Object.entries(leisure.alternatives ?? {}))
+        for (const id of [required, ...alternatives])
+          if (!featureIds.has(id))
+            issue(`unknown alternative feature ${id}`, ['bookings', 'leisure'])
+      if (leisure.hall) {
+        const hall = leisure.hall
+        for (const role of [hall.desk.role, ...(hall.setting ? [hall.setting.role] : [])])
+          if (!bk.roles[role]) issue(`unknown hall role ${role}`, ['bookings', 'leisure'])
+        const desk = bk.roles[hall.desk.role]
+        if (desk?.founderHours !== undefined && desk.founderHours !== hall.desk.hoursPerShift)
+          issue('hall founder desk hours must match actual cover', ['bookings', 'leisure'])
+        for (const role of [hall.desk.role, ...(hall.setting ? [hall.setting.role] : [])])
+          if (Object.values(bk.roles[role]?.units ?? {}).some((n) => n > 0))
+            issue('hall desk/setting roles cannot also coach services', ['bookings', 'leisure'])
+        if (hall.setting && bk.roles[hall.setting.role]?.founderHours !== undefined)
+          issue('founder setting uses settingHours, not paid setter shifts', [
+            'bookings',
+            'leisure',
+          ])
+        if (hall.setting?.role === hall.desk.role)
+          issue('hall desk and setting need separate roles', ['bookings', 'leisure'])
+        for (const id of Object.keys(hall.comfortByStage ?? {}))
+          if (!s.officeStages.some((stage) => stage.id === id))
+            issue(`unknown hall stage ${id}`, ['bookings', 'leisure'])
+      }
+      for (const p of Object.values(leisure.products))
+        if (p.simultaneous) {
+          if (!leisure.hall || p.classPlaces)
+            issue('simultaneous hall places need hall mode and cannot be classes', [
+              'bookings',
+              'leisure',
+            ])
+          if (p.simultaneous.comfort > p.simultaneous.hard)
+            issue('hall comfort exceeds safety limit', ['bookings', 'leisure'])
+        }
+      for (const f of Object.values(leisure.freshness ?? {}))
+        for (const [id, hours] of Object.entries(f.refresh.closedHours ?? {}))
+          if (!leisure.hall || !leisure.slots.some((slot) => slot.id === id && hours <= slot.hours))
+            issue(`invalid reset closure ${id}`, ['bookings', 'leisure'])
+      if (leisure.qualifications) {
+        const q = leisure.qualifications
+        for (const [segment, levels] of Object.entries(q.initial)) {
+          if (!bk.segments[segment])
+            issue(`unknown qualification segment ${segment}`, ['bookings', 'leisure'])
+          for (const level of Object.keys(levels))
+            if (!q.levels[level])
+              issue(`unknown initial qualification ${level}`, ['bookings', 'leisure'])
+        }
+        for (const [id, level] of Object.entries(q.levels)) {
+          for (const required of level.requires)
+            if (!q.levels[required] || required === id)
+              issue(`invalid qualification prerequisite ${required}`, ['bookings', 'leisure'])
+        }
+        const cycle = (id: string, seen: Set<string>): boolean =>
+          seen.has(id) ||
+          (q.levels[id]?.requires.some((next) => cycle(next, new Set([...seen, id]))) ?? false)
+        for (const id of Object.keys(q.levels))
+          if (cycle(id, new Set()))
+            issue('qualification prerequisite cycle', ['bookings', 'leisure'])
+        for (const id of Object.keys(q.courseMembership))
+          if (!bk.products[id]?.course)
+            issue(`membership conversion needs a course: ${id}`, ['bookings', 'leisure'])
+        for (const p of Object.values(bk.products)) {
+          if (p.needsLevel && !q.levels[p.needsLevel])
+            issue(`unknown personal qualification ${p.needsLevel}`, ['bookings', 'leisure'])
+          if (p.course && !q.levels[p.course.level])
+            issue(`unknown course qualification ${p.course.level}`, ['bookings', 'leisure'])
+        }
+      }
       if (leisure.noise)
         for (const id of [
           ...leisure.noise.products,
@@ -1879,9 +1990,10 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     if (c?.review?.shelter && !bk.products[c.review.shelter]) {
       issue('unknown shelter product', ['bookings', 'conditions', 'review'])
     }
-    const levels = new Set(
-      Object.values(bk.products).flatMap((p) => (p.course ? [p.course.level] : [])),
-    )
+    const levels = new Set([
+      ...Object.values(bk.products).flatMap((p) => (p.course ? [p.course.level] : [])),
+      ...Object.keys(bk.leisure?.qualifications?.levels ?? {}),
+    ])
     for (const seg of Object.values(bk.segments)) for (const l of seg.levels ?? []) levels.add(l)
     for (const [id, p] of Object.entries(bk.products)) {
       const at = ['bookings', 'products', id]

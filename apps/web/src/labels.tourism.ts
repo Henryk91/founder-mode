@@ -736,7 +736,48 @@ const SCHWEISSPERLE: Overrides = {
     'You cancelled {company} visits for unavailable classes or missing cover; members and guests cancelled {guest}.',
 }
 
+const GRIFFIG: Overrides = {
+  ...SCHWEISSPERLE,
+  'stat.guests': 'Hall visits,last 4 weeks',
+  'stat.guests.short': 'Visits',
+  'tab.calendar': { scrappy: 'Walls', organised: 'Walls', established: 'Hall access' },
+  'tab.pipeline': { scrappy: 'Walls', organised: 'Walls', established: 'Hall access' },
+  'tour.calendar': 'Walls and members',
+  'leisure.membersTitle': 'Memberships and visit cards',
+  'leisure.freshnessLine': '{word} routes.',
+  'plan.section.build': {
+    scrappy: 'Build walls and set routes',
+    organised: 'Walls and upkeep',
+    established: 'Walls and upkeep',
+  },
+  'plan.section.guests': {
+    scrappy: 'Bring climbers in',
+    organised: 'Channels',
+    established: 'Distribution',
+  },
+  'plan.hint.build':
+    'Prepare the fit-out and chosen walls,then allow their construction waits. Founder setting takes hours;paid setting needs actual setter shifts and an allocation in Walls.',
+  'plan.hint.prices':
+    'Set day-ticket prices and new membership terms. Check included areas,skills and usable slots before selling access.',
+  'leisure.beforeOpening':
+    'Not open yet. Complete the common fit-out and at least one chosen area. Other areas may finish later.',
+  'market.trials.title': 'Listings and open days',
+  'help.week.1':
+    'Research climbers and prepare the first-wall choice and bank plan. Fund common fit-out as well as the walls. Once open,set hall hours and pay desk cover in the rota;independent rope access requires belay skills.',
+  'help.week.4':
+    'Every fourth week closes a financial month. Membership fees and visit cards bring cash;unused card visits remain owed. Route setting,courses,desk cover and café work each need their own hours. Summer does not cancel wages.',
+  'explain.prices.text':
+    'Day tickets are per visit;interview budgets are monthly membership budgets. Monthly,annual,off-peak and prepaid visits have separate terms. Rope access needs earned qualifications;courses and parties are separate paid products.',
+  'explain.test.text':
+    'A listing and an open day test interest. Compare requested walls,budgets and usable slots with what people actually pay for. An experiment does not complete construction or qualify a rope climber.',
+  'results.entry.ui_established':
+    'The hall pays its bills. The climbing remains vertical;the accounts now have columns too.',
+  'pm.guests.cancelled':
+    'You cancelled {company} visits for unavailable areas or missing cover;climbers cancelled {guest}.',
+}
+
 export const SCENARIO_LABELS: Record<string, Overrides> = {
+  griffig: GRIFFIG,
   schweissperle: SCHWEISSPERLE,
   fabriketage: FABRIKETAGE,
   ausgesperrt: AUSGESPERRT,

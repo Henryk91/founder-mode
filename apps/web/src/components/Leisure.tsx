@@ -490,9 +490,17 @@ function VenueFacts({ leisure: l, view }: { leisure: LeisureView; view: PlayerVi
       ))}
       {l.extras?.map((e) => (
         <div key={e.productId}>
+          {e.staffing && (
+            <p>
+              {label('hall.extraStaff', stage, {
+                name: e.staffing.name,
+                units: e.staffing.unitsPerShift,
+              })}
+            </p>
+          )}
           {e.terms.map((t) => (
             <p key={t.segmentId}>
-              {label('leisure.extraTerms', stage, {
+              {label(l.hall ? 'hall.extraTerms' : 'leisure.extraTerms', stage, {
                 name: e.name,
                 segment: view.segments.find((s) => s.id === t.segmentId)?.name ?? t.segmentId,
                 share: Math.round(t.revenueShare * 100),

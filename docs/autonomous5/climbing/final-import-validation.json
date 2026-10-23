@@ -1,0 +1,12 @@
+{
+  "fitnessImport": "a6060e0",
+  "normalGames": 21,
+  "funded104WeekCourseGames": 6,
+  "completeResultsIdenticalToIntegratedBaseline": true,
+  "allPublicViewTracesIdentical": true,
+  "testsPassed": 829,
+  "testsSkipped": 27,
+  "lintPassed": true,
+  "registered": false,
+  "tuningRounds": 0
+}

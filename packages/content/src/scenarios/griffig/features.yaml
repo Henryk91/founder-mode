@@ -1,0 +1,176 @@
+- id: basic_fit_out
+  name: Reception, mats and changing rooms
+  buildHours: 40
+  bugsOnShip:
+    min: 0
+    max: 1
+  mention: A safe floor, working changing rooms and a reception that knows who is inside.
+- id: boulder_area
+  name: Bouldering area
+  buildHours: 30
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Fresh boulders we can try together after lectures, with room to land.
+- id: rope_walls
+  name: Rope walls
+  buildHours: 40
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Proper rope routes, useful grades and enough space to train with a partner.
+- id: auto_belays
+  name: Auto-belay lines
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A way to climb without finding a partner, after a proper induction.
+- id: kids_area
+  name: Children’s bouldering area
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Somewhere the children can learn without running through adult training.
+- id: training_area
+  name: Training boards and equipment
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A useful training corner. I would rather have that than a larger reception sofa.
+- id: cafe_counter
+  name: Café counter
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A coffee after climbing is welcome. It does not replace the climbing.
+- id: intro_course
+  name: Introduction to bouldering
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: Show us the basics before we copy the most confident person in the room.
+- id: belay_course
+  name: Top-rope belay course
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A proper course and assessment, with a clear route to independent practice.
+- id: lead_course
+  name: Lead climbing course
+  buildHours: 15
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: I have the belay basics and want to learn the next skill properly.
+- id: kids_club
+  name: Weekly children’s climbing club
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A regular coach, clear ages and a session we can plan a weekend around.
+- id: birthday_parties
+  name: Supervised birthday parties
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A complete price, safe cover and enough rental shoes for the actual guest list.
+- id: student_prices
+  name: Student tickets and memberships
+  buildHours: 5
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: A price we can afford at a time we can attend.
+- id: online_booking
+  name: Tickets and course booking
+  buildHours: 10
+  bugsOnShip:
+    min: 0
+    max: 1
+  mention: Let me see which areas and courses are open before buying the ticket.
+- id: speed_wall
+  name: Competition speed wall
+  buildHours: 20
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention: The speed wall looks impressive online. My membership is for the rest of the hall.
+- id: rental_stock
+  name: Rental shoes and harnesses
+  mention: Clean,checked rental equipment in the sizes people actually need.
+  buildHours: 4
+  bugsOnShip:
+    min: 0
+    max: 0
+- id: monthly_membership
+  name: Monthly membership
+  mention: A clear monthly price and four weeks of notice.
+  buildHours: 4
+  bugsOnShip:
+    min: 0
+    max: 0
+- id: annual_membership
+  name: Twelve-month membership
+  mention: A lower monthly price for a full year of commitment.
+  buildHours: 4
+  bugsOnShip:
+    min: 0
+    max: 0
+- id: off_peak_membership
+  name: Off-peak membership
+  mention: A cheaper membership for the quiet hours I can use.
+  buildHours: 4
+  bugsOnShip:
+    min: 0
+    max: 0
+- id: visit_card
+  name: Ten-visit card
+  mention: Ten prepaid visits,valid for a year. Unused visits remain owed.
+  buildHours: 4
+  bugsOnShip:
+    min: 0
+    max: 0
+- id: student_monthly_membership
+  name: Student monthly membership
+  buildHours: 2
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention:
+    The student agreement is one fifth below the corresponding regular price. It keeps the same
+    slots and term.
+- id: student_annual_membership
+  name: Student twelve-month membership
+  buildHours: 2
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention:
+    The student agreement is one fifth below the corresponding regular price. It keeps the same
+    slots and term.
+- id: student_off_peak_membership
+  name: Student off-peak membership
+  buildHours: 2
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention:
+    The student agreement is one fifth below the corresponding regular price. It keeps the same
+    slots and term.
+- id: student_visit_card
+  name: Student ten-visit card
+  buildHours: 2
+  bugsOnShip:
+    min: 0
+    max: 0
+  mention:
+    The student agreement is one fifth below the corresponding regular price. It keeps the same
+    slots and term.

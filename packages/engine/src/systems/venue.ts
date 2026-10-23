@@ -119,6 +119,7 @@ export function finishVenue(
   rng: Rng | undefined,
   money: VenueMoney | undefined,
   turnaround: Record<string, number>,
+  cover: Readonly<Record<string, number>> = {},
 ): { state: GameState; receiptsCents: number; costsCents: number } {
   const c = input.scenario.bookings?.leisure
   const l = input.bookings?.leisure
@@ -143,13 +144,18 @@ export function finishVenue(
   let costsCents = 0
   for (const [id, extra] of entries(c.extras ?? {})) {
     const total = emptyExtra()
+    let remaining = extra.staffing
+      ? (cover[extra.staffing.role] ?? 0) * extra.staffing.unitsPerShift
+      : Infinity
     if (shipped(input, id))
       for (const b of served) {
         const term = extra.segments[b.segmentId]
         if (!term) continue
-        const receipt = b.units * Math.round(term.grossCents * term.revenueShare)
-        const cost = b.units * term.unitCostCents
-        total.units += b.units
+        const units = Math.min(b.units, remaining)
+        remaining -= units
+        const receipt = units * Math.round(term.grossCents * term.revenueShare)
+        const cost = units * term.unitCostCents
+        total.units += units
         total.receiptsCents += receipt
         total.costsCents += cost
         if (noise && late(b)) {
@@ -277,6 +283,15 @@ export function venueView(s: GameState): Pick<LeisureView, 'noise' | 'extras'> {
               productId: id,
               name: s.scenario.features.find((f) => f.id === id)?.name ?? id,
               active: shipped(s, id),
+              ...(extra.staffing
+                ? {
+                    staffing: {
+                      roleId: extra.staffing.role,
+                      name: s.scenario.bookings!.roles[extra.staffing.role]!.name,
+                      unitsPerShift: extra.staffing.unitsPerShift,
+                    },
+                  }
+                : {}),
               terms: entries(extra.segments).map(([segmentId, term]) => ({ segmentId, ...term })),
               ...total,
               receiptsLast4Cents: recent.reduce(

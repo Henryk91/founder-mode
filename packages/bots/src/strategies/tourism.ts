@@ -8,6 +8,7 @@ import {
   type WeekReport,
 } from '@founder-mode/engine'
 import { fitnessWanted, planFitness, priceFitness } from './fitness'
+import { climbingFirst, climbingWanted, planClimbing, priceClimbing } from './climbing'
 import { budgetHints } from '../pricing'
 import { PlanBuilder, segmentNotes, type Player, type Strategy } from '../strategy'
 import { TOURISM_READER } from './tourismReader'
@@ -458,7 +459,8 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           ? 0
           : greedy
             ? plan.workingCapitalMaxCents
-            : (cfg.leisure?.noise || cfg.leisure?.classStaffing) && runningLoans.length === 0
+            : (cfg.leisure?.noise || cfg.leisure?.classStaffing || cfg.leisure?.hall) &&
+                runningLoans.length === 0
               ? plan.workingCapitalMaxCents
               : Math.max(0, need - itemsCents())
       let wc = Math.floor(Math.min(plan.workingCapitalMaxCents, roundUp(wcNeed)) / step) * step
@@ -536,7 +538,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     for (const id of ids) {
       const req = cfg.products[id]?.requires
       const supplied =
-        (cfg.leisure?.noise || cfg.leisure?.classStaffing) &&
+        (cfg.leisure?.noise || cfg.leisure?.classStaffing || cfg.leisure?.hall) &&
         view.bookings?.assets.some((a) => a.buyProduct === req && a.option !== 'none' && !a.broken)
       if (req && !supplied && !out.includes(req)) out.push(req)
       if (!out.includes(id)) out.push(id)
@@ -819,6 +821,19 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           answers.push(initial)
         }
       }
+      if (cfg.leisure?.hall && (!rule.tests || view.week >= 2)) {
+        const message = view.inbox.find(
+          (m) => m.eventId === 'choose_first_walls' && m.answeredChoiceId === null,
+        )
+        if (message) {
+          const first = climbingFirst(view, rule, rank(view)[0]?.id ?? view.segments[0]!.id)
+          const choiceId =
+            first.length === 2 ? 'both' : first[0] === 'rope_walls' ? 'rope' : 'boulder'
+          const old = answers.findIndex((a) => a.messageId === message.id)
+          if (old >= 0) answers.splice(old, 1)
+          answers.push({ messageId: message.id, choiceId })
+        }
+      }
       if (cfg.leisure?.classStaffing && rule.leisure?.neverMatch) {
         for (const message of view.inbox.filter(
           (m) => m.eventId === 'her_own_place' && m.answeredChoiceId === null,
@@ -828,7 +843,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           answers.push({ messageId: message.id, choiceId: 'leave' })
         }
       }
-      if (cfg.leisure?.classStaffing && !rule.reviews) {
+      if ((cfg.leisure?.classStaffing || cfg.leisure?.hall) && !rule.reviews) {
         for (let i = answers.length - 1; i >= 0; i--) {
           const answer = answers[i]!
           const message = view.inbox.find((m) => m.id === answer.messageId)
@@ -1044,10 +1059,16 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     }
     b.chase(Math.max(3, view.invoices.filter((i) => i.canChase).length))
     // Venue fit-out is common to every market: finance it while interviewing, not afterwards.
-    if ((cfg.leisure?.noise || cfg.leisure?.classStaffing) && view.week <= 2)
+    if (
+      (cfg.leisure?.noise || cfg.leisure?.classStaffing || cfg.leisure?.hall) &&
+      view.week <= 2 &&
+      (!cfg.leisure.hall || view.week >= 2)
+    )
       planLoan(view, b, [
         ...(rule.temptationEarly ? [rule.temptationEarly] : []),
-        ...cfg.leisure.opening!.areas,
+        ...(cfg.leisure.hall
+          ? climbingWanted(scenario, view, rule, [], rank(view)[0]?.id ?? ids[0]!)
+          : cfg.leisure.opening!.areas),
       ])
 
     // This week's guests come first: the roster.
@@ -1202,11 +1223,16 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     }
     if (cfg.leisure?.classStaffing)
       Object.assign(used, planFitness(scenario, view, b, plan, rule, januaryPeak))
+    if (cfg.leisure?.hall) Object.assign(used, planClimbing(view, b, plan, rule))
     shiftsUsed = [...shiftsUsed, used].slice(-Math.max(STEADY_WEEKS, IDLE_WEEKS))
     planContracts(view, plan)
 
     // Week 1: listen to everyone. Week 2: a test listing and a pilot where it points.
-    if (rule.tests && (cfg.leisure?.noise || cfg.leisure?.classStaffing) && view.week <= 2) {
+    if (
+      rule.tests &&
+      (cfg.leisure?.noise || cfg.leisure?.classStaffing || cfg.leisure?.hall) &&
+      view.week <= 2
+    ) {
       const each = Math.min(
         FIRST_WEEK_INTERVIEWS,
         Math.floor(b.free / (ids.length * scenario.experiments.interview.hours)),
@@ -1286,9 +1312,11 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           : []),
       ]
       const selected =
-        cfg.leisure?.classStaffing && !rule.buildAll
-          ? fitnessWanted(scenario, view, rule, toBuild)
-          : toBuild
+        cfg.leisure?.hall && !rule.buildAll
+          ? climbingWanted(scenario, view, rule, toBuild, seg)
+          : cfg.leisure?.classStaffing && !rule.buildAll
+            ? fitnessWanted(scenario, view, rule, toBuild)
+            : toBuild
       const baseBuilding = view.loan
         ? withRequired([...new Set([...selected, ...bought, ...early])], view)
         : selected
@@ -1301,7 +1329,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         const visibleBridge = view.loan?.bridgeMonthsHint ?? 0
         const bridge = Math.max(0, Math.max(leadMonths, visibleBridge) - LOAN_BUFFER_MONTHS)
         const reserve =
-          cfg.leisure?.noise || cfg.leisure?.classStaffing
+          cfg.leisure?.noise || cfg.leisure?.classStaffing || cfg.leisure?.hall
             ? Math.max(3, RESERVE_MONTHS + bridge) *
               (view.company.monthlyFixedCostsCents + view.founder.livingCostCentsPerMonth)
             : (RESERVE_MONTHS + bridge) * view.company.monthlyFixedCostsCents
@@ -1312,7 +1340,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           (f) =>
             !shipped(f) &&
             !(
-              (cfg.leisure?.noise || cfg.leisure?.classStaffing) &&
+              (cfg.leisure?.noise || cfg.leisure?.classStaffing || cfg.leisure?.hall) &&
               view.product.features.find((x) => x.id === f)?.readyWeek !== null
             ) &&
             building.some((g) => cfg.products[g]?.requires === f),
@@ -1326,7 +1354,10 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
               ? 0
               : (cfg.products[f]?.oneOffCents ?? 0)
           const keep =
-            required.length > 0 && !(cfg.leisure?.noise || cfg.leisure?.classStaffing) ? 0 : reserve
+            required.length > 0 &&
+            !(cfg.leisure?.noise || cfg.leisure?.classStaffing || cfg.leisure?.hall)
+              ? 0
+              : reserve
           if (cost > 0 && view.company.cashCents - keep - committed < cost) continue
           if ((bv.abroad || bv.leisure) && !shipped(f)) committed += cost
           b.build(f, 40 - (b.plan.build[f] ?? 0))
@@ -1445,6 +1476,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     }
     if (cfg.leisure) planLeisure(view, b, plan, rule)
     if (cfg.leisure?.classStaffing) priceFitness(scenario, view, plan, rule)
+    if (cfg.leisure?.hall) priceClimbing(scenario, view, plan, rule)
     b.plan.bookings = plan
     return b.plan
   }
@@ -1799,6 +1831,62 @@ export const TOURISM_STRATEGIES: Strategy[] = [
       text as string,
       { ...CAREFUL_TOURISM, ...(rule as Partial<TourismRule>) },
       ['schweissperle'],
+    ),
+  ),
+  // Plan5:unregistered Griffig policies activate only once the scenario enters the catalogue.
+  ...[
+    [
+      'climbing_boulder_first',
+      'Builds the bouldering wall first.',
+      { leisure: { climbingFirst: 'boulder' } },
+    ],
+    ['climbing_rope_first', 'Builds rope walls first.', { leisure: { climbingFirst: 'rope' } }],
+    [
+      'climbing_both_first',
+      'Builds bouldering and rope walls together.',
+      { leisure: { climbingFirst: 'both' } },
+    ],
+    [
+      'climbing_setting_half',
+      'Allocates half the careful setting hours.',
+      { leisure: { climbingSetting: 0.5 } },
+    ],
+    [
+      'climbing_setting_double',
+      'Allocates twice the careful setting hours.',
+      { leisure: { climbingSetting: 2 } },
+    ],
+    [
+      'climbing_aggregator_all',
+      'Opens every staffed slot to the aggregator.',
+      { leisure: { aggregator: 'all' } },
+    ],
+    [
+      'climbing_aggregator_none',
+      'Never joins the aggregator.',
+      { leisure: { aggregator: 'none' } },
+    ],
+    [
+      'climbing_rope_no_courses',
+      'Builds rope walls first without belay or lead courses.',
+      { leisure: { climbingFirst: 'rope', climbingCourses: false } },
+    ],
+    [
+      'climbing_speed_early',
+      'Funds the speed wall in the first year.',
+      { temptationEarly: 'speed_wall' },
+    ],
+    [
+      'climbing_no_later_loan',
+      'Keeps initial financing and takes no later loan.',
+      { leisure: { laterLoans: false } },
+    ],
+  ].map(([id, text, rule]) =>
+    tourism(
+      id as string,
+      text as string,
+      { ...CAREFUL_TOURISM, ...(rule as Partial<TourismRule>) },
+      ['griffig'],
     ),
   ),
   // Plan 4: Leinen los's own targets (G1 to G4).

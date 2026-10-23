@@ -1,0 +1,322 @@
+events:
+  - id: the_first_belay_course
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Several beginners want rope access after watching their friends. A course place is available,
+      but independent access needs demonstrated skills. Enthusiasm has not completed the assessment.
+      Use the weekly wall,access and staff controls for lasting changes;this follow-up pays for the
+      conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Offer the proper course
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Promise uncoached rope access immediately
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_next_step
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Graduates ask about lead climbing. The course needs a qualified coach, wall time and a smaller
+      group. Their first certificate is a beginning rather than a universal key. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Schedule the progression course
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Sell the largest possible group
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_incomplete_course
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: A participant misses the final assessment. His friend says he was very good last week. The
+      access record still needs evidence from this week. Use the weekly wall,access and staff
+      controls for lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Arrange the remaining assessment
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Mark the qualification complete
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_kids_register
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Two birthday groups arrive with similar names and different allergies. The coach asks for the
+      correct register before the parents leave. The booking emails are less festive than the cake,
+      and more useful now. Use the weekly wall,access and staff controls for lasting changes;this
+      follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Reconcile and brief the coach
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Start both groups at once
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_birthday_price
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: A parent wants extra children added to the party without another coach. The invitation has
+      already gone out. The coach's attention has not expanded with the guest list. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Quote safe cover or a smaller group
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Accept the extra children unchanged
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_trusted_coach
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: A coach with regular returning students is offered work elsewhere. Several learners ask
+      whether their next course will still run. The timetable contains more than a name. Use the
+      weekly wall,access and staff controls for lasting changes;this follow-up pays for the
+      conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Make a sustainable offer
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Arrange a qualified handover
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: desk_and_wall
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      The founder is coaching while reception handles a queue of new visitors. The desk worker asks
+      who will check rental equipment. Both tasks would like the same pair of hands. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for sufficient cover
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Move between both jobs
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: permanent_cover
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: A reliable desk worker wants a regular contract. Winter evenings could support it; summer
+      mornings are less certain. The notice period has a calendar of its own. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review steady hours
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Keep shifts for now
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: rental_checks
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Several rental items need inspection before the weekend. The equipment log has dates; the
+      birthday list has names. One does not replace the other. Use the weekly wall,access and staff
+      controls for lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Inspect and withdraw anything overdue
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Wait for a customer to report a fault
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1
+  - id: the_cancelled_coach
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: A coach falls ill before a beginner session. Qualified cover costs more at short notice.
+      Cancelling also costs something beyond the refund. Use the weekly wall,access and staff
+      controls for lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay qualified cover
+        hours: 2
+        effects:
+          - type: cash
+            amountCents: -12000
+          - type: review
+            rating: 5
+            count: 1
+      - id: leave
+        label: Cancel clearly and refund
+        hours: 0
+        effects:
+          - type: review
+            rating: 3
+            count: 1

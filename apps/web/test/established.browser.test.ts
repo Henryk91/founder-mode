@@ -133,6 +133,41 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 established screens', () => {
             expect(await page.evaluate(() => document.documentElement.dataset['stage'])).toBe(
               'established',
             )
+            // The stage attribute precedes its lazy stylesheet. Load the actual face
+            // once,then let the fitter settle without repeatedly requesting that face.
+            await expect
+              .poll(
+                () =>
+                  page.evaluate(() => {
+                    const h = document.querySelector('header h1') as HTMLElement
+                    return getComputedStyle(h).fontFamily
+                  }),
+                { timeout: 15_000 },
+              )
+              .toContain('Bricolage Grotesque')
+            await page.evaluate(async () => {
+              const h = document.querySelector('header h1') as HTMLElement
+              const css = getComputedStyle(h)
+              await document.fonts.load(
+                `${css.fontWeight} ${css.fontSize} ${css.fontFamily}`,
+                h.textContent ?? '',
+              )
+            })
+            await expect
+              .poll(
+                () =>
+                  page.evaluate(() => {
+                    const h = document.querySelector('header h1') as HTMLElement
+                    const size = parseFloat(getComputedStyle(h).fontSize)
+                    return {
+                      fits: h.scrollWidth <= h.clientWidth + 1,
+                      oneLine: h.getBoundingClientRect().height / (size * 1.25) <= 1.5,
+                      readable: size >= 12,
+                    }
+                  }),
+                { timeout: 15_000 },
+              )
+              .toEqual({ fits: true, oneLine: true, readable: true })
             const tourism = run.id !== 'kantino'
             const found: string[] = []
             // The company's name on one line, never below 12 px (Henry's review of plan 3).

@@ -142,9 +142,10 @@ export function officeEconomics(state: GameState): OfficeEconomics[] {
     const rentCents = Math.round(
       ((until - stay.acceptedWeek + 1) * stage.monthlyCents) / weeksPerMonth,
     )
-    const traffic = state.scenario.bookings?.leisure?.classStaffing
-      ? state.bookings?.leisure?.traffic
-      : undefined
+    const traffic =
+      state.scenario.bookings?.leisure?.classStaffing || state.scenario.bookings?.leisure?.hall
+        ? state.bookings?.leisure?.traffic
+        : undefined
     const guests = traffic?.length
       ? traffic
           .filter(

@@ -1,0 +1,14 @@
+{
+  "source": "8a3a423",
+  "kind": "three-game performance diagnostic, not target measurement",
+  "seeds": [
+    "test-0",
+    "test-1",
+    "test-2"
+  ],
+  "strategy": "tourism_careful",
+  "completeResultsMatchCheckpoint": true,
+  "profile": "/tmp/plan5-climbing-current.cpuprofile",
+  "results": "/tmp/plan5-climbing-current-profile-results.json",
+  "decision": "No source change during the active initial matrix. Costs are spread across bookings allocation, option selection, leisure aggregation and views; a profile of three games does not establish a controlled speed gain."
+}
