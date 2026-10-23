@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 5 complete (report f1559b2, tag plan5-climbing, merged into main). Step 6 next.
-Last commit: the merge of plan5-climbing-work into main.
-Next action: step 6 as changed by Henry. Copy every open target, with its closest result and options, to docs/BACKLOG.md; then the full report once (one scenario per process), pnpm seeds, docs, the final report and the tag plan5-complete.
+Step: 6 (wrap up). Open targets copied to docs/BACKLOG.md (8eb64bb). The full report is running.
+Last commit: see git log of main.
+Next action: when the full report finishes, commit docs/balancing.md, run pnpm seeds, then docs, the final report and the tag plan5-complete.
 
 Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
 
@@ -28,7 +28,7 @@ Henry's resume instructions override the plan where they differ:
 
 ## Active jobs
 
-None.
+- The full report, once: 13 units (one scenario and mode per process, catalogue order), 1,000 seeds, 10,000 wide seeds, event tables; Kantino long adds team and funding. Griffig reuses its exact-source main and event tasks; everything else computes fresh. Driver, runner, manifest, checkpoints and logs: state folder, plan5-full-driver.sh and full-campaign/. Restart: run the driver again (done units are skipped, an unfinished unit resumes). No tests run while it runs.
 
 ## Checklist
 
