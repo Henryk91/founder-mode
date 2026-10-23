@@ -48,3 +48,18 @@ Corrected review-blind measurement complete at eee2e74:464wins,paired
 −5.2±1.4 against careful516;T10 passes. Only that policy reran,1,000paired
 test seeds. REVIEW_BLIND_CORRECTION.md and review-blind-paired.csv retain
 provenance and every paired ending. The full initial matrix is still running.
+
+
+First-wall contributions completed:boulder56.4%,rope9.1%,both0%. A single
+both-first test0 diagnostic reproduces every measured RunResult field.
+It borrowsEUR480,000 for the three actual fit-out/wall items,with no working
+capital;the20%own-money rule caps lending againstEUR120,000opening capital.
+Company cash reachesEUR1,900inweek21,bouldering opensweek23 and the loan is
+calledweek24,before rope walls finishweek26. This is an initial-financing
+constraint,not evidence that both walls can never serve a profitable market.
+Review the fictional own-money/working-capital estimates before spending
+a value round. Raw compact trace:first-wall-financing-diagnostic.json.
+
+Initial setting variants:half51.5%,double51.1%,against careful51.6%.
+Neither establishes the required loss;wait for the complete target table and
+remaining contributions before selecting value changes.
