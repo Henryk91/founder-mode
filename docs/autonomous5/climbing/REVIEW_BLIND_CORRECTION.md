@@ -22,6 +22,10 @@ error before any games was fixed;no completed games were repeated. Temporary
 entry removed after loading. Reuse every unaffected original policy;replace
 only this task when assembling the coherent corrected initial report.
 
-The isolated branch remains ready for import after original validations are
-collected. Do not spend a value round on this bot error or rerun the whole
+Imported at4e92152 after the initial matrix completed. Earlier-game proof
+continues on its unchanged applicable code paths and content. The coherent
+corrected32-policy report is griffig-main-corrected.md:31 original tasks and
+one corrected task reused,no additional games played. Source cache:
+/tmp/plan5-climbing-corrected-checkpoints-4e92152. Zero report-generation
+wall time is not a play-speed claim;T12 retains actual cached policy times. Do not spend a value round on this bot error or rerun the whole
 initial matrix to replace one policy.
