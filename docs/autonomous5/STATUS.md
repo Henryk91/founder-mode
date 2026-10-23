@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 5.8 resumed after the hard stop (Henry authorised continuing, with a fresh count of three attempts for the browser test failure).
-Last commit: climbing 23013dd, the test command split. Heading fix 94047f1. Outcome source 27756b3.
-Next action: the event campaign is running again from 96 checkpoints (missing tasks only). Then the climbing report, tag plan5-climbing, merge into main, and step 6 (open targets to the backlog, the full report once, one scenario per process).
+Step: 5 complete (report f1559b2, tag plan5-climbing, merged into main). Step 6 next.
+Last commit: the merge of plan5-climbing-work into main.
+Next action: step 6 as changed by Henry. Copy every open target, with its closest result and options, to docs/BACKLOG.md; then the full report once (one scenario per process), pnpm seeds, docs, the final report and the tag plan5-complete.
 
 Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
 
@@ -28,7 +28,7 @@ Henry's resume instructions override the plan where they differ:
 
 ## Active jobs
 
-- Climbing event campaign, resumed from 96 checkpoints with the same command at 23013dd (no package change since 27756b3). Log: state folder, plan5-climbing-events-resume.log. No tests run while it runs.
+None.
 
 ## Checklist
 
@@ -37,7 +37,7 @@ Henry's resume instructions override the plan where they differ:
 - [x] Step 2 Ausgesperrt: plan5-escape
 - [x] Step 3 Fabriketage: plan5-venue, main 75f180b
 - [x] Step 4 Schweißperle: plan5-fitness, 325ebbf, merged into main bd84bcf
-- [ ] Step 5 Griffig: validation gate, event table, report, tag, merge
+- [x] Step 5 Griffig: plan5-climbing, report f1559b2, merged into main
 - [ ] Step 6 wrap up: backlog, full report, seeds, docs, final report, plan5-complete
 
 ## Climbing
@@ -46,7 +46,7 @@ Final main source 27756b3: careful 30.8% ± 2.9, top 39.0%, no-tests 0%; 32 poli
 
 24 features, 49 events, 150 quotes, four intros, two scenes. 225 ending seeds generated; only Griffig rows change and all replay. Twelve earlier-game comparisons remain valid; engine 0.14.0.
 
-Event campaign (first and only), interrupted at the hard stop: 32 complete main tasks and 48 complete forced-answer tasks (40,026 played games) preserved. Inventory: climbing/EVENT_CHECKPOINTS.json. Resume only the missing tasks.
+Event table (first and only): complete after two resumes from checkpoints. 100 policies, 76,588 of 100,000 games played; 49 events judged, 33 favour the cheapest answer, 16 a more effortful one. Every event except the first-wall choice moves outcomes by less than noise. Raw table: climbing/griffig-events.md.
 
 Validation gate: the three earlier full attempts each failed one WebKit established-heading fit case. After the restart:
 - 3a, full suite with nothing else running, unchanged code: still failed (WebKit 375, Gratwanderung and Tiefgang). So the cause is code, not load.
