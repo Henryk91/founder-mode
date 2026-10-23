@@ -1,0 +1,333 @@
+events:
+  - id: the_farewell_class
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text:
+      Members thank the departing instructor and ask where she will teach next. Your timetable still
+      shows her name. The app needs an answer before it needs a new photograph. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Call members and review the cover
+        hours: 3
+        effects:
+          - type: review
+            rating: 4.5
+            count: 1
+            when:
+              - leisure.members >= 20
+      - id: leave
+        label: Keep the current class arrangements
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - leisure.packed >= 1
+  - id: thirteen_classes
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text:
+      The rota could put thirteen classes on one retained instructor. The workload display counts
+      the founder across roles and each named instructor separately. Check actual loads before
+      adding another class; use the Calendar to change them.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Discuss the actual teaching loads
+        hours: 3
+        effects:
+          - type: energy
+            delta: 2
+      - id: leave
+        label: Keep the planned class count
+        hours: 0
+        effects: []
+  - id: seventeen_thirty
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text: The six o'clock teacher calls in sick. Cover is available at a premium. The members are
+      already putting shoes in bags. Use the Calendar or membership controls for any lasting change;
+      this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay the incident cover
+        hours: 1
+        effects:
+          - type: cash
+            amountCents: -8000
+          - type: review
+            rating: 4.5
+            count: 1
+      - id: leave
+        label: Notify the affected class
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+  - id: the_yoga_bass
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text:
+      A yoga member can hear every spin beat through the quiet part of class. The spin instructor
+      has helpfully supplied more bass. Both rooms are getting what one paid for. Use the Calendar
+      or membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Call members and review the cover
+        hours: 3
+        effects:
+          - type: review
+            rating: 4.5
+            count: 1
+            when:
+              - leisure.members >= 20
+      - id: leave
+        label: Keep the current class arrangements
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - leisure.packed >= 1
+  - id: pilates_cover
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text: The regular pilates instructor is away next week. The available strength teacher has never
+      taught reformer. Both know anatomy; only one knows the machine's springs. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay the incident cover
+        hours: 1
+        effects:
+          - type: cash
+            amountCents: -8000
+          - type: review
+            rating: 4.5
+            count: 1
+      - id: leave
+        label: Notify the affected class
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+  - id: the_desk_queue
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text:
+      The founder answers membership questions while the next class waits outside. Three questions
+      could have been answered before class. The fourth involves a lost shoe. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Call members and review the cover
+        hours: 3
+        effects:
+          - type: review
+            rating: 4.5
+            count: 1
+            when:
+              - leisure.members >= 20
+      - id: leave
+        label: Keep the current class arrangements
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - leisure.packed >= 1
+  - id: predictable_work
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text:
+      A reliable instructor asks for a regular contract. The class is busy now; the summer calendar
+      is still thin. The proposed pay includes the weeks that will look empty. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Call members and review the cover
+        hours: 3
+        effects:
+          - type: review
+            rating: 4.5
+            count: 1
+            when:
+              - leisure.members >= 20
+      - id: leave
+        label: Keep the current class arrangements
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - leisure.packed >= 1
+  - id: a_viral_morning
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text: A member's early-class video circulates locally. Bookings rise before anybody reads the
+      changing-room rules. The teacher asks whether somebody can meet the newcomers. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Call members and review the cover
+        hours: 3
+        effects:
+          - type: review
+            rating: 4.5
+            count: 1
+            when:
+              - leisure.members >= 20
+      - id: leave
+        label: Keep the current class arrangements
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - leisure.packed >= 1
+  - id: the_substitute
+    area: team
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your class team
+    look: note
+    text: Members praise a substitute's class and ask whether she can stay. Your regular instructor
+      returns next week. Two good teachers now need one honest conversation. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Call members and review the cover
+        hours: 3
+        effects:
+          - type: review
+            rating: 4.5
+            count: 1
+            when:
+              - leisure.members >= 20
+      - id: leave
+        label: Keep the current class arrangements
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 1
+            when:
+              - leisure.packed >= 1
+  - id: her_own_place
+    area: team
+    weight: 2
+    once: false
+    cooldownWeeks: 26
+    when:
+      - week >= 20
+      - leisure.open == 1
+      - leisure.members >= 25
+    from: none
+    sender: Your most followed instructor
+    look: letter
+    text:
+      Your most followed instructor has been offered a room elsewhere. Matching the offer adds 150
+      EUR a month to the studio payroll. Letting the instructor leave stops real followers
+      attending, while agreed terms and owed class packs remain on the books.
+    defaultChoice: leave
+    choices:
+      - id: match
+        label: Match the continuing offer
+        hours: 2
+        effects:
+          - type: fixedCost
+            id: retention
+            name: Instructor retention supplement
+            monthlyCents: 15000
+      - id: leave
+        label: Let the instructor leave with a handover
+        hours: 0
+        effects:
+          - type: leisureInstructor
+            role: most_followed

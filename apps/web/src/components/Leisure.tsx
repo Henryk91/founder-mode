@@ -3,6 +3,7 @@ import { formatEuro } from '../format'
 import { label, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import { Choices, Market, SubHeading, Writing } from './Ruled'
+import { MembershipFacts } from './Memberships'
 import { Stepper } from './Stepper'
 import ui from './ui.module.css'
 
@@ -189,6 +190,7 @@ export function LeisureCalendar({ view }: { view: PlayerView }) {
         </p>
       ))}
       <VenueFacts leisure={l} view={view} />
+      <MembershipFacts leisure={l} view={view} />
       {l.holds && (
         <>
           <h3 className={ui.title}>{label('leisure.holdPolicy', stage)}</h3>
@@ -386,6 +388,7 @@ export function LeisureSummary({ leisure: l, view }: { leisure: LeisureView; vie
     <section className={ui.card}>
       <h2 className={ui.title}>{label('leisure.lessons', stage)}</h2>
       <VenueFacts leisure={l} view={view} />
+      <MembershipFacts leisure={l} view={view} />
       {l.noise &&
         l.builds
           .filter((b) => b.productId === 'roof_terrace')
@@ -407,6 +410,14 @@ export function LeisureSummary({ leisure: l, view }: { leisure: LeisureView; vie
                 </p>
               )}
             </div>
+          ))}
+      {l.instructorWork &&
+        l.builds
+          .filter((b) => b.productId === 'recovery_room' && b.started)
+          .map((b) => (
+            <p key={b.productId}>
+              {label('leisure.recoveryLesson', stage, { amount: formatEuro(b.costCents) })}
+            </p>
           ))}
       {l.slots.map((slot) => {
         const rows = l.history.flatMap((w) => w.slots.filter((s) => s.slotId === slot.id))

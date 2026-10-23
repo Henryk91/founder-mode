@@ -760,6 +760,15 @@ const SlotShares = z
 export const LeisureSchema = z
   .object({
     strictKeepsDeposit: z.literal(true).optional(),
+    wtpBasis: z.literal('monthly').optional(),
+    classStaffing: z.literal(true).optional(),
+    instructorWorkload: z
+      .object({
+        maxClasses: z.number().int().positive(),
+        penaltyPerOverloadedClass: z.number().nonnegative(),
+      })
+      .optional(),
+    respectSlotPreferences: z.literal(true).optional(),
     slots: z
       .array(z.object({ id: Id, name: z.string().min(1), hours: z.number().positive() }))
       .min(1),
@@ -786,11 +795,30 @@ export const LeisureSchema = z
         comfort: z.record(Id, z.number().int().positive()).optional(),
         // A class has these places, multiplied by the timetable's class count.
         classPlaces: z.number().int().positive().optional(),
+        classPlacesWhen: z.object({ feature: Id, places: z.number().int().positive() }).optional(),
         classHours: z.number().positive().optional(),
         room: Id.optional(),
+        availableStages: z.array(Id).min(1).optional(),
       }),
     ),
     instructors: z.record(Id, ShareRange).optional(),
+    premiumNiche: z
+      .object({
+        feature: Id,
+        offers: z.array(Id).min(1),
+        segments: z.array(Id).min(1),
+        share: ShareRange,
+        wtpFactor: z.number().positive(),
+        requirePreferredOffer: z.literal(true).optional(),
+      })
+      .optional(),
+    foundingFollowing: z
+      .object({
+        segment: Id,
+        count: rangeOf(z.number().int().nonnegative()),
+        weeks: z.number().int().positive(),
+      })
+      .optional(),
     slotPrices: z
       .record(Id, z.record(Id, z.object({ peak: Cents.positive(), off: Cents.positive() })))
       .optional(),
@@ -802,6 +830,8 @@ export const LeisureSchema = z
         Id,
         z.object({
           kind: z.enum(['monthly', 'annual', 'off_peak', 'pack', 'intro']),
+          visitsPerWeek: z.number().nonnegative().optional(),
+          products: z.array(Id).min(1).optional(),
           priceCents: Cents.positive(),
           serves: z.array(Id).min(1),
           slots: z.array(Id).min(1),
@@ -816,6 +846,8 @@ export const LeisureSchema = z
     aggregator: z
       .object({
         name: z.string().min(1),
+        payOnVisit: z.literal(true).optional(),
+        sharedQueue: z.literal(true).optional(),
         payoutCents: rangeOf(Cents.positive()),
         capPerMonth: z.number().int().positive(),
         noticeWeeks: z.number().int().positive(),
@@ -943,6 +975,8 @@ export const LeisureSchema = z
         issue('minimum areas exceeds configured opening areas')
     for (const product of Object.values(l.products)) {
       if (product.classPlaces && !product.classHours) issue('classes need their hours')
+      if (product.classPlacesWhen && !product.classPlaces)
+        issue('class conversion needs base places')
       for (const id of [...Object.keys(product.capacity), ...Object.keys(product.comfort ?? {})]) {
         if (!slots.has(id)) issue(`unknown slot ${id}`)
         if ((product.comfort?.[id] ?? 0) > (product.capacity[id] ?? 0))
@@ -954,8 +988,17 @@ export const LeisureSchema = z
     for (const f of Object.values(l.freshness ?? {}))
       for (const id of Object.keys(f.refresh.lostCapacity ?? {}))
         if (!slots.has(id)) issue(`unknown maintenance slot ${id}`)
+    if (l.instructorWorkload && !l.classStaffing) issue('instructor workload needs class staffing')
+    for (const id of l.premiumNiche?.offers ?? [])
+      if (!l.memberships?.[id]) issue(`unknown premium offer ${id}`)
+    for (const id of l.premiumNiche?.segments ?? [])
+      if (!l.segments[id]) issue(`unknown premium segment ${id}`)
+    if (l.foundingFollowing && !l.segments[l.foundingFollowing.segment])
+      issue('unknown founding following segment')
     for (const offer of Object.values(l.memberships ?? {})) {
       for (const id of offer.slots) if (!slots.has(id)) issue(`unknown slot ${id}`)
+      for (const id of offer.products ?? [])
+        if (!l.products[id]) issue(`unknown membership product ${id}`)
       if (offer.kind === 'pack' && (!offer.visits || !offer.validWeeks))
         issue('packs need visits and validity')
       if (offer.kind === 'intro' && (!offer.validWeeks || offer.convert === undefined))
@@ -1058,7 +1101,11 @@ export const BookingsConfigSchema = z.object({
   // Plan 2 step 3: guests take the founder's time (welcoming, the phone, the bookings, a word at
   // the table): this many hours per unit served last week, at most maxHours a week.
   hosting: z
-    .object({ hoursPerUnit: z.number().nonnegative(), maxHours: z.number().int().nonnegative() })
+    .object({
+      hoursPerUnit: z.number().nonnegative(),
+      maxHours: z.number().int().nonnegative(),
+      relief: z.object({ role: Id, hoursPerShift: z.number().positive() }).optional(),
+    })
     .optional(),
   vouchers: VoucherConfigSchema.optional(),
   renovation: RenovationSchema.optional(),
@@ -1689,6 +1736,8 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       }
     }
     const bk = s.bookings
+    if (bk.hosting?.relief && !bk.roles[bk.hosting.relief.role])
+      issue('unknown hosting relief role', ['bookings', 'hosting', 'relief'])
     for (const id of s.loan?.items ?? []) {
       if (!bk.products[id]) issue(`unknown product ${id}`, ['loan', 'items'])
     }
@@ -1756,6 +1805,18 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
           if (!bk.products[id]) issue(`unknown noise product ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.slotUpgrades ?? {}))
         if (!featureIds.has(id)) issue(`unknown capacity upgrade ${id}`, ['bookings', 'leisure'])
+      if (leisure.premiumNiche && !featureIds.has(leisure.premiumNiche.feature))
+        issue('unknown premium niche feature', ['bookings', 'leisure'])
+      for (const product of Object.values(leisure.products))
+        for (const id of product.availableStages ?? [])
+          if (!s.officeStages.some((stage) => stage.id === id))
+            issue(`unknown class stage ${id}`, ['bookings', 'leisure'])
+      for (const product of Object.values(leisure.products))
+        if (product.classPlacesWhen && !featureIds.has(product.classPlacesWhen.feature))
+          issue(`unknown class conversion ${product.classPlacesWhen.feature}`, [
+            'bookings',
+            'leisure',
+          ])
       for (const id of Object.keys(leisure.space?.uses ?? {}))
         if (!featureIds.has(id)) issue(`unknown space product ${id}`, ['bookings', 'leisure'])
       for (const map of [

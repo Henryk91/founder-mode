@@ -1,4 +1,57 @@
 export const LEISURE_LABELS = {
+  'leisure.membersTitle': 'Memberships and class packs',
+  'leisure.memberCounts':
+    '{active} attending; {inactive} stopped attending; {owed} prepaid visits still owed.',
+  'leisure.memberChanges': 'Last four weeks: {joined} joined, {cancelled} contracts ended.',
+  'leisure.offerOn': 'Offer to new members',
+  'leisure.offerOff': 'Pause new sales',
+  'leisure.offerWhat': 'price for {name}',
+  'leisure.offerTerms': '{term} weeks agreed; {notice} weeks’ notice. Usable slots: {slots}.',
+  'leisure.offerPack':
+    '{visits} visits per pack, valid for {weeks} weeks. Unused visits remain owed until expiry.',
+  'leisure.offerFrequency': 'Typical weekly visits: {n}.',
+  'leisure.offerProducts': 'Includes: {products}.',
+  'leisure.offerPrepare': 'Prepare this offer in the building section before selling it.',
+  'leisure.offerPrices':
+    'Prices change new agreements. Existing members keep their agreed price and term.',
+  'leisure.offer.kind.monthly': 'Monthly fee',
+  'leisure.offer.kind.annual': 'Monthly fee, annual term',
+  'leisure.offer.kind.off_peak': 'Monthly off-peak fee',
+  'leisure.offer.kind.pack': 'Pack price',
+  'leisure.offer.kind.intro': 'Intro price',
+  'leisure.offer.kind.corporate': 'Monthly fee per employee',
+  'leisure.timetable': 'Class timetable',
+  'leisure.timetableHint':
+    'Each scheduled class needs one qualified instructor shift, including empty classes. Classes sharing a room share its available hours.',
+  'leisure.classTerms': '{places} places per class, {hours} h in {room}.',
+  'leisure.classSlot': 'classes for {name}, {slot}',
+  'leisure.classCovered':
+    'Last service: {covered} of {classes} scheduled classes covered in {slot}.',
+  'leisure.classUnavailable': 'This room is not available at the current premises.',
+  'leisure.classPrepare': 'Finish this class’s preparation before scheduling it.',
+  'leisure.room.studio': 'the mat studio',
+  'leisure.room.spin': 'the spin room',
+  'leisure.room.annex': 'the adjoining room',
+  'leisure.instructorFounder': 'Founder',
+  'leisure.instructorLimit':
+    'A regular instructor’s comfortable weekly load is {n} classes. Extra classes can affect reviews.',
+  'leisure.instructorLoad': '{name}: {n} classes taught last week.',
+  'leisure.departure':
+    'Week {week}: {name} left; {stopped} followers stopped attending, {pending} are serving notice.',
+  'leisure.following': 'Your founding following: {invited} invited, {joined} joined a paid offer.',
+  'leisure.recoveryLesson':
+    'The recovery room costs {amount} and adds no class places. Nice photographs still need paying memberships.',
+  'leisure.aggregatorTitle': 'Aggregator access',
+  'leisure.aggregatorTerms':
+    '{name}: up to {cap} check-ins per person each month; {weeks} weeks’ notice to leave. Payment follows actual check-ins.',
+  'leisure.aggregatorQueue': 'Members and platform visitors use the same booking queue.',
+  'leisure.aggregatorJoin': 'Join with these slots',
+  'leisure.aggregatorLeave': 'Give notice to leave',
+  'leisure.aggregatorLeaving': 'Notice given; contract ends in week {week}.',
+  'leisure.aggregatorSlot': 'Open {name}',
+  'leisure.aggregatorRecent':
+    'Last four weeks: {n} check-ins, {amount} received; {cancelled} members said they moved to the aggregator.',
+
   'leisure.roofLesson':
     '{name} costs {amount} and creates no extra event dates. Requests for outdoor space still need paying bookings; the bank cannot collect compliments.',
   'leisure.productPrices': '{name}: {peak} peak, {off} off season in this slot.',

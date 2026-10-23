@@ -1,0 +1,28 @@
+{
+  "beforeSource": "85d9b2b",
+  "games": 21,
+  "policies": [
+    "fitness_aggregator_all",
+    "fitness_recovery_early",
+    "fitness_reformer_always",
+    "fitness_reformer_never",
+    "tourism_careful",
+    "tourism_no_tests",
+    "tourism_understaffing"
+  ],
+  "seeds": [
+    "test-0",
+    "test-1",
+    "test-2"
+  ],
+  "completeResultsIdentical": true,
+  "publicViewTracesIdentical": true,
+  "carefulPairedSeeds": 1000,
+  "carefulResultsIdentical": true,
+  "carefulWins": 937,
+  "cacheRunSeconds": 353.04445533399996,
+  "settledRunSeconds": 348.00437762399997,
+  "timingLoadsControlled": false,
+  "retained": false,
+  "reason": "No demonstrated speed improvement; retain the simpler existing reservation reader."
+}

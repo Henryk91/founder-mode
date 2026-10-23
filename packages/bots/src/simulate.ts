@@ -182,6 +182,7 @@ export type RunResult = {
       openingWeek: number | null
       roomsBuilt: number
       refreshes: number
+      fitness?: { instructorDepartures: number; followersStopped: number }
       venue?: {
         lateEvents: number
         restrictions: number
@@ -657,6 +658,17 @@ function tourismResult(state: GameState, viable: string): RunResult['tourism'] {
       ? {
           leisure: {
             openingWeek: b.leisure.openingWeek,
+            ...(state.scenario.bookings?.leisure?.classStaffing
+              ? {
+                  fitness: {
+                    instructorDepartures: b.leisure.instructorDepartures.length,
+                    followersStopped: b.leisure.instructorDepartures.reduce(
+                      (sum, d) => sum + d.stopped,
+                      0,
+                    ),
+                  },
+                }
+              : {}),
             ...(b.leisure.noise
               ? {
                   venue: {

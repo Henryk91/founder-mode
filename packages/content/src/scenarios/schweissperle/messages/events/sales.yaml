@@ -1,0 +1,309 @@
+events:
+  - id: six_thirty
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      The early class fills while the afternoon class has two bookings. One afternoon booking is an
+      instructor checking the app. The early members ask for another morning. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: march_attendance
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+      - tour.month == 3
+    from: none
+    sender: Your studio notebook
+    look: note
+    text: Several January members have stopped coming and started sending cancellation emails. Their
+      evening reservations are still in the app. The instructor is still on the payroll. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: cheap_afternoons
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      A member asks whether the off-peak offer includes the evening class she can actually attend.
+      It does not. The price is clear; her calendar is clearer. Use the Calendar or membership
+      controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Explain the usable slots
+        hours: 3
+        effects:
+          - type: review
+            rating: 4.5
+            count: 1
+            when:
+              - leisure.members >= 10
+      - id: leave
+        label: Call it equivalent unlimited access
+        hours: 0
+        effects:
+          - type: review
+            rating: 2
+            count: 2
+            when:
+              - leisure.members >= 10
+  - id: the_sunday_class
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      Weekend yoga fills without the spin room making a sound. The teacher asks for a regular place
+      in the timetable. Sunday cleaning is not in the weekday quote. Use the Calendar or membership
+      controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: yoga_crowd
+            count: 3
+            when:
+              - leisure.open == 1
+              - shipped.yoga_classes == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: the_ten_class_balance
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text: A member asks how many visits remain on her pack. Your first answer counts bookings; hers
+      counts classes she actually attended. The difference has brought a screenshot. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: quiet_slot_proposal
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      The aggregator offers to feature afternoon classes. Your own members mostly arrive after work.
+      The empty mats have no objection. Use the Calendar or membership controls for any lasting
+      change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: a_platform_alternative
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      A direct member notices that her employer now pays for the aggregator. She asks why she should
+      keep both. The question has a calculator behind it. Use the Calendar or membership controls
+      for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: off_peak_payout
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      The aggregator offers a temporary higher payout for midday check-ins. The offer ends in six
+      weeks. A permanent instructor contract does not. Use the Calendar or membership controls for
+      any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: the_pack_discount
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      A member sends a competitor's discounted class pack. She likes your early teacher and dislikes
+      the rival's timetable. The screenshot contains only one of those facts. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: premium_trial
+    area: sales
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text: The reformer trial has paying bookings and several polite apologies. The instructor asks
+      whether next month is confirmed. The free taster photographs cannot answer that. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Invite a paid premium trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+              - shipped.reformer_pilates == 1
+      - id: leave
+        label: Keep the brochure for later
+        hours: 0
+        effects: []

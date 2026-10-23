@@ -1115,3 +1115,152 @@ Leisure offers may finish preparation before equipment is acquired; actual sale/
 still requires available equipment. This does not relax an asset purchase’s own company
 prerequisite or the existing non-leisure preparation rules. Venue bots recognise hired
 equipment when expanding dependencies,without marking its purchase feature shipped.
+
+### Optional monthly leisure pricing and offer access
+
+`leisure.wtpBasis: monthly` means hidden segment budgets and interview hints are
+monthly. Joining tests the actual monthly-equivalent offer fee once. Direct ticket
+requests test ticket price times segment visits/week times weeks/month,once after
+choosing their date. Member service reviews use the paid monthly-equivalent offer
+fee;direct ticket reviews use the same normalisation. No such block retains the
+earlier price paths and draw order.
+
+`leisure.respectSlotPreferences: true` excludes membership offers with no positive
+preferred-slot overlap,including intro migration. Optional `memberships[id].products`
+restricts member visits to the named leisure products,including waiting-list
+failures;ordinary/unrestricted offers retain their earlier product routing. Premium
+offers therefore need an explicit paid product restriction rather than giving
+every unlimited membership free premium equipment access. No hidden fields
+are introduced by these config additions,apart from optional public
+`LeisureView.members[].products`,a copied list of the stated allowed class products.
+
+Optional `leisure.products[id].classPlacesWhen: { feature, places }` replaces
+that class's normal seat count once the named feature is ready. Capacity remains
+class count times actual seats;shared room/timetable hours do not increase. The
+public timetable's `places` reports the actual installed seat count. Before the
+conversion,and without this block,the original capacity and view are unchanged.
+
+### Optional timetable-aware staffing
+
+`leisure.classStaffing: true` consumes one eligible serve-role shift for each
+scheduled class,in configured slot order and sorted product order. Instructor
+coverage is per class/slot,not pooled weekly guests. Empty rostered classes use
+their shift;uncovered classes cannot serve. Existing explicit shift wages are
+paid once,including empty classes,and contract/founder cover uses the same pool.
+The existing physical-room hour limit remains in force.
+
+Optional `LeisureState.classCoverage[product][slot]` records actual covered class
+counts for the week. Public `LeisureView.timetable[].coveredClasses` is a copied
+map of those counts. Original games without the switch receive no new fields
+and keep the original guest-based staffing path.
+
+### Optional premium niche and founding following
+
+`leisure.premiumNiche` names the premium feature/paid offers/segments,a hidden
+run-level interest-share range,and a budget multiplier for that paid premium
+service. `HiddenLeisure.premiumInterest` is drawn only with this block. Its
+customers prefer premium offers when available;actual joins still test the paid
+monthly-equivalent fee. The same premium budget basis applies to price churn
+and service-value reviews. Intro migration uses the same observed-offer eligibility
+and preference routing. Premium service restrictions remain in offer product lists.
+
+Interviews can mention the premium feature from actual underlying niche interest,
+using the existing public mentioned-feature evidence. The share stays hidden;
+players/bots can learn from real mentions and actual paid enrolment,not a seed key.
+
+`leisure.foundingFollowing: {segment,count,weeks}` draws a finite opening cohort
+in `HiddenLeisure.foundingFollowing`. Over the configured first open weeks,it
+adds those people to genuine membership enquiries,independent of advertising.
+The ordinary paid-offer/price test still applies;they are people,not free revenue
+or guaranteed signed members. Optional `LeisureState.foundingFollowing` and
+`LeisureView.foundingFollowing` record only actual introductions and paid joins.
+The total estimate and premium share never enter the public view. Unconfigured
+games draw nothing extra and receive no fields.
+
+### Identified class-instructor workload
+
+Optional `leisure.instructorWorkload: {maxClasses,penaltyPerOverloadedClass}`
+requires class-aware staffing. Actual covered classes use the founder first,
+then working named contracts in their stable signing order,then anonymous
+per-class cover. Founder classes across roles count as one person's workload;
+contracts count individually. A review penalty weights excess classes over the
+stated limit by all covered classes. Flexible anonymous shifts are a pool of
+people,and do not pretend that all cover is one person.
+
+`LeisureState.instructorLoads` optionally records actual founder/contract identities
+and class counts. Public `LeisureView.instructorWork` copies those loads and the
+stated maximum;the review coefficient is not public. These optional fields and
+calculations do not exist for earlier games without the content block.
+
+Optional `leisure.products[id].availableStages` restricts its physical capacity
+to those actually occupied office stages. Prepared classes cannot use an annex
+before the move completes. The public timetable optionally reports `available`;
+without the block,no field or restriction is added. Distinct annex class aliases
+share an annex room-hour budget and need their own instructor coverage.
+
+Instructor following eligibility also honours a membership's optional product
+list. A departing mat teacher cannot take members whose paid offer permits only
+premium classes taught by somebody else. Unrestricted offers keep their old path.
+
+### Optional paid administrative relief
+
+`bookings.hosting.relief: {role,hoursPerShift}` lets paid weekly/contract desk
+cover reduce the following week's automatic founder administration from actual
+served visits. It never supplies instructor coverage. Optional
+`BookingsState.hostingReliefHours` records that week's paid cover,capped by the
+hosting maximum and reset each week. Public `BookingsView.hostingReliefHours`
+shows actual cover;`hostingHours` shows the remaining founder hours,never negative.
+Unconfigured games retain their previous hosting path and get no fields.
+
+Class-aware timetables additionally expose optional `classHours`, the stated duration
+of one class. Existing member bookings cancelled at service add a failed visit to waitlist
+history without redeeming pack visits or value; this behaviour is unchanged.
+
+Fitness bot results optionally record `tourism.leisure.fitness` with counts of
+actual instructor departures and followers stopped. This report-only aggregate
+is absent without class-aware staffing and does not enter player decisions.
+
+For class-aware membership offers, `LeisureView.members[].visits` optionally
+exposes the stated visits per purchased pack, distinct from aggregate owed visits.
+
+Class-aware leisure keeps optional `LeisureState.traffic`:one product-count row
+per week for served,arrived and non-cancelled visits,retaining the same54-week
+window as the earlier individual history. Finished individual class visits older
+than one week fold into existing lifetime archive totals. Calendar year comparisons,
+recent occupancy and office visit counts read the compact history;future bookings,
+member credit,ledger and action logs retain their existing rules. Traffic records
+are not copied into PlayerView. Member lookup maps are local to a calculation.
+No compact records or shorter retention apply without class-aware content.
+
+Class-aware visit compaction retains the current service week as individual bookings and54weeks of product/week traffic aggregates. Lifetime status/segment/channel totals remain in the ordinary archive. Hosting hours use the aggregate previous-week served count too,including an ending shown before the week increments. No public fields or outcome formulas change.
+
+Optional leisure aggregator `payOnVisit:true` settles actual check-ins directly,
+even when the visitor's segment ordinarily receives invoices. It never creates
+an invoice to that visitor's employer. Omitted retains the earlier payment path.
+Optional membership `visitsPerWeek` overrides the segment's usage for that offer
+and the pack's monthly-equivalent budget basis;the public offer repeats this
+stated frequency. Omitted retains the segment rate exactly.
+
+
+### Optional shared reservation queue and strict specialist preference
+
+`leisure.aggregator.sharedQueue:true` collects actual member/platform visit
+requests and applies a seeded arrival ordering before allocating the existing
+hard capacity. With no platform request,the existing member order is retained.
+Denied members receive the actual week in their existing waitlist;no reservation
+creates an extra place. Omitted retains the earlier member-first path and RNG.
+Optional `LeisureView.aggregator.sharedQueue:true` exposes only this published
+booking rule;the labels explain it without arrival probabilities.
+
+`premiumNiche.requirePreferredOffer:true` allows a normal prospective enquiry
+to decline when its sampled ordinary/specialist preference has no enabled usable
+offer. The finite founder following keeps its existing fallback,and members
+already on an ordinary intro retain their renewal fallback. Paid conversion,
+product/slot restrictions and budgets still apply. The optional switch draws no
+additional hidden parameter and is absent in earlier games.
+
+Class-aware service reviews now include the existing cancellation penalty times
+the fraction of actual member reservation attempts refused:current-week waitlist
+entries divided by those entries plus reserved member visits. Company-cancelled
+bookings remain the existing service penalty,not additional denied reservations.
+No new numeric coefficient or player-state field is introduced.

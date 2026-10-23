@@ -1,0 +1,132 @@
+{
+  "baseline": "f334fd7",
+  "completeGames": 21,
+  "matches": [
+    {
+      "strategy": "tourism_careful",
+      "seed": "test-0",
+      "publicTraceSha256": "0beec9883d8191b843d83138ee6d678597c3717df5652a3010ce4dc4293cf9d2",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "tourism_careful",
+      "seed": "test-1",
+      "publicTraceSha256": "0930a83988b20204052ba51895a40f26e14dc0b2502a93c59af9ebc63cc992d1",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "tourism_careful",
+      "seed": "test-2",
+      "publicTraceSha256": "546131b50d2848a0e254e0eaf4bf01279833722458424b51cf4926dd58c8d87f",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "tourism_no_tests",
+      "seed": "test-0",
+      "publicTraceSha256": "0730d46bb69768690fa3e4d33e9eb63e729f4b12044bd1626bceafa031a136f2",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "tourism_no_tests",
+      "seed": "test-1",
+      "publicTraceSha256": "a4a5bae2df8eb2d3678dfd076e9a6085cc4418c24b5d49d854dbb24e5bfea8ee",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "tourism_no_tests",
+      "seed": "test-2",
+      "publicTraceSha256": "be172ac5a422a0a6fbc211255be74e2922470c052bd31d1794a2536fd3ea3e9b",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "tourism_understaffing",
+      "seed": "test-0",
+      "publicTraceSha256": "d8528b5bc8860eb2a58c2ef5f2f6ea7354d7e0c9c6450998370a6977be51c442",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "tourism_understaffing",
+      "seed": "test-1",
+      "publicTraceSha256": "913d0952be4cdc78c4ac5829567b3ba08ee6c3ee6e4faa49688c0741ae933c37",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "tourism_understaffing",
+      "seed": "test-2",
+      "publicTraceSha256": "7a318e8e5e1700697fc3ff29bd339556e2c93e9a172a0d35ba6bf2d0db81bbb3",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_reformer_always",
+      "seed": "test-0",
+      "publicTraceSha256": "6601d721e7aa71f8cb653ffd03d121b5da20f7b97150ce84417839b42740a87a",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_reformer_always",
+      "seed": "test-1",
+      "publicTraceSha256": "406eb667c8a285cfd00b7f149ae23d312624b00fa0dbfa7e7e50c13c9fa37b94",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_reformer_always",
+      "seed": "test-2",
+      "publicTraceSha256": "c59cc492ebe3209466519aeeae603f68652febe84e9402893a6f7af36326ff5d",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_reformer_never",
+      "seed": "test-0",
+      "publicTraceSha256": "0beec9883d8191b843d83138ee6d678597c3717df5652a3010ce4dc4293cf9d2",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_reformer_never",
+      "seed": "test-1",
+      "publicTraceSha256": "0930a83988b20204052ba51895a40f26e14dc0b2502a93c59af9ebc63cc992d1",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_reformer_never",
+      "seed": "test-2",
+      "publicTraceSha256": "546131b50d2848a0e254e0eaf4bf01279833722458424b51cf4926dd58c8d87f",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_aggregator_all",
+      "seed": "test-0",
+      "publicTraceSha256": "76f5cec5b2b2302fa0a6667fc359bebe198bd124ad5f663e7658ef77b104af49",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_aggregator_all",
+      "seed": "test-1",
+      "publicTraceSha256": "6095b78e0d00a4477067c809c34b17647186149d415e850fef938ea3fde6c3d6",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_aggregator_all",
+      "seed": "test-2",
+      "publicTraceSha256": "25fd5b3308106c2764bc6db039571ab06dde3ac9c4c176742e4f9f5389499bda",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_recovery_early",
+      "seed": "test-0",
+      "publicTraceSha256": "50ee35b0791c8d27bf1ff5e2a0b2440fa8e6b916e77bea0c0f224501b684511d",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_recovery_early",
+      "seed": "test-1",
+      "publicTraceSha256": "31ce314029972a776bbe15146093a3628279c8e3636443c8d47e1cbd3968c3b2",
+      "completeResultMatches": true
+    },
+    {
+      "strategy": "fitness_recovery_early",
+      "seed": "test-2",
+      "publicTraceSha256": "08ee1f8a5c66bb8d3346d985f2c0c25df298e58ab488fc3fdcb76ca9e69ee2bc",
+      "completeResultMatches": true
+    }
+  ]
+}

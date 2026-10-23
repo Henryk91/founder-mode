@@ -663,7 +663,81 @@ const FABRIKETAGE: Overrides = {
     'You cancelled {company} events for closed dates or missing cover; clients cancelled {guest}.',
 }
 
+const SCHWEISSPERLE: Overrides = {
+  ...shared({
+    test: {
+      one: 'Class listing',
+      other: 'Class listings',
+      lower: 'class listing',
+      lowerPlural: 'class listings',
+    },
+    pilot: {
+      one: 'Trial class',
+      other: 'Trial classes',
+      lower: 'trial class',
+      lowerPlural: 'trial classes',
+    },
+    formal: {
+      test: { one: 'Listing test', other: 'Listing tests' },
+      pilot: { one: 'Open class', other: 'Open classes' },
+    },
+    fixFormal: 'Studio upkeep',
+    snag: { one: 'snag', other: 'snags' },
+    fix: 'Fix studio snags',
+    fixWhat: 'hours fixing studio snags',
+    build: 'Prepare the studio and offers',
+    invoices: {
+      hint: 'Company plans invoice employee memberships. Chase overdue invoices for {hours}; individual plans and packs are paid in advance.',
+      none: 'No company membership invoices yet.',
+    },
+    fixedCosts:
+      'Company costs per month (rent, insurance, utilities, music, software, cleaning and accountant)',
+  }),
+  'bar.company': { scrappy: '{name}', organised: '{name}', established: '{name} GmbH' },
+  'stat.guests': 'Class visits, last 4 weeks',
+  'stat.guests.short': 'Visits',
+  'tab.calendar': { scrappy: 'Classes', organised: 'Classes', established: 'Timetable' },
+  'tab.pipeline': { scrappy: 'Classes', organised: 'Classes', established: 'Timetable' },
+  'tour.calendar': 'Classes and members',
+  'plan.section.talk': {
+    scrappy: 'Talk to potential members',
+    organised: 'Member conversations',
+    established: 'Member research',
+  },
+  'plan.section.guests': {
+    scrappy: 'Fill the classes',
+    organised: 'Channels',
+    established: 'Distribution',
+  },
+  'plan.hint.build':
+    'Prepare the paid fit-out, classes and offers. Allow construction time before opening; reformers reduce mat places in the same studio.',
+  'plan.hint.prices':
+    'Set new membership and pack prices. Agreed terms and prepaid visits remain owed.',
+  'leisure.beforeOpening':
+    'Not open yet. Fund and prepare the studio fit-out, then allow the stated construction wait.',
+  'leisure.buildPrep': '{name}: {amount} committed. Finish preparation, then allow {weeks} weeks.',
+  'market.trials.title': 'Class listings and open classes',
+  'asset.capacity': 'Spin class places',
+  'asset.capacityShare': '{pct}% of the bikes',
+  'asset.products': 'Used for: {products}.',
+  'asset.switch.buy':
+    'Lease or return bikes through the supplier’s inbox offer. Buy through the product list; the studio and classes must also be ready.',
+  'help.week.1':
+    'Plan your hours. Research potential members while preparing the bank loan and studio fit-out. Prepare class offers, then set the timetable in Classes and roster one qualified instructor shift for every class, including empty ones.',
+  'help.week.4':
+    'Every fourth week closes a financial month. Membership fees and class packs bring cash; an unused pack still owes visits. Annual members keep their agreed term even if they stop attending. The aggregator pays only actual check-ins in the slots you open.',
+  'explain.prices.text':
+    'Monthly fees, annual terms, off-peak access, intro offers and packs are separate agreements. New prices apply to new members. Check slots and included classes before enabling an offer. Drop-in prices are per visit; monthly interview budgets refer to membership fees.',
+  'explain.test.text':
+    'A class listing measures interest before you commit. A trial class gives people a small paid offer. Read the budgets, requested classes and usable slots; enthusiasm alone does not pay the lease.',
+  'results.entry.ui_established':
+    'The studio pays its bills. The timetable has become a spreadsheet, with the same early alarm.',
+  'pm.guests.cancelled':
+    'You cancelled {company} visits for unavailable classes or missing cover; members and guests cancelled {guest}.',
+}
+
 export const SCENARIO_LABELS: Record<string, Overrides> = {
+  schweissperle: SCHWEISSPERLE,
   fabriketage: FABRIKETAGE,
   ausgesperrt: AUSGESPERRT,
   leinenlos: LEINENLOS,

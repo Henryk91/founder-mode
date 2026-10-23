@@ -1,0 +1,3 @@
+/tmp/plan5-fitness-settled-checkpoints-5e886ff48dea4514
+Source:85d9b2b. Runner backup:/tmp/plan5-fitness-settled-runner.ts. Main only,1,000test seeds,four workers;values0/2,formula0/1.
+The temporary source entry packages/bots/src/plan5-settled.ts was removed after loading;the running process keeps its loaded code. Restore the backup only for an exact-source resumption of this matrix.

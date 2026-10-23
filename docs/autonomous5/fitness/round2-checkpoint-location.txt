@@ -1,0 +1,4 @@
+/tmp/plan5-fitness-round2-checkpoints-a6a1c8c
+Source:a6a1c8c1bf920983ac81df722a7b71ba3fc4d3d4. Main only,30policies,1,000 paired test seeds,eight workers. Values2/2,formula0/1.
+Runner backup:/tmp/plan5-fitness-round2-runner.ts;restore as packages/bots/src/plan5-round2.ts only for exact-source resumption.
+Log:/tmp/plan5-fitness-main-round2.log;output:schweissperle-main-round2.md.

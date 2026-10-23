@@ -1,0 +1,94 @@
+events:
+  - id: the_founder_s_double
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text: You teach early, cover lunch and answer messages after the evening class. Tomorrow has the
+      same timetable. Your breakfast has become an administrative task. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: act
+    choices:
+      - id: act
+        label: Make room for a break
+        hours: 0
+        effects:
+          - type: energy
+            delta: 6
+      - id: leave
+        label: Inspect more snags instead
+        hours: 4
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+  - id: a_weekend_away
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      A friend invites you away during a quiet weekend. Qualified cover is available and costs more
+      than the train. You have started describing a quiet room as a day off. Use the Calendar or
+      membership controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: act
+    choices:
+      - id: act
+        label: Make room for a break
+        hours: 0
+        effects:
+          - type: energy
+            delta: 6
+      - id: leave
+        label: Inspect more snags instead
+        hours: 4
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+  - id: the_timetable_meeting
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      Staff bring attendance figures, member requests and three incompatible holiday plans. The room
+      contains enough evidence for a useful decision. It also contains enough opinions for a long
+      evening. Use the Calendar or membership controls for any lasting change; this follow-up
+      handles the conversation.
+    defaultChoice: act
+    choices:
+      - id: act
+        label: Make room for a break
+        hours: 0
+        effects:
+          - type: energy
+            delta: 6
+      - id: leave
+        label: Inspect more snags instead
+        hours: 4
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1

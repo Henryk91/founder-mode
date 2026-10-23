@@ -1,0 +1,110 @@
+[
+  {
+    "id": "tourism_careful",
+    "seed": "test-0",
+    "ending": "sustainable",
+    "week": 104,
+    "denied": 133,
+    "reserved": 25908,
+    "aggregator": 11993,
+    "refusalWeeks": 3,
+    "openWeeks": 92,
+    "meanOpenPlatformSlots": 4.9021739130434785
+  },
+  {
+    "id": "tourism_careful",
+    "seed": "test-1",
+    "ending": "sustainable",
+    "week": 104,
+    "denied": 112,
+    "reserved": 27907,
+    "aggregator": 12400,
+    "refusalWeeks": 6,
+    "openWeeks": 92,
+    "meanOpenPlatformSlots": 4.771739130434782
+  },
+  {
+    "id": "tourism_careful",
+    "seed": "test-2",
+    "ending": "sustainable",
+    "week": 104,
+    "denied": 302,
+    "reserved": 30771,
+    "aggregator": 12370,
+    "refusalWeeks": 25,
+    "openWeeks": 92,
+    "meanOpenPlatformSlots": 4.891304347826087
+  },
+  {
+    "id": "fitness_aggregator_all",
+    "seed": "test-0",
+    "ending": "sustainable",
+    "week": 104,
+    "denied": 130,
+    "reserved": 25900,
+    "aggregator": 12127,
+    "refusalWeeks": 4,
+    "openWeeks": 92,
+    "meanOpenPlatformSlots": 5
+  },
+  {
+    "id": "fitness_aggregator_all",
+    "seed": "test-1",
+    "ending": "sustainable",
+    "week": 104,
+    "denied": 79,
+    "reserved": 27898,
+    "aggregator": 12318,
+    "refusalWeeks": 4,
+    "openWeeks": 92,
+    "meanOpenPlatformSlots": 5
+  },
+  {
+    "id": "fitness_aggregator_all",
+    "seed": "test-2",
+    "ending": "sustainable",
+    "week": 104,
+    "denied": 258,
+    "reserved": 32831,
+    "aggregator": 12346,
+    "refusalWeeks": 20,
+    "openWeeks": 92,
+    "meanOpenPlatformSlots": 5
+  },
+  {
+    "id": "fitness_aggregator_none",
+    "seed": "test-0",
+    "ending": "bank_called",
+    "week": 44,
+    "denied": 152,
+    "reserved": 5139,
+    "aggregator": 0,
+    "refusalWeeks": 6,
+    "openWeeks": 32,
+    "meanOpenPlatformSlots": 0
+  },
+  {
+    "id": "fitness_aggregator_none",
+    "seed": "test-1",
+    "ending": "bank_called",
+    "week": 44,
+    "denied": 125,
+    "reserved": 4038,
+    "aggregator": 0,
+    "refusalWeeks": 10,
+    "openWeeks": 32,
+    "meanOpenPlatformSlots": 0
+  },
+  {
+    "id": "fitness_aggregator_none",
+    "seed": "test-2",
+    "ending": "bank_called",
+    "week": 40,
+    "denied": 181,
+    "reserved": 5564,
+    "aggregator": 0,
+    "refusalWeeks": 11,
+    "openWeeks": 28,
+    "meanOpenPlatformSlots": 0
+  }
+]
