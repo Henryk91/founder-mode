@@ -431,16 +431,24 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
       })
     const scrollTo = (top: number) =>
       page.evaluate((top) => document.querySelector('main')!.scrollTo(0, top), top)
-    const showing = (what: string) =>
+    const showing = (what: string, requireData = true) =>
       page.waitForFunction(
-        (what) => document.querySelector('[data-show]')?.getAttribute('data-show') === what,
-        what,
+        ({ what, requireData }) => {
+          const swap = document.querySelector('[data-show]')
+          if (!swap || (requireData && swap.getAttribute('data-show') !== what)) return false
+          const [numbers, hours] = [...swap.children]
+          const visible = what === 'numbers' ? numbers! : hours!
+          const hidden = what === 'numbers' ? hours! : numbers!
+          return (
+            getComputedStyle(visible).opacity === '1' && getComputedStyle(hidden).opacity === '0'
+          )
+        },
+        { what, requireData },
       )
 
     // Planning scrolled the notebook down to the stepper; start from the top.
     await scrollTo(0)
     await showing('numbers')
-    await page.waitForTimeout(250)
     const top = await band()
     expect(top.numbers).toBe('1')
     expect(top.hours).toBe('0')
@@ -451,7 +459,6 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
 
     await scrollTo(800)
     await showing('hours')
-    await page.waitForTimeout(250)
     const down = await band()
     expect(down.hoursText).toBe('5 of 50 h · 45 h free')
     expect(down.hidden).toBe(true)
@@ -464,7 +471,8 @@ function tests(getBrowser: () => Browser, getUrl: () => string, widths: Widths) 
 
     // A number taking keyboard focus brings the numbers back while it has it.
     await page.getByRole('button', { name: /^Cash/ }).focus()
-    await page.waitForTimeout(250)
+    // Focus reveals the numbers through CSS without changing the scroll-state attribute.
+    await showing('numbers', false)
     expect((await band()).numbers).toBe('1')
     await page.evaluate(() => (document.activeElement as HTMLElement).blur())
 

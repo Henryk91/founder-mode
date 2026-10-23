@@ -63,7 +63,10 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('unregistered climbing screens', () => {
             const page = await browser.newPage({ viewport: { width, height: 900 } })
             await page.goto(url + `climbing-preview.html?stage=${stage}`)
             await expect
-              .poll(async () => await page.getByRole('button', { name: /end week/i }).count())
+              .poll(async () => await page.getByRole('button', { name: /end week/i }).count(), {
+                // A cold preview loads the full scenario and screens under concurrent bot load.
+                timeout: 15_000,
+              })
               .toBeGreaterThan(0)
             const tabs =
               width < 1200 ? await page.locator('nav button').allTextContents() : ['desk']

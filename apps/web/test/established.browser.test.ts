@@ -133,6 +133,13 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 established screens', () => {
             expect(await page.evaluate(() => document.documentElement.dataset['stage'])).toBe(
               'established',
             )
+            // The heading fitter reacts to the stage's font loading and two painted layouts.
+            await page.evaluate(async () => {
+              await document.fonts.ready
+              await new Promise<void>((resolve) =>
+                requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+              )
+            })
             const tourism = run.id !== 'kantino'
             const found: string[] = []
             // The company's name on one line, never below 12 px (Henry's review of plan 3).
