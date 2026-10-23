@@ -1,7 +1,7 @@
 # Griffig measurement and tuning budget
 
 Current:values2/2 exhausted,formulas0/1. Final value change passes27focused
-checks/lint;main-only measurement follows. No further first-pass numeric round. No climbing event table
+checks/lint;main-only measurement is running at8c931a1. No further first-pass numeric round. No climbing event table
 has run. Full report NEVER started;reserved for step6,once.
 
 T1–T18,E1,K1–K5 now apply. T11 covers visitor refunds after exposing their
@@ -24,15 +24,16 @@ Round1 changes only Griffig reachable demand,fictional own-money share and
 estimated reset hours. Keep prices,rent,equipment invoices,wages and the lending
 ceiling. Source/estimate rationale:scenario-climbing.md section15.
 
-Earlier-game proof main only1,000seeds×12units continues;legacy content and
-applicable code paths are unchanged by the hall-only bot correction and Griffig
-values. Keep its temporary runner until the controller finishes. Main STATUS
-records sessions/checkpoints. Final phase needs events once,seeds and full tests.
-Do not repeat completed reports. Only the sole formula round remains for unresolved first-pass targets. Step6 has its own fresh budget.
+Earlier-game proof main only,1,000test seeds×12units is complete and identical
+apart from timings. Its temporary runner has been removed. Hall-only bot fixes
+and Griffig values leave earlier content and applicable paths unchanged.
+Final phase needs events once,seeds and full tests. Do not repeat completed
+reports. Only the sole formula round remains for unresolved first-pass targets.
+Step6 has its own fresh budget.
 
 
 Round2 decision:committed40–100/week,freshness loss12/week. Other values stay
 fixed. Full rationale in ROUND1_REVIEW.md and scenario-climbing.md section15.
 
-Final value round source pending commit:32main policies×1,000paired test seeds.
+Final value round source8c931a1:32main policies×1,000paired test seeds.
 All12 earlier-game comparisons complete,identical apart from timings.

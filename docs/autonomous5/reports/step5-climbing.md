@@ -1,6 +1,6 @@
 # Step5: Griffig
 
-Draft:first value-round measurement running;phase gate not complete.
+Draft:final value-round measurement running;phase gate not complete.
 
 ## Built
 
@@ -26,7 +26,7 @@ initial exclusion overlooked a control hidden by the shared membership form.
 The hall now exposes it separately from membership notice,with the original
 limits. Existing strict/flexible data supplies it;T4 starts at opening. K1 counts sole/joint binary win leaders
 on differing paired outcomes;K4 reports actually opened rope baselines and
-separates no-rope seeds. These decisions predate measurement.
+separates no-rope seeds. K1/K4 definitions predate measurement;the T11 correction is recorded separately.
 
 Initial source8a3a423:main only,32policies on1,000paired test seeds.
 Careful51.6%,top boulder-first56.4%,no-tests0%. Hall-only review-blind
@@ -42,7 +42,12 @@ case;it openedweek23 and the loan was calledweek24 before rope finishedweek26.
 First value round78cae39:student/family enquiries reduced,committed increased;
 fictional own-money share15%,reset work32hours. Fees,rent,wages,equipment and
 loan ceiling unchanged. Sources/estimate rationale in scenario-climbing.md15.
-Main only32policies×1,000paired test seeds running;values1/2,formula0/1.
+Round1 complete:careful24.0%±2.6,top26.5% after the hall overstaffing
+correction. Coherent table:climbing/griffig-main-round1-corrected.md.
+Final value round8c931a1 raises committed enquiries to40–100/week and
+freshness loss to12/week;all other values remain fixed. Its main matrix is
+running,32policies×1,000paired test seeds,eight workers. Values2/2 exhausted,
+formula0/1. Review:climbing/ROUND1_REVIEW.md.
 No climbing event table or full report.
 
 
