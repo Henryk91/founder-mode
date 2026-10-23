@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:5.8 Griffig initial contributions and bot correction;steps0–4 complete.
-Last commit:climbing4e92152 integrates validated bot correctioneee2e74;engine/content8a3a423.
-Next action:Initial main complete32policies;corrected review-blind complete. Corrected review-blind complete46.4%,paired−5.2±1.4,T10pass. Corrected32-policy baseline assembled from31original+one corrected task,no new games. Commit it,then first value round as INITIAL_REVIEW.md. Only new-hall bot/content changes;earlier-game engine/content stay frozen while proof continues. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
+Step:5.8 Griffig first value round;steps0–4 complete.
+Last commit:climbing6b8a3e8 coherent corrected baseline and7/12 protected comparisons.
+Next action:Initial main complete32policies;corrected review-blind complete. Corrected review-blind complete46.4%,paired−5.2±1.4,T10pass. Corrected32-policy baseline assembled from31original+one corrected task,no new games. First value round passes26focused checks/lint;commit and measure main only1,000paired test seeds. Only new-hall bot/content changes;earlier-game engine/content stay frozen while proof continues. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
 
 ## Active jobs and resumption
 
@@ -28,13 +28,13 @@ Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work.
 Completed fitness milestone imported at7ac610e before registration8a3a423.
 24features,49events,150quotes,four intros,two native scenes;optional staffed hall hours,individual qualifications,courses,paid setting,shared wall pools,clubs/parties,café/rental baskets and internal mezzanine implemented.27 full results/public traces match before/after hall compaction and final fitness import.
 
-Initial careful51.6%±3.1 (T1 fails),platform-only41.5% (−10.1±1.9),no-tests0%,naive52.3%. Viable segments:committed17.6%,families66.2%,students68.7%. Initial review:climbing/INITIAL_REVIEW.md. Other contributions pending;values0/2,formula0/1. No climbing events have run.
+Initial careful51.6%±3.1 (T1 fails),platform-only41.5% (−10.1±1.9),no-tests0%,naive52.3%. Viable segments:committed17.6%,families66.2%,students68.7%. Initial review:climbing/INITIAL_REVIEW.md. All contributions complete;first value round edited,values1/2,formula0/1. No climbing events have run.
 
 The initial review-blind516wins are superseded for T10:its inbox still repaired snags. Isolated hall-only safeguardeee2e74 has a reproduced regression,57focused checks and lint passing;Corrected measurement complete464wins (−5.2±1.4),T10pass;reuse unaffected matrix data. Careful and all earlier policies retain their choices.
 
 Validation:829preparation checks/27skips. Registered full suite:1,952pass/30skip/3browser timing failures. Test-only fixes now pass the exact readiness/header cases and notebook transition in Chromium/WebKit;lint/typechecks pass. No product geometry or simulation changed. Run the full suite on final tuning source. Seeds225rows,only18new Griffig rows;all documented endings replay. Profile diagnostic test0–2 matches measured careful results exactly;no optimisation retained.
 
-Protected proof:7/12 reports identical apart from timings (Kantino/Zollstock standard,Kantino/Gratwanderung/Seeblick/Hinterhof/Tiefgang long). All eleven older content fingerprints match;fitness recorded. Raw reports:protected-step5/.
+Protected proof:8/12 reports identical apart from timings (Kantino/Zollstock standard,Kantino/Gratwanderung/Seeblick/Hinterhof/Tiefgang/Rückenwind long). All eleven older content fingerprints match;fitness recorded. Raw reports:protected-step5/.
 
 ## Completed results and open issues
 
@@ -47,6 +47,8 @@ Ausgesperrt:careful42.8%±3.1,top48.4%;X1 at limit,X2–4pass. Open T2,T3,T6,T10
 Step6 has a fresh two-round revisit budget. Full report NEVER started.
 
 ## For Henry to review (non-blocking)
+
+- Climbing round1:tuned enquiry bands,15%fictional own-money share and32-hour reset estimate;scenario-climbing.md section15/decisions first value round.
 
 - Climbing:two-hour average wall occupancy during longer courses,average café/rental baskets,family-loan repayment after104weeks;scenario-climbing.md section15 and decisions step5.
 - Fitness:studio/aggregator naming,instructor following,annex mat classes,recovery-room exclusion;scenario-fitness.md section15 and decisions step4.

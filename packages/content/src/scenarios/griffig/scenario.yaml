@@ -398,7 +398,7 @@ loan:
   meetingHours: 4
   decisionWeeks: 2
   retryWeeks: 4
-  ownShare: 0.2
+  ownShare: 0.15
   unprovenMaxCents: 65000000
   revenueMultiple: 1
   minCents: 5000000
@@ -458,8 +458,8 @@ bookings:
   segments:
     students:
       base:
-        min: 150
-        max: 500
+        min: 80
+        max: 240
       unit: person
       price:
         peak: 1600
@@ -496,8 +496,8 @@ bookings:
       reviewWeight: 0.8
     committed:
       base:
-        min: 4
-        max: 15
+        min: 10
+        max: 30
       unit: person
       price:
         peak: 2000
@@ -522,8 +522,8 @@ bookings:
       reviewWeight: 0.8
     families:
       base:
-        min: 60
-        max: 200
+        min: 32
+        max: 100
       unit: person
       price:
         peak: 2000
@@ -1326,7 +1326,7 @@ bookings:
           families: 0.2
         reviewPenalty: 0.7
         refresh:
-          hours: 25
+          hours: 32
           cents: 0
           weeks: 0
           closedHours:
@@ -1343,7 +1343,7 @@ bookings:
           families: 0.2
         reviewPenalty: 0.7
         refresh:
-          hours: 25
+          hours: 32
           cents: 0
           weeks: 0
           closedHours:
@@ -1360,7 +1360,7 @@ bookings:
           families: 0.2
         reviewPenalty: 0.7
         refresh:
-          hours: 25
+          hours: 32
           cents: 0
           weeks: 0
           closedHours:
@@ -1377,7 +1377,7 @@ bookings:
           families: 0.2
         reviewPenalty: 0.7
         refresh:
-          hours: 25
+          hours: 32
           cents: 0
           weeks: 0
           closedHours:

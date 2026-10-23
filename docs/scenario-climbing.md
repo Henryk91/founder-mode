@@ -29,7 +29,7 @@ Munich already has very large climbing centres, some run by the alpine club with
 | Founder living costs | 675 per week, rising a tenth from week 53 | |
 | Company fixed costs per month | Hall lease 16,000 (est., about 9 a square metre for a warehouse), insurance 900 (est.), heating and electricity 2,500 (est., more in winter), booking and access software 300, accountant 300, cleaning 1,200 (est.) | |
 | Basic fit-out | Needed before opening: floor mats, toilets, changing rooms, a reception. 80,000 (est.) | |
-| Founder | Sets routes (about 25 hours per wall section a reset), coaches courses, runs the desk | |
+| Founder | Sets routes (about 32 hours per wall section a reset), coaches courses, runs the desk | |
 | Bank loan | Available (fictional "Isartal Sparkasse"). Items: every wall section, the fit-out, the café, the speed wall (the temptation), working capital | |
 | Funding | Not available | |
 
@@ -122,7 +122,7 @@ A polite trap example: committed climbers who praise the setting, never buy a me
 
 | Role | Pay (est., verify) | Does |
 |---|---|---|
-| Route setter | 250 a day freelance | Resets a wall section in about 25 hours (est.) |
+| Route setter | 250 a day freelance | Resets a wall section in about 32 hours (est.) |
 | Coach | 30 an hour | Courses, the kids' club, birthdays |
 | Front desk | 15 an hour; minijob or part time | Check-ins, rentals, sales; needed in every open slot unless the founder is at the desk |
 | Café staff | 15 an hour | With `cafe_counter` |
@@ -235,7 +235,7 @@ scenario estimates,not a tuned or measured economy.
 - The all-area ticket basis isEUR20,with a boulder-only factor0.75 givingEUR15. Students pay80%:EUR16all areas orEUR12bouldering. Four separate student membership/card agreements cost80%of the corresponding regular fee,serve only students and require the student-price feature. Regular agreements serve the other segments. Course prices retain the same student discount.
 - Children’s parties reserve ten real places atEUR19.90 each for theEUR199party. The club billsEUR55monthly and reserves one actual coached visit each week. Its coaches also cover parties;the roster cannot spend the same shift twice.
 - Regular memberships admit available ordinary areas,not courses or parties. The ten-visit card owes ten visits for52weeks. Off-peak access is restricted to early/daytime slots.
-- Paid route-setting hours supplement separately budgeted founder setting. A reset takes25hours and closes four daytime hours only in the reset week. Dedicated desk,setter and café roles do not produce free coaching.
+- Paid route-setting hours supplement separately budgeted founder setting. A reset takes32hours and closes four daytime hours only in the reset week. Dedicated desk,setter and café roles do not produce free coaching.
 - Café contribution is an estimatedEUR5average receipt lessEUR2service costs per served visitor,limited to50visitors per paid four-hour staff shift. Rental stock costsEUR2,500;an estimated average rental basket,not a shop or equipment inventory,earnsEUR1.50per casual visitor orEUR0.50per committed visit,lessEUR0.30cost. NominalEUR5/3rental prices remain background context.
 - Follow-up event cards pay for immediate conversations,cover and their stated small effects. Persistent wall,staff,access and opening-hour changes remain weekly controls. Events do not silently award unearned qualifications or override safe capacity.
 
@@ -253,3 +253,25 @@ Fitness milestone325ebbf imported before registration. The mezzanine offer is
 guaranteed at its stated eligibility point (week26,two cost-covering months),
 with a12-week repeat cooldown;acceptance still uses actual crowding and cash.
 No initial fee,demand or cost value is tuned by registration.
+
+### First value round,23 October2026
+
+After32policies on1,000paired test seeds and the corrected review-blind
+comparison:careful51.6%,viable-segment spread51.1points;both-first0% with no
+working capital under the20%own-money rule. Contributions and exact financing
+trace are in autonomous5/climbing/INITIAL_REVIEW.md.
+
+- Reachable weekly enquiries (tuned estimates):students150–500→80–240,
+  families60–200→32–100,committed4–15→10–30. Fees and all Munich cost estimates
+  stay fixed. This addresses the segment spread and overall ease.
+- Fictional bank own-money share20%→15%. The existing EUR650,000 unproven
+  ceiling and six-month working-capital allowance remain. Both-wall items cost
+  EUR480,000;the old rule capped that plan at exactly the invoices,leaving no
+  working capital. This is a scenario estimate,not a claim about a real lender.
+- Estimated reset work25→32hours per wall section,four eight-hour person-days.
+  Paid day remains EUR250. Normal/doubled setting can then cross an actual
+  paid-day boundary;old7/13hours often bought the same one day. The reset still
+  closes only four daytime hours in its reset week. No supplier quote is implied.
+
+Values1/2,formulas0/1. Main only,1,000paired test seeds before another change;
+no event table until the end of this step.
