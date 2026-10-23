@@ -171,3 +171,15 @@ and lint/typechecks pass. All21 ordinary plus six funded104-week results/public
 traces remain exact against the integrated baseline. Griffig stays unregistered
 and omits the optional specialist/shared-queue flags. Import the completed
 fitness milestone before registration/measurement.
+
+
+## Registration,23 October2026
+
+Completed fitness milestone325ebbf imported at7ac610e. Griffig is registered
+in IDs,catalogue,static and lazy loaders at8a3a423. Catalogue/static/lazy content
+checks pass;generic developer test uses explicit fixture working capital.
+Mezzanine eligibility now triggers the offer after two cost-covering months
+from week26,with12-week cooldown;cost/rent wording and letter styling fixed.
+Initial main:1,000 paired test seeds,checkpointed,values0/2,formula0/1.
+Twelve-unit earlier-game proof runs main only on1,000 seeds each.
+No climbing event table or full report has started.

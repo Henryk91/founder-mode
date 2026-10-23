@@ -246,3 +246,10 @@ scenario estimates,not a tuned or measured economy.
 - Interview budgets below EUR200 round to EUR10, rather than the inherited EUR500 step. This preserves useful on-screen evidence at ticket and membership prices. Corrected before the first climbing measurement; no tuning round is spent.
 
 - The aggregator explicitly settles actual check-ins directly via payOnVisit. It does not issue employer invoices. Fitness shared-mechanic fixes are integrated into the isolated preparation branch before Griffig registration;no climbing measurement or tuning round is implied.
+
+### Registration,23 October2026
+
+Fitness milestone325ebbf imported before registration. The mezzanine offer is
+guaranteed at its stated eligibility point (week26,two cost-covering months),
+with a12-week repeat cooldown;acceptance still uses actual crowding and cash.
+No initial fee,demand or cost value is tuned by registration.

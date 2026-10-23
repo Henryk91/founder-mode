@@ -3,8 +3,8 @@
 ## Current
 
 Step:5 climbing integration and registration.
-Last commit:climbing7ac610e imports completed fitness325ebbf;tag plan5-fitness.
-Next action:Run initial Griffig main only on1,000 paired test seeds with durable checkpoints;inspect sensible bots and contributions before values. Registration checks pass (259content+16freelance);lint/typechecks pass. Seed generation running;earlier protected proof required for hall opt-ins. Fitness event table complete once;all eleven earlier games unchanged;full suite1,841 passed,27 skipped. Full report only step6,once.
+Last commit:climbing8a3a423 registers Griffig after fitness milestone325ebbf.
+Next action:Collect initial Griffig main only on1,000 paired test seeds(session96275,/tmp/plan5-climbing-main-initial.log),inspect bots/contributions before values. Protected twelve-unit proof running(session39214,/tmp/plan5-protected-step5.log);keep plan5-protected-step5.ts until controller completes. Registration checks pass (259content+16freelance);lint/typechecks pass. Seed generation running(session87897). Values0/2,formula0/1;no climbing events/full report. Fitness event table complete once;all eleven earlier games unchanged;full suite1,841 passed,27 skipped. Full report only step6,once.
 
 ## Checklist
 
