@@ -1,101 +1,73 @@
 # Step5: Griffig
 
-Draft:final main complete;events and full checks remain.
+**Stopped under plan section1.2.1.** Three full-source attempts still leave an
+established WebKit heading-fit failure. Final main is complete,but the climbing
+phase gate and milestone are incomplete. See [hard-stop record](../climbing/HARD_STOP.md).
 
-## Built
+## What was built
 
-Munich climbing hall with24features,49authored events,150interview quotes,
-four intro cards,two native360×170hall/mezzanine scenes and all three interface
-voices. Accent#2F6B3A has white contrast6.39:1.
+A long-only Munich climbing hall with24features,49events,150interview quotes,
+four intro cards and two native360×170hall/mezzanine scenes. All three interface
+voices use the existing design. Accent#2F6B3A gives white contrast6.39:1.
 
-Actual paid first-wall/common fit-out choices,staffed opening hours,shared wall
-pools,personal earned belay/lead skills,paid setting with reset-week closures,
-monthly/annual/off-peak/student agreements,owed ten-visit cards,course ladders,
-weekend children's clubs/parties,staffed café and rental baskets,aggregator
-slots/caps/leaving and real internal mezzanine offer are implemented.
+- Real common fit-out and boulder/rope first-build invoices,construction waits,
+  opening progress and bank working capital. The internal mezzanine is a paid
+  same-building offer,with no second location or safety-capacity increase.
+- Actually staffed opening hours,separate paid/founder desk cover,shared wall
+  capacity for ordinary visitors and coached groups,and setting work from
+  actual founder hours or paid setters. Only the reset morning closes.
+- Individual earned belay/lead skills,prerequisite course ladders and paid
+  membership enquiries from actual graduates. No segment-wide free skills,
+  invented members or free coaching from the front desk.
+- Monthly/annual/off-peak/student agreements,owed ten-visit cards,weekly clubs
+  and ten real birthday places. Café/rental baskets earn on served visits;
+  café receipts also need dedicated paid throughput cover. No shop simulation.
+- Aggregator slots,caps,leaving and membership migration. Optional seeded
+  member/platform arrivals compete for the same actual places and preserve
+  personal qualifications. The existing interface explains the common queue.
+- Visitor refund controls are visible separately from membership notice. All
+  controls use PlayerView and the existing notebook/Calendar components.
 
-All additions are optional content switches. Fitness milestone325ebbf was
-imported before registration8a3a423. Hall-history compaction and final shared
-formula integration preserve27 complete results and all public-view traces,
-including six funded104-week course stress fixtures.
+All additions are optional. Completed fitness milestone325ebbf was imported
+before registration8a3a423. Hall traffic compaction and shared-formula import
+preserve27complete diagnostic results and public traces,including six funded
+104-week rope/course fixtures. An inconclusive further cache was discarded.
 
-## Targets and measurement
+## Measurement and tuning
 
-T1–T18,E1,K1–K5 apply. T11 now covers actual visitor booking refunds;the
-initial exclusion overlooked a control hidden by the shared membership form.
-The hall now exposes it separately from membership notice,with the original
-limits. Existing strict/flexible data supplies it;T4 starts at opening. K1 counts sole/joint binary win leaders
-on differing paired outcomes;K4 reports actually opened rope baselines and
-separates no-rope seeds. K1/K4 definitions predate measurement;the T11 correction is recorded separately.
+Every matrix below is main only,32policies×1,000paired test seeds. Corrected
+policy-only measurements reuse all unaffected tasks;raw superseded evidence
+remains labelled in the detailed reviews. No full report has run.
 
-Initial source8a3a423:main only,32policies on1,000paired test seeds.
-Careful51.6%,top boulder-first56.4%,no-tests0%. Hall-only review-blind
-correctioneee2e74 (import4e92152) gives464wins,paired−5.2±1.4,T10pass.
-Coherent baseline:climbing/griffig-main-corrected.md,31original tasks plus
-one corrected task reused;no games replayed to assemble it.
+| Outcome source | Measurement | Careful | Top | Budget |
+|---|---|---|---|---|
+|8a3a423 /4e92152|Initial,review-blind corrected|51.6%±3.1|56.4%|values0/2,formula0/1|
+|78cae39 /26f5ecb|Value1,overstaffing corrected|24.0%±2.6 at limit|26.5%|values1/2,formula0/1|
+|8c931a1|Value2|31.6%±2.9|39.6%±3.0|values2/2,formula0/1|
+|27756b3|Sole formula:shared arrivals|30.8%±2.9|39.0%±3.0|values2/2,formula1/1|
 
-Open:T1,T3,T5–T7,T9,T12,T14,K1–K3. K5atlimit;T11originally omitted,now measured for visitor refunds. Contributions
-and first-wall financing trace:climbing/INITIAL_REVIEW.md. Both-first0%
-was capped atEUR480,000construction with no working capital in the traced
-case;it openedweek23 and the loan was calledweek24 before rope finishedweek26.
+The first value round adjusted estimated demand,fictional own-money share and
+reset work. The final value round raised committed enquiries and calendar
+freshness loss. Fees,rent,wages,equipment prices and loan ceiling stayed fixed.
+The sole formula activates existing shared-arrival code for Griffig;it adds no
+engine change or numeric penalty. Sources/estimates:scenario-climbing.md15.
 
-First value round78cae39:student/family enquiries reduced,committed increased;
-fictional own-money share15%,reset work32hours. Fees,rent,wages,equipment and
-loan ceiling unchanged. Sources/estimate rationale in scenario-climbing.md15.
-Round1 complete:careful24.0%±2.6,top26.5% after the hall overstaffing
-correction. Coherent table:climbing/griffig-main-round1-corrected.md.
-Final value round8c931a1 raises committed enquiries to40–100/week and
-freshness loss to12/week;all other values remain fixed. Its main matrix is complete:careful31.6%±2.9,top39.6%±3.0,no-tests0%.
-Main only32policies×1,000paired test seeds,eight workers,1,773wall seconds.
-Review:climbing/ROUND2_REVIEW.md;T1/T14/K4pass,K5atlimit.
-
-Sole formula source27756b3 enables existing shared member/platform arrivals
-in Griffig. Actual requests compete for the same places and retain personal
-qualifications. Existing UI explains the queue. All numeric values stay fixed;
-no engine change.48focused checks/lint pass. Final main matrix complete,careful30.8%±2.9,top39.0%±3.0,no-tests0%;
-32policies×1,000paired test seeds,eight workers,1,713wall seconds. Values2/2 and formula1/1
-are exhausted. No more first-pass tuning. Final seeds225rows generated,only Griffig changed;full checks are running.
-No climbing event table or full report.
-
-
-## Validation
-
-829 preparation checks pass,27 skipped;lint/typechecks pass.24 integrated
-Chromium/WebKit cases pass axe,cut and word checks across375/390/430/1440px,
-all three stages. Two390px opening-hour tap checks pass. Screenshots outside
-repo under /private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-climbing.
-
-Registration content checks259pass,30skip;16freelance checks pass with explicit
-working-capital fixtures;lint/typechecks pass. Seed generation wrote225rows;
-only18Griffig rows were added. Registered full suite:1,952pass,30skip,three browser timing failures.
-All three exact cases now pass after semantic readiness waits;notebook passes
-in both browsers. Final full suite follows the final tuning source.
-All twelve earlier-game main comparisons are identical apart from
-timings,on1,000test seeds each,in
-protected-step5/. All eleven earlier fingerprints match;fitness recorded.
-Full phase tests and final event table remain. Full report only step6,once.
-
-## Decisions and review
-
-Sources/estimates and adaptations are in scenario-climbing.md section15.
-Two-hour average course wall occupancy,average café/rental baskets and family
-loan repayment outside104weeks remain for Henry's non-blocking review.
-No second site,shop,personal training,physiotherapy or real integration.
-
-
-Hall refund visibility:10focused UI/report checks and24Chromium/WebKit
-width/stage cases pass. All roles and visitor refund controls use existing
-notebook components;member-only fitness remains unchanged. The screen fixture
-selects another real action sequence if numeric tuning ends its first seed
-beforeweek32. No injected features,cash or qualifications.
-
+Final main takes1,713wall seconds/13,376summed seconds over eight workers.
+Careful30.8%±2.9,top39.0%±3.0,no-tests0% meet the plan's playability bounds.
+No further first-pass tuning is allowed. Step6 has its separate fresh budget.
 
 ## Final first-pass main targets
 
-Source27756b3,main only32policies×1,000paired test seeds. K5passes at its
-limit;all other passing rows pass outright. Detailed contributions,closest
-evidence and step6options:climbing/FINAL_REVIEW.md. Open:T3,T5–T7,T9,T11,
-T12,T14,T15,K1–K3. No first-pass tuning budget remains.
+T1–T18,E1,K1–K5 apply. T4 starts at actual opening. The initial T11exclusion
+was corrected after audit found an operative visitor-refund control hidden by
+the shared membership form;its original wording/limits are retained. K1 counts
+sole/joint leaders on differing paired binary outcomes and reports all ties.
+K4 judges actually opened rope baselines and separately reports absent ropes.
+
+Source27756b3,main only1,000paired seeds per policy. “Yes” uses the plan's
+margin rule. K5passes at its limit;all other passing rows pass outright.
+T14needs an advantage beyond its paired margin,so seasonal+0.6±0.9fails.
+T15+6.8±1.6 stays outside5using the exact unrounded margin.
 
 | # | Target | Value | Margin | Met |
 |---|---|---|---|---|
@@ -124,15 +96,69 @@ T12,T14,T15,K1–K3. No first-pass tuning budget remains.
 | K4 | On seeds where rope-first opens rope walls,omitting belay and lead courses loses at least3points | -13.3; rope-opened 1000,no-rope baseline 0 | ±2.1 | yes |
 | K5 | Building the speed wall in year one loses at least3points | -2.3 | ±1.0 | yes |
 
+## Decisions and open issues
 
-Final full validation initially finishes1,960pass/30skip with two established
-Gratwanderung WebKit header-cut failures (390/430px). The lazy stage stylesheet
-can arrive after the earlier font-ready promise. Test-only face-loading and
-stable-fit waits preserve all original geometry/axe assertions;all8focused
-Gratwanderung cases and lint/typechecks now pass. Full suite reruns before gate.
+Open:T3,T5–T7,T9,T11,T12,T14,T15,K1–K3. Full contributions,closest evidence
+and options are in [FINAL_REVIEW.md](../climbing/FINAL_REVIEW.md),with the
+preceding numeric review in [ROUND2_REVIEW.md](../climbing/ROUND2_REVIEW.md).
 
-Full retry passes the original Gratwanderung cuts,with1,961pass/30skip and
-one new exact-subpixel stability timeout in Rückenwind390WebKit. Load the
-actual face once outside polling,then poll the original fit/one-line/minimum
-size criteria. All56established cases and lint/typechecks pass;every per-tab
-cut/axe assertion remains. The full suite runs again before the phase gate.
+Boulder and rope each have sole wins;both-first has only four joint wins and
+no sole win. Half setting still misses its loss target. Shared arrivals provide
+the real physical trade-off but all-slot access still has no established
+outcome disadvantage. These remain open rather than being hidden by a strategy
+penalty or relaxed threshold. Hint pricing,refund-market splits and seasonal
+contract gains likewise remain inconclusive or miss their original targets.
+
+Review-blind inbox and hall-overstaffing behaviour were corrected before
+numeric compensation;only affected policies reran. Complete no-platform,
+no-tests and overworker results remain exact across the final value/formula
+comparison. No extra games were needed to compare those cached records.
+
+The discarded capacity experiment preserves27results/public traces and2,000
+paired benchmark results,but its1.1%timing difference is within uncertainty.
+No optimisation was retained and no cross-load matrix speed gain is claimed.
+
+For Henry:two-hour average coached wall occupancy,estimated café/rental baskets,
+family-loan repayment beyond104weeks,shared arrivals and visible visitor refunds
+are explicit adaptations in scenario-climbing.md15/decisions. No second site,
+shop,personal training,physiotherapy or real integration was added.
+
+## Validation and protected games
+
+- 48focused content/hall/qualification/queue/bot/target checks and lint/typechecks
+  pass on the final outcome source. The queue preserves each visitor's actual
+  belay skills,determinism and input immutability.
+- Final seed generation writes225rows;only Griffig changes. The full suite
+  replays every example successfully,but its complete result remains red.
+- All56established scenario/width/browser cases pass with actual one-time lazy
+  face loading and the original fit,one-line,minimum-size,cut and axe checks.
+  This test-only readiness change leaves product geometry and outcomes intact.
+  The focused suite passes56/56;the last full suite passes55/56. An earlier
+  progress claim of56/56inside the full suite was premature and is corrected.
+- The final full attempt passes the24Griffig Chromium/WebKit stage/width
+  cases at375/390/430/1440px,including the shared-queue/refund controls.
+  Screenshots at390/1440are outside the repo under
+  /private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-climbing.
+- All12earlier main comparisons are identical apart from timings,on1,000test
+  seeds each. Eleven earlier fingerprints match;fitness is recorded and its
+  complete30-policy main matches the final formula baseline. See
+  [proof provenance](../protected-step5/PROVENANCE.md). Griffig-only bot/values
+  and queue activation leave earlier content/executed paths unchanged.
+
+## Once-only event table
+
+Interrupted at the mandatory test hard stop:events only,1,000test seeds per
+forced answer,source27756b3,eight workers. Exact-source careful baseline reused,
+with zero baseline games replayed.48forced-answer task checkpoints preserve
+40,026actually played games;all32main task checkpoints also remain valid.
+There is no completed event markdown/table. Source/count/hash manifest:
+[EVENT_CHECKPOINTS.json](../climbing/EVENT_CHECKPOINTS.json). All run-owned
+processes are stopped. Resume only missing exact-source tasks after resolving
+validation;do not start a duplicate campaign or rerun completed tasks.
+
+Latest full suite:107files pass,one fails;1,961tests pass,one fails,30skip.
+Failure:Rückenwind established WebKit375,header fit remains false after15seconds.
+Focused56established cases and lint/typechecks pass,but do not satisfy the
+whole-suite gate. Attempts/options/logs are in the hard-stop record.
+
+Full report only in step6,once. No push.

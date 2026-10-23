@@ -1,0 +1,570 @@
+{
+  "outcomeSource": "27756b3",
+  "eventCampaign": "interrupted at plan-mandated test hard stop",
+  "cache": "/tmp/plan5-climbing-formula-checkpoints-27756b3",
+  "completedMainTasks": 32,
+  "completedForcedTasks": 48,
+  "completedForcedGames": 40026,
+  "entries": [
+    {
+      "file": "00a5003756af0d3853459ff6382121bad4e8b039ff46db5420e44b77bcb7dd5c.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_first_induction:leave",
+      "playedSeeds": 1000,
+      "sha256": "4ef44dee302d6ada3a70dba82a8886b2290ff62dedffaceb7a0f2030f99d7fc4"
+    },
+    {
+      "file": "00d9a99a0baff3834646a4bc8dca61ba164bdce9919c79047119ad8ea993acb4.json",
+      "kind": "main",
+      "strategy": "tourism_inbox_none",
+      "playedSeeds": 1000,
+      "sha256": "6bf15d151af22ace64d9d98ca8407868b3f4e57cd935ff47dd2860c79fb9f7af"
+    },
+    {
+      "file": "035564271c1055ca432dee27c210588d560d43a63233a440840dc84cf3456aa2.json",
+      "kind": "main",
+      "strategy": "tourism_reckless",
+      "playedSeeds": 1000,
+      "sha256": "28109e2cddc42d20c52f91dd592e322fce40945db3b7e59816806a5b63c88c8c"
+    },
+    {
+      "file": "0ff35a937b67e94cbc3156c4bc14a611b87d8a7678221f21e9c5ff1395ac90c4.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_rival_discount:leave",
+      "playedSeeds": 715,
+      "sha256": "6844c329ecf3185968458ddba1230961524d1162fcf7508fd1d1249b44d05107"
+    },
+    {
+      "file": "108d353d30575666227cfcf120888edd98a36f910d616f2c7c69cb1f71c2ca82.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_reception_desk:leave",
+      "playedSeeds": 1000,
+      "sha256": "ebaf964e733a247754e305dac5a322538fae608976bf3dd21b91194314e867c2"
+    },
+    {
+      "file": "1105b665094885614182fd2e3c3b564eedd24d5a318a1be6066f360e4b7fb76c.json",
+      "kind": "main",
+      "strategy": "tourism_contracts_none",
+      "playedSeeds": 1000,
+      "sha256": "ccf07b9c6e453af52ce8d493ec39dff335ebe2f26226d6b14f91e0f404903a8e"
+    },
+    {
+      "file": "123dbbc8b251320916b07beb46e3c148344ca27731425bbd389d14ad90ef6e7e.json",
+      "kind": "main",
+      "strategy": "climbing_setting_half",
+      "playedSeeds": 1000,
+      "sha256": "2fdd5058bfca944d671f56f8ef4521aaa94dc9d522cc2c28bb728babb0bb319d"
+    },
+    {
+      "file": "12af702681dbdb659aa9f513cc24a9a1b0ddd515cfddee90496b4d96bdb8168d.json",
+      "kind": "main",
+      "strategy": "tourism_naive_careful",
+      "playedSeeds": 1000,
+      "sha256": "81c3721747ecdb889affea862a83f71322a3b9783160374c676cb39a8602be4d"
+    },
+    {
+      "file": "12caa909b477f1e6ad8a1ce578559c70b7ff586af0adced76e77af787d6509de.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_family_money:leave",
+      "playedSeeds": 1000,
+      "sha256": "c906b65258eadc606258f56707b7a7380aa86f01862406dcbdfb178817a474f3"
+    },
+    {
+      "file": "179deb8bcf87545574c3edea5a213996d77a010fc547c0d8b2b6f2a97a7e1b5f.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_flat_fee_setter:act",
+      "playedSeeds": 731,
+      "sha256": "cb42d13a1562cbd47597cf07e8ade8b5742c300375a0e23429202bdb6e4aa788"
+    },
+    {
+      "file": "2280083bc626902878621d0bcc946cddbd950274f789443b830b967c063234c7.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_rival_discount:act",
+      "playedSeeds": 715,
+      "sha256": "979af0ede1b433405d8c04c3b827deb9c2979ae0e14eb9d74781fd5c2d4bee13"
+    },
+    {
+      "file": "24dc7278b945b42a608244b712095ea3e26049749d2ef634254ccc21f50e4556.json",
+      "kind": "main",
+      "strategy": "tourism_refit_loan",
+      "playedSeeds": 1000,
+      "sha256": "251a71320283b969264f93dcb805139c767354b061b5bf6c18eaf200fc4af134"
+    },
+    {
+      "file": "29982800194de9cd3784945b97e664b4ee3fb35d7e60aff7bb13dbc77d3d0cfb.json",
+      "kind": "main",
+      "strategy": "tourism_price_blind",
+      "playedSeeds": 1000,
+      "sha256": "5762df471bf4ae95be5a3307ea879174f7ddbd4f0107babd3656ea174c128cff"
+    },
+    {
+      "file": "2a4be477511e90e58f04f383e62c13468ec4d1e2f8218750cf305834bf2fc31e.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful mats_at_the_door:act",
+      "playedSeeds": 1000,
+      "sha256": "cb6832061cc7d671ca05212c13b83ec1d882d76313d2b83d9513ae8b42c52df6"
+    },
+    {
+      "file": "2aec9c693a6929da8e79ef18de44ca5fc7249de6f249ca2cd9ea878a361c9d91.json",
+      "kind": "main",
+      "strategy": "tourism_understaffing",
+      "playedSeeds": 1000,
+      "sha256": "d035dbb827a43dfc406879f8a0452c111c6dc9eaecfe4b109ba3acd87fcfbc5b"
+    },
+    {
+      "file": "2b1a7f06513a7aa8111f62e71493343e2ae44c6e36e6614b1e461424771af674.json",
+      "kind": "main",
+      "strategy": "climbing_aggregator_none",
+      "playedSeeds": 1000,
+      "sha256": "bd66e28702a8071fd7872d532fc527e57252769a4f92bd5ea86e592194df3c53"
+    },
+    {
+      "file": "2cc0de81304b186a74880844367e9ae81069c42eea7fbb0ace4a0455a13b293b.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful first_snow:leave",
+      "playedSeeds": 731,
+      "sha256": "b8ce7d17a711155fa59b24df087110a2ff47da39e002b344934d5f0f99f87a0e"
+    },
+    {
+      "file": "2ce31711045f8456383770d7c4ce2b6ba10fbf7222a0a72ded88f10ab7b225aa.json",
+      "kind": "main",
+      "strategy": "tourism_careful",
+      "playedSeeds": 1000,
+      "sha256": "2efd7c105f056a615b27f1ac9ea66b2d9a6d4b89faf98fa798d48bf6c93cec91"
+    },
+    {
+      "file": "2d1a7977a6818bfcb96033488f928fcb994e649cf3028c81dd72800b77b3fb9f.json",
+      "kind": "main",
+      "strategy": "tourism_overstaffing",
+      "playedSeeds": 1000,
+      "sha256": "bb0cc158dae51ef2312a1ba690eee4cdedad4e68841cd42a7510f297586cb439"
+    },
+    {
+      "file": "3d3d08e5d0608c1325387ce62919301c237461b8b60471bf3360996121cdf5cd.json",
+      "kind": "main",
+      "strategy": "tourism_never_move",
+      "playedSeeds": 1000,
+      "sha256": "cce982f89cc33e29a2c5bbd549d4c2a9f17b01b79e9482e9d4cf6ee19ebbd0d1"
+    },
+    {
+      "file": "41368a46d9da36726cbca280633c81cdb3646597530f1e710aefb961ee4918e2.json",
+      "kind": "main",
+      "strategy": "tourism_always_strict",
+      "playedSeeds": 1000,
+      "sha256": "fd68dd9e6e20fd064c8e36964cad64e6aac6e13a54d85c719d9d32ed2acbe696"
+    },
+    {
+      "file": "42279e7a3be898028585c15d6e4e31a1c2c02c693dc0bbb3d2a6f7b46124849c.json",
+      "kind": "main",
+      "strategy": "climbing_setting_double",
+      "playedSeeds": 1000,
+      "sha256": "3e44b231437dbdfc54eb1979aa7a3cbd0ce10a9ac9fe668a13d09b742dabf4d9"
+    },
+    {
+      "file": "43f80d426b93abf01252215b0b6c4525d253a1383dd36498206b5f34da661d05.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_double_reset:act",
+      "playedSeeds": 734,
+      "sha256": "71fb9f1e9a9ffc4d6bef2bb183798e44ab3126457c291df48749f3a2557423fd"
+    },
+    {
+      "file": "46f2a5851df1ae95a55a96f4927b4674c5a11adf692498f3f94c404073cba959.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_setter_s_wrist:act",
+      "playedSeeds": 713,
+      "sha256": "948cd7eee4246b7cb4016c5b3d955e9dd66f43f1148099e83526e36c8acbbfad"
+    },
+    {
+      "file": "4e563faf00afec9d13b76d757954c2298ff8dddc6f102bd8a58c6900f54bdd89.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful june_pauses:act",
+      "playedSeeds": 706,
+      "sha256": "810e89b5531c45d7fe4c3ecfc630fd241d9d63ebcc878109381ed93acee0a5b1"
+    },
+    {
+      "file": "5760994db026d57d0598ec5b00059457d221798e96a3d28e1240eee4984918ca.json",
+      "kind": "main",
+      "strategy": "tourism_review_blind",
+      "playedSeeds": 1000,
+      "sha256": "0159a3a1085e5890ba6f454de956df2e993b4853c87a57b28c6323af425197c5"
+    },
+    {
+      "file": "5a387bda750f82983bd6e5eb8d63b4c2e4dbd1f19b5c65057de923fa875ba7f1.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful opening_photographs:act",
+      "playedSeeds": 1000,
+      "sha256": "61e9a3108868f664215bb4d7cd8c6aa7c80da4be8b1ec27a02ed72b2e50938fc"
+    },
+    {
+      "file": "5adc6eb611c5b197a063f33673420dc55af33e0f4dbb76b288386aee22f754e8.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful choose_first_walls:both",
+      "playedSeeds": 1000,
+      "sha256": "b97c1372b20f07f7b9c4a2d00de33260756c42b0d95de80d0b850c90efaba43e"
+    },
+    {
+      "file": "5b8775cd8609412e358a689b8aeb1d1b95621e718e4fada03f4f1c085bc78b66.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_family_money:act",
+      "playedSeeds": 1000,
+      "sha256": "54d45217806f1370133ea17e62b2f7cce617cb3939b79385bdab2f947599fa6b"
+    },
+    {
+      "file": "5ca636bcb937da4ebd1fef35fa5d604089e3c03a11a105d3540324912d618c89.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_speed_rendering:leave",
+      "playedSeeds": 1000,
+      "sha256": "9de57f43710a6a1a2b1655c33d195042e5aa808ddd8e05f9237d927fa5a50a35"
+    },
+    {
+      "file": "5ce23cdd47ab2fcd8351210f1ec9efd56776c21adab7bc20a36e8b0ed81246e6.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful new_holds:act",
+      "playedSeeds": 746,
+      "sha256": "203cf75f8ac19c81c2986e96ad72d3f43d9bee6c6726f2cce778c6eabf84601c"
+    },
+    {
+      "file": "5d784beb0a46e4aabfd35c92040fb9e3214e98b8353a0fb8622b0f9a09b9e9df.json",
+      "kind": "main",
+      "strategy": "climbing_boulder_first",
+      "playedSeeds": 1000,
+      "sha256": "b8e23ef252b23776986d89e21d2f59b6e43efa2023061a3a8183aa288e9b740d"
+    },
+    {
+      "file": "5e32a62f88d2ec06f079432f4a59e078597fcd3b87060c21fb0d5888a57b9d75.json",
+      "kind": "main",
+      "strategy": "tourism_platform_only",
+      "playedSeeds": 1000,
+      "sha256": "3d83afa51d7508beba24d92ca6ddfc5665a33440a0c07c4d7266dae5581c4bdc"
+    },
+    {
+      "file": "5ec3abea850eded493d526bfe865c188ec58859603fc3d48ec6f2d9265eb4180.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful choose_first_walls:rope",
+      "playedSeeds": 1000,
+      "sha256": "aa4cd46830bb8a4034db3f85ca0f28b2862f93150f91459326cb16d1c5661006"
+    },
+    {
+      "file": "6261276513c978f65bf9f748bcb4cfb05993640b103bc9ab28d3506e27232d22.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_familiar_corner:leave",
+      "playedSeeds": 761,
+      "sha256": "8889ef6f909c6d119eaf67513352caab25c22b7efc37e6506fd70941ae3c4f95"
+    },
+    {
+      "file": "640e13ad628b7ce49937e6776a6516bbeeb3e35da481b367e7226b3dbe5cc104.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_familiar_corner:act",
+      "playedSeeds": 761,
+      "sha256": "636872d57ba6221248ff0950bfb88579ec15ac1ae2d75284ef83baf891da644a"
+    },
+    {
+      "file": "664e28ef501764657aa83d69e6bb4df85f22608437cd6cd75ede5ed10c7b0c5a.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful a_shared_visit:leave",
+      "playedSeeds": 737,
+      "sha256": "aaa04cd3b7c20ca972af837d70ad8bb9d8974ae9252eb68cf70ee32d99096593"
+    },
+    {
+      "file": "67d03a0d7497a19d83c42eb654a030e7b402d2f1e9ff877e46e14e5dbebfa896.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful mats_at_the_door:leave",
+      "playedSeeds": 1000,
+      "sha256": "7c27d2417f9e83a5e817e783104b22bc49663623af54183bec65baf953ba2273"
+    },
+    {
+      "file": "6a9d67e02f6d2ca7dc60a7a88f78d8859389f30b11aa70e61fdfcebc99606a71.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful opening_photographs:leave",
+      "playedSeeds": 1000,
+      "sha256": "a7f9ecc9107409e56a5de8cd0c7b61ab9111a3fc3f7f48ba345cbc47b847942a"
+    },
+    {
+      "file": "6ab1dd6fb9a6aa8fb521c14e304fe38055c9132b7ec7469377563c6a73b0c65f.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_university_group:leave",
+      "playedSeeds": 739,
+      "sha256": "f22faa8256105b7e6d5bbc33dc8bb35030666764255d820f3ed0f5d7cf6b4294"
+    },
+    {
+      "file": "6ac7eac5ac5a2a5d20b5955cf58092c5a43e4464d1d1f78fd95d1fc62e45024b.json",
+      "kind": "main",
+      "strategy": "tourism_inbox_effort",
+      "playedSeeds": 1000,
+      "sha256": "5c6ee0668d49dc3ba45df90749946463e2efc833ec6c6a36c00bb96664a80202"
+    },
+    {
+      "file": "745b7af3f31d7e349d4680f48cce5e0f635c719566fe713dc9e8be9d082594c7.json",
+      "kind": "main",
+      "strategy": "climbing_rope_no_courses",
+      "playedSeeds": 1000,
+      "sha256": "214852eaeee7be9b0f6b0c98bdecc8c221da5467f5d00fcea5ef2d4f9ce07cfa"
+    },
+    {
+      "file": "76005ca7a8292c6fe431adb6d6ee0968174092d06af5cf342f8019d701f3c956.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_double_reset:leave",
+      "playedSeeds": 734,
+      "sha256": "5937d38814fdbca2b81eb86d19ac68f97ba0e65ce3c6b83c45a2ffe990ba7afb"
+    },
+    {
+      "file": "7ae947344f0dc433819b3e8cf6d7162bccb86d4c33793b5dd6d7c8c20869e7b4.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_speed_rendering:act",
+      "playedSeeds": 1000,
+      "sha256": "d4033e68356aef1d9b2c73570ee210edd4a19a4ae5c3ab3c22a23b7dece63fa4"
+    },
+    {
+      "file": "7db6bfe89d89b14c712cc9db67c3f8047ac8f3116adff5a37bdc709ff38511f2.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful concrete_samples:act",
+      "playedSeeds": 1000,
+      "sha256": "26df15196ecfd18b8129547b52c30daa7d34e46ed383e5bb870edd4b192f8759"
+    },
+    {
+      "file": "80b71d546e4a14669aa4a7a8609320d68b861895e9a3f5b9f02d3a1d26061e8d.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_setter_s_wrist:leave",
+      "playedSeeds": 713,
+      "sha256": "d7abe04884325e6a3e81d25ad68fa9e4ac0ed0d52f897a7f76853f645a9371ab"
+    },
+    {
+      "file": "86a766839ae9a4336f14da18b77ef2e51c2c731f51eb21146614bcd3609e558f.json",
+      "kind": "main",
+      "strategy": "tourism_always_move",
+      "playedSeeds": 1000,
+      "sha256": "a580a8ce9446df75df89a3b06e9081eee525693fc3f60ee8747834c9dbfc893d"
+    },
+    {
+      "file": "8e448d93bac1180f8769fc0a01e92f3237fc942c41eeb7197406686ec303be08.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_empty_morning:act",
+      "playedSeeds": 724,
+      "sha256": "96774dc50772719a3a581a12b556c32f04468cc8365d33f29cc57deab70a36f5"
+    },
+    {
+      "file": "91c3b1401d5806aef7eefdd4027b71c540fe2fc5c7e0bd0011ffc344a937a65d.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful weekend_families:act",
+      "playedSeeds": 730,
+      "sha256": "8542f2ef4b2c1c9b07624bb8bbac9adad735632da312e1592daf83fada4bec21"
+    },
+    {
+      "file": "9659f0cd252c7fc843f69b9e34015632c7030e410a714cc1748bee7cc4d64c40.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_outdoor_forecast:act",
+      "playedSeeds": 734,
+      "sha256": "cbafb4ec42cb777b30511ce659c04152488747239ed9cdab54d23a7f2fc89871"
+    },
+    {
+      "file": "9e112679b60340c540cd5df25417a8a302cbc4bdce6cea03e6582168a2a1d200.json",
+      "kind": "main",
+      "strategy": "tourism_always_flexible",
+      "playedSeeds": 1000,
+      "sha256": "07548490a958860d7a40ecae9e4757daa1846324a7dfbd911e3d184cb6cd75bb"
+    },
+    {
+      "file": "a212316b53dbae5fe228a1be7d331dbf287ecb4bf8c2c19fe557768c7b797adc.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful first_snow:act",
+      "playedSeeds": 731,
+      "sha256": "a0b49bb716a816e8da2a223b52ef32441f332b9c4d5c3579764cf6e22bc74de5"
+    },
+    {
+      "file": "a5243a69de2a88ea912e7411df220af2aba4fd81a01754e15db81290eedf343a.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful weekend_families:leave",
+      "playedSeeds": 730,
+      "sha256": "794bd22eddd678b994aeec5a49fd40ac3e2aeb6ca58a39190db37274e4c66704"
+    },
+    {
+      "file": "ac747bc83914fa21e7079d7abf513d3d2d8b2e983edbfc21eafc9df46a5e3705.json",
+      "kind": "main",
+      "strategy": "climbing_no_later_loan",
+      "playedSeeds": 1000,
+      "sha256": "a3d96bab7a564d71479e57db6cbf53325b617ffe01b9b98085433325f38f2e3a"
+    },
+    {
+      "file": "ac8d1aeb1c358b84288bed1f84757cb61374b740e0432bb0caae053d7acbd146.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_flat_fee_setter:leave",
+      "playedSeeds": 731,
+      "sha256": "57be6698b592ca879a74d2f1b0ca6af766bb6a3c3f3c75deb0412482f0ab6781"
+    },
+    {
+      "file": "b3c1ac785e59feffe40f1b697316b3f367a47b9fdaa1f4c289dcfb64b225205c.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful aggregator_tuesday:act",
+      "playedSeeds": 761,
+      "sha256": "b5d78dd1bbd462237851ab15dbc378702e49215dd3ceab44fbb3bb0ae7b17a97"
+    },
+    {
+      "file": "b788806567624973b9fe18dadba55e1fa64d116683a4c49c0e59b5f97edadd5c.json",
+      "kind": "main",
+      "strategy": "tourism_permanent",
+      "playedSeeds": 1000,
+      "sha256": "0868579313a169a5a562c4d6b0e842c661d988199ee6900c13c15422caaa658c"
+    },
+    {
+      "file": "ba1911bb2f184c92b26698b804d3bd5487d51b78ed374ee7e79c7d45d1f6dad2.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_university_group:act",
+      "playedSeeds": 739,
+      "sha256": "0b668b1511fe35307ba5b4456ca6e51a5dd959dd826ce452813f6516b4850388"
+    },
+    {
+      "file": "c0d5b6ed5286bb66d2809be8fefe9dfe45c45bc39215b33d4bb1c9797a790fcc.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful a_shared_visit:act",
+      "playedSeeds": 737,
+      "sha256": "6d998919393bf9c594d02a8ba5cf85281af2c19ad375d1d509aabfdf8d05f09c"
+    },
+    {
+      "file": "c76b76127e5a806ccabaf9f5cc62c65a7acd47567bc846b0be040b20b944f311.json",
+      "kind": "main",
+      "strategy": "climbing_rope_first",
+      "playedSeeds": 1000,
+      "sha256": "c9b8382bf513b6f1b4264a86e4fd65d515274513462295ef75a7ef95c4c00887"
+    },
+    {
+      "file": "c8390d767b58d7b81d24e15c98737872701c528ef0d0de54b6cc8d1d37b154be.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_empty_morning:leave",
+      "playedSeeds": 724,
+      "sha256": "0007d6c3825cb059733c9d05a09f86a6097151ef08edabb3bbace6af41338965"
+    },
+    {
+      "file": "c8d9a621e838a81465e1c4a2c1ce8caa9a11696b15d83396c31fc2d36b69879f.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_reception_desk:act",
+      "playedSeeds": 1000,
+      "sha256": "c2972caf39836742b87fee1247456dbdfe87c88a5f2a97571a2b9e450d65fbdc"
+    },
+    {
+      "file": "c9cf1440b15ba8a9d646b42f73be19dc9d57f8cf0c99f57ae786ce8c29a10276.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful june_pauses:leave",
+      "playedSeeds": 706,
+      "sha256": "769b89fbc52ba78eb25cfebe6d29a0e43c41eec259f1adf63f797a39190cef95"
+    },
+    {
+      "file": "ca0bb578b558d83dea48a4de72611ce7162ed274b213fe44474634845e7e5e07.json",
+      "kind": "main",
+      "strategy": "climbing_speed_early",
+      "playedSeeds": 1000,
+      "sha256": "9111ab491cac461d7228415c323853f6c10b98d81a0eeb1fb1e63c2f1a95dc77"
+    },
+    {
+      "file": "ca53fc59853669115e4b1c4dc4c3582c6be71605caa0de08fee9747cdbb0b245.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful choose_first_walls:boulder",
+      "playedSeeds": 1000,
+      "sha256": "e720cdc2b53515035b6412584db5f80139dfe9c01c43d4e95118e1ca08cb826e"
+    },
+    {
+      "file": "d57b307f0a8465acf7eaaacd814dd736f2b3c1942d244fc9e9055f81368ef2dc.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful choose_first_walls:research",
+      "playedSeeds": 1000,
+      "sha256": "5802c3021bb6125f2d27981e0cea9ad234b054c6f021411951763c2535e019f7"
+    },
+    {
+      "file": "d65a956c4f707eb51775fa52a9eaa09a761e48af6b4a9d794f5cd569c7da1605.json",
+      "kind": "main",
+      "strategy": "tourism_overworker",
+      "playedSeeds": 1000,
+      "sha256": "f2a84ca95c7f63298476227f545d56513bf341a5c41771e7d7190cb5eec07575"
+    },
+    {
+      "file": "d68649c8c5ebb6b97539ddd019b7020ad6b479e5359f7174a9ade658a3ea48c3.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful new_holds:leave",
+      "playedSeeds": 746,
+      "sha256": "bda16faedcff0025cf1482e5915af7161ba12a6d5889ef0412ff7ca1fc956b71"
+    },
+    {
+      "file": "d89113eb1e0743834d5b1d38559162b44536842cceeef2a5222d86879e1f1e30.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful aggregator_tuesday:leave",
+      "playedSeeds": 761,
+      "sha256": "b64b049fccc8c0127c3b545915edb94de0c6a76778eea055c037ba53ef5c416d"
+    },
+    {
+      "file": "db9123ad5ec2f632217545f73ace20e3066c7770b5beba4ed5d6e25daad090ce.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful tuesday_waiting:act",
+      "playedSeeds": 751,
+      "sha256": "378e23eeab302c78af440185643ffae2adca3fa92a2aa2af28033422e1cd0417"
+    },
+    {
+      "file": "e2418dfb3ca35244d526feb63f43718df4cbc20097baff41db699ea35f58df85.json",
+      "kind": "main",
+      "strategy": "tourism_seasonal",
+      "playedSeeds": 1000,
+      "sha256": "10e18f534561cf94c264fafbc2a96a625a29627cca8e23cbc3c2890afc72f4e2"
+    },
+    {
+      "file": "e4b70d303c2ad97e0b77ac97855c0c90323eece847d79b76250c95fb7ea3c466.json",
+      "kind": "main",
+      "strategy": "climbing_aggregator_all",
+      "playedSeeds": 1000,
+      "sha256": "4a335404f66ef460a0319723ccf5bb6ea46dfda9fefa2266359b0227529a12a7"
+    },
+    {
+      "file": "e4c9b8014ecd60ba0193b282be949880ccdc8f8fe175a7b7f0a1f5fb5b18e10a.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_outdoor_forecast:leave",
+      "playedSeeds": 734,
+      "sha256": "c86bd1f93b482039cd9d4bdba192126c9613131ef664b02090e22b15fa707210"
+    },
+    {
+      "file": "e5b5c0e0b70137264277befdf90d57f25ab5e180221c6f87a0bae058ad95d480.json",
+      "kind": "main",
+      "strategy": "tourism_overborrow",
+      "playedSeeds": 1000,
+      "sha256": "398a4c1d0245e15549b088f7fbe173af269b72b98d64f6a3a6ab99eb15207f97"
+    },
+    {
+      "file": "e815e23da4743e4cbe2d0d2a1bc498577089862312bd5911a92e73c0827d08f6.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful concrete_samples:leave",
+      "playedSeeds": 1000,
+      "sha256": "fb61c682985a09bf6485af39130a9f88a03827b74ae99e6ac09230c007c23af5"
+    },
+    {
+      "file": "eb4cc56c3ac5a2b136cc73de232e18693ac928a43116c62901e3042f2a1b2bb1.json",
+      "kind": "main",
+      "strategy": "tourism_no_tests",
+      "playedSeeds": 1000,
+      "sha256": "99bdbe3b1b2f08319a02afa54e649cd4603531cd19be229f1dece0f5d1135d27"
+    },
+    {
+      "file": "ed2a8ca82b4d98e7d624f2e0f5e7c199582c060a6cb2d1737fd68dcef7df5b13.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful the_first_induction:act",
+      "playedSeeds": 1000,
+      "sha256": "0fb187177998d1effe26ec6f4a8a1888680730a904a2c5ca2e66ea7047da5587"
+    },
+    {
+      "file": "ee3aad717cfe5580319ef1ed12280bd9439fe4dbcc536155ca604753f1d273d3.json",
+      "kind": "main",
+      "strategy": "tourism_part_time",
+      "playedSeeds": 1000,
+      "sha256": "1100ea49348765a87a38b35ca8b4a3fc0363d3b26a64e0b16c87e70a716a6e26"
+    },
+    {
+      "file": "ee442221b2b700b7852ffbc90e8e16feb94aaec79fac626cff837df52de0ce22.json",
+      "kind": "main",
+      "strategy": "climbing_both_first",
+      "playedSeeds": 1000,
+      "sha256": "26006e33cc305fe8959846f9f7188c1463d9b9ec32a6c43fbfd14cfce0a758ad"
+    },
+    {
+      "file": "faa0e7a518cb8831667f5498aea24297e16f80ed037501502dde0f5f5bb8a710.json",
+      "kind": "forced_event",
+      "strategy": "tourism_careful tuesday_waiting:leave",
+      "playedSeeds": 751,
+      "sha256": "07f9191b9c6aae1ce844b386f5276c8ca90bdfca5852238ae0d31e58c26dad85"
+    }
+  ]
+}

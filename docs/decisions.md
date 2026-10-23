@@ -1121,3 +1121,8 @@ AUTONOMOUS:Final full suite passes1,960checks/30skips but two Gratwanderung WebK
 
 
 AUTONOMOUS:Full retry fixes the original Gratwanderung cuts but the added exact-subpixel stability assertion times out on Rückenwind390WebKit (1,961pass/30skip). Load the declared established face once outside polling,then poll the original fit/one-line/minimum-size criteria;retain all per-tab cut/axe checks. All56established width/scenario/browser cases and lint/typechecks pass. No product geometry or outcomes change;full suite runs again.
+
+
+### Plan5 mandatory test hard stop
+
+AUTONOMOUS:Stop under plan1.2.1 after three full-source established-heading font/fit attempts. Latest1,961pass/1fail/30skip;focused56and lint pass,but full WebKit Rückenwind375still fails the original fit criterion. An earlier update overstated full-suite font success;only the focused run was green. Stop the run-owned event process tree,preserve48forced checkpoints/40,026played games plus32main tasks,and commit failure evidence/options. No climbing milestone,step6,full report,push or further tuning.

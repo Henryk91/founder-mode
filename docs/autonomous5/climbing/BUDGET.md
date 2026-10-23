@@ -48,3 +48,10 @@ Sole formula round:sharedQueue true in Griffig;existing seeded actual arrivals,p
 Sole formula validation:48focused content/hall/qualification/queue/bot/target checks and lint/typechecks pass. Final main matrix follows on this frozen source.
 
 Final formula source27756b3:main only32policies×1,000paired test seeds,eight workers. Cache and session in STATUS;no more first-pass tuning.
+
+
+STOPPED23October under plan1.2.1 after three full-source heading-fit failures.
+Final full result1,961pass/1fail/30skip;focused56and lint pass. Event campaign
+interrupted,48forced tasks/40,026played games preserved plus32main tasks.
+No active jobs,no climbing milestone,no step6/full report. HARD_STOP.md records
+attempts and same-campaign resumption;no extra tuning or confirmation run.

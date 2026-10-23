@@ -2,23 +2,21 @@
 
 ## Current
 
-Step:5.8 final event table and validation.
-Last commit:climbingc9dbf3f explicit lazy-font browser readiness;outcome source27756b3.
-Next action:Final main complete27756b3,careful30.8%±2.9,top39.0%;playability bounds met. Values2/2 and formula1/1 exhausted. Climbing events ONCE running on1,000test seeds with cached final careful baseline;collect the full-suite retry after the committed browser font-readiness fix. Final seeds225rows,only Griffig changed. Complete climbing report/tag/merge,then step6open-issue review and full report once.
+Step:STOPPED during5.8(final climbing validation/events).
+Last commit:climbingdd789c1 one-time heading-face wait;outcome source27756b3.
+Next action:Hard stop under plan1.2.1 after three full-source heading-fit attempts. Inspect /private/tmp/founder-mode-plan5-climbing/docs/autonomous5/climbing/HARD_STOP.md. Next technical investigation is actual WebKit TopBar fitting under suite load. Once validation is resolved,resume only missing tasks of the SAME event campaign,then finish climbing report/tag/merge. Step6/full report have not started.
 
 ## Active jobs and resumption
 
-Read-only wrap-up preparation:/tmp/plan5-step6-docs-notes.md and /tmp/plan5-step6-full-notes.md;issue candidates /tmp/plan5-step6-issue-candidates.md. Step6/full report NOT started. Read-only inbox diagnostic confirms escape/venue review-blind snag repairs;see /tmp/plan5-step6-inbox-diagnostic.log and candidate notes. No bot/value change made.
+None. The identified event driver,workers and service descendants are stopped;all their recorded PIDs are confirmed gone. Full test processes finished. No temporary runner remains in the repository.
 
-Capacity experiment complete and discarded:27full results/public traces plus2,000benchmark results exact;291.3s→288.1s (1.1%,paired uncertainty includes no gain). No engine change merged. Evidence:climbing/capacity-benchmark.json. Performance worktree restored to original source;no active job there.
-
-- Griffig final formula main:complete(session8118),/tmp/plan5-climbing-main-formula.log,32policies×1,000paired test seeds,eight workers,1,713wall seconds. Frozen source27756b3;cache /tmp/plan5-climbing-formula-checkpoints-27756b3;backup /tmp/plan5-climbing-formula-runner.ts;temporary entry removed.
-- Climbing events ONCE:running(session91748),/tmp/plan5-climbing-events.log,eight workers,events only1,000test seeds. Exact-source careful baseline reused (0seconds replay);same cache /tmp/plan5-climbing-formula-checkpoints-27756b3. Backup /tmp/plan5-climbing-events-runner.ts;temporary entry removed after loading. Never start a duplicate or rerun completed tasks. No full report.
-- Final seed generation:complete(session13762),/tmp/plan5-climbing-final-seeds.log,225rows. Full tests completed(session83272):1,960pass,30skip,two Gratwanderung WebKit header-cut failures(390/430px),/tmp/plan5-climbing-final-full-tests.log. Established CSS is imported after data-stage;the old fonts.ready/two-frame wait can precede that import. Test-only semantic face/fit wait passes all8Gratwanderung Chromium/WebKit widths(session99854),/tmp/plan5-climbing-established-font-focused.log;lint/typechecks pass(session35973),/tmp/plan5-climbing-established-font-lint.log. Full retry completed(session59463):1,961pass/30skip,one NEW exact-metric stability timeout for Rückenwind WebKit390;the original Gratwanderung cuts pass. Replace repeated font loads/exact subpixel-signature stability with one actual face load followed by polling original fit/one-line/minimum-size criteria. All56established cases PASS(session84813),/tmp/plan5-climbing-established-all.log;lint/typechecks PASS(session83298),/tmp/plan5-climbing-established-once-lint.log. No geometry/game/bot/value change. Commit and start final full rerun.
-- Griffig round2 main:complete(session28214),/tmp/plan5-climbing-main-round2.log,32policies,eight workers,1,773wall seconds. Cache:/tmp/plan5-climbing-round2-checkpoints-8c931a1;runner backup:/tmp/plan5-climbing-round2-runner.ts;temporary entry removed. Shared-arrival personal qualifications:13focused checks and lint pass.
-- Twelve earlier-game proof:complete(session39214),/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Temporary packages/bots/src/plan5-protected-step5.ts removed after all12completed;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs. Earlier content/applicable code paths unchanged by hall-only bot fix and Griffig values.
-
-Initial main complete32policies at8a3a423 (3,673wall/28,924summed seconds),cache /tmp/plan5-climbing-initial-checkpoints-8a3a423. Corrected review-blindeee2e74 complete464wins,paired−5.2±1.4,T10pass;imported4e92152. Coherent corrected32-policy baseline uses31original+one corrected task,no extra games:cache /tmp/plan5-climbing-corrected-checkpoints-4e92152,report climbing/griffig-main-corrected.md. Original/isolated corrected jobs are finished. Botcheck worktree/branch retained;no active job there.
+- Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work. Main has not received the climbing code;its STATUS is synchronised for the IDE.
+- Frozen outcome source27756b3;main32policies×1,000paired test seeds complete. Cache:/tmp/plan5-climbing-formula-checkpoints-27756b3. Backup:/tmp/plan5-climbing-formula-runner.ts.
+- First/only climbing event campaign INTERRUPTED at the hard stop:48complete forced-answer tasks,40,026actually played games preserved plus32complete main tasks. All JSON files parse with unique seeds;hash/count inventory:climbing/EVENT_CHECKPOINTS.json. No final event markdown/table exists. Restore /tmp/plan5-climbing-events-runner.ts and resume the same exact-source/cache command from HARD_STOP.md;never replay completed tasks to confirm them. Former session91748 is closed;log /tmp/plan5-climbing-events.log.
+- Final full attempts:27756b3 1,960pass/2fail/30skip;c9dbf3f 1,961pass/1fail/30skip;dd789c1 1,961pass/1fail/30skip. Last failure:Rückenwind established WebKit375,header fit remains false after15seconds. Failure excerpts:climbing/TEST_FAILURES.txt. Last log:/tmp/plan5-climbing-final-full-tests-final.log.
+- Focused56established cases and lint/typechecks pass,but the full gate does not. An earlier update claiming all56passed inside the full suite was premature;only the focused run was wholly green.
+- Protected proof12/12 main-only1,000test-seed units complete,identical apart from timings;protected-step5/. No proof job remains. Capacity experiment discarded,not merged;climbing/capacity-benchmark.json.
+- Read-only step6preparation only:/tmp/plan5-step6-docs-notes.md,/tmp/plan5-step6-full-notes.md,/tmp/plan5-step6-issue-candidates.md,/tmp/plan5-step6-open-issue-inventory.json.34open targets indexed;no fresh tuning round or full report started. Inbox diagnostic /tmp/plan5-step6-inbox-diagnostic.log confirms escape/venue review-blind snag repairs;no bot/value fix applied.
 
 ## Checklist
 
@@ -32,18 +30,11 @@ Initial main complete32policies at8a3a423 (3,673wall/28,924summed seconds),cache
 
 ## Climbing
 
-Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work.
-Final main source27756b3:careful30.8%±2.9,top39.0%,no-tests0%;32policies×1,000paired seeds. Values2/2 and formula1/1 exhausted. Open T3,T5–T7,T9,T11,T12,T14,T15,K1–K3;K5atlimit. Full contributions/closest evidence/options:climbing/FINAL_REVIEW.md. Shared member/platform arrivals now enabled;all numbers frozen. First/only event table running;final full suite has two browser readiness failures under repair;milestone not complete yet.
-Completed fitness milestone imported at7ac610e before registration8a3a423.
-24features,49events,150quotes,four intros,two native scenes;optional staffed hall hours,individual qualifications,courses,paid setting,shared wall pools,clubs/parties,café/rental baskets and internal mezzanine implemented.27 full results/public traces match before/after hall compaction and final fitness import.
+Final main source27756b3:careful30.8%±2.9,top39.0%,no-tests0%;32policies×1,000paired test seeds. Playability bounds met. Values2/2 and formula1/1 exhausted. Open T3,T5–T7,T9,T11,T12,T14,T15,K1–K3;K5atlimit. Full contributions/closest evidence/options:climbing/FINAL_REVIEW.md.
 
-Initial careful51.6%±3.1 (T1 fails),platform-only41.5% (−10.1±1.9),no-tests0%,naive52.3%. Viable segments:committed17.6%,families66.2%,students68.7%. Initial review:climbing/INITIAL_REVIEW.md. Round1 careful by viable segment:committed3.1%,families24.5%,students43.1%;T3 remains open pending full review. All baseline contributions complete;round1 values1/2,formula0/1. No climbing events have run.
+24features,49events,150quotes,four intros,two scenes;actual paid fit-out/staffed hours/setting,shared wall pools,individual belay skills/courses,clubs/parties,café/rental baskets,member/platform shared arrivals and internal mezzanine implemented. T11visitor refunds now visible,with unchanged target limits.27complete results/public traces preserve hall compaction/import behaviour.
 
-The initial review-blind516wins are superseded for T10:its inbox still repaired snags. Isolated hall-only safeguardeee2e74 has a reproduced regression,57focused checks and lint passing;Corrected measurement complete464wins (−5.2±1.4),T10pass;reuse unaffected matrix data. Careful and all earlier policies retain their choices.
-
-Validation:829preparation checks/27skips. Registered full suite:1,952pass/30skip/3browser timing failures. Test-only fixes now pass the exact readiness/header cases and notebook transition in Chromium/WebKit;lint/typechecks pass. No product geometry or simulation changed. Run the full suite on final tuning source. Seeds225rows,only18new Griffig rows;all documented endings replay. Profile diagnostic test0–2 matches measured careful results exactly;no optimisation retained.
-
-Protected proof:12/12 reports identical apart from timings (Kantino/Zollstock standard,Kantino/Gratwanderung/Seeblick/Hinterhof/Tiefgang/Rückenwind/Leinenlos/Ausgesperrt/Fabriketage/Schweißperle long). All eleven older content fingerprints match;fitness recorded. Raw reports:protected-step5/.
+225ending seeds generated;only Griffig rows change and all replay. All24Griffig browser cases pass in the latest full attempt;the unrelated established-heading failure blocks the overall gate. Twelve earlier-game comparisons/fingerprints remain valid;engine0.14.0. No climbing milestone/tag/merge until the stopped validation/event gate is completed.
 
 ## Completed results and open issues
 
@@ -55,7 +46,9 @@ Ausgesperrt:careful42.8%±3.1,top48.4%;X1 at limit,X2–4pass. Open T2,T3,T6,T10
 
 Step6 has a fresh two-round revisit budget. Full report NEVER started.
 
-## For Henry to review (non-blocking)
+## For Henry to review
+
+- BLOCKING:established WebKit heading still fails full-suite fitting after three attempts. Evidence/options:/private/tmp/founder-mode-plan5-climbing/docs/autonomous5/climbing/HARD_STOP.md. Remaining items below are non-blocking.
 
 - Griffig shared member/platform arrivals now compete for real places;personal skills remain individual. Decision:step5 sole formula round.
 
@@ -70,5 +63,6 @@ Step6 has a fresh two-round revisit budget. Full report NEVER started.
 
 ## Stopped
 
-None. User authorised continuing everything. No final until complete or a plan hard stop.
-Never push,rewrite history or delete branches. No external account/service required.
+23October2026,18:45UTC. Mandatory hard stop,plan1.2.1. Three honest full-source attempts at established-heading font/fit readiness still do not make the full suite green. Final result1,961pass/1fail/30skip;failure Rückenwind WebKit375. Focused56/lint pass but do not replace a green full suite. No assertion was weakened or product geometry changed. See HARD_STOP.md for exact attempts and next options(instrument actual fitter;isolate concurrent-load effects;retain all fit/cut checks).
+
+Event processing stopped with48completed forced tasks/40,026played games and32main tasks preserved. All run-owned background jobs are stopped. Fitness is complete;climbing and step6are incomplete. Full bot report NEVER started. No push.
