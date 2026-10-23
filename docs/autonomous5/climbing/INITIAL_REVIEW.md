@@ -42,3 +42,9 @@ visible-inbox regression;measure only the corrected policy on1,000 paired
 seeds and retain all unaffected matrix data. The initial516wins are
 superseded for T10 after that correction,not a valid final contribution.
 Do not spend numeric tuning budget on this bot mistake.
+
+
+Corrected review-blind measurement complete at eee2e74:464wins,paired
+−5.2±1.4 against careful516;T10 passes. Only that policy reran,1,000paired
+test seeds. REVIEW_BLIND_CORRECTION.md and review-blind-paired.csv retain
+provenance and every paired ending. The full initial matrix is still running.
