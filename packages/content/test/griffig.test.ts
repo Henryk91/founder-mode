@@ -34,7 +34,7 @@ describe('Griffig content', () => {
     expect(l.qualifications!.courseMembership).toEqual({ belay_course: 0.35, lead_course: 0.5 })
     expect(l.qualifications!.levels.lead!.requires).toEqual(['belay'])
     expect(l.freshness!.rope_walls!.refresh).toMatchObject({
-      hours: 25,
+      hours: 32,
       closedHours: { midday: 4 },
     })
     expect(b.roles.desk!.units).toEqual({})

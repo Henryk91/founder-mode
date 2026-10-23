@@ -1083,3 +1083,8 @@ AUTONOMOUS:Full registered validation found three browser timing failures under 
 AUTONOMOUS:An actual visible-inbox regression reproduces the hall review-blind bot clearing service snags through event replies. Extend the existing fitness safeguard to hall opt-ins;careful and earlier scenarios retain their choices. This corrects the bot before values,not a tuning round. Measure only the corrected hall policy on1,000 paired test seeds and reuse unaffected initial results. Prepare this in a separate checkout while the original source8a3a423 reports/proof remain frozen.
 
 AUTONOMOUS:Import validated hall-only bot correctioneee2e74 after the initial32-policy matrix completes. Reuse31 unaffected policy tasks and substitute only corrected review-blind data. Earlier games omit hall and fitness already has classStaffing,so the safeguard predicate and all executed earlier-game policy choices are unchanged;the twelve-unit proof continues on their frozen engine/content. Subsequent numeric changes affect Griffig only.
+
+
+### Step5 first value round
+
+AUTONOMOUS:After the complete corrected32-policy/1,000-seed baseline,reduce weekly enquiries students150–500→80–240 and families60–200→32–100,increase committed4–15→10–30. Set fictional bank own-money share20%→15% so both-first can finance working capital under the existing ceiling. Set estimated reset work25→32hours (four paid eight-hour days),preserving the four-hour reset closure. Keep fees,rent,equipment prices,wages and lending ceiling. Values1/2,formula0/1;measure affected main only on1,000paired test seeds. Sources/estimates and financing trace are explicit in scenario-climbing.md section15.
