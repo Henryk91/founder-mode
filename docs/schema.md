@@ -2,7 +2,7 @@
 
 Source of truth for the shapes shared between engine, content, bots, and UI. Update this file in the same change as any type change.
 
-Status: Phase 9 part B (engine 0.12.0). Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
+Status: plan 5, the leisure scenarios (engine 0.14.0). Engine types live in `packages/engine/src/types.ts`, content schemas in `packages/content/src/schema.ts`.
 
 ## Conventions
 
@@ -1269,8 +1269,8 @@ No new numeric coefficient or player-state field is introduced.
 
 `leisure.qualifications` names earned levels/prerequisites,initial segment skill
 ranges and course-to-membership enquiry shares. Validation rejects missing levels,
-segments,courses and prerequisite cycles. No registered scenario enables it during
-isolated preparation. `HiddenLeisure.qualificationRates` stores the sampled ranges;
+segments,courses and prerequisite cycles. Griffig enables it;no other registered
+scenario does. `HiddenLeisure.qualificationRates` stores the sampled ranges;
 optional `LeisureMember.levels`,aggregator-user `levels` and `Booking.levels` store
 actual held skills. Uncoached products with `needsLevel` require that person's skill.
 Ordinary check-ins do not silently enrol users on coached courses.

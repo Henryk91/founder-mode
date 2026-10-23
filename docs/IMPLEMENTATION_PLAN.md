@@ -776,6 +776,14 @@ Open issues are in `docs/autonomous2/STATUS.md`.
 - Rückenwind (Mallorca), Tiefgang (Cyprus) and Leinen los (Fethiye), each with its own bots and targets (W1 to W5, D1 to D4, G1 to G4), UI parts (the forecast strip, the trip policy, the students card, the boat card, the season calendar) and scene drawings. The protected games (both 60-week games and the four earlier long modes) were proven unchanged after every engine step.
 - Open issues are in `docs/autonomous4/STATUS.md` and `docs/BACKLOG.md`.
 
+### After plan 4: plan 5
+
+`docs/AUTONOMOUS_PLAN_5.md` added four leisure businesses in Munich under a new "Leisure" category (reports in `docs/autonomous5/reports/`, summary in `docs/autonomous5/reports/final.md`):
+
+- Engine additions in `docs/leisure-mechanics.md`, each off unless a scenario's YAML names it: capacity per time slot with crowding; memberships with notice, annual terms and packs owed until used; an aggregator platform paying per check-in; freshness that fades; date holds; and build-outs with areas closed while they are fitted. The fitness step added class rooms with qualified instructors and their followers; the climbing step added hall opening hours with desk cover, shared wall pools, personal belay qualifications earned on courses, and a queue shared by members and platform visitors. Engine 0.14.0.
+- Ausgesperrt (escape room), Fabriketage (event venue), Schweißperle (class studio) and Griffig (climbing hall), each with its own bots and targets (X1 to X4, V1 to V4, F1 to F5, K1 to K5), UI parts on the existing notebook and calendar components, and scene drawings. Office stages 1 and 2 only. The protected games were proven unchanged after every shared change.
+- A first tuning pass only. Its 34 open targets, with closest results and options, are in `docs/BACKLOG.md` for a later tuning plan.
+
 ## 10. How to start with Claude Code
 
 1. Create an empty repo, add this file as `docs/IMPLEMENTATION_PLAN.md` and the provided `CLAUDE.md` at the root.

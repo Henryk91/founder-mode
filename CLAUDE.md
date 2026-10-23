@@ -13,6 +13,8 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 - `docs/scenario-zollstock.md`: the second scenario (trade businesses), written as differences from Kantino.
 - `docs/abroad-mechanics.md`: the engine additions of the abroad scenarios (day conditions, courses, day trips, assets with buy, lease and share, licences, the tender, local cost steps).
 - `docs/scenario-watersports.md`, `docs/scenario-dive.md`, `docs/scenario-gulet.md`: the abroad scenarios Rückenwind, Tiefgang and Leinen los, with sources and values as built.
+- `docs/leisure-mechanics.md`: the engine additions of the leisure scenarios (time of day and crowding, memberships, the aggregator, freshness, date holds, build-out with closed areas). Class rooms and instructors are in the fitness spec; hall cover and personal qualifications in the climbing spec.
+- `docs/scenario-escape-room.md`, `docs/scenario-event-venue.md`, `docs/scenario-fitness.md`, `docs/scenario-climbing.md`: the leisure scenarios Ausgesperrt, Fabriketage, Schweißperle and Griffig in Munich, with sources and values as built.
 - `docs/design/design.md`: layout, colour and font tokens, component mapping, and three HTML mockups. Read before any UI work.
 - `docs/schema.md`: game state, player view, save file, content schemas. Update it in the same change as any type change.
 - `docs/balancing.md`: latest bot report
