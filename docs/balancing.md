@@ -5346,3 +5346,6 @@ Plan5 climbing initial main complete:32policies,1,000paired test seeds,source8a3
 
 
 Plan5 climbing value round1 complete,source78cae39:main only32policies×1,000paired test seeds,six workers,1,682wall/9,954summed seconds. Careful24.0%±2.6 at lower limit,top overstaff29.1%,no-tests0%,naive25.6%. T3spread39.9±5.6;all contributions:autonomous5/climbing/ROUND1_REVIEW.md. Hall overstaffing variant needs a role-coverage correction before round2;measure only that policy. Values1/2,formula0/1. No events/full report.
+
+
+Plan5 climbing corrected round1:overstaff219wins,paired−2.1±1.5,T9atlimit. Coherent32-policy table reuses31original tasks plus this one corrected policy;no games to reassemble it. Newly visible visitor refunds make T11applicable with unchanged limits:strict−1.4±1.0overall,no established strict segment advantage,open. Source26f5ecb,game values78cae39. Raw table:autonomous5/climbing/griffig-main-round1-corrected.md. Capacity experiment discarded:1.1%timing difference within uncertainty,all2,000results exact. No engine change/events/full report.

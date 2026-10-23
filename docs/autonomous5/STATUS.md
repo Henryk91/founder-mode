@@ -3,8 +3,8 @@
 ## Current
 
 Step:5.8 round1 complete;correct hall overstaffing before final value round.
-Last commit:climbing6c40856 round1 review and corrected hall overstaffing;game values78cae39.
-Next action:Round1 complete32policies,careful24.0%±2.6 at limit. Hall overstaffing correction passes58focused checks/lint;commit and measure that policy only on1,000paired seeds,then choose final value round from ROUND1_REVIEW.md. Values1/2,formula0/1;at most one further value round then one formula round. Complete earlier-game proof,events once at step end,seeds and final full tests. Full report only step6,once.
+Last commit:climbing26f5ecb hall refund visibility/T11 and12protected comparisons;game values78cae39.
+Next action:Round1 complete32policies,careful24.0%±2.6 at limit. Corrected overstaffing219wins,−2.1±1.5,T9 at limit. Coherent round1 table rebuilt from32cached tasks,T11now measured and open. Commit baseline,then final value round per ROUND1_REVIEW.md. Values1/2,formula0/1;at most one further value round then one formula round. Complete earlier-game proof,events once at step end,seeds and final full tests. Full report only step6,once.
 
 ## Active jobs and resumption
 

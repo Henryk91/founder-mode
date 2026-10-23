@@ -40,3 +40,35 @@ passes57focused checks and lint,and is benchmarking1,000paired seeds in
 alternating100-seed blocks. No optimisation is merged or speed gain claimed.
 The main matrix's T12 remains515.5seconds and fails;loads differ from earlier
 matrices. Await the completed benchmark before retaining or discarding it.
+
+
+## Corrections collected before round2
+
+Hall overstaffing6c40856:219wins (21.9%),paired−2.1±1.5 against unchanged
+careful240. T9passes at its margin;58focused checks/lint pass.31unaffected
+tasks reused and only this policy measured again. Current coherent table:
+griffig-main-round1-corrected.md,report/UI source26f5ecb.
+
+Audit exposed existing visitor refund controls that the shared membership form
+had hidden in halls. They are now visible,separate from membership notice.
+T11applies with its original limits:strict−1.4±1.0 overall,committed+0.6,
+families−4.7,students0.0;no established strict segment advantage,so it fails.
+All policy outcomes were already cached;no extra games for this row.
+
+Current open:T3,T5–T7,T11,T12,K1–K3,K5. T1,T9,T15,K4 at their limits.
+The capacity candidate is discarded:before291.3s,after288.1s on1,000paired
+seeds each,1.1%gain within uncertainty.27full results/public traces and all
+2,000benchmark results were exact;no engine change was merged.
+
+## Final value-round decision
+
+Increase committed enquiries10–30→40–100/week. The public cash/member trace
+shows its recurring cohort is too small before the opening bridge runs out.
+Keep student/family demand,fees,rent,equipment,wages,credit ceiling and15%own
+money share. Increase estimated calendar freshness loss10→12/week for the
+four configured wall sections:half setting then leaves routes tired for more
+of its eight-week reset cycle,while normal setting still completes in four.
+This tests the measured segment and setting shortfalls with believable
+estimates rather than changing the first-wall invoices or paid day prices.
+Values2/2,formula0/1 once committed. Measure main only on1,000paired seeds;
+no further first-pass numeric round after it.
