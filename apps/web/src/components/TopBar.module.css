@@ -58,6 +58,11 @@
   white-space: nowrap;
 }
 
+/* The name's text as a box of its own width, so the fitter sees a new face or spacing change it. */
+:global([data-stage='established']) .nameText {
+  display: inline-block;
+}
+
 /* The name's column takes the room the buttons leave, so a long name can be measured in it. */
 :global([data-stage='established']) .who {
   flex: 1 1 auto;

@@ -1126,3 +1126,7 @@ AUTONOMOUS:Full retry fixes the original Gratwanderung cuts but the added exact-
 ### Plan5 mandatory test hard stop
 
 AUTONOMOUS:Stop under plan1.2.1 after three full-source established-heading font/fit attempts. Latest1,961pass/1fail/30skip;focused56and lint pass,but full WebKit Rückenwind375still fails the original fit criterion. An earlier update overstated full-suite font success;only the focused run was green. Stop the run-owned event process tree,preserve48forced checkpoints/40,026played games plus32main tasks,and commit failure evidence/options. No climbing milestone,step6,full report,push or further tuning.
+
+### Plan 5 resume: established heading fits on its own width change
+
+Henry authorised resuming after the hard stop. A full suite with no other jobs running still failed (WebKit 375, Gratwanderung and Tiefgang), so the cause was code, not load. The lazy established stylesheet supplies `--font-head` and resets letter spacing; with the face already cached no `loadingdone` fires and the heading's column keeps its width, so the fitter never refitted. The established name now sits in an inline-block span watched by its own ResizeObserver, which refits on the next frame whenever the span's width differs from what the fitter last left. Other stages keep the plain heading text. No test or assertion changed.

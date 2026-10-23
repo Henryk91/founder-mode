@@ -16,9 +16,10 @@ import ui from './ui.module.css'
 export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
   const view = useGame((s) => s.view)
   const nameRef = useRef<HTMLHeadingElement>(null)
+  const textRef = useRef<HTMLSpanElement>(null)
   const company = view ? label('bar.company', voiceOf(view), { name: view.scenarioName }) : ''
   const fits = view?.company.uiStage === 'established'
-  useFitOneLine(nameRef, fits ? company : null)
+  useFitOneLine(nameRef, textRef, fits ? company : null)
   const issues = useGame((s) => s.issues.length)
   const showingReport = useGame((s) => s.report !== null)
   const endWeek = useGame((s) => s.endWeek)
@@ -36,7 +37,14 @@ export function TopBar(props: { wide: boolean; planHours?: boolean | null }) {
       )}
       <div>
         <h1 ref={nameRef} className={styles.name} tabIndex={-1} data-autofocus>
-          {company}
+          {established ? (
+            // Its own box, so the fitter sees the glyphs change width (see useFitOneLine).
+            <span ref={textRef} className={styles.nameText}>
+              {company}
+            </span>
+          ) : (
+            company
+          )}
         </h1>
         <div className={styles.week}>
           {label(established && props.wide ? 'bar.weekPlace' : 'bar.week', stage, {
@@ -116,12 +124,17 @@ const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayout
 
 /**
  * Plan 3, the established bar: the company's full name stays on one line. A long name steps its
- * size down (to 12 px at the least) until it fits, again when the bar resizes or the heading font
- * arrives. `text` null leaves the size alone.
+ * size down (to 12 px at the least) until it fits, again when the bar resizes or the name's own
+ * width changes (its heading font or stylesheet arriving). `text` null leaves the size alone.
  */
-function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | null) {
+function useFitOneLine(
+  ref: React.RefObject<HTMLElement | null>,
+  textRef: React.RefObject<HTMLElement | null>,
+  text: string | null,
+) {
   useIsoLayoutEffect(() => {
     const el = ref.current
+    const span = textRef.current
     if (!el || text === null) return
     // The name's column; without the logo square a long name has 42 px more.
     const who = el.parentElement?.parentElement ?? null
@@ -147,6 +160,13 @@ function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | 
     }
     let live = true
     let frame = 0
+    // The name's width as the fitter last left it. Any other width means the face, letter spacing
+    // or stylesheet changed the glyphs (a cached face fires no loadingdone, and the bar keeps its
+    // width), so the name is fitted again; the fitter's own size writes are not.
+    let fitted = -1
+    const note = () => {
+      if (span) fitted = span.getBoundingClientRect().width
+    }
     const fit = () => {
       if (who) delete who.dataset['tight']
       el.style.fontSize = ''
@@ -157,6 +177,7 @@ function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | 
       if (who && Math.max(range.getBoundingClientRect().width, el.scrollWidth) > el.clientWidth - 1)
         who.dataset['tight'] = 'true'
       shrink()
+      note()
       // WebKit can settle flex widths after the font-size write; finish against that layout.
       cancelAnimationFrame(frame)
       let quietFrames = 0
@@ -169,6 +190,7 @@ function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | 
           el.style.fontSize = `${Math.max(MIN_NAME_PX, size - 0.5)}px`
           quietFrames = 0
         } else quietFrames++
+        note()
         // Font shaping can finish after the size write. Require two stable painted
         // layouts; further corrections only shrink, so no reset/resize oscillation.
         if (quietFrames < 2) frame = requestAnimationFrame(settle)
@@ -181,13 +203,24 @@ function useFitOneLine(ref: React.RefObject<HTMLElement | null>, text: string | 
     document.fonts?.addEventListener('loadingdone', fit)
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(fit)
     observer?.observe(el.parentElement ?? el)
+    const own =
+      typeof ResizeObserver === 'undefined' || !span
+        ? null
+        : new ResizeObserver(() => {
+            // Next frame: resizing an observed box inside its own callback is a loop error.
+            if (Math.abs(span.getBoundingClientRect().width - fitted) <= 0.5) return
+            cancelAnimationFrame(frame)
+            frame = requestAnimationFrame(() => live && fit())
+          })
+    if (span) own?.observe(span)
     return () => {
       live = false
       cancelAnimationFrame(frame)
       observer?.disconnect()
+      own?.disconnect()
       document.fonts?.removeEventListener('loadingdone', fit)
       el.style.fontSize = ''
       if (who) delete who.dataset['tight']
     }
-  }, [ref, text])
+  }, [ref, textRef, text])
 }
