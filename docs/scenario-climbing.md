@@ -317,3 +317,7 @@ common queue. Each visitor retains their own earned belay skills;no segment-wide
 access is granted. No new penalty,numeric value or engine path is introduced.
 All fees,costs,demand,setting and loan terms stay at the final value round.
 This spends formula1/1;values2/2 were already exhausted.
+
+### Final first pass
+
+The values above are those of outcome source 27756b3 (tag `plan5-climbing`), measured in `docs/autonomous5/reports/step5-climbing.md`. Plan 5 made no further value changes in its wrap up; the targets left open are in `docs/BACKLOG.md` for a later tuning plan.

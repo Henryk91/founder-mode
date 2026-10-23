@@ -292,3 +292,7 @@ These are gameplay estimates,not research claims. Quoted money,market demand,
 lead times,payroll,deposit shares and loan terms stay fixed. Conservatively debit
 round2 to all targets. No formula allowance used;all29 main strategies measured
 on1,000 test seeds. The event table remains once-only after final values.
+
+### Final first pass
+
+The values above are those of the tag `plan5-venue`, measured in `docs/autonomous5/reports/step3-venue.md`. Plan 5 made no further value changes in its wrap up; the targets left open are in `docs/BACKLOG.md` for a later tuning plan.

@@ -295,3 +295,7 @@ Both value rounds are complete. Careful wins 42.8% ±3.1 and no strategy exceeds
 on main only, 1,000 `test` seeds. Eight tourism targets remain open. The formula
 allowance is deliberately unused: the review in the step report identifies options
 for step 6, without inventing a formula penalty or exceeding the two value rounds.
+
+### Final first pass
+
+The values above are those of the tag `plan5-escape`, measured in `docs/autonomous5/reports/step2-escape.md`. Plan 5 made no further value changes in its wrap up; the targets left open are in `docs/BACKLOG.md` for a later tuning plan.
