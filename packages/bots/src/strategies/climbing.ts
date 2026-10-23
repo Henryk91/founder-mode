@@ -106,7 +106,8 @@ export function planClimbing(
         (n, w) => n + w.slots.filter((s) => s.slotId === slot.id).reduce((n, s) => n + s.visits, 0),
         0,
       )
-      const quiet = slot.id === 'early' && recent.length === 4 && visits < 8
+      const quiet =
+        rule.roster !== 'over' && slot.id === 'early' && recent.length === 4 && visits < 8
       return [slot.id, opened && !quiet ? slot.hours : 0]
     }),
   )
@@ -136,7 +137,7 @@ export function planClimbing(
     for (const f of l.freshness.filter((f) =>
       view.product.features.some((p) => p.id === f.productId && p.shipped),
     )) {
-      const total = Math.ceil((f.resetHours / 4) * factor)
+      const total = Math.ceil((rule.roster === 'over' ? f.resetHours : f.resetHours / 4) * factor)
       const founder = Math.min(total, Math.max(0, Math.min(6, b.free - 20)))
       settingHours[f.productId] = founder
       b.free -= founder

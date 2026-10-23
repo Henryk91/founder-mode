@@ -5343,3 +5343,6 @@ Plan5 climbing corrected review-blind only,main1,000paired test seeds,sourceeee2
 
 
 Plan5 climbing initial main complete:32policies,1,000paired test seeds,source8a3a423,3,673wall/28,924summed seconds. Careful51.6%,top boulder-first56.4%,no-tests0%. After hall-only review-blind correction,T10passes;open T1,T3,T5–T7,T9,T12,T14,K1–K3. K5atlimit. Raw table:autonomous5/climbing/griffig-main-initial.md;contributions/first value decision:INITIAL_REVIEW.md. No events/full report.
+
+
+Plan5 climbing value round1 complete,source78cae39:main only32policies×1,000paired test seeds,six workers,1,682wall/9,954summed seconds. Careful24.0%±2.6 at lower limit,top overstaff29.1%,no-tests0%,naive25.6%. T3spread39.9±5.6;all contributions:autonomous5/climbing/ROUND1_REVIEW.md. Hall overstaffing variant needs a role-coverage correction before round2;measure only that policy. Values1/2,formula0/1. No events/full report.

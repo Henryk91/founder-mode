@@ -149,6 +149,37 @@ describe('unregistered climbing policies', () => {
       false,
     )
   })
+  it('rosters full hall hours and weekly wall resets when deliberately overstaffing', () => {
+    const v = opened(),
+      l = v.bookings!.leisure!
+    v.product.features = v.product.features.map((f) => ({ ...f, shipped: f.id === 'boulder_area' }))
+    l.history = [1, 2, 3, 4].map((week) => ({
+      week,
+      joined: 0,
+      cancelled: 0,
+      active: 0,
+      signed: 0,
+      held: 0,
+      converted: 0,
+      released: 0,
+      lateReleased: 0,
+      aggregatorCancellations: 0,
+      aggregatorPayoutCents: 0,
+      turnedAway: {},
+      slots: [],
+    }))
+    const careful = empty(),
+      over = empty()
+    planClimbing(v, new PlanBuilder(v, 50), careful, CAREFUL_TOURISM)
+    planClimbing(v, new PlanBuilder(v, 50), over, { ...CAREFUL_TOURISM, roster: 'over' })
+    expect(careful.leisure!.openHours!.early).toBe(0)
+    expect(over.leisure!.openHours!.early).toBe(10)
+    const allocated = (p: BookingsPlan) =>
+      p.leisure!.settingHours!.boulder_area! + p.leisure!.paidSettingHours!.boulder_area!
+    expect(allocated(careful)).toBe(8)
+    expect(allocated(over)).toBe(32)
+    expect(over.shifts.setter).toBeGreaterThan(careful.shifts.setter!)
+  })
   it('covers actual opening hours and purchases every allocated setter hour', () => {
     const v = opened(),
       b = new PlanBuilder(v, 50),

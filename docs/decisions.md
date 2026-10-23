@@ -1088,3 +1088,8 @@ AUTONOMOUS:Import validated hall-only bot correctioneee2e74 after the initial32-
 ### Step5 first value round
 
 AUTONOMOUS:After the complete corrected32-policy/1,000-seed baseline,reduce weekly enquiries students150–500→80–240 and families60–200→32–100,increase committed4–15→10–30. Set fictional bank own-money share20%→15% so both-first can finance working capital under the existing ceiling. Set estimated reset work25→32hours (four paid eight-hour days),preserving the four-hour reset closure. Keep fees,rent,equipment prices,wages and lending ceiling. Values1/2,formula0/1;measure affected main only on1,000paired test seeds. Sources/estimates and financing trace are explicit in scenario-climbing.md section15.
+
+
+### Step5 hall overstaffing bot correction before round2
+
+AUTONOMOUS:Round1 showed that the overstaffing policy still closed quiet hall hours and used the careful monthly setting schedule;only course coaching was rostered for full capacity. A public-plan regression reproduces this. Apply full advertised hours and one full reset/week to each shipped wall under roster:over,using actual desk/setter shifts and availability. Careful and all other policies are unchanged. Measure only corrected overstaffing on1,000paired seeds before the final value round;no numeric/formula budget spent by this bot correction.
