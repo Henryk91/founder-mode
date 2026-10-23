@@ -5337,3 +5337,6 @@ Plan5 fitness event table complete,once:99 fixed-answer policies on1,000 paired 
 
 
 Plan5 climbing initial main in progress,source8a3a423:1,000 paired test seeds per policy,eight workers. Completed careful51.6%±3.1,platform-only41.5% (paired−10.1±1.9),no-tests0%. Partial review:autonomous5/climbing/INITIAL_REVIEW.md. Values0/2,formula0/1;no climbing events,wide or full report. Complete matrix and contributions required before tuning.
+
+
+Plan5 climbing corrected review-blind only,main1,000paired test seeds,sourceeee2e74:46.4%±3.1 versus unchanged careful51.6%,paired−5.2±1.4;T10passes. Only this policy reran;initial516wins superseded. Provenance/per-seed endings:autonomous5/climbing/REVIEW_BLIND_CORRECTION.md and review-blind-paired.csv. Values0/2,formula0/1;no events/full report.

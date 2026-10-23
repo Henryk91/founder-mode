@@ -3,13 +3,13 @@
 ## Current
 
 Step:5.8 Griffig initial contributions and bot correction;steps0–4 complete.
-Last commit:climbing959c24d;engine/content/bot measurement source8a3a423.
-Next action:Collect the initial climbing main matrix and corrected review-blind policy below. Import isolated bot fixeee2e74 after frozen validations;reuse unaffected results and review all contributions before values. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
+Last commit:climbing95799e1 browser readiness fixes and5/12 protected comparisons;measurement source8a3a423.
+Next action:Collect the initial climbing main matrix and corrected review-blind policy below. Corrected review-blind complete46.4%,paired−5.2±1.4,T10pass. Import isolated bot fixeee2e74 after frozen validations;reuse unaffected results and review all contributions before values. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
 
 ## Active jobs and resumption
 
 - Initial Griffig main:session96275,/tmp/plan5-climbing-main-initial.log. Main only,1,000paired test seeds,eight workers,source8a3a423;16policies complete. Cache:/tmp/plan5-climbing-initial-checkpoints-8a3a423;runner backup:/tmp/plan5-climbing-initial-runner.ts. Reuse completed tasks;do not restart completed reports.
-- Corrected review-blind only:session87679,/tmp/plan5-climbing-reviewblind-main.log. Sourceeee2e74 in /private/tmp/founder-mode-plan5-climbing-botcheck (branch plan5-climbing-botcheck),two workers,1,000paired test seeds. Cache:/tmp/plan5-climbing-reviewblind-checkpoints-eee2e74;runner:/tmp/plan5-climbing-reviewblind-runner.ts. A dependency-link error happened before any games;links corrected. Temporary entry removed after loading.
+- Corrected review-blind only:complete(session87679),/tmp/plan5-climbing-reviewblind-main.log. Sourceeee2e74 in /private/tmp/founder-mode-plan5-climbing-botcheck (branch plan5-climbing-botcheck),two workers,1,000paired test seeds. Cache:/tmp/plan5-climbing-reviewblind-checkpoints-eee2e74;runner:/tmp/plan5-climbing-reviewblind-runner.ts. A dependency-link error happened before any games;links corrected. Temporary entry removed after loading.
 - Twelve earlier-game proof:session39214,/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Keep packages/bots/src/plan5-protected-step5.ts until controller completes;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs.
 
 ## Checklist
@@ -30,7 +30,7 @@ Completed fitness milestone imported at7ac610e before registration8a3a423.
 
 Initial careful51.6%±3.1 (T1 fails),platform-only41.5% (−10.1±1.9),no-tests0%,naive52.3%. Viable segments:committed17.6%,families66.2%,students68.7%. Initial review:climbing/INITIAL_REVIEW.md. Other contributions pending;values0/2,formula0/1. No climbing events have run.
 
-The initial review-blind516wins are superseded for T10:its inbox still repaired snags. Isolated hall-only safeguardeee2e74 has a reproduced regression,57focused checks and lint passing;measure only that policy and reuse unaffected matrix data. Careful and all earlier policies retain their choices.
+The initial review-blind516wins are superseded for T10:its inbox still repaired snags. Isolated hall-only safeguardeee2e74 has a reproduced regression,57focused checks and lint passing;Corrected measurement complete464wins (−5.2±1.4),T10pass;reuse unaffected matrix data. Careful and all earlier policies retain their choices.
 
 Validation:829preparation checks/27skips. Registered full suite:1,952pass/30skip/3browser timing failures. Test-only fixes now pass the exact readiness/header cases and notebook transition in Chromium/WebKit;lint/typechecks pass. No product geometry or simulation changed. Run the full suite on final tuning source. Seeds225rows,only18new Griffig rows;all documented endings replay. Profile diagnostic test0–2 matches measured careful results exactly;no optimisation retained.
 
