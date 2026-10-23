@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "pnpm --filter @founder-mode/web dev",
     "build": "pnpm --filter @founder-mode/web build",
-    "test": "vitest run",
+    "test": "vitest run --project web && vitest run --project '!web'",
     "test:watch": "vitest",
     "lint": "eslint . && prettier --check . && pnpm -r typecheck",
     "format": "prettier --write .",

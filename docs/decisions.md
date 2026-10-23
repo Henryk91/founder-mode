@@ -1130,3 +1130,7 @@ AUTONOMOUS:Stop under plan1.2.1 after three full-source established-heading font
 ### Plan 5 resume: established heading fits on its own width change
 
 Henry authorised resuming after the hard stop. A full suite with no other jobs running still failed (WebKit 375, Gratwanderung and Tiefgang), so the cause was code, not load. The lazy established stylesheet supplies `--font-head` and resets letter spacing; with the face already cached no `loadingdone` fires and the heading's column keeps its width, so the fitter never refitted. The established name now sits in an inline-block span watched by its own ResizeObserver, which refits on the next frame whenever the span's width differs from what the fitter last left. Other stages keep the plain heading text. No test or assertion changed.
+
+### Plan 5 resume: the test command runs in two halves
+
+With the heading fixed, every full run still passed all 1,962 tests but ended with one vitest 3.2.7 worker error ("Timeout calling onTaskUpdate"), even on an idle machine; no test or hook comes near the 60 s RPC timer, and the web project and the other projects each pass alone. Henry accepted the gate with `pnpm test` running the web project first, then all other projects (`--project '!web'`), exiting 0 only if both pass. maxWorkers stays at 50%. Revisit when vitest is upgraded (backlog).
