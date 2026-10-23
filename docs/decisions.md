@@ -1103,3 +1103,8 @@ AUTONOMOUS:Audit found that the shared membership form hid the visitor cancellat
 ### Step5 final first-pass value round
 
 AUTONOMOUS:Use the last value round after corrected round1 contributions and an exact public-view committed-loss trace. Set committed enquiries10–30→40–100/week and calendar freshness loss10→12/week for the four configured wall sections. Preserve all other demand,fees,rent,equipment,wages,32-hour reset/four-hour closure and bank terms. This addresses cohort runway and half-setting's tired weeks. Values2/2 exhausted,formula0/1 remains;main only1,000paired seeds before deciding the sole formula round.
+
+
+### Step5 shared-arrival qualification validation
+
+AUTONOMOUS:Before deciding the sole formula round,extend qualifications.test.ts to exercise personal belay restrictions through the existing optional shared-arrival queue. Members and platform visitors keep their own skills;beginners retain the accessible alternative and courses are not ordinary admission.13 focused tests and lint/typechecks pass. No outcome code or content changed;the final numeric matrix continues on8c931a1.
