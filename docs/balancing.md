@@ -5355,3 +5355,6 @@ Plan5 climbing final value round8c931a1:main only32policies×1,000paired test se
 
 
 Plan5 climbing final first-pass main27756b3:32policies×1,000paired test seeds,eight workers,1,713wall/13,376summed seconds. Careful30.8%±2.9,top39.0%±3.0,no-tests0%;playability bounds met. Open T3,T5–T7,T9,T11,T12,T14,T15,K1–K3;K5atlimit. Full contributions/options:autonomous5/climbing/FINAL_REVIEW.md. Values2/2,formula1/1 exhausted. Seeds225rows,only Griffig changed;full tests running. Climbing events run once next;full report only step6.
+
+
+Plan5 hard stop23October,section1.2.1:three full-source established WebKit heading-fit attempts do not make the whole suite green. Latest1,961pass/1fail/30skip (Rückenwind375);focused56and lint pass. Griffig final main remains30.8%,top39.0%,no-tests0%,source27756b3. First/only event campaign stopped with48complete forced task checkpoints/40,026played games;32main tasks retained. No event table completed,no climbing milestone or step6/full report. Evidence:autonomous5/climbing/HARD_STOP.md,TEST_FAILURES.txt,EVENT_CHECKPOINTS.json. All run-owned jobs stopped;no push.
