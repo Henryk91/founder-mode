@@ -3,14 +3,16 @@
 ## Current
 
 Step:5.8 sole formula round.
-Last commit:climbinge9219c0 complete final value-round review;values2/2,formula0/1.
-Next action:Final value round complete32policies×1,000paired seeds,careful31.6%±2.9,top39.6%. Review:climbing/ROUND2_REVIEW.md. Existing shared-arrival queue now enabled in Griffig only;values2/2 and formula1/1 exhausted. 48focused checks and lint pass;commit and measure main1,000paired seeds. After that events once,seeds/full tests and climbing milestone;full report only step6,once.
+Last commit:climbing27756b3 shared actual arrivals;values2/2,formula1/1 exhausted.
+Next action:Final main complete27756b3,careful30.8%±2.9,top39.0%;playability bounds met. Values2/2 and formula1/1 exhausted. Start climbing events ONCE on1,000test seeds with cached final careful baseline;collect full tests. Final seeds225rows,only Griffig changed. Complete climbing report/tag/merge,then step6open-issue review and full report once.
 
 ## Active jobs and resumption
 
 Capacity experiment complete and discarded:27full results/public traces plus2,000benchmark results exact;291.3s→288.1s (1.1%,paired uncertainty includes no gain). No engine change merged. Evidence:climbing/capacity-benchmark.json. Performance worktree restored to original source;no active job there.
 
-- Griffig round2 main:complete(session28214),/tmp/plan5-climbing-main-round2.log,32policies,eight workers,1,773wall seconds. Cache:/tmp/plan5-climbing-round2-checkpoints-8c931a1;runner backup:/tmp/plan5-climbing-round2-runner.ts;temporary entry removed. No active climbing measurement. Shared-arrival personal qualifications:13focused checks and lint pass.
+- Griffig final formula main:complete(session8118),/tmp/plan5-climbing-main-formula.log,32policies×1,000paired test seeds,eight workers,1,713wall seconds. Frozen source27756b3;cache /tmp/plan5-climbing-formula-checkpoints-27756b3;backup /tmp/plan5-climbing-formula-runner.ts;temporary entry removed.
+- Final seed generation:complete(session13762),/tmp/plan5-climbing-final-seeds.log,225rows. Full tests running(session83272),/tmp/plan5-climbing-final-full-tests.log,one worker on final source.
+- Griffig round2 main:complete(session28214),/tmp/plan5-climbing-main-round2.log,32policies,eight workers,1,773wall seconds. Cache:/tmp/plan5-climbing-round2-checkpoints-8c931a1;runner backup:/tmp/plan5-climbing-round2-runner.ts;temporary entry removed. Shared-arrival personal qualifications:13focused checks and lint pass.
 - Twelve earlier-game proof:complete(session39214),/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Temporary packages/bots/src/plan5-protected-step5.ts removed after all12completed;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs. Earlier content/applicable code paths unchanged by hall-only bot fix and Griffig values.
 
 Initial main complete32policies at8a3a423 (3,673wall/28,924summed seconds),cache /tmp/plan5-climbing-initial-checkpoints-8a3a423. Corrected review-blindeee2e74 complete464wins,paired−5.2±1.4,T10pass;imported4e92152. Coherent corrected32-policy baseline uses31original+one corrected task,no extra games:cache /tmp/plan5-climbing-corrected-checkpoints-4e92152,report climbing/griffig-main-corrected.md. Original/isolated corrected jobs are finished. Botcheck worktree/branch retained;no active job there.

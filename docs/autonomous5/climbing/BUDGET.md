@@ -1,8 +1,9 @@
 # Griffig measurement and tuning budget
 
-Current:values2/2 and formulas1/1 exhausted. Final value change passes27focused
-checks/lint;main-only measurement completed at8c931a1. No further first-pass numeric round. No climbing event table
-has run. Full report NEVER started;reserved for step6,once.
+Current:values2/2 and formulas1/1 exhausted. Final main completed at27756b3:
+careful30.8%±2.9,top39.0%±3.0,no-tests0%. No further first-pass tuning.
+All targets/contributions/options:FINAL_REVIEW.md. Climbing events run once now.
+Full report NEVER started;reserved for step6,once.
 
 T1–T18,E1,K1–K5 now apply. T11 covers visitor refunds after exposing their
 previously hidden existing control;membership notice is separate. Limits unchanged.
@@ -16,6 +17,7 @@ ties. K4 judges only actually opened rope baselines and reports the rest.
 |eee2e74 /4e92152|Corrected review-blind only1,000seeds;31unaffected tasks reused|51.6% unchanged|56.4% unchanged|values0/2,formula0/1|
 |78cae39 /26f5ecb|Round1 complete32policies×1,000paired seeds,overstaff corrected|24.0%±2.6,T1 at limit|26.5%|values1/2,formula0/1|
 |8c931a1|Round2 complete32policies×1,000paired seeds|31.6%±2.9|39.6%±3.0|values2/2,formula0/1|
+|27756b3|Final formula complete32policies×1,000paired seeds|30.8%±2.9|39.0%±3.0|values2/2,formula1/1|
 
 Correction:T10 now passes at−5.2±1.4 (464versus516wins);no whole-matrix rerun.
 Coherent corrected baseline:griffig-main-corrected.md. Open:T1,T3,T5–T7,T9,
@@ -44,3 +46,5 @@ Round2 complete;ROUND2_REVIEW.md records every target and contribution. Next:sol
 Sole formula round:sharedQueue true in Griffig;existing seeded actual arrivals,personal qualifications and UI. All numeric values fixed. Focused checks/lint and final main measurement follow before events once.
 
 Sole formula validation:48focused content/hall/qualification/queue/bot/target checks and lint/typechecks pass. Final main matrix follows on this frozen source.
+
+Final formula source27756b3:main only32policies×1,000paired test seeds,eight workers. Cache and session in STATUS;no more first-pass tuning.

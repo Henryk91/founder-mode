@@ -9,9 +9,8 @@ a serial tail. Completed task checkpoints are reused. No scenario outcomes chang
 
 Controller:/tmp/plan5-protected-step5.py. Checkpoints:
 /tmp/plan5-protected-step5-checkpoints-8a3a423. Runner backup:
-/tmp/plan5-protected-step5-runner.ts. Keep temporary source entry
-packages/bots/src/plan5-protected-step5.ts until every scheduled unit completes.
-Reuse completed reports and resume only missing exact-source tasks.
+/tmp/plan5-protected-step5-runner.ts. All scheduled units completed and the
+temporary source entry was removed. Reuse completed reports;no active proof job.
 No event,wide or full report. Full report only step6,once.
 
 
@@ -28,3 +27,9 @@ content fingerprints match exactly;fitness is recorded and its full30-policy
 main matches the final formula baseline. Temporary runner removed after
 controller completion. Later hall-only bot/report/UI fixes do not change any
 applicable earlier-game choices or content. No full report or event tables.
+
+Final value source8c931a1 and sole formula source27756b3 modify only Griffig
+YAML. Shared arrivals were already implemented during the validated fitness
+source;enabling that switch for Griffig changes no earlier content or executed
+path. Personal-qualification regression changes tests only. The twelve completed
+main comparisons remain the final earlier-game proof for this phase.
