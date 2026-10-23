@@ -293,7 +293,7 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     ...venueTargets(careful, s, all),
     ...fitnessTargets(careful, s, all),
     ...climbingTargets(careful, s, all),
-  ].filter((row) => row.id !== 11 || (!s('fitness_never_match') && !s('climbing_rope_first')))
+  ].filter((row) => row.id !== 11 || !s('fitness_never_match'))
 }
 
 /**

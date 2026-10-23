@@ -275,3 +275,13 @@ trace are in autonomous5/climbing/INITIAL_REVIEW.md.
 
 Values1/2,formulas0/1. Main only,1,000paired test seeds before another change;
 no event table until the end of this step.
+
+### Visitor refunds,23 October2026
+
+The existing flexible/strict policy covers booked day visits and courses,not
+membership notice. The membership-form predicate originally hid this visitor
+control even though bots and paid booking conversion/cancellations still used
+it. Halls now show the existing choices and a separate caption;member-only
+fitness is unchanged. T11 therefore applies to Griffig visitor bookings,with
+its original limits. Existing paired strict/flexible data supplies it;no
+extra bot games or outcome change accompanies the UI/report correction.

@@ -1093,3 +1093,8 @@ AUTONOMOUS:After the complete corrected32-policy/1,000-seed baseline,reduce week
 ### Step5 hall overstaffing bot correction before round2
 
 AUTONOMOUS:Round1 showed that the overstaffing policy still closed quiet hall hours and used the careful monthly setting schedule;only course coaching was rostered for full capacity. A public-plan regression reproduces this. Apply full advertised hours and one full reset/week to each shipped wall under roster:over,using actual desk/setter shifts and availability. Careful and all other policies are unchanged. Measure only corrected overstaffing on1,000paired seeds before the final value round;no numeric/formula budget spent by this bot correction.
+
+
+### Step5 visitor refund visibility and target applicability
+
+AUTONOMOUS:Audit found that the shared membership form hid the visitor cancellation control in halls,although paid day/course bookings and bots still use its strict/flexible terms. Expose the existing control for optional halls with a caption separating visitor refunds from membership notice;member-only fitness remains unchanged. Correct the initial T11 exclusion:it applies to hall visitor bookings,with its original wording and limits. The old exclusion would have ignored an operative engine/bot choice hidden by a UI predicate. Re-evaluate existing cached strict/flexible results;no extra games or numeric/formula round.

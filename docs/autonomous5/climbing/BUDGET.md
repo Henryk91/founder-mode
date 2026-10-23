@@ -4,7 +4,9 @@ Current:values1/2,formulas0/1. First value change passes26focused checks and
 lint/typechecks;round1 measurement follows its commit. No climbing event table
 has run. Full report NEVER started;reserved for step6,once.
 
-T1–T10,T12–T18,E1,K1–K5 apply. T11 excluded before measurement;T4 starts at
+T1–T18,E1,K1–K5 now apply. T11 covers visitor refunds after exposing their
+previously hidden existing control;membership notice is separate. Limits unchanged.
+Original reports predate that UI/applicability correction. T4 starts at
 opening. K1 uses differing paired binary outcomes,sole/joint leaders and all
 ties. K4 judges only actually opened rope baselines and reports the rest.
 

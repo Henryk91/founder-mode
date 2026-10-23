@@ -21,8 +21,10 @@ including six funded104-week course stress fixtures.
 
 ## Targets and measurement
 
-T1–T10,T12–T18,E1,K1–K5 apply. T11 is inapplicable to same-day admission and
-membership notice;T4 starts at opening. K1 counts sole/joint binary win leaders
+T1–T18,E1,K1–K5 apply. T11 now covers actual visitor booking refunds;the
+initial exclusion overlooked a control hidden by the shared membership form.
+The hall now exposes it separately from membership notice,with the original
+limits. Existing strict/flexible data supplies it;T4 starts at opening. K1 counts sole/joint binary win leaders
 on differing paired outcomes;K4 reports actually opened rope baselines and
 separates no-rope seeds. These decisions predate measurement.
 
@@ -32,7 +34,7 @@ correctioneee2e74 (import4e92152) gives464wins,paired−5.2±1.4,T10pass.
 Coherent baseline:climbing/griffig-main-corrected.md,31original tasks plus
 one corrected task reused;no games replayed to assemble it.
 
-Open:T1,T3,T5–T7,T9,T12,T14,K1–K3. K5atlimit;T11inapplicable. Contributions
+Open:T1,T3,T5–T7,T9,T12,T14,K1–K3. K5atlimit;T11originally omitted,now measured for visitor refunds. Contributions
 and first-wall financing trace:climbing/INITIAL_REVIEW.md. Both-first0%
 was capped atEUR480,000construction with no working capital in the traced
 case;it openedweek23 and the loan was calledweek24 before rope finishedweek26.
@@ -56,8 +58,8 @@ working-capital fixtures;lint/typechecks pass. Seed generation wrote225rows;
 only18Griffig rows were added. Registered full suite:1,952pass,30skip,three browser timing failures.
 All three exact cases now pass after semantic readiness waits;notebook passes
 in both browsers. Final full suite follows the final tuning source.
-Eight of twelve earlier-game main comparisons are identical apart from
-timings,on1,000test seeds each. Remaining comparisons continue in
+All twelve earlier-game main comparisons are identical apart from
+timings,on1,000test seeds each,in
 protected-step5/. All eleven earlier fingerprints match;fitness recorded.
 Full phase tests and final event table remain. Full report only step6,once.
 
@@ -67,3 +69,10 @@ Sources/estimates and adaptations are in scenario-climbing.md section15.
 Two-hour average course wall occupancy,average café/rental baskets and family
 loan repayment outside104weeks remain for Henry's non-blocking review.
 No second site,shop,personal training,physiotherapy or real integration.
+
+
+Hall refund visibility:10focused UI/report checks and24Chromium/WebKit
+width/stage cases pass. All roles and visitor refund controls use existing
+notebook components;member-only fitness remains unchanged. The screen fixture
+selects another real action sequence if numeric tuning ends its first seed
+beforeweek32. No injected features,cash or qualifications.
