@@ -5349,3 +5349,6 @@ Plan5 climbing value round1 complete,source78cae39:main only32policies×1,000pai
 
 
 Plan5 climbing corrected round1:overstaff219wins,paired−2.1±1.5,T9atlimit. Coherent32-policy table reuses31original tasks plus this one corrected policy;no games to reassemble it. Newly visible visitor refunds make T11applicable with unchanged limits:strict−1.4±1.0overall,no established strict segment advantage,open. Source26f5ecb,game values78cae39. Raw table:autonomous5/climbing/griffig-main-round1-corrected.md. Capacity experiment discarded:1.1%timing difference within uncertainty,all2,000results exact. No engine change/events/full report.
+
+
+Plan5 climbing final value round8c931a1:main only32policies×1,000paired test seeds,eight workers,1,773wall/13,771summed seconds. Careful31.6%±2.9,top39.6%±3.0,no-tests0%. Values2/2 exhausted,formula0/1. T1/T14/K4pass,K5atlimit;open T3,T5–T7,T9,T11,T12,T15,K1–K3. Contributions and sole shared-arrival formula decision:autonomous5/climbing/ROUND2_REVIEW.md. No climbing events/full report.
