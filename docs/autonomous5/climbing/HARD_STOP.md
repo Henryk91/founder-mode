@@ -13,9 +13,9 @@ started after reaching the limit;only the mandated stop bookkeeping continued. N
 |2|c9dbf3f:actual face plus repeated exact-metric stability|1,961pass,1fail,30skip|Rückenwind WebKit390:added stability wait times out|
 |3|dd789c1:one actual face load,then original fit criteria|1,961pass,1fail,30skip|Rückenwind WebKit375:fits remains false after15seconds|
 
-Full logs:/tmp/plan5-climbing-final-full-tests.log,
-/tmp/plan5-climbing-final-full-tests-retry.log,
-/tmp/plan5-climbing-final-full-tests-final.log.
+Full logs:/Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-state/plan5-climbing-final-full-tests.log,
+/Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-state/plan5-climbing-final-full-tests-retry.log,
+/Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-state/plan5-climbing-final-full-tests-final.log.
 Committed failure excerpts:TEST_FAILURES.txt.
 
 The focused final established suite passes56/56cases;the last full suite
@@ -44,13 +44,13 @@ its seeds are unique,and all32main tasks contain1,000results. File hashes/counts
 are committed in EVENT_CHECKPOINTS.json. In-flight incomplete tasks were stopped;
 there is no completed griffig-events.md and no final event-table claim.
 
-Cache:/tmp/plan5-climbing-formula-checkpoints-27756b3.
-Runner backup:/tmp/plan5-climbing-events-runner.ts.
-Event log:/tmp/plan5-climbing-events.log.
+Cache:/Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-state/plan5-climbing-formula-checkpoints-27756b3.
+Runner backup:/Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-state/plan5-climbing-events-runner.ts.
+Event log:/Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-state/plan5-climbing-events.log.
 The identified event driver and its worker/service descendants were terminated;
 all recorded PIDs are confirmed gone. No run-owned background job remains.
 
-Climbing worktree:/private/tmp/founder-mode-plan5-climbing,
+Climbing worktree:/Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-climbing,
 branch plan5-climbing-work. No climbing milestone/tag/merge was made.
 Fitness remains complete at plan5-fitness,merged into main. Step6 and the full
 bot report have NEVER started. No push.
@@ -69,7 +69,7 @@ bot report have NEVER started. No push.
    from the backup and use the original command:
 
 ```sh
-cp /tmp/plan5-climbing-events-runner.ts packages/bots/src/plan5-climbing-events.ts
+cp /Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-state/plan5-climbing-events-runner.ts packages/bots/src/plan5-climbing-events.ts
 pnpm --filter @founder-mode/bots exec vite-node src/plan5-climbing-events.ts -- --scenario griffig --mode long --parts events --runs 1000 --seed-prefix test --jobs 8 --out docs/autonomous5/climbing/griffig-events.md
 ```
 
