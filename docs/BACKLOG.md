@@ -82,6 +82,7 @@ Targets that do not apply as written: Leinen los T9, T14, T15 to T18; every abro
 |---|---|
 | Stale worktree records | Four agent scratch worktrees under `/private/tmp` whose folders are gone. `git worktree prune` clears them when no agent is running |
 | `packages/bots/scratch/` | Six local debug scripts, excluded in `.git/info/exclude`, so never committed. Delete when no longer useful |
+| Split test command | `pnpm test` runs the web project, then the others, because one combined vitest 3.2.7 run ends with "Timeout calling onTaskUpdate" although every test passes. Revisit when vitest is upgraded: try one `vitest run` again |
 
 ## Plan 5 venue first-pass adaptations
 
