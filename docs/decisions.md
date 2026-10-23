@@ -1134,3 +1134,7 @@ Henry authorised resuming after the hard stop. A full suite with no other jobs r
 ### Plan 5 resume: the test command runs in two halves
 
 With the heading fixed, every full run still passed all 1,962 tests but ended with one vitest 3.2.7 worker error ("Timeout calling onTaskUpdate"), even on an idle machine; no test or hook comes near the 60 s RPC timer, and the web project and the other projects each pass alone. Henry accepted the gate with `pnpm test` running the web project first, then all other projects (`--project '!web'`), exiting 0 only if both pass. maxWorkers stays at 50%. Revisit when vitest is upgraded (backlog).
+
+### Plan 5 step 6: open targets go to the backlog
+
+Henry changed step 6: no revisit of the open targets. All 34 (Ausgesperrt 8, Fabriketage 6, Schweißperle 8, Griffig 12) are copied to `docs/BACKLOG.md` with their closest results and options for a later tuning plan. The fresh two-round step 6 budget is unused.
