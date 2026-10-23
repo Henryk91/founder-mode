@@ -13,3 +13,11 @@ Controller:/tmp/plan5-protected-step5.py. Checkpoints:
 packages/bots/src/plan5-protected-step5.ts until every scheduled unit completes.
 Reuse completed reports and resume only missing exact-source tasks.
 No event,wide or full report. Full report only step6,once.
+
+
+After the first eight units,the validated hall-only review-blind safeguard
+was imported at4e92152 and Griffig-only values changed at78cae39. Earlier
+content and engine remain unchanged. Earlier games omit hall;fitness already
+has classStaffing,so that guard's truth value and all applicable policy
+choices are identical. This is a Griffig-only bot/value change under the
+report budget;do not repeat completed earlier-game reports.

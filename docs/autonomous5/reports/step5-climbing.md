@@ -1,6 +1,6 @@
 # Step5: Griffig
 
-Draft:registered and initial measurement running;phase gate not complete.
+Draft:first value-round measurement running;phase gate not complete.
 
 ## Built
 
@@ -26,8 +26,23 @@ membership notice;T4 starts at opening. K1 counts sole/joint binary win leaders
 on differing paired outcomes;K4 reports actually opened rope baselines and
 separates no-rope seeds. These decisions predate measurement.
 
-Initial source8a3a423:main only,1,000 paired test seeds,all applicable policies.
-Pending results. Values0/2,formulas0/1. No climbing event table has run.
+Initial source8a3a423:main only,32policies on1,000paired test seeds.
+Careful51.6%,top boulder-first56.4%,no-tests0%. Hall-only review-blind
+correctioneee2e74 (import4e92152) gives464wins,paired−5.2±1.4,T10pass.
+Coherent baseline:climbing/griffig-main-corrected.md,31original tasks plus
+one corrected task reused;no games replayed to assemble it.
+
+Open:T1,T3,T5–T7,T9,T12,T14,K1–K3. K5atlimit;T11inapplicable. Contributions
+and first-wall financing trace:climbing/INITIAL_REVIEW.md. Both-first0%
+was capped atEUR480,000construction with no working capital in the traced
+case;it openedweek23 and the loan was calledweek24 before rope finishedweek26.
+
+First value round78cae39:student/family enquiries reduced,committed increased;
+fictional own-money share15%,reset work32hours. Fees,rent,wages,equipment and
+loan ceiling unchanged. Sources/estimate rationale in scenario-climbing.md15.
+Main only32policies×1,000paired test seeds running;values1/2,formula0/1.
+No climbing event table or full report.
+
 
 ## Validation
 
@@ -41,7 +56,8 @@ working-capital fixtures;lint/typechecks pass. Seed generation wrote225rows;
 only18Griffig rows were added. Registered full suite:1,952pass,30skip,three browser timing failures.
 All three exact cases now pass after semantic readiness waits;notebook passes
 in both browsers. Final full suite follows the final tuning source.
-Twelve earlier-game main comparisons on1,000test seeds each are running in
+Eight of twelve earlier-game main comparisons are identical apart from
+timings,on1,000test seeds each. Remaining comparisons continue in
 protected-step5/. All eleven earlier fingerprints match;fitness recorded.
 Full phase tests and final event table remain. Full report only step6,once.
 
