@@ -337,6 +337,7 @@ export type BookingTotal = {
 }
 
 export type BookingsState = {
+  hostingReliefHours?: number
   leisure?: LeisureState
   bookings: Booking[]
   /** Price per unit per segment, for peak and off season months. */
@@ -1549,6 +1550,7 @@ export type BookingsView = {
   vouchers: VouchersView | null
   /** Plan 2 step 3: founder hours this week's guests take (from last week's), before planning. */
   hostingHours: number
+  hostingReliefHours?: number
   /** Plan 2 step 1c: units prepared per service product, or null to prepare what the roster can cook. */
   prep: { productId: FeatureId; units: number | null }[]
   /**
@@ -2591,7 +2593,17 @@ export type LeisureNoiseState = {
 }
 
 /** Plan 5: independent of conditions; present only with bookings.leisure content. */
+export type LeisureTraffic = {
+  week: number
+  served: Record<FeatureId, number>
+  came: Record<FeatureId, number>
+  nonCancelled: Record<FeatureId, number>
+}
 export type LeisureState = {
+  traffic?: LeisureTraffic[]
+
+  instructorLoads?: { id: string; kind: 'founder' | 'contract'; name?: string; classes: number }[]
+  foundingFollowing?: { invited: number; joined: number }
   permitRefunds?: Record<FeatureId, { week: number; cents: number }>
   noise?: LeisureNoiseState
   extras?: Record<FeatureId, LeisureExtraTotals>
@@ -2602,6 +2614,7 @@ export type LeisureState = {
   instructorDepartures: { week: number; roleId: string; stopped: number; pending: number }[]
   members: LeisureMember[]
   offers: Record<FeatureId, { enabled: boolean; priceCents: number }>
+  classCoverage?: Record<FeatureId, Record<string, number>>
   timetable: Record<FeatureId, Record<string, number>>
   settingHours: Record<FeatureId, number>
   freshness: Record<
@@ -2684,6 +2697,8 @@ export type LeisureWeek = {
   }[]
 }
 export type HiddenLeisure = {
+  premiumInterest?: number
+  foundingFollowing?: number
   instructorFollowing: Record<string, number>
   localPools: Record<FeatureId, number>
   payoutCents: number | null
@@ -2700,6 +2715,8 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  instructorWork?: { maxClasses: number; loads: NonNullable<LeisureState['instructorLoads']> }
+  foundingFollowing?: { invited: number; joined: number }
   noise?: {
     complaints: number
     totalComplaints: number
@@ -2767,7 +2784,10 @@ export type LeisureView = {
   load: LeisureWeek['slots']
   turnedAwayBySlot: Record<string, number>
   members: {
+    products?: FeatureId[]
     offerId: FeatureId
+    visitsPerWeek?: number
+    visits?: number
     name: string
     active: number
     inactive: number
@@ -2787,6 +2807,7 @@ export type LeisureView = {
   retained: number
   aggregator: {
     name: string
+    sharedQueue?: true
     slots: string[]
     joined: boolean
     leavingWeek: number | null
@@ -2851,6 +2872,9 @@ export type LeisureView = {
     name: string
     room: string | null
     places: number
+    classHours?: number
+    available?: boolean
+    coveredClasses?: Record<string, number>
     classes: Record<string, number>
   }[]
   history: LeisureWeek[]

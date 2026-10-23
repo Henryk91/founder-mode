@@ -15,7 +15,7 @@ import {
 } from './report'
 import { combined, fmtMargin, rateMargin } from './margin'
 import { diveTargets, guletTargets, watersportsTargets } from './abroadTargets'
-import { escapeTargets, venueTargets } from './leisureTargets'
+import { escapeTargets, venueTargets, fitnessTargets } from './leisureTargets'
 import type { RunResult } from './simulate'
 import { PACING_WEEKS, YEAR2_WEEK } from './simulate'
 
@@ -291,7 +291,8 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
     ...guletTargets(careful, s, all),
     ...escapeTargets(careful, s, all),
     ...venueTargets(careful, s, all),
-  ]
+    ...fitnessTargets(careful, s, all),
+  ].filter((row) => row.id !== 11 || !s('fitness_never_match'))
 }
 
 /**
@@ -308,11 +309,13 @@ function loanTargets(
   if (!careful.results.some((x) => x.loan !== null)) return []
   const indoor = careful.results.some((x) => x.tourism?.leisure)
   const venue = careful.results.some((x) => x.tourism?.leisure?.venue)
-  const refit = venue
-    ? s('venue_no_later_loan')
-    : indoor
-      ? s('leisure_no_later_loan')
-      : s('tourism_refit_loan')
+  const refit = s('fitness_no_later_loan')
+    ? s('fitness_no_later_loan')
+    : venue
+      ? s('venue_no_later_loan')
+      : indoor
+        ? s('leisure_no_later_loan')
+        : s('tourism_refit_loan')
   const over = s('tourism_overborrow')
   const reckless = s('tourism_reckless')
   const optional = refit ? pairedOn(careful, refit, all) : null

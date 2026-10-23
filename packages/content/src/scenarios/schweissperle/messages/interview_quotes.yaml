@@ -1,0 +1,168 @@
+young_professionals:
+  not_a_problem:
+    - I run by the Isar. The river has never asked me to download an app.
+    - My office gym is downstairs and already included.
+    - I train at home. My commute to the mat is excellent.
+    - I cycle to work. That is enough organised suffering for one day.
+    - My current gym has places when I can go.
+    - I do not attend classes. Nobody has persuaded my calendar otherwise.
+    - I use the gym in my building. It is very local.
+    - I have a studio near home and an instructor I like.
+    - Work pays for another place. I have not finished using that benefit.
+    - I play football twice a week. My knees consider the timetable complete.
+  mild:
+    - A class near the office could be convenient sometimes.
+    - I might try an early class if the showers worked.
+    - My gym is fine, though its playlist retired before I did.
+    - A smaller studio sounds pleasant. I would need to see the times.
+    - I occasionally miss a class because work runs late.
+    - I could use somewhere between the station and the office.
+    - Spin looks interesting, but I have not booked anything yet.
+    - An app with fewer steps than the warm-up would be welcome.
+    - I would try a strength class if a friend came along.
+    - The place looks nice. I have said that about several places.
+  noticeable:
+    - The evening class is full before I leave my last meeting.
+    - I pay for unlimited classes and attend the one nobody else wants.
+    - The showers make a morning class a gamble with my first appointment.
+    - The timetable changes after I have arranged my commute around it.
+    - I need to book several days ahead, then work changes the day.
+    - The waitlist tells me I have a place while I am already on a train home.
+    - I prefer strength classes, but the useful times are all spin.
+    - My gym sells more memberships without adding evening places.
+    - I would pay for a reliable early class near the office.
+    - The app makes cancelling easy and finding a replacement place difficult.
+  painful:
+    - I have failed to get an evening place three times this month.
+    - My only useful class moved to a time when I am still at work.
+    - I arrived for the early class and found the instructor had cancelled.
+    - I need a shower after training. Wet wipes are not a workplace strategy.
+    - I keep paying because cancelling is harder than attending.
+    - The teacher I joined for has left, and nobody told the members.
+    - I need a place I can use at six-thirty, with clear booking rules.
+    - My pack expires soon and the useful classes remain full.
+    - I would change studios for two reliable evening places a week.
+    - The room is crowded enough that the warm-up includes an apology.
+  urgent:
+    - My current studio closes next week. Can I book an early class now?
+    - I have a new job nearby and need a timetable before Monday.
+    - My pack ended yesterday. I need a place for tomorrow evening.
+    - I am training for an event and have lost my regular class.
+    - Our building gym closes for repairs this month. I need an actual alternative.
+    - I have a friend ready to join if we can get the same early class.
+    - I need a membership I can use before work, starting this week.
+    - The teacher I follow starts here next month. Are those classes confirmed?
+    - I have cancelled the old contract. Please show me the booking terms.
+    - My diary has two free evenings. Can I buy access to classes on them?
+yoga_crowd:
+  not_a_problem:
+    - I practise at home. The furniture knows to stay quiet.
+    - My regular teacher already has a room nearby.
+    - I have attended the same class for years and it suits me.
+    - I practise in the park when the weather allows it.
+    - I do not need another membership to remember.
+    - The community class is affordable and has space.
+    - I prefer recorded sessions. They wait when the doorbell rings.
+    - My current studio is calm and close to home.
+    - I am not looking for classes at the moment.
+    - I go where my teacher goes. She has not moved.
+  mild:
+    - A quieter room would be nice, though the current class works.
+    - I might try a weekend session if it were nearby.
+    - The photographs look peaceful. I would like to hear the room.
+    - I sometimes want a midday class rather than an evening one.
+    - A small pack would let me try the teaching without committing.
+    - I would consider somewhere new if the teacher suited me.
+    - The changing area could be better, but it is not why I attend.
+    - I like the idea of a steady timetable.
+    - An off-peak price could fit my routine.
+    - I have been meaning to try a different class, without much urgency.
+  noticeable:
+    - I hear the spin class through the quiet part of ours.
+    - The room is full enough that we negotiate where to put our arms.
+    - My teacher changes every week and so does the class.
+    - I cannot find a regular midday session near home.
+    - The timetable favours evenings, which are the time I cannot go.
+    - A class pack would suit me better than an unlimited contract.
+    - The advertised quiet studio shares a wall with a loudspeaker.
+    - I want the same teacher at the same time for more than a fortnight.
+    - The weekend classes fill before I know whether I am free.
+    - I would pay for a room that is clean, calm and properly ventilated.
+  painful:
+    - I have stopped going because the music next door drowns out the teacher.
+    - My regular class was cancelled to make room for a more expensive one.
+    - I bought a pack and then the midday timetable disappeared.
+    - The teacher I trust has left and the studio will not say where she went.
+    - I cannot practise comfortably with mats touching on every side.
+    - I need a calm class, not another hour of instructions shouted over music.
+    - My annual contract continues, but the class I joined for does not.
+    - I have asked for a quieter room three times and received three vouchers.
+    - I want a reliable weekend class with room to move.
+    - I would switch for steady teaching and a timetable that fits my week.
+  urgent:
+    - My teacher's room has closed. Is there a regular class this weekend?
+    - I have moved nearby and need a midday class starting this week.
+    - The old studio cancelled our course. Several of us are looking together.
+    - My class pack expires today. I want to choose the next place carefully.
+    - I can attend early mornings now. Can I reserve a trial place?
+    - My regular teacher is joining you. When does her timetable start?
+    - I need a calm room near home and can visit tomorrow.
+    - Our weekend class has ended. Do you have spaces for two people?
+    - I have cancelled my membership elsewhere and want clear pack terms.
+    - I am ready to pay for a trial if the room really is separate from spin.
+corporate:
+  not_a_problem:
+    - We already pay for an employee sports scheme.
+    - Nobody has asked HR for local classes.
+    - Our office has a gym and somebody who opens it.
+    - The wellbeing budget is committed for the year.
+    - We work remotely across several cities.
+    - Staff arrange their own exercise. Finance prefers the simplicity.
+    - We have a supplier contract that still has a year to run.
+    - Our team prefers cycling together after work.
+    - We do not reimburse memberships at present.
+    - A studio near one office would not cover most employees.
+  mild:
+    - A nearby lunch class could be a pleasant trial.
+    - We might include the studio in the next staff newsletter.
+    - A local offer sounds useful if the administration is simple.
+    - Some employees have mentioned classes, though we have not counted them.
+    - I would need a clear per-person price to show finance.
+    - A trial could tell us more than another wellbeing survey.
+    - We may have some budget left towards the end of the year.
+    - An invoice would help, but we have not agreed a programme.
+    - The office manager likes the idea. Procurement has not met it yet.
+    - A short lunchtime format might fit between meetings.
+  noticeable:
+    - Our existing scheme offers many places and few useful lunch times.
+    - Staff ask for a class near the office, then cannot get an evening place.
+    - I spend too long matching receipts to employees.
+    - We need a company invoice and a clear joining process.
+    - The lunch break is not long enough for the usual class plus changing.
+    - I can find discounts, but not reliable places for our staff.
+    - Our team would use early sessions if the showers were dependable.
+    - The current provider cannot explain how many staff actually attend.
+    - We need a plan that works without everyone booking the same evening.
+    - A nearby studio could work if the contract allowed predictable headcounts.
+  painful:
+    - We paid for memberships that staff could not use at their available times.
+    - The previous supplier sent personal invoices after promising a company account.
+    - Our lunch trial ran late and half the group missed a client call.
+    - I need an offer with capacity, an invoice and no surprise annual commitment.
+    - We cannot recommend classes that are full before staff leave work.
+    - Our existing plan is expensive and attendance is almost invisible.
+    - Several staff stopped attending after repeated waitlists.
+    - I have a budget but no provider who can handle a company list reliably.
+    - The last discount required employees to sign a contract we had not approved.
+    - We need a short class people can attend and still return to the office.
+  urgent:
+    - Our sports contract ends this month. Can you quote a usable local plan?
+    - The new employee benefit starts next week and procurement needs an invoice.
+    - We have a paid trial approved for twelve staff. Which lunch slot is available?
+    - The office move is on Monday. We need a nearby offer to announce.
+    - Our old supplier has closed the local classes. We need cover this month.
+    - Finance has approved a per-person budget if the terms arrive today.
+    - We have employees ready to join, provided the showers and lunch class are open.
+    - Our wellbeing week is next month. Can you confirm a short paid session?
+    - The team chose your trial. I need a quotation with actual places attached.
+    - I have a purchase-order number and a staff list. Can we start next week?

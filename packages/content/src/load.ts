@@ -13,6 +13,7 @@ import { sources as tiefgang } from './sources/tiefgang'
 import { sources as leinenlos } from './sources/leinenlos'
 import { sources as ausgesperrt } from './sources/ausgesperrt'
 import { sources as fabriketage } from './sources/fabriketage'
+import { sources as schweissperle } from './sources/schweissperle'
 import { sources as zollstock } from './sources/zollstock'
 
 export { SCENARIO_IDS, SCENARIO_MODES, isScenarioId, type ScenarioId } from './ids'
@@ -43,6 +44,7 @@ const SOURCES: Record<ScenarioId, ScenarioSources> = {
   leinenlos,
   ausgesperrt,
   fabriketage,
+  schweissperle,
 }
 
 /**

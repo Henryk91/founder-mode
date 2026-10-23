@@ -1,0 +1,31 @@
+intro:
+  cards:
+    - id: you
+      title: The following
+      body:
+        You taught spin and strength in big gyms for six years. Some members say they will follow you.
+        You have {cash:eur} in the company, {savings:eur} in savings and living costs of
+        {living:eur} a week; the word some is doing financial work.
+    - id: idea
+      title: The shop
+      body:
+        A former shop in the Glockenbachviertel has room for twenty bikes and eighteen mats. It is
+        July. The fit-out takes eight weeks after preparation and payment; the landlord starts
+        charging before the first warm-up.
+    - id: problem
+      title: Five parts of the day
+      body:
+        Young professionals want early and evening classes, yoga regulars want calm, and companies
+        want a usable lunch break. The aggregator can fill spare places. It can also sell the last
+        place to somebody paying much less than your member.
+    - id: goal
+      title: The goal
+      body: Last {maxWeeks} weeks and make three profitable months in the last thirteen. The studio,
+        instructors, bank and you all count. January enthusiasm is welcome; it does not sign the
+        lease for August.
+founderNotes:
+  first_week: Week 1. Two rooms, several quotations and a timetable still in pencil.
+  no_evidence: Week {week}. People have admired the windows. Ask when they can actually attend.
+  only_interviews: You have {n} conversations. An enthusiastic reply is not a recurring payment.
+  built_unseen: The studio is ready. The first class still needs to find the door.
+  leads_only: You have {n} enquiries. Their calendars have not agreed with yours yet.

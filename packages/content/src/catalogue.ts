@@ -14,6 +14,7 @@ import tiefgangAbout from './scenarios/tiefgang/about.yaml?raw'
 import leinenlosAbout from './scenarios/leinenlos/about.yaml?raw'
 import ausgesperrtAbout from './scenarios/ausgesperrt/about.yaml?raw'
 import fabriketageAbout from './scenarios/fabriketage/about.yaml?raw'
+import schweissperleAbout from './scenarios/schweissperle/about.yaml?raw'
 import categoriesYaml from './categories.yaml?raw'
 
 export { SCENARIO_IDS, SCENARIO_MODES, isScenarioId, type ScenarioId } from './ids'
@@ -64,6 +65,7 @@ const ABOUT: Record<ScenarioId, string> = {
   leinenlos: leinenlosAbout,
   ausgesperrt: ausgesperrtAbout,
   fabriketage: fabriketageAbout,
+  schweissperle: schweissperleAbout,
 }
 
 /** Name, category, tags and description of every built in scenario, in `SCENARIO_IDS` order. */

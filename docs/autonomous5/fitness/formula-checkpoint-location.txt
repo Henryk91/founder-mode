@@ -1,0 +1,5 @@
+/tmp/plan5-fitness-formula-checkpoints-a6060e0
+Source:a6060e0007af7a89c551050e484c5b37e3debdb5. Main only,30policies,1,000 paired test seeds,eight workers. Values2/2,formula1/1.
+Runner backup:/tmp/plan5-fitness-formula-runner.ts;restore as packages/bots/src/plan5-formula.ts only for exact-source resumption.
+Log:/tmp/plan5-fitness-main-formula.log;output:schweissperle-main-formula.md.
+No further first-pass tuning. Apply the playability stop after all policies complete,or finish the phase gate.

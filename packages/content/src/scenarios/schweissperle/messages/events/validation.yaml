@@ -1,0 +1,310 @@
+events:
+  - id: the_january_queue
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+      - tour.month == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text: The waitlist contains familiar names and people who joined yesterday. The new people have
+      booked the next six evenings. Your spring timetable is still written in pencil. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: the_lunch_experiment
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text: A nearby firm's employees can leave for forty-five minutes. Your lunch class lasts forty
+      minutes before changing and walking back. The HR organiser has brought a watch. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: corporate
+            count: 3
+            when:
+              - leisure.open == 1
+              - shipped.lunch_classes == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: third_waitlist
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      A member has failed to get an evening place three times this month. She has paid on time on
+      all three occasions. An unlimited promise has become a very specific complaint. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: holiday_requests
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+      - tour.month == 8
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      Members ask to pause in August. Their instructors also ask about August. The landlord's summer
+      plans do not include pausing the rent. Use the Calendar or membership controls for any lasting
+      change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: the_annual_offer
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      Annual membership brings commitment and a lower monthly price. A new member asks whether you
+      will still run early classes in winter. Twelve months is longer than the timetable on the
+      wall. Use the Calendar or membership controls for any lasting change; this follow-up handles
+      the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: evening_check_ins
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      Aggregator visitors fill the last evening places before direct members finish work. The class
+      is full and the membership inbox is fuller. The payout statement has arrived too. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: corporate_eighty
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      A company wants eighty memberships at a deep discount. Its organiser says most employees will
+      use the studio at six. You have counted the bikes again. Use the Calendar or membership
+      controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: corporate
+            count: 3
+            when:
+              - leisure.open == 1
+              - shipped.lunch_classes == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: intro_ending
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text: A batch of introductory offers ends this week. Several people attended; several only
+      downloaded the app. They all received the same reminder. Use the Calendar or membership
+      controls for any lasting change; this follow-up handles the conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
+  - id: reformer_enquiry
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text:
+      Three people ask about reformer classes and one asks about the price. The supplier offers a
+      layout replacing eighteen mats with eight machines. The drawing has become quieter. Use the
+      Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Invite a paid premium trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: young_professionals
+            count: 3
+            when:
+              - leisure.open == 1
+              - shipped.reformer_pilates == 1
+      - id: leave
+        label: Keep the brochure for later
+        hours: 0
+        effects: []
+  - id: the_partnership_cut
+    area: validation
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    when:
+      - week >= 12
+      - leisure.open == 1
+    from: none
+    sender: Your studio notebook
+    look: note
+    text: A physiotherapist offers referrals for a fee. The proposed fee applies to every month,
+      including those after the patient stops attending. Somebody should read the second page. Use
+      the Calendar or membership controls for any lasting change; this follow-up handles the
+      conversation.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check usable times and invite a trial
+        hours: 3
+        effects:
+          - type: guests
+            segment: yoga_crowd
+            count: 3
+            when:
+              - leisure.open == 1
+              - shipped.yoga_classes == 1
+      - id: leave
+        label: Leave the current offer unchanged
+        hours: 0
+        effects: []
