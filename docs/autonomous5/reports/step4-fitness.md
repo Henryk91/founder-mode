@@ -1,15 +1,13 @@
 # Step4: Schweißperle
 
-**Draft phase gate: final main complete;event table,protected proof and full checks are pending.**
-No fitness milestone or integration into main is claimed by this draft.
+**Complete first pass.** Final main,one event table,protected comparisons and full checks pass the phase gate.
 
 ## What was built
 
 A long-only Munich class studio with20 authored features,49 events,150 interview
 quotes,four intro cards and two native360×170 shop/annex scenes. The established
 accent remains#B0284F (white contrast6.44:1). All three interface voices use the
-existing notebook/Calendar design. The studio is registered only in its isolated
-fitness branch until the phase gate.
+existing notebook/Calendar design. The studio is registered for the fitness milestone.
 
 - Eight-week paid fit-out,real showers/quiet works,twenty bikes bought or leased,
   and actual class preparation. The same-building adjoining mat room has its own
@@ -54,7 +52,7 @@ was superseded after the false corporate check-in invoice path was discovered.
 Neither partial run is presented as final tuning evidence.
 
 Budget:values2/2,formula1/1. No further first-pass tuning is permitted. Final
-playability bounds must be checked after every policy completes. Contributions,
+playability bounds are met across all completed policies. Contributions,
 not just headline rates,are preserved in INITIAL_REVIEW.md,SETTLED_REVIEW.md,
 ROUND1_REVIEW.md and ROUND2_REVIEW.md under autonomous5/fitness/.
 
@@ -100,11 +98,22 @@ advantage on its own. Detailed contributions/options:fitness/FINAL_REVIEW.md.
 - All24 final Chromium/WebKit width/stage cases pass axe,cut and word checks
   at375/390/430/1440px.390/1440 screenshots are outside the repo under
   `/private/var/folders/6x/8dfrb28n3gbbgqdj7r47jrgw0000gn/T/founder-mode-fitness`.
-- Final seed regeneration and full `pnpm test` are pending the final results.
+- Full `pnpm test --maxWorkers 1`:99 files,1,841 passed,27 skipped.
+  `pnpm seeds` wrote207 rows;only18 new fitness rows changed.
 - Final sourcea6060e0 protected proof:main only,1,000 test seeds per earlier game.
-  All eleven content fingerprints match. Kantino/Zollstock standard compare
-  identical apart from timings;the remaining comparisons are running in
+  All eleven reports,including Ausgesperrt and Fabriketage,compare identical
+  apart from timings;all content fingerprints match. Raw final proof:
   `protected-step4-final/`. The earlier completed proof is retained separately.
+
+## Event table
+
+First/only event table:99 fixed-answer policies,1,000 paired test seeds each,
+sourcea6060e0.85,392 of99,000 games played;unaffected seeds reuse the exact-source
+careful baseline.46 events were judged:25 favour the cheapest answer,21 a more
+effortful answer. Holiday requests appeared in132 seeds;the recovery bill and
+neighbouring keys were unseen,so those three are unjudged. No duplicate event
+run was made. Raw table:fitness/schweissperle-events.md. Partial-report target
+rows lack other policies;the complete main target table above is authoritative.
 
 ## Decisions and deferred scope
 
@@ -130,5 +139,5 @@ results and concrete options are recorded in fitness/FINAL_REVIEW.md. These are
 non-blocking first-pass issues under the plan;no extra numeric/formula round has
 been taken. Step6 has its separate fresh revisit budget.
 
-Event/protected/seed/full-test phase gates still remain. `plan5-fitness` is not
-tagged yet. Full report has never run and is reserved for step6,once.
+All phase gates are complete;annotated milestone `plan5-fitness` follows this
+report. Full report has never run and is reserved for step6,once.

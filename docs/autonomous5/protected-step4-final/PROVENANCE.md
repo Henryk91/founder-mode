@@ -12,3 +12,6 @@ Keep that temporary entry until every scheduled scenario has started/completed.
 Completed reports are compared and reused,never rerun;missing policy tasks
 resume from checkpoints. Logs:/tmp/plan5-protected-final-step4-logs.
 No event tables,wide parts or full report. Full report only step6,once.
+
+Complete:all eleven comparison exit codes are0;only timings differ. The temporary
+entry has been removed after the controller completed.
