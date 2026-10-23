@@ -5340,3 +5340,6 @@ Plan5 climbing initial main in progress,source8a3a423:1,000 paired test seeds pe
 
 
 Plan5 climbing corrected review-blind only,main1,000paired test seeds,sourceeee2e74:46.4%±3.1 versus unchanged careful51.6%,paired−5.2±1.4;T10passes. Only this policy reran;initial516wins superseded. Provenance/per-seed endings:autonomous5/climbing/REVIEW_BLIND_CORRECTION.md and review-blind-paired.csv. Values0/2,formula0/1;no events/full report.
+
+
+Plan5 climbing initial main complete:32policies,1,000paired test seeds,source8a3a423,3,673wall/28,924summed seconds. Careful51.6%,top boulder-first56.4%,no-tests0%. After hall-only review-blind correction,T10passes;open T1,T3,T5–T7,T9,T12,T14,K1–K3. K5atlimit. Raw table:autonomous5/climbing/griffig-main-initial.md;contributions/first value decision:INITIAL_REVIEW.md. No events/full report.
