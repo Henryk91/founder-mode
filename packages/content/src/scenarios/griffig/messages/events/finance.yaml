@@ -8,7 +8,7 @@ events:
       - leisure.open == 1
     from: none
     sender: Your hall notebook
-    look: note
+    look: letter
     text: Water falls near the rope wall after heavy rain. The landlord asks for photographs and the
       duty manager asks for a barrier. The wall does not need another kind of hold. Use the weekly
       wall,access and staff controls for lasting changes;this follow-up pays for the conversation

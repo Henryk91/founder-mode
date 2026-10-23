@@ -1,12 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import { parseScenario } from '../src/parse'
+import { loadScenario } from '../src/load'
+import { loadScenarioLazy } from '../src/lazy'
 import { sources } from '../src/sources/griffig'
 import { scenarioCatalogue } from '../src/catalogue'
 
-describe('unregistered Griffig content', () => {
+describe('Griffig content', () => {
   const s = parseScenario(sources, 'long')
-  it('provides authored long-game content without entering the catalogue', () => {
-    expect(scenarioCatalogue().some((s) => String(s.id) === 'griffig')).toBe(false)
+  it('loads authored long-game content through catalogue,static and lazy paths', async () => {
+    expect(scenarioCatalogue().find((s) => s.id === 'griffig')).toMatchObject({
+      category: 'leisure',
+      tags: ['Members', 'Build-out'],
+      modes: ['long'],
+    })
+    expect(loadScenario('griffig', 'long')).toEqual(s)
+    expect(await loadScenarioLazy('griffig', 'long')).toEqual(s)
     expect(s.maxWeeks).toBe(104)
     expect(s.events.length).toBeGreaterThanOrEqual(40)
     expect(s.intro.cards).toHaveLength(4)

@@ -368,6 +368,7 @@ const SCENARIO_READER: Record<ScenarioId, Record<string, ReaderRule>> = {
   ausgesperrt: {},
   fabriketage: {},
   schweissperle: {},
+  griffig: {},
   zollstock: {},
   // Tourism events are read from their declared conditions (tourism bots).
   gratwanderung: {},

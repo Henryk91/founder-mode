@@ -20,8 +20,10 @@ const sales: StrategySpec = {
 }
 
 describe('freelancer bots', () => {
-  it.each(SCENARIO_IDS)('book a developer once, in week 2, with valid plans, in %s', (id) => {
+  it.each(SCENARIO_IDS)('book a developer once, in week 2, in a funded %s fixture', (id) => {
     const scenario = loadScenario(id)
+    // Isolate freelancer scheduling from an unfunded construction-stage shutdown.
+    scenario.start.cashCents = Math.max(scenario.start.cashCents, 100000000)
     for (let i = 0; i < 8; i++) {
       const r = runGame(scenario, strategyOf(dev), `fl-${i}`)
       expect(r.freelance).not.toBeNull()
