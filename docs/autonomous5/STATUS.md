@@ -4,7 +4,7 @@
 
 Step: 5.8 resumed after the hard stop (Henry authorised continuing, with a fresh count of three attempts for the browser test failure).
 Last commit: climbing 94047f1, the TopBar fitter fix. Outcome source 27756b3, hard-stop evidence d149f1b.
-Next action: confirm the full suite is wholly green on 94047f1, then resume the interrupted climbing event campaign (missing tasks only).
+Next action: a full run on 94047f1 in a quiet window must be wholly green, then resume the interrupted climbing event campaign (missing tasks only).
 
 Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
 
@@ -51,8 +51,10 @@ Event campaign (first and only), interrupted at the hard stop: 32 complete main 
 Validation gate: the three earlier full attempts each failed one WebKit established-heading fit case. After the restart:
 - 3a, full suite with nothing else running, unchanged code: still failed (WebKit 375, Gratwanderung and Tiefgang). So the cause is code, not load.
 - Fix attempt 1: the name in its own span with a ResizeObserver on its width. Every browser heading case passed; a jsdom a11y markup check failed because the span showed in every stage.
-- Fix attempt 2 (94047f1): the span only in the established stage. All 1,962 tests passed, 30 skipped, but the run exited 1 on one vitest "Timeout calling onTaskUpdate" worker error (no test failed). Rerunning unchanged to check whether that is transient.
-Logs: state folder, resume-full-tests-1.log, -fix1.log, -fix2.log, -fix2b.log.
+- Fix attempt 2 (94047f1): the span only in the established stage. All 1,962 tests passed, 30 skipped, but the run exited 1 on one vitest "Timeout calling onTaskUpdate" worker error (no test failed). Two more unchanged runs: one passed every test but hit the same worker error; one hit it plus an a11y browser start-screen timeout (30 s).
+- A/B with the pre-fix TopBar under the same conditions: the heading case fails again (Rückenwind WebKit 375), and the worker error appears too. So the fix works, and the worker error comes from the environment, not the fitter. Instrumented counts show the fitter settles (at most 7 fits per page, no loop).
+- Load samples: another Claude session (sponsorship-platform) runs its own Playwright suite and Next server and overlapped both sampled runs (load up to 35 on 10 cores). Next full run waits until that project has been quiet for 2 minutes.
+Logs in the state folder: resume-full-tests-*.log and resume-load-*.log.
 
 ## Completed results and open issues
 
