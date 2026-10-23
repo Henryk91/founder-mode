@@ -3,8 +3,8 @@
 ## Current
 
 Step:5.8 Griffig initial contributions and bot correction;steps0–4 complete.
-Last commit:climbingc82e170 first-wall financing diagnostic and6/12 protected comparisons;initial source8a3a423.
-Next action:Initial main complete32policies;corrected review-blind complete. Corrected review-blind complete46.4%,paired−5.2±1.4,T10pass. Commit completed baseline,import isolated bot fixeee2e74 and assemble corrected baseline from cached tasks;then first value round as INITIAL_REVIEW.md. Only new-hall bot/content changes;earlier-game engine/content stay frozen while proof continues. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
+Last commit:climbing4e92152 integrates validated bot correctioneee2e74;engine/content8a3a423.
+Next action:Initial main complete32policies;corrected review-blind complete. Corrected review-blind complete46.4%,paired−5.2±1.4,T10pass. Corrected32-policy baseline assembled from31original+one corrected task,no new games. Commit it,then first value round as INITIAL_REVIEW.md. Only new-hall bot/content changes;earlier-game engine/content stay frozen while proof continues. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
 
 ## Active jobs and resumption
 
@@ -34,7 +34,7 @@ The initial review-blind516wins are superseded for T10:its inbox still repaired 
 
 Validation:829preparation checks/27skips. Registered full suite:1,952pass/30skip/3browser timing failures. Test-only fixes now pass the exact readiness/header cases and notebook transition in Chromium/WebKit;lint/typechecks pass. No product geometry or simulation changed. Run the full suite on final tuning source. Seeds225rows,only18new Griffig rows;all documented endings replay. Profile diagnostic test0–2 matches measured careful results exactly;no optimisation retained.
 
-Protected proof:6/12 reports identical apart from timings (Kantino/Zollstock standard,Kantino/Gratwanderung/Seeblick/Hinterhof long). All eleven older content fingerprints match;fitness recorded. Raw reports:protected-step5/.
+Protected proof:7/12 reports identical apart from timings (Kantino/Zollstock standard,Kantino/Gratwanderung/Seeblick/Hinterhof/Tiefgang long). All eleven older content fingerprints match;fitness recorded. Raw reports:protected-step5/.
 
 ## Completed results and open issues
 
