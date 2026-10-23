@@ -5352,3 +5352,6 @@ Plan5 climbing corrected round1:overstaff219wins,paired−2.1±1.5,T9atlimit. Co
 
 
 Plan5 climbing final value round8c931a1:main only32policies×1,000paired test seeds,eight workers,1,773wall/13,771summed seconds. Careful31.6%±2.9,top39.6%±3.0,no-tests0%. Values2/2 exhausted,formula0/1. T1/T14/K4pass,K5atlimit;open T3,T5–T7,T9,T11,T12,T15,K1–K3. Contributions and sole shared-arrival formula decision:autonomous5/climbing/ROUND2_REVIEW.md. No climbing events/full report.
+
+
+Plan5 climbing final first-pass main27756b3:32policies×1,000paired test seeds,eight workers,1,713wall/13,376summed seconds. Careful30.8%±2.9,top39.0%±3.0,no-tests0%;playability bounds met. Open T3,T5–T7,T9,T11,T12,T14,T15,K1–K3;K5atlimit. Full contributions/options:autonomous5/climbing/FINAL_REVIEW.md. Values2/2,formula1/1 exhausted. Seeds225rows,only Griffig changed;full tests running. Climbing events run once next;full report only step6.
