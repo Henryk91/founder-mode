@@ -1073,3 +1073,8 @@ AUTONOMOUS:Fitness325ebbf completes all phase gates and is tagged plan5-fitness.
 AUTONOMOUS:Registration checks exposed missing letter styling and the mezzanine offer's required cost/rent format and12-week cooldown;correct these before first measurement. The generic developer-scheduling fixture now has explicit working capital so an unfunded hall shutdown does not masquerade as a freelance scheduling failure. Production starting cash is unchanged.
 
 AUTONOMOUS:The mezzanine offer is triggered at two cost-covering months from week26,with a12-week repeat cooldown;actual crowding remains the on-screen reason to accept or decline. This makes the expansion offer available at the stated eligibility point instead of relying on an unrelated random draw.
+
+
+### Step5 review-blind bot correction before values
+
+AUTONOMOUS:An actual visible-inbox regression reproduces the hall review-blind bot clearing service snags through event replies. Extend the existing fitness safeguard to hall opt-ins;careful and earlier scenarios retain their choices. This corrects the bot before values,not a tuning round. Measure only the corrected hall policy on1,000 paired test seeds and reuse unaffected initial results. Prepare this in a separate checkout while the original source8a3a423 reports/proof remain frozen.

@@ -49,6 +49,42 @@ const variants: [string, Partial<TourismRule>][] = [
   ['speed_wall', { temptationEarly: 'speed_wall' }],
 ]
 describe('unregistered climbing policies', () => {
+  it('leaves snag-repair inbox choices to defaults when reviews are ignored', () => {
+    const view = opened()
+    view.product.bugs = 3
+    const event = spec.events.find((e) =>
+      e.choices.some((c) => c.effects.some((fx) => fx.type === 'bugs' && fx.delta < 0)),
+    )!
+    const repair = event.choices.find((c) =>
+      c.effects.some((fx) => fx.type === 'bugs' && fx.delta < 0),
+    )!
+    view.inbox = [
+      {
+        id: 'snag-card',
+        eventId: event.id,
+        week: view.week,
+        expiresWeek: view.week + 1,
+        fromRole: 'none',
+        fromName: event.sender,
+        look: event.look,
+        text: event.text,
+        answeredChoiceId: null,
+        choices: event.choices.map((c) => ({
+          id: c.id,
+          label: c.label,
+          hours: c.hours,
+          costCents: 0,
+          possibleCostCents: 0,
+          monthlyCostCents: 0,
+        })),
+      },
+    ]
+    const careful = tourismPlayer(spec, CAREFUL_TOURISM, 'snag-check')
+    const blind = tourismPlayer(spec, { ...CAREFUL_TOURISM, reviews: false }, 'snag-check')
+    const answer = { messageId: 'snag-card', choiceId: repair.id }
+    expect(careful.respond!(view)).toContainEqual(answer)
+    expect(blind.respond!(view)).not.toContainEqual(answer)
+  })
   it('chooses walls from observed segment evidence and preserves explicit paired choices', () => {
     const v = opened()
     expect(climbingFirst(v, CAREFUL_TOURISM, 'committed')).toEqual(['rope_walls'])
