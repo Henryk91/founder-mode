@@ -27,7 +27,7 @@ Last updated: 24 October 2026, at the end of plan 5.
 
 ## 2. Left out of plan 5 (the leisure scenarios)
 
-Plan 5 (`docs/AUTONOMOUS_PLAN_5.md`) builds the escape room, event venue, fitness studio and climbing gym in Munich, under a new "Leisure" tab. It runs after plan 4.
+Plan 5 (`docs/AUTONOMOUS_PLAN_5.md`) built the escape room, event venue, fitness studio and climbing gym in Munich, under a new "Leisure" tab. These were left out:
 
 | Item | Notes |
 |---|---|
