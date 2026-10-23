@@ -3,15 +3,18 @@
 ## Current
 
 Step:5.8 sole formula round.
-Last commit:climbing27756b3 shared actual arrivals;values2/2,formula1/1 exhausted.
-Next action:Final main complete27756b3,careful30.8%±2.9,top39.0%;playability bounds met. Values2/2 and formula1/1 exhausted. Start climbing events ONCE on1,000test seeds with cached final careful baseline;collect full tests. Final seeds225rows,only Griffig changed. Complete climbing report/tag/merge,then step6open-issue review and full report once.
+Last commit:climbinga36ccaa final main and seeds;outcome source27756b3,budget exhausted.
+Next action:Final main complete27756b3,careful30.8%±2.9,top39.0%;playability bounds met. Values2/2 and formula1/1 exhausted. Climbing events ONCE running on1,000test seeds with cached final careful baseline;repair final browser font readiness and collect full tests. Final seeds225rows,only Griffig changed. Complete climbing report/tag/merge,then step6open-issue review and full report once.
 
 ## Active jobs and resumption
+
+Read-only wrap-up preparation:/tmp/plan5-step6-docs-notes.md and /tmp/plan5-step6-full-notes.md. Step6/full report NOT started.
 
 Capacity experiment complete and discarded:27full results/public traces plus2,000benchmark results exact;291.3s→288.1s (1.1%,paired uncertainty includes no gain). No engine change merged. Evidence:climbing/capacity-benchmark.json. Performance worktree restored to original source;no active job there.
 
 - Griffig final formula main:complete(session8118),/tmp/plan5-climbing-main-formula.log,32policies×1,000paired test seeds,eight workers,1,713wall seconds. Frozen source27756b3;cache /tmp/plan5-climbing-formula-checkpoints-27756b3;backup /tmp/plan5-climbing-formula-runner.ts;temporary entry removed.
-- Final seed generation:complete(session13762),/tmp/plan5-climbing-final-seeds.log,225rows. Full tests running(session83272),/tmp/plan5-climbing-final-full-tests.log,one worker on final source.
+- Climbing events ONCE:running(session91748),/tmp/plan5-climbing-events.log,eight workers,events only1,000test seeds. Exact-source careful baseline reused (0seconds replay);same cache /tmp/plan5-climbing-formula-checkpoints-27756b3. Backup /tmp/plan5-climbing-events-runner.ts;temporary entry removed after loading. Never start a duplicate or rerun completed tasks. No full report.
+- Final seed generation:complete(session13762),/tmp/plan5-climbing-final-seeds.log,225rows. Full tests completed(session83272):1,960pass,30skip,two Gratwanderung WebKit header-cut failures(390/430px),/tmp/plan5-climbing-final-full-tests.log. Established CSS is imported after data-stage;the old fonts.ready/two-frame wait can precede that import. Test-only semantic face/fit wait passes all8Gratwanderung Chromium/WebKit widths(session99854),/tmp/plan5-climbing-established-font-focused.log;lint/typechecks pass(session35973),/tmp/plan5-climbing-established-font-lint.log. Commit and rerun full suite.
 - Griffig round2 main:complete(session28214),/tmp/plan5-climbing-main-round2.log,32policies,eight workers,1,773wall seconds. Cache:/tmp/plan5-climbing-round2-checkpoints-8c931a1;runner backup:/tmp/plan5-climbing-round2-runner.ts;temporary entry removed. Shared-arrival personal qualifications:13focused checks and lint pass.
 - Twelve earlier-game proof:complete(session39214),/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Temporary packages/bots/src/plan5-protected-step5.ts removed after all12completed;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs. Earlier content/applicable code paths unchanged by hall-only bot fix and Griffig values.
 
@@ -30,6 +33,7 @@ Initial main complete32policies at8a3a423 (3,673wall/28,924summed seconds),cache
 ## Climbing
 
 Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work.
+Final main source27756b3:careful30.8%±2.9,top39.0%,no-tests0%;32policies×1,000paired seeds. Values2/2 and formula1/1 exhausted. Open T3,T5–T7,T9,T11,T12,T14,T15,K1–K3;K5atlimit. Full contributions/closest evidence/options:climbing/FINAL_REVIEW.md. Shared member/platform arrivals now enabled;all numbers frozen. First/only event table running;final full suite has two browser readiness failures under repair;milestone not complete yet.
 Completed fitness milestone imported at7ac610e before registration8a3a423.
 24features,49events,150quotes,four intros,two native scenes;optional staffed hall hours,individual qualifications,courses,paid setting,shared wall pools,clubs/parties,café/rental baskets and internal mezzanine implemented.27 full results/public traces match before/after hall compaction and final fitness import.
 

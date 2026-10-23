@@ -133,13 +133,42 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 established screens', () => {
             expect(await page.evaluate(() => document.documentElement.dataset['stage'])).toBe(
               'established',
             )
-            // The heading fitter reacts to the stage's font loading and two painted layouts.
-            await page.evaluate(async () => {
-              await document.fonts.ready
-              await new Promise<void>((resolve) =>
-                requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+            // The stage attribute precedes its lazy stylesheet. Wait for that face and
+            // stable fitted glyphs,not an earlier font-ready promise for the Start screen.
+            let previous = ''
+            let stable = 0
+            await expect
+              .poll(
+                async () => {
+                  const metrics = await page.evaluate(async () => {
+                    const h = document.querySelector('header h1') as HTMLElement
+                    const css = getComputedStyle(h)
+                    const face = `${css.fontWeight} ${css.fontSize} ${css.fontFamily}`
+                    const established = css.fontFamily.includes('Bricolage Grotesque')
+                    if (established) await document.fonts.load(face, h.textContent ?? '')
+                    const range = document.createRange()
+                    range.selectNodeContents(h)
+                    return {
+                      ready: established && document.fonts.check(face, h.textContent ?? ''),
+                      size: getComputedStyle(h).fontSize,
+                      width: h.getBoundingClientRect().width,
+                      glyphs: range.getBoundingClientRect().width,
+                      scroll: h.scrollWidth,
+                      client: h.clientWidth,
+                    }
+                  })
+                  const fitted =
+                    metrics.ready &&
+                    metrics.scroll <= metrics.client + 1 &&
+                    metrics.glyphs <= metrics.width + 1
+                  const signature = JSON.stringify(metrics)
+                  stable = fitted && signature === previous ? stable + 1 : 0
+                  previous = signature
+                  return { ...metrics, stable: stable >= 2 }
+                },
+                { timeout: 15_000 },
               )
-            })
+              .toMatchObject({ ready: true, stable: true })
             const tourism = run.id !== 'kantino'
             const found: string[] = []
             // The company's name on one line, never below 12 px (Henry's review of plan 3).

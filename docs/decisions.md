@@ -1113,3 +1113,8 @@ AUTONOMOUS:Before deciding the sole formula round,extend qualifications.test.ts 
 ### Step5 sole formula round
 
 AUTONOMOUS:After the complete final value matrix and ROUND2_REVIEW.md,enable existing shared member/platform arrivals in Griffig only. Previously members always reserved before platform users,removing actual member displacement from the all-slot trade-off. Actual seeded requests share hard capacity and retain individual qualifications;existing UI explains the queue. No numeric or engine change. Values2/2,formula1/1 exhausted;measure main only1,000paired seeds,then events once and final checks.
+
+
+### Step5 final established-font readiness
+
+AUTONOMOUS:Final full suite passes1,960checks/30skips but two Gratwanderung WebKit widths still sample a clipped heading. App sets data-stage before its lazy established stylesheet import,so the earlier fonts.ready/two-frame wait can resolve before the actual face is requested. In established.browser.test.ts wait for the declared Bricolage face and repeated stable fitted glyph geometry;keep every original cut,one-line,minimum-size and axe assertion. All8Gratwanderung width/browser cases and lint/typechecks pass. No product,engine,bot or outcome change;rerun the full suite.

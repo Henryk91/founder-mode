@@ -123,3 +123,10 @@ T12,T14,T15,K1–K3. No first-pass tuning budget remains.
 | K3 | Quiet-slot aggregator access beats all slots and no aggregator by at least2points each | all +1.0; none -4.0 | ±0.7; ±1.9 | no |
 | K4 | On seeds where rope-first opens rope walls,omitting belay and lead courses loses at least3points | -13.3; rope-opened 1000,no-rope baseline 0 | ±2.1 | yes |
 | K5 | Building the speed wall in year one loses at least3points | -2.3 | ±1.0 | yes |
+
+
+Final full validation initially finishes1,960pass/30skip with two established
+Gratwanderung WebKit header-cut failures (390/430px). The lazy stage stylesheet
+can arrive after the earlier font-ready promise. Test-only face-loading and
+stable-fit waits preserve all original geometry/axe assertions;all8focused
+Gratwanderung cases and lint/typechecks now pass. Full suite reruns before gate.
