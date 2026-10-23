@@ -3,12 +3,12 @@
 ## Current
 
 Step:5.8 Griffig initial contributions and bot correction;steps0–4 complete.
-Last commit:climbing5b982a7 corrected review-blind evidence;initial measurement source8a3a423.
-Next action:Collect the initial climbing main matrix and corrected review-blind policy below. Corrected review-blind complete46.4%,paired−5.2±1.4,T10pass. Import isolated bot fixeee2e74 after frozen validations;reuse unaffected results and review all contributions before values. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
+Last commit:climbingc82e170 first-wall financing diagnostic and6/12 protected comparisons;initial source8a3a423.
+Next action:Initial main complete32policies;corrected review-blind complete. Corrected review-blind complete46.4%,paired−5.2±1.4,T10pass. Commit completed baseline,import isolated bot fixeee2e74 and assemble corrected baseline from cached tasks;then first value round as INITIAL_REVIEW.md. Only new-hall bot/content changes;earlier-game engine/content stay frozen while proof continues. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
 
 ## Active jobs and resumption
 
-- Initial Griffig main:session96275,/tmp/plan5-climbing-main-initial.log. Main only,1,000paired test seeds,eight workers,source8a3a423;26policies complete. First builds:boulder56.4%,rope9.1%,both0%;both-first financing trace reproduces measured result and finds zero working capital under20%own-money cap. Cache:/tmp/plan5-climbing-initial-checkpoints-8a3a423;runner backup:/tmp/plan5-climbing-initial-runner.ts. Reuse completed tasks;do not restart completed reports.
+- Initial Griffig main:session96275,/tmp/plan5-climbing-main-initial.log. Main only,1,000paired test seeds,eight workers,source8a3a423;32policies complete,3,673wall/28,924summed seconds. First builds:boulder56.4%,rope9.1%,both0%;both-first financing trace reproduces measured result and finds zero working capital under20%own-money cap. Cache:/tmp/plan5-climbing-initial-checkpoints-8a3a423;runner backup:/tmp/plan5-climbing-initial-runner.ts. Reuse completed tasks;do not restart completed reports.
 - Corrected review-blind only:complete(session87679),/tmp/plan5-climbing-reviewblind-main.log. Sourceeee2e74 in /private/tmp/founder-mode-plan5-climbing-botcheck (branch plan5-climbing-botcheck),two workers,1,000paired test seeds. Cache:/tmp/plan5-climbing-reviewblind-checkpoints-eee2e74;runner:/tmp/plan5-climbing-reviewblind-runner.ts. A dependency-link error happened before any games;links corrected. Temporary entry removed after loading.
 - Twelve earlier-game proof:session39214,/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Keep packages/bots/src/plan5-protected-step5.ts until controller completes;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs.
 

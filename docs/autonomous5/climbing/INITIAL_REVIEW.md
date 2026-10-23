@@ -1,10 +1,12 @@
-# Initial Griffig review (partial)
+# Initial Griffig review
 
 Engine/content/bot source8a3a423. Main only,1,000 paired test seeds per policy,
-eight workers. Matrix still running;no tuning decisions or rounds spent.
+eight workers.32 policies complete:3,673wall seconds,28,924summed seconds.
+No value/formula round spent at this baseline.
 
 Completed careful51.6%±3.1:playable under the hard bounds but fails T1.
-Platform-only41.5%,paired−10.1±1.9;no-tests0%. Other policies are not yet judged.
+Platform-only41.5%,paired−10.1±1.9;no-tests0%. Full raw targets:griffig-main-initial.md. T10 is superseded by the separately
+measured corrected policy,as documented below.
 
 Careful by viable segment:committed17.6%(318seeds),families66.2%(343),
 students68.7%(339). Median opening week26/22/22 respectively;all1,000 open.
@@ -47,7 +49,7 @@ Do not spend numeric tuning budget on this bot mistake.
 Corrected review-blind measurement complete at eee2e74:464wins,paired
 −5.2±1.4 against careful516;T10 passes. Only that policy reran,1,000paired
 test seeds. REVIEW_BLIND_CORRECTION.md and review-blind-paired.csv retain
-provenance and every paired ending. The full initial matrix is still running.
+provenance and every paired ending. The full initial matrix is now complete.
 
 
 First-wall contributions completed:boulder56.4%,rope9.1%,both0%. A single
@@ -63,3 +65,35 @@ a value round. Raw compact trace:first-wall-financing-diagnostic.json.
 Initial setting variants:half51.5%,double51.1%,against careful51.6%.
 Neither establishes the required loss;wait for the complete target table and
 remaining contributions before selecting value changes.
+
+
+## Completed baseline judgement
+
+After the reviewed hall-only bot correction,T10 passes at−5.2±1.4.
+Open:T1,T3,T5–T7,T9,T12,T14,K1–K3. Pass:T2,T4,T8,T10,T13,T15–T18,E1,K4;
+K5 is at its limit (−2.8±1.0 versus−3). T11 was excluded before measurement.
+No strategy exceeds60%;careful is above T1 but inside the hard playability bound.
+
+Further contributions:all aggregator slots+0.5±0.6,none−2.0±1.4. No courses
+loses9.1±1.8 against rope-first on all1,000rope-opened seeds. Optional later
+borrowing adds3.7±1.2,taken56.5%;overborrow−9.8±2.1,reckless failed-owing
+66.6% versus careful47.1%,own-loan-caused misses0.8%±0.6. Established reaches
+99.6%of516wins and2.7%of484losses,medianweek63±0.5. Slowest policy1,736.1seconds.
+
+## First value-round decision
+
+Use the first of two allowed value rounds. Reduce students150–500 to80–240
+and families60–200 to32–100 reachable enquiries/week;increase committed4–15
+to10–30. This addresses the measured segment spread and T1,without changing
+fees,rent,equipment invoices or wages. Change the fictional bank's own-money
+share20%to15% so both-first can include working capital below the existing
+EUR650,000 unproven ceiling. The20% rule made that option an unintended
+pre-opening cash trap,not a useful market-fit comparison.
+
+Change estimated setting work25to32hours per reset (four eight-hour days).
+A careful eight-hour weekly allocation and a doubled16hours then cross an
+actual paid-day boundary;the old7/13hours both often purchased one day.
+The four-hour reset closure remains unchanged. These are tuned estimates,
+not new supplier quotes. Public reset-work and bank terms remain visible.
+Measure affected main only on1,000paired seeds before another change.
+Values1/2,formula0/1 once that change is committed;no events until the end.
