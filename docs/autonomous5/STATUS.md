@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.8 fitness sole formula round;5 isolated climbing preparation ready for integration after fitness.
-Last commit:HEAD,merge frozen fitness formulas with qualified climbing reservations.
-Next action:Fitness final matrix complete(careful44.7%,top51.8%);its event table,final protected proof and full phase gate remain. Climbing imports frozen fitnessa6060e0 and passes829 checks/27 skips,lint,and27 exact full replay/view diagnostics. Wait for the completed fitness milestone before Griffig registration or measurement. Full report only step6,once.
+Step:5 climbing integration and registration.
+Last commit:fitness325ebbf;phase gate complete and tagged plan5-fitness.
+Next action:Register Griffig after completing this fitness milestone import,then measure initial main only on1,000 paired test seeds. Fitness event table complete once;all eleven earlier games unchanged;full suite1,841 passed,27 skipped. Full report only step6,once.
 
 ## Checklist
 
@@ -12,7 +12,7 @@ Next action:Fitness final matrix complete(careful44.7%,top51.8%);its event table
 - [x] Step1:engine(tag plan5-engine)
 - [x] Step2:Ausgesperrt(tag plan5-escape)
 - [x] Step3:Fabriketage(tag plan5-venue,main75f180b)
-- [ ] Step4:Schweißperle
+- [x] Step4:Schweißperle
 - [ ] Step5:Griffig
 - [ ] Step6:wrap up
 
@@ -31,8 +31,8 @@ Careful-only timing after compaction:301s/1,000,864wins unchanged;T12still fails
 Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED_REVIEW.md.
 Round1 complete:careful83.7%,platform-only57.7%,top88.8%,no-tests7.6%;median net wealth EUR30,149. Contributions:fitness/ROUND1_REVIEW.md.
 Round2 complete:careful65.6%,top73.9%,no-tests0.7%. Full contributions:fitness/ROUND2_REVIEW.md.
-Formula provisional:careful44.7%,naive51.8% on1,000test seeds each;remaining policies still running.
-Values2/2,formula1/1;fitness event table not run. No full report.
+Final formula main complete:careful44.7%±3.1,top51.8%±3.1,no-tests0.3%±0.3. Open T3,T5–T7,T12,T14,F3,F4;review:fitness/FINAL_REVIEW.md.
+Values2/2,formula1/1;first/only event table complete:99policies,85,392/99,000 games played,46judged events (25cheapest/21effortful),three unjudged. Full tests1,841pass/27skip;seeds207rows. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
 ## Protected proof
@@ -40,20 +40,18 @@ Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s u
 All eleven earlier main reports match step0 apart from timings,on1,000test seeds each.
 All content fingerprints match at engine0.14.0. Raw proof:protected-step4/.
 Ten comparisons survived the stop;only interrupted Ausgesperrt was resumed.
-Final sourcea6060e0 proof now running:protected-step4-final/,session28386. Kantino/Zollstock standard already match exactly apart from timings(2/11 complete). Two processes,main only1,000test seeds per earlier game,durable task checkpoints. All eleven content fingerprints match. Temporary packages/bots/src/plan5-protected-final.ts must remain until the controller finishes. Never change earlier values.
+Final sourcea6060e0 proof complete:protected-step4-final/. All eleven main reports match exactly apart from timings on1,000test seeds each;all content fingerprints match. Temporary runner removed after controller completion.
 
 ## Isolated climbing
 
-Frozen import complete:fitnessa6060e0,preserving qualification-aware direct/queued requests and compact hall history.829 checks pass,27 skips;lint passes. All27 full results/public traces remain exact. Griffig remains unregistered.
-
-Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEAD578fcb8 (hall compaction sourcef4a4759).
+Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEADf25be3a (frozen formula import;hall compaction sourcef4a4759).
 Unregistered Griffig:24features,49events,150quotes,four intros,two native scenes.
 Optional personal qualifications/course conversions,staffed hall hours,paid setting,groups,weekly club,café/rentals,alternative requirements,shared wall pools and allowed slots implemented.
 Hall UI,first-wall/setting/aggregator/course/speed bots,K1–K5 reporting and real mezzanine offer prepared.
 Careful opens through real actions and saves replay exactly. Latest shared-pool change:29focused checks/lint pass. Earlier core preparation:748checks,27skips.
 Browser fixture renders the real app without catalogue registration:24Chromium/WebKit cases pass across375/390/430/1440 and all3stages;two additional390px opening-hour tap checks pass.
 Small-budget quotes now round to EUR10 before first measurement;22 content/bot checks and lint pass.
-Fitnessa0643aa imported into isolated climbing;hall/qualification/shared-slot fields and traffic history retained,direct aggregator payout enabled.822 checks pass,27 skips;lint/typechecks pass.
+Fitnessa6060e0 imported into isolated climbing;hall/qualification/shared-slot fields and traffic history retained,direct aggregator payout enabled.829 checks pass,27 skips;lint/typechecks pass.
 Hall traffic compaction preserves27 complete results/public traces,including six funded104-week course stress cases. Integrated24-case Chromium/WebKit browser check passes(/tmp/plan5-climbing-integrated-browser.log).
 No climbing measurements/events/tuning yet. Import the completed fitness milestone before registration or merge into main.
 
