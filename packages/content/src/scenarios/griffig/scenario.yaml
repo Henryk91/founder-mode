@@ -496,8 +496,8 @@ bookings:
       reviewWeight: 0.8
     committed:
       base:
-        min: 10
-        max: 30
+        min: 40
+        max: 100
       unit: person
       price:
         peak: 2000
@@ -1317,7 +1317,7 @@ bookings:
       boulder_area:
         newAbove: 70
         knownAbove: 30
-        weeklyLoss: 10
+        weeklyLoss: 12
         useLoss: 0
         localSegments: []
         sensitivity:
@@ -1334,7 +1334,7 @@ bookings:
       rope_walls:
         newAbove: 70
         knownAbove: 30
-        weeklyLoss: 10
+        weeklyLoss: 12
         useLoss: 0
         localSegments: []
         sensitivity:
@@ -1351,7 +1351,7 @@ bookings:
       auto_belays:
         newAbove: 70
         knownAbove: 30
-        weeklyLoss: 10
+        weeklyLoss: 12
         useLoss: 0
         localSegments: []
         sensitivity:
@@ -1368,7 +1368,7 @@ bookings:
       kids_area:
         newAbove: 70
         knownAbove: 30
-        weeklyLoss: 10
+        weeklyLoss: 12
         useLoss: 0
         localSegments: []
         sensitivity:
