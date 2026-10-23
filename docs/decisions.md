@@ -1073,3 +1073,8 @@ AUTONOMOUS:Fitness325ebbf completes all phase gates and is tagged plan5-fitness.
 AUTONOMOUS:Registration checks exposed missing letter styling and the mezzanine offer's required cost/rent format and12-week cooldown;correct these before first measurement. The generic developer-scheduling fixture now has explicit working capital so an unfunded hall shutdown does not masquerade as a freelance scheduling failure. Production starting cash is unchanged.
 
 AUTONOMOUS:The mezzanine offer is triggered at two cost-covering months from week26,with a12-week repeat cooldown;actual crowding remains the on-screen reason to accept or decline. This makes the expansion offer available at the stated eligibility point instead of relying on an unrelated random draw.
+
+
+### Step5 registered browser validation
+
+AUTONOMOUS:Full registered validation found three browser timing failures under concurrent bots:climbing cold preview readiness,Gratwanderung heading layout before font fitting settled,and a notebook opacity sampled at0.924899. Wait for app readiness (15seconds maximum),font readiness/two layout frames and final visible/hidden opacity rather than250ms sleeps. Keep all geometry,axe and transition-duration assertions;no product or simulation behaviour changes. Recheck the exact cases,then the full suite.
