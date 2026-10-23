@@ -304,3 +304,16 @@ staffing and bank payments. This is one diagnostic,not a target estimate.
 
 Values2/2 exhausted,formula0/1. Main only,1,000paired test seeds before the
 sole formula decision. No extra first-pass numeric round is permitted.
+
+
+### Step5 sole formula round:shared actual arrivals
+
+After the final value matrix (careful31.6%,all platform slots+0.5±0.8),enable
+the existing optional shared member/platform reservation queue for Griffig.
+Previously all members reserved before platform visitors;all-slot access could
+not displace them. Seeded common arrivals now compete for the same actual
+places,with refused members recorded in waitlists. The interface explains the
+common queue. Each visitor retains their own earned belay skills;no segment-wide
+access is granted. No new penalty,numeric value or engine path is introduced.
+All fees,costs,demand,setting and loan terms stay at the final value round.
+This spends formula1/1;values2/2 were already exhausted.

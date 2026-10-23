@@ -1553,6 +1553,7 @@ bookings:
         lead_course: 0.5
     aggregator:
       payOnVisit: true
+      sharedQueue: true
       name: Turnsaldo
       payoutCents:
         min: 800

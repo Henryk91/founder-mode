@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:5.8 final first-pass value round.
-Last commit:climbinge787273 shared-arrival qualification validation;outcome source8c931a1,values2/2,formula0/1.
-Next action:Final value round complete32policies×1,000paired seeds,careful31.6%±2.9,top39.6%. Review:climbing/ROUND2_REVIEW.md. Values2/2 exhausted;enable existing shared-arrival queue as sole formula round,then main1,000paired seeds. After that events once,seeds/full tests and climbing milestone;full report only step6,once.
+Step:5.8 sole formula round.
+Last commit:climbinge9219c0 complete final value-round review;values2/2,formula0/1.
+Next action:Final value round complete32policies×1,000paired seeds,careful31.6%±2.9,top39.6%. Review:climbing/ROUND2_REVIEW.md. Existing shared-arrival queue now enabled in Griffig only;values2/2 and formula1/1 exhausted. 48focused checks and lint pass;commit and measure main1,000paired seeds. After that events once,seeds/full tests and climbing milestone;full report only step6,once.
 
 ## Active jobs and resumption
 
@@ -50,6 +50,8 @@ Ausgesperrt:careful42.8%±3.1,top48.4%;X1 at limit,X2–4pass. Open T2,T3,T6,T10
 Step6 has a fresh two-round revisit budget. Full report NEVER started.
 
 ## For Henry to review (non-blocking)
+
+- Griffig shared member/platform arrivals now compete for real places;personal skills remain individual. Decision:step5 sole formula round.
 
 - Hall visitor refunds now visible separately from membership notice;T11 applies with unchanged limits. Initial omission corrected after UI/engine audit;decisions step5 visitor refund visibility.
 
