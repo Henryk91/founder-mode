@@ -1,7 +1,7 @@
 {
   "outcomeSource": "27756b3",
-  "eventCampaign": "interrupted at plan-mandated test hard stop",
-  "cache": "/tmp/plan5-climbing-formula-checkpoints-27756b3",
+  "eventCampaign": "complete: resumed twice from checkpoints, 100 policies, 76,588 of 100,000 games played, report griffig-events.md",
+  "cache": "/Users/henry/Documents/DevProjects/Personal/founder-mode-plan5-state/plan5-climbing-formula-checkpoints-27756b3",
   "completedMainTasks": 32,
   "completedForcedTasks": 48,
   "completedForcedGames": 40026,
@@ -566,5 +566,6 @@
       "playedSeeds": 751,
       "sha256": "07f9191b9c6aae1ce844b386f5276c8ca90bdfca5852238ae0d31e58c26dad85"
     }
-  ]
+  ],
+  "completedCheckpointFiles": 132
 }
