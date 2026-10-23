@@ -104,6 +104,30 @@ describe('optional personal climbing qualifications', () => {
     expect(s).toEqual(before)
     expect(leisureVisits(s, [], rng())).toEqual(result)
   })
+  it('keeps personal belay access when members and platform visitors share arrivals', () => {
+    let s = game()
+    s.scenario.bookings!.leisure!.aggregator!.sharedQueue = true
+    s.bookings!.leisure!.members = [member('novice', []), member('trained', ['belay'])]
+    s.bookings!.leisure!.aggregator!.joined = true
+    s.bookings!.leisure!.aggregator!.slots = ['daytime', 'evening']
+    s.bookings!.leisure!.aggregator!.users = [
+      { segmentId: 'medical', month: 0, visits: 0, levels: [] },
+      { segmentId: 'medical', month: 0, visits: 0, levels: ['belay'] },
+    ]
+    s = beginLeisure(s, plan(), rng()).state
+    const before = structuredClone(s)
+    const result = leisureVisits(s, [], rng())
+    const novice = result.added.filter((b) => b.memberId === 'novice' || b.aggregatorUser === 0)
+    const trained = result.added.filter((b) => b.memberId === 'trained' || b.aggregatorUser === 1)
+    expect(novice.length).toBeGreaterThan(0)
+    expect(trained.length).toBeGreaterThan(0)
+    expect(novice.every((b) => b.productId === 'allergy_filter')).toBe(true)
+    expect(trained.every((b) => b.productId === 'basic_ordering')).toBe(true)
+    expect(trained.every((b) => b.levels?.includes('belay'))).toBe(true)
+    expect(result.added.some((b) => b.productId === 'invoice_export')).toBe(false)
+    expect(s).toEqual(before)
+    expect(leisureVisits(s, [], rng())).toEqual(result)
+  })
   it('assigns actual initial skills without exposing the hidden rate', () => {
     const s = joinLeisure(game(), 'medical', 100, rng())
     expect(s.bookings!.leisure!.members.length).toBeGreaterThan(0)
