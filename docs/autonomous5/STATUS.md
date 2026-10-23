@@ -3,8 +3,8 @@
 ## Current
 
 Step:5 climbing integration and registration.
-Last commit:fitness325ebbf;phase gate complete and tagged plan5-fitness.
-Next action:Register Griffig after completing this fitness milestone import,then measure initial main only on1,000 paired test seeds. Fitness event table complete once;all eleven earlier games unchanged;full suite1,841 passed,27 skipped. Full report only step6,once.
+Last commit:climbing7ac610e imports completed fitness325ebbf;tag plan5-fitness.
+Next action:Run initial Griffig main only on1,000 paired test seeds with durable checkpoints;inspect sensible bots and contributions before values. Registration checks pass (259content+16freelance);lint/typechecks pass. Seed generation running;earlier protected proof required for hall opt-ins. Fitness event table complete once;all eleven earlier games unchanged;full suite1,841 passed,27 skipped. Full report only step6,once.
 
 ## Checklist
 
@@ -45,7 +45,7 @@ Final sourcea6060e0 proof complete:protected-step4-final/. All eleven main repor
 ## Isolated climbing
 
 Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work,HEADf25be3a (frozen formula import;hall compaction sourcef4a4759).
-Unregistered Griffig:24features,49events,150quotes,four intros,two native scenes.
+Griffig registered after fitness milestone import:24features,49events,150quotes,four intros,two native scenes.
 Optional personal qualifications/course conversions,staffed hall hours,paid setting,groups,weekly club,café/rentals,alternative requirements,shared wall pools and allowed slots implemented.
 Hall UI,first-wall/setting/aggregator/course/speed bots,K1–K5 reporting and real mezzanine offer prepared.
 Careful opens through real actions and saves replay exactly. Latest shared-pool change:29focused checks/lint pass. Earlier core preparation:748checks,27skips.
@@ -53,7 +53,7 @@ Browser fixture renders the real app without catalogue registration:24Chromium/W
 Small-budget quotes now round to EUR10 before first measurement;22 content/bot checks and lint pass.
 Fitnessa6060e0 imported into isolated climbing;hall/qualification/shared-slot fields and traffic history retained,direct aggregator payout enabled.829 checks pass,27 skips;lint/typechecks pass.
 Hall traffic compaction preserves27 complete results/public traces,including six funded104-week course stress cases. Integrated24-case Chromium/WebKit browser check passes(/tmp/plan5-climbing-integrated-browser.log).
-No climbing measurements/events/tuning yet. Import the completed fitness milestone before registration or merge into main.
+No climbing measurements/events/tuning yet. Completed fitness milestone imported at7ac610e;registration prepared,values0/2,formula0/1.
 
 ## Completed scenario results
 

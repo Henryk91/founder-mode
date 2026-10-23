@@ -1064,3 +1064,12 @@ AUTONOMOUS: Continue the user-approved parallel climbing preparation while fitne
 AUTONOMOUS: Extend existing traffic compaction and local member indexes to optional halls before Griffig registration.27 full results/public-view traces match integrated sourcea148737,including six funded104-week rope/both-wall/course stress cases. Sixty-week fixture retains year-ago traffic,lifetime totals and future course identities. This is bookkeeping,not a value/formula round;no controlled runtime improvement is claimed before the first main report.
 
 AUTONOMOUS: Import frozen fitness formula sourcea6060e0 into isolated climbing preparation while its final measurements/proof run. Preserve per-person qualifications in both direct and queued reservations,usable qualified offers and compact hall history. Griffig omits the new specialist/shared-queue switches,so its existing path must replay exactly. Registration,measurements and main integration still wait for the fitness milestone.
+
+
+### Step5 registration after fitness milestone
+
+AUTONOMOUS:Fitness325ebbf completes all phase gates and is tagged plan5-fitness. Import its final reports,seeds and proof into isolated climbing before registering Griffig. Registration changes only IDs,catalogue and loaders;initial measurement is main only on1,000 paired test seeds,values0/2,formula0/1. Keep the established hall preparation and its27 exact replay comparisons.
+
+AUTONOMOUS:Registration checks exposed missing letter styling and the mezzanine offer's required cost/rent format and12-week cooldown;correct these before first measurement. The generic developer-scheduling fixture now has explicit working capital so an unfunded hall shutdown does not masquerade as a freelance scheduling failure. Production starting cash is unchanged.
+
+AUTONOMOUS:The mezzanine offer is triggered at two cost-covering months from week26,with a12-week repeat cooldown;actual crowding remains the on-screen reason to accept or decline. This makes the expansion offer available at the stated eligibility point instead of relying on an unrelated random draw.

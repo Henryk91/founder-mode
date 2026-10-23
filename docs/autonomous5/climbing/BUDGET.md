@@ -1,11 +1,11 @@
 # Griffig measurement and tuning budget
 
-Unregistered preparation only. Values0/2,formulas0/1 for every failing target.
+Fitness milestone325ebbf imported;registration now enabled. Values0/2,formulas0/1 for every failing target.
 T1–T10,T12–T18,E1,K1–K5 apply;T4 starts at opening and T11 is inapplicable.
 K1 uses differing paired win/loss outcomes,including sole/joint leaders and all
 ties. K4 separates seeds where the rope-first baseline never opened rope walls.
 
-No registered climbing main report,event table or tuning round has run.
+Initial main measurement is next;no climbing event table or tuning round has run.
 The27 full-game/replay diagnostics are correctness tests,including six funded
 104-week course stress cases;they are not target measurements or seed sweeps.
 829 core/content/bot/UI checks pass,27 skips;lint/typechecks pass. All24 integrated

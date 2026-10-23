@@ -3,15 +3,17 @@ events:
     area: finance
     weight: 2
     once: false
-    cooldownWeeks: 16
+    cooldownWeeks: 12
     when:
       - week >= 26
       - office.stage == 1
       - months.coveringAll >= 2
+    trigger:
+      - months.coveringAll >= 2
     from: none
     sender: Your hall designer
     look: official
-    text: A mezzanine inside the existing hall costs EUR40,000 and takes six weeks. It moves amenities above reception and makes the climbing floor less crowded,without increasing the safety limit. The lease stays the same. Check the slot history before paying for space above an empty floor.
+    text: A mezzanine inside the existing hall costs 40,000 EUR and takes six weeks. It moves amenities above reception and makes the climbing floor less crowded,without increasing the safety limit. There is no more rent. Check the slot history before paying for space above an empty floor.
     defaultChoice: stay
     choices:
       - id: move
