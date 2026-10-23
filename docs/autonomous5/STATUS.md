@@ -4,7 +4,7 @@
 
 Step: 5.8 resumed after the hard stop (Henry authorised continuing, with a fresh count of three attempts for the browser test failure).
 Last commit: climbing 94047f1, the TopBar fitter fix. Outcome source 27756b3, hard-stop evidence d149f1b.
-Next action: a full run on 94047f1 in a quiet window must be wholly green, then resume the interrupted climbing event campaign (missing tasks only).
+Next action: the interrupted climbing event campaign is running again from its checkpoints (missing tasks only). After it finishes, a wholly green full suite (with nothing else on the machine) before the climbing report, tag and merge.
 
 Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
 
@@ -28,7 +28,7 @@ Henry's resume instructions override the plan where they differ:
 
 ## Active jobs
 
-None.
+- Climbing event campaign, resumed from the state-folder cache with the same command, at 94047f1 (no engine, content or bot change since 27756b3). Log: state folder, plan5-climbing-events-resume.log. No tests run while it runs.
 
 ## Checklist
 
@@ -54,6 +54,9 @@ Validation gate: the three earlier full attempts each failed one WebKit establis
 - Fix attempt 2 (94047f1): the span only in the established stage. All 1,962 tests passed, 30 skipped, but the run exited 1 on one vitest "Timeout calling onTaskUpdate" worker error (no test failed). Two more unchanged runs: one passed every test but hit the same worker error; one hit it plus an a11y browser start-screen timeout (30 s).
 - A/B with the pre-fix TopBar under the same conditions: the heading case fails again (Rückenwind WebKit 375), and the worker error appears too. So the fix works, and the worker error comes from the environment, not the fitter. Instrumented counts show the fitter settles (at most 7 fits per page, no loop).
 - Load samples: another Claude session (sponsorship-platform) runs its own Playwright suite and Next server and overlapped both sampled runs (load up to 35 on 10 cores). Next full run waits until that project has been quiet for 2 minutes.
+- Quiet-window run: the other session restarted mid-run; all tests passed, worker error again.
+- maxWorkers 40% trial: worse (two chromium click timeouts plus the worker error). Reverted, not committed.
+- Conclusion: the heading failure is fixed (green in all five full runs since the fix). The gate is still not wholly green because of load timeouts that track the other session. Question for Henry below.
 Logs in the state folder: resume-full-tests-*.log and resume-load-*.log.
 
 ## Completed results and open issues
@@ -67,6 +70,8 @@ Ausgesperrt: careful 42.8% ± 3.1, top 48.4%; X1 at limit, X2 to X4 pass. Open T
 Full bot report: never started.
 
 ## For Henry to review
+
+- QUESTION: the full suite cannot be shown wholly green while the sponsorship-platform Claude session runs its own Playwright suite. Please pause it for about 5 minutes when I ask, or accept the gate on the evidence (every test passes in the runs without overlap-related timeouts; the heading case is green in all of them).
 
 - Griffig shared member and platform arrivals compete for real places; personal skills remain individual (step 5 formula round).
 - Hall visitor refunds now visible separately from the membership notice; T11 applies with unchanged limits.
