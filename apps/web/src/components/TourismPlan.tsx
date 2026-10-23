@@ -370,9 +370,12 @@ export function PricesPlan() {
             }),
           ]
         })}
-      {!b.leisure?.members.length && (
+      {(!b.leisure?.members.length || b.leisure?.hall) && (
         <>
-          <SubHeading>{label('tour.policy', stage)}</SubHeading>
+          <SubHeading>
+            {label(b.leisure?.hall ? 'tour.policy.visitors' : 'tour.policy', stage)}
+          </SubHeading>
+          {b.leisure?.hall && <Writing>{label('tour.policy.visitorsHint', stage)}</Writing>}
           {b.policyLocked ? (
             <Writing>{label('tour.policy.locked', stage)}</Writing>
           ) : (

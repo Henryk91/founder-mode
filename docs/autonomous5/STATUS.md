@@ -3,15 +3,15 @@
 ## Current
 
 Step:5.8 round1 complete;correct hall overstaffing before final value round.
-Last commit:climbing130f02d round1 checkpoint/proof scope;measurement source78cae39.
+Last commit:climbing6c40856 round1 review and corrected hall overstaffing;game values78cae39.
 Next action:Round1 complete32policies,careful24.0%±2.6 at limit. Hall overstaffing correction passes58focused checks/lint;commit and measure that policy only on1,000paired seeds,then choose final value round from ROUND1_REVIEW.md. Values1/2,formula0/1;at most one further value round then one formula round. Complete earlier-game proof,events once at step end,seeds and final full tests. Full report only step6,once.
 
 ## Active jobs and resumption
 
-- Isolated capacity experiment:session20109,/tmp/plan5-climbing-capacity-benchmark.log,worktree /private/tmp/founder-mode-plan5-climbing-performance,branch plan5-climbing-performance (base78cae39). 27full results/view traces exact,57checks/lint pass. Controller /tmp/plan5-climbing-capacity-benchmark.py alternates saved leisure.ts variants over1,000seeds each. Do not edit that worktree engine file until controller ends;it restores candidate. Keep only≥10%robust gain with every full result exact. No source change merged.
+Capacity experiment complete and discarded:27full results/public traces plus2,000benchmark results exact;291.3s→288.1s (1.1%,paired uncertainty includes no gain). No engine change merged. Evidence:climbing/capacity-benchmark.json. Performance worktree restored to original source;no active job there.
 
 - Griffig round1 main:complete(session5882),/tmp/plan5-climbing-main-round1.log,six workers. Thirteen policies complete:careful24.0%±2.6(T1 at lower limit),platform14.2%,overstaff29.1%,under18.3%,no-tests/overworker0%,price-blind23.8%,review-blind20.1%. Naive25.6%,blind effort24.7%,defaults22.0%;remaining policies pending. Cache:/tmp/plan5-climbing-round1-checkpoints-78cae39;runner backup:/tmp/plan5-climbing-round1-runner.ts. Temporary entry removed after loading. Resume only missing exact-source tasks;do not repeat completed reports.
-- Twelve earlier-game proof:session39214,/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Keep packages/bots/src/plan5-protected-step5.ts until controller completes;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs. Earlier content/applicable code paths unchanged by hall-only bot fix and Griffig values.
+- Twelve earlier-game proof:complete(session39214),/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Temporary packages/bots/src/plan5-protected-step5.ts removed after all12completed;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs. Earlier content/applicable code paths unchanged by hall-only bot fix and Griffig values.
 
 Initial main complete32policies at8a3a423 (3,673wall/28,924summed seconds),cache /tmp/plan5-climbing-initial-checkpoints-8a3a423. Corrected review-blindeee2e74 complete464wins,paired−5.2±1.4,T10pass;imported4e92152. Coherent corrected32-policy baseline uses31original+one corrected task,no extra games:cache /tmp/plan5-climbing-corrected-checkpoints-4e92152,report climbing/griffig-main-corrected.md. Original/isolated corrected jobs are finished. Botcheck worktree/branch retained;no active job there.
 
@@ -37,7 +37,7 @@ The initial review-blind516wins are superseded for T10:its inbox still repaired 
 
 Validation:829preparation checks/27skips. Registered full suite:1,952pass/30skip/3browser timing failures. Test-only fixes now pass the exact readiness/header cases and notebook transition in Chromium/WebKit;lint/typechecks pass. No product geometry or simulation changed. Run the full suite on final tuning source. Seeds225rows,only18new Griffig rows;all documented endings replay. Profile diagnostic test0–2 matches measured careful results exactly;no optimisation retained.
 
-Protected proof:10/12 reports identical apart from timings (Kantino/Zollstock standard,Kantino/Gratwanderung/Seeblick/Hinterhof/Tiefgang/Rückenwind/Leinenlos/Ausgesperrt long). All eleven older content fingerprints match;fitness recorded. Raw reports:protected-step5/.
+Protected proof:12/12 reports identical apart from timings (Kantino/Zollstock standard,Kantino/Gratwanderung/Seeblick/Hinterhof/Tiefgang/Rückenwind/Leinenlos/Ausgesperrt/Fabriketage/Schweißperle long). All eleven older content fingerprints match;fitness recorded. Raw reports:protected-step5/.
 
 ## Completed results and open issues
 
@@ -50,6 +50,8 @@ Ausgesperrt:careful42.8%±3.1,top48.4%;X1 at limit,X2–4pass. Open T2,T3,T6,T10
 Step6 has a fresh two-round revisit budget. Full report NEVER started.
 
 ## For Henry to review (non-blocking)
+
+- Hall visitor refunds now visible separately from membership notice;T11 applies with unchanged limits. Initial omission corrected after UI/engine audit;decisions step5 visitor refund visibility.
 
 - Climbing round1:tuned enquiry bands,15%fictional own-money share and32-hour reset estimate;scenario-climbing.md section15/decisions first value round.
 

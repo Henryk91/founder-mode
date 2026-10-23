@@ -21,3 +21,10 @@ content and engine remain unchanged. Earlier games omit hall;fitness already
 has classStaffing,so that guard's truth value and all applicable policy
 choices are identical. This is a Griffig-only bot/value change under the
 report budget;do not repeat completed earlier-game reports.
+
+
+Complete:all12comparison exit codes0,apart from timings. Original eleven
+content fingerprints match exactly;fitness is recorded and its full30-policy
+main matches the final formula baseline. Temporary runner removed after
+controller completion. Later hall-only bot/report/UI fixes do not change any
+applicable earlier-game choices or content. No full report or event tables.

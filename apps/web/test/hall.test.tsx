@@ -6,6 +6,7 @@ import { createGameStore } from '../src/store'
 import { memoryStorage } from '../src/storage'
 import { StoreProvider } from '../src/useGame'
 import { HallPlan, hallRoleHours } from '../src/components/Hall'
+import { PricesPlan } from '../src/components/TourismPlan'
 
 const spec = loadScenario('schweissperle', 'long')
 function fixture() {
@@ -83,6 +84,45 @@ describe('hall opening interface', () => {
     expect(hallRoleHours(v, p, 'front_desk', 2)).toBe(22)
     v.bookings!.contracts[0]!.working = false
     expect(hallRoleHours(v, p, 'front_desk', 2)).toBe(14)
+  })
+  it.each(['scrappy', 'organised', 'established'] as const)(
+    'shows visitor refund choices alongside membership terms in a %s hall',
+    (stage) => {
+      const scenario = loadScenario('griffig', 'long')
+      const s = createGameStore({
+        storage: memoryStorage(),
+        makeSeed: () => 'hall-refunds',
+        scenario: () => scenario,
+      })
+      s.getState().startRun()
+      const view = getView(createGame(scenario, 'hall-refunds'))
+      view.company.uiStage = stage
+      view.bookings!.policyLocked = false
+      s.setState({ view })
+      const html = renderToString(
+        <StoreProvider value={s}>
+          <PricesPlan />
+        </StoreProvider>,
+      ).replace(/<!-- -->/g, '')
+      expect(html).toContain('Strict: cancel and still pay')
+      expect(html).toContain('Flexible: free to cancel')
+      expect(html).toMatch(/Membership notice (stays with|follows) each agreement/)
+    },
+  )
+  it('keeps visitor refund controls out of member-only class studios', () => {
+    const s = createGameStore({
+      storage: memoryStorage(),
+      makeSeed: () => 'studio-refunds',
+      scenario: () => spec,
+    })
+    s.getState().startRun()
+    const html = renderToString(
+      <StoreProvider value={s}>
+        <PricesPlan />
+      </StoreProvider>,
+    )
+    expect(html).not.toContain('Strict: cancel and still pay')
+    expect(html).not.toContain('Visitor booking cancellations')
   })
   it('keeps the hall controls absent in ordinary class studios', () => {
     const s = createGameStore({

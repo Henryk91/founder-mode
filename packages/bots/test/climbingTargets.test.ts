@@ -75,7 +75,7 @@ describe('climbing paired targets', () => {
     expect(rows.find((r) => r.id === 'K4')!.pass).toBe(false)
     expect(rows.find((r) => r.id === 'K4')!.value).toContain('rope-opened 0')
   })
-  it('includes K1–K5 and omits the unrelated membership cancellation-policy comparison', () => {
+  it('includes K1–K5 and visitor booking policy separately from membership notice', () => {
     const rows = evaluateTourismTargets({
       engineVersion: 'test',
       runs: 6,
@@ -85,6 +85,6 @@ describe('climbing paired targets', () => {
     })
     for (const id of ['K1', 'K2', 'K3', 'K4', 'K5'])
       expect(rows.some((r) => r.id === id)).toBe(true)
-    expect(rows.some((r) => r.id === 11)).toBe(false)
+    expect(rows.some((r) => r.id === 11)).toBe(true)
   })
 })
