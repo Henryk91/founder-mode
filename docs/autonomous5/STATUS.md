@@ -3,8 +3,8 @@
 ## Current
 
 Step: 5.8 resumed after the hard stop (Henry authorised continuing, with a fresh count of three attempts for the browser test failure).
-Last commit: climbing 94047f1, the TopBar fitter fix. Outcome source 27756b3, hard-stop evidence d149f1b.
-Next action: waiting for Henry's decision on the vitest worker error. The event campaign is paused at 96 of its checkpoints (16 more since the restart); restart it with the same command to run only the missing tasks.
+Last commit: climbing 23013dd, the test command split. Heading fix 94047f1. Outcome source 27756b3.
+Next action: the event campaign is running again from 96 checkpoints (missing tasks only). Then the climbing report, tag plan5-climbing, merge into main, and step 6 (open targets to the backlog, the full report once, one scenario per process).
 
 Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
 
@@ -28,7 +28,7 @@ Henry's resume instructions override the plan where they differ:
 
 ## Active jobs
 
-None. The event campaign was stopped for the clean test window; all 96 checkpoints parse. The temporary runner was removed from the worktree (backup in the state folder).
+- Climbing event campaign, resumed from 96 checkpoints with the same command at 23013dd (no package change since 27756b3). Log: state folder, plan5-climbing-events-resume.log. No tests run while it runs.
 
 ## Checklist
 
@@ -58,7 +58,7 @@ Validation gate: the three earlier full attempts each failed one WebKit establis
 - maxWorkers 40% trial: worse (two chromium click timeouts plus the worker error). Reverted, not committed.
 - Clean run (event campaign stopped at 96 checkpoints, sponsorship-platform stopped by Henry, no outside process in any load sample): all 1,962 tests passed, 30 skipped, but the worker error appeared again. The earlier claim that it tracks the other session was wrong: it happens on a clean machine.
 - Timings run: no test exceeds 10.7 s and no file spends over 0.5 s outside its tests, so no long synchronous block explains vitest's 60 s RPC timer. The web project (599 tests) and the bots project (579 tests) each pass alone with no worker error; it appears only when the whole suite runs together.
-- Conclusion: the heading failure is fixed (green in every full run since the fix). The gate fails only on this vitest worker error, a separate failure family. Question for Henry below.
+- Gate accepted by Henry with one change: `pnpm test` now runs the web project, then all other projects, and exits 0 only if both pass (23013dd). Run on an idle machine: web 599 passed; others 1,363 passed, 30 skipped; exit 0. The vitest error is recorded in decisions and the backlog ("revisit when vitest is upgraded").
 Logs in the state folder: resume-full-tests-*.log and resume-load-*.log.
 
 ## Completed results and open issues
@@ -73,7 +73,6 @@ Full bot report: never started.
 
 ## For Henry to review
 
-- QUESTION: every test passes, but each full run ends with one vitest "Timeout calling onTaskUpdate" worker error, even on a clean machine. Investigate it further (a separate failure family from the heading), or accept the gate on the evidence?
 
 - Griffig shared member and platform arrivals compete for real places; personal skills remain individual (step 5 formula round).
 - Hall visitor refunds now visible separately from the membership notice; T11 applies with unchanged limits.
