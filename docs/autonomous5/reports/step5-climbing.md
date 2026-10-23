@@ -130,3 +130,9 @@ Gratwanderung WebKit header-cut failures (390/430px). The lazy stage stylesheet
 can arrive after the earlier font-ready promise. Test-only face-loading and
 stable-fit waits preserve all original geometry/axe assertions;all8focused
 Gratwanderung cases and lint/typechecks now pass. Full suite reruns before gate.
+
+Full retry passes the original Gratwanderung cuts,with1,961pass/30skip and
+one new exact-subpixel stability timeout in Rückenwind390WebKit. Load the
+actual face once outside polling,then poll the original fit/one-line/minimum
+size criteria. All56established cases and lint/typechecks pass;every per-tab
+cut/axe assertion remains. The full suite runs again before the phase gate.
