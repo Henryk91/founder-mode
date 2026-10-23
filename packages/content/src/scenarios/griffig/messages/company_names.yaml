@@ -1,0 +1,69 @@
+students:
+  first:
+    - Amelie
+    - Bruno
+    - Carla
+    - Derya
+    - Emil
+    - Frida
+    - Gregor
+    - Hanna
+    - Ida
+    - Joris
+  second:
+    - Auer
+    - Birk
+    - Dorn
+    - Ertl
+    - Falk
+    - Gruber
+    - Hecht
+    - Kern
+    - Lenz
+    - Mohr
+committed:
+  first:
+    - Klara
+    - Lars
+    - Mara
+    - Nico
+    - Olga
+    - Pavel
+    - Runa
+    - Sven
+    - Tessa
+    - Ulf
+  second:
+    - Auer
+    - Birk
+    - Dorn
+    - Ertl
+    - Falk
+    - Gruber
+    - Hecht
+    - Kern
+    - Lenz
+    - Mohr
+families:
+  first:
+    - Family Auer
+    - Family Born
+    - Family Clemens
+    - Family Danner
+    - Family Eder
+    - Family Frei
+    - Family Graf
+    - Family Horn
+    - Family Imhof
+    - Family Jansen
+  second:
+    - Auer
+    - Birk
+    - Dorn
+    - Ertl
+    - Falk
+    - Gruber
+    - Hecht
+    - Kern
+    - Lenz
+    - Mohr

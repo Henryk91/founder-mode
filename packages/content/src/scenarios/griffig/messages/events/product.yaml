@@ -1,0 +1,565 @@
+events:
+  - id: choose_first_walls
+    area: product
+    weight: 1
+    once: true
+    when:
+      - week == 1
+    from: none
+    sender: Your wall builder
+    look: official
+    text: Choose the first areas to prepare. Bouldering costs EUR140,000 and takes twelve weeks;rope
+      walls cost EUR260,000 and take sixteen. Both also need the EUR80,000 common fit-out.
+      Preparation does not pay the invoice;use the bank plan or company cash for the build.
+    defaultChoice: research
+    choices:
+      - id: boulder
+        label: Prepare bouldering and common fit-out
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - basic_fit_out
+              - boulder_area
+      - id: rope
+        label: Prepare rope walls and common fit-out
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - basic_fit_out
+              - rope_walls
+      - id: both
+        label: Prepare both walls and common fit-out
+        hours: 0
+        effects:
+          - type: leisureStart
+            products:
+              - basic_fit_out
+              - boulder_area
+              - rope_walls
+      - id: research
+        label: Interview before choosing
+        hours: 0
+        effects: []
+  - id: concrete_samples
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: The engineer wants to check the slab before fixing the wall. The sample holes are less
+      attractive than the wall rendering. They also arrive before the climbers do. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Pay for the structural check
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Ask for another rendering
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_reception_desk
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      The reception plan contains a till, a coffee machine and no place for rental shoes. The desk
+      worker has drawn another plan in pencil. It includes people. Use the weekly wall,access and
+      staff controls for lasting changes;this follow-up pays for the conversation and immediate
+      cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review the check-in flow
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Order the original desk
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: mats_at_the_door
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: The delivery firm can bring the mats on Tuesday. The door is wide enough if the temporary
+      reception is moved. Moving it after the lorry arrives has a different price. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Clear and measure the route
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Trust the delivery instructions
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_family_money
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: The family loan is interest free until after the run. Your relative asks for the terms in
+      writing anyway. The request sounds less generous and considerably more useful. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Record the agreement
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Leave it as a family understanding
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: opening_photographs
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      A photographer offers pictures of an empty hall with excellent light. Your first area is still
+      under construction. The caption cannot make a wall ready. Use the weekly wall,access and staff
+      controls for lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Show the actual opening plan
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Announce every area as opening soon
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_speed_rendering
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      The supplier's speed-wall drawing looks like a competition broadcast. Your prospective members
+      mostly ask about ordinary routes. The supplier has not priced ordinary enthusiasm. Use the
+      weekly wall,access and staff controls for lasting changes;this follow-up pays for the
+      conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Keep the quotation for later
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Put the speed wall in the bank plan
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_first_induction
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - week >= 2
+      - leisure.open == 0
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Volunteers offer to help on opening day. Some climb well and none knows your check-in
+      procedure. A busy door is an awkward place to invent one. Use the weekly wall,access and staff
+      controls for lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Run a supervised rehearsal
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Explain it when the queue arrives
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_familiar_corner
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Regulars have climbed every problem in one corner. Several now walk past it without looking.
+      The corner still takes the same rent. Use the weekly wall,access and staff controls for
+      lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Schedule a reset
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Leave it until complaints increase
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_flat_fee_setter
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      A setter offers a regular weekly block. It costs money in quiet weeks too. The route log shows
+      which areas actually need it. Use the weekly wall,access and staff controls for lasting
+      changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Match the work to the route log
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Buy the largest block
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_double_reset
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Two areas are ready for new routes. Resetting both on the same morning would make the labour
+      efficient and the open hall small. The morning members have paid for somewhere to climb. Use
+      the weekly wall,access and staff controls for lasting changes;this follow-up pays for the
+      conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Stagger the work
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Close both areas together
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: new_holds
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      A hold supplier offers a large discount for a large order. You have boxes of holds that have
+      not yet touched a wall. The discount requires another shelf. Use the weekly wall,access and
+      staff controls for lasting changes;this follow-up pays for the conversation and immediate
+      cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review what setting needs
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Buy the whole offer
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_setter_s_wrist
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: A regular setter needs time off. Her usual work has not become easier to do one-handed.
+      Qualified cover is available before the next busy week. Use the weekly wall,access and staff
+      controls for lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Book safe cover
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Add the work to the founder's evenings
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: a_video_of_the_new_set
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      A climber posts a popular video of the fresh problems. Visitors want to try the same corner
+      this evening. Publicity has chosen a slot without asking reception. Use the weekly wall,access
+      and staff controls for lasting changes;this follow-up pays for the conversation and immediate
+      cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Check crowding and communicate access
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Promote unlimited evening visits
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: grades_on_paper
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: Several climbers disagree with a new problem's grade. They agree that the movement is
+      interesting. The setter would like to hear the useful part of the discussion. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review feedback and the route
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Regrade everything from the loudest comment
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: fresh_but_empty
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text: The training corner gets new problems again while the family wall remains unchanged. The
+      setting hours look impressive in total. The parents do not visit the total. Use the weekly
+      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
+      and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review freshness by area
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep repeating the same setting block
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: the_late_finish
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Setting overruns its planned morning closure. People booked for the afternoon are waiting by
+      the barrier. The final checks still need doing. Use the weekly wall,access and staff controls
+      for lasting changes;this follow-up pays for the conversation and immediate cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Finish checks and explain the delay
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Reopen before sign-off
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1
+  - id: chalk_on_the_vents
+    area: product
+    weight: 1
+    once: false
+    cooldownWeeks: 18
+    when:
+      - leisure.open == 1
+    from: none
+    sender: Your hall notebook
+    look: note
+    text:
+      Chalk dust settles faster than the cleaning rota removes it. Members notice it before the air
+      monitor arrives. The cleaning quotation assumed fewer visits. Use the weekly wall,access and
+      staff controls for lasting changes;this follow-up pays for the conversation and immediate
+      cover.
+    defaultChoice: leave
+    choices:
+      - id: act
+        label: Review ventilation and cleaning
+        hours: 2
+        effects:
+          - type: bugs
+            delta: -1
+            when:
+              - bugs >= 1
+      - id: leave
+        label: Keep the original cleaning hours
+        hours: 0
+        effects:
+          - type: energy
+            delta: -1

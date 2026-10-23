@@ -1,0 +1,109 @@
+Attempt1 — /tmp/plan5-climbing-final-full-tests.log
+Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |web| test/established.browser.test.ts > plan 3 established screens > in webkit > shows gratwanderung established at 390 px
+ FAIL  |web| test/established.browser.test.ts > plan 3 established screens > in webkit > shows gratwanderung established at 430 px
+AssertionError: expected [ …(5) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "Inbox (1): H1._name_aeuvb_53 \"Gratwanderung Bergtouren\"",
++   "Plan: H1._name_aeuvb_53 \"Gratwanderung Bergtouren\"",
++   "Occupancy: H1._name_aeuvb_53 \"Gratwanderung Bergtouren\"",
++   "Market: H1._name_aeuvb_53 \"Gratwanderung Bergtouren\"",
++   "Finance: H1._name_aeuvb_53 \"Gratwanderung Bergtouren\"",
++ ]
+
+ ❯ test/established.browser.test.ts:202:27
+    200|               expect(text).not.toMatch(/^\d+\/\d+$/m)
+    201|             }
+    202|             expect(found).toEqual([])
+       |                           ^
+    203|             await page.close()
+    204|           }, 180_000)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 107 passed (108)
+      Tests  2 failed | 1960 passed | 30 skipped (1992)
+   Start at  19:34:23
+   Duration  1043.58s (transform 4.03s, setup 28.91s, collect 37.19s, tests 957.18s, environment 11ms, prepare 4.82s)
+
+ ELIFECYCLE  Test failed. See above for more details.
+
+
+Attempt2 — /tmp/plan5-climbing-final-full-tests-retry.log
+Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |web| test/established.browser.test.ts > plan 3 established screens > in webkit > shows rueckenwind established at 390 px
+Error: Matcher did not succeed in time.
+ ❯ test/established.browser.test.ts:171:16
+    169|                 { timeout: 15_000 },
+    170|               )
+    171|               .toMatchObject({ ready: true, stable: true })
+       |                ^
+    172|             const tourism = run.id !== 'kantino'
+    173|             const found: string[] = []
+
+Caused by: AssertionError: expected { ready: true, size: '16px', …(5) } to match object { ready: true, stable: true }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "ready": true,
+-   "stable": true,
++   "stable": false,
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 107 passed (108)
+      Tests  1 failed | 1961 passed | 30 skipped (1992)
+   Start at  19:55:46
+   Duration  1216.83s (transform 6.62s, setup 37.67s, collect 47.49s, tests 1108.75s, environment 11ms, prepare 5.30s)
+
+ ELIFECYCLE  Test failed. See above for more details.
+
+
+Attempt3 — /tmp/plan5-climbing-final-full-tests-final.log
+Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |web| test/established.browser.test.ts > plan 3 established screens > in webkit > shows rueckenwind established at 375 px
+Error: Matcher did not succeed in time.
+ ❯ test/established.browser.test.ts:170:16
+    168|                 { timeout: 15_000 },
+    169|               )
+    170|               .toEqual({ fits: true, oneLine: true, readable: true })
+       |                ^
+    171|             const tourism = run.id !== 'kantino'
+    172|             const found: string[] = []
+
+Caused by: AssertionError: expected { fits: false, oneLine: true, …(1) } to deeply equal { fits: true, oneLine: true, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "fits": true,
++   "fits": false,
+    "oneLine": true,
+    "readable": true,
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 107 passed (108)
+      Tests  1 failed | 1961 passed | 30 skipped (1992)
+   Start at  20:23:14
+   Duration  1020.84s (transform 6.41s, setup 26.69s, collect 34.41s, tests 940.18s, environment 11ms, prepare 4.57s)
+
+ ELIFECYCLE  Test failed. See above for more details.
+

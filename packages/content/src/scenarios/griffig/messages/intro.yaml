@@ -1,0 +1,31 @@
+intro:
+  cards:
+    - id: you
+      title: Ten years on the wall
+      body:
+        You set routes and coached climbers in big Munich halls for ten years. Now you have {cash:eur}
+        in the company, including an interest-free family loan due after the run, plus {savings:eur}
+        in personal savings. Living costs are {living:eur} a week; chalk is not accepted in payment.
+    - id: idea
+      title: The warehouse
+      body:
+        'An empty hall in Freimann has height, floor space and a lease. It is June. Choose what to
+        build first: bouldering opens sooner, rope walls need more money and time, and building both
+        does not make the bank wait.'
+    - id: problem
+      title: Who climbs here
+      body: Students want affordable evenings, regular climbers want fresh routes and training, and
+        families want suitable space and coaching. Rope access needs demonstrated belay skills. The
+        busy winter must also pay for the quieter summer.
+    - id: goal
+      title: The goal
+      body: Last {maxWeeks} weeks and make three profitable months in the last thirteen. The
+        hall,staff,bank and your living costs all count. A wall keeps its cost long after everybody
+        knows its routes.
+founderNotes:
+  first_week: Week 1. The hall is empty. Decide what opens first and what the bank must finance.
+  no_evidence: Week {week}. Nobody has told you which walls they will pay to use. The quotations
+    remain enthusiastic.
+  only_interviews: You have {n} conversations. Admiring a route is easier than buying a membership.
+  built_unseen: An area is ready. People still need to know where the door is.
+  leads_only: You have {n} enquiries. The rental shoes are waiting for feet.

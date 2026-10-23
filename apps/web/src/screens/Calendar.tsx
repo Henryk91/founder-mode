@@ -1,6 +1,7 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { label, stageOf, voiceOf } from '../labels'
 import { Pipeline } from './Pipeline'
+import { HallPlan } from '../components/Hall'
 import { ClassTimetable } from '../components/Memberships'
 import { LeisureCalendar } from '../components/Leisure'
 import { cruiseWeekText, forecastLine } from '../components/TourismPlan'
@@ -20,6 +21,7 @@ export function Calendar() {
   return (
     <>
       <ClassTimetable />
+      <HallPlan />
       {b.leisure && <LeisureCalendar view={view} />}
       {!b.leisure && (
         <section className={styles.card} aria-label={label('tour.calendar', stage)}>

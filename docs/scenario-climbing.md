@@ -29,7 +29,7 @@ Munich already has very large climbing centres, some run by the alpine club with
 | Founder living costs | 675 per week, rising a tenth from week 53 | |
 | Company fixed costs per month | Hall lease 16,000 (est., about 9 a square metre for a warehouse), insurance 900 (est.), heating and electricity 2,500 (est., more in winter), booking and access software 300, accountant 300, cleaning 1,200 (est.) | |
 | Basic fit-out | Needed before opening: floor mats, toilets, changing rooms, a reception. 80,000 (est.) | |
-| Founder | Sets routes (about 25 hours per wall section a reset), coaches courses, runs the desk | |
+| Founder | Sets routes (about 32 hours per wall section a reset), coaches courses, runs the desk | |
 | Bank loan | Available (fictional "Isartal Sparkasse"). Items: every wall section, the fit-out, the café, the speed wall (the temptation), working capital | |
 | Funding | Not available | |
 
@@ -122,7 +122,7 @@ A polite trap example: committed climbers who praise the setting, never buy a me
 
 | Role | Pay (est., verify) | Does |
 |---|---|---|
-| Route setter | 250 a day freelance | Resets a wall section in about 25 hours (est.) |
+| Route setter | 250 a day freelance | Resets a wall section in about 32 hours (est.) |
 | Coach | 30 an hour | Courses, the kids' club, birthdays |
 | Front desk | 15 an hour; minijob or part time | Check-ins, rentals, sales; needed in every open slot unless the founder is at the desk |
 | Café staff | 15 an hour | With `cafe_counter` |
@@ -215,3 +215,105 @@ Established accent `#2F6B3A` (check white text reaches 4.5:1).
 ## 15. Sources and values as built
 
 The agent fills this in.
+
+### Initial content preparation,22 October2026
+
+Griffig remains unregistered until the fitness milestone. These are initial
+scenario estimates,not a tuned or measured economy.
+
+- [Einstein Munich prices and hours](https://muenchenwisesystem.einstein-boulder.com/preise-zeiten/),checked22October2026:adult dayEUR15.50,reducedEUR12.90,twelve visitsEUR155,monthlyEUR39 with a three-month initial term,annualEUR420,and shoe hireEUR4.50. This is a boulder-only comparator. Our mixed-hallEUR69/59/45 monthly fees remain estimates;the comparator does not establish them.
+- [BMAS minimum-wage questions](https://www.bmas.de/EN/Labour/Minimum-Wage/the-minimum-wage-questions-and-answers.html),checked22October2026:EUR13.90 gross/hour in2026,EUR14.60 fromJanuary2027;employer contributions are additional. Desk/café shifts use an estimated employer costEUR18/hour,four hours per shift. CoachingEUR30/hour and settingEUR250/eight-hour day remain freelance estimates. Contract shifts quote the whole weekly bill.
+- Prisma's website timed out on refresh. Its earlier preparatory prices are not used as verified current figures.
+- Hall lease,build-out prices,utilities,insurance,cleaning,equipment,the platform payout and all demand/usage/churn ranges remain estimates. No supplier quotation or local rent evidence was found for this particular fictional hall. The bank'sEUR650,000 unproven ceiling and six-month working-capital allowance are fictional estimates sized to let the player propose any first-wall plan;approval and the player's repayment ability still matter.
+
+### Units and adaptations before measurement
+
+- Simultaneous capacities are converted to weekly visits using actual staffed slot hours and an estimated two-hour average visit. The four slots total75hours/week;closing hours removes capacity and saves desk cover. Comfort remains hidden;the mezzanine increases comfort15% without changing safety capacity.
+- Common fit-out takes ten builder weeks after40preparation hours;the first wall takes its stated12/16weeks. Both must finish before opening. Course preparation and wall preparation are distinct. The children’s area can also open the business after common fit-out.
+- TheEUR120,000 opening cash includes the family loan;it is not counted twice. Repayment after week104 is contextual,not simulated bank debt. The win condition uses the existing tourism rule:three profitable months in the last thirteen,including living costs and scheduled bank repayments. The rough spec wording did not change that inherited rule.
+- Personal belay/lead skills gate independent access. Actual coached completion awards skills and may create a qualified paid-membership enquiry next week;35%/50% is not a guaranteed free membership. Two/three course sessions fit within one game week;the coach's four/six-hour shift covers the entire course. Course prices follow the segment ticket ratio,so student discounts also affect them.
+- The all-area ticket basis isEUR20,with a boulder-only factor0.75 givingEUR15. Students pay80%:EUR16all areas orEUR12bouldering. Four separate student membership/card agreements cost80%of the corresponding regular fee,serve only students and require the student-price feature. Regular agreements serve the other segments. Course prices retain the same student discount.
+- Children’s parties reserve ten real places atEUR19.90 each for theEUR199party. The club billsEUR55monthly and reserves one actual coached visit each week. Its coaches also cover parties;the roster cannot spend the same shift twice.
+- Regular memberships admit available ordinary areas,not courses or parties. The ten-visit card owes ten visits for52weeks. Off-peak access is restricted to early/daytime slots.
+- Paid route-setting hours supplement separately budgeted founder setting. A reset takes32hours and closes four daytime hours only in the reset week. Dedicated desk,setter and café roles do not produce free coaching.
+- Café contribution is an estimatedEUR5average receipt lessEUR2service costs per served visitor,limited to50visitors per paid four-hour staff shift. Rental stock costsEUR2,500;an estimated average rental basket,not a shop or equipment inventory,earnsEUR1.50per casual visitor orEUR0.50per committed visit,lessEUR0.30cost. NominalEUR5/3rental prices remain background context.
+- Follow-up event cards pay for immediate conversations,cover and their stated small effects. Persistent wall,staff,access and opening-hour changes remain weekly controls. Events do not silently award unearned qualifications or override safe capacity.
+
+- The real internal mezzanine offer appears after week26 and two months covering all costs. It costsEUR40,000,takes six weeks and adds no rent or safety places. Careful play uses repeated observed crowding before considering it;the normal cash and whole-year surplus checks still apply.
+
+- Courses,clubs and parties share the actual boulder/rope/children’s wall pool with ordinary visitors. Explicit allowed slots keep clubs and parties on weekends and courses in their stated periods. Coaching pay covers the full two/four/six-hour course;the first pass reserves one estimated two-hour wall visit per participant,with remaining coached time for demonstrations and off-wall practice. This is a weekly average,not an exact session timetable. Coaches still limit actual served participants;no extra wall places are created by a course product.
+
+- Interview budgets below EUR200 round to EUR10, rather than the inherited EUR500 step. This preserves useful on-screen evidence at ticket and membership prices. Corrected before the first climbing measurement; no tuning round is spent.
+
+- The aggregator explicitly settles actual check-ins directly via payOnVisit. It does not issue employer invoices. Fitness shared-mechanic fixes are integrated into the isolated preparation branch before Griffig registration;no climbing measurement or tuning round is implied.
+
+### Registration,23 October2026
+
+Fitness milestone325ebbf imported before registration. The mezzanine offer is
+guaranteed at its stated eligibility point (week26,two cost-covering months),
+with a12-week repeat cooldown;acceptance still uses actual crowding and cash.
+No initial fee,demand or cost value is tuned by registration.
+
+### First value round,23 October2026
+
+After32policies on1,000paired test seeds and the corrected review-blind
+comparison:careful51.6%,viable-segment spread51.1points;both-first0% with no
+working capital under the20%own-money rule. Contributions and exact financing
+trace are in autonomous5/climbing/INITIAL_REVIEW.md.
+
+- Reachable weekly enquiries (tuned estimates):students150–500→80–240,
+  families60–200→32–100,committed4–15→10–30. Fees and all Munich cost estimates
+  stay fixed. This addresses the segment spread and overall ease.
+- Fictional bank own-money share20%→15%. The existing EUR650,000 unproven
+  ceiling and six-month working-capital allowance remain. Both-wall items cost
+  EUR480,000;the old rule capped that plan at exactly the invoices,leaving no
+  working capital. This is a scenario estimate,not a claim about a real lender.
+- Estimated reset work25→32hours per wall section,four eight-hour person-days.
+  Paid day remains EUR250. Normal/doubled setting can then cross an actual
+  paid-day boundary;old7/13hours often bought the same one day. The reset still
+  closes only four daytime hours in its reset week. No supplier quote is implied.
+
+Values1/2,formulas0/1. Main only,1,000paired test seeds before another change;
+no event table until the end of this step.
+
+### Visitor refunds,23 October2026
+
+The existing flexible/strict policy covers booked day visits and courses,not
+membership notice. The membership-form predicate originally hid this visitor
+control even though bots and paid booking conversion/cancellations still used
+it. Halls now show the existing choices and a separate caption;member-only
+fitness is unchanged. T11 therefore applies to Griffig visitor bookings,with
+its original limits. Existing paired strict/flexible data supplies it;no
+extra bot games or outcome change accompanies the UI/report correction.
+
+### Final first-pass value round,23 October2026
+
+After corrected round1 (32policies,1,000paired seeds):careful24.0% at the
+lower limit;committed3.1%,families24.5%,students43.1%. The measured
+committed test5 trace opens normally but reaches only121members and
+EUR18,665monthly receipts byweek40,againstEUR21,200fixed costs plus
+staffing and bank payments. This is one diagnostic,not a target estimate.
+
+- Increase estimated reachable committed enquiries10–30→40–100/week so its
+  recurring cohort can build before the opening bridge runs out. Keep all
+  student/family ranges,fees,rent,equipment,wages and lending terms.
+- Increase estimated calendar freshness loss10→12/week across the four
+  configured wall sections. Half setting's eight-week reset cycle now leaves
+  more time with tired routes;normal setting still resets in four weeks.
+  Reset work remains32hours,the paid dayEUR250,and closure four daytime hours.
+
+Values2/2 exhausted,formula0/1. Main only,1,000paired test seeds before the
+sole formula decision. No extra first-pass numeric round is permitted.
+
+
+### Step5 sole formula round:shared actual arrivals
+
+After the final value matrix (careful31.6%,all platform slots+0.5±0.8),enable
+the existing optional shared member/platform reservation queue for Griffig.
+Previously all members reserved before platform visitors;all-slot access could
+not displace them. Seeded common arrivals now compete for the same actual
+places,with refused members recorded in waitlists. The interface explains the
+common queue. Each visitor retains their own earned belay skills;no segment-wide
+access is granted. No new penalty,numeric value or engine path is introduced.
+All fees,costs,demand,setting and loan terms stay at the final value round.
+This spends formula1/1;values2/2 were already exhausted.

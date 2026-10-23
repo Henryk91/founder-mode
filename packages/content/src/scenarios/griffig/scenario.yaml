@@ -1,0 +1,1611 @@
+id: griffig
+name: Griffig
+longOnly: true
+maxWeeks: 104
+win:
+  profitableMonths: 3
+  overMonths: 13
+start:
+  cashCents: 12000000
+  savingsCents: 1425000
+  livingCostCentsPerWeek: 67500
+  priceCentsPerMonth: 6900
+  energy: 80
+  skills:
+    interviewing: 0.1
+    selling: 0.1
+  fixedCosts:
+    - id: lease
+      name: Warehouse hall lease
+      monthlyCents: 1600000
+    - id: insurance
+      name: Insurance
+      monthlyCents: 90000
+    - id: utilities
+      name: Heating and electricity
+      monthlyCents: 250000
+    - id: software
+      name: Booking and access software
+      monthlyCents: 30000
+    - id: accountant
+      name: Accountant
+      monthlyCents: 30000
+    - id: cleaning
+      name: Cleaning
+      monthlyCents: 120000
+founder:
+  baseHoursPerWeek: 50
+  maxHoursPerWeek: 65
+  energy:
+    max: 100
+    perHourOverBase: -1
+    perRestHour: 1.5
+    weeklyRecovery: 3
+    fullAt: 70
+    lowBelow: 30
+    lowFactor: 0.85
+    burnoutWeeks: 3
+  livingSteps:
+    - week: 53
+      centsPerWeek: 74250
+finance:
+  weeksPerMonth: 4
+  invoiceDueDays: 30
+  writeOffWeeks: 8
+  chaseHours: 1
+  chaseBoost: 0.3
+experiments:
+  interview:
+    hours: 2
+    noiseSd: 0.3
+    skillGain: 0.01
+    skillCap: 0.8
+    mentionBase: 0.3
+    mentionPerPain: 0.3
+    budgetChance: 0.2
+    budgetNoiseSd: 0.25
+    budgetSmallStepCents: 1000
+    buckets:
+      - id: not_a_problem
+        name: Not a problem
+        below: 0.2
+      - id: mild
+        name: Mild
+        below: 0.4
+      - id: noticeable
+        name: Noticeable
+        below: 0.6
+      - id: painful
+        name: Painful
+        below: 0.9
+      - id: urgent
+        name: Urgent
+  landing:
+    hours: 6
+    budgetsCents:
+      - 20000
+      - 50000
+    centsPerVisitor: 150
+    weeks: 2
+    signupBase: 0.02
+    signupPerPain: 0.15
+    signupsPerLead: 5
+    maxTestsPerSegment: 3
+  presale:
+    hoursPerBatch: 9
+    batchSize: 6
+    weeks: 1
+    commitRate: 0.35
+    maxBatchesPerSegment: 3
+    refundWeeks: 8
+product:
+  startQuality: 90
+  qualityPerBug: 3
+  fixHoursPerBug: 4
+  fitBase: 0.5
+  fitPerQuality: 0.5
+sales:
+  sellingBase: 0.5
+  saturationHours: 12
+  saturationWeeks: 3
+  saturatedFactor: 0.3
+  leadToDemoBase: 0.18
+  leadToDemoOffset: 0.4
+  leadToDemoPerPain: 0.6
+  demoHours: 3
+  followUpHours: 1
+  followUpDemoBoost: 0.05
+  demoToTrialBase: 0.05
+  demoToTrialPerFit: 0.35
+  trialWeeks: 1
+  ghostChancePerWeek: 0.1
+  silentWeeksToLose: 4
+  skillGainPerDemo: 0.005
+  skillCap: 0.8
+  price:
+    midpoint: 1.35
+    steepness: 10
+  churn:
+    base: 0.03
+    perMisfit: 0.2
+    perBug: 0.01
+    priceFrom: 1
+    perPrice: 0.15
+    cap: 0.6
+  referral:
+    chancePerFit: 0
+    chancePerBug: 0
+    demoBonus: 0
+team:
+  searchHours: 6
+  searchWeeks: 2
+  candidates: 3
+  startWeeks: 2
+  severanceWeeks: 4
+  impressionSd: 0.25
+  impressions:
+    - id: weak
+      name: Weak
+      below: 0.7
+    - id: solid
+      name: Solid
+      below: 0.95
+    - id: strong
+      name: Strong
+      below: 1.1
+    - id: outstanding
+      name: Outstanding
+  roles:
+    developer:
+      name: Developer
+      monthlyCents: 390000
+      weeklyHours: 20
+      skill:
+        min: 0.5
+        max: 1.2
+    salesperson:
+      name: Salesperson
+      monthlyCents: 330000
+      weeklyHours: 20
+      skill:
+        min: 0.5
+        max: 1.2
+      selling: 0.3
+  candidateNames:
+    - Anselm Brandt
+    - Berit Kowalczyk
+    - Cosima Wendt
+    - Dario Feldmann
+    - Elke Hartmann
+    - Florian Scholz
+    - Greta Lindqvist
+    - Henrik Aumann
+    - Ilse Brunner
+    - Jonas Ruprecht
+    - Katja Merkel
+    - Lukas Oberhuber
+    - Mathilde Sauer
+    - Nils Eckhardt
+    - Odile Fraunhofer
+    - Paulina Vogt
+    - Rainer Zeller
+    - Sabine Kellner
+    - Tobias Nagel
+    - Ursula Pfeiffer
+    - Viktor Hahn
+    - Wiebke Stadler
+  freelance:
+    hoursOptions:
+      - 10
+      - 20
+    outputShare: 0.9
+    onboardingFactor: 0.5
+    noticeWeeks: 1
+    extraBugsPerFeature: 1
+    roles:
+      developer:
+        name: Freelance developer
+        centsPerHour: 6800
+      salesperson:
+        name: Freelance salesperson
+        centsPerHour: 5800
+        selling: 0.2
+    names:
+      - Arne Lindgren
+      - Bettina Roos
+      - Cem Yildiz
+      - Dagmar Wolke
+      - Emil Sandau
+      - Frieda Kessler
+      - Gero Matthes
+      - Hanna Brecht
+inbox:
+  maxPerWeek: 2
+  drawChance: 0.55
+  openWeeks: 2
+  guaranteeBelowOpen: 1
+  cooldownWeeks: 8
+  openLimit: 3
+roles:
+  - id: viable
+    pain:
+      min: 0.6
+      max: 0.85
+    politeness:
+      min: 0.05
+      max: 0.15
+  - id: mediocre
+    pain:
+      min: 0.35
+      max: 0.55
+    politeness:
+      min: 0.25
+      max: 0.4
+  - id: trap
+    pain:
+      min: 0.1
+      max: 0.25
+    politeness:
+      min: 0.5
+      max: 0.65
+segments:
+  - id: students
+    name: Students and young adults
+    description: Friends who boulder after lectures and work.
+    mustHave:
+      - boulder_area
+      - student_prices
+    size:
+      min: 600
+      max: 3000
+    wtpCents:
+      min: 4800
+      max: 6900
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.02
+        max: 0.05
+      in_person:
+        min: 0.03
+        max: 0.07
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - About {amount} a month works if the areas I use are open.
+      - I could pay {amount} monthly for fresh routes and usable slots.
+      - Something near {amount} a month could work. Show the term first.
+      - My monthly budget is around {amount}. Queueing is not training.
+  - id: committed
+    name: Committed climbers
+    description: Regular climbers who train indoors and climb outside in summer.
+    mustHave:
+      - rope_walls
+      - training_area
+    size:
+      min: 600
+      max: 3000
+    wtpCents:
+      min: 6200
+      max: 8300
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.02
+        max: 0.05
+      in_person:
+        min: 0.03
+        max: 0.07
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - About {amount} a month works if the areas I use are open.
+      - I could pay {amount} monthly for fresh routes and usable slots.
+      - Something near {amount} a month could work. Show the term first.
+      - My monthly budget is around {amount}. Queueing is not training.
+  - id: families
+    name: Families
+    description: Parents and children looking for suitable space,coaching and weekend visits.
+    mustHave:
+      - kids_area
+      - kids_club
+    size:
+      min: 600
+      max: 3000
+    wtpCents:
+      min: 5500
+      max: 7600
+    channelResponse:
+      cold_email:
+        min: 0.01
+        max: 0.03
+      phone:
+        min: 0.02
+        max: 0.05
+      in_person:
+        min: 0.03
+        max: 0.07
+    paymentDelayDaysMean: 0
+    neverPaysShare: 0
+    waitsForChaseShare: 0
+    budgetQuotes:
+      - About {amount} a month works if the areas I use are open.
+      - I could pay {amount} monthly for fresh routes and usable slots.
+      - Something near {amount} a month could work. Show the term first.
+      - My monthly budget is around {amount}. Queueing is not training.
+milestones:
+  - id: first_interview
+    name: First interview
+    kind: count
+    of: interviews
+    target: 1
+  - id: first_customer
+    name: First paid visit
+    kind: count
+    of: guests
+    target: 1
+  - id: covers_company_costs
+    name: A month of tickets and memberships covers company costs
+    kind: revenue
+    covers: company
+  - id: covers_all_costs
+    name: A month of tickets and memberships covers all costs, you included
+    kind: revenue
+    covers: all
+  - id: weeks_26
+    name: 26 weeks survived
+    kind: weeks
+    target: 26
+  - id: weeks_52
+    name: 52 weeks survived
+    kind: weeks
+    target: 52
+  - id: weeks_78
+    name: 78 weeks survived
+    kind: weeks
+    target: 78
+  - id: weeks_104
+    name: 104 weeks survived
+    kind: weeks
+    target: 104
+officeStages:
+  - id: warehouse_hall
+    name: The hall
+    monthlyCents: 0
+  - id: climbing_mezzanine
+    name: The mezzanine inside the hall
+    monthlyCents: 0
+    oneOffCents: 4000000
+    moveWeeks: 6
+    qualityBonus: 0.1
+office:
+  noticeWeeks: 13
+  moveHoursPerWeek: 4
+organisedAt:
+  - covers_all_costs
+establishedAt:
+  monthsCoveringAll: 8
+loan:
+  bankName: Isartal Savings Bank
+  bridgeMonthsHint: 6
+  planHours: 30
+  meetingHours: 4
+  decisionWeeks: 2
+  retryWeeks: 4
+  ownShare: 0.15
+  unprovenMaxCents: 65000000
+  revenueMultiple: 1
+  minCents: 5000000
+  maxCents: 100000000
+  stepCents: 1000000
+  rateBp:
+    min: 450
+    max: 750
+  leverageSpreadBp: 100
+  termMonths:
+    - 60
+    - 84
+    - 120
+  graceMonths:
+    - 0
+    - 6
+    - 12
+  missedFeeCents: 5000
+  earlyFeeShare: 0.01
+  maxLoans: 2
+  items:
+    - basic_fit_out
+    - boulder_area
+    - rope_walls
+    - auto_belays
+    - kids_area
+    - training_area
+    - cafe_counter
+    - speed_wall
+  workingCapitalMonths: 6
+bookings:
+  startWeekOfYear: 23
+  seasonNoise: 0.15
+  peakMonths:
+    - 1
+    - 2
+    - 3
+    - 10
+    - 11
+    - 12
+  policyWeeks: 4
+  platform:
+    name: Turnsaldo
+    commission: 0.15
+  website:
+    product: online_booking
+    repeatsFull: 100
+  partnershipHours: 6
+  partnershipCut: 0.1
+  outreachHoursFull: 10
+  reachCap: 1.5
+  roleFactor:
+    viable: 1
+    mediocre: 0.7
+    trap: 0.35
+  fitBase: 0.35
+  segments:
+    students:
+      base:
+        min: 80
+        max: 240
+      unit: person
+      price:
+        peak: 1600
+        off: 1440
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 0
+        max: 0
+      season: &a1
+        - 1.15
+        - 1.1
+        - 1.1
+        - 1
+        - 0.65
+        - 0.5
+        - 0.45
+        - 0.5
+        - 0.8
+        - 1.2
+        - 1.25
+        - 1.15
+      response:
+        platform: 0.6
+        website: 0.65
+        partnership: 0.65
+        outreach: 0.2
+        walkIn: 0.45
+      cancel: 0.03
+      strictConversion: 0.8
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.8
+    committed:
+      base:
+        min: 40
+        max: 100
+      unit: person
+      price:
+        peak: 2000
+        off: 1800
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 0
+        max: 0
+      season: *a1
+      response:
+        platform: 0.1
+        website: 0.5
+        partnership: 0.05
+        outreach: 0.15
+        walkIn: 0.1
+      cancel: 0.03
+      strictConversion: 0.8
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.8
+    families:
+      base:
+        min: 32
+        max: 100
+      unit: person
+      price:
+        peak: 2000
+        off: 1800
+      size:
+        min: 1
+        max: 1
+      leadWeeks:
+        min: 0
+        max: 0
+      season: *a1
+      response:
+        platform: 0.15
+        website: 0.5
+        partnership: 0.55
+        outreach: 0.2
+        walkIn: 0.3
+      cancel: 0.03
+      strictConversion: 0.8
+      weatherSensitive: false
+      invoiced: false
+      reviewWeight: 0.8
+  products:
+    basic_fit_out:
+      oneOffCents: 8000000
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    boulder_area:
+      oneOffCents: 14000000
+      monthlyCents: 0
+      capacity: 140
+      serves:
+        - students
+        - committed
+        - families
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: basic_fit_out
+      priceFactor: 0.75
+    rope_walls:
+      oneOffCents: 26000000
+      monthlyCents: 0
+      capacity: 60
+      serves:
+        - committed
+        - families
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: basic_fit_out
+      needsLevel: belay
+    auto_belays:
+      oneOffCents: 2500000
+      monthlyCents: 0
+      capacity: 12
+      serves:
+        - families
+        - committed
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: basic_fit_out
+    kids_area:
+      oneOffCents: 3000000
+      monthlyCents: 0
+      capacity: 35
+      serves:
+        - families
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: basic_fit_out
+    training_area:
+      oneOffCents: 2000000
+      monthlyCents: 0
+      capacity: 30
+      serves:
+        - committed
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: basic_fit_out
+    cafe_counter:
+      oneOffCents: 2500000
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: basic_fit_out
+    speed_wall:
+      oneOffCents: 6000000
+      monthlyCents: 0
+      capacity: 4
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: basic_fit_out
+    intro_course:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 40
+      serves:
+        - students
+        - families
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: boulder_area
+      priceFactor: 1.75
+      course:
+        level: boulder_intro
+      capacityOf: boulder_area
+    belay_course:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 24
+      serves:
+        - students
+        - families
+        - committed
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: rope_walls
+      priceFactor: 4.45
+      course:
+        level: belay
+        sameStay:
+          share: 0.2
+          products:
+            - lead_course
+      capacityOf: rope_walls
+    lead_course:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 12
+      serves:
+        - committed
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: rope_walls
+      priceFactor: 7.45
+      course:
+        level: lead
+      needsLevel: belay
+      capacityOf: rope_walls
+    kids_club:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 32
+      serves:
+        - families
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: kids_area
+      capacityOf: kids_area
+    birthday_parties:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 40
+      serves:
+        - families
+      unitCostCents: 100
+      months: []
+      weatherClosed: false
+      requires: kids_area
+      requestSize:
+        min: 10
+        max: 10
+      priceFactor: 0.9949999999999999
+      capacityOf: kids_area
+    student_prices:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    online_booking:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    rental_stock:
+      oneOffCents: 250000
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: basic_fit_out
+    monthly_membership:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    annual_membership:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    off_peak_membership:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    visit_card:
+      oneOffCents: 0
+      monthlyCents: 0
+      capacity: 0
+      serves: []
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+    student_monthly_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: student_prices
+    student_annual_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: student_prices
+    student_off_peak_membership:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: student_prices
+    student_visit_card:
+      capacity: 0
+      serves: []
+      oneOffCents: 0
+      monthlyCents: 0
+      unitCostCents: 0
+      months: []
+      weatherClosed: false
+      requires: student_prices
+  roles:
+    desk:
+      name: Front desk, four-hour shift
+      centsPerShift: 7200
+      units: {}
+      available:
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+      founderHours: 4
+      contracts:
+        permanent:
+          centsPerWeek: 57600
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.05
+          max: 3
+        part_time:
+          centsPerWeek: 27360
+          shifts: 4
+          noticeWeeks: 2
+          quality: 0.02
+          max: 3
+        seasonal:
+          centsPerWeek: 64800
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.03
+          max: 3
+          months:
+            - 10
+            - 11
+            - 12
+            - 1
+            - 2
+            - 3
+    setter:
+      name: Route setter, eight-hour day
+      centsPerShift: 25000
+      units: {}
+      available:
+        - 10
+        - 10
+        - 10
+        - 10
+        - 10
+        - 10
+        - 10
+        - 10
+        - 10
+        - 10
+        - 10
+        - 10
+      contracts:
+        permanent:
+          centsPerWeek: 200000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.05
+          max: 3
+        part_time:
+          centsPerWeek: 95000
+          shifts: 4
+          noticeWeeks: 2
+          quality: 0.02
+          max: 3
+        seasonal:
+          centsPerWeek: 225000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.03
+          max: 3
+          months:
+            - 10
+            - 11
+            - 12
+            - 1
+            - 2
+            - 3
+    intro_coach:
+      name: Bouldering coach, two-hour session
+      centsPerShift: 6000
+      units:
+        intro_course: 10
+      available:
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+      founderHours: 2
+      contracts:
+        permanent:
+          centsPerWeek: 48000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.05
+          max: 3
+        part_time:
+          centsPerWeek: 22800
+          shifts: 4
+          noticeWeeks: 2
+          quality: 0.02
+          max: 3
+        seasonal:
+          centsPerWeek: 54000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.03
+          max: 3
+          months:
+            - 10
+            - 11
+            - 12
+            - 1
+            - 2
+            - 3
+    belay_coach:
+      name: Belay coach, four-hour course
+      centsPerShift: 12000
+      units:
+        belay_course: 6
+      available:
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+      founderHours: 4
+      contracts:
+        permanent:
+          centsPerWeek: 96000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.05
+          max: 3
+        part_time:
+          centsPerWeek: 45600
+          shifts: 4
+          noticeWeeks: 2
+          quality: 0.02
+          max: 3
+        seasonal:
+          centsPerWeek: 108000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.03
+          max: 3
+          months:
+            - 10
+            - 11
+            - 12
+            - 1
+            - 2
+            - 3
+    lead_coach:
+      name: Lead coach, six-hour course
+      centsPerShift: 18000
+      units:
+        lead_course: 4
+      available:
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+      founderHours: 6
+      contracts:
+        permanent:
+          centsPerWeek: 144000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.05
+          max: 3
+        part_time:
+          centsPerWeek: 68400
+          shifts: 4
+          noticeWeeks: 2
+          quality: 0.02
+          max: 3
+        seasonal:
+          centsPerWeek: 162000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.03
+          max: 3
+          months:
+            - 10
+            - 11
+            - 12
+            - 1
+            - 2
+            - 3
+    club_coach:
+      name: Children’s coach, two-hour session
+      centsPerShift: 6000
+      units:
+        kids_club: 8
+        birthday_parties: 10
+      available:
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+      founderHours: 2
+      contracts:
+        permanent:
+          centsPerWeek: 48000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.05
+          max: 3
+        part_time:
+          centsPerWeek: 22800
+          shifts: 4
+          noticeWeeks: 2
+          quality: 0.02
+          max: 3
+        seasonal:
+          centsPerWeek: 54000
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.03
+          max: 3
+          months:
+            - 10
+            - 11
+            - 12
+            - 1
+            - 2
+            - 3
+    cafe_staff:
+      name: Café staff, four-hour shift
+      centsPerShift: 7200
+      units: {}
+      available:
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+        - 40
+      contracts:
+        permanent:
+          centsPerWeek: 57600
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.05
+          max: 3
+        part_time:
+          centsPerWeek: 27360
+          shifts: 4
+          noticeWeeks: 2
+          quality: 0.02
+          max: 3
+        seasonal:
+          centsPerWeek: 64800
+          shifts: 10
+          noticeWeeks: 4
+          quality: 0.03
+          max: 3
+          months:
+            - 10
+            - 11
+            - 12
+            - 1
+            - 2
+            - 3
+  reviews:
+    qualityBase: 4.5
+    noiseSd: 0.2
+    understaffPenalty: 2
+    tiredPenalty: 0.5
+    cancelPenalty: 1
+    snagPenalty: 0.25
+    valueWeight: 1
+    reviewsPerUnit: 0.08
+    reviewsFull: 100
+  trials:
+    test_listing:
+      name: Quiet-slot listing
+      hours: 4
+      cents: 20000
+      weeks: 2
+      people: 60
+      reach:
+        students: 0.7
+        committed: 0.1
+        families: 0.2
+      rate:
+        base: 0.01
+        perPain: 0.15
+      max: 3
+    free_week:
+      name: Open day
+      hours: 8
+      cents: 50000
+      weeks: 1
+      people: 30
+      reach:
+        students: 0.4
+        committed: 0.3
+        families: 0.3
+      rate:
+        base: 0.02
+        perPain: 0.25
+      repeat: true
+      max: 3
+  leisure:
+    slots:
+      - id: early
+        name: Early mornings
+        hours: 10
+      - id: midday
+        name: Weekday daytime
+        hours: 20
+      - id: evening
+        name: Weekday evenings
+        hours: 25
+      - id: weekend
+        name: Weekends
+        hours: 20
+    wtpBasis: monthly
+    respectSlotPreferences: true
+    hall:
+      visitHours: 2
+      desk:
+        role: desk
+        hoursPerShift: 4
+      setting:
+        role: setter
+        hoursPerShift: 8
+      comfortByStage:
+        climbing_mezzanine: 1.15
+    alternatives:
+      rope_walls:
+        - boulder_area
+      kids_area:
+        - auto_belays
+      kids_club:
+        - birthday_parties
+    segments:
+      students:
+        slotShare:
+          evening: 0.7
+          weekend: 0.25
+          midday: 0.05
+        visitsPerWeek: 1.5
+        memberShare: 0.12
+        churn: 0.018
+        crowdingChurn: 0.05
+        freshnessChurn: 0.04
+        priceChurn: 0.03
+        januaryFade: 0.01
+        waitlistAt: 3
+      committed:
+        slotShare:
+          early: 0.25
+          evening: 0.65
+          weekend: 0.1
+        visitsPerWeek: 3
+        memberShare: 0.9
+        churn: 0.004
+        crowdingChurn: 0.05
+        freshnessChurn: 0.04
+        priceChurn: 0.03
+        januaryFade: 0.01
+        waitlistAt: 3
+      families:
+        slotShare:
+          weekend: 0.85
+          midday: 0.15
+        visitsPerWeek: 0.5
+        memberShare: 0.08
+        churn: 0.01
+        crowdingChurn: 0.05
+        freshnessChurn: 0.01
+        priceChurn: 0.03
+        januaryFade: 0.01
+        waitlistAt: 3
+    products:
+      boulder_area:
+        capacity: {}
+        simultaneous:
+          hard: 140
+          comfort: 80
+      rope_walls:
+        capacity: {}
+        simultaneous:
+          hard: 60
+          comfort: 48
+      auto_belays:
+        capacity: {}
+        simultaneous:
+          hard: 12
+          comfort: 12
+      kids_area:
+        capacity: {}
+        simultaneous:
+          hard: 35
+          comfort: 25
+      training_area:
+        capacity: {}
+        simultaneous:
+          hard: 30
+          comfort: 20
+      speed_wall:
+        capacity: {}
+        simultaneous:
+          hard: 4
+          comfort: 4
+      intro_course:
+        capacity:
+          midday: 40
+          evening: 40
+          weekend: 40
+        availableSlots:
+          - midday
+          - evening
+          - weekend
+      belay_course:
+        capacity:
+          evening: 24
+          weekend: 24
+        availableSlots:
+          - evening
+          - weekend
+      lead_course:
+        capacity:
+          evening: 12
+          weekend: 12
+        availableSlots:
+          - evening
+          - weekend
+      kids_club:
+        capacity:
+          weekend: 32
+        availableSlots:
+          - weekend
+      birthday_parties:
+        capacity:
+          weekend: 40
+        availableSlots:
+          - weekend
+    crowdingPenalty: 0.8
+    quietBelow: 0.4
+    packedFrom: 0.85
+    opening:
+      areas:
+        - boulder_area
+        - rope_walls
+        - kids_area
+      requires:
+        - basic_fit_out
+    buildOut:
+      boulder_area:
+        weeks: 12
+      rope_walls:
+        weeks: 16
+      auto_belays:
+        weeks: 4
+      kids_area:
+        weeks: 6
+      training_area:
+        weeks: 4
+      speed_wall:
+        weeks: 6
+      basic_fit_out:
+        weeks: 10
+      cafe_counter:
+        weeks: 6
+    freshness:
+      boulder_area:
+        newAbove: 70
+        knownAbove: 30
+        weeklyLoss: 12
+        useLoss: 0
+        localSegments: []
+        sensitivity:
+          students: 0.6
+          committed: 1
+          families: 0.2
+        reviewPenalty: 0.7
+        refresh:
+          hours: 32
+          cents: 0
+          weeks: 0
+          closedHours:
+            midday: 4
+      rope_walls:
+        newAbove: 70
+        knownAbove: 30
+        weeklyLoss: 12
+        useLoss: 0
+        localSegments: []
+        sensitivity:
+          students: 0.6
+          committed: 1
+          families: 0.2
+        reviewPenalty: 0.7
+        refresh:
+          hours: 32
+          cents: 0
+          weeks: 0
+          closedHours:
+            midday: 4
+      auto_belays:
+        newAbove: 70
+        knownAbove: 30
+        weeklyLoss: 12
+        useLoss: 0
+        localSegments: []
+        sensitivity:
+          students: 0.6
+          committed: 1
+          families: 0.2
+        reviewPenalty: 0.7
+        refresh:
+          hours: 32
+          cents: 0
+          weeks: 0
+          closedHours:
+            midday: 4
+      kids_area:
+        newAbove: 70
+        knownAbove: 30
+        weeklyLoss: 12
+        useLoss: 0
+        localSegments: []
+        sensitivity:
+          students: 0.6
+          committed: 1
+          families: 0.2
+        reviewPenalty: 0.7
+        refresh:
+          hours: 32
+          cents: 0
+          weeks: 0
+          closedHours:
+            midday: 4
+    memberships:
+      monthly_membership:
+        kind: monthly
+        priceCents: 6900
+        termWeeks: 0
+        slots: &a2
+          - early
+          - midday
+          - evening
+          - weekend
+        noticeWeeks: 4
+        serves:
+          - committed
+          - families
+        products: &a3
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+      annual_membership:
+        kind: annual
+        priceCents: 5900
+        termWeeks: 52
+        slots: *a2
+        noticeWeeks: 4
+        serves:
+          - committed
+          - families
+        products: *a3
+      off_peak_membership:
+        kind: off_peak
+        priceCents: 4500
+        termWeeks: 0
+        slots:
+          - early
+          - midday
+        noticeWeeks: 4
+        serves:
+          - committed
+          - families
+        products: *a3
+      visit_card:
+        kind: pack
+        priceCents: 14000
+        termWeeks: 0
+        slots: *a2
+        noticeWeeks: 0
+        serves:
+          - committed
+          - families
+        products: *a3
+        visits: 10
+        validWeeks: 52
+      kids_club:
+        kind: monthly
+        priceCents: 5500
+        termWeeks: 0
+        slots:
+          - weekend
+        noticeWeeks: 4
+        serves:
+          - families
+        products:
+          - kids_club
+        visitsPerWeek: 1
+      student_monthly_membership:
+        kind: monthly
+        priceCents: 5520
+        termWeeks: 0
+        slots:
+          - early
+          - midday
+          - evening
+          - weekend
+        noticeWeeks: 4
+        serves:
+          - students
+        products:
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+      student_annual_membership:
+        kind: annual
+        priceCents: 4720
+        termWeeks: 52
+        slots:
+          - early
+          - midday
+          - evening
+          - weekend
+        noticeWeeks: 4
+        serves:
+          - students
+        products:
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+      student_off_peak_membership:
+        kind: off_peak
+        priceCents: 3600
+        termWeeks: 0
+        slots:
+          - early
+          - midday
+        noticeWeeks: 4
+        serves:
+          - students
+        products:
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+      student_visit_card:
+        kind: pack
+        priceCents: 11200
+        termWeeks: 0
+        slots:
+          - early
+          - midday
+          - evening
+          - weekend
+        noticeWeeks: 0
+        serves:
+          - students
+        products:
+          - boulder_area
+          - rope_walls
+          - auto_belays
+          - kids_area
+          - training_area
+        visits: 10
+        validWeeks: 52
+    qualifications:
+      levels:
+        boulder_intro:
+          name: Bouldering introduction
+          requires: []
+        belay:
+          name: Top-rope belay
+          requires: []
+        lead:
+          name: Lead climbing
+          requires:
+            - belay
+      initial:
+        students:
+          belay:
+            min: 0.05
+            max: 0.3
+        committed:
+          belay:
+            min: 0.7
+            max: 0.95
+          lead:
+            min: 0.4
+            max: 0.7
+        families:
+          belay:
+            min: 0.02
+            max: 0.15
+      courseMembership:
+        belay_course: 0.35
+        lead_course: 0.5
+    aggregator:
+      payOnVisit: true
+      sharedQueue: true
+      name: Turnsaldo
+      payoutCents:
+        min: 800
+        max: 1500
+      capPerMonth: 4
+      noticeWeeks: 13
+      visitsPerWeek: 0.6
+      users:
+        students:
+          min: 100
+          max: 300
+        committed:
+          min: 15
+          max: 50
+        families:
+          min: 20
+          max: 65
+      cannibalisation:
+        students: 0.25
+        committed: 0.08
+        families: 0.1
+    extras:
+      cafe_counter:
+        staffing:
+          role: cafe_staff
+          unitsPerShift: 50
+        segments:
+          students:
+            grossCents: 500
+            revenueShare: 1
+            unitCostCents: 200
+          committed:
+            grossCents: 500
+            revenueShare: 1
+            unitCostCents: 200
+          families:
+            grossCents: 500
+            revenueShare: 1
+            unitCostCents: 200
+      rental_stock:
+        segments:
+          students:
+            grossCents: 150
+            revenueShare: 1
+            unitCostCents: 30
+          committed:
+            grossCents: 50
+            revenueShare: 1
+            unitCostCents: 30
+          families:
+            grossCents: 150
+            revenueShare: 1
+            unitCostCents: 30
+modes:
+  long: {}

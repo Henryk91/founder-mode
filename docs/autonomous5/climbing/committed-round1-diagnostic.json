@@ -1,0 +1,47 @@
+{
+  "source": "78cae39",
+  "kind": "one known committed-climber loss, not a target estimate",
+  "seed": "test-5",
+  "fullResultMatchesCheckpoint": true,
+  "ending": "bank_called",
+  "weeks": 40,
+  "rows": [
+    {
+      "week": 28,
+      "cashCents": 8904600,
+      "monthlyRevenueCents": 80400,
+      "monthlyFixedCents": 2120000,
+      "activeMembers": 7,
+      "agreedMonthlyCents": 39100,
+      "weeklyFlexibleWagesCents": 147400
+    },
+    {
+      "week": 32,
+      "cashCents": 5993737,
+      "monthlyRevenueCents": 570167,
+      "monthlyFixedCents": 2120000,
+      "activeMembers": 28,
+      "agreedMonthlyCents": 148800,
+      "weeklyFlexibleWagesCents": 129400
+    },
+    {
+      "week": 36,
+      "cashCents": 3494150,
+      "monthlyRevenueCents": 1217523,
+      "monthlyFixedCents": 2120000,
+      "activeMembers": 66,
+      "agreedMonthlyCents": 365600,
+      "weeklyFlexibleWagesCents": 177400
+    },
+    {
+      "week": 40,
+      "cashCents": 969249,
+      "monthlyRevenueCents": 1866497,
+      "monthlyFixedCents": 2120000,
+      "activeMembers": 121,
+      "agreedMonthlyCents": 643100,
+      "weeklyFlexibleWagesCents": 279400
+    }
+  ],
+  "rawTrace": "/tmp/plan5-climbing-committed-round1-diagnostic.json"
+}

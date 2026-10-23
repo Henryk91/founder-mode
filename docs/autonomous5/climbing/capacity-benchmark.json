@@ -1,0 +1,146 @@
+{
+  "base": "78cae39",
+  "hashes": {
+    "before": "80008c6288318c877acddf2a575af4e4aec6652ec329d91c40a5abdbf4db31e6",
+    "after": "1c5d95651271392b1aa016cdf9bb379f6a8718cbaf6241b7273694bff794d6c2"
+  },
+  "parts": "main, careful only, 1000 paired test seeds per variant",
+  "blocks": [
+    {
+      "variant": "before",
+      "start": 0,
+      "seconds": 31.581188833,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 0,
+      "seconds": 31.249309333,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 100,
+      "seconds": 28.175047958000004,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 100,
+      "seconds": 27.026296290999998,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 200,
+      "seconds": 27.036852959,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 200,
+      "seconds": 23.765797624999998,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 300,
+      "seconds": 23.926729709,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 300,
+      "seconds": 27.106949667000002,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 400,
+      "seconds": 29.182261916,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 400,
+      "seconds": 25.521295207999998,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 500,
+      "seconds": 31.397176333,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 500,
+      "seconds": 32.234447083,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 600,
+      "seconds": 25.243014125,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 600,
+      "seconds": 33.82356875,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 700,
+      "seconds": 29.035112667,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 700,
+      "seconds": 30.664653459,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 800,
+      "seconds": 34.576249667000006,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 800,
+      "seconds": 31.366435209,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "after",
+      "start": 900,
+      "seconds": 29.875199458,
+      "fullResultsMatch": true
+    },
+    {
+      "variant": "before",
+      "start": 900,
+      "seconds": 26.690779042,
+      "fullResultsMatch": true
+    }
+  ],
+  "beforeSeconds": 291.342693042,
+  "afterSeconds": 288.13567224999997,
+  "gainPercent": 1.1007726874885826,
+  "fasterBlocks": 7,
+  "meanBlockSaving": 0.3207020792000005,
+  "paired95ApproxMargin": 2.785895572702093,
+  "all2000ResultsExact": true,
+  "decision": "discard: 1.1% timing difference is within paired uncertainty and below predeclared 10% retention threshold",
+  "traceChecks": {
+    "normalCompleteGames": 21,
+    "funded104weekGames": 6,
+    "allResultsAndPublicTracesExact": true
+  },
+  "focusedTestsPassed": 57,
+  "lintPassed": true,
+  "merged": false
+}

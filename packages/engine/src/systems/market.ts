@@ -1,3 +1,4 @@
+import { leisureAlternativeMet } from './requirements'
 import { expNeg } from '../math'
 import type { ChannelId } from '@founder-mode/content'
 import type { Rng } from '../rng'
@@ -39,8 +40,10 @@ export function drawHiddenSegments(scenario: Scenario, rng: Rng): Record<Segment
 export function coverage(state: GameState, segmentId: SegmentId): number {
   const hidden = state.hidden.segments[segmentId]
   if (!hidden || hidden.mustHave.length === 0) return 0
-  const shipped = hidden.mustHave.filter((id) =>
-    state.product.features.some((f) => f.id === id && f.shippedWeek !== null),
+  const shipped = hidden.mustHave.filter(
+    (id) =>
+      state.product.features.some((f) => f.id === id && f.shippedWeek !== null) ||
+      leisureAlternativeMet(state, id),
   )
   return shipped.length / hidden.mustHave.length
 }

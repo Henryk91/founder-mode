@@ -1,0 +1,507 @@
+{
+  "source": "8a3a423",
+  "kind": "one-game financing diagnostic, not target estimate",
+  "seed": "test-0",
+  "strategy": "climbing_both_first",
+  "completeRunResultMatchesMeasuredCheckpoint": true,
+  "ending": "bank_called",
+  "weeks": 24,
+  "history": [
+    {
+      "week": 1,
+      "cashCents": 12000000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": []
+    },
+    {
+      "week": 2,
+      "cashCents": 12000000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": {
+        "planHours": 30,
+        "apply": {
+          "amountCents": 48000000,
+          "termMonths": 84,
+          "graceMonths": 6,
+          "items": [
+            "basic_fit_out",
+            "boulder_area",
+            "rope_walls"
+          ],
+          "rooms": 0,
+          "workingCapitalCents": 0
+        },
+        "accept": false,
+        "decline": false,
+        "repay": null
+      },
+      "coreBuilds": []
+    },
+    {
+      "week": 3,
+      "cashCents": 12000000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": []
+    },
+    {
+      "week": 4,
+      "cashCents": 12000000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": []
+    },
+    {
+      "week": 5,
+      "cashCents": 9880000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": {
+        "planHours": 0,
+        "apply": null,
+        "accept": true,
+        "decline": false,
+        "repay": null
+      },
+      "coreBuilds": []
+    },
+    {
+      "week": 6,
+      "cashCents": 9880000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": []
+    },
+    {
+      "week": 7,
+      "cashCents": 9880000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": []
+    },
+    {
+      "week": 8,
+      "cashCents": 9880000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": []
+    },
+    {
+      "week": 9,
+      "cashCents": 7760000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": []
+    },
+    {
+      "week": 10,
+      "cashCents": 7760000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 10,
+          "readyWeek": null
+        }
+      ]
+    },
+    {
+      "week": 11,
+      "cashCents": 7760000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 12,
+      "cashCents": 7510000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 13,
+      "cashCents": 5070000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 14,
+      "cashCents": 5070000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 15,
+      "cashCents": 5070000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 16,
+      "cashCents": 5070000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 17,
+      "cashCents": 2630000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 18,
+      "cashCents": 2630000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 19,
+      "cashCents": 2630000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 19
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 20,
+      "cashCents": 2630000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": true,
+          "progress": 40,
+          "readyWeek": null
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 21,
+      "cashCents": 190000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": true,
+          "progress": 40,
+          "readyWeek": null
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 22,
+      "cashCents": 190000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": true,
+          "progress": 40,
+          "readyWeek": null
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 23,
+      "cashCents": 130000,
+      "monthlyRevenueCents": 0,
+      "openingWeek": null,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": true,
+          "progress": 40,
+          "readyWeek": null
+        },
+        {
+          "id": "boulder_area",
+          "shipped": false,
+          "progress": 30,
+          "readyWeek": 23
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    },
+    {
+      "week": 24,
+      "cashCents": 62500,
+      "monthlyRevenueCents": 0,
+      "openingWeek": 23,
+      "loanPlan": null,
+      "coreBuilds": [
+        {
+          "id": "basic_fit_out",
+          "shipped": true,
+          "progress": 40,
+          "readyWeek": null
+        },
+        {
+          "id": "boulder_area",
+          "shipped": true,
+          "progress": 30,
+          "readyWeek": null
+        },
+        {
+          "id": "rope_walls",
+          "shipped": false,
+          "progress": 40,
+          "readyWeek": 26
+        }
+      ]
+    }
+  ],
+  "applicationTerms": {
+    "ownMoneyCents": 12000000,
+    "ownShare": 0.2,
+    "maxCents": 100000000,
+    "bridgeMonthsHint": 6
+  },
+  "workingCapitalMaxCents": 12720000,
+  "rawTrace": "/tmp/plan5-climbing-both-first-diagnostic.json"
+}

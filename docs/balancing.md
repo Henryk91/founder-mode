@@ -5334,3 +5334,27 @@ Plan5 fitness final first-pass main:30policies on1,000 paired test seeds,sourcea
 
 
 Plan5 fitness event table complete,once:99 fixed-answer policies on1,000 paired test seeds,85,392/99,000 games played with exact-source baseline reuse.46 judged events:25 cheapest,21 more effortful;three unjudged (132/0/0 appearances). Raw table:autonomous5/fitness/schweissperle-events.md. Final eleven earlier main reports match baseline exactly apart from timings;full suite1,841 passed,27 skipped. No full report.
+
+
+Plan5 climbing initial main in progress,source8a3a423:1,000 paired test seeds per policy,eight workers. Completed careful51.6%±3.1,platform-only41.5% (paired−10.1±1.9),no-tests0%. Partial review:autonomous5/climbing/INITIAL_REVIEW.md. Values0/2,formula0/1;no climbing events,wide or full report. Complete matrix and contributions required before tuning.
+
+
+Plan5 climbing corrected review-blind only,main1,000paired test seeds,sourceeee2e74:46.4%±3.1 versus unchanged careful51.6%,paired−5.2±1.4;T10passes. Only this policy reran;initial516wins superseded. Provenance/per-seed endings:autonomous5/climbing/REVIEW_BLIND_CORRECTION.md and review-blind-paired.csv. Values0/2,formula0/1;no events/full report.
+
+
+Plan5 climbing initial main complete:32policies,1,000paired test seeds,source8a3a423,3,673wall/28,924summed seconds. Careful51.6%,top boulder-first56.4%,no-tests0%. After hall-only review-blind correction,T10passes;open T1,T3,T5–T7,T9,T12,T14,K1–K3. K5atlimit. Raw table:autonomous5/climbing/griffig-main-initial.md;contributions/first value decision:INITIAL_REVIEW.md. No events/full report.
+
+
+Plan5 climbing value round1 complete,source78cae39:main only32policies×1,000paired test seeds,six workers,1,682wall/9,954summed seconds. Careful24.0%±2.6 at lower limit,top overstaff29.1%,no-tests0%,naive25.6%. T3spread39.9±5.6;all contributions:autonomous5/climbing/ROUND1_REVIEW.md. Hall overstaffing variant needs a role-coverage correction before round2;measure only that policy. Values1/2,formula0/1. No events/full report.
+
+
+Plan5 climbing corrected round1:overstaff219wins,paired−2.1±1.5,T9atlimit. Coherent32-policy table reuses31original tasks plus this one corrected policy;no games to reassemble it. Newly visible visitor refunds make T11applicable with unchanged limits:strict−1.4±1.0overall,no established strict segment advantage,open. Source26f5ecb,game values78cae39. Raw table:autonomous5/climbing/griffig-main-round1-corrected.md. Capacity experiment discarded:1.1%timing difference within uncertainty,all2,000results exact. No engine change/events/full report.
+
+
+Plan5 climbing final value round8c931a1:main only32policies×1,000paired test seeds,eight workers,1,773wall/13,771summed seconds. Careful31.6%±2.9,top39.6%±3.0,no-tests0%. Values2/2 exhausted,formula0/1. T1/T14/K4pass,K5atlimit;open T3,T5–T7,T9,T11,T12,T15,K1–K3. Contributions and sole shared-arrival formula decision:autonomous5/climbing/ROUND2_REVIEW.md. No climbing events/full report.
+
+
+Plan5 climbing final first-pass main27756b3:32policies×1,000paired test seeds,eight workers,1,713wall/13,376summed seconds. Careful30.8%±2.9,top39.0%±3.0,no-tests0%;playability bounds met. Open T3,T5–T7,T9,T11,T12,T14,T15,K1–K3;K5atlimit. Full contributions/options:autonomous5/climbing/FINAL_REVIEW.md. Values2/2,formula1/1 exhausted. Seeds225rows,only Griffig changed;full tests running. Climbing events run once next;full report only step6.
+
+
+Plan5 hard stop23October,section1.2.1:three full-source established WebKit heading-fit attempts do not make the whole suite green. Latest1,961pass/1fail/30skip (Rückenwind375);focused56and lint pass. Griffig final main remains30.8%,top39.0%,no-tests0%,source27756b3. First/only event campaign stopped with48complete forced task checkpoints/40,026played games;32main tasks retained. No event table completed,no climbing milestone or step6/full report. Evidence:autonomous5/climbing/HARD_STOP.md,TEST_FAILURES.txt,EVENT_CHECKPOINTS.json. All run-owned jobs stopped;no push.

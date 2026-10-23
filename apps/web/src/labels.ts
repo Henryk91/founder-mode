@@ -890,6 +890,18 @@ const labels = {
   'tour.unit.cover': 'per cover',
   'tour.unit.night': 'per room night',
   'tour.policy': 'Cancellations',
+  'tour.policy.visitors': {
+    scrappy: 'Cancelled visits',
+    organised: 'Visitor booking cancellations',
+    established: 'Admission and course cancellations',
+  },
+  'tour.policy.visitorsHint': {
+    scrappy: 'For booked visits and courses. Membership notice stays with each agreement.',
+    organised:
+      'Booking refunds cover visits and courses. Membership notice stays with each agreement.',
+    established:
+      'Admission and course refunds follow this policy. Membership notice follows each agreement.',
+  },
   'tour.policy.flexible': 'Flexible: free to cancel',
   'tour.policy.strict': 'Strict: cancel and still pay',
   'tour.policy.locked': 'The policy changed recently. Guests need a few weeks to notice.',
