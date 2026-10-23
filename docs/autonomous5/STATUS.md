@@ -3,14 +3,15 @@
 ## Current
 
 Step:5.8 Griffig first value round;steps0–4 complete.
-Last commit:climbing6b8a3e8 coherent corrected baseline and7/12 protected comparisons.
-Next action:Initial main complete32policies;corrected review-blind complete. Corrected review-blind complete46.4%,paired−5.2±1.4,T10pass. Corrected32-policy baseline assembled from31original+one corrected task,no new games. First value round passes26focused checks/lint;commit and measure main only1,000paired test seeds. Only new-hall bot/content changes;earlier-game engine/content stay frozen while proof continues. Finish twelve earlier-game comparisons,then tune within values2/formula1;Griffig events once at the end and final full tests. Full report only step6,once.
+Last commit:climbing78cae39 first value round;8/12 protected comparisons.
+Next action:Collect round1 Griffig main (32policies×1,000paired test seeds,source78cae39),compare contributions to the corrected baseline before another change. Values1/2,formula0/1;at most one further value round then one formula round. Complete earlier-game proof,events once at step end,seeds and final full tests. Full report only step6,once.
 
 ## Active jobs and resumption
 
-- Initial Griffig main:session96275,/tmp/plan5-climbing-main-initial.log. Main only,1,000paired test seeds,eight workers,source8a3a423;32policies complete,3,673wall/28,924summed seconds. First builds:boulder56.4%,rope9.1%,both0%;both-first financing trace reproduces measured result and finds zero working capital under20%own-money cap. Cache:/tmp/plan5-climbing-initial-checkpoints-8a3a423;runner backup:/tmp/plan5-climbing-initial-runner.ts. Reuse completed tasks;do not restart completed reports.
-- Corrected review-blind only:complete(session87679),/tmp/plan5-climbing-reviewblind-main.log. Sourceeee2e74 in /private/tmp/founder-mode-plan5-climbing-botcheck (branch plan5-climbing-botcheck),two workers,1,000paired test seeds. Cache:/tmp/plan5-climbing-reviewblind-checkpoints-eee2e74;runner:/tmp/plan5-climbing-reviewblind-runner.ts. A dependency-link error happened before any games;links corrected. Temporary entry removed after loading.
-- Twelve earlier-game proof:session39214,/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Keep packages/bots/src/plan5-protected-step5.ts until controller completes;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs.
+- Griffig round1 main:session5882,/tmp/plan5-climbing-main-round1.log,six workers. Eight policies complete:careful24.0%±2.6(T1 at lower limit),platform14.2%,overstaff29.1%,under18.3%,no-tests/overworker0%,price-blind23.8%,review-blind20.1%. Remaining policies pending. Cache:/tmp/plan5-climbing-round1-checkpoints-78cae39;runner backup:/tmp/plan5-climbing-round1-runner.ts. Temporary entry removed after loading. Resume only missing exact-source tasks;do not repeat completed reports.
+- Twelve earlier-game proof:session39214,/tmp/plan5-protected-step5.log;controller /tmp/plan5-protected-step5.py. Main only,1,000test seeds per unit. Cache:/tmp/plan5-protected-step5-checkpoints-8a3a423. Two scenario drivers;one seed worker each except Ausgesperrt2 and fitness4. Keep packages/bots/src/plan5-protected-step5.ts until controller completes;backup /tmp/plan5-protected-step5-runner.ts. Never rerun completed outputs. Earlier content/applicable code paths unchanged by hall-only bot fix and Griffig values.
+
+Initial main complete32policies at8a3a423 (3,673wall/28,924summed seconds),cache /tmp/plan5-climbing-initial-checkpoints-8a3a423. Corrected review-blindeee2e74 complete464wins,paired−5.2±1.4,T10pass;imported4e92152. Coherent corrected32-policy baseline uses31original+one corrected task,no extra games:cache /tmp/plan5-climbing-corrected-checkpoints-4e92152,report climbing/griffig-main-corrected.md. Original/isolated corrected jobs are finished. Botcheck worktree/branch retained;no active job there.
 
 ## Checklist
 
@@ -28,7 +29,7 @@ Worktree:/private/tmp/founder-mode-plan5-climbing,branch plan5-climbing-work.
 Completed fitness milestone imported at7ac610e before registration8a3a423.
 24features,49events,150quotes,four intros,two native scenes;optional staffed hall hours,individual qualifications,courses,paid setting,shared wall pools,clubs/parties,café/rental baskets and internal mezzanine implemented.27 full results/public traces match before/after hall compaction and final fitness import.
 
-Initial careful51.6%±3.1 (T1 fails),platform-only41.5% (−10.1±1.9),no-tests0%,naive52.3%. Viable segments:committed17.6%,families66.2%,students68.7%. Initial review:climbing/INITIAL_REVIEW.md. All contributions complete;first value round edited,values1/2,formula0/1. No climbing events have run.
+Initial careful51.6%±3.1 (T1 fails),platform-only41.5% (−10.1±1.9),no-tests0%,naive52.3%. Viable segments:committed17.6%,families66.2%,students68.7%. Initial review:climbing/INITIAL_REVIEW.md. Round1 careful by viable segment:committed3.1%,families24.5%,students43.1%;T3 remains open pending full review. All baseline contributions complete;round1 values1/2,formula0/1. No climbing events have run.
 
 The initial review-blind516wins are superseded for T10:its inbox still repaired snags. Isolated hall-only safeguardeee2e74 has a reproduced regression,57focused checks and lint passing;Corrected measurement complete464wins (−5.2±1.4),T10pass;reuse unaffected matrix data. Careful and all earlier policies retain their choices.
 

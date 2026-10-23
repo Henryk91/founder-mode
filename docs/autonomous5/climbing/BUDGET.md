@@ -12,7 +12,7 @@ ties. K4 judges only actually opened rope baselines and reports the rest.
 |---|---|---|---|---|
 |8a3a423|Initial main,32policies×1,000paired test seeds|51.6%|56.4%|values0/2,formula0/1|
 |eee2e74 /4e92152|Corrected review-blind only1,000seeds;31unaffected tasks reused|51.6% unchanged|56.4% unchanged|values0/2,formula0/1|
-|Round1 source pending commit|Main only,32policies×1,000paired test seeds|pending|pending|values1/2,formula0/1|
+|78cae39|Main only,32policies×1,000paired test seeds,running|24.0%±2.6 so far,T1 at limit|pending|values1/2,formula0/1|
 
 Correction:T10 now passes at−5.2±1.4 (464versus516wins);no whole-matrix rerun.
 Coherent corrected baseline:griffig-main-corrected.md. Open:T1,T3,T5–T7,T9,
