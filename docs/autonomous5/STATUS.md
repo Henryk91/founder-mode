@@ -3,8 +3,8 @@
 ## Current
 
 Step:5 climbing integration and registration.
-Last commit:climbing8a3a423 registers Griffig after fitness milestone325ebbf.
-Next action:Collect initial Griffig main only on1,000 paired test seeds(session96275,/tmp/plan5-climbing-main-initial.log),inspect bots/contributions before values. Protected twelve-unit proof running(session39214,/tmp/plan5-protected-step5.log);keep plan5-protected-step5.ts until controller completes. Registration checks pass (259content+16freelance);lint/typechecks pass. Seed generation running(session87897). Values0/2,formula0/1;no climbing events/full report. Fitness event table complete once;all eleven earlier games unchanged;full suite1,841 passed,27 skipped. Full report only step6,once.
+Last commit:climbing8c0cf31 records measurement/proof provenance;source8a3a423.
+Next action:Collect initial Griffig main only on1,000 paired test seeds(session96275,/tmp/plan5-climbing-main-initial.log),inspect bots/contributions before values. Protected twelve-unit proof running(session39214,/tmp/plan5-protected-step5.log),2/12 complete (Kantino/Zollstock standard identical);keep plan5-protected-step5.ts until controller completes. Registration checks pass (259content+16freelance);lint/typechecks pass. Seed generation complete225rows,only18Griffig additions;full tests running(session42492,/tmp/plan5-climbing-registered-full-tests.log). Initial completed careful51.6%±3.1,T1 fails;platform-only41.5%,paired−10.1±1.9. Initial review:climbing/INITIAL_REVIEW.md;other policies pending. Values0/2,formula0/1;no climbing events/full report. Fitness event table complete once;all eleven earlier games unchanged;full suite1,841 passed,27 skipped. Full report only step6,once.
 
 ## Checklist
 

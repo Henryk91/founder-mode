@@ -5334,3 +5334,6 @@ Plan5 fitness final first-pass main:30policies on1,000 paired test seeds,sourcea
 
 
 Plan5 fitness event table complete,once:99 fixed-answer policies on1,000 paired test seeds,85,392/99,000 games played with exact-source baseline reuse.46 judged events:25 cheapest,21 more effortful;three unjudged (132/0/0 appearances). Raw table:autonomous5/fitness/schweissperle-events.md. Final eleven earlier main reports match baseline exactly apart from timings;full suite1,841 passed,27 skipped. No full report.
+
+
+Plan5 climbing initial main in progress,source8a3a423:1,000 paired test seeds per policy,eight workers. Completed careful51.6%±3.1,platform-only41.5% (paired−10.1±1.9),no-tests0%. Partial review:autonomous5/climbing/INITIAL_REVIEW.md. Values0/2,formula0/1;no climbing events,wide or full report. Complete matrix and contributions required before tuning.
