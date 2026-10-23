@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 6 (wrap up). Open targets copied to docs/BACKLOG.md (8eb64bb). The full report is running.
-Last commit: see git log of main.
-Next action: when the full report finishes, commit docs/balancing.md, run pnpm seeds, then docs, the final report and the tag plan5-complete.
+Step: 6 (wrap up). Done: open targets to docs/BACKLOG.md (8eb64bb); docs for CLAUDE.md, README, IMPLEMENTATION_PLAN, schema and backlog (6319fd7); spec final-source notes (350562f). The full report is running.
+Last commit: 350562f.
+Next action: when the full report finishes, commit docs/balancing.md, run pnpm seeds, write the final report and tag plan5-complete.
 
 Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
 
@@ -38,7 +38,7 @@ Henry's resume instructions override the plan where they differ:
 - [x] Step 3 Fabriketage: plan5-venue, main 75f180b
 - [x] Step 4 Schweißperle: plan5-fitness, 325ebbf, merged into main bd84bcf
 - [x] Step 5 Griffig: plan5-climbing, report f1559b2, merged into main
-- [ ] Step 6 wrap up: backlog, full report, seeds, docs, final report, plan5-complete
+- [ ] Step 6 wrap up: backlog (done), docs (done), full report (running), seeds, final report, plan5-complete
 
 ## Climbing
 
