@@ -2,9 +2,9 @@
 
 ## Current
 
-Step:4.8 fitness sole formula round;5 isolated climbing preparation ready for integration after fitness.
-Last commit:fitness9d272da preserves protected reports;formula sourcea6060e0,final main complete.
-Next action:Collect first/only fitness event table(session90034,/tmp/plan5-fitness-events.log) and final protected proof(session28386,/tmp/plan5-protected-final-step4.log). Careful44.7%,top51.8%;playability bounds met,eight targets open. Seed regeneration complete(207rows;only18fitness rows added). Full test suite running(session20872,/tmp/plan5-fitness-full-tests.log),then final lint and finish step4 report/tag/merge. Values2/2,formula1/1;no more first-pass tuning. Full report only step6,once.
+Step:4 complete;5 climbing integration and registration next.
+Last commit:fitness593f7e9;final phase gate documentation pending commit.
+Next action:Run final lint,commit fitness phase gate and annotate plan5-fitness,merge into main. Import completed fitness milestone into climbing,then register Griffig and measure initial main only on1,000 paired test seeds. Fitness event table complete once;all eleven earlier games unchanged;full suite1,841 passed,27 skipped. Full report only step6,once.
 
 ## Checklist
 
@@ -12,7 +12,7 @@ Next action:Collect first/only fitness event table(session90034,/tmp/plan5-fitne
 - [x] Step1:engine(tag plan5-engine)
 - [x] Step2:Ausgesperrt(tag plan5-escape)
 - [x] Step3:Fabriketage(tag plan5-venue,main75f180b)
-- [ ] Step4:Schweißperle
+- [x] Step4:Schweißperle
 - [ ] Step5:Griffig
 - [ ] Step6:wrap up
 
@@ -32,7 +32,7 @@ Settled source85d9b2b:careful93.7%,top99.0%,no-tests27.4%;review:fitness/SETTLED
 Round1 complete:careful83.7%,platform-only57.7%,top88.8%,no-tests7.6%;median net wealth EUR30,149. Contributions:fitness/ROUND1_REVIEW.md.
 Round2 complete:careful65.6%,top73.9%,no-tests0.7%. Full contributions:fitness/ROUND2_REVIEW.md.
 Final formula main complete:careful44.7%±3.1,top51.8%±3.1,no-tests0.3%±0.3. Open T3,T5–T7,T12,T14,F3,F4;review:fitness/FINAL_REVIEW.md.
-Values2/2,formula1/1;first/only fitness event table running,with cached careful baseline. No full report.
+Values2/2,formula1/1;first/only event table complete:99policies,85,392/99,000 games played,46judged events (25cheapest/21effortful),three unjudged. Full tests1,841pass/27skip;seeds207rows. No full report.
 Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s under different loads). All1,000 careful results and21 full-game/public traces matched exactly. Existing reader retained;T12 still fails.
 
 ## Protected proof
@@ -40,7 +40,7 @@ Capacity-cache experiment discarded:no demonstrated speed gain(353s versus348s u
 All eleven earlier main reports match step0 apart from timings,on1,000test seeds each.
 All content fingerprints match at engine0.14.0. Raw proof:protected-step4/.
 Ten comparisons survived the stop;only interrupted Ausgesperrt was resumed.
-Final sourcea6060e0 proof now running:protected-step4-final/,session28386. Kantino/Zollstock standard,Kantino long,Gratwanderung,Hinterhof and Seeblick match exactly apart from timings(6/11 complete). Two processes,main only1,000test seeds per earlier game,durable task checkpoints. All eleven content fingerprints match. Temporary packages/bots/src/plan5-protected-final.ts must remain until the controller finishes. Never change earlier values.
+Final sourcea6060e0 proof complete:protected-step4-final/. All eleven main reports match exactly apart from timings on1,000test seeds each;all content fingerprints match. Temporary runner removed after controller completion.
 
 ## Isolated climbing
 
