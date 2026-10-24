@@ -2,9 +2,9 @@
 
 ## Current
 
-Step: 6 (wrap up). Done: open targets to docs/BACKLOG.md (8eb64bb); docs for CLAUDE.md, README, IMPLEMENTATION_PLAN, schema and backlog (6319fd7); spec final-source notes (350562f). The full report is running.
-Last commit: 350562f.
-Next action: when the full report finishes, commit docs/balancing.md, run pnpm seeds, write the final report and tag plan5-complete.
+Step: plan 5 complete (tag plan5-complete). Final report: docs/autonomous5/reports/final.md.
+Last commit: the plan 5 final report.
+Next action: none. Henry reviews the final report's list, pushes when ready, and may delete the state folder and the plan 5 worktrees.
 
 Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
 
@@ -28,7 +28,7 @@ Henry's resume instructions override the plan where they differ:
 
 ## Active jobs
 
-- The full report, once: 13 units (one scenario and mode per process, catalogue order), 1,000 seeds, 10,000 wide seeds, event tables; Kantino long adds team and funding. Griffig reuses its exact-source main and event tasks; everything else computes fresh. Driver, runner, manifest, checkpoints and logs: state folder, plan5-full-driver.sh and full-campaign/. Restart: run the driver again (done units are skipped, an unfinished unit resumes). No tests run while it runs. Progress: Kantino 60-week done (outcomes identical to the committed report, timings aside). Kantino long finished all 416 tasks but hit the default Node heap limit while reloading them; restarted with a 10 GB heap ceiling, which only reloads its saved tasks.
+None.
 
 ## Checklist
 
@@ -38,7 +38,7 @@ Henry's resume instructions override the plan where they differ:
 - [x] Step 3 Fabriketage: plan5-venue, main 75f180b
 - [x] Step 4 Schweißperle: plan5-fitness, 325ebbf, merged into main bd84bcf
 - [x] Step 5 Griffig: plan5-climbing, report f1559b2, merged into main
-- [ ] Step 6 wrap up: backlog (done), docs (done), full report (running), seeds, final report, plan5-complete
+- [x] Step 6 wrap up: backlog, docs, full report (c984f40), seeds (no change), final report, plan5-complete
 
 ## Climbing
 
@@ -69,7 +69,7 @@ Venue: careful 46.6% ± 3.1, top 47.6%; all V pass, V2 at limit. Open T3, T6, T1
 
 Ausgesperrt: careful 42.8% ± 3.1, top 48.4%; X1 at limit, X2 to X4 pass. Open T2, T3, T6, T10, T11, T14, T15, T17. Report: reports/step2-escape.md. Event table complete once.
 
-Full bot report: never started.
+Full bot report: run once in step 6 (c984f40). 13 units, about 7 hours; every earlier unit identical apart from timings; the four new sections reproduce their step reports. pnpm seeds: no change. Final suite on main: 1,962 passed, 30 skipped; lint passes.
 
 ## For Henry to review
 
