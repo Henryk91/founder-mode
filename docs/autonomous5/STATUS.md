@@ -6,8 +6,6 @@ Step: plan 5 complete (tag plan5-complete). Final report: docs/autonomous5/repor
 Last commit: the plan 5 final report.
 Next action: none. Henry reviews the final report's list, pushes when ready, and may delete the state folder and the plan 5 worktrees.
 
-Henry's resume instructions. Rerun the full suite on the climbing branch with no other jobs running.
-
 Henry's resume instructions override the plan where they differ:
 
 1. Secure the state outside /tmp (done).
@@ -86,3 +84,4 @@ Full bot report: run once in step 6 (c984f40). 13 units, about 7 hours; every ea
 
 - 23 October 2026, 18:45 UTC: mandatory hard stop (plan 1.2.1) after three attempts at the heading-fit failure.
 - 23 October 2026: Henry authorised resuming; worktree moved out of /private/tmp and state copied to the state folder.
+- 24 October 2026: heading fixed (94047f1); test command split on Henry's acceptance (23013dd); climbing event table, report, tag and merge; open targets to the backlog; full report once (c984f40); seeds unchanged; final report and tag plan5-complete (fdec7fa).
