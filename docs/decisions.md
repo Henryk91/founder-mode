@@ -1138,3 +1138,7 @@ With the heading fixed, every full run still passed all 1,962 tests but ended wi
 ### Plan 5 step 6: open targets go to the backlog
 
 Henry changed step 6: no revisit of the open targets. All 34 (Ausgesperrt 8, Fabriketage 6, Schweißperle 8, Griffig 12) are copied to `docs/BACKLOG.md` with their closest results and options for a later tuning plan. The fresh two-round step 6 budget is unused.
+
+### Plan 5 step 6: the full report, once
+
+13 units, one scenario and mode per process, 1,000 seeds, 10,000 wide seeds and event tables; Kantino long with team and funding. Griffig reused its exact-source main and event tasks rather than rerunning them to re-confirm. Kantino long needed a 10 GB Node heap ceiling to reload its 2.2 GB of finished tasks. All nine earlier units are identical to the previous report apart from timings; the four new sections reproduce their step reports; `pnpm seeds` found no change.
