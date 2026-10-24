@@ -28,7 +28,7 @@ Henry's resume instructions override the plan where they differ:
 
 ## Active jobs
 
-- The full report, once: 13 units (one scenario and mode per process, catalogue order), 1,000 seeds, 10,000 wide seeds, event tables; Kantino long adds team and funding. Griffig reuses its exact-source main and event tasks; everything else computes fresh. Driver, runner, manifest, checkpoints and logs: state folder, plan5-full-driver.sh and full-campaign/. Restart: run the driver again (done units are skipped, an unfinished unit resumes). No tests run while it runs.
+- The full report, once: 13 units (one scenario and mode per process, catalogue order), 1,000 seeds, 10,000 wide seeds, event tables; Kantino long adds team and funding. Griffig reuses its exact-source main and event tasks; everything else computes fresh. Driver, runner, manifest, checkpoints and logs: state folder, plan5-full-driver.sh and full-campaign/. Restart: run the driver again (done units are skipped, an unfinished unit resumes). No tests run while it runs. Progress: Kantino 60-week done (outcomes identical to the committed report, timings aside). Kantino long finished all 416 tasks but hit the default Node heap limit while reloading them; restarted with a 10 GB heap ceiling, which only reloads its saved tasks.
 
 ## Checklist
 
