@@ -1,0 +1,343 @@
+{
+  "source": "0391cf6df5d49fe9c68339f77f8b59f686ef9a146443124c19d6a03c347d76b7",
+  "id": "ausgesperrt",
+  "mode": "long",
+  "rows": [
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "leisure_one_room"
+      },
+      "same": true,
+      "beforeHash": "c198da569b995c16f65e3e46a5bd83b6b8898862910458b24b863df6715cb373",
+      "afterHash": "c198da569b995c16f65e3e46a5bd83b6b8898862910458b24b863df6715cb373",
+      "seconds": 169.563081168,
+      "baselineSeconds": 199.75304012499998,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "leisure_quarterly_rooms"
+      },
+      "same": true,
+      "beforeHash": "18833a66428138ae8d2879876815c1c6e573261919c10a083edf5c76c221d5e0",
+      "afterHash": "18833a66428138ae8d2879876815c1c6e573261919c10a083edf5c76c221d5e0",
+      "seconds": 253.84262487499998,
+      "baselineSeconds": 303.29463737599997,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "leisure_theme_blind"
+      },
+      "same": true,
+      "beforeHash": "8d57d2b0f5e67d0ca1bf3072a41443bfef0b1644b6a889f89f65a919e9c85f01",
+      "afterHash": "8d57d2b0f5e67d0ca1bf3072a41443bfef0b1644b6a889f89f65a919e9c85f01",
+      "seconds": 237.69331837299998,
+      "baselineSeconds": 296.830742334,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "leisure_no_daytime"
+      },
+      "same": true,
+      "beforeHash": "a6715e1a189222181a2c7aa5fc0bf499af510291d3147c7c5524dcef5ea5e208",
+      "afterHash": "a6715e1a189222181a2c7aa5fc0bf499af510291d3147c7c5524dcef5ea5e208",
+      "seconds": 181.092488667,
+      "baselineSeconds": 224.060401292,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "leisure_vr_first_year"
+      },
+      "same": true,
+      "beforeHash": "8a16104fc0d598bf8541fc3911c9b8e22800615b48bca294708da30896faa341",
+      "afterHash": "8a16104fc0d598bf8541fc3911c9b8e22800615b48bca294708da30896faa341",
+      "seconds": 199.525017417,
+      "baselineSeconds": 227.44553104299996,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "leisure_no_later_loan"
+      },
+      "same": true,
+      "beforeHash": "95b9dacc0a4c8e4178d7e33d489a67845a200faaca31450e82ed4c90aa906ecc",
+      "afterHash": "95b9dacc0a4c8e4178d7e33d489a67845a200faaca31450e82ed4c90aa906ecc",
+      "seconds": 177.614543209,
+      "baselineSeconds": 193.64361483300002,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_careful"
+      },
+      "same": true,
+      "beforeHash": "a6d2418e54e4b73582318b043556d8ac3997a83903cff01c2576d97387cb5a58",
+      "afterHash": "a6d2418e54e4b73582318b043556d8ac3997a83903cff01c2576d97387cb5a58",
+      "seconds": 233.57777424900002,
+      "baselineSeconds": 293.23552091600004,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_platform_only"
+      },
+      "same": true,
+      "beforeHash": "55a1c0e4ddcad4142f98737682e44edcdde20cdf81e6bc9d70d915586f0ab013",
+      "afterHash": "55a1c0e4ddcad4142f98737682e44edcdde20cdf81e6bc9d70d915586f0ab013",
+      "seconds": 160.28926224999998,
+      "baselineSeconds": 197.79591987500004,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_overstaffing"
+      },
+      "same": true,
+      "beforeHash": "8c2290eb525be88e1e76691f38b84106291e7df79c9a661221773e46db305509",
+      "afterHash": "8c2290eb525be88e1e76691f38b84106291e7df79c9a661221773e46db305509",
+      "seconds": 80.78390737400002,
+      "baselineSeconds": 100.74719629200001,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_understaffing"
+      },
+      "same": true,
+      "beforeHash": "47fef481bf5cd5528606db46790e2747106c1b16af12ed48b73bb5b83710d190",
+      "afterHash": "47fef481bf5cd5528606db46790e2747106c1b16af12ed48b73bb5b83710d190",
+      "seconds": 86.44722308299998,
+      "baselineSeconds": 106.69230508400005,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_no_tests"
+      },
+      "same": true,
+      "beforeHash": "e28407304a0064bd1660c687a90e5aefdb3592a63623b9bd432fbc33b648ad3d",
+      "afterHash": "e28407304a0064bd1660c687a90e5aefdb3592a63623b9bd432fbc33b648ad3d",
+      "seconds": 201.89206825,
+      "baselineSeconds": 260.267051168,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_price_blind"
+      },
+      "same": true,
+      "beforeHash": "9b33d84012619e349ebbff8017f3b6425d503bfeaa37efc83651422707776412",
+      "afterHash": "9b33d84012619e349ebbff8017f3b6425d503bfeaa37efc83651422707776412",
+      "seconds": 234.74596008399996,
+      "baselineSeconds": 292.5213091659999,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_review_blind"
+      },
+      "same": true,
+      "beforeHash": "941a6bd0560475cef112901fb0d8ab81c57295c8528b1dd409465b516005e39d",
+      "afterHash": "941a6bd0560475cef112901fb0d8ab81c57295c8528b1dd409465b516005e39d",
+      "seconds": 232.71734345999997,
+      "baselineSeconds": 287.231742333,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_always_flexible"
+      },
+      "same": true,
+      "beforeHash": "9f032b956e646687330bc751f475a00222a3eb2f09bc18674dabe290bc1e87fb",
+      "afterHash": "9f032b956e646687330bc751f475a00222a3eb2f09bc18674dabe290bc1e87fb",
+      "seconds": 230.19548229100002,
+      "baselineSeconds": 287.35753220799995,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_overworker"
+      },
+      "same": true,
+      "beforeHash": "58208387577a0b486e690fe0fce7898665df89813ef259951ff1ec64d54a8d65",
+      "afterHash": "58208387577a0b486e690fe0fce7898665df89813ef259951ff1ec64d54a8d65",
+      "seconds": 8.095788791999977,
+      "baselineSeconds": 8.207014250000007,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_inbox_none"
+      },
+      "same": true,
+      "beforeHash": "6eed007ee234cf28abc1004e521523cf8061982c40a2b2450857839adcd5578c",
+      "afterHash": "6eed007ee234cf28abc1004e521523cf8061982c40a2b2450857839adcd5578c",
+      "seconds": 195.536826167,
+      "baselineSeconds": 241.47842137599997,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_inbox_effort"
+      },
+      "same": true,
+      "beforeHash": "6d9cc58387aa6d33a5a85735a547b7b130e9260671decc579a68288254596a11",
+      "afterHash": "6d9cc58387aa6d33a5a85735a547b7b130e9260671decc579a68288254596a11",
+      "seconds": 212.30710754199998,
+      "baselineSeconds": 265.923099082,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_naive_careful"
+      },
+      "same": true,
+      "beforeHash": "b36f47e9e6ae941eb4e22b446ae0c132aafced085568364ebded7e801aa5146f",
+      "afterHash": "b36f47e9e6ae941eb4e22b446ae0c132aafced085568364ebded7e801aa5146f",
+      "seconds": 207.33598975,
+      "baselineSeconds": 257.219125626,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_contracts_none"
+      },
+      "same": true,
+      "beforeHash": "04d8a803aa01d679323bd34d035f65cf9c9325f5c43ace4c9eaebf44d01d39bf",
+      "afterHash": "04d8a803aa01d679323bd34d035f65cf9c9325f5c43ace4c9eaebf44d01d39bf",
+      "seconds": 224.02283970900004,
+      "baselineSeconds": 277.708935709,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_permanent"
+      },
+      "same": true,
+      "beforeHash": "901e07b0118beba7f726c23ea6861fbebd58508921a565ea937d57375ccd67e3",
+      "afterHash": "901e07b0118beba7f726c23ea6861fbebd58508921a565ea937d57375ccd67e3",
+      "seconds": 235.182707167,
+      "baselineSeconds": 291.31429783400006,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_seasonal"
+      },
+      "same": true,
+      "beforeHash": "73c65bf5c64ec163a3eee8064e833b5186ea6dfa35fe1caa36a6e40544ce09ae",
+      "afterHash": "73c65bf5c64ec163a3eee8064e833b5186ea6dfa35fe1caa36a6e40544ce09ae",
+      "seconds": 228.85555516700003,
+      "baselineSeconds": 286.37676983299997,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_part_time"
+      },
+      "same": true,
+      "beforeHash": "c10c36c1ab5e455695148c04e1b2ba5ac4e084037c701dcceaaaaa8aab5f11a8",
+      "afterHash": "c10c36c1ab5e455695148c04e1b2ba5ac4e084037c701dcceaaaaa8aab5f11a8",
+      "seconds": 236.566264248,
+      "baselineSeconds": 294.27808299999987,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_never_move"
+      },
+      "same": true,
+      "beforeHash": "e1b5ad9fbe1220c0437e9127a6d4c4e5e5b74aa8c798b05590cbcdce7a4b0f74",
+      "afterHash": "e1b5ad9fbe1220c0437e9127a6d4c4e5e5b74aa8c798b05590cbcdce7a4b0f74",
+      "seconds": 231.33369179199997,
+      "baselineSeconds": 290.667540542,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_always_move"
+      },
+      "same": true,
+      "beforeHash": "4444b01f36cf5eca06793ebe374013c6306706febcd2f4bac316afccf142ccd2",
+      "afterHash": "4444b01f36cf5eca06793ebe374013c6306706febcd2f4bac316afccf142ccd2",
+      "seconds": 227.36464083399997,
+      "baselineSeconds": 278.18406487600004,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_always_strict"
+      },
+      "same": true,
+      "beforeHash": "9aa0e57a85d6665bb8375ecae9f83e3d9e6190008c106440f6ae69bd242e516e",
+      "afterHash": "9aa0e57a85d6665bb8375ecae9f83e3d9e6190008c106440f6ae69bd242e516e",
+      "seconds": 201.89354349900015,
+      "baselineSeconds": 253.552073584,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_overborrow"
+      },
+      "same": true,
+      "beforeHash": "dfe475fa252239e3eb57e7b74f8f5558d7344958faaa69992a48cd3e31f3cbe2",
+      "afterHash": "dfe475fa252239e3eb57e7b74f8f5558d7344958faaa69992a48cd3e31f3cbe2",
+      "seconds": 202.36064312599996,
+      "baselineSeconds": 253.64160616799978,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_reckless"
+      },
+      "same": true,
+      "beforeHash": "fcb3f63437b438556dad88faf9fa8a3c3840f28f93db50e474ff6daa7f0da402",
+      "afterHash": "fcb3f63437b438556dad88faf9fa8a3c3840f28f93db50e474ff6daa7f0da402",
+      "seconds": 185.5915803759999,
+      "baselineSeconds": 231.89722904099978,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_refit_loan"
+      },
+      "same": true,
+      "beforeHash": "ed67e1887f10d6752174b8133ed69c50232be523533267d970fca27dc5cc7062",
+      "afterHash": "ed67e1887f10d6752174b8133ed69c50232be523533267d970fca27dc5cc7062",
+      "seconds": 173.89531445900002,
+      "baselineSeconds": 197.56771620899997,
+      "seeds": 1000
+    }
+  ]
+}

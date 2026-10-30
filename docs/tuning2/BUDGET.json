@@ -1,0 +1,358 @@
+{
+  "baseline": "plan5-complete",
+  "valuesCap": 3,
+  "formulasCap": 2,
+  "botFixesCountAsRounds": false,
+  "fullReportStarted": false,
+  "speed": {
+    "cap": 2,
+    "roundsImplemented": 1,
+    "round1": "outcome verification in progress",
+    "additionalBaselineSpeedFailures": [
+      "ausgesperrt",
+      "fabriketage"
+    ]
+  },
+  "targets": [
+    {
+      "scenario": "ausgesperrt",
+      "target": "T2",
+      "baseline": "no tests 22.1% ±2.6 (lowest corrected); top 48.4% passes its cap",
+      "options": "Broad-portfolio contribution and learnable theme preferences; keep the 5% threshold",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "T3",
+      "baseline": "32.5 ±7.0 points (companies 27.7%, locals 60.2%, tourists 40.6%)",
+      "options": "Corporate room-game demand and pricing; two-room plus meeting-space capital and cash timing",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "T6",
+      "baseline": "reading +10.8, blind effort +8.9 ±2.8; round 1 +4.4 / +5.6 was closer to the blind limit",
+      "options": "Use the event table to find choices where effort substitutes for reading",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "T10",
+      "baseline": "review-blind +4.7 ±2.1; corrected baseline +2.2 came with 75.8% careful wins",
+      "options": "Separate the cost of spare roster shifts from repair and review benefits; no arbitrary review multiplier",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "T11",
+      "baseline": "strict -3.4 ±2.7 overall; companies +3.8, locals -1.5, tourists -13.2; split not established",
+      "options": "More evidence or a clearer observable commitment trade-off; keep the 5-point overall limit",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "T14",
+      "baseline": "seasonal +1.9 ±2.2 on signed seeds; permanent +8.6 and part time +10.7 pass",
+      "options": "Seasonal coverage and idle-week decisions; 10,000 seeds only if tuning this smaller-than-margin effect",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "T15",
+      "baseline": "+16.5 ±2.8, taken in 98.7%; corrected baseline +12.5 came with 75.8% careful wins",
+      "options": "Loan terms, grace and investment timing; no hidden borrowing penalty",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "T17",
+      "baseline": "reckless 42.6% vs careful 38.7% owing, gap +3.9 ±4.3; first value round gap 7.1 (careful 55.7%)",
+      "options": "Debt service, grace exposure and actual owed endings; keep the 15-point target",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "fabriketage",
+      "target": "T3",
+      "baseline": "58.8 ±5.8 in round 1; final 62.2 (companies 72.0%, private parties 55.7%, weddings 9.7%)",
+      "options": "Wedding long-lead cash, forward deposits and a viable mixed calendar; do not exclude weddings",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "fabriketage",
+      "target": "T6",
+      "baseline": "reading +15.4, blind effort +15.9 ±2.3",
+      "options": "More contextual choices with observable consequences; review reader decisions before values",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "fabriketage",
+      "target": "T11",
+      "baseline": "strict +1.0 ±1.5 overall; companies 0.0, private +3.2, weddings -0.3",
+      "options": "Real cancellation frequency, deposit and commitment trade-offs; small split signs are inconclusive",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "fabriketage",
+      "target": "T13",
+      "baseline": "round 1 31.2%, gap -11.5 ±2.1 (at limit); final 32.4%, gap -14.2 ±2.2",
+      "options": "Teach bridge costs and forward calendars on screen; inspect default reader and channel behaviour",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "fabriketage",
+      "target": "T14",
+      "baseline": "permanent 0 throughout; round 1 seasonal -0.3 ±1.4, part time -0.2 ±1.2",
+      "options": "Contract utilisation, idle periods and founder cover; do not call insignificant savings a win",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "fabriketage",
+      "target": "T15",
+      "baseline": "+35.9 ±3.0 (corrected); final +40.6 ±3.1, taken in 100%",
+      "options": "Initial financing scope and timing of AV and working capital; keep actual borrowing costs",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "T3",
+      "baseline": "28.8 ±7.3 points (corporate 62.1%, yoga 33.3%, young professionals 37.8%)",
+      "options": "Corporate reachable demand against the ordinary and specialist split",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "T5",
+      "baseline": "early 71.7% (closest 71.8%); year 2 92.9%",
+      "options": "Genuine preparation decisions in pre-opening weeks 8 to 12; no relabelled routine news",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "T6",
+      "baseline": "reading +13.8, blind effort +12.6 ±2.3",
+      "options": "Replies too often reward the same effort choice; review contextual trade-offs",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "T7",
+      "baseline": "hints -1.0 ±1.5; closest -0.8 ±1.1",
+      "options": "Confidence or observable price feedback; no hidden willingness or numeric sweeps",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "T12",
+      "baseline": "slowest 462.1 s per 1,000; closest complete matrix 404.4 s",
+      "options": "Profile membership-history costs; loads differ, so not controlled comparisons",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "T14",
+      "baseline": "permanent +1.2 ±1.4, seasonal +0.6 ±1.8, part time +3.3 ±1.5",
+      "options": "Schedule-aware contract selection and commitment, not implausible wages",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "F3",
+      "baseline": "-22.1 ±3.0; buy-only 34, no-buy-only 255, ties 711",
+      "options": "Affordability and forecast rules; keep actual equipment, teacher and seat costs",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "F4",
+      "baseline": "never match +0.1 ±1.6; 30,426 followers stopped in 945 runs; earlier -0.8 ±1.5 in a too-easy game",
+      "options": "Retention persistence and its observable financial contribution",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T3",
+      "baseline": "31.1 ±6.4 points (committed 12.9%, families 34.4%, students 44.0%)",
+      "options": "Actual first-wall selection and service income; keep rope-or-boulder alternatives",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T5",
+      "baseline": "early 82.6%; year 2 100%",
+      "options": "Genuine pre-opening preparation decisions; no relabelled routine news",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T6",
+      "baseline": "reading +2.6, blind effort +3.7 ±1.1; round 1 +2.0 / +2.7. Every event except the first wall moves outcomes by less than noise",
+      "options": "Contextual trade-offs from the event table; no arbitrary effort penalties",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T7",
+      "baseline": "-0.5 ±1.0; closest round 2 -0.1 ±0.9",
+      "options": "Confidence and observable price feedback before changing prices",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T9",
+      "baseline": "over +1.1 ±1.5, under -4.9 passes; corrected round 1 over -2.1 ±1.5 passed at limit",
+      "options": "Keep the real trade-off; no bot-specific cost",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T11",
+      "baseline": "strict -0.9 ±0.9 overall; committed -0.6, families -2.0, students 0",
+      "options": "Actual lead times, foregone bookings and cancellation exposure; refunds stay distinct from membership notice",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T12",
+      "baseline": "slowest 811.9 s per 1,000; closest 515.5 s (round 1)",
+      "options": "The discarded cache gained only 1.1%; do not repeat it",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T14",
+      "baseline": "permanent +4.5 ±1.5, seasonal +0.6 ±0.9, part time +1.2 ±1.0; round 2 all three passed",
+      "options": "Utilisation and commitment; no pay cuts or relaxed threshold",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "T15",
+      "baseline": "+6.8 ±1.6, taken in 55.8%; round 1 +5.4 ±1.4 passed at limit",
+      "options": "Timing and retained-cash bridge; no hidden borrowing penalty",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "K1",
+      "baseline": "boulder 91.8%, rope 31.5%, both 0.9% of 425 differing seeds",
+      "options": "Staged opening and mixed-market use; keep actual construction and funding costs",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "K2",
+      "baseline": "half -1.4 ±0.9 (needs -3); double -1.4 ±1.0 passes; round 2 half -1.6 ±1.1",
+      "options": "Observed tired weeks and paid reset closure timing; no strategy-specific deduction",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    },
+    {
+      "scenario": "griffig",
+      "target": "K3",
+      "baseline": "all slots +1.0 ±0.7, none -4.0 ±1.9; round 2 all +0.5",
+      "options": "Actual peak occupancy and paid visitor mix",
+      "status": "open",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": []
+    }
+  ]
+}

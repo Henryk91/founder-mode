@@ -7597,3 +7597,13 @@ Plan5 climbing final first-pass main27756b3:32policies×1,000paired test seeds,e
 
 
 Plan5 hard stop23October,section1.2.1:three full-source established WebKit heading-fit attempts do not make the whole suite green. Latest1,961pass/1fail/30skip (Rückenwind375);focused56and lint pass. Griffig final main remains30.8%,top39.0%,no-tests0%,source27756b3. First/only event campaign stopped with48complete forced task checkpoints/40,026played games;32main tasks retained. No event table completed,no climbing milestone or step6/full report. Evidence:autonomous5/climbing/HARD_STOP.md,TEST_FAILURES.txt,EVENT_CHECKPOINTS.json. All run-owned jobs stopped;no push.
+
+
+## Tuning 2 speed, round 1 (in progress)
+
+Main only, 1,000 paired test seeds per policy: Ausgesperrt 28 policies,
+Fabriketage 29 and Schweißperle 30 reproduce every plan5-complete RunResult
+exactly. Griffig's 32-policy comparison is running. CPU profiles use 100 seeds
+per slowest policy; they are not idle T12 measurements. Details and proof hashes:
+`docs/tuning2/reports/step1-speed.md` and `docs/tuning2/proof/`.
+No content values, formulas or policy choices changed. Full report not started.

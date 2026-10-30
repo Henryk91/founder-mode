@@ -20,7 +20,7 @@ are profiled. The 34-target inventory remains historical; speed covers all four.
 
 Node inspector CPU profiler, one slowest main policy per scenario, 100 seeds
 `test-0` to `test-99`. No tests or browser tests ran during the profiles.
-Profile tooling: `packages/bots/scratch/tuning2-profile.ts` (ignored local file).
+Profile tooling: `packages/bots/scratch/tuning2-profile.tmp.ts` (ignored local file).
 Raw profiles and complete results: `docs/tuning2/state/profiles/` (ignored).
 Top costs below are self-sampled CPU time; anonymous functions use Vite's
 transformed source location rather than claiming an original TypeScript line.
@@ -103,4 +103,33 @@ helpers do. Dynamic state/history records continue to use fresh entries.
 No capacity cache, state copy policy, RNG call, or numerical rule changes.
 Keep this only if complete outcome comparisons and replay remain identical.
 
-Round 1 of 2 planned; not yet implemented or measured.
+Round 1 is implemented. Focused leisure/qualification tests: 53 passed.
+`pnpm lint` passes. The first edit accidentally replaced two unsorted
+`Object.entries` call sites too; those were restored before measurements.
+Local diagnostics were renamed to the repository's `*.tmp.ts` convention before
+lint passed. No assertion or lint rule was changed.
+
+Original-engine save verification: 21 complete saved states across all 13
+scenario/mode units replay identically under the optimisation. Leisure also covers
+no-tests and naive policies. Logs, saved action histories and full-state hashes are
+in `state/replays/` and `state/round1-replay.log`.
+
+Early 100-seed result checks: Griffig 40.511 → 29.275 s and Schweißperle
+29.065 → 25.180 s; all complete RunResult records identical. These profiles are
+not idle 1,000-run T12 measurements. Main matrices are still running.
+
+## Round 1 main proof (in progress)
+
+Ausgesperrt: all 28 policies × 1,000 paired `test` seeds match every saved
+RunResult field exactly. Checkpoints and SHA256 comparisons:
+`state/round1/ausgesperrt-long/comparison.json`. The slowest policy's summed
+worker time is 253.84 s; this is not an idle T12 measurement.
+
+Fabriketage: all 29 policies × 1,000 paired test seeds match every saved
+RunResult field exactly. Evidence: state/round1/fabriketage-long/comparison.json.
+
+Schweißperle: all 30 policies × 1,000 paired test seeds match every saved
+RunResult field exactly. Evidence: state/round1/schweissperle-long/comparison.json.
+
+Committed proof hashes for these three units are in `../proof/round1-*.json`.
+Total so far: 87 policies, 87,000 identical complete results. Griffig pending.
