@@ -104,7 +104,7 @@ No capacity cache, state copy policy, RNG call, or numerical rule changes.
 Keep this only if complete outcome comparisons and replay remain identical.
 
 Round 1 is implemented. Focused leisure/qualification tests: 53 passed.
-`pnpm lint` passes. The first edit accidentally replaced two unsorted
+`pnpm lint` passes. The first edit accidentally replaced three unsorted
 `Object.entries` call sites too; those were restored before measurements.
 Local diagnostics were renamed to the repository's `*.tmp.ts` convention before
 lint passed. No assertion or lint rule was changed.
@@ -116,9 +116,9 @@ in `state/replays/` and `state/round1-replay.log`.
 
 Early 100-seed result checks: Griffig 40.511 → 29.275 s and Schweißperle
 29.065 → 25.180 s; all complete RunResult records identical. These profiles are
-not idle 1,000-run T12 measurements. Main matrices are still running.
+not idle 1,000-run T12 measurements. All four main matrices are now complete.
 
-## Round 1 main proof (in progress)
+## Round 1 main proof
 
 Ausgesperrt: all 28 policies × 1,000 paired `test` seeds match every saved
 RunResult field exactly. Checkpoints and SHA256 comparisons:
@@ -131,5 +131,34 @@ RunResult field exactly. Evidence: state/round1/fabriketage-long/comparison.json
 Schweißperle: all 30 policies × 1,000 paired test seeds match every saved
 RunResult field exactly. Evidence: state/round1/schweissperle-long/comparison.json.
 
-Committed proof hashes for these three units are in `../proof/round1-*.json`.
-Total so far: 87 policies, 87,000 identical complete results. Griffig pending.
+Griffig: all 32 policies × 1,000 paired test seeds match every saved RunResult
+field exactly. Evidence: state/round1/griffig-long/comparison.json.
+
+Committed proof hashes for all four units: `../proof/round1-*.json`.
+Total: 119 policies, 119,000 identical complete results. All 517 engine tests
+(57 files) pass after the bot processes exit; log: state/round1-engine-all.log.
+Lint passed on this source. Engine remains 0.14.0 and content is unchanged.
+
+| Scenario | Slowest policy in the parallel campaign | Summed worker seconds |
+|---|---|---|
+| Ausgesperrt | leisure_quarterly_rooms | 253.843 |
+| Fabriketage | venue_free_holds | 130.326 |
+| Schweißperle | tourism_naive_careful | 482.437 |
+| Griffig | climbing_boulder_first | 657.041 |
+
+These times do not establish idle T12. After the final round, select the slowest
+policy from that matrix and measure 1,000 seeds serially with no competing jobs.
+
+## Second and final speed round
+
+Planned files: leisure.ts, leisure.test.ts, this report, decisions, STATUS and budget.
+Keep alias-specific readiness/requirements but delegate pool products directly to
+leisureCapacity, which already checks them. Select the product with most remaining
+room in one alphabetical pass instead of filtering and sorting with repeated room
+calls. Preserve the existing tie-break, qualifications, sold offers and every RNG
+call. Add a regression for deterministic equal-capacity selection.
+
+This is removal of duplicate work, not a capacity cache. No content or economic
+formula changes. Apply only after the first round is committed; validate before
+starting its main comparisons. The nine earlier units get their required 1,000-seed
+main proof on the final speed source, avoiding a duplicate intermediate campaign.

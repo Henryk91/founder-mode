@@ -1146,3 +1146,7 @@ Henry changed step 6: no revisit of the open targets. All 34 (Ausgesperrt 8, Fab
 ### Tuning 2 step 1: profile before optimising
 
 AUTONOMOUS: Use plan5-complete's saved main results without a baseline rerun. Profile all four leisure scenarios on 100 test seeds because their final report timings all exceed T12. First speed round memoises only sorted immutable content entries: this helper/comparator costs 22.9% of Griffig's sampled CPU time. Preserve all ordering and RNG calls; do not repeat the discarded capacity cache. Profile evidence: docs/tuning2/reports/step1-speed.md.
+
+### Tuning 2 step 1: keep round 1; final round removes duplicate work
+
+AUTONOMOUS: Keep sorted immutable-content entries after 119 policies × 1,000 paired seeds reproduce every saved result, 21 original saved states replay identically, and all 517 engine tests and lint pass. Second/final speed round delegates pool checks once and selects the most free product in one stable alphabetical pass; no capacity cache or economic change. Prove all four affected units again, then all nine earlier units on the final source; idle T12 follows the matrix's actual slowest policies.
