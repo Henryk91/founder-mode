@@ -6,13 +6,13 @@
   "fullReportStarted": false,
   "speed": {
     "cap": 2,
-    "roundsImplemented": 1,
+    "roundsImplemented": 2,
     "round1": "119 policies x 1000 seeds exactly identical; 21 saved states identical; 517 engine tests pass",
     "additionalBaselineSpeedFailures": [
       "ausgesperrt",
       "fabriketage"
     ],
-    "round2": "prepared; not applied"
+    "round2": "518 engine tests, lint, 21 original-state replays and 3 profiles pass; final 13-unit main proof running"
   },
   "targets": [
     {

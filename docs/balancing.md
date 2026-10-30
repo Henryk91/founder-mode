@@ -7607,3 +7607,9 @@ RunResult exactly: 119,000 complete results. CPU profiles use 100 seeds
 per slowest policy; they are not idle T12 measurements. Details and proof hashes:
 `docs/tuning2/reports/step1-speed.md` and `docs/tuning2/proof/`.
 No content values, formulas or policy choices changed. Full report not started.
+
+
+Tuning 2 final speed source, main-only proof in progress: Ausgesperrt 28,
+Fabriketage 29 and Schweißperle 30 policies × 1,000 paired test seeds match every
+saved result. Griffig and the nine earlier units follow. No wide seeds, events,
+content values or economic formula changes; full report remains reserved for wrap up.

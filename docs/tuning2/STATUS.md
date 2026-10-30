@@ -1,10 +1,12 @@
 # Tuning run 2 status
 
 ## Current
-Step: 1, prepare second and final speed round.
-Last commit: 4999353, record 87000 identical leisure outcomes during speed validation.
-Next action: Commit the verified first optimisation, then apply the prepared second round.
-Run engine tests and lint before any more bots.
+Step: 1, final speed-source main proof.
+Last commit: 1fe1913, reuse sorted leisure content records with identical simulation outcomes.
+Next action: Finish the round 2 main campaign: four affected units, then nine earlier units.
+After all bot jobs exit, measure leisure T12 serially on the actual slowest policies.
+Round 2 complete: Ausgesperrt 28, Fabriketage 29, Schweißperle 30 policies.
+All 87,000 results identical. Griffig active; the nine earlier units follow.
 Ausgesperrt complete: all 28 policies / 28,000 results exactly match baseline.
 Fabriketage complete: all 29 policies / 29,000 results exactly match baseline.
 Schweißperle complete: all 30 policies / 30,000 results exactly match baseline.
@@ -22,12 +24,20 @@ Original-save comparison: 21 full states across all 13 units replay identically.
 - [ ] Step 4: wrap up (tag tuning2-complete)
 
 ## Running jobs and state
-No active jobs. Main campaign 53447 and engine test session 86283 exited 0.
-Driver: docs/tuning2/state/round1-main.sh.
-Checkpoint source is pinned in state/round1/<scenario>-long/source.json.
-Logs: state/round1-<scenario>.log. No tests or browser jobs may run concurrently.
-Profiling complete: four policies, 100 seeds each; ten CPU costs in reports/step1-speed.md.
+Active: round 2 main campaign, session 8532, one scenario process, eight workers.
+Driver: state/round2-main.sh. All 13 units, main only, 1,000 paired test seeds.
+Budget check: engine changes require this proof; no wide seeds or events.
+Do not run tests or browser jobs while the campaign runs.
+Second round: all 518 engine tests, lint, 21 original-state replays pass.
+Three 100-seed profiles also reproduce every complete result.
+Completed first driver: docs/tuning2/state/round1-main.sh.
+Checkpoint source: state/round2/<scenario>-<mode>/source.json.
+Completed first-round checkpoints: state/round1/<scenario>-long/.
+Current logs: state/round2-<scenario>-<mode>.log.
+Initial profiling: four policies, 100 seeds each; ten CPU costs in reports/step1-speed.md.
 Tools: packages/bots/scratch/tuning2-{profile,timings,main}.tmp.ts.
+Additional diagnostics there: tuning2-{replay,replay-saved,t12,baselines}.tmp.ts.
+All 314 saved main baselines exist; metadata check played no games.
 Completed proof hashes: proof/round1-<scenario>.json, all four units.
 Original engine source for save/replay comparison: state/baseline-engine/ (plan5-complete).
 Saved action logs and state hashes: state/replays/; runner: scratch/tuning2-replay.tmp.ts.
@@ -35,7 +45,8 @@ Read-only Part B findings: state/step2-preparation.md (no changes applied).
 State and profiles: docs/tuning2/state/ (ignored local artifacts).
 Baseline: plan5-complete, docs/balancing.md and docs/autonomous5/.
 No baseline rerun. No full report started.
-Preconditions passed: plan5-complete exists; tuning2-start does not exist.
+At setup, plan5-complete existed and tuning2-start was absent.
+The tuning2-start tag now exists and this plan is in progress.
 Existing edits are the tuning plan and the backlog price-realism note; preserve both.
 
 ## Open issues
@@ -44,7 +55,7 @@ Details and closest results: docs/BACKLOG.md, section 3.
 Speed also measures Ausgesperrt and Fabriketage, whose final report timings exceed T12.
 All tuning budgets unused: up to 3 value rounds, then 2 formula rounds per target.
 Per-target budget and closest baseline evidence: BUDGET.json.
-Speed budget: first round verified; second/final round prepared, not applied.
+Speed budget: first round verified; second/final round applied, main proof running.
 
 ## For Henry to review (non-blocking)
 - Content-entry memoisation verified on 119,000 outcomes and 21 saved states.

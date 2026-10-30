@@ -162,3 +162,33 @@ This is removal of duplicate work, not a capacity cache. No content or economic
 formula changes. Apply only after the first round is committed; validate before
 starting its main comparisons. The nine earlier units get their required 1,000-seed
 main proof on the final speed source, avoiding a duplicate intermediate campaign.
+
+## Round 2 checks and profile
+
+The added alphabetical tie-break test passes on the original round 1 source and
+the final source. Full engine project: 518 passed in 57 files. Lint and all
+workspace typechecks pass. The same 21 original saved action logs replay to the
+exact original full-state SHA256, without generating another original baseline.
+Logs: state/round2-engine-all.log, round2-lint.log and round2-replay.log.
+
+Profiles, 100 paired test seeds each, every RunResult equal to the stored prefix:
+
+| Scenario/policy | Round 1 profile | Round 2 profile |
+|---|---|---|
+| Griffig careful | 29.275 s | 25.702 s |
+| Schweißperle careful | 25.180 s | 23.001 s |
+| Griffig boulder-first | not profiled | 29.436 s |
+
+These are short profiles, not idle 1,000-run T12 judgements. Second and final
+main proof now runs 1,000 seeds per policy: four affected units first, then the
+nine earlier units. No full report, wide seeds or events are part of this proof.
+
+## Round 2 main proof (in progress)
+
+Ausgesperrt 28, Fabriketage 29 and Schweißperle 30 policies each reproduce every
+complete result on 1,000 paired test seeds. Committed proof hashes:
+`../proof/round2-<scenario>-long.json`. Total: 87,000 identical results so far.
+Griffig and all nine earlier units are still pending.
+
+Metadata-only availability check found all 314 main-policy baselines across the
+13 units, without playing any baseline games. Log: state/baseline-availability.log.
