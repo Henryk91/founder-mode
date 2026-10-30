@@ -108,6 +108,7 @@ At the limit (pass): Ausgesperrt X1, Fabriketage V2, Schweißperle T1, F1 and T1
 | Item | Notes |
 |---|---|
 | Zollstock long mode | With funding and office stages |
+| Price realism: demand that responds to price | Each segment acts as one buyer, so a price below its willingness to pay wins almost nobody new (tuning plan 1 finding behind T7). Real off-season discounts bring more bookings because buyers differ. Proposed: a lower price raises the number of requests, not only the chance of a yes. Touches every bookings scenario; needs its own plan |
 | The next batch of 60-week changes | Chasing invoices with a risk of chasing too early; automatic reminders |
 | Summarised inbox reports in the established look | From the old established mockup |
 | Cofounders | |
