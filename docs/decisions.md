@@ -1142,3 +1142,7 @@ Henry changed step 6: no revisit of the open targets. All 34 (Ausgesperrt 8, Fab
 ### Plan 5 step 6: the full report, once
 
 13 units, one scenario and mode per process, 1,000 seeds, 10,000 wide seeds and event tables; Kantino long with team and funding. Griffig reused its exact-source main and event tasks rather than rerunning them to re-confirm. Kantino long needed a 10 GB Node heap ceiling to reload its 2.2 GB of finished tasks. All nine earlier units are identical to the previous report apart from timings; the four new sections reproduce their step reports; `pnpm seeds` found no change.
+
+### Tuning 2 step 1: profile before optimising
+
+AUTONOMOUS: Use plan5-complete's saved main results without a baseline rerun. Profile all four leisure scenarios on 100 test seeds because their final report timings all exceed T12. First speed round memoises only sorted immutable content entries: this helper/comparator costs 22.9% of Griffig's sampled CPU time. Preserve all ordering and RNG calls; do not repeat the discarded capacity cache. Profile evidence: docs/tuning2/reports/step1-speed.md.
