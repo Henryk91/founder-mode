@@ -1174,3 +1174,7 @@ AUTONOMOUS: Leisure T6's blind limit needs the paired variance of effort − 2/3
 ### Tuning 2 step 2: inspect the measured candidate before forcing choices
 
 AUTONOMOUS: Shared1 completes 119,000 leisure measurements and 195,000 identical protected results on one source. Preserve every target result, including escape X1/T16 regressions. Correct the generic reader's guest-only spending after observable repeat reach saturates, and restore the ticket experiment that did not fix T7, before forcing event choices against that reader (judgement rule 1). Use the current public counts and fixed channel rule, never hidden demand or roles. This is a bot correction, with economic budgets unchanged; event tables and a fresh careful reference follow on the corrected source.
+
+### Tuning 2 step 2: correct the invitation audit before changing the reader
+
+AUTONOMOUS: The previous capped-reach explanation was wrong: inbox guests populate eventGuests, and bookings converts those to additional requests independently of repeatGuest reach. Discard the proposed saturation guard and its incorrect expectation. Fix five fitness invitation targets from nonexistent yoga to yoga_crowd, validate guest targets across all four leisure event sets, and preserve invitations at saturated repeat reach. Restore the failed fitness/climbing off-season ticket experiment. No values/formula round is spent; measure main outcomes and affected event tables before attributing further effects.

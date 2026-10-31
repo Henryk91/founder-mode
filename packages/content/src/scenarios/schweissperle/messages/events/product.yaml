@@ -280,7 +280,7 @@ events:
         hours: 4
         effects:
           - type: 'guests'
-            segment: 'yoga'
+            segment: 'yoga_crowd'
             count: 12
             when:
               - 'loan.running >= 1'
@@ -367,7 +367,7 @@ events:
         hours: 4
         effects:
           - type: 'guests'
-            segment: 'yoga'
+            segment: 'yoga_crowd'
             count: 14
             when:
               - 'loan.running >= 1'

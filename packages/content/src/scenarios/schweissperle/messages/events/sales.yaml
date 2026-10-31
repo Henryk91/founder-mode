@@ -71,7 +71,7 @@ events:
         hours: 5
         effects:
           - type: 'guests'
-            segment: 'yoga'
+            segment: 'yoga_crowd'
             count: 25
             when:
               - 'leisure.packed == 0'
@@ -159,7 +159,7 @@ events:
         hours: 5
         effects:
           - type: 'guests'
-            segment: 'yoga'
+            segment: 'yoga_crowd'
             count: 25
             when:
               - 'energy >= 50'
@@ -336,7 +336,7 @@ events:
         hours: 5
         effects:
           - type: 'guests'
-            segment: 'yoga'
+            segment: 'yoga_crowd'
             count: 25
             when:
               - 'bugs == 0'

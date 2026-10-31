@@ -262,12 +262,7 @@ export function priceFitness(
     const factor = priceFactor([id], monthly.serves.includes(id) ? monthly.priceCents : baseMonthly)
     plan.prices[id] = {
       peak: Math.round((segment.price.peak * factor) / 100) * 100,
-      // As in the earlier tuned venues, discounting below the observed budget
-      // needlessly loses receipts on the flat part of the demand curve.
-      off:
-        Math.round(
-          ((rule.pricing === 'hints' ? segment.price.peak : segment.price.off) * factor) / 100,
-        ) * 100,
+      off: Math.round((segment.price.off * factor) / 100) * 100,
     }
   }
   plan.platform = false

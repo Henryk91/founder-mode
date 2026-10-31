@@ -200,7 +200,7 @@ describe('unregistered climbing policies', () => {
       p = empty()
     priceClimbing(spec, v, p, CAREFUL_TOURISM)
     expect(p.prices.students!.peak).toBe(1600)
-    expect(p.prices.students!.off).toBe(1600)
+    expect(p.prices.students!.off).toBe(1400)
     const fixed = empty()
     priceClimbing(spec, v, fixed, { ...CAREFUL_TOURISM, pricing: 'fixed' })
     expect(fixed.prices.students!.off).toBe(1400)

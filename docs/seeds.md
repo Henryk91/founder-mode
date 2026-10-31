@@ -211,12 +211,12 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | schweissperle (long) | sustainable | `tourism_careful` | `ending-3` | 104 |
 | schweissperle (long) | sustainable | `tourism_careful` | `ending-5` | 104 |
 | schweissperle (long) | sustainable | `tourism_careful` | `ending-9` | 104 |
-| schweissperle (long) | still_searching | `tourism_careful` | `ending-58` | 104 |
-| schweissperle (long) | still_searching | `tourism_careful` | `ending-156` | 104 |
+| schweissperle (long) | still_searching | `tourism_careful` | `ending-18` | 104 |
+| schweissperle (long) | still_searching | `tourism_careful` | `ending-55` | 104 |
 | schweissperle (long) | still_searching | `tourism_careful` | `ending-160` | 104 |
-| schweissperle (long) | bankrupt | `tourism_no_tests` | `ending-100` | 40 |
-| schweissperle (long) | bankrupt | `tourism_no_tests` | `ending-138` | 40 |
-| schweissperle (long) | bankrupt | `tourism_no_tests` | `ending-188` | 40 |
+| schweissperle (long) | bankrupt | `tourism_no_tests` | `ending-17` | 40 |
+| schweissperle (long) | bankrupt | `tourism_no_tests` | `ending-64` | 44 |
+| schweissperle (long) | bankrupt | `tourism_no_tests` | `ending-122` | 40 |
 | schweissperle (long) | burnout | `tourism_overworker` | `ending-1` | 10 |
 | schweissperle (long) | burnout | `tourism_overworker` | `ending-2` | 9 |
 | schweissperle (long) | burnout | `tourism_overworker` | `ending-3` | 10 |
@@ -230,7 +230,6 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | griffig (long) | sustainable | `tourism_careful` | `ending-5` | 104 |
 | griffig (long) | sustainable | `tourism_careful` | `ending-14` | 104 |
 | griffig (long) | still_searching | `tourism_careful` | `ending-2` | 104 |
-| griffig (long) | still_searching | `tourism_careful` | `ending-316` | 104 |
 | griffig (long) | still_searching | `tourism_price_blind` | `ending-2` | 104 |
 | griffig (long) | bankrupt | `tourism_no_tests` | `ending-15` | 19 |
 | griffig (long) | bankrupt | `tourism_no_tests` | `ending-38` | 19 |

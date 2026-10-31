@@ -192,12 +192,11 @@ climbers and first-wall economics still need the planned scenario investigation.
 K2 passes at the limit: half setting −1.8 ±1.4, double −2.7 ±1.5.
 
 T6 fails its reading condition: reading −1.9 ±1.8, blind gain −3.3. Reading the
-new paid offers can be worse than taking defaults. Code audit: guests effects
-only add repeatGuest history, improving capped website/word-of-mouth reach;
-they do not directly add a booking request. The generic conditional reader treats
-those effects as helpful even after saturation. Correct this actual assumption
-before any arbitrary penalty or sweep of invitation counts/fees. Event-table
-contributions remain pending; no further change is applied during this campaign.
+new paid offers can be worse than taking defaults. The initial audit incorrectly
+attributed this to capped repeat reach. A follow-up traced inbox `guests` effects
+to `eventGuests`, then `sentRequests` in bookings: invitations add requests directly,
+independent of the repeat-reach cap. Do not implement the proposed saturation
+filter. Event-table contributions are needed to explain the losses.
 
 T7 still fails at −1.5 ±1.4. The tested ticket setting does not fix either
 fitness or climbing and is marked for reversion after source-frozen work.
@@ -218,13 +217,34 @@ All four leisure matrices total 119,000 newly measured results. Manifest and
 per-unit hashes: ../proof/shared1-main-manifest.json and shared1-*-comparison.json.
 This is main only, 1,000 paired seeds per policy; no wide seeds or events.
 
-Before event tables, correct the now-observed reader error under judgement rule 1:
-visible repeat-contact counts already show when the existing reach rule is
-saturated. A guest-only reminder then has no benefit; the reader currently pays
-for it whenever its authored condition is true. Use public observed counts and
-the fixed scenario rule, with no hidden demand, role or seed access. Keep choices
-with another actual benefit eligible. Restore the two ticket settings whose
-experiment did not fix T7. These are bot corrections, not another economic round.
-Then collect event-table evidence against a sensible, identical-source careful
-reference. The prepared event tool rejects any source mismatch; no event table
-has been run against the known-bad reader merely to repeat the main finding.
+Before event tables, restore the two ticket settings whose experiment did not fix
+T7. Correct five fitness invitation references from nonexistent `yoga` to the actual
+`yoga_crowd` segment. Focused tests validate every rewritten mailing's target and
+preserve reader choices when repeat reach is full. These are corrections, not an
+economic round. Collect event-table evidence against an identical-source careful
+reference; no event tables have yet run.
+
+
+## Follow-up correction and measurement scope
+
+All 104 focused bot tests pass. The expanded invitation test checks guest segment
+references in every event of all four leisure scenarios and preserves useful
+invitations when repeat reach is full. Five fitness references were invalid:
+three sales mailings and two preparation sessions. No reader filter remains.
+Both ticket helpers return to their prior off-season calculations. No new value
+or formula round is spent, and no target wording changes.
+
+Only fitness/climbing main targets can move in this follow-up. Run their main
+matrices on 1,000 paired test seeds against shared1; regenerate only the careful
+escape/venue references needed for identical-source event-table reuse. The
+previous 195,000-result protected proof remains applicable: this correction
+changes only the two scenario-specific helpers, leisure tests and fitness data.
+All four affected event tables remain required for the shared content changes.
+No wide seeds and no full report are authorised at this point.
+
+Seed regeneration completed with 224 examples; only fitness/climbing rows change.
+All older-game rows remain identical. Full root tests run with no bot jobs active.
+
+Correction gate passed: 599 web plus 1,380 other tests, 1,979 total and 30 skipped.
+Lint and all typechecks pass. Logs: state/step2-botfix-full-tests.log and
+state/step2-botfix-final-lint-2.log. Source e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5.

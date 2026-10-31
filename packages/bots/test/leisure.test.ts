@@ -21,11 +21,16 @@ describe('contextual leisure invitations', () => {
   it.each(['ausgesperrt', 'fabriketage', 'schweissperle', 'griffig'] as const)(
     'reads %s season and crowding instead of always buying the mailing',
     (id) => {
-      const scenario = loadScenario(id, 'long')
+      const scenario = structuredClone(loadScenario(id, 'long'))
       const cards = scenario.events.filter((e) =>
         e.choices.some((c) => c.id === 'more' && c.label === 'Buy the invitation mailing'),
       )
       expect(cards).toHaveLength(10)
+      for (const card of scenario.events)
+        for (const choice of card.choices)
+          for (const fx of choice.effects)
+            if (fx.type === 'guests' && fx.segment)
+              expect(scenario.segments.some((segment) => segment.id === fx.segment)).toBe(true)
       for (const event of cards) {
         const benefit = event.choices.find((c) => c.id === 'act')!.effects[0]!
         const context =
@@ -100,6 +105,16 @@ describe('contextual leisure invitations', () => {
             messageId: 'context-card',
             choiceId: 'more',
           })
+          if (expected === 'more') {
+            // Invitations create requests directly, even after ordinary repeat reach is full.
+            for (const segment of view.bookings!.segments)
+              segment.repeatGuests = scenario.bookings!.website.repeatsFull
+            const mature = tourismPlayer(scenario, CAREFUL_TOURISM, 'context-visible')
+            expect(mature.respond!(view)).toContainEqual({
+              messageId: 'context-card',
+              choiceId: 'more',
+            })
+          }
         }
       }
     },
