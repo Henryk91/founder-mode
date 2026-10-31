@@ -1,265 +1,450 @@
 events:
-  - id: three_saturdays
-    area: sales
+  - id: 'three_saturdays'
+    area: 'sales'
     weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text:
-      A couple asks to hold three Saturdays while they talk to both sets of parents. The parents are
-      abroad and return next month. Your calendar is very good at displaying uncertainty.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A wedding planner offers a mailing to three couples and asks for clear arrival information for booked clients. Their parents have requested a separate version. In peak months, ask existing guests for feedback with clear visit notes; in the off season, paid invitations help if no slot was packed last week. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Apply the normal hold terms
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
         hours: 2
         effects:
-          - type: guests
-            segment: weddings
-            count: 1
-      - id: leave
-        label: Hold all three freely
-        hours: 0
-        effects: []
-  - id: christmas_exclusivity
-    area: sales
-    weight: 2
-    once: false
-    cooldownWeeks: 18
-    when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text:
-      An agency offers to sell your whole December if it gets an exclusive rate. Its forecast has
-      six events and no deposit. December itself has not agreed to wait.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Ask for guaranteed paid dates
-        hours: 3
+          - type: 'review'
+            rating: 4.5
+            count: 3
+            when:
+              - 'tour.peak == 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: guests
-            segment: companies
-            count: 2
-      - id: leave
-        label: Accept the forecast
-        hours: 0
-        effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: the_empty_tuesday
-    area: sales
-    weight: 2
-    once: false
-    cooldownWeeks: 18
-    when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text:
-      A film crew wants three quiet weekdays. They need a bare brick background and permission to
-      move the furniture. For once, the building’s unfinished appearance is in the brief.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Price the dates and the reset
-        hours: 3
-        effects:
-          - type: guests
-            segment: private_parties
-            count: 2
-      - id: leave
-        label: Offer the floor free for a credit
-        hours: 0
-        effects:
-          - type: cash
-            amountCents: -40000
-  - id: eleven_days
-    area: sales
-    weight: 2
-    once: false
-    cooldownWeeks: 18
-    when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text: A launch organiser has lost their venue and needs a floor next week. They have a budget, a
-      stage plan and very little sleep. Your enquiries form has never looked more useful.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Check the crew and take a deposit
-        hours: 4
-        effects:
-          - type: guests
-            segment: companies
-            count: 1
-      - id: leave
-        label: Promise everything immediately
-        hours: 0
-        effects:
-          - type: review
+          - type: 'guests'
+            segment: 'weddings'
+            count: 3
+            when:
+              - 'tour.peak == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
             rating: 2
-            count: 1
-  - id: the_planner_s_commission
-    area: sales
-    weight: 2
-    once: false
-    cooldownWeeks: 18
-    when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text: A wedding planner can send couples, provided the referral fee is clear. She also asks how
-      quickly a held date expires. These are more useful questions than whether you like weddings.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Agree written terms
-        hours: 3
-        effects:
-          - type: guests
-            segment: weddings
-            count: 1
-      - id: leave
-        label: Offer an indefinite free hold
-        hours: 0
-        effects: []
-  - id: the_weekday_package
-    area: sales
-    weight: 2
-    once: false
-    cooldownWeeks: 18
-    when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text:
-      An HR manager wants a day rate covering the screen, coffee and somebody who can find the light
-      switches. Your quotation currently prices each switch separately.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Send one clear conference offer
-        hours: 3
-        effects:
-          - type: guests
-            segment: companies
-            count: 1
-      - id: leave
-        label: Send the equipment list again
-        hours: 0
-        effects: []
-  - id: the_winter_cancellation
-    area: sales
-    weight: 2
-    once: false
-    cooldownWeeks: 18
-    when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text: A firm cuts its Christmas party after a difficult quarter. Its organiser asks whether the
-      deposit can move to a spring workshop. The cancelled Friday is now six weeks away.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Apply the stated terms
-        hours: 2
-        effects: []
-      - id: leave
-        label: Promise a full refund and no replacement date
-        hours: 0
-        effects:
-          - type: cash
-            amountCents: -80000
-  - id: the_fair_stand
-    area: sales
-    weight: 2
-    once: false
-    cooldownWeeks: 18
-    when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text: A wedding fair offers a free stand if you host its after-party. The after-party wants a
-      Saturday you can still sell. Free has brought a contract.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Price the Saturday before agreeing
-        hours: 3
-        effects:
-          - type: guests
-            segment: weddings
-            count: 1
-      - id: leave
-        label: Accept the stand at once
-        hours: 0
-        effects:
-          - type: cash
-            amountCents: -100000
-  - id: the_price_screenshot
-    area: sales
-    weight: 2
-    once: false
-    cooldownWeeks: 18
-    when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text: A couple sends a screenshot of a cheaper Sunday and asks for the same Saturday price. The
-      screenshot is accurate. So is the day of the week.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Explain the date prices
-        hours: 2
-        effects: []
-      - id: leave
-        label: Match every date to Sunday
-        hours: 0
-        effects:
-          - type: cash
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
             amountCents: -60000
-  - id: a_quiet_sunday
-    area: sales
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'christmas_exclusivity'
+    area: 'sales'
     weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: The booking desk
-    look: letter
-    text:
-      A makers’ market wants the floor on a Sunday. It pays less than a wedding and arrives with its
-      own audience. No wedding has asked about that Sunday.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'An agency offers a paid invitation campaign for company events. Its sales estimate contains more confidence than signatures. If a slot was packed last week, send existing guests clear access notes and request feedback; otherwise a paid invitation can reach new visitors. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Check the costs and quote
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
         hours: 2
         effects:
-          - type: guests
-            segment: private_parties
+          - type: 'review'
+            rating: 4.5
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'companies'
+            count: 3
+            when:
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_empty_tuesday'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A film club will circulate your private-event invitation. The brick wall is already their preferred cast member. Fix an outstanding snag before circulating invitations; with no snags and no packed slots last week, paid promotion has somewhere useful to send people. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Fix a snag before promising more visits'
+        hours: 2
+        effects:
+          - type: 'bugs'
+            delta: -1
+            when:
+              - 'bugs >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'private_parties'
+            count: 3
+            when:
+              - 'bugs == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'bugs >= 1'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'eleven_days'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A launch organiser offers an introduction to other teams as well as a practical update for booked clients. Everyone would prefer fewer attachments. Below 50 energy, take a break rather than launch another campaign; rested founders with no packed slots last week can use the paid invitations. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Defer the campaign and take a break'
+        hours: 2
+        effects:
+          - type: 'energy'
+            delta: 4
+            when:
+              - 'energy < 50'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'companies'
+            count: 3
+            when:
+              - 'energy >= 50'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'energy'
+            delta: -3
+            when:
+              - 'energy < 50'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_planner_s_commission'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A planner offers a paid invitation mailing to engaged couples. The invoice for publicity arrives before the couples do. Below EUR30,000 in cash, ask for a small free forwarding; above that, the full paid mailing reaches more people if no slot was packed last week. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Ask for a small free forwarding instead'
+        hours: 2
+        effects:
+          - type: 'guests'
+            segment: 'weddings'
             count: 1
-      - id: leave
-        label: Hold out for a wedding
+            when:
+              - 'cashEur < 30000'
+              - 'leisure.packed == 0'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'weddings'
+            count: 3
+            when:
+              - 'cashEur >= 30000'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_weekday_package'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A local employers group has space for a paid weekday-event invitation. It can also forward access notes to existing organisers. In peak months, ask existing guests for feedback with clear visit notes; in the off season, paid invitations help if no slot was packed last week. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
+        hours: 2
+        effects:
+          - type: 'review'
+            rating: 4.5
+            count: 3
+            when:
+              - 'tour.peak == 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'companies'
+            count: 3
+            when:
+              - 'tour.peak == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_winter_cancellation'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A bridal newsletter offers to circulate an invitation after another venue cancels its advertising. The empty space is in the newsletter, not necessarily your hall. If a slot was packed last week, send existing guests clear access notes and request feedback; otherwise a paid invitation can reach new visitors. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
+        hours: 2
+        effects:
+          - type: 'review'
+            rating: 4.5
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'weddings'
+            count: 3
+            when:
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_fair_stand'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A small wedding fair offers a paid invitation mailing and an organiser update. The sample centrepiece is larger than the desk. Fix an outstanding snag before circulating invitations; with no snags and no packed slots last week, paid promotion has somewhere useful to send people. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Fix a snag before promising more visits'
+        hours: 2
+        effects:
+          - type: 'bugs'
+            delta: -1
+            when:
+              - 'bugs >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'weddings'
+            count: 3
+            when:
+              - 'bugs == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'bugs >= 1'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_price_screenshot'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: "A neighbourhood organiser wants a current invitation to share. Last year's price screenshot is still making its own travel arrangements. Below 50 energy, take a break rather than launch another campaign; rested founders with no packed slots last week can use the paid invitations. The campaign costs EUR600; promoting already packed slots invites complaints."
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Defer the campaign and take a break'
+        hours: 2
+        effects:
+          - type: 'energy'
+            delta: 4
+            when:
+              - 'energy < 50'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'private_parties'
+            count: 3
+            when:
+              - 'energy >= 50'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'energy'
+            delta: -3
+            when:
+              - 'energy < 50'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'a_quiet_sunday'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A community group offers to circulate a private-event invitation. Its secretary can also send practical access notes to your booked hosts. Below EUR30,000 in cash, ask for a small free forwarding; above that, the full paid mailing reaches more people if no slot was packed last week. The campaign costs EUR600; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Ask for a small free forwarding instead'
+        hours: 2
+        effects:
+          - type: 'guests'
+            segment: 'private_parties'
+            count: 1
+            when:
+              - 'cashEur < 30000'
+              - 'leisure.packed == 0'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'private_parties'
+            count: 3
+            when:
+              - 'cashEur >= 30000'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
         hours: 0
         effects: []
   - id: the_agency_tasting

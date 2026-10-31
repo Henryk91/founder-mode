@@ -88,14 +88,16 @@ export function leisureWanted(
           week.slots.some((slot) => slot.load === 'packed') &&
           Object.values(week.turnedAway).some((n) => n > 0),
       ).length >= 3
-  const need =
-    rule.leisure?.rooms !== 'one' &&
+  const additionalOpeningArea =
+    (l.minimumAreas[segment] ?? 1) > Math.max(first.length, started.length)
+  const expansion =
     opened !== null &&
     (quarterly
       ? started.length < 1 + Math.floor((view.week - opened) / 13)
       : ((known || crowded) &&
           started.every((id) => view.product.features.find((f) => f.id === id)?.shipped)) ||
         (l.minimumAreas[segment] ?? 1) > started.length)
+  const need = rule.leisure?.rooms !== 'one' && (additionalOpeningArea || expansion)
   const next = need
     ? preferred.find((id) => !started.includes(id) && !first.includes(id))
     : undefined

@@ -1,0 +1,74 @@
+[
+  {
+    "scenario": "ausgesperrt",
+    "source": "42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8",
+    "baseline": "tuning2-speed",
+    "parts": "saved main only; no new games",
+    "runs": 1000,
+    "taskHashes": {
+      "C": "387279bc68adc3e6dbde5ad0da01ff397b5aad343b0a31777d77d586199ad662",
+      "N": "aafdbfc43ede92e7d606a484fac564778cb668020255adfccaeda886859031bf",
+      "E": "134cd589f4b4bb74e40e063b3b52ec704b84736443df700dbe1b1f1416eab003"
+    },
+    "readingGain": 10.8,
+    "blindGain": 8.9,
+    "readingMargin": 2.7741859663692336,
+    "blindLimitMargin": 2.0842449499892175,
+    "blindLimitExcess": 5.300000000000002,
+    "pass": false
+  },
+  {
+    "scenario": "fabriketage",
+    "source": "42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8",
+    "baseline": "tuning2-speed",
+    "parts": "saved main only; no new games",
+    "runs": 1000,
+    "taskHashes": {
+      "C": "d53878dbaeac3b949d6275219b63b207d5c2fcd16e426d11aa5c289030568b13",
+      "N": "64477afb5200ead06f1986be80c2a46445049eadded0d55adf274aae114078c8",
+      "E": "faecfd2c1adff5da544a14f2a3c3204d037d272971e134baeaab0cfe5d290330"
+    },
+    "readingGain": 15.4,
+    "blindGain": 15.9,
+    "readingMargin": 2.2881184724572288,
+    "blindLimitMargin": 1.8440569145229762,
+    "blindLimitExcess": 10.766666666666671,
+    "pass": false
+  },
+  {
+    "scenario": "schweissperle",
+    "source": "42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8",
+    "baseline": "tuning2-speed",
+    "parts": "saved main only; no new games",
+    "runs": 1000,
+    "taskHashes": {
+      "C": "007e0464560f087b7196e12dbe8b05753c5be62d67c5407f1789079bbfd4e5f9",
+      "N": "5ad259d69eddd9e7ba17ff8fb1cc439944db89951f0ccfa29401d81bb86469f9",
+      "E": "ff621e291bd5cb77350a0058ca82be205653b260c445a40bd9f4d53c030504c4"
+    },
+    "readingGain": 13.8,
+    "blindGain": 12.6,
+    "readingMargin": 2.3104401520056737,
+    "blindLimitMargin": 1.8849544173681112,
+    "blindLimitExcess": 8.000000000000004,
+    "pass": false
+  },
+  {
+    "scenario": "griffig",
+    "source": "42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8",
+    "baseline": "tuning2-speed",
+    "parts": "saved main only; no new games",
+    "runs": 1000,
+    "taskHashes": {
+      "C": "2ce31711045f8456383770d7c4ce2b6ba10fbf7222a0a72ded88f10ab7b225aa",
+      "N": "00d9a99a0baff3834646a4bc8dca61ba164bdce9919c79047119ad8ea993acb4",
+      "E": "6ac7eac5ac5a2a5d20b5955cf58092c5a43e4464d1d1f78fd95d1fc62e45024b"
+    },
+    "readingGain": 2.6,
+    "blindGain": 3.6999999999999997,
+    "readingMargin": 1.0969698190925765,
+    "blindLimitMargin": 1.1044522221948359,
+    "blindLimitExcess": 2.833333333333335,
+    "pass": false
+  }
+]

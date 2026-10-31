@@ -241,7 +241,9 @@ export function priceClimbing(
         : 1
     plan.prices[id] = {
       peak: Math.round((seg.price.peak * factor) / 100) * 100,
-      off: Math.round((seg.price.off * factor) / 100) * 100,
+      off:
+        Math.round(((rule.pricing === 'hints' ? seg.price.peak : seg.price.off) * factor) / 100) *
+        100,
     }
   }
 }

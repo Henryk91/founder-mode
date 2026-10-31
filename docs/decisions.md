@@ -1154,3 +1154,19 @@ AUTONOMOUS: Keep sorted immutable-content entries after 119 policies × 1,000 pa
 ### Tuning 2 step 1: complete proof and retain open speed failures
 
 AUTONOMOUS: All 314 policies × 1,000 paired seeds across all 13 units reproduce every baseline result on one common source; 21 original saved states replay identically. Serial T12 checks two slowest candidates in passing units and stops after one disproves a failing unit: escape 115.099 s maximum, venue 54.865 s, fitness 247.792 s, climbing 292.426 s. Keep both outcome-preserving optimisations and continue after the phase gate with fitness/climbing speed open; the two-round cap rules out a third optimisation. Profile costs and timing limitations are in docs/tuning2/reports/step1-speed.md.
+
+### Tuning 2 step 2: bot repair isolation and venue advances
+
+AUTONOMOUS: Focused regressions prove escape and venue review-blind bots still repair through generic inbox answers; extend the existing leisure repair guard without changing older games. Measure those two policies on 1,000 paired seeds with venue balance collection disabled to isolate the correction. Bot fixes spend no tuning round.
+
+AUTONOMOUS: Fabriketage already enables requestsAhead. Implement its specified wedding four-week/private one-week balance deadlines with separate paid-balance tracking, one-time refunds and commission settlement. Charge venue T3 formula round 1 conservatively: no value-only adjustment can implement missing collection/refund accounting. Values remain unchanged apart from the specified deadline configuration; passing targets must still be checked before retaining the change.
+
+### Tuning 2 step 2: scope before loan terms; contextual cards before numbers
+
+AUTONOMOUS: Eight sample loan traces per escape/venue/climbing expose a premature common-fit-out-only venue application and a postponed corporate second escape area. Fund the observed opening scope first; keep borrowing rates/costs. Climbing already funds its first wall plus six months, so retain terms pending full contributions. Leisure contracts use six-week average paid utilisation with existing coverage/affordability checks; fitness/climbing hint tickets stop needless off-season discounting. These are bot corrections, not value rounds.
+
+AUTONOMOUS: Rewrite ten cards per leisure unit with visible season, crowding, snag, energy and cash trade-offs, removing their fixed reader replies. Add five actual quoted, funded-opening preparation decisions each for fitness/climbing. Charge value round 1 to each T6 and to those two T5 targets; invitees use ordinary demand, prices and capacity, with no seed/hidden-role branches. Targets remain pending measurement; inventory and checks are in the shared report.
+
+### Tuning 2 step 2: each T6 limit uses its own confidence margin
+
+AUTONOMOUS: Leisure T6's blind limit needs the paired variance of effort − 2/3 no-inbox − 1/3 careful, including covariance on the same seeds; using reading's margin could misclassify boundary results. Correct only leisure reporting, show both margins, and add inside/outside-boundary regressions. No threshold, target wording or outcome changes; this spends no economic tuning round. Keep older-game reporting unchanged in this leisure-only plan.

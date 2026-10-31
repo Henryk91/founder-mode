@@ -128,51 +128,62 @@ describe('venue complaints and real receipts', () => {
     expect(getView(result.state).bookings!.leisure!.noise!.complaints).toBe(1)
   })
 
-  it('immediately refunds restricted future reservations and paid holds exactly once', () => {
-    const s = game({
-      holds: {
-        feeCents: 5000,
-        weeks: { min: 2, max: 4 },
-        lateReleaseShare: 0,
-        segments: { small_offices: { ask: 0, convert: 0, feeConversion: 1, noHoldConversion: 1 } },
-      },
-    })
-    s.bookings!.bookings = [
-      event({ units: 4, status: 'booked' }),
-      event({ id: 'future', week: 3, status: 'booked', depositCents: 3000 }),
-    ]
-    s.bookings!.leisure!.holds = [
-      {
-        id: 'held',
-        booking: event({ id: 'held-event', week: 5, status: 'booked' }),
-        releaseWeek: 5,
-        status: 'held',
-        feeCents: 5000,
-      },
-    ]
-    const before = structuredClone(s)
-    const result = applyBookings(s, operating(), rng())
-    expect(result.revenueCents).toBe(40000 - 3000 - 5000)
-    expect(result.state.bookings!.bookings.find((b) => b.id === 'future')).toMatchObject({
-      status: 'company_cancelled',
-      refundedCents: 3000,
-    })
-    expect(result.state.bookings!.leisure!.holds[0]).toMatchObject({
-      status: 'released',
-      refundedCents: 5000,
-    })
-    expect(getView(result.state).bookings!.leisure!.noise).toMatchObject({
-      receiptsCents: 40000,
-      refundsCents: 8000,
-      cancelledBookings: 1,
-      releasedHolds: 1,
-    })
-    expect(getView(result.state).bookings!.leisure!.holds!.calendar[0]!.refundedCents).toBe(5000)
-    const later = applyBookings({ ...result.state, week: 3 }, plan(), rng())
-    expect(later.revenueCents).toBe(0)
-    expect(later.state.bookings!.leisure!.noise!.refundsCents).toBe(8000)
-    expect(s).toEqual(before)
-  })
+  it.each([0, 7000])(
+    'immediately refunds restricted future reservations and paid holds exactly once (balance %i)',
+    (balance) => {
+      const s = game({
+        holds: {
+          feeCents: 5000,
+          weeks: { min: 2, max: 4 },
+          lateReleaseShare: 0,
+          segments: {
+            small_offices: { ask: 0, convert: 0, feeConversion: 1, noHoldConversion: 1 },
+          },
+        },
+      })
+      s.bookings!.bookings = [
+        event({ units: 4, status: 'booked' }),
+        event({
+          id: 'future',
+          week: 3,
+          status: 'booked',
+          depositCents: 3000,
+          ...(balance ? { balancePaidCents: balance } : {}),
+        }),
+      ]
+      s.bookings!.leisure!.holds = [
+        {
+          id: 'held',
+          booking: event({ id: 'held-event', week: 5, status: 'booked' }),
+          releaseWeek: 5,
+          status: 'held',
+          feeCents: 5000,
+        },
+      ]
+      const before = structuredClone(s)
+      const result = applyBookings(s, operating(), rng())
+      expect(result.revenueCents).toBe(40000 - 3000 - balance - 5000)
+      expect(result.state.bookings!.bookings.find((b) => b.id === 'future')).toMatchObject({
+        status: 'company_cancelled',
+        refundedCents: 3000 + balance,
+      })
+      expect(result.state.bookings!.leisure!.holds[0]).toMatchObject({
+        status: 'released',
+        refundedCents: 5000,
+      })
+      expect(getView(result.state).bookings!.leisure!.noise).toMatchObject({
+        receiptsCents: 40000,
+        refundsCents: 8000 + balance,
+        cancelledBookings: 1,
+        releasedHolds: 1,
+      })
+      expect(getView(result.state).bookings!.leisure!.holds!.calendar[0]!.refundedCents).toBe(5000)
+      const later = applyBookings({ ...result.state, week: 3 }, plan(), rng())
+      expect(later.revenueCents).toBe(0)
+      expect(later.state.bookings!.leisure!.noise!.refundsCents).toBe(8000 + balance)
+      expect(s).toEqual(before)
+    },
+  )
 
   it('earns ancillary receipts only for served units after installation and copies their public records', () => {
     const s = beginLeisure(game({ noise: undefined, extras }), plan(), rng()).state

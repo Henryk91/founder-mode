@@ -1,0 +1,19 @@
+{
+  "id": "fabriketage",
+  "source": "6af2d79f4189f2c8ab7be32155beb36fbb258a17dd8371b829dfdfece2c2ebf7",
+  "runs": 1000,
+  "parts": "review-blind main policy only",
+  "isolation": "balanceWeeksBefore removed; no other economic changes",
+  "before": {
+    "change": -1.8000000000000043,
+    "onlyFull": 33,
+    "onlyOther": 15,
+    "margin": 1.3533370666615172
+  },
+  "after": {
+    "change": -31.200000000000003,
+    "onlyFull": 313,
+    "onlyOther": 1,
+    "margin": 2.8849708657107787
+  }
+}

@@ -933,6 +933,9 @@ bookings:
           peak: 280000
           off: 230000
     strictKeepsDeposit: true
+    balanceWeeksBefore:
+      weddings: 4
+      private_parties: 1
     slotUpgrades:
       split_days:
         product: fit_out

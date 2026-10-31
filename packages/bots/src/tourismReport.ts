@@ -84,6 +84,23 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
   const price = vs('tourism_price_blind')
   const noInbox = vs('tourism_inbox_none')
   const effort = vs('tourism_inbox_effort')
+  // T6's second limit is E - N <= (C - N) / 3. Its paired uncertainty
+  // belongs to E - 2N/3 - C/3, not to the separate C - N comparison.
+  const blindLimitMargin = (() => {
+    if (!indoor || !noInbox || !effort) return noInbox?.margin ?? 0
+    const none = s('tourism_inbox_none')!
+    const blind = s('tourism_inbox_effort')!
+    const differences = all.map(
+      (i) =>
+        Number(winsOf(blind.results[i]!)) -
+        (2 / 3) * Number(winsOf(none.results[i]!)) -
+        Number(winsOf(careful.results[i]!)) / 3,
+    )
+    const n = differences.length
+    const mean = differences.reduce((sum, d) => sum + d, 0) / n
+    const variance = Math.max(0, differences.reduce((sum, d) => sum + d * d, 0) / n - mean * mean)
+    return 196 * Math.sqrt(variance / n)
+  })()
   const platform = vs('tourism_platform_only')
   const over = vs('tourism_overstaffing')
   const under = vs('tourism_understaffing')
@@ -188,12 +205,16 @@ export function evaluateTourismTargets(input: ReportInput): Target[] {
         noInbox && effort
           ? `reading ${signed(-noInbox.change)}, blind effort ${signed(effort.change - noInbox.change)}`
           : '-',
-      margin: noInbox ? fmtMargin(noInbox.margin) : '',
+      margin: noInbox
+        ? indoor
+          ? `reading ${fmtMargin(noInbox.margin)}; blind limit ${fmtMargin(blindLimitMargin)}`
+          : fmtMargin(noInbox.margin)
+        : '',
       pass:
         !!noInbox &&
         !!effort &&
         -noInbox.change + noInbox.margin >= 3 &&
-        effort.change - noInbox.change - noInbox.margin <= -noInbox.change / 3,
+        effort.change - noInbox.change - blindLimitMargin <= -noInbox.change / 3,
     },
     {
       id: 7,

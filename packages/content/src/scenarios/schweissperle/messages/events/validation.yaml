@@ -264,7 +264,7 @@ events:
     defaultChoice: leave
     choices:
       - id: act
-        label: Invite a paid premium trial
+        label: Invite a paid premium taster
         hours: 3
         effects:
           - type: guests

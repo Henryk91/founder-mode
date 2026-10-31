@@ -1,309 +1,449 @@
 events:
-  - id: six_thirty
-    area: sales
-    weight: 1
+  - id: 'six_thirty'
+    area: 'sales'
+    weight: 2
     once: false
-    cooldownWeeks: 12
+    cooldownWeeks: 18
     when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text:
-      The early class fills while the afternoon class has two bookings. One afternoon booking is an
-      instructor checking the app. The early members ask for another morning. Use the Calendar or
-      membership controls for any lasting change; this follow-up handles the conversation.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A nearby office offers to circulate a class invitation. The early risers have already asked whether enthusiasm counts as breakfast. In peak months, ask existing guests for feedback with clear visit notes; in the off season, paid invitations help if no slot was packed last week. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Check usable times and invite a trial
-        hours: 3
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
+        hours: 2
         effects:
-          - type: guests
-            segment: young_professionals
-            count: 3
-            when:
-              - leisure.open == 1
-      - id: leave
-        label: Leave the current offer unchanged
-        hours: 0
-        effects: []
-  - id: march_attendance
-    area: sales
-    weight: 1
-    once: false
-    cooldownWeeks: 12
-    when:
-      - week >= 12
-      - leisure.open == 1
-      - tour.month == 3
-    from: none
-    sender: Your studio notebook
-    look: note
-    text: Several January members have stopped coming and started sending cancellation emails. Their
-      evening reservations are still in the app. The instructor is still on the payroll. Use the
-      Calendar or membership controls for any lasting change; this follow-up handles the
-      conversation.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Check usable times and invite a trial
-        hours: 3
-        effects:
-          - type: guests
-            segment: young_professionals
-            count: 3
-            when:
-              - leisure.open == 1
-      - id: leave
-        label: Leave the current offer unchanged
-        hours: 0
-        effects: []
-  - id: cheap_afternoons
-    area: sales
-    weight: 1
-    once: false
-    cooldownWeeks: 12
-    when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text:
-      A member asks whether the off-peak offer includes the evening class she can actually attend.
-      It does not. The price is clear; her calendar is clearer. Use the Calendar or membership
-      controls for any lasting change; this follow-up handles the conversation.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Explain the usable slots
-        hours: 3
-        effects:
-          - type: review
+          - type: 'review'
             rating: 4.5
-            count: 1
+            count: 3
             when:
-              - leisure.members >= 10
-      - id: leave
-        label: Call it equivalent unlimited access
-        hours: 0
+              - 'tour.peak == 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
+          - type: 'guests'
+            segment: 'young_professionals'
+            count: 25
+            when:
+              - 'tour.peak == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
             rating: 2
-            count: 2
-            when:
-              - leisure.members >= 10
-  - id: the_sunday_class
-    area: sales
-    weight: 1
-    once: false
-    cooldownWeeks: 12
-    when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text:
-      Weekend yoga fills without the spin room making a sound. The teacher asks for a regular place
-      in the timetable. Sunday cleaning is not in the weekday quote. Use the Calendar or membership
-      controls for any lasting change; this follow-up handles the conversation.
-    defaultChoice: leave
-    choices:
-      - id: act
-        label: Check usable times and invite a trial
-        hours: 3
-        effects:
-          - type: guests
-            segment: yoga_crowd
             count: 3
             when:
-              - leisure.open == 1
-              - shipped.yoga_classes == 1
-      - id: leave
-        label: Leave the current offer unchanged
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
         hours: 0
         effects: []
-  - id: the_ten_class_balance
-    area: sales
-    weight: 1
+  - id: 'march_attendance'
+    area: 'sales'
+    weight: 2
     once: false
-    cooldownWeeks: 12
+    cooldownWeeks: 18
     when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text: A member asks how many visits remain on her pack. Your first answer counts bookings; hers
-      counts classes she actually attended. The difference has brought a screenshot. Use the
-      Calendar or membership controls for any lasting change; this follow-up handles the
-      conversation.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A yoga group asks for a fresh invitation and an update for current members. Its attendance spreadsheet has become an act of optimism. If a slot was packed last week, send existing guests clear access notes and request feedback; otherwise a paid invitation can reach new visitors. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Check usable times and invite a trial
-        hours: 3
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
+        hours: 2
         effects:
-          - type: guests
-            segment: young_professionals
+          - type: 'review'
+            rating: 4.5
             count: 3
             when:
-              - leisure.open == 1
-      - id: leave
-        label: Leave the current offer unchanged
+              - 'leisure.packed >= 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'yoga'
+            count: 25
+            when:
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
         hours: 0
         effects: []
-  - id: quiet_slot_proposal
-    area: sales
-    weight: 1
+  - id: 'cheap_afternoons'
+    area: 'sales'
+    weight: 2
     once: false
-    cooldownWeeks: 12
+    cooldownWeeks: 18
     when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text:
-      The aggregator offers to feature afternoon classes. Your own members mostly arrive after work.
-      The empty mats have no objection. Use the Calendar or membership controls for any lasting
-      change; this follow-up handles the conversation.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A neighbourhood mailing offers paid promotion for your classes. Its editor would like the actual opening times this time. Fix an outstanding snag before circulating invitations; with no snags and no packed slots last week, paid promotion has somewhere useful to send people. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Check usable times and invite a trial
-        hours: 3
+      - id: 'act'
+        label: 'Fix a snag before promising more visits'
+        hours: 2
         effects:
-          - type: guests
-            segment: young_professionals
+          - type: 'bugs'
+            delta: -1
+            when:
+              - 'bugs >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'young_professionals'
+            count: 25
+            when:
+              - 'bugs == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
             count: 3
             when:
-              - leisure.open == 1
-      - id: leave
-        label: Leave the current offer unchanged
+              - 'leisure.packed >= 1'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'bugs >= 1'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
         hours: 0
         effects: []
-  - id: a_platform_alternative
-    area: sales
-    weight: 1
+  - id: 'the_sunday_class'
+    area: 'sales'
+    weight: 2
     once: false
-    cooldownWeeks: 12
+    cooldownWeeks: 18
     when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text:
-      A direct member notices that her employer now pays for the aggregator. She asks why she should
-      keep both. The question has a calculator behind it. Use the Calendar or membership controls
-      for any lasting change; this follow-up handles the conversation.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A weekend group offers to circulate a class invitation. Sunday is available; your instructors and places still need checking. Below 50 energy, take a break rather than launch another campaign; rested founders with no packed slots last week can use the paid invitations. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Check usable times and invite a trial
-        hours: 3
+      - id: 'act'
+        label: 'Defer the campaign and take a break'
+        hours: 2
         effects:
-          - type: guests
-            segment: young_professionals
+          - type: 'energy'
+            delta: 4
+            when:
+              - 'energy < 50'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'yoga'
+            count: 25
+            when:
+              - 'energy >= 50'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
             count: 3
             when:
-              - leisure.open == 1
-      - id: leave
-        label: Leave the current offer unchanged
+              - 'leisure.packed >= 1'
+          - type: 'energy'
+            delta: -3
+            when:
+              - 'energy < 50'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
         hours: 0
         effects: []
-  - id: off_peak_payout
-    area: sales
-    weight: 1
+  - id: 'the_ten_class_balance'
+    area: 'sales'
+    weight: 2
     once: false
-    cooldownWeeks: 12
+    cooldownWeeks: 18
     when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text:
-      The aggregator offers a temporary higher payout for midday check-ins. The offer ends in six
-      weeks. A permanent instructor contract does not. Use the Calendar or membership controls for
-      any lasting change; this follow-up handles the conversation.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A workplace club wants to share your class invitation and remind current visitors how bookings work. Their old spreadsheet includes a class from last year. Below EUR30,000 in cash, ask for a small free forwarding; above that, the full paid mailing reaches more people if no slot was packed last week. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Check usable times and invite a trial
-        hours: 3
+      - id: 'act'
+        label: 'Ask for a small free forwarding instead'
+        hours: 2
         effects:
-          - type: guests
-            segment: young_professionals
+          - type: 'guests'
+            segment: 'young_professionals'
+            count: 6
+            when:
+              - 'cashEur < 30000'
+              - 'leisure.packed == 0'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'young_professionals'
+            count: 25
+            when:
+              - 'cashEur >= 30000'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
             count: 3
             when:
-              - leisure.open == 1
-      - id: leave
-        label: Leave the current offer unchanged
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
         hours: 0
         effects: []
-  - id: the_pack_discount
-    area: sales
-    weight: 1
+  - id: 'quiet_slot_proposal'
+    area: 'sales'
+    weight: 2
     once: false
-    cooldownWeeks: 12
+    cooldownWeeks: 18
     when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text:
-      A member sends a competitor's discounted class pack. She likes your early teacher and dislikes
-      the rival's timetable. The screenshot contains only one of those facts. Use the Calendar or
-      membership controls for any lasting change; this follow-up handles the conversation.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'An employee club offers a paid invitation mailing. The office has plenty of people and very few people who read the whole email. In peak months, ask existing guests for feedback with clear visit notes; in the off season, paid invitations help if no slot was packed last week. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Check usable times and invite a trial
-        hours: 3
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
+        hours: 2
         effects:
-          - type: guests
-            segment: young_professionals
+          - type: 'review'
+            rating: 4.5
             count: 3
             when:
-              - leisure.open == 1
-      - id: leave
-        label: Leave the current offer unchanged
+              - 'tour.peak == 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'corporate'
+            count: 25
+            when:
+              - 'tour.peak == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
         hours: 0
         effects: []
-  - id: premium_trial
-    area: sales
-    weight: 1
+  - id: 'a_platform_alternative'
+    area: 'sales'
+    weight: 2
     once: false
-    cooldownWeeks: 12
+    cooldownWeeks: 18
     when:
-      - week >= 12
-      - leisure.open == 1
-    from: none
-    sender: Your studio notebook
-    look: note
-    text: The reformer trial has paying bookings and several polite apologies. The instructor asks
-      whether next month is confirmed. The free taster photographs cannot answer that. Use the
-      Calendar or membership controls for any lasting change; this follow-up handles the
-      conversation.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A local community list offers a direct class invitation campaign. Its members still occupy ordinary places when they turn up. If a slot was packed last week, send existing guests clear access notes and request feedback; otherwise a paid invitation can reach new visitors. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Invite a paid premium trial
-        hours: 3
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
+        hours: 2
         effects:
-          - type: guests
-            segment: young_professionals
+          - type: 'review'
+            rating: 4.5
             count: 3
             when:
-              - leisure.open == 1
-              - shipped.reformer_pilates == 1
-      - id: leave
-        label: Keep the brochure for later
+              - 'leisure.packed >= 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'young_professionals'
+            count: 25
+            when:
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'off_peak_payout'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A yoga organiser offers to circulate an invitation for your quieter season. The printer requires payment in the present season. Fix an outstanding snag before circulating invitations; with no snags and no packed slots last week, paid promotion has somewhere useful to send people. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Fix a snag before promising more visits'
+        hours: 2
+        effects:
+          - type: 'bugs'
+            delta: -1
+            when:
+              - 'bugs >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'yoga'
+            count: 25
+            when:
+              - 'bugs == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'bugs >= 1'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_pack_discount'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A sports newsletter offers a paid invitation mailing and a separate update for current visitors. Neither creates another studio room. Below 50 energy, take a break rather than launch another campaign; rested founders with no packed slots last week can use the paid invitations. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Defer the campaign and take a break'
+        hours: 2
+        effects:
+          - type: 'energy'
+            delta: 4
+            when:
+              - 'energy < 50'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'young_professionals'
+            count: 25
+            when:
+              - 'energy >= 50'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'energy'
+            delta: -3
+            when:
+              - 'energy < 50'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'premium_trial'
+    area: 'sales'
+    weight: 2
+    once: false
+    cooldownWeeks: 18
+    when:
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A company wellbeing group offers to share your studio invitation. Its coordinator would also appreciate arrival instructions that fit on one page. Below EUR30,000 in cash, ask for a small free forwarding; above that, the full paid mailing reaches more people if no slot was packed last week. The campaign costs EUR400; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
+    choices:
+      - id: 'act'
+        label: 'Ask for a small free forwarding instead'
+        hours: 2
+        effects:
+          - type: 'guests'
+            segment: 'corporate'
+            count: 6
+            when:
+              - 'cashEur < 30000'
+              - 'leisure.packed == 0'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
+        effects:
+          - type: 'guests'
+            segment: 'corporate'
+            count: 25
+            when:
+              - 'cashEur >= 30000'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -40000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
         hours: 0
         effects: []

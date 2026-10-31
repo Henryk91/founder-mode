@@ -1182,6 +1182,33 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       )
   }
 
+  // Optional venue terms: the remaining price is due before the event, once only.
+  // Deposits stay distinct so strict cancellation can retain only that agreed deposit.
+  const balanceTerms = cfg.leisure?.balanceWeeksBefore
+  if (balanceTerms) {
+    for (let i = 0; i < bookings.length; i++) {
+      const x = bookings[i]!
+      const before = balanceTerms[x.segmentId]
+      if (
+        before === undefined ||
+        x.status !== 'booked' ||
+        x.week <= week ||
+        x.week - week > before ||
+        x.voucherId ||
+        x.memberId ||
+        x.aggregatorUser !== undefined
+      )
+        continue
+      const remaining = Math.max(
+        0,
+        x.units * x.priceCents - (x.depositCents ?? 0) - (x.balancePaidCents ?? 0),
+      )
+      if (remaining === 0) continue
+      bookings[i] = { ...x, balancePaidCents: (x.balancePaidCents ?? 0) + remaining }
+      out.revenueCents += remaining
+    }
+  }
+
   // 5. This week's bookings.
   const alternativeShipped = (id: FeatureId) => {
     const alt = cfg.products[id]?.alternative
@@ -1683,8 +1710,12 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   if (cfg.leisure) {
     for (const x of due) {
       if (x.status === 'cancelled' || x.status === 'company_cancelled') {
-        const refund = Math.max(0, (x.depositCents ?? 0) - (x.refundedCents ?? 0))
+        const refund = Math.max(
+          0,
+          (x.depositCents ?? 0) + (x.balancePaidCents ?? 0) - (x.refundedCents ?? 0),
+        )
         out.revenueCents -= refund
+        if (x.balancePaidCents) x.refundedCents = (x.refundedCents ?? 0) + refund
       }
     }
   }
@@ -1722,7 +1753,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const cut = x.channel === 'platform' ? Math.round(gross * cfg.platform.commission) : 0
     commission += cut
     // What a deposit already paid comes off what is due now.
-    const owed = gross - cut - (x.depositCents ?? 0)
+    const owed = gross - cut - (x.depositCents ?? 0) - (x.balancePaidCents ?? 0)
+    if (depositOnly && x.balancePaidCents) x.refundedCents = x.balancePaidCents
     let cost = 0
     if (x.status === 'served') {
       const prod = cfg.products[x.productId]
@@ -1741,6 +1773,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     if (
       !s.invoiced ||
       depositOnly ||
+      (x.balancePaidCents !== undefined && owed < 0) ||
       (cfg.leisure?.aggregator?.payOnVisit && x.aggregatorUser !== undefined)
     ) {
       out.revenueCents += owed

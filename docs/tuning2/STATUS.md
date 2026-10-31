@@ -1,10 +1,13 @@
 # Tuning run 2 status
 
 ## Current
-Step: 2, shared leisure patterns, ready to begin.
+Step: 2, shared first draft implemented; validate before main measurements.
 Last commit: tuning2-speed, finish speed proof and isolated timing gate.
-Next action: Implement shared leisure fixes, beginning with bot diagnostics
-and optional venue advance-balance accounting, then measure affected targets.
+Next action: Start state/shared1-main.sh on the committed shared draft.
+Measure four leisure main matrices, then prove the nine earlier units unchanged.
+1,980 full tests pass, 30 skipped; lint and all typechecks pass.
+All 225 ending examples regenerated; earlier-game seed rows unchanged.
+Leisure T6 confidence correction keeps all four baseline T6 failures open.
 Speed gate: 1,963 tests pass, 30 skipped; lint and all typechecks pass.
 Ausgesperrt candidates max 115.099 s; Fabriketage max 54.865 s.
 Schweißperle 247.792 s and Griffig 292.426 s remain over T12 after two rounds.
@@ -29,7 +32,22 @@ Original-save comparison: 21 full states across all 13 units replay identically.
 ## Running jobs and state
 Completed: round 2 main campaign, session 8532 exited successfully.
 Completed: serial T12 session 26715 exited successfully; no bot jobs active.
-No active jobs. Full pnpm test (session 11936) exited 0 after web then others.
+Completed: review-fix diagnostic 15868 and loan-scope trace 36712.
+Latest validation sessions 81631/68270/22420 completed.
+Completed: pnpm seeds, session 92983, exited 0.
+Shared full gate attempt 2: session 43874 exited 0; lint 94922 exited 0.
+Initial browser wording failures are fixed; no assertion weakened.
+No active jobs. Source will be frozen for the main campaign.
+Logs: state/step2-shared-seeds.log and state/step2-shared-full-tests-2.log.
+Prepared runner: scratch/tuning2-shared-main.tmp.ts; syntax checked, no games started.
+Only escape/venue review-blind policies, 1,000 test seeds; no tests overlap.
+Venue payment setting removed in the review diagnostic to isolate the bot fix.
+Loan scope: state/loan-scope/ (8 example seeds per scenario, not target estimates).
+Event inventory: proof/context-events-round1.json (40 rewrites, 10 new prep cards).
+Draft writer: state/rewrite-context-events.py; not needed by the game.
+Review-blind deltas now escape -31.7 ±3.0, venue -31.2 ±2.9.
+State: state/review-fix/; log: state/step2-review-fix.log.
+Full speed pnpm test (session 11936) exited 0 after web then others.
 Initial sandbox attempt could not bind browser ports; permitted run passes.
 Log: state/step1-full-tests.log.
 Timing evidence: proof/t12-<scenario>.json; raw state: state/t12-round2/.
@@ -61,11 +79,14 @@ Existing edits are the tuning plan and the backlog price-realism note; preserve 
 34 first-pass targets: Ausgesperrt 8, Fabriketage 6, Schweißperle 8, Griffig 12.
 Details and closest results: docs/BACKLOG.md, section 3.
 Speed also measures Ausgesperrt and Fabriketage, whose final report timings exceed T12.
-All tuning budgets unused: up to 3 value rounds, then 2 formula rounds per target.
+T6 value round 1 in all four; T5 round 1 in fitness/climbing.
+Venue T3 uses formula round 1 for advance accounting. Other budgets unused.
+Numeric changes cannot implement a missing payment deadline or refund ledger.
 Per-target budget and closest baseline evidence: BUDGET.json.
 Speed budget: both rounds complete; no third round. Fitness/climbing T12 open.
 
 ## For Henry to review (non-blocking)
+- Shared draft tested; target effects still pending. Decisions: Tuning 2 step 2.
 - Fitness remains over T12 at 247.792 s after two speed rounds; step1-speed report.
 - Content-entry memoisation verified on 119,000 outcomes and 21 saved states.
 - Final speed round removes duplicate availability/room evaluation; decisions, Tuning 2 step 1.

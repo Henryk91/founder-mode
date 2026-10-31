@@ -665,6 +665,78 @@ describe('leisure integration boundaries', () => {
     },
   )
 
+  it('collects the remaining balance at its deadline once, including late confirmations', () => {
+    const scenario = leisureScenario({ balanceWeeksBefore: { small_offices: 4 } })
+    for (const segment of Object.values(scenario.bookings.segments))
+      segment.base = { min: 0, max: 0 }
+    const s = open(createGame(scenario, 'advance-deadline'))
+    s.bookings!.bookings = [booking({ week: 6, depositCents: 3000 })]
+    const original = structuredClone(s)
+    const early = applyBookings(s, plan(), rng())
+    expect(early.revenueCents).toBe(0)
+    const deadline = applyBookings({ ...early.state, week: 2 }, plan(), rng())
+    expect(deadline.revenueCents).toBe(7000)
+    expect(deadline.state.bookings!.bookings[0]).toMatchObject({
+      depositCents: 3000,
+      balancePaidCents: 7000,
+    })
+    const repeat = applyBookings({ ...deadline.state, week: 3 }, plan(), rng())
+    expect(repeat.revenueCents).toBe(0)
+    const late = applyBookings({ ...s, week: 5 }, plan(), rng())
+    expect(late.revenueCents).toBe(7000)
+    expect(s).toEqual(original)
+  })
+
+  it.each(['served', 'flexible', 'strict', 'company'] as const)(
+    'settles prepaid platform balances correctly when %s, without a negative invoice',
+    (mode) => {
+      const scenario = leisureScenario({
+        balanceWeeksBefore: { small_offices: 4 },
+        strictKeepsDeposit: true,
+      })
+      for (const segment of Object.values(scenario.bookings.segments)) {
+        segment.base = { min: 0, max: 0 }
+        segment.cancel = mode === 'flexible' || mode === 'strict' ? 1 : 0
+        segment.invoiced = true
+      }
+      const s = open(createGame(scenario, 'advance-settlement'))
+      s.bookings!.policy = mode === 'strict' ? 'strict' : 'flexible'
+      s.bookings!.bookings = [
+        booking({ bookedWeek: 0, depositCents: 3000, balancePaidCents: 7000, channel: 'platform' }),
+      ]
+      const original = structuredClone(s)
+      const result = applyBookings(
+        s,
+        plan({
+          bookings: {
+            shifts: mode === 'company' ? {} : { guide: 1 },
+            founderShifts: {},
+            prices: {},
+            policy: null,
+            platform: null,
+            partnerships: [],
+            outreach: {},
+          },
+        }),
+        rng(),
+      )
+      const commission = scenario.bookings.platform.commission
+      expect(result.revenueCents).toBe(
+        mode === 'served'
+          ? -Math.round(10000 * commission)
+          : mode === 'strict'
+            ? -7000 - Math.round(3000 * commission)
+            : -10000,
+      )
+      expect(result.state.invoices).toHaveLength(0)
+      if (mode !== 'served')
+        expect(result.state.bookings!.bookings[0]!.refundedCents).toBe(
+          mode === 'strict' ? 7000 : 10000,
+        )
+      expect(s).toEqual(original)
+    },
+  )
+
   it('rechecks the particular slot at service, even when another slot still has space', () => {
     const c = leisureConfig()
     c.products.basic_ordering!.capacity = { daytime: 6, evening: 2 }

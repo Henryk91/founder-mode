@@ -15,11 +15,240 @@ import { TOURISM_STRATEGIES } from '../src/strategies/tourism'
 import { evaluateTourismTargets } from '../src/tourismReport'
 import { PlanBuilder } from '../src/strategy'
 import { leisureBuildOrder, leisureWanted, planLeisure } from '../src/strategies/leisure'
-import { CAREFUL_TOURISM } from '../src/strategies/tourism'
+import { CAREFUL_TOURISM, tourismPlayer } from '../src/strategies/tourism'
+
+describe('contextual leisure invitations', () => {
+  it.each(['ausgesperrt', 'fabriketage', 'schweissperle', 'griffig'] as const)(
+    'reads %s season and crowding instead of always buying the mailing',
+    (id) => {
+      const scenario = loadScenario(id, 'long')
+      const cards = scenario.events.filter((e) =>
+        e.choices.some((c) => c.id === 'more' && c.label === 'Buy the invitation mailing'),
+      )
+      expect(cards).toHaveLength(10)
+      for (const event of cards) {
+        const benefit = event.choices.find((c) => c.id === 'act')!.effects[0]!
+        const context =
+          benefit.type === 'bugs'
+            ? 'snags'
+            : benefit.type === 'energy'
+              ? 'energy'
+              : benefit.type === 'guests'
+                ? 'cash'
+                : benefit.when.some((c) => c.path === 'tour.peak')
+                  ? 'season'
+                  : 'crowding'
+        for (const expected of ['more', 'act', 'leave'] as const) {
+          const state = createGame(scenario, 'context-visible')
+          state.week = 20
+          state.company.cashCents = 100000000
+          state.product.features = state.product.features.map((f) => ({ ...f, shippedWeek: 0 }))
+          state.bookings!.leisure!.openingWeek = 1
+          const view = getView(state)
+          view.bookings!.peak = expected === 'act' && context === 'season'
+          view.bookings!.reviews = expected === 'leave' ? 0 : 10
+          const packed = expected === 'leave' || (expected === 'act' && context === 'crowding')
+          view.bookings!.leisure!.load = [
+            {
+              productId: scenario.bookings!.leisure!.opening!.areas[0]!,
+              slotId: scenario.bookings!.leisure!.slots[0]!.id,
+              visits: packed ? 100 : 0,
+              turnedAway: packed ? 10 : 0,
+              aggregator: 0,
+              load: packed ? 'packed' : 'quiet',
+            },
+          ]
+          view.product.bugs = expected === 'act' && context === 'snags' ? 3 : 0
+          view.founder.energy = expected === 'act' && context === 'energy' ? 30 : 100
+          if (expected === 'act' && context === 'cash') view.company.cashCents = 1000000
+          view.inbox = [
+            {
+              id: 'context-card',
+              eventId: event.id,
+              week: 20,
+              expiresWeek: 21,
+              fromRole: 'none',
+              fromName: event.sender,
+              look: event.look,
+              text: event.text,
+              answeredChoiceId: null,
+              choices: event.choices.map((c) => ({
+                id: c.id,
+                label: c.label,
+                hours: c.hours,
+                costCents: c.effects.reduce(
+                  (sum, fx) =>
+                    sum + (fx.type === 'cash' && fx.amountCents < 0 ? -fx.amountCents : 0),
+                  0,
+                ),
+                possibleCostCents: 0,
+                monthlyCostCents: 0,
+              })),
+            },
+          ]
+          const reader = tourismPlayer(scenario, CAREFUL_TOURISM, 'context-visible')
+          const effort = tourismPlayer(
+            scenario,
+            { ...CAREFUL_TOURISM, inbox: 'effort' },
+            'context-visible',
+          )
+          expect(
+            reader.respond!(view).find((a) => a.messageId === 'context-card')?.choiceId ??
+              event.defaultChoice,
+          ).toBe(expected)
+          expect(effort.respond!(view)).toContainEqual({
+            messageId: 'context-card',
+            choiceId: 'more',
+          })
+        }
+      }
+    },
+  )
+})
+
+describe('leisure review-blind comparison', () => {
+  it.each(['ausgesperrt', 'fabriketage'] as const)(
+    'does not repair %s snags through inbox answers',
+    (id) => {
+      const scenario = loadScenario(id, 'long')
+      const state = createGame(scenario, 'snag-check')
+      state.product.bugs = 3
+      state.product.features = state.product.features.map((f) => ({ ...f, shippedWeek: 0 }))
+      state.bookings!.leisure!.openingWeek = 1
+      const view = getView(state)
+      const event = scenario.events.find((e) =>
+        e.choices.some((c) => c.effects.some((fx) => fx.type === 'bugs' && fx.delta < 0)),
+      )!
+      const repair = event.choices.find((c) =>
+        c.effects.some((fx) => fx.type === 'bugs' && fx.delta < 0),
+      )!
+      view.inbox = [
+        {
+          id: 'snag-card',
+          eventId: event.id,
+          week: view.week,
+          expiresWeek: view.week + 1,
+          fromRole: 'none',
+          fromName: event.sender,
+          look: event.look,
+          text: event.text,
+          answeredChoiceId: null,
+          choices: event.choices.map((c) => ({
+            id: c.id,
+            label: c.label,
+            hours: c.hours,
+            costCents: 0,
+            possibleCostCents: 0,
+            monthlyCostCents: 0,
+          })),
+        },
+      ]
+      const careful = tourismPlayer(scenario, CAREFUL_TOURISM, 'snag-check')
+      const blind = tourismPlayer(scenario, { ...CAREFUL_TOURISM, reviews: false }, 'snag-check')
+      const answer = { messageId: 'snag-card', choiceId: repair.id }
+      expect(careful.respond!(view)).toContainEqual(answer)
+      expect(blind.respond!(view)).not.toContainEqual(answer)
+    },
+  )
+})
 
 describe('Ausgesperrt players', () => {
   const scenario = loadScenario('ausgesperrt', 'long')
   const strategies = TOURISM_STRATEGIES.filter((s) => playsIn(s, scenario))
+  it.each([
+    [340, true],
+    [400, false],
+  ] as const)('judges a %i-win blind policy by its own paired limit margin', (effortWins, pass) => {
+    const sample = runGame(
+      scenario,
+      strategies.find((s) => s.id === 'tourism_careful')!,
+      'margin-shape',
+    )
+    const rows = (id: string, wins: number) => ({
+      id,
+      description: '',
+      seconds: 0,
+      results: Array.from({ length: 1000 }, (_, i) => ({
+        ...sample,
+        seed: `paired-${i}`,
+        ending: i < wins ? ('sustainable' as const) : ('bankrupt' as const),
+      })),
+    })
+    const targets = evaluateTourismTargets({
+      engineVersion: 'test',
+      runs: 1000,
+      seedPrefix: 'paired',
+      maxWeeks: 104,
+      tourism: true,
+      strategies: [
+        rows('tourism_careful', 1000),
+        rows('tourism_inbox_none', 0),
+        rows('tourism_inbox_effort', effortWins),
+      ],
+    })
+    const target = targets.find((t) => t.id === 6)!
+    // Reading gains exactly 100 points. 34 is within its own 95% margin of
+    // the 33 1/3-point blind limit; 40 is outside it. Reading's margin is zero.
+    expect(target.pass).toBe(pass)
+    expect(target.margin).toContain('blind limit')
+  })
+  it('includes the public two-area requirement in the corporate opening plan', () => {
+    const view = getView(createGame(scenario, 'corporate-opening-scope'))
+    const corporate = leisureWanted(
+      scenario,
+      view,
+      CAREFUL_TOURISM,
+      ['meeting_room'],
+      'companies',
+      'corporate-opening-scope',
+    )
+    const locals = leisureWanted(
+      scenario,
+      view,
+      CAREFUL_TOURISM,
+      [],
+      'locals',
+      'corporate-opening-scope',
+    )
+    const areas = scenario.bookings!.leisure!.opening!.areas
+    expect(corporate.filter((id) => areas.includes(id))).toHaveLength(2)
+    expect(corporate).toContain('meeting_room')
+    expect(locals.filter((id) => areas.includes(id))).toHaveLength(1)
+  })
+  it('signs from sustained paid utilisation even with a quiet week, before winning', () => {
+    const state = createGame(scenario, 'intermittent-contract')
+    state.company.cashCents = 100000000
+    state.product.features.find((f) => f.id === 'heist')!.shippedWeek = 1
+    state.bookings!.leisure!.openingWeek = 1
+    const player = tourismPlayer(
+      scenario,
+      { ...CAREFUL_TOURISM, contracts: 'permanent' },
+      'intermittent-contract',
+    )
+    let last: ReturnType<typeof player.plan>
+    for (let i = 0; i < 6; i++) {
+      state.week = 20 + i
+      state.bookings!.bookings =
+        i === 0
+          ? []
+          : ['daytime', 'evening', 'weekend'].map((slotId) => ({
+              id: slotId,
+              productId: 'heist',
+              segmentId: 'locals',
+              week: state.week,
+              units: 30,
+              priceCents: 12500,
+              channel: 'direct' as const,
+              bookedWeek: 19,
+              status: 'booked' as const,
+              slotId,
+            }))
+      last = player.plan(getView(state))
+      if (i === 0) expect(last.bookings!.hire ?? []).toHaveLength(0)
+    }
+    expect(last!.bookings!.hire).toContainEqual({ roleId: 'game_master', kind: 'permanent' })
+    expect(state.status).toBe('running')
+  })
   it('uses existing permanent shifts before adding seasonal contracts', () => {
     const state = createGame(scenario, 'contract-coverage')
     state.week = 20

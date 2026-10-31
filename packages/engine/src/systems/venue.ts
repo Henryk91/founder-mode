@@ -58,7 +58,10 @@ export function beginVenue(input: GameState): { state: GameState; refundCents: n
   const bookings = input.bookings!.bookings.map((b) => {
     if (b.status !== 'booked' || b.week < input.week || venueOpen(input, b.productId, b.week))
       return b
-    const refund = Math.max(0, (b.depositCents ?? 0) - (b.refundedCents ?? 0))
+    const refund = Math.max(
+      0,
+      (b.depositCents ?? 0) + (b.balancePaidCents ?? 0) - (b.refundedCents ?? 0),
+    )
     refundCents += refund
     cancelled += b.units
     return {

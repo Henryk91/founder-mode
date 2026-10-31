@@ -1104,6 +1104,18 @@ cancellations keep the full agreed payment as before, including Ausgesperrt.
 
 ### Venue bot observations
 
+Optional `bookings.leisure.balanceWeeksBefore` maps segment IDs to positive whole
+weeks before service when the remaining agreed price is collected. Fabriketage
+uses weddings 4 and private parties 1; requests already made inside that window
+pay on their next booking settlement. `Booking.balancePaidCents?` records this
+separately from `depositCents?`. Collection is once only, excludes vouchers and
+membership/aggregator visits, and never changes unconfigured scenarios or RNG.
+Service subtracts both payments and settles commission once, directly in cash if
+negative rather than issuing a negative invoice. Flexible and company cancellation
+refund both advances; deposit-only strict cancellation refunds the balance and
+keeps just the original deposit. `refundedCents?` also records balance refunds.
+Future venue restrictions return the entire advance exactly once.
+
 Bot `RunResult.tourism.leisure.venue` is optional and present only with the noise
 configuration. It records actual late service, restriction count, late receipts,
 attributable costs/net and observed hold/converted/late-release counts. V3 uses

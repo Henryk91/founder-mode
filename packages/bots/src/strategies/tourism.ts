@@ -408,6 +408,12 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       b.plan.loan = p
       return
     }
+    // A venue's first interviews identify the equipment the opening loan needs.
+    // Write the common plan in week 1, then submit with that evidence in week 2.
+    if (cfg.leisure?.noise && rule.tests && view.week < 2 && runningLoans.length === 0) {
+      b.plan.loan = p
+      return
+    }
     const step = l.stepCents
     const roundUp = (c: number) => Math.ceil(c / step) * step
     // The most the bank's stated own-money rule allows on top of what is already borrowed.
@@ -621,7 +627,15 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       const contracted = mine.reduce((t, c) => t + c.shifts, 0)
       const recent = hist.slice(-3)
       const recentAvg = recent.length ? recent.reduce((t, x) => t + x, 0) / recent.length : 0
-      const steady = hist.length >= STEADY_WEEKS ? Math.min(...hist.slice(-STEADY_WEEKS)) : 0
+      // Leisure cover can pay across a month with occasional quiet weeks. Requiring the
+      // cheapest week's demand to cover payroll prevented even useful venue contracts.
+      const stable = hist.slice(-STEADY_WEEKS)
+      const steady =
+        hist.length < STEADY_WEEKS
+          ? 0
+          : cfg.leisure
+            ? stable.reduce((sum, shifts) => sum + shifts, 0) / stable.length
+            : Math.min(...stable)
       const option = (k: string) =>
         mode === 'careful' || mode === k ? r.contracts.find((c) => c.kind === k) : undefined
       const seasonal = option('seasonal')
@@ -843,7 +857,7 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
           answers.push({ messageId: message.id, choiceId: 'leave' })
         }
       }
-      if ((cfg.leisure?.classStaffing || cfg.leisure?.hall) && !rule.reviews) {
+      if (cfg.leisure && !rule.reviews) {
         for (let i = answers.length - 1; i >= 0; i--) {
           const answer = answers[i]!
           const message = view.inbox.find((m) => m.id === answer.messageId)
@@ -1068,7 +1082,9 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         ...(rule.temptationEarly ? [rule.temptationEarly] : []),
         ...(cfg.leisure.hall
           ? climbingWanted(scenario, view, rule, [], rank(view)[0]?.id ?? ids[0]!)
-          : cfg.leisure.opening!.areas),
+          : cfg.leisure.noise && view.week >= 2
+            ? withRequired(wanted(view, rank(view)[0]?.id ?? ids[0]!), view)
+            : cfg.leisure.opening!.areas),
       ])
 
     // This week's guests come first: the roster.

@@ -72,6 +72,12 @@ describe('fitness players', () => {
     const p = empty()
     priceFitness(spec, v, p, CAREFUL_TOURISM)
     expect(p.prices.young_professionals!.peak).toBe(2600)
+    expect(p.prices.young_professionals!.off).toBe(2600)
+    const fixed = empty()
+    priceFitness(spec, v, fixed, { ...CAREFUL_TOURISM, pricing: 'fixed' })
+    expect(fixed.prices.young_professionals!.off).toBe(
+      spec.bookings!.segments.young_professionals!.price.off,
+    )
     expect(p.leisure!.offers!.monthly_membership).toEqual({ enabled: true, priceCents: 13900 })
     expect(p.leisure!.offers!.premium_pack!.enabled).toBe(false)
   })

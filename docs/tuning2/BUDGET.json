@@ -60,14 +60,27 @@
       "target": "T6",
       "options": "Use the event table to find choices where effort substitutes for reading",
       "status": "open",
-      "valuesUsed": 0,
+      "valuesUsed": 1,
       "formulasUsed": 0,
-      "changes": [],
+      "changes": [
+        {
+          "kind": "values",
+          "round": 1,
+          "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
+          "measurement": "Pending main and affected event tables on 1000 paired seeds."
+        }
+      ],
       "closestFirstPass": "reading +10.8, blind effort +8.9 ±2.8; round 1 +4.4 / +5.6 was closer to the blind limit",
       "baselineResult": {
         "value": "reading +10.8, blind effort +8.9",
         "margin": "±2.8",
         "met": "no"
+      },
+      "baselineConfidenceAudit": {
+        "readingMargin": 2.7741859663692336,
+        "blindLimitMargin": 2.0842449499892175,
+        "blindLimitExcess": 5.300000000000002,
+        "pass": false
       }
     },
     {
@@ -151,8 +164,16 @@
       "options": "Wedding long-lead cash, forward deposits and a viable mixed calendar; do not exclude weddings",
       "status": "open",
       "valuesUsed": 0,
-      "formulasUsed": 0,
-      "changes": [],
+      "formulasUsed": 1,
+      "changes": [
+        {
+          "kind": "formula",
+          "round": 1,
+          "change": "Optional separate advance-balance accounting; wedding 4 weeks and private 1 week before service, as specified.",
+          "reason": "Missing payment collection/refund behaviour cannot be supplied by value-only rounds.",
+          "measurement": "Pending; focused accounting tests pass."
+        }
+      ],
       "closestFirstPass": "58.8 ±5.8 in round 1; final 62.2 (companies 72.0%, private parties 55.7%, weddings 9.7%)",
       "baselineResult": {
         "value": "62.2 points (companies 72.0%, private_parties 55.7%, weddings 9.7%)",
@@ -165,14 +186,27 @@
       "target": "T6",
       "options": "More contextual choices with observable consequences; review reader decisions before values",
       "status": "open",
-      "valuesUsed": 0,
+      "valuesUsed": 1,
       "formulasUsed": 0,
-      "changes": [],
+      "changes": [
+        {
+          "kind": "values",
+          "round": 1,
+          "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
+          "measurement": "Pending main and affected event tables on 1000 paired seeds."
+        }
+      ],
       "closestFirstPass": "reading +15.4, blind effort +15.9 ±2.3",
       "baselineResult": {
         "value": "reading +15.4, blind effort +15.9",
         "margin": "±2.3",
         "met": "no"
+      },
+      "baselineConfidenceAudit": {
+        "readingMargin": 2.2881184724572288,
+        "blindLimitMargin": 1.8440569145229762,
+        "blindLimitExcess": 10.766666666666671,
+        "pass": false
       }
     },
     {
@@ -255,9 +289,16 @@
       "target": "T5",
       "options": "Genuine preparation decisions in pre-opening weeks 8 to 12; no relabelled routine news",
       "status": "open",
-      "valuesUsed": 0,
+      "valuesUsed": 1,
       "formulasUsed": 0,
-      "changes": [],
+      "changes": [
+        {
+          "kind": "values",
+          "round": 1,
+          "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
+          "measurement": "Pending main and affected event tables on 1000 paired seeds."
+        }
+      ],
       "closestFirstPass": "early 71.7% (closest 71.8%); year 2 92.9%",
       "baselineResult": {
         "value": "71.7%; year 2 92.9%",
@@ -270,14 +311,27 @@
       "target": "T6",
       "options": "Replies too often reward the same effort choice; review contextual trade-offs",
       "status": "open",
-      "valuesUsed": 0,
+      "valuesUsed": 1,
       "formulasUsed": 0,
-      "changes": [],
+      "changes": [
+        {
+          "kind": "values",
+          "round": 1,
+          "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
+          "measurement": "Pending main and affected event tables on 1000 paired seeds."
+        }
+      ],
       "closestFirstPass": "reading +13.8, blind effort +12.6 ±2.3",
       "baselineResult": {
         "value": "reading +13.8, blind effort +12.6",
         "margin": "±2.3",
         "met": "no"
+      },
+      "baselineConfidenceAudit": {
+        "readingMargin": 2.3104401520056737,
+        "blindLimitMargin": 1.8849544173681112,
+        "blindLimitExcess": 8.000000000000004,
+        "pass": false
       }
     },
     {
@@ -382,9 +436,16 @@
       "target": "T5",
       "options": "Genuine pre-opening preparation decisions; no relabelled routine news",
       "status": "open",
-      "valuesUsed": 0,
+      "valuesUsed": 1,
       "formulasUsed": 0,
-      "changes": [],
+      "changes": [
+        {
+          "kind": "values",
+          "round": 1,
+          "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
+          "measurement": "Pending main and affected event tables on 1000 paired seeds."
+        }
+      ],
       "closestFirstPass": "early 82.6%; year 2 100%",
       "baselineResult": {
         "value": "82.6%; year 2 100.0%",
@@ -397,14 +458,27 @@
       "target": "T6",
       "options": "Contextual trade-offs from the event table; no arbitrary effort penalties",
       "status": "open",
-      "valuesUsed": 0,
+      "valuesUsed": 1,
       "formulasUsed": 0,
-      "changes": [],
+      "changes": [
+        {
+          "kind": "values",
+          "round": 1,
+          "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
+          "measurement": "Pending main and affected event tables on 1000 paired seeds."
+        }
+      ],
       "closestFirstPass": "reading +2.6, blind effort +3.7 ±1.1; round 1 +2.0 / +2.7. Every event except the first wall moves outcomes by less than noise",
       "baselineResult": {
         "value": "reading +2.6, blind effort +3.7",
         "margin": "±1.1",
         "met": "no"
+      },
+      "baselineConfidenceAudit": {
+        "readingMargin": 1.0969698190925765,
+        "blindLimitMargin": 1.1044522221948359,
+        "blindLimitExcess": 2.833333333333335,
+        "pass": false
       }
     },
     {
@@ -549,5 +623,14 @@
         "met": "no"
       }
     }
-  ]
+  ],
+  "sharedCandidate": {
+    "label": "shared1",
+    "validation": "1980 full tests passed, 30 skipped; lint/typechecks pass",
+    "parts": "main",
+    "runs": 1000,
+    "protectedBaseline": "tuning2-speed",
+    "measurement": "Not started; source frozen on launch",
+    "fullReportStarted": false
+  }
 }

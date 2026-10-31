@@ -7621,3 +7621,16 @@ Ausgesperrt slowest two candidates 104.797 / 115.099 s, Fabriketage 51.127 /
 still fail after two speed rounds. Every timed result is identical to the proven
 main matrix. These isolated times are not directly comparable to the old full
 report's concurrent worker times. Timing evidence: `tuning2/proof/t12-*.json`.
+
+
+## Tuning 2 shared candidate (measurement pending)
+
+Isolated review-blind correction, main policy only, 1,000 paired test seeds each:
+Ausgesperrt +4.7 → −31.7 ±3.0 points against the saved careful result; Fabriketage
+−1.8 → −31.2 ±2.9. Venue balance collection was disabled in this diagnostic.
+The shared candidate adds advance-balance accounting, initial-loan scope fixes,
+utilisation-based contracts, hint ticket pricing and contextual cards. Full gate:
+1,980 tests passed, 30 skipped; lint/typechecks pass. Target effects still pending.
+Leisure T6 now uses the blind limit's own paired margin; all four saved baseline
+failures remain failures. No baseline games or full report were rerun. See
+`tuning2/reports/step2-shared.md` and `tuning2/BUDGET.json` for scope and budgets.

@@ -780,6 +780,8 @@ export const LeisureSchema = z
       })
       .optional(),
     strictKeepsDeposit: z.literal(true).optional(),
+    // Remaining balance collected this many weeks before service, by segment.
+    balanceWeeksBefore: z.record(Id, z.number().int().positive()).optional(),
     wtpBasis: z.literal('monthly').optional(),
     classStaffing: z.literal(true).optional(),
     instructorWorkload: z
@@ -1914,6 +1916,9 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
           ...leisure.noise.setupProducts,
         ])
           if (!bk.products[id]) issue(`unknown noise product ${id}`, ['bookings', 'leisure'])
+      for (const id of Object.keys(leisure.balanceWeeksBefore ?? {}))
+        if (!bk.segments[id])
+          issue(`unknown advance-balance segment ${id}`, ['bookings', 'leisure'])
       for (const id of Object.keys(leisure.slotUpgrades ?? {}))
         if (!featureIds.has(id)) issue(`unknown capacity upgrade ${id}`, ['bookings', 'leisure'])
       if (leisure.premiumNiche && !featureIds.has(leisure.premiumNiche.feature))

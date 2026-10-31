@@ -235,8 +235,11 @@ preparation note that called the 5,500 rate the whole location. The game's compa
 ### First-pass adaptations
 
 Strict guest cancellations retain the advance only. Company-caused and flexible
-cancellations return advances. Guest balances settle on the event date; the
-proposed four-week wedding and one-week private balance collections are deferred.
+cancellations return advances. Tuning 2 implements the originally specified
+balance deadlines: weddings four weeks before service and private parties one
+week before. Late confirmations pay inside that window; collection occurs once.
+The original deposit is tracked separately, so strict cancellation returns the
+extra balance while retaining only the agreed deposit.
 Company balances are invoiced after service with 30-day terms. Deposits are paid
 at booking and credited once at settlement. No supplier roster or hidden supplier
 selection is simulated; authored caterer incidents affect real reviews.

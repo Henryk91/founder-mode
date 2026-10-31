@@ -1,301 +1,449 @@
 events:
-  - id: first_snow
-    area: sales
-    weight: 1
+  - id: 'first_snow'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text: Outdoor climbers come back indoors on the same wet evening. The hall looks successful from
-      reception and crowded from the mats. Members ask whether next Tuesday will be similar. Use the
-      weekly wall,access and staff controls for lasting changes;this follow-up pays for the
-      conversation and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'An outdoor climbing club offers to circulate your hall invitation. Its members have noticed that rain does not respect the training plan. In peak months, ask existing guests for feedback with clear visit notes; in the off season, paid invitations help if no slot was packed last week. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Review busy-slot access
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
         hours: 2
         effects:
-          - type: guests
-            segment: students
+          - type: 'review'
+            rating: 4.5
             count: 3
-      - id: leave
-        label: Sell every available visit
-        hours: 0
+            when:
+              - 'tour.peak == 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: tuesday_waiting
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'committed'
+            count: 45
+            when:
+              - 'tour.peak == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'tuesday_waiting'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text: Climbers spend more time waiting for problems than climbing them. The visit counter still
-      calls every arrival a success. The cancellation inbox is beginning to disagree. Use the weekly
-      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
-      and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A university organiser offers a paid hall invitation mailing. The queue at reception is not the sort of route they came to work on. If a slot was packed last week, send existing guests clear access notes and request feedback; otherwise a paid invitation can reach new visitors. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Protect comfortable space
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
         hours: 2
         effects:
-          - type: guests
-            segment: families
+          - type: 'review'
+            rating: 4.5
             count: 3
-      - id: leave
-        label: Count the extra check-ins
-        hours: 0
+            when:
+              - 'leisure.packed >= 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: the_university_group
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'students'
+            count: 45
+            when:
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_university_group'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text:
-      A university sports organiser wants a discounted weekly group. Tuesday evening is convenient
-      for everyone, which is the problem. Thursday afternoon has more room than friends. Use the
-      weekly wall,access and staff controls for lasting changes;this follow-up pays for the
-      conversation and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A university club wants an invitation for new climbers and access notes for its current visitors. The committee has already chosen a typeface. Fix an outstanding snag before circulating invitations; with no snags and no packed slots last week, paid promotion has somewhere useful to send people. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Quote a quiet-slot group
+      - id: 'act'
+        label: 'Fix a snag before promising more visits'
         hours: 2
         effects:
-          - type: guests
-            segment: students
-            count: 3
-      - id: leave
-        label: Discount the busy evening
-        hours: 0
+          - type: 'bugs'
+            delta: -1
+            when:
+              - 'bugs >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: weekend_families
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'students'
+            count: 45
+            when:
+              - 'bugs == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'bugs >= 1'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'weekend_families'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text: Parents ask for somewhere children can climb without crossing a hard training area. The
-      children have already found the training area. A clear family slot would save several
-      conversations. Use the weekly wall,access and staff controls for lasting changes;this
-      follow-up pays for the conversation and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A parents group will circulate a family-climbing invitation. The children are enthusiastic about every wall, including the office wall. Below 50 energy, take a break rather than launch another campaign; rested founders with no packed slots last week can use the paid invitations. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Review the family area and cover
+      - id: 'act'
+        label: 'Defer the campaign and take a break'
         hours: 2
         effects:
-          - type: guests
-            segment: families
-            count: 3
-      - id: leave
-        label: Open every area to the party
-        hours: 0
+          - type: 'energy'
+            delta: 4
+            when:
+              - 'energy < 50'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: the_outdoor_forecast
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'families'
+            count: 45
+            when:
+              - 'energy >= 50'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'energy'
+            delta: -3
+            when:
+              - 'energy < 50'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_outdoor_forecast'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text: A warm weekend sends members to real rock. The desk rota has not read the forecast. Summer
-      does not cancel wages automatically. Use the weekly wall,access and staff controls for lasting
-      changes;this follow-up pays for the conversation and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A climbing club offers to circulate a hall invitation for its training calendar. The calendar contains both indoor enthusiasm and actual summer. Below EUR50,000 in cash, ask for a small free forwarding; above that, the full paid mailing reaches more people if no slot was packed last week. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Review the quiet-slot cover
+      - id: 'act'
+        label: 'Ask for a small free forwarding instead'
         hours: 2
         effects:
-          - type: guests
-            segment: students
-            count: 3
-      - id: leave
-        label: Keep the winter rota
-        hours: 0
+          - type: 'guests'
+            segment: 'committed'
+            count: 11
+            when:
+              - 'cashEur < 50000'
+              - 'leisure.packed == 0'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: june_pauses
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'committed'
+            count: 45
+            when:
+              - 'cashEur >= 50000'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'june_pauses'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text:
-      Members ask to freeze subscriptions while climbing outside. Several plan to return in autumn.
-      Your rent is committed to staying indoors. Use the weekly wall,access and staff controls for
-      lasting changes;this follow-up pays for the conversation and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A regional club offers a paid invitation mailing to returning climbers. Your rent has expressed an interest in their return too. In peak months, ask existing guests for feedback with clear visit notes; in the off season, paid invitations help if no slot was packed last week. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Apply clear pause terms
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
         hours: 2
         effects:
-          - type: guests
-            segment: families
+          - type: 'review'
+            rating: 4.5
             count: 3
-      - id: leave
-        label: Promise free months to everybody
-        hours: 0
+            when:
+              - 'tour.peak == 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: aggregator_tuesday
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'committed'
+            count: 45
+            when:
+              - 'tour.peak == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'aggregator_tuesday'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text: The aggregator supplies a large share of the evening visitors. Members say the hall is
-      crowded; the platform says the listing performs well. Both have evidence. Use the weekly
-      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
-      and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A campus newsletter offers direct hall invitations as well as an update for current visitors. Direct payment still takes up floor space. If a slot was packed last week, send existing guests clear access notes and request feedback; otherwise a paid invitation can reach new visitors. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Restrict full slots and review caps
+      - id: 'act'
+        label: 'Send visit notes and request feedback'
         hours: 2
         effects:
-          - type: guests
-            segment: students
+          - type: 'review'
+            rating: 4.5
             count: 3
-      - id: leave
-        label: Open more evening access
-        hours: 0
+            when:
+              - 'leisure.packed >= 1'
+              - 'tour.reviews >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: the_empty_morning
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'students'
+            count: 45
+            when:
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_empty_morning'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text: The early slot has a few regulars and a full desk shift. One regular says she would be
-      disappointed if it closed. The accountant has expressed a different emotion. Use the weekly
-      wall,access and staff controls for lasting changes;this follow-up pays for the conversation
-      and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A family sports association wants an invitation to circulate. Its editor asks whether the photographs show a normal morning or a particularly patient photographer. Fix an outstanding snag before circulating invitations; with no snags and no packed slots last week, paid promotion has somewhere useful to send people. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Check the morning contribution
+      - id: 'act'
+        label: 'Fix a snag before promising more visits'
         hours: 2
         effects:
-          - type: guests
-            segment: families
-            count: 3
-      - id: leave
-        label: Keep every hour from habit
-        hours: 0
+          - type: 'bugs'
+            delta: -1
+            when:
+              - 'bugs >= 1'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: a_shared_visit
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'families'
+            count: 45
+            when:
+              - 'bugs == 0'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'bugs >= 1'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'a_shared_visit'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text: Friends arrive together on day tickets, memberships and the aggregator. All want the same
-      fresh wall. Their payment methods do not create extra space. Use the weekly wall,access and
-      staff controls for lasting changes;this follow-up pays for the conversation and immediate
-      cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A student club offers a paid invitation campaign for friends who climb together. Their different payment methods do not create different gravity. Below 50 energy, take a break rather than launch another campaign; rested founders with no packed slots last week can use the paid invitations. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Apply the same capacity rules
+      - id: 'act'
+        label: 'Defer the campaign and take a break'
         hours: 2
         effects:
-          - type: guests
-            segment: students
-            count: 3
-      - id: leave
-        label: Add places for the group
-        hours: 0
+          - type: 'energy'
+            delta: 4
+            when:
+              - 'energy < 50'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
-  - id: the_rival_discount
-    area: sales
-    weight: 1
+          - type: 'guests'
+            segment: 'students'
+            count: 45
+            when:
+              - 'energy >= 50'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'energy'
+            delta: -3
+            when:
+              - 'energy < 50'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []
+  - id: 'the_rival_discount'
+    area: 'sales'
+    weight: 2
     once: false
     cooldownWeeks: 18
     when:
-      - leisure.open == 1
-    from: none
-    sender: Your hall notebook
-    look: note
-    text:
-      A big club hall lowers student prices. Your members ask whether you will match them. They also
-      ask when the next reset is planned. Use the weekly wall,access and staff controls for lasting
-      changes;this follow-up pays for the conversation and immediate cover.
-    defaultChoice: leave
+      - 'leisure.open == 1'
+    from: 'none'
+    sender: 'The organiser'
+    look: 'letter'
+    text: 'A climbing newsletter offers a hall invitation and a practical update for existing visitors. Your neighbours have supplied their own much larger logo. Below EUR50,000 in cash, ask for a small free forwarding; above that, the full paid mailing reaches more people if no slot was packed last week. The campaign costs EUR900; promoting already packed slots invites complaints.'
+    defaultChoice: 'leave'
     choices:
-      - id: act
-        label: Explain the offer and compare costs
+      - id: 'act'
+        label: 'Ask for a small free forwarding instead'
         hours: 2
         effects:
-          - type: guests
-            segment: families
-            count: 3
-      - id: leave
-        label: Match every advertised discount
-        hours: 0
+          - type: 'guests'
+            segment: 'committed'
+            count: 11
+            when:
+              - 'cashEur < 50000'
+              - 'leisure.packed == 0'
+      - id: 'more'
+        label: 'Buy the invitation mailing'
+        hours: 5
         effects:
-          - type: review
-            rating: 3
-            count: 1
+          - type: 'guests'
+            segment: 'committed'
+            count: 45
+            when:
+              - 'cashEur >= 50000'
+              - 'leisure.packed == 0'
+          - type: 'review'
+            rating: 2
+            count: 3
+            when:
+              - 'leisure.packed >= 1'
+          - type: 'cash'
+            amountCents: -90000
+      - id: 'leave'
+        label: 'Keep the existing invitations and budget'
+        hours: 0
+        effects: []

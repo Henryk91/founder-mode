@@ -1,0 +1,392 @@
+[
+  {
+    "scenario": "ausgesperrt",
+    "event": "school_morning",
+    "kind": "rewritten",
+    "context": "season",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "hr_free_test",
+    "kind": "rewritten",
+    "context": "crowding",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "hotel_concierge",
+    "kind": "rewritten",
+    "context": "snags",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "platform_feature",
+    "kind": "rewritten",
+    "context": "energy",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "corporate_saturday",
+    "kind": "rewritten",
+    "context": "cash",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "birthday_helpers",
+    "kind": "rewritten",
+    "context": "season",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "tourist_video",
+    "kind": "rewritten",
+    "context": "crowding",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "agency_commission",
+    "kind": "rewritten",
+    "context": "snags",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "gift_deadline",
+    "kind": "rewritten",
+    "context": "energy",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "ausgesperrt",
+    "event": "quiet_tuesday",
+    "kind": "rewritten",
+    "context": "cash",
+    "costEur": 300,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "three_saturdays",
+    "kind": "rewritten",
+    "context": "season",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "christmas_exclusivity",
+    "kind": "rewritten",
+    "context": "crowding",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "the_empty_tuesday",
+    "kind": "rewritten",
+    "context": "snags",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "eleven_days",
+    "kind": "rewritten",
+    "context": "energy",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "the_planner_s_commission",
+    "kind": "rewritten",
+    "context": "cash",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "the_weekday_package",
+    "kind": "rewritten",
+    "context": "season",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "the_winter_cancellation",
+    "kind": "rewritten",
+    "context": "crowding",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "the_fair_stand",
+    "kind": "rewritten",
+    "context": "snags",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "the_price_screenshot",
+    "kind": "rewritten",
+    "context": "energy",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "fabriketage",
+    "event": "a_quiet_sunday",
+    "kind": "rewritten",
+    "context": "cash",
+    "costEur": 600,
+    "invitedPool": 3
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "six_thirty",
+    "kind": "rewritten",
+    "context": "season",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "march_attendance",
+    "kind": "rewritten",
+    "context": "crowding",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "cheap_afternoons",
+    "kind": "rewritten",
+    "context": "snags",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "the_sunday_class",
+    "kind": "rewritten",
+    "context": "energy",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "the_ten_class_balance",
+    "kind": "rewritten",
+    "context": "cash",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "quiet_slot_proposal",
+    "kind": "rewritten",
+    "context": "season",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "a_platform_alternative",
+    "kind": "rewritten",
+    "context": "crowding",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "off_peak_payout",
+    "kind": "rewritten",
+    "context": "snags",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "the_pack_discount",
+    "kind": "rewritten",
+    "context": "energy",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "premium_trial",
+    "kind": "rewritten",
+    "context": "cash",
+    "costEur": 400,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "griffig",
+    "event": "first_snow",
+    "kind": "rewritten",
+    "context": "season",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "tuesday_waiting",
+    "kind": "rewritten",
+    "context": "crowding",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "the_university_group",
+    "kind": "rewritten",
+    "context": "snags",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "weekend_families",
+    "kind": "rewritten",
+    "context": "energy",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "the_outdoor_forecast",
+    "kind": "rewritten",
+    "context": "cash",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "june_pauses",
+    "kind": "rewritten",
+    "context": "season",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "aggregator_tuesday",
+    "kind": "rewritten",
+    "context": "crowding",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "the_empty_morning",
+    "kind": "rewritten",
+    "context": "snags",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "a_shared_visit",
+    "kind": "rewritten",
+    "context": "energy",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "griffig",
+    "event": "the_rival_discount",
+    "kind": "rewritten",
+    "context": "cash",
+    "costEur": 900,
+    "invitedPool": 45
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "opening_teacher_meeting",
+    "kind": "new preparation decision",
+    "costEur": 500,
+    "invitedPool": 12
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "opening_office_contacts",
+    "kind": "new preparation decision",
+    "costEur": 600,
+    "invitedPool": 18
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "opening_member_evening",
+    "kind": "new preparation decision",
+    "costEur": 700,
+    "invitedPool": 20
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "opening_timetable_forum",
+    "kind": "new preparation decision",
+    "costEur": 500,
+    "invitedPool": 14
+  },
+  {
+    "scenario": "schweissperle",
+    "event": "opening_local_invites",
+    "kind": "new preparation decision",
+    "costEur": 600,
+    "invitedPool": 16
+  },
+  {
+    "scenario": "griffig",
+    "event": "opening_club_meeting",
+    "kind": "new preparation decision",
+    "costEur": 900,
+    "invitedPool": 30
+  },
+  {
+    "scenario": "griffig",
+    "event": "opening_student_contacts",
+    "kind": "new preparation decision",
+    "costEur": 700,
+    "invitedPool": 35
+  },
+  {
+    "scenario": "griffig",
+    "event": "opening_family_walkthrough",
+    "kind": "new preparation decision",
+    "costEur": 800,
+    "invitedPool": 25
+  },
+  {
+    "scenario": "griffig",
+    "event": "opening_course_contacts",
+    "kind": "new preparation decision",
+    "costEur": 900,
+    "invitedPool": 30
+  },
+  {
+    "scenario": "griffig",
+    "event": "opening_neighbour_invites",
+    "kind": "new preparation decision",
+    "costEur": 700,
+    "invitedPool": 35
+  }
+]

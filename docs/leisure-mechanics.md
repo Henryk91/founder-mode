@@ -161,3 +161,15 @@ Post-mortem lines:
 - set the hold policy from how often holds convert.
 
 Single-choice variants for each spec's targets.
+
+
+### Advance guest balances (Tuning 2)
+
+A leisure scenario may name `balanceWeeksBefore` per segment. Fabriketage collects
+wedding balances four weeks before the event and private-party balances one week
+before. Late confirmations inside the window pay before service too. Original
+deposits and extra balances stay separate: strict deposit-only terms return the
+balance, flexible or company cancellation return both. Future noise restrictions
+refund both immediately, once. Service deducts both payments and settles platform
+commission once; negative adjustments are cash settlements rather than invoices.
+Unconfigured scenarios retain their previous payment timing and random draws.

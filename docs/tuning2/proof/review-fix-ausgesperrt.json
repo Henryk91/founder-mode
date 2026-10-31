@@ -1,0 +1,19 @@
+{
+  "id": "ausgesperrt",
+  "source": "6af2d79f4189f2c8ab7be32155beb36fbb258a17dd8371b829dfdfece2c2ebf7",
+  "runs": 1000,
+  "parts": "review-blind main policy only",
+  "isolation": "balanceWeeksBefore removed; no other economic changes",
+  "before": {
+    "change": 4.700000000000003,
+    "onlyFull": 35,
+    "onlyOther": 82,
+    "margin": 2.0999550128514657
+  },
+  "after": {
+    "change": -31.699999999999996,
+    "onlyFull": 325,
+    "onlyOther": 8,
+    "margin": 2.988669030856378
+  }
+}

@@ -210,6 +210,8 @@ export type Booking = {
   status: BookingStatus
   /** Paid when booked (a deposit, step 7); the rest is due at the stay. Absent: none. */
   depositCents?: number
+  /** Remaining booking price collected before service; separate from the retained deposit. */
+  balancePaidCents?: number
   /** Advance already returned following a venue restriction. */
   refundedCents?: number
   /** Plan 2: a voucher redeemed for this booking; it was paid when the voucher was sold. */

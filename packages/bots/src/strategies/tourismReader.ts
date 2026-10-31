@@ -59,16 +59,6 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
         'the_quiet_walk',
         'the_family_weekend',
         'the_empty_floor_photograph',
-        'three_saturdays',
-        'christmas_exclusivity',
-        'the_empty_tuesday',
-        'eleven_days',
-        'the_planner_s_commission',
-        'the_weekday_package',
-        'the_winter_cancellation',
-        'the_fair_stand',
-        'the_price_screenshot',
-        'a_quiet_sunday',
         'the_agency_tasting',
         'the_six_month_enquiry',
         'invoice_reference',
@@ -130,15 +120,6 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
         'double_room_training',
         'freelance_builder',
         'first_payroll',
-        'school_morning',
-        'hr_free_test',
-        'hotel_concierge',
-        'platform_feature',
-        'corporate_saturday',
-        'birthday_helpers',
-        'tourist_video',
-        'agency_commission',
-        'gift_deadline',
         'accessibility_call',
         'horror_interviews',
         'free_game_survey',
@@ -153,7 +134,6 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
         'neighbour_screams',
         'basement_air',
         'design_for_sale',
-        'quiet_tuesday',
         'old_plans',
         'opening_sign',
         'design_rights',
@@ -167,12 +147,6 @@ export const TOURISM_READER: Record<string, Record<string, TourismReaderRule>> =
     forgotten_birthday: ifTired(80, 'act'),
     puzzle_conference: ifTired(65, 'act'),
     paint_samples: (view) => (view.week <= 3 ? 'act' : null),
-    school_morning: (view) =>
-      view.bookings?.leisure?.slotCalendar.some(
-        (c) => c.slotId === 'daytime' && c.week === view.week && c.booked + c.held < c.capacity,
-      )
-        ? 'act'
-        : null,
   },
   // Plan 4: the beach tender. Tuning 1: bidding as before (bidding higher where hotel guests
   // were the market cost the careful bot 1.5 points, 1,000 seeds); the reviews carry the bid.

@@ -13,6 +13,25 @@ const spec = loadScenario('fabriketage', 'long')
 const strategies = TOURISM_STRATEGIES.filter((s) => playsIn(s, spec))
 
 describe('venue players', () => {
+  it('includes observed company equipment in the first loan instead of a compulsory second loan', () => {
+    const view = getView(createGame(spec, 'venue-opening-scope'))
+    view.week = 2
+    view.loan!.planHours = view.loan!.planNeeded
+    const companies = view.segments.find((s) => s.id === 'companies')!
+    companies.interviews = Array.from({ length: 4 }, () => ({
+      week: 1,
+      segmentId: companies.id,
+      bucketId: 'painful',
+      bucketName: 'Painful',
+      quote: 'We need a working projector for the company day.',
+      mentionedFeature: { id: 'av_tech', name: 'Installed AV', quote: 'A working projector.' },
+      budget: null,
+    }))
+    const player = strategies
+      .find((s) => s.id === 'tourism_careful')!
+      .create(spec, 'venue-opening-scope')
+    expect(player.plan(view).loan!.apply!.items).toContain('av_tech')
+  })
   it('does not require spare cash for useful no-cost inbox work', () => {
     const view = getView(createGame(spec, 'venue-reader'))
     const first = view.inbox[0]!

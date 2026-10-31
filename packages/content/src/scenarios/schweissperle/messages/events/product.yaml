@@ -262,3 +262,148 @@ events:
         label: Keep the current arrangement
         hours: 0
         effects: []
+  - id: 'opening_teacher_meeting'
+    area: 'product'
+    weight: 8
+    once: true
+    when:
+      - 'week >= 7'
+      - 'leisure.open == 0'
+    from: 'none'
+    sender: 'Your opening organiser'
+    look: 'letter'
+    text: 'The first teachers can introduce their followers at an opening-planning session. A funded fit-out gives them a date to discuss; an unfunded drawing gives them another drawing. The quotation is EUR500; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    defaultChoice: 'wait'
+    choices:
+      - id: 'prepare'
+        label: 'Pay for the opening-planning session'
+        hours: 4
+        effects:
+          - type: 'guests'
+            segment: 'yoga'
+            count: 12
+            when:
+              - 'loan.running >= 1'
+              - 'cashEur >= 5500'
+          - type: 'cash'
+            amountCents: -50000
+      - id: 'wait'
+        label: 'Wait until the opening plan can support it'
+        hours: 0
+        effects: []
+  - id: 'opening_office_contacts'
+    area: 'product'
+    weight: 8
+    once: true
+    when:
+      - 'week >= 8'
+      - 'leisure.open == 0'
+    from: 'none'
+    sender: 'Your opening organiser'
+    look: 'letter'
+    text: 'A nearby employers club will discuss the first employee classes before opening. Its coordinator asks for a funded opening plan before circulating invitations. The quotation is EUR600; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    defaultChoice: 'wait'
+    choices:
+      - id: 'prepare'
+        label: 'Pay for the opening-planning session'
+        hours: 4
+        effects:
+          - type: 'guests'
+            segment: 'corporate'
+            count: 18
+            when:
+              - 'loan.running >= 1'
+              - 'cashEur >= 5600'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'wait'
+        label: 'Wait until the opening plan can support it'
+        hours: 0
+        effects: []
+  - id: 'opening_member_evening'
+    area: 'product'
+    weight: 8
+    once: true
+    when:
+      - 'week >= 9'
+      - 'leisure.open == 0'
+    from: 'none'
+    sender: 'Your opening organiser'
+    look: 'letter'
+    text: 'A designer can prepare a founding-members invitation evening. The invitations need a funded build, rather than a photograph of a shower fitting. The quotation is EUR700; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    defaultChoice: 'wait'
+    choices:
+      - id: 'prepare'
+        label: 'Pay for the opening-planning session'
+        hours: 4
+        effects:
+          - type: 'guests'
+            segment: 'young_professionals'
+            count: 20
+            when:
+              - 'loan.running >= 1'
+              - 'cashEur >= 5700'
+          - type: 'cash'
+            amountCents: -70000
+      - id: 'wait'
+        label: 'Wait until the opening plan can support it'
+        hours: 0
+        effects: []
+  - id: 'opening_timetable_forum'
+    area: 'product'
+    weight: 8
+    once: true
+    when:
+      - 'week >= 10'
+      - 'leisure.open == 0'
+    from: 'none'
+    sender: 'Your opening organiser'
+    look: 'letter'
+    text: 'Prospective members will attend a timetable-planning session with your first teacher. Without a funded build, there is no credible timetable to print. The quotation is EUR500; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    defaultChoice: 'wait'
+    choices:
+      - id: 'prepare'
+        label: 'Pay for the opening-planning session'
+        hours: 4
+        effects:
+          - type: 'guests'
+            segment: 'yoga'
+            count: 14
+            when:
+              - 'loan.running >= 1'
+              - 'cashEur >= 5500'
+          - type: 'cash'
+            amountCents: -50000
+      - id: 'wait'
+        label: 'Wait until the opening plan can support it'
+        hours: 0
+        effects: []
+  - id: 'opening_local_invites'
+    area: 'product'
+    weight: 8
+    once: true
+    when:
+      - 'week >= 11'
+      - 'leisure.open == 0'
+    from: 'none'
+    sender: 'Your opening organiser'
+    look: 'letter'
+    text: 'The local sports association offers a launch-planning mailing. Its organiser wants a funded opening date before recommending the studio. The quotation is EUR600; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    defaultChoice: 'wait'
+    choices:
+      - id: 'prepare'
+        label: 'Pay for the opening-planning session'
+        hours: 4
+        effects:
+          - type: 'guests'
+            segment: 'young_professionals'
+            count: 16
+            when:
+              - 'loan.running >= 1'
+              - 'cashEur >= 5600'
+          - type: 'cash'
+            amountCents: -60000
+      - id: 'wait'
+        label: 'Wait until the opening plan can support it'
+        hours: 0
+        effects: []
