@@ -1200,3 +1200,7 @@ AUTONOMOUS: Count one round each for venue and escape, including bot changes und
 ### Tuning 2 narrowed round 2: final permitted changes
 
 AUTONOMOUS: Round 1 gives weddings 32/318 (10.1%), careful escape 46.2%, quarterly 51.8% and part-time 52.3%; the part-time lead is inconclusive. Spend the second and final round for each: wedding enquiries include estimated late bookings (8–40 weeks rather than 26–70), while escape considers three full future weeks inside the visible construction lead time. These address missed first-season receipts and delayed capacity decisions without invented costs or strategy penalties. Freeze source after tests; no third round, event table or full report. Griffig uses zero extra rounds (46.3% careful reference).
+
+### Tuning 2 capped completion
+
+AUTONOMOUS: Stop at Henry's two-round caps: weddings 33/318 (10.4% +/-3.4), below 20%; escape tourism_part_time 52.3%, quarterly 51.8%; paired gap +0.5 +/-2.3 points, ranking second but inconclusive; Griffig 463/1000 (46.3% +/-3.1), above 25% with no extra tuning. Preserve these results without relabelling misses as successes. Finish after one four-leisure main matrix and one nine-game protected proof; 119,000 leisure games and 195,000 identical protected outcomes on one source. No event tables or full report under the amendment. Other open targets remain LOW priority; tag tuning2-complete marks the capped run's completion, not universal target closure.

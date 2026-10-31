@@ -2,7 +2,7 @@
 
 Everything planned or discussed that no plan builds yet. When a plan picks an item up, move it to that plan. When a plan leaves something out or opens an issue, add it here.
 
-Last updated: 31 October 2026, Henry’s narrowed tuning 2 scope.
+Last updated: 1 November 2026, completion of Henry’s capped tuning 2 scope.
 
 ## 1. Left out of plan 4 (the abroad scenarios)
 
@@ -150,6 +150,21 @@ event tables are authorised in this run.
 | griffig | K3 | LOW | all +1.2; none -11.7 |
 | ausgesperrt | T16 | LOW | See historical measurements |
 | schweissperle | F1 | LOW | See historical measurements |
+
+### Remaining narrowed goals after the cap
+
+Both permitted venue and escape rounds are spent. Further changes need a new
+scope; this run stops at Henry's cap. These are the explicitly retained goals,
+not additional work on the LOW priority targets above.
+
+| Goal | Final main evidence, 1,000 seeds per policy | Remaining issue |
+|---|---|---|
+| Wedding floor >=20% | 33/318 (10.4% +/-3.4) | Open. Trace operating margin, hold conversion and bridge cash before another change; shorter lead time did not resolve the floor |
+| Quarterly escape expansion not best | tourism_part_time 52.3%, quarterly 51.8%; paired gap +0.5 +/-2.3 points | Quarterly ranks second, but the difference is inconclusive; no claim of a clearly worse strategy |
+
+Griffig's retained floor passes: 463/1000 (46.3% +/-3.1). Invitation timing is fixed and tested.
+[Final scoped report](tuning2/reports/final.md). Historical first-pass values above
+are retained for context; final main tables hold the current measured candidate.
 
 ## 4. Features not in any plan
 

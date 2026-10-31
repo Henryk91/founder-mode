@@ -331,3 +331,7 @@ business and created complaints before it opened. Existing quoted fees and
 counts stay fixed for the timing measurement. At opening, ordinary admission,
 prices and capacity still apply; the preparation count is shown in the calendar.
 This corrects timing and does not guarantee a sale or a profitable campaign.
+
+### Tuning 2 narrowed completion, 1 November 2026
+
+Henry retained only the careful-bot floor of 25%. After the invitation timing fix, the final main matrix gives 463/1000 (46.3% +/-3.1), passing that floor. No further Griffig tuning round was used; all other open targets are LOW priority in the backlog.

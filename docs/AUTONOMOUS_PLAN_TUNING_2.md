@@ -16,8 +16,8 @@ Finish the current pre-opening invitation fix and its tests. Then tune only:
 2. Ausgesperrt X1: building a new room every three months is not the best strategy.
 3. Griffig: careful bot wins at least 25%.
 
-At most two further rounds per goal, including bot changes. Stop all other
-target tuning and move every other open target to `docs/BACKLOG.md` as LOW
+At most two further rounds per goal. AUTONOMOUS: count bot revisions toward
+this cap conservatively. Stop all other target tuning and move every other open target to `docs/BACKLOG.md` as LOW
 priority. Run no event tables. At the end run only the main part of all four
 leisure scenarios on 1,000 seeds once; skip the full report. Prove the nine
 earlier games unchanged once at the end only if engine code changed.

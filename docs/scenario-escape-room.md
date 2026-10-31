@@ -310,3 +310,5 @@ allowed round also considers three full booked weeks in the public calendar
 within construction lead time. It uses capacity and bookings, never hidden
 demand, and retains the one-room and quarterly comparison rules. No room cost,
 capacity, rent, borrowing term or construction time changes.
+
+Final main measurement: tourism_part_time 52.3%, quarterly 51.8%; paired gap +0.5 +/-2.3 points. Quarterly ranks second, but the paired difference is inconclusive. Both permitted rounds are spent.

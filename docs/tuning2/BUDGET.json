@@ -1,4 +1,48 @@
 {
+  "henryScopeAmendment": {
+    "date": "2026-10-31",
+    "roundCapPerGoal": 2,
+    "includesBotChanges": true,
+    "goals": [
+      {
+        "scenario": "fabriketage",
+        "target": "weddings win >=20%",
+        "roundsUsed": 2,
+        "round1": "Prepare observed mixed-calendar equipment before opening, using three interviews; no economic values changed.",
+        "round1Result": "32/318 weddings-viable wins (10.1%), all careful 36.6%",
+        "round2": "Wedding lead window 26\u201370 -> 8\u201340 weeks, estimated mixed late/advance booking market; prices and costs unchanged.",
+        "finalStatus": "open",
+        "finalEvidence": "proof/final-narrowed-goals.json"
+      },
+      {
+        "scenario": "ausgesperrt",
+        "target": "X1 quarterly rooms not best",
+        "roundsUsed": 2,
+        "round1": "Expand after three packed weeks or any existing familiar room, not only newest-room wear; comparison policies unchanged.",
+        "round1Result": "Careful 46.2%, quarterly 51.8%, part time 52.3%; 0.5-point lead over quarterly inconclusive.",
+        "round2": "Consider three visibly full future weeks within construction lead time before starting another room; preserve comparison policies.",
+        "finalStatus": "inconclusive",
+        "finalEvidence": "proof/final-narrowed-goals.json"
+      },
+      {
+        "scenario": "griffig",
+        "target": "careful win >=25%",
+        "roundsUsed": 0,
+        "openingFixReference": "463/1000 wins, 46.3%; no further change required, pending final matrix.",
+        "finalStatus": "pass",
+        "finalEvidence": "proof/final-narrowed-goals.json"
+      }
+    ],
+    "eventTablesAllowed": false,
+    "fullReportAllowed": false,
+    "finalLeisureMainRuns": 1,
+    "finalProtectedProofRuns": 1,
+    "allOtherTargets": "LOW priority backlog; historical budgets below are inactive",
+    "roundCountingDecision": "AUTONOMOUS: count reader changes toward the two-round cap conservatively",
+    "status": "complete within caps; weddings open, X1 inconclusive, Griffig pass",
+    "finalSourceCommit": "9c2c36a",
+    "finalSourceSHA256": "a53aba3fb38cdc9036cc619ca74b16984c40ce260952c08429bf5a27249b779e"
+  },
   "baseline": "plan5-complete",
   "valuesCap": 3,
   "formulasCap": 2,
@@ -1072,39 +1116,5 @@
     "stoppedFitnessEventTasks": 60,
     "climbingShared2EventsStarted": false,
     "formulaRationale": "Values cannot defer an immediate request to opening. Opt-in preparation timing only; no value changes."
-  },
-  "henryScopeAmendment": {
-    "date": "2026-10-31",
-    "roundCapPerGoal": 2,
-    "includesBotChanges": true,
-    "goals": [
-      {
-        "scenario": "fabriketage",
-        "target": "weddings win >=20%",
-        "roundsUsed": 2,
-        "round1": "Prepare observed mixed-calendar equipment before opening, using three interviews; no economic values changed.",
-        "round1Result": "32/318 weddings-viable wins (10.1%), all careful 36.6%",
-        "round2": "Wedding lead window 26\u201370 -> 8\u201340 weeks, estimated mixed late/advance booking market; prices and costs unchanged."
-      },
-      {
-        "scenario": "ausgesperrt",
-        "target": "X1 quarterly rooms not best",
-        "roundsUsed": 2,
-        "round1": "Expand after three packed weeks or any existing familiar room, not only newest-room wear; comparison policies unchanged.",
-        "round1Result": "Careful 46.2%, quarterly 51.8%, part time 52.3%; 0.5-point lead over quarterly inconclusive.",
-        "round2": "Consider three visibly full future weeks within construction lead time before starting another room; preserve comparison policies."
-      },
-      {
-        "scenario": "griffig",
-        "target": "careful win >=25%",
-        "roundsUsed": 0,
-        "openingFixReference": "463/1000 wins, 46.3%; no further change required, pending final matrix."
-      }
-    ],
-    "eventTablesAllowed": false,
-    "fullReportAllowed": false,
-    "finalLeisureMainRuns": 0,
-    "finalProtectedProofRuns": 0,
-    "allOtherTargets": "LOW priority backlog; historical budgets below are inactive"
   }
 }

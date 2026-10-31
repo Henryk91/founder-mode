@@ -1,79 +1,61 @@
 # Tuning run 2 status
 
 ## Current
-Step: Finish invitation timing, then Henry's three remaining goals.
-Last commit: 33f0b1c, tested first-full-week invitations and Henry scope amendment.
-Next action: Run the final four leisure main matrices, then the nine protected units once.
-Henry's 31 October scope replaces the broader plan: at most two further rounds
-per goal, including bot changes. No event tables or full report.
+Step: Complete within Henry's narrowed scope and tuning caps.
+Last commit: tuning2-complete (final report/proof commit; resolve the annotated tag).
+Final source commit: 9c2c36a.
+Next action: None in this run. Weddings and X1 uncertainty remain recorded after the cap.
+Full report skipped; no event tables under the scope amendment.
 
-## Active goals
-- Fabriketage: weddings-viable wins >=20% (prior candidate 3.8%).
-- Ausgesperrt X1: quarterly new rooms must not be the best strategy
-  (prior candidate quarterly 51.8%, careful 40.1%).
-- Griffig: careful wins >=25% (prior candidate 26.5%).
-All other open targets are LOW priority in docs/BACKLOG.md.
-Counters and historical budgets: BUDGET.json; Henry amendment takes precedence.
+## Results
+- Invitation timing fixed and tested: release once in the first full week open.
+- Fabriketage weddings: 33/318 (10.4% +/-3.4), below 20%; 2/2 rounds spent.
+- Ausgesperrt: tourism_part_time 52.3%, quarterly 51.8%; paired gap +0.5 +/-2.3 points; quarterly second, inconclusive; 2/2 rounds spent.
+- Griffig careful: 463/1000 (46.3% +/-3.1), above 25%; 0/2 extra rounds.
+- Every other open target: LOW priority in docs/BACKLOG.md.
+
+## Verification
+- pnpm test: 1,992 passed, 30 skipped; lint/typechecks pass.
+- Closing gate logs: state/completion-tests.log and state/completion-lint.log.
+- pnpm seeds: 225 examples regenerated.
+- Four leisure main matrices once: 119 policies x1,000 seeds =119,000 games.
+- Nine earlier games proved unchanged once at the end: 195 policies x1,000
+  seeds =195,000 complete results identical, excluding timings.
+- All 13 units share source SHA256:
+  a53aba3fb38cdc9036cc619ca74b16984c40ce260952c08429bf5a27249b779e.
+- No wide seeds, event tables or full report under Henry's amendment.
+- No bot/test/browser jobs remain active. Final gate sessions 89640/1572 exited 0.
 
 ## Checklist
 - [x] Setup: tuning2-start.
 - [x] Speed: tuning2-speed, two rounds exhausted.
-- [x] Invitation timing fix with tests.
-- [ ] Three narrowed goals, at most two further rounds each.
-- [ ] Four leisure main matrices on 1,000 seeds once at the end.
-- [ ] Nine earlier games unchanged once at the end (engine changed).
-- [ ] Short final report and annotated tuning2-complete tag.
+- [x] Invitation fix, tests and public queued status.
+- [x] Only the three remaining goals; venue/escape capped at two rounds each.
+- [x] Other open targets deferred LOW priority.
+- [x] Final four leisure main matrices once; no full report/event tables.
+- [x] Nine earlier games unchanged once because engine changed.
+- [x] Short final report and annotated tuning2-complete tag.
 
-## Running jobs and state
-Bot jobs finished; no bot or browser/test jobs may overlap.
-Griffig invitation-fix careful reference: 463/1,000 wins (46.3%), session 76827 exited 0.
-Venue and escape narrowed round 1: 82 focused bot tests and lint pass.
-Main-only measurements now running: V careful then E careful/quarterly, 1,000 seeds each.
-Logs: state/narrowed-r1-<scenario>.log; checkpoints state/narrowed-r1/.
-Round 1 finished; all jobs exited. Weddings 10.1%; E C46.2/Q51.8/PT52.3.
-Final allowed V/E round implemented; no third round. Griffig needs no tuning.
-Final gate: pnpm test passes (1,992 passed, 30 skipped), lint/typechecks pass.
-Seeds regenerated: 225 examples. All tests exited before starting bot jobs.
-Final logs: state/narrow-final-tests.log, narrow-final-lint.log, narrow-final-seeds.log.
-After gates: final four leisure main matrices once, then nine protected units once.
-Seed regeneration finished: 225 examples, only fitness/climbing rows changed.
-Lint/typechecks pass: state/opening-final-lint.log.
-Focused invitation tests: 6 engine +4 content pass.
-Full web gate: 27 files pass; saves browser setup timed out before assertions.
-Saves retry and all non-web tests pass: 1,990 passed, 30 skipped in total.
-Session 84618 exited 0; no bot/test jobs remain active.
-Logs: state/opening-final-tests.log, opening-saves-retry.log, opening-rest-tests.log.
-Four prefixes prove queued invitations remain through construction completion
-and release in the next full week with normal prices and capacity.
-Proof: proof/opening-invitation-first-full-week.json.
-Original bug proof: proof/opening-invitation-timing.json.
-No protected main proof or final leisure main run started under the new scope.
+## Reports and proof
+Report: reports/final.md.
+Proof: proof/final-main-manifest.json, proof/final-narrowed-goals.json.
+Final measurements: measurements/final-<scenario>.md.
+Invitation proof: proof/opening-invitation-first-full-week.json.
+Historical rounds remain in proof/ and measurements/; earlier event evidence
+is historical and was not resumed under the amendment.
 
-## Preserved historical evidence
-Shared1 main: all 119 leisure policies x1,000 seeds; nine protected units
-195,000 identical outcomes. proof/shared1-main-manifest.json.
-Shared2 main: fitness/climbing 62 policies x1,000 plus E/V careful references.
-proof/shared2-main-manifest.json; measurements/shared2-*.md.
-Shared2 source: e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5.
-Shared1 source: a0a325a9e7978c04787ee556416217f01f5b50f0c76d4198054efef26bc70b17.
-Prior gate: 1,979 passed, 30 skipped; lint/typechecks passed.
-Historical completed escape/venue event tables remain in measurements/ and proof/.
-Fitness events stopped at 60/119; climbing events never started.
-Do not resume event jobs or use historical candidate results as final-source proof.
-No wide seeds or full report run in tuning2.
+## Working state
+Final driver session 5566 exited 0; all workers finished.
+Checkpoints/logs: docs/tuning2/state/narrowed-final/ and state/final-*.log.
+Ignored scratch tools: packages/bots/scratch/tuning2-*.tmp.ts.
+No worktrees, branches or /tmp state created. Audit checkpoints retained.
+Unrelated user plan documents left outside this run's commits.
 
-## Working paths
-All checkpoints, diagnostics and logs: docs/tuning2/state/ (ignored).
-Current timing prefixes: state/opening-invite-trace/openingfix2/.
-Prior candidates: state/shared1/, state/shared2/, state/events-shared2/.
-Protected baseline: state/round2/ (all 314 main tasks), tuning2-speed.
-Scratch tools: packages/bots/scratch/tuning2-*.tmp.ts (ignored).
-No worktrees, branches or /tmp working state created. Never push.
-
-## For Henry to review (non-blocking)
-- Scope amendment is recorded in the plan and decisions.md; other targets LOW priority.
-- First full week release leaves a planning turn after construction finishes.
-- Invitation counts/costs unchanged; capacity may still refuse visitors.
-- Speed remains open for fitness/climbing after the two-round cap.
+## For Henry to review
+- Weddings still below the requested floor after both allowed rounds.
+- Quarterly is second by the point estimate, but the lead over it is inconclusive.
+- Griffig floor passes and the invitation timing fix is covered by tests.
+- All other open targets, including fitness/climbing speed, remain LOW priority.
 
 ## Stopped
+No hard stop. Completed the authorised capped run; not all retained goals passed.

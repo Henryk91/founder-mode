@@ -72,7 +72,7 @@ Noise rules after 22:00 are strict in residential parts of Munich (my understand
 | Booking unit | Per event | Per event | Per event |
 | Requests per week at peak (reachable, est.) | 1 to 4 | 0.5 to 2 | 1 to 4 |
 | Willingness to pay (est.) | 4,000 to 9,000 a day | 3,500 to 7,000 a Saturday | 1,500 to 3,500 |
-| Lead time | 4 to 20 weeks; Christmas parties booked from June | 26 to 70 weeks | 2 to 12 weeks |
+| Lead time | 4 to 20 weeks; Christmas parties booked from June | 8 to 40 weeks (tuning 2 estimate) | 2 to 12 weeks |
 | Slots | Weekdays, Fridays | Saturdays | Fridays, Saturdays, Sundays |
 | Season shape (hidden) | September to December peak (the autumn trade fair season, the weeks around Oktoberfest, Christmas parties), March to June | May to September | All year, December high |
 | Must haves | `av_tech`, `conference_package` | `furniture`, `caterer_list`, `wedding_package` | `caterer_list`, `late_licence` |
@@ -309,4 +309,4 @@ first narrowed measurement improves weddings from 12/318 (3.8%) to 32/318
 window from 26–70 to 8–40 weeks, admitting late bookings for a newly opened
 venue as well as advance bookings. This is a simulation estimate, not a supplier
 quote. Prices, deposits, four-week balance deadline, capacity and costs stay as
-built. Final main-only measurement follows; no event table is requested.
+built. Final main-only measurement: 33/318 (10.4% +/-3.4), below 20%; both allowed rounds exhausted. No event table was run under the amendment.

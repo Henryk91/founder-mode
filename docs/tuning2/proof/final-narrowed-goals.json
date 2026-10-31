@@ -1,0 +1,91 @@
+{
+  "sourceCommit": "9c2c36a",
+  "sourceSHA256": "a53aba3fb38cdc9036cc619ca74b16984c40ce260952c08429bf5a27249b779e",
+  "parts": "main",
+  "seedPrefix": "test",
+  "seedsPerPolicy": 1000,
+  "fabriketage": {
+    "goal": "weddings-viable wins >=20%",
+    "roundsUsed": 2,
+    "result": {
+      "wins": 33,
+      "runs": 318,
+      "percent": 10.377358490566039,
+      "margin95Points": 3.3519288488835053
+    },
+    "status": "open"
+  },
+  "ausgesperrt": {
+    "goal": "quarterly expansion must not be best",
+    "roundsUsed": 2,
+    "topPolicies": [
+      [
+        "tourism_part_time",
+        {
+          "wins": 523,
+          "runs": 1000,
+          "percent": 52.300000000000004,
+          "margin95Points": 3.095751594685853
+        }
+      ],
+      [
+        "leisure_quarterly_rooms",
+        {
+          "wins": 518,
+          "runs": 1000,
+          "percent": 51.800000000000004,
+          "margin95Points": 3.097023283089748
+        }
+      ],
+      [
+        "tourism_permanent",
+        {
+          "wins": 472,
+          "runs": 1000,
+          "percent": 47.199999999999996,
+          "margin95Points": 3.0941690089586245
+        }
+      ],
+      [
+        "tourism_seasonal",
+        {
+          "wins": 467,
+          "runs": 1000,
+          "percent": 46.7,
+          "margin95Points": 3.09227504856861
+        }
+      ],
+      [
+        "tourism_always_flexible",
+        {
+          "wins": 463,
+          "runs": 1000,
+          "percent": 46.300000000000004,
+          "margin95Points": 3.09053530897157
+        }
+      ]
+    ],
+    "quarterly": {
+      "wins": 518,
+      "runs": 1000,
+      "percent": 51.800000000000004,
+      "margin95Points": 3.097023283089748
+    },
+    "bestVsQuarterly": {
+      "differencePoints": 0.5,
+      "margin95Points": 2.295059672186956
+    },
+    "status": "inconclusive"
+  },
+  "griffig": {
+    "goal": "careful wins >=25%",
+    "roundsUsed": 0,
+    "result": {
+      "wins": 463,
+      "runs": 1000,
+      "percent": 46.300000000000004,
+      "margin95Points": 3.09053530897157
+    },
+    "status": "pass"
+  }
+}
