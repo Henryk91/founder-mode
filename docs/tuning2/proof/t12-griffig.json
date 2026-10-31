@@ -1,0 +1,14 @@
+{
+  "source": "42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8",
+  "id": "griffig",
+  "rows": [
+    {
+      "policy": "climbing_boulder_first",
+      "runs": 1000,
+      "seconds": 292.42570975,
+      "same": true,
+      "pass": false
+    }
+  ],
+  "pass": false
+}

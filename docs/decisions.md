@@ -1150,3 +1150,7 @@ AUTONOMOUS: Use plan5-complete's saved main results without a baseline rerun. Pr
 ### Tuning 2 step 1: keep round 1; final round removes duplicate work
 
 AUTONOMOUS: Keep sorted immutable-content entries after 119 policies × 1,000 paired seeds reproduce every saved result, 21 original saved states replay identically, and all 517 engine tests and lint pass. Second/final speed round delegates pool checks once and selects the most free product in one stable alphabetical pass; no capacity cache or economic change. Prove all four affected units again, then all nine earlier units on the final source; idle T12 follows the matrix's actual slowest policies.
+
+### Tuning 2 step 1: complete proof and retain open speed failures
+
+AUTONOMOUS: All 314 policies × 1,000 paired seeds across all 13 units reproduce every baseline result on one common source; 21 original saved states replay identically. Serial T12 checks two slowest candidates in passing units and stops after one disproves a failing unit: escape 115.099 s maximum, venue 54.865 s, fitness 247.792 s, climbing 292.426 s. Keep both outcome-preserving optimisations and continue after the phase gate with fitness/climbing speed open; the two-round cap rules out a third optimisation. Profile costs and timing limitations are in docs/tuning2/reports/step1-speed.md.

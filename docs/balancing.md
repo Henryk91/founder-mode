@@ -7610,6 +7610,14 @@ No content values, formulas or policy choices changed. Full report not started.
 
 
 Tuning 2 final speed source: all four leisure main matrices (119 policies ×
-1,000 paired test seeds) match every saved result. Kantino standard also matches
-all 11 policies; the other eight earlier units continue on the frozen source. No wide seeds, events,
+1,000 paired test seeds) match every saved result. The nine earlier
+units also match: 314 policies and 314,000 complete identical results across all
+13 units, with a common current package-source checksum. No wide seeds, events,
 content values or economic formula changes; full report remains reserved for wrap up.
+
+Serial T12, one worker and no concurrent test/bot jobs, 1,000 paired test seeds:
+Ausgesperrt slowest two candidates 104.797 / 115.099 s, Fabriketage 51.127 /
+54.865 s. Schweißperle naive-careful 247.792 s and Griffig boulder-first 292.426 s
+still fail after two speed rounds. Every timed result is identical to the proven
+main matrix. These isolated times are not directly comparable to the old full
+report's concurrent worker times. Timing evidence: `tuning2/proof/t12-*.json`.

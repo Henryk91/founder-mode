@@ -84,7 +84,7 @@ Left open by plan 5's first pass (values 2 rounds, formula 1 round per failing t
 | Schweißperle | T5 (decision news) | early 71.7% (closest 71.8%); year 2 92.9% | Genuine preparation decisions in pre-opening weeks 8 to 12; no relabelled routine news |
 | Schweißperle | T6 (reading the inbox) | reading +13.8, blind effort +12.6 ±2.3 | Replies too often reward the same effort choice; review contextual trade-offs |
 | Schweißperle | T7 (seasonal pricing) | hints -1.0 ±1.5; closest -0.8 ±1.1 | Confidence or observable price feedback; no hidden willingness or numeric sweeps |
-| Schweißperle | T12 (speed) | slowest 462.1 s per 1,000; closest complete matrix 404.4 s | Profile membership-history costs; loads differ, so not controlled comparisons |
+| Schweißperle | T12 (speed) | Tuning 2 serial naive-careful 247.792 s per 1,000; two speed rounds exhausted; old closest complete matrix 404.4 s | Profile membership-history costs; loads differ, so not controlled comparisons |
 | Schweißperle | T14 (staff contracts) | permanent +1.2 ±1.4, seasonal +0.6 ±1.8, part time +3.3 ±1.5 | Schedule-aware contract selection and commitment, not implausible wages |
 | Schweißperle | F3 (reformers a real choice) | -22.1 ±3.0; buy-only 34, no-buy-only 255, ties 711 | Affordability and forecast rules; keep actual equipment, teacher and seat costs |
 | Schweißperle | F4 (instructor departure) | never match +0.1 ±1.6; 30,426 followers stopped in 945 runs; earlier -0.8 ±1.5 in a too-easy game | Retention persistence and its observable financial contribution |
@@ -94,7 +94,7 @@ Left open by plan 5's first pass (values 2 rounds, formula 1 round per failing t
 | Griffig | T7 (seasonal pricing) | -0.5 ±1.0; closest round 2 -0.1 ±0.9 | Confidence and observable price feedback before changing prices |
 | Griffig | T9 (staffing) | over +1.1 ±1.5, under -4.9 passes; corrected round 1 over -2.1 ±1.5 passed at limit | Keep the real trade-off; no bot-specific cost |
 | Griffig | T11 (cancellation policy) | strict -0.9 ±0.9 overall; committed -0.6, families -2.0, students 0 | Actual lead times, foregone bookings and cancellation exposure; refunds stay distinct from membership notice |
-| Griffig | T12 (speed) | slowest 811.9 s per 1,000; closest 515.5 s (round 1) | The discarded cache gained only 1.1%; do not repeat it |
+| Griffig | T12 (speed) | Tuning 2 serial boulder-first 292.426 s per 1,000; two speed rounds exhausted; old closest matrix 515.5 s | The discarded cache gained only 1.1%; do not repeat it |
 | Griffig | T14 (staff contracts) | permanent +4.5 ±1.5, seasonal +0.6 ±0.9, part time +1.2 ±1.0; round 2 all three passed | Utilisation and commitment; no pay cuts or relaxed threshold |
 | Griffig | T15 (later loan a real choice) | +6.8 ±1.6, taken in 55.8%; round 1 +5.4 ±1.4 passed at limit | Timing and retained-cash bridge; no hidden borrowing penalty |
 | Griffig | K1 (each first wall wins somewhere) | boulder 91.8%, rope 31.5%, both 0.9% of 425 differing seeds | Staged opening and mixed-market use; keep actual construction and funding costs |

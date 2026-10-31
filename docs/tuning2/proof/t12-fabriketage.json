@@ -1,0 +1,21 @@
+{
+  "source": "42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8",
+  "id": "fabriketage",
+  "rows": [
+    {
+      "policy": "venue_free_holds",
+      "runs": 1000,
+      "seconds": 51.127129749999995,
+      "same": true,
+      "pass": true
+    },
+    {
+      "policy": "venue_no_insulation",
+      "runs": 1000,
+      "seconds": 54.864936207,
+      "same": true,
+      "pass": true
+    }
+  ],
+  "pass": true
+}

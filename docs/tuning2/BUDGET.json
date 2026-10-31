@@ -12,7 +12,17 @@
       "ausgesperrt",
       "fabriketage"
     ],
-    "round2": "518 engine tests, lint, 21 original-state replays, 119000 leisure outcomes and Kantino standard pass; remaining earlier-unit proof active"
+    "round2": "All 314000 main outcomes and 21 original saved states identical. Full suite 1963 passed / 30 skipped; lint/typechecks pass. Serial T12 complete; step 1 complete.",
+    "serialSeconds": {
+      "ausgesperrt": 115.099,
+      "fabriketage": 54.865,
+      "schweissperle": 247.792,
+      "griffig": 292.426
+    },
+    "openAfterCap": [
+      "schweissperle",
+      "griffig"
+    ]
   },
   "targets": [
     {
@@ -298,6 +308,13 @@
         "value": "574.0 s per 1000 runs",
         "margin": "",
         "met": "no"
+      },
+      "speedAfterTwoRounds": {
+        "seconds": 247.792,
+        "runs": 1000,
+        "workers": 1,
+        "status": "fail",
+        "outcomesIdentical": true
       }
     },
     {
@@ -448,6 +465,13 @@
         "value": "811.9 s per 1000 runs",
         "margin": "",
         "met": "no"
+      },
+      "speedAfterTwoRounds": {
+        "seconds": 292.426,
+        "runs": 1000,
+        "workers": 1,
+        "status": "fail",
+        "outcomesIdentical": true
       }
     },
     {

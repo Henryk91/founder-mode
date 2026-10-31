@@ -180,27 +180,84 @@ Profiles, 100 paired test seeds each, every RunResult equal to the stored prefix
 | Griffig boulder-first | not profiled | 29.436 s |
 
 These are short profiles, not idle 1,000-run T12 judgements. Second and final
-main proof now runs 1,000 seeds per policy: four affected units first, then the
+main proof ran 1,000 seeds per policy: four affected units first, then the
 nine earlier units. No full report, wide seeds or events are part of this proof.
 
 ## Round 2 main proof
 
 Ausgesperrt 28, Fabriketage 29 and Schweißperle 30 policies each reproduce every
 complete result on 1,000 paired test seeds. Committed proof hashes:
-`../proof/round2-<scenario>-long.json`. Total: 87,000 identical results so far.
-Griffig is now also complete: 32 policies × 1,000 paired seeds, every result
-identical. All four leisure units total 119,000 identical results. Kantino
-standard also reproduces all 11 policies / 11,000 results; the other eight
-earlier units remain in progress.
+`../proof/round2-<scenario>-long.json`. Griffig also reproduces all 32 policies × 1,000 paired seeds. All four
+leisure units total 119,000 identical results. The nine earlier units are also
+complete, giving 314,000 identical results across all 13 units.
 
 Metadata-only availability check found all 314 main-policy baselines across the
 13 units, without playing any baseline games. Log: state/baseline-availability.log.
 
-The final speed source is ready to commit after 518 engine tests, lint, 21 original
+The final speed source was committed after 518 engine tests, lint, 21 original
 saved-state replays, and all four affected 1,000-seed main matrices. The nine
-earlier-unit campaign continues on the same frozen package bytes. No speed
-milestone is tagged until that proof, idle T12 and the full suite finish.
+earlier-unit campaign then completed on the same frozen package bytes. No speed
+milestone is tagged until idle T12 and the full suite finish.
 
 Benchmark environment: Node v20.19.5, Darwin arm64, Apple M5, 10 available CPUs,
 16 GiB RAM. Main proof uses eight seed workers; T12 will use one. Metadata:
 `../proof/environment.json`.
+
+## Complete final-source proof
+
+All 13 scenario/mode units completed successfully: 314 policies, each on 1,000
+paired test seeds, with all 314,000 complete RunResult records identical to the
+saved plan 5 baseline. This includes the nine protected earlier units.
+Every comparison carries the same current package-source SHA256:
+`42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8`.
+All final comparisons are preserved in `../proof/round2-*.json`.
+The campaign exited before serial T12 measurements started. No wide seeds,
+event tables or full report were run.
+
+## Remaining profile costs and isolated timing method
+
+The final fitness profile still spends 15.0% self CPU in leisureCapacity and
+8.7% in applyBookings. The final climbing boulder-first profile spends 10.5%
+in applyBookings, 6.4% in garbage collection, 5.0% in leisureCapacity and 4.6%
+in pickProduct. The repeated sorted-entry cost is no longer a leading entry.
+Two speed rounds are the cap; further optimisation is deferred if T12 fails.
+
+For each leisure unit, take the two slowest candidates from the completed main
+matrix and time 1,000 paired seeds serially, with no concurrent bot or test jobs.
+If the first exceeds 150 seconds, it already disproves T12, so do not run a second
+candidate merely to reconfirm failure. Every timed complete result is hashed
+against the proven main matrix. This checks the slowest candidates, rather than
+claiming that every policy was timed in isolation. Normal desktop services remain
+open; the preflight process check showed no competing sustained CPU workload.
+
+Completed timings so far: Ausgesperrt 104.797 and 115.099 seconds; Fabriketage
+51.127 and 54.865 seconds. Both candidates in each unit meet the 150-second limit.
+Schweißperle tourism_naive_careful: 247.792 seconds. Griffig
+climbing_boulder_first: 292.426 seconds. Both fail T12 after two rounds; their
+complete outcomes remain identical. No second candidate was timed in either
+failing unit. The full phase test gate follows after all timing jobs exit.
+
+| Scenario | Plan 5 full report, concurrent worker seconds | Isolated final-source seconds | T12 |
+|---|---:|---:|---|
+| Ausgesperrt | 303.3 | 115.099 (maximum of two candidates) | candidates pass |
+| Fabriketage | 152.4 | 54.865 (maximum of two candidates) | candidates pass |
+| Schweißperle | 574.0 | 247.792 | fail |
+| Griffig | 811.9 | 292.426 | fail |
+
+The before and after columns use different concurrency and are not a controlled
+speedup ratio. Controlled 100-seed profile pairs are reported separately above.
+Committed serial timing evidence: `../proof/t12-<scenario>.json`.
+
+Two rounds are exhausted. Keep both proven optimisations, preserve the remaining
+speed failures and profile costs, and continue to Part B as the plan requires.
+Future work can profile booking/view construction and repeated capacity predicates;
+no third speed round or repeated capacity cache is attempted here.
+
+## Phase gate
+
+Full `pnpm test` passed after all bot jobs exited: web 599 passed, remaining
+projects 1,364 passed and 30 skipped, total 1,963 passed. The initial sandbox
+attempt could not bind local browser ports (EPERM); the permitted run exited 0.
+No tests or assertions were weakened. `pnpm lint` and every workspace typecheck
+passed. Logs: state/step1-full-tests.log and state/step1-final-lint.log.
+Step 1 is complete; proceed to shared leisure patterns. Full report unused.

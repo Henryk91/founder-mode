@@ -1,0 +1,21 @@
+{
+  "source": "42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8",
+  "id": "ausgesperrt",
+  "rows": [
+    {
+      "policy": "leisure_quarterly_rooms",
+      "runs": 1000,
+      "seconds": 104.797145418,
+      "same": true,
+      "pass": true
+    },
+    {
+      "policy": "leisure_theme_blind",
+      "runs": 1000,
+      "seconds": 115.09919966700001,
+      "same": true,
+      "pass": true
+    }
+  ],
+  "pass": true
+}

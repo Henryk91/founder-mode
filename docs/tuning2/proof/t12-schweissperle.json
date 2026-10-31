@@ -1,0 +1,14 @@
+{
+  "source": "42148c7bc7257ef76ae0b7fc3761f0da9d9bf5ee93ef6afa4949998673a35eb8",
+  "id": "schweissperle",
+  "rows": [
+    {
+      "policy": "tourism_naive_careful",
+      "runs": 1000,
+      "seconds": 247.79155299899998,
+      "same": true,
+      "pass": false
+    }
+  ],
+  "pass": false
+}
