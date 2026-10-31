@@ -926,6 +926,60 @@
         "margin": "±0.9; ±2.2",
         "pass": false
       }
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "X1",
+      "options": "Restore room-portfolio trade-off; inspect capacity/area compatibility and actual upkeep before values.",
+      "status": "regression to resolve",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": [],
+      "introducedBy": "shared1",
+      "baselineResult": null,
+      "currentResult": {
+        "id": "X1",
+        "text": "Products have a life: never building a second room loses at least 5 points, and building a new room every three months loses at least 3",
+        "value": "one room -39.3; quarterly +11.7",
+        "margin": "±3.0; ±2.5",
+        "pass": false
+      }
+    },
+    {
+      "scenario": "ausgesperrt",
+      "target": "T16",
+      "options": "Restore temptation borrowing loss using actual investment/repayment costs, with no bot-specific penalty.",
+      "status": "regression to resolve",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": [],
+      "introducedBy": "shared1",
+      "baselineResult": null,
+      "currentResult": {
+        "id": 16,
+        "text": "L2. Borrowing for a temptation no segment requires (tourism_overborrow: every item the bank lists and the most working capital, early) loses clearly against borrowing only what the business needs: at least 3 points",
+        "value": "-0.1",
+        "margin": "±2.8",
+        "pass": false
+      }
+    },
+    {
+      "scenario": "schweissperle",
+      "target": "F1",
+      "options": "Restore quiet-slot aggregator advantage; inspect actual crowding, displacement and paid visitor mix.",
+      "status": "regression to resolve",
+      "valuesUsed": 0,
+      "formulasUsed": 0,
+      "changes": [],
+      "introducedBy": "shared2",
+      "baselineResult": null,
+      "currentResult": {
+        "id": "F1",
+        "text": "Quiet-slot aggregator access beats all slots and no aggregator by at least 2 points each",
+        "value": "all +0.9; none -41.7",
+        "margin": "±2.1; ±3.1",
+        "pass": false
+      }
     }
   ],
   "sharedCandidate": {
@@ -955,12 +1009,16 @@
       {
         "scenario": "schweissperle",
         "change": "Hint off-season day tickets set equal to peak",
-        "reason": "T7 remains failing at -2.8 ±1.7; setting did not help. Restore the prior per-season ticket settings after the frozen source campaigns."
+        "reason": "T7 remains failing at -2.8 ±1.7; setting did not help. Restore the prior per-season ticket settings after the frozen source campaigns.",
+        "status": "reverted and measured",
+        "resolvedBy": "c24b3ec; shared2 main evidence committed in 4373308"
       },
       {
         "scenario": "griffig",
         "change": "Hint off-season day tickets set equal to peak",
-        "reason": "T7 still fails at -1.5 ±1.4; setting did not fix the target. Restore previous ticket setting after frozen campaigns."
+        "reason": "T7 still fails at -1.5 ±1.4; setting did not fix the target. Restore previous ticket setting after frozen campaigns.",
+        "status": "reverted and measured",
+        "resolvedBy": "c24b3ec; shared2 main evidence committed in 4373308"
       }
     ]
   },
@@ -975,6 +1033,24 @@
       "target": "F1",
       "value": "aggregator all +0.9 ±2.1; none -41.7 ±3.1",
       "followUp": "Inspect actual peak occupancy in the fitness sub-step; preserve normal ticket/aggregator accounting."
+    },
+    "events": {
+      "ausgesperrt": {
+        "tasks": 119,
+        "playedGames": 107768,
+        "reusedGames": 11232,
+        "judgedEvents": 47,
+        "events": 50,
+        "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+        "evidence": "proof/shared2-ausgesperrt-events.json"
+      },
+      "remaining": [
+        "fabriketage",
+        "schweissperle",
+        "griffig"
+      ]
     }
-  }
+  },
+  "originalOpenTargetCount": 34,
+  "regressionTargetCount": 3
 }

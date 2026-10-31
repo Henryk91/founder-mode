@@ -278,3 +278,27 @@ target. No baseline-passing climbing target regresses at this source.
 
 No economic tuning round is charged for these corrections. Preserve escape X1/T16
 and fitness F1 regressions as work to resolve before accepting the final source.
+
+
+## Shared2: complete escape event table
+
+Events only, 1,000 paired test seeds per choice, 119 choices across 50 events.
+107,768 forced games played; 11,232 unseen-event results reused from the
+identical-source careful reference. 47 events meet the 150-seed judgement floor.
+Full table: ../measurements/shared2-ausgesperrt-events.md; own paired margins:
+../proof/shared2-ausgesperrt-events.json. No wide seeds or full report.
+
+Clear individual differences against the reader: hr_free_test always-act
+-2.23 ±1.72; agency_commission default -1.92 ±1.80; opening_sign default
+-0.80 ±0.73; reset_checklist default -2.62 ±1.99; lease_storage extra effort
+-1.81 ±1.08. First theme: horror -3.5 ±2.7, kids +3.9 ±2.4. The reader hardcodes
+heist; assess public costs and observed segment evidence before any values or
+hidden theme preferences. A fixed kids choice selected from this aggregate
+would be outcome tuning, so it is not implemented.
+
+All ten rewritten invitation cards were measured. Each always-more difference
+is within its own paired margin; do not claim a proven per-card blind penalty.
+Most repair-card effects are also smaller than their margins. The aggregate
+T6 failure remains established by the main comparison, but these signs alone
+do not justify a value change. Venue/fitness/climbing event tables continue on
+the frozen source. No further economic round is charged.

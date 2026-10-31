@@ -7658,3 +7658,13 @@ the limit; climbing careful 26.5%, T5/K2 pass. Fitness F1 now fails (all-slot
 aggregator +0.9 ±2.1), requiring follow-up alongside escape X1/T16. Shared2 T12
 figures are concurrent campaign timings; use the serial speed proof above.
 Affected event tables are running. No wide seeds or full report have started.
+
+
+Shared2 escape event table complete: 119 choices, 1,000 paired seeds each;
+107,768 forced games and 11,232 identical-source unseen-event results reused.
+47 of 50 events meet the 150-seed floor. [Full event table](tuning2/measurements/shared2-ausgesperrt-events.md),
+with paired margins in `tuning2/proof/shared2-ausgesperrt-events.json`.
+Kids-first beats the fixed-heist reader by +3.9 ±2.4; investigate the bot's public
+evidence and quoted costs before values. Every rewritten always-more card effect
+is within its own margin; aggregate T6 still fails. Other affected event tables
+continue; no wide seeds or full report have run.

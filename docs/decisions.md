@@ -1178,3 +1178,7 @@ AUTONOMOUS: Shared1 completes 119,000 leisure measurements and 195,000 identical
 ### Tuning 2 step 2: correct the invitation audit before changing the reader
 
 AUTONOMOUS: The previous capped-reach explanation was wrong: inbox guests populate eventGuests, and bookings converts those to additional requests independently of repeatGuest reach. Discard the proposed saturation guard and its incorrect expectation. Fix five fitness invitation targets from nonexistent yoga to yoga_crowd, validate guest targets across all four leisure event sets, and preserve invitations at saturated repeat reach. Restore the failed fitness/climbing off-season ticket experiment. No values/formula round is spent; measure main outcomes and affected event tables before attributing further effects.
+
+### Tuning 2 step 2: keep new regressions explicit
+
+AUTONOMOUS: Shared2 completes 62 affected main policies on 1,000 paired seeds and two identical-source careful references. Track escape X1/T16 and fitness F1 as three regressions alongside the original 34 targets, with the same unused per-target caps; do not weaken thresholds or hide them among provisional passes. Resume the affected event tables from exact-source checkpoints with eight workers after the main jobs finish. No wide seeds, full report or extra economic round.

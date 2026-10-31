@@ -2,7 +2,7 @@
 
 ## Current
 Step: 2, shared2 main complete; event measurements running.
-Last commit: c24b3ec, correct fitness invitation targets and restore seasonal tickets.
+Last commit: 4373308, record corrected fitness and climbing main measurements.
 Next action: Monitor shared2 main/event jobs, then inspect paired target effects.
 Record finished tables before choosing further tuning or the shared milestone.
 The capped-contact audit was incorrect; invitations add booking requests directly.
@@ -40,20 +40,23 @@ Seed regeneration session 55004 exited 0: 224 examples, older rows unchanged.
 Full tests session 96499 exited 0.
 Completed: shared2 main campaign session 56732 exited 0 (64,000 games).
 Event campaign 86174 stopped for resize after main finished.
-Completed forced tasks preserved; resume with 8 workers, same source.
+Active event campaign: session 95340, 8 workers, same source/checkpoints.
+Escape finished; venue running, then fitness and climbing.
 No isolated T12 claim from concurrent campaign timings.
 Escape/venue careful references complete: both 1,000 results identical to shared1.
 Fitness 30/30 and climbing 32/32 main policies complete.
 Fitness: C 47.8%; T3/T6 at limit, T5 passes; new F1 regression.
 Climbing: C 26.5%; T5/K2 pass; T3/T6/T7/K1/K3 remain open.
 Manifest: proof/shared2-main-manifest.json.
-Escape event tasks in progress; 6 empty tasks saved without games.
+Escape events complete: 119 tasks, 107,768 forced games; 47/50 events judged.
+Venue events running, then fitness and climbing.
+Escape kids-first +3.9 ±2.4 versus fixed-heist reader; bot investigation queued.
 No tests or source edits while main/event jobs run.
 Stopped superseded seed session 65812 before the last two target corrections.
 Completed driver: state/shared1-main.sh.
 Next drivers: state/shared2-main.sh, state/shared2-events.sh.
-Logs: state/shared1-<scenario>-<mode>.log.
-Checkpoints/targets: state/shared1/<scenario>-<mode>/.
+Logs: state/shared2-<scenario>-long.log and shared2-events-<scenario>.log.
+Checkpoints: state/shared2/ and state/events-shared2/.
 Do not run tests or browser jobs during bot/event campaigns.
 Source freeze for shared1 ended after all 13 units completed.
 Shared2 source is frozen at c24b3ec until main/event measurements finish.
@@ -81,6 +84,7 @@ No worktrees or branches created. Earlier run state remains untouched.
 
 ## Open issues
 34 first-pass targets: Ausgesperrt 8, Fabriketage 6, Schweißperle 8, Griffig 12.
+Three regressions also tracked with budgets: escape X1/T16, fitness F1.
 Details and closest results: docs/BACKLOG.md, section 3.
 Speed also measures Ausgesperrt and Fabriketage, whose final report timings exceed T12.
 T6 value round 1 in all four; T5 round 1 in fitness/climbing.
@@ -90,7 +94,9 @@ Per-target budget and closest baseline evidence: BUDGET.json.
 Speed budget: both rounds complete; no third round. Fitness/climbing T12 open.
 
 ## For Henry to review (non-blocking)
-- Shared draft tested; target effects still pending. Decisions: Tuning 2 step 2.
+- Shared2 main evidence: fitness T3 improves; F1 regresses; step2-shared report.
+- Invitation audit corrected: no saturation filter; five yoga references fixed.
+- Shared targets remain provisional until event/scenario tuning finishes.
 - Fitness remains over T12 at 247.792 s after two speed rounds; step1-speed report.
 - Content-entry memoisation verified on 119,000 outcomes and 21 saved states.
 - Final speed round removes duplicate availability/room evaluation; decisions, Tuning 2 step 1.
