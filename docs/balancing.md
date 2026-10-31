@@ -7668,3 +7668,12 @@ Kids-first beats the fixed-heist reader by +3.9 ±2.4; investigate the bot's pub
 evidence and quoted costs before values. Every rewritten always-more card effect
 is within its own margin; aggregate T6 still fails. Other affected event tables
 continue; no wide seeds or full report have run.
+
+
+Shared2 venue event table complete: 121 choices, 1,000 paired seeds each;
+77,274 forced games and 43,726 identical-source unseen cases reused. 54 of 55
+events judged. [Full table](tuning2/measurements/shared2-fabriketage-events.md),
+own margins in `tuning2/proof/shared2-fabriketage-events.json`. Early fire-plan
+and inventory fees need a public-need/cash-timing bot review (+3.8 ±1.3 and
++2.2 ±1.4 for defaults), while declining dinner furniture loses -9.7 ±2.0.
+Fitness and climbing event measurements continue; no wide seeds or full report.

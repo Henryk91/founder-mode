@@ -2,9 +2,9 @@
 
 ## Current
 Step: 2, shared2 main complete; event measurements running.
-Last commit: 4373308, record corrected fitness and climbing main measurements.
-Next action: Monitor shared2 main/event jobs, then inspect paired target effects.
-Record finished tables before choosing further tuning or the shared milestone.
+Last commit: 36cfae4, record shared escape event contributions and regression budgets.
+Next action: Monitor event session 95340; inspect and commit each completed table.
+Fitness and climbing remain before shared tuning decisions/milestone.
 The capped-contact audit was incorrect; invitations add booking requests directly.
 No saturation guard is retained. Five fitness yoga targets are corrected.
 Correction source SHA256: e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5.
@@ -41,7 +41,9 @@ Full tests session 96499 exited 0.
 Completed: shared2 main campaign session 56732 exited 0 (64,000 games).
 Event campaign 86174 stopped for resize after main finished.
 Active event campaign: session 95340, 8 workers, same source/checkpoints.
-Escape finished; venue running, then fitness and climbing.
+Completed: climbing staff trace session 31462 exited 0, nine diagnostic games.
+Path: state/climbing-staff-trace/shared2/; log state/climbing-staff-trace.log.
+Escape/venue finished; fitness running, then climbing.
 No isolated T12 claim from concurrent campaign timings.
 Escape/venue careful references complete: both 1,000 results identical to shared1.
 Fitness 30/30 and climbing 32/32 main policies complete.
@@ -49,7 +51,8 @@ Fitness: C 47.8%; T3/T6 at limit, T5 passes; new F1 regression.
 Climbing: C 26.5%; T5/K2 pass; T3/T6/T7/K1/K3 remain open.
 Manifest: proof/shared2-main-manifest.json.
 Escape events complete: 119 tasks, 107,768 forced games; 47/50 events judged.
-Venue events running, then fitness and climbing.
+Venue events complete: 121 tasks, 77,274 forced games; 54/55 events judged.
+Fitness events running, then climbing.
 Escape kids-first +3.9 ±2.4 versus fixed-heist reader; bot investigation queued.
 No tests or source edits while main/event jobs run.
 Stopped superseded seed session 65812 before the last two target corrections.
@@ -78,7 +81,7 @@ Measurements: measurements/shared1-<scenario>.md; proof/shared1-*.json.
 
 Run-owned scratch tools: packages/bots/scratch/tuning2-*.tmp.ts.
 Names: profile, timings, main, replay, replay-saved, t12, baselines,
-review-fix, loan-scope, shared-main, events, fitness-trace.
+review-fix, loan-scope, shared-main, events, fitness-trace, climbing-staff-trace.
 All working state is under docs/tuning2/state/, never /tmp.
 No worktrees or branches created. Earlier run state remains untouched.
 

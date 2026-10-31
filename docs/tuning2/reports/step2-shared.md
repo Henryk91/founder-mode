@@ -302,3 +302,37 @@ Most repair-card effects are also smaller than their margins. The aggregate
 T6 failure remains established by the main comparison, but these signs alone
 do not justify a value change. Venue/fitness/climbing event tables continue on
 the frozen source. No further economic round is charged.
+
+
+## Shared2: complete venue event table
+
+Events only, 1,000 paired test seeds, 121 choices across 55 events. 77,274 forced
+games; 43,726 identical-source unseen cases reused. 54 events meet the 150-seed
+floor. Full table: ../measurements/shared2-fabriketage-events.md, own margins in
+../proof/shared2-fabriketage-events.json. No wide seeds or full report.
+
+Leaving the_fire_plan beats the reader by +3.8 ±1.3; leaving insurance_inventory
+by +2.2 ±1.4. These are early fees (EUR1,800 for a snag change; EUR450 plus
+EUR100/month for declared-use cover). Review the actual scope, public need and
+cash timing before a bot correction; do not hardcode a cheap reply from aggregate
+wins or infer that real safety/insurance work is dispensable. The scenario's
+physical-opening requirements and the card abstractions must remain coherent.
+
+Conversely, declining/returning hired dinner furniture loses -9.7 ±2.0, and
+leaving the_agency_reunion loses -1.94 ±1.72. Contextual choices: always-act
+christmas_exclusivity loses -1.60 ±1.34; always-more the_winter_cancellation
+loses -1.42 ±1.39. Other individual invitation effects remain within their own
+margins. Main T6/T3/T11/T14/T15 still need scenario follow-up; T13 passes but
+its explicit forward-calendar/cash-gap UI requirement is not implemented yet.
+
+## Climbing staffing diagnostic (nine games, no target estimate)
+
+Three seeds selected where overstaff wins and careful loses (test98/104/188),
+replayed under careful, overstaff and double-setting for absent weekly data.
+Compare only common horizons. Overstaff pays much less for club coaches while
+paying more for setters, with nearly identical desk totals. At test98 week64,
+careful/overstaff club shifts are 808/160 and setter shifts 43/273. Investigate
+coaching allocation and alias capacity before changing wages or adding costs.
+These selected examples cannot estimate the target effect. Summary evidence:
+../proof/shared2-griffig-staff-diagnostic.json; raw state/climbing-staff-trace/shared2/.
+No game code, values, formulas or thresholds changed.

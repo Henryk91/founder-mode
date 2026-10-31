@@ -1,0 +1,138 @@
+{
+  "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+  "purpose": "Three over-only winning examples selected from main, not a representative win-rate sample",
+  "rawPath": "docs/tuning2/state/climbing-staff-trace/shared2/",
+  "examples": [
+    {
+      "seed": "test-98",
+      "commonHorizon": 64,
+      "policies": {
+        "tourism_careful": {
+          "ending": "bank_called",
+          "endingWeek": 64,
+          "receiptsCents": 31154423,
+          "bookingCostsCents": 40874250,
+          "paidShiftsSinceOpening": {
+            "club_coach": 808,
+            "desk": 524,
+            "setter": 43
+          },
+          "visitsSinceOpening": 31065
+        },
+        "tourism_overstaffing": {
+          "ending": "sustainable",
+          "endingWeek": 104,
+          "receiptsCents": 33852404,
+          "bookingCostsCents": 42506640,
+          "paidShiftsSinceOpening": {
+            "club_coach": 160,
+            "desk": 524,
+            "setter": 273
+          },
+          "visitsSinceOpening": 33868
+        },
+        "climbing_setting_double": {
+          "ending": "bank_called",
+          "endingWeek": 64,
+          "receiptsCents": 34127137,
+          "bookingCostsCents": 43906790,
+          "paidShiftsSinceOpening": {
+            "club_coach": 924,
+            "desk": 524,
+            "setter": 119
+          },
+          "visitsSinceOpening": 34423
+        }
+      }
+    },
+    {
+      "seed": "test-104",
+      "commonHorizon": 52,
+      "policies": {
+        "tourism_careful": {
+          "ending": "bank_called",
+          "endingWeek": 56,
+          "receiptsCents": 28103964,
+          "bookingCostsCents": 59362670,
+          "paidShiftsSinceOpening": {
+            "belay_coach": 294,
+            "club_coach": 554,
+            "desk": 293,
+            "lead_coach": 325,
+            "setter": 39
+          },
+          "visitsSinceOpening": 21979
+        },
+        "tourism_overstaffing": {
+          "ending": "sustainable",
+          "endingWeek": 104,
+          "receiptsCents": 24018006,
+          "bookingCostsCents": 52005500,
+          "paidShiftsSinceOpening": {
+            "club_coach": 144,
+            "desk": 292,
+            "lead_coach": 81,
+            "setter": 156
+          },
+          "visitsSinceOpening": 20710
+        },
+        "climbing_setting_double": {
+          "ending": "bank_called",
+          "endingWeek": 52,
+          "receiptsCents": 27381539,
+          "bookingCostsCents": 59852910,
+          "paidShiftsSinceOpening": {
+            "belay_coach": 276,
+            "club_coach": 550,
+            "desk": 293,
+            "lead_coach": 319,
+            "setter": 78
+          },
+          "visitsSinceOpening": 20927
+        }
+      }
+    },
+    {
+      "seed": "test-188",
+      "commonHorizon": 48,
+      "policies": {
+        "tourism_careful": {
+          "ending": "bank_called",
+          "endingWeek": 56,
+          "receiptsCents": 17990036,
+          "bookingCostsCents": 36134780,
+          "paidShiftsSinceOpening": {
+            "club_coach": 442,
+            "desk": 252,
+            "setter": 27
+          },
+          "visitsSinceOpening": 18826
+        },
+        "tourism_overstaffing": {
+          "ending": "sustainable",
+          "endingWeek": 104,
+          "receiptsCents": 18769895,
+          "bookingCostsCents": 35567900,
+          "paidShiftsSinceOpening": {
+            "club_coach": 96,
+            "desk": 252,
+            "setter": 161
+          },
+          "visitsSinceOpening": 20050
+        },
+        "climbing_setting_double": {
+          "ending": "bank_called",
+          "endingWeek": 48,
+          "receiptsCents": 16740741,
+          "bookingCostsCents": 36570980,
+          "paidShiftsSinceOpening": {
+            "club_coach": 376,
+            "desk": 252,
+            "setter": 71
+          },
+          "visitsSinceOpening": 16766
+        }
+      }
+    }
+  ]
+}

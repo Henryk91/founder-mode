@@ -1045,10 +1045,18 @@
         "evidence": "proof/shared2-ausgesperrt-events.json"
       },
       "remaining": [
-        "fabriketage",
         "schweissperle",
         "griffig"
-      ]
+      ],
+      "fabriketage": {
+        "tasks": 121,
+        "playedGames": 77274,
+        "reusedGames": 43726,
+        "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+        "judgedEvents": 54,
+        "events": 55,
+        "evidence": "proof/shared2-fabriketage-events.json"
+      }
     }
   },
   "originalOpenTargetCount": 34,

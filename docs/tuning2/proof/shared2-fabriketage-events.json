@@ -1,0 +1,2281 @@
+{
+  "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+  "id": "fabriketage",
+  "label": "shared2",
+  "parts": "events",
+  "runs": 1000,
+  "tasks": 121,
+  "playedGames": 77274,
+  "reusedGames": 43726,
+  "seconds": 8165.217362682002,
+  "rows": [
+    {
+      "eventId": "agency_progress_tour",
+      "seeds": 997,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 4,
+          "costCents": 15000,
+          "rate": 33.19959879638917
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 32.497492477432296
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 33.90170511534604
+    },
+    {
+      "eventId": "three_saturdays",
+      "seeds": 560,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 60.535714285714285
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 60.714285714285715
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.535714285714285
+        }
+      ],
+      "best": "more",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 60.357142857142854
+    },
+    {
+      "eventId": "christmas_exclusivity",
+      "seeds": 563,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 58.259325044404974
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 59.85790408525755
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 58.792184724689164
+        }
+      ],
+      "best": "more",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 59.85790408525755
+    },
+    {
+      "eventId": "the_empty_tuesday",
+      "seeds": 568,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 59.33098591549296
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 59.50704225352113
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.33098591549296
+        }
+      ],
+      "best": "more",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 59.50704225352113
+    },
+    {
+      "eventId": "eleven_days",
+      "seeds": 543,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 61.51012891344383
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 61.87845303867403
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 61.51012891344383
+        }
+      ],
+      "best": "more",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 61.87845303867403
+    },
+    {
+      "eventId": "the_planner_s_commission",
+      "seeds": 586,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 57.508532423208194
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 57.508532423208194
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 58.19112627986348
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 57.67918088737201
+    },
+    {
+      "eventId": "the_weekday_package",
+      "seeds": 554,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 60.288808664259925
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 60.288808664259925
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.288808664259925
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 60.83032490974729
+    },
+    {
+      "eventId": "the_winter_cancellation",
+      "seeds": 563,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 59.85790408525755
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 58.43694493783304
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.213143872113676
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.85790408525755
+    },
+    {
+      "eventId": "the_fair_stand",
+      "seeds": 569,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 59.402460456942
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 58.699472759226715
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.402460456942
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.402460456942
+    },
+    {
+      "eventId": "the_price_screenshot",
+      "seeds": 565,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 60.35398230088496
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 59.29203539823009
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.35398230088496
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.823008849557525
+    },
+    {
+      "eventId": "a_quiet_sunday",
+      "seeds": 577,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 59.79202772963605
+        },
+        {
+          "choiceId": "more",
+          "hours": 5,
+          "costCents": 60000,
+          "rate": 58.578856152513
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.79202772963605
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 58.578856152513
+    },
+    {
+      "eventId": "the_agency_tasting",
+      "seeds": 557,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 4,
+          "costCents": 30000,
+          "rate": 60.32315978456015
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.78456014362657
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 60.502692998204665
+    },
+    {
+      "eventId": "the_six_month_enquiry",
+      "seeds": 565,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 59.64601769911504
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.64601769911504
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.64601769911504
+    },
+    {
+      "eventId": "start_fit_out",
+      "seeds": 1000,
+      "choices": [
+        {
+          "choiceId": "prepare",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 33.8
+        },
+        {
+          "choiceId": "later",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 33.8
+        }
+      ],
+      "best": "prepare",
+      "cheapest": "prepare",
+      "favoursCheap": true,
+      "reading": 33.8
+    },
+    {
+      "eventId": "the_fire_plan",
+      "seeds": 1000,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 4,
+          "costCents": 180000,
+          "rate": 33.8
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 37.6
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 33.8
+    },
+    {
+      "eventId": "lift_dimensions",
+      "seeds": 999,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 0,
+          "rate": 33.833833833833836
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 34.134134134134136
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 33.833833833833836
+    },
+    {
+      "eventId": "brick_dust",
+      "seeds": 1000,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 18000,
+          "rate": 33.8
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 32.8
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 33.8
+    },
+    {
+      "eventId": "the_prep_kitchen",
+      "seeds": 999,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 4,
+          "costCents": 0,
+          "rate": 33.733733733733736
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 33.633633633633636
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 33.733733733733736
+    },
+    {
+      "eventId": "the_roof_brochure",
+      "seeds": 1000,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 33.8
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 33.8
+        }
+      ],
+      "best": "act",
+      "cheapest": "act",
+      "favoursCheap": true,
+      "reading": 33.8
+    },
+    {
+      "eventId": "the_sample_dinner",
+      "seeds": 999,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 4,
+          "costCents": 35000,
+          "rate": 33.733733733733736
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 33.433433433433436
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 33.733733733733736
+    },
+    {
+      "eventId": "the_calendar_promise",
+      "seeds": 999,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 33.733733733733736
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 32.832832832832835
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 33.733733733733736
+    },
+    {
+      "eventId": "insurance_inventory",
+      "seeds": 1000,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 45000,
+          "rate": 33.8
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 36
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 33.8
+    },
+    {
+      "eventId": "the_goods_lift",
+      "seeds": 569,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 85000,
+          "rate": 59.22671353251318
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.05096660808436
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 59.402460456942
+    },
+    {
+      "eventId": "cold_plates",
+      "seeds": 562,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 65000,
+          "rate": 59.9644128113879
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.9644128113879
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.9644128113879
+    },
+    {
+      "eventId": "the_turnaround",
+      "seeds": 0,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 1,
+          "costCents": 40000,
+          "rate": 0
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 0
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 0
+    },
+    {
+      "eventId": "projector_silence",
+      "seeds": 559,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 1,
+          "costCents": 15000,
+          "rate": 59.749552772808585
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.10733452593918
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 60.46511627906977
+    },
+    {
+      "eventId": "the_coat_queue",
+      "seeds": 555,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 25000,
+          "rate": 60.54054054054054
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 61.08108108108108
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 60.9009009009009
+    },
+    {
+      "eventId": "the_quiet_limiter",
+      "seeds": 414,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 35000,
+          "rate": 75.84541062801932
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 76.57004830917874
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 76.57004830917874
+    },
+    {
+      "eventId": "three_complaints",
+      "seeds": 176,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 5,
+          "costCents": 0,
+          "rate": 81.25
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 81.81818181818181
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 81.25
+    },
+    {
+      "eventId": "the_early_finish",
+      "seeds": 244,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 50000,
+          "rate": 79.09836065573771
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 79.50819672131148
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 78.68852459016394
+    },
+    {
+      "eventId": "blocked_exit",
+      "seeds": 564,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 59.9290780141844
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 61.347517730496456
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.9290780141844
+    },
+    {
+      "eventId": "the_kitchen_list",
+      "seeds": 556,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 12000,
+          "rate": 60.431654676258994
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.07194244604317
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 60.25179856115108
+    },
+    {
+      "eventId": "dinner_furniture",
+      "seeds": 1000,
+      "choices": [
+        {
+          "choiceId": "hire",
+          "hours": 1,
+          "costCents": 0,
+          "rate": 34.3
+        },
+        {
+          "choiceId": "later",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 24.1
+        },
+        {
+          "choiceId": "return",
+          "hours": 1,
+          "costCents": 0,
+          "rate": 24.1
+        }
+      ],
+      "best": "hire",
+      "cheapest": "later",
+      "favoursCheap": false,
+      "reading": 33.8
+    },
+    {
+      "eventId": "drawing_revision",
+      "seeds": 1000,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 0,
+          "rate": 33.8
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 33.9
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 33.8
+    },
+    {
+      "eventId": "invoice_reference",
+      "seeds": 374,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 89.03743315508021
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 89.03743315508021
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 89.03743315508021
+    },
+    {
+      "eventId": "heating_adjustment",
+      "seeds": 564,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 0,
+          "rate": 59.9290780141844
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 65000,
+          "rate": 60.46099290780142
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.9290780141844
+    },
+    {
+      "eventId": "the_wet_stair",
+      "seeds": 570,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 4,
+          "costCents": 30000,
+          "rate": 58.94736842105263
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.824561403508774
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.12280701754386
+    },
+    {
+      "eventId": "the_security_deposit",
+      "seeds": 558,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 60.57347670250896
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 45000,
+          "rate": 60.39426523297491
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 60.57347670250896
+    },
+    {
+      "eventId": "the_accountant_s_dates",
+      "seeds": 575,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 0,
+          "rate": 58.78260869565217
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 58.78260869565217
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 58.78260869565217
+    },
+    {
+      "eventId": "the_insurance_renewal",
+      "seeds": 553,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 40000,
+          "rate": 61.12115732368897
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 62.0253164556962
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 61.12115732368897
+    },
+    {
+      "eventId": "monthly_cost_sheet",
+      "seeds": 998,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 0,
+          "rate": 32.965931863727455
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 8000,
+          "rate": 33.26653306613226
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 33.86773547094188
+    },
+    {
+      "eventId": "the_sunday_tour",
+      "seeds": 558,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.39426523297491
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.39426523297491
+        }
+      ],
+      "best": "act",
+      "cheapest": "act",
+      "favoursCheap": true,
+      "reading": 60.39426523297491
+    },
+    {
+      "eventId": "the_agency_reunion",
+      "seeds": 566,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 4,
+          "costCents": 10000,
+          "rate": 60.42402826855124
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 57.773851590106005
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 59.71731448763251
+    },
+    {
+      "eventId": "the_flattering_award",
+      "seeds": 562,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 1,
+          "costCents": 0,
+          "rate": 60.1423487544484
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 90000,
+          "rate": 59.786476868327405
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 60.1423487544484
+    },
+    {
+      "eventId": "the_quiet_walk",
+      "seeds": 575,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 58.608695652173914
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 58.608695652173914
+        }
+      ],
+      "best": "act",
+      "cheapest": "act",
+      "favoursCheap": true,
+      "reading": 58.608695652173914
+    },
+    {
+      "eventId": "the_family_weekend",
+      "seeds": 552,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 0,
+          "costCents": 25000,
+          "rate": 60.507246376811594
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.68840579710145
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 61.05072463768116
+    },
+    {
+      "eventId": "the_empty_floor_photograph",
+      "seeds": 564,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 1,
+          "costCents": 0,
+          "rate": 59.9290780141844
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.9290780141844
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.9290780141844
+    },
+    {
+      "eventId": "waiting_weekend",
+      "seeds": 1000,
+      "choices": [
+        {
+          "choiceId": "walk",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 33.8
+        },
+        {
+          "choiceId": "check",
+          "hours": 4,
+          "costCents": 0,
+          "rate": 34.1
+        }
+      ],
+      "best": "check",
+      "cheapest": "walk",
+      "favoursCheap": false,
+      "reading": 33.8
+    },
+    {
+      "eventId": "the_host_s_notebook",
+      "seeds": 561,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 4,
+          "costCents": 0,
+          "rate": 60.249554367201426
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 60.42780748663102
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 60.249554367201426
+    },
+    {
+      "eventId": "technician_elsewhere",
+      "seeds": 548,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 30000,
+          "rate": 61.496350364963504
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 61.86131386861314
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 61.67883211678832
+    },
+    {
+      "eventId": "last_train",
+      "seeds": 552,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 18000,
+          "rate": 61.41304347826087
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 61.05072463768116
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 61.231884057971016
+    },
+    {
+      "eventId": "the_permanent_manager",
+      "seeds": 545,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 3,
+          "costCents": 0,
+          "rate": 61.8348623853211
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 61.8348623853211
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 61.8348623853211
+    },
+    {
+      "eventId": "the_carrying_favour",
+      "seeds": 573,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 1,
+          "costCents": 40000,
+          "rate": 58.81326352530541
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 57.94066317626527
+        }
+      ],
+      "best": "act",
+      "cheapest": "leave",
+      "favoursCheap": false,
+      "reading": 58.98778359511344
+    },
+    {
+      "eventId": "the_late_handover",
+      "seeds": 571,
+      "choices": [
+        {
+          "choiceId": "act",
+          "hours": 2,
+          "costCents": 12500,
+          "rate": 58.66900175131349
+        },
+        {
+          "choiceId": "leave",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 59.36952714535902
+        }
+      ],
+      "best": "leave",
+      "cheapest": "leave",
+      "favoursCheap": true,
+      "reading": 59.01926444833625
+    },
+    {
+      "eventId": "breakout_floor",
+      "seeds": 432,
+      "choices": [
+        {
+          "choiceId": "move",
+          "hours": 4,
+          "costCents": 0,
+          "rate": 77.77777777777777
+        },
+        {
+          "choiceId": "stay",
+          "hours": 0,
+          "costCents": 0,
+          "rate": 77.77777777777777
+        }
+      ],
+      "best": "move",
+      "cheapest": "stay",
+      "favoursCheap": true,
+      "reading": 77.77777777777777
+    }
+  ],
+  "margins": [
+    {
+      "eventId": "agency_progress_tour",
+      "seeds": 997,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.7021063189568706,
+          "margin": 1.0577708432758306
+        },
+        {
+          "choiceId": "leave",
+          "change": -1.4042126379137412,
+          "margin": 1.4420018408282977
+        }
+      ]
+    },
+    {
+      "eventId": "three_saturdays",
+      "seeds": 560,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0.17857142857142858,
+          "margin": 1.0498958281658233
+        },
+        {
+          "choiceId": "more",
+          "change": 0.35714285714285715,
+          "margin": 1.5649680507920918
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.17857142857142858,
+          "margin": 1.2618562715301613
+        }
+      ]
+    },
+    {
+      "eventId": "christmas_exclusivity",
+      "seeds": 563,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -1.5985790408525755,
+          "margin": 1.3418392497652298
+        },
+        {
+          "choiceId": "more",
+          "change": 0,
+          "margin": 1.3026018611149066
+        },
+        {
+          "choiceId": "leave",
+          "change": -1.0657193605683837,
+          "margin": 1.3897545722705533
+        }
+      ]
+    },
+    {
+      "eventId": "the_empty_tuesday",
+      "seeds": 568,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.176056338028169,
+          "margin": 1.4226881260603554
+        },
+        {
+          "choiceId": "more",
+          "change": 0,
+          "margin": 1.6185237481080847
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.176056338028169,
+          "margin": 1.4226881260603554
+        }
+      ]
+    },
+    {
+      "eventId": "eleven_days",
+      "seeds": 543,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.3683241252302026,
+          "margin": 1.2500101023615635
+        },
+        {
+          "choiceId": "more",
+          "change": 0,
+          "margin": 1.693041416068862
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.3683241252302026,
+          "margin": 1.2500101023615635
+        }
+      ]
+    },
+    {
+      "eventId": "the_planner_s_commission",
+      "seeds": 586,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.17064846416382254,
+          "margin": 1.2058731496378576
+        },
+        {
+          "choiceId": "more",
+          "change": -0.17064846416382254,
+          "margin": 1.6040070083809401
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.5119453924914675,
+          "margin": 1.5321780412042012
+        }
+      ]
+    },
+    {
+      "eventId": "the_weekday_package",
+      "seeds": 554,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.5415162454873647,
+          "margin": 1.0604134916675736
+        },
+        {
+          "choiceId": "more",
+          "change": -0.5415162454873647,
+          "margin": 1.4580189162533583
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.5415162454873647,
+          "margin": 1.3694829547833434
+        }
+      ]
+    },
+    {
+      "eventId": "the_winter_cancellation",
+      "seeds": 563,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 1.3026018611149066
+        },
+        {
+          "choiceId": "more",
+          "change": -1.4209591474245116,
+          "margin": 1.3875842905211753
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.3552397868561279,
+          "margin": 1.3022712934503744
+        }
+      ]
+    },
+    {
+      "eventId": "the_fair_stand",
+      "seeds": 569,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 1.540489713848713
+        },
+        {
+          "choiceId": "more",
+          "change": -0.70298769771529,
+          "margin": 1.3766445854086855
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 1.4614368623468892
+        }
+      ]
+    },
+    {
+      "eventId": "the_price_screenshot",
+      "seeds": 565,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0.5309734513274337,
+          "margin": 1.2500087727367797
+        },
+        {
+          "choiceId": "more",
+          "change": -0.5309734513274337,
+          "margin": 1.2500087727367797
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.5309734513274337,
+          "margin": 1.2500087727367797
+        }
+      ]
+    },
+    {
+      "eventId": "a_quiet_sunday",
+      "seeds": 577,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 1.2131715771230502,
+          "margin": 1.2207557392102775
+        },
+        {
+          "choiceId": "more",
+          "change": 0,
+          "margin": 1.593278143718184
+        },
+        {
+          "choiceId": "leave",
+          "change": 1.2131715771230502,
+          "margin": 1.5534955100137995
+        }
+      ]
+    },
+    {
+      "eventId": "the_agency_tasting",
+      "seeds": 557,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.17953321364452424,
+          "margin": 0.7866977246416477
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.718132854578097,
+          "margin": 1.7932775391872111
+        }
+      ]
+    },
+    {
+      "eventId": "the_six_month_enquiry",
+      "seeds": 565,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "start_fit_out",
+      "seeds": 1000,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "prepare",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "later",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "the_fire_plan",
+      "seeds": 1000,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 3.8,
+          "margin": 1.3083055056063932
+        }
+      ]
+    },
+    {
+      "eventId": "lift_dimensions",
+      "seeds": 999,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.3003003003003003,
+          "margin": 0.6504426478256886
+        }
+      ]
+    },
+    {
+      "eventId": "brick_dust",
+      "seeds": 1000,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": -1,
+          "margin": 1.2066343273751166
+        }
+      ]
+    },
+    {
+      "eventId": "the_prep_kitchen",
+      "seeds": 999,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.1001001001001001,
+          "margin": 0.588555855580272
+        }
+      ]
+    },
+    {
+      "eventId": "the_roof_brochure",
+      "seeds": 1000,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "the_sample_dinner",
+      "seeds": 999,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.3003003003003003,
+          "margin": 1.256130590410958
+        }
+      ]
+    },
+    {
+      "eventId": "the_calendar_promise",
+      "seeds": 999,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.9009009009009009,
+          "margin": 1.5562566101153137
+        }
+      ]
+    },
+    {
+      "eventId": "insurance_inventory",
+      "seeds": 1000,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 2.2,
+          "margin": 1.406783087757313
+        }
+      ]
+    },
+    {
+      "eventId": "the_goods_lift",
+      "seeds": 569,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.1757469244288225,
+          "margin": 0.3441611463521714
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.351493848857645,
+          "margin": 1.2885425324259216
+        }
+      ]
+    },
+    {
+      "eventId": "cold_plates",
+      "seeds": 562,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0.8542704441023183
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 1.7085408882046367
+        }
+      ]
+    },
+    {
+      "eventId": "the_turnaround",
+      "seeds": 0,
+      "judged": false,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "projector_silence",
+      "seeds": 559,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.7155635062611807,
+          "margin": 0.6987387791739921
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.35778175313059035,
+          "margin": 1.5677671348568862
+        }
+      ]
+    },
+    {
+      "eventId": "the_coat_queue",
+      "seeds": 555,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.36036036036036034,
+          "margin": 0.49853328557349014
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.18018018018018017,
+          "margin": 1.367674130831385
+        }
+      ]
+    },
+    {
+      "eventId": "the_quiet_limiter",
+      "seeds": 414,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.7246376811594203,
+          "margin": 0.8170282966288408
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 1.7714126758639914
+        }
+      ]
+    },
+    {
+      "eventId": "three_complaints",
+      "seeds": 176,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.5681818181818182,
+          "margin": 2.4887513417342886
+        }
+      ]
+    },
+    {
+      "eventId": "the_early_finish",
+      "seeds": 244,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0.4098360655737705,
+          "margin": 0.8016309356335245
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.819672131147541,
+          "margin": 2.2696861531079273
+        }
+      ]
+    },
+    {
+      "eventId": "blocked_exit",
+      "seeds": 564,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 1.4184397163120568,
+          "margin": 1.54973133960471
+        }
+      ]
+    },
+    {
+      "eventId": "the_kitchen_list",
+      "seeds": 556,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0.17985611510791366,
+          "margin": 0.6103960069239353
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.17985611510791366,
+          "margin": 0.9325550954163909
+        }
+      ]
+    },
+    {
+      "eventId": "dinner_furniture",
+      "seeds": 1000,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "hire",
+          "change": 0.5,
+          "margin": 0.7060082152496527
+        },
+        {
+          "choiceId": "later",
+          "change": -9.7,
+          "margin": 1.9559876932128177
+        },
+        {
+          "choiceId": "return",
+          "change": -9.7,
+          "margin": 1.9559876932128177
+        }
+      ]
+    },
+    {
+      "eventId": "drawing_revision",
+      "seeds": 1000,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 1.0371345139373196
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.1,
+          "margin": 1.0184270145670724
+        }
+      ]
+    },
+    {
+      "eventId": "invoice_reference",
+      "seeds": 374,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "heating_adjustment",
+      "seeds": 564,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.5319148936170213,
+          "margin": 0.7758322672891947
+        }
+      ]
+    },
+    {
+      "eventId": "the_wet_stair",
+      "seeds": 570,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.17543859649122806,
+          "margin": 0.34355788544105437
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.7017543859649122,
+          "margin": 1.5367075725586496
+        }
+      ]
+    },
+    {
+      "eventId": "the_security_deposit",
+      "seeds": 558,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.17921146953405018,
+          "margin": 0.6082088614721615
+        }
+      ]
+    },
+    {
+      "eventId": "the_accountant_s_dates",
+      "seeds": 575,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "the_insurance_renewal",
+      "seeds": 553,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0.7088607594936709
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.9041591320072333,
+          "margin": 1.2756929721564323
+        }
+      ]
+    },
+    {
+      "eventId": "monthly_cost_sheet",
+      "seeds": 998,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.9018036072144289,
+          "margin": 1.0189518962896205
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.6012024048096193,
+          "margin": 0.9614009164895928
+        }
+      ]
+    },
+    {
+      "eventId": "the_sunday_tour",
+      "seeds": 558,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "the_agency_reunion",
+      "seeds": 566,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0.7067137809187279,
+          "margin": 0.8462326443689633
+        },
+        {
+          "choiceId": "leave",
+          "change": -1.9434628975265018,
+          "margin": 1.724029854841712
+        }
+      ]
+    },
+    {
+      "eventId": "the_flattering_award",
+      "seeds": 562,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.35587188612099646,
+          "margin": 0.6968880609849533
+        }
+      ]
+    },
+    {
+      "eventId": "the_quiet_walk",
+      "seeds": 575,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "the_family_weekend",
+      "seeds": 552,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.5434782608695652,
+          "margin": 0.6133300654719304
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.36231884057971014,
+          "margin": 0.5012377794581652
+        }
+      ]
+    },
+    {
+      "eventId": "the_empty_floor_photograph",
+      "seeds": 564,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "waiting_weekend",
+      "seeds": 1000,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "walk",
+          "change": 0,
+          "margin": 0.9193214889253922
+        },
+        {
+          "choiceId": "check",
+          "change": 0.3,
+          "margin": 0.8541418242891518
+        }
+      ]
+    },
+    {
+      "eventId": "the_host_s_notebook",
+      "seeds": 561,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.17825311942959002,
+          "margin": 1.5228237358380787
+        }
+      ]
+    },
+    {
+      "eventId": "technician_elsewhere",
+      "seeds": 548,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.18248175182481752,
+          "margin": 0.3573377485852077
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.18248175182481752,
+          "margin": 1.2894862210677354
+        }
+      ]
+    },
+    {
+      "eventId": "last_train",
+      "seeds": 552,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0.18115942028985507,
+          "margin": 0.6148178300968004
+        },
+        {
+          "choiceId": "leave",
+          "change": -0.18115942028985507,
+          "margin": 1.6270762568728663
+        }
+      ]
+    },
+    {
+      "eventId": "the_permanent_manager",
+      "seeds": 545,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "leave",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    },
+    {
+      "eventId": "the_carrying_favour",
+      "seeds": 573,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.17452006980802792,
+          "margin": 0.3417607253859148
+        },
+        {
+          "choiceId": "leave",
+          "change": -1.0471204188481675,
+          "margin": 1.2769938077393284
+        }
+      ]
+    },
+    {
+      "eventId": "the_late_handover",
+      "seeds": 571,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "act",
+          "change": -0.3502626970227671,
+          "margin": 0.6859134713438277
+        },
+        {
+          "choiceId": "leave",
+          "change": 0.3502626970227671,
+          "margin": 1.0850950758156537
+        }
+      ]
+    },
+    {
+      "eventId": "breakout_floor",
+      "seeds": 432,
+      "judged": true,
+      "choices": [
+        {
+          "choiceId": "move",
+          "change": 0,
+          "margin": 0
+        },
+        {
+          "choiceId": "stay",
+          "change": 0,
+          "margin": 0
+        }
+      ]
+    }
+  ]
+}
