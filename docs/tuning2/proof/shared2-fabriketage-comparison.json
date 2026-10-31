@@ -1,0 +1,21 @@
+{
+  "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+  "baseline": "shared1",
+  "protected": false,
+  "id": "fabriketage",
+  "mode": "long",
+  "rows": [
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_careful"
+      },
+      "same": true,
+      "beforeHash": "cc59d8e6593c266b001caf21e7d0f79777a913d286c1ca2070f718d96a6d0a8d",
+      "afterHash": "cc59d8e6593c266b001caf21e7d0f79777a913d286c1ca2070f718d96a6d0a8d",
+      "seconds": 62.357424542000004,
+      "baselineSeconds": 78.72931437500002,
+      "seeds": 1000
+    }
+  ]
+}

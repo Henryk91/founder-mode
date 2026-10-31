@@ -1,0 +1,21 @@
+{
+  "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+  "baseline": "shared1",
+  "protected": false,
+  "id": "ausgesperrt",
+  "mode": "long",
+  "rows": [
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "tourism_careful"
+      },
+      "same": true,
+      "beforeHash": "99d761aeebfe5bbedf498771e6f39c658568efa36bea0882088c37a940b2763f",
+      "afterHash": "99d761aeebfe5bbedf498771e6f39c658568efa36bea0882088c37a940b2763f",
+      "seconds": 164.593869666,
+      "baselineSeconds": 232.62760512400004,
+      "seeds": 1000
+    }
+  ]
+}

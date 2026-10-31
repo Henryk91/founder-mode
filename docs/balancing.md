@@ -7644,6 +7644,17 @@ field of 195,000 results. Full tables: [escape](tuning2/measurements/shared1-aus
 [climbing](tuning2/measurements/shared1-griffig.md).
 Seven originally open targets meet their limits at this candidate, including
 at-the-limit results; escape X1 and T16 regress and require follow-up.
-The conditional reader wrongly pays for guest-only reminders after reach is
-saturated. Correct that assumption and restore the unsuccessful ticket experiment
-before event-table measurement. No event tables, wide seeds or full report started.
+The initial capped-reach explanation was incorrect: inbox invitations add booking
+requests directly through eventGuests. No saturation filter is retained.
+Five invalid fitness invitation targets are corrected and the unsuccessful ticket
+experiment is restored to its prior settings before event-table measurement.
+
+
+Tuning 2 shared2 main measurement complete on c24b3ec: fitness/climbing, 62 policies
+x 1,000 paired test seeds; 2,000 fresh escape/venue careful results remain identical.
+Full tables: [fitness](tuning2/measurements/shared2-schweissperle.md),
+[climbing](tuning2/measurements/shared2-griffig.md). Fitness careful 47.8%, T3/T6 at
+the limit; climbing careful 26.5%, T5/K2 pass. Fitness F1 now fails (all-slot
+aggregator +0.9 ±2.1), requiring follow-up alongside escape X1/T16. Shared2 T12
+figures are concurrent campaign timings; use the serial speed proof above.
+Affected event tables are running. No wide seeds or full report have started.

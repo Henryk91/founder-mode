@@ -248,3 +248,33 @@ All older-game rows remain identical. Full root tests run with no bot jobs activ
 Correction gate passed: 599 web plus 1,380 other tests, 1,979 total and 30 skipped.
 Lint and all typechecks pass. Logs: state/step2-botfix-full-tests.log and
 state/step2-botfix-final-lint-2.log. Source e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5.
+
+
+## Shared2: corrected source main results complete
+
+Commit c24b3ec, common source e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5.
+Fitness/climbing main: 62 policies x 1,000 paired test seeds. Escape/venue careful
+references: 2,000 results identical to shared1. Manifest: ../proof/shared2-main-manifest.json.
+Full matrices: ../measurements/shared2-schweissperle.md and shared2-griffig.md.
+No wide seeds; event tables still in progress. Concurrent timings are not isolated T12.
+
+Fitness careful remains 47.8%; T3 spread 16.5 ±7.5 passes at the limit, with
+corporate 58.0%, yoga 41.5%, young 43.4%. T5 87.5%/91.3% passes. T6 reading
++18.3 ±2.7 and blind gain +7.4 passes at the limit using its own limit margin.
+T7 -3.1 ±1.9 remains open; the per-scenario price experiment did not solve it.
+T14 permanent +0.7 ±1.3 and seasonal -0.4 ±1.2 fail; part time +4.2 ±1.3 passes.
+F3 -22.7 ±3.2 and F4 +0.6 ±1.7 remain open. New regression: F1 aggregator-all
++0.9 ±2.1 no longer reaches the required -2 even within its margin; no aggregator
+-41.7 ±3.1 still passes. Investigate peak occupancy in the fitness sub-step.
+
+Climbing careful 26.5%; T3 spread 22.8 ±6.4 fails (committed 13.5%, families
+28.9%, students 36.3%). T5 90.0%/100% and K2 half -2.3 ±1.2/double -2.4 ±1.4
+pass. T6 reading -1.8 ±1.8 still fails. T7 -0.4 ±1.2 remains open. T9 overstaffing
++1.4 ±1.7 fails; under -8.5 ±2.0 passes. T11 has no established segment split;
+T14 only permanent +3.1 ±1.7 passes. T15 +11.1 ±2.0 still fails. K1 boulder
+98.2%, rope 13.3%, both 0% of differing seeds fails; K3 all +1.2 ±0.9 fails.
+The earlier provisional T3 pass is not retained; it was already an original open
+target. No baseline-passing climbing target regresses at this source.
+
+No economic tuning round is charged for these corrections. Preserve escape X1/T16
+and fitness F1 regressions as work to resolve before accepting the final source.

@@ -1,0 +1,41 @@
+{
+  "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+  "commit": "c24b3ec",
+  "parts": "main",
+  "runs": 1000,
+  "fullReport": false,
+  "units": [
+    {
+      "scenario": "ausgesperrt",
+      "policies": 1,
+      "games": 1000,
+      "identicalPolicies": 1,
+      "scope": "careful event reference",
+      "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5"
+    },
+    {
+      "scenario": "fabriketage",
+      "policies": 1,
+      "games": 1000,
+      "identicalPolicies": 1,
+      "scope": "careful event reference",
+      "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5"
+    },
+    {
+      "scenario": "schweissperle",
+      "policies": 30,
+      "games": 30000,
+      "identicalPolicies": 0,
+      "scope": "matrix",
+      "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5"
+    },
+    {
+      "scenario": "griffig",
+      "policies": 32,
+      "games": 32000,
+      "identicalPolicies": 1,
+      "scope": "matrix",
+      "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5"
+    }
+  ]
+}
