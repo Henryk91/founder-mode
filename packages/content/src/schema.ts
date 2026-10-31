@@ -1339,6 +1339,8 @@ export const EffectSchema = z.discriminatedUnion('type', [
     type: z.literal('guests'),
     segment: Id.optional(),
     count: z.number().int().positive(),
+    // Preparation contacts are sent once the leisure business first opens.
+    onOpening: z.boolean().optional(),
     ...fx,
   }),
   // Tourism: reviews at this rating (1 to 5) arrive.
@@ -2133,6 +2135,12 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
           e.from !== 'customer'
         ) {
           issue(`${fx.type} needs a customer sender`, at('choices', j, 'effects'))
+        }
+        if (fx.type === 'guests' && fx.onOpening) {
+          if (!s.bookings?.leisure?.opening)
+            issue('opening invitations need a leisure opening', at('choices', j, 'effects'))
+          if (fx.segment && !s.bookings?.segments[fx.segment])
+            issue(`unknown booking segment ${fx.segment}`, at('choices', j, 'effects'))
         }
         if (fx.type === 'touchLead' && e.from !== 'lead') {
           issue('touchLead needs a lead sender', at('choices', j, 'effects'))

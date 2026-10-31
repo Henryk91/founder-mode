@@ -1356,3 +1356,23 @@ borrows a physical wall's pool. Courses/parties and ordinary visitors then reser
 the same pool;the alias's allowed slots do not create extra safety places.
 
 Optional hall content now uses the same54-week traffic aggregates and current-service-week individual retention as class-aware content. Qualifications,course learners,future reservations and lifetime totals remain distinct persistent records.27 complete diagnostic results/public-view traces match the pre-compaction hall representation,including six funded rope-course stress cases. No new shape or RNG draw is introduced;other earlier leisure scenarios retain individual history.
+
+
+### Opening invitations
+
+Optional guest effect `onOpening?: boolean` marks a quoted preparation contact.
+If the leisure business has not opened, the effect adds to optional
+`BookingsState.openingInvitations: Record<SegmentId, number>` rather than this
+week's `eventGuests`. Fees and conditions still resolve when the choice is made.
+In the first full week after opening, the stored contacts join ordinary event requests once,
+and the pending record clears. This leaves a planning turn to schedule service
+after construction finishes. Ordinary prices, qualifications, staffing and
+physical capacity still apply; invitations are not guaranteed sales. An effect
+answered after opening uses the current request path. Effects without the flag
+retain their existing timing and RNG behaviour.
+
+The flag requires a configured leisure opening and a valid named segment where
+specified. Optional `LeisureView.openingInvitations` copies `{segmentId, count}`
+rows for the public preparation status. No demand or conversion probability is
+exposed. The ten new fitness/climbing preparation cards opt in; earlier content
+and saves without the flag keep their existing behaviour.

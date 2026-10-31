@@ -219,10 +219,12 @@ function applyEffect(
       const ids = Object.keys(b.repeatGuests)
       const seg = effect.segment ?? (ids.length ? rng.pick(ids) : null)
       if (!seg) return state
-      const sent = b.eventGuests ?? {}
+      const field =
+        effect.onOpening && b.leisure?.openingWeek === null ? 'openingInvitations' : 'eventGuests'
+      const sent = b[field] ?? {}
       return {
         ...state,
-        bookings: { ...b, eventGuests: { ...sent, [seg]: (sent[seg] ?? 0) + effect.count } },
+        bookings: { ...b, [field]: { ...sent, [seg]: (sent[seg] ?? 0) + effect.count } },
       }
     }
     case 'review': {

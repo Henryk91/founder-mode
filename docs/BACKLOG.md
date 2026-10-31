@@ -2,7 +2,7 @@
 
 Everything planned or discussed that no plan builds yet. When a plan picks an item up, move it to that plan. When a plan leaves something out or opens an issue, add it here.
 
-Last updated: 24 October 2026, at the end of plan 5.
+Last updated: 31 October 2026, Henry’s narrowed tuning 2 scope.
 
 ## 1. Left out of plan 4 (the abroad scenarios)
 
@@ -102,6 +102,54 @@ Left open by plan 5's first pass (values 2 rounds, formula 1 round per failing t
 | Griffig | K3 (quiet-slot aggregator access) | all slots +1.0 ±0.7, none -4.0 ±1.9; round 2 all +0.5 | Actual peak occupancy and paid visitor mix |
 
 At the limit (pass): Ausgesperrt X1, Fabriketage V2, Schweißperle T1, F1 and T17, Griffig K5.
+
+### Tuning 2 deferred targets, LOW priority
+
+Henry stops all tuning except Fabriketage weddings >=20%, Ausgesperrt X1
+quarterly expansion not best, and Griffig careful >=25%. All other open targets
+below are LOW priority, including partially addressed targets and regressions.
+The venue T3 row defers segment parity beyond the active wedding floor.
+Results are historical candidates, not final-source confirmations. No further
+event tables are authorised in this run.
+
+| Scenario | Target | Priority | Latest recorded evidence |
+|---|---|---|---|
+| ausgesperrt | T2 | LOW | top leisure_quarterly_rooms 51.8%; no tests 27.0% |
+| ausgesperrt | T3 | LOW | 37.7 points (companies 21.3%, locals 59.0%, tourists 40.3%) |
+| ausgesperrt | T6 | LOW | reading +14.9, blind effort +9.9 |
+| ausgesperrt | T10 | LOW | -30.8 |
+| ausgesperrt | T11 | LOW | strict ahead by -5.2 overall; companies -4.1, locals -0.9, tourists -11.0 |
+| ausgesperrt | T14 | LOW | permanent +3.8 (signed in 90.0%); seasonal +1.6 (signed in 90.2%); part time +6.7 (signed in 93.7%) |
+| ausgesperrt | T15 | LOW | second loan +9.9 against none (second loan taken in 84.5% of runs) |
+| ausgesperrt | T17 | LOW | ending owing: reckless 44.2%, careful 34.2% (gap +10.0); careful loan-caused misses 1.1% |
+| fabriketage | T3 | LOW | 55.8 points (companies 59.6%, private_parties 36.2%, weddings 3.8%) |
+| fabriketage | T6 | LOW | reading +5.8, blind effort +5.5 |
+| fabriketage | T11 | LOW | strict ahead by +0.5 overall; companies +0.6, private_parties +1.7, weddings -0.9 |
+| fabriketage | T13 | LOW | 33.0%; gap -0.8 |
+| fabriketage | T14 | LOW | permanent -0.8 (signed in 24.6%); seasonal +0.0 (signed in 28.5%); part time -1.9 (signed in 37.6%) |
+| fabriketage | T15 | LOW | second loan +11.0 against none (second loan taken in 56.8% of runs) |
+| schweissperle | T3 | LOW | 16.5 points (corporate 58.0%, yoga_crowd 41.5%, young_professionals 43.4%) |
+| schweissperle | T5 | LOW | 87.5%; year 2 91.3% |
+| schweissperle | T6 | LOW | reading +18.3, blind effort +7.4 |
+| schweissperle | T7 | LOW | -3.1 |
+| schweissperle | T12 | LOW | 475.1 s per 1000 runs |
+| schweissperle | T14 | LOW | permanent +0.7 (signed in 55.0%); seasonal -0.4 (signed in 50.8%); part time +4.2 (signed in 97.2%) |
+| schweissperle | F3 | LOW | -22.7; buy-only 44, no-buy-only 271, ties 685 |
+| schweissperle | F4 | LOW | +0.6; 27862 followers stopped in 918 runs |
+| griffig | T3 | LOW | 22.8 points (committed 13.5%, families 28.9%, students 36.3%) |
+| griffig | T5 | LOW | 90.0%; year 2 100.0% |
+| griffig | T6 | LOW | reading -1.8, blind effort -3.1 |
+| griffig | T7 | LOW | -0.4 |
+| griffig | T9 | LOW | over +1.4, under -8.5 |
+| griffig | T11 | LOW | strict ahead by -2.1 overall; committed +1.6, families -5.0, students -2.7 |
+| griffig | T12 | LOW | 775.3 s per 1000 runs |
+| griffig | T14 | LOW | permanent +3.1 (signed in 70.3%); seasonal -0.3 (signed in 100.0%); part time -0.3 (signed in 100.0%) |
+| griffig | T15 | LOW | second loan +11.1 against none (second loan taken in 53.1% of runs) |
+| griffig | K1 | LOW | boulder_first 98.2% (384 sole,51 joint); rope_first 13.3% (8 sole,51 joint); both_first 0.0% (0 sole,0 joint); differing 443,all-outcome ties 557 |
+| griffig | K2 | LOW | half -2.3; double -2.4 |
+| griffig | K3 | LOW | all +1.2; none -11.7 |
+| ausgesperrt | T16 | LOW | See historical measurements |
+| schweissperle | F1 | LOW | See historical measurements |
 
 ## 4. Features not in any plan
 

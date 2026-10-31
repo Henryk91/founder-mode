@@ -272,7 +272,7 @@ events:
     from: 'none'
     sender: 'Your opening organiser'
     look: 'letter'
-    text: 'The first teachers can introduce their followers at an opening-planning session. A funded fit-out gives them a date to discuss; an unfunded drawing gives them another drawing. The quotation is EUR500; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    text: 'The first teachers can introduce their followers at an opening-planning session. A funded fit-out gives them a date to discuss; an unfunded drawing gives them another drawing. The quotation is EUR500 for 12 invitations, sent for your first full week after opening; visitors pay ordinary prices and need available places. Keep EUR5,000 in cash after paying the quote.'
     defaultChoice: 'wait'
     choices:
       - id: 'prepare'
@@ -280,6 +280,7 @@ events:
         hours: 4
         effects:
           - type: 'guests'
+            onOpening: true
             segment: 'yoga_crowd'
             count: 12
             when:
@@ -301,7 +302,7 @@ events:
     from: 'none'
     sender: 'Your opening organiser'
     look: 'letter'
-    text: 'A nearby employers club will discuss the first employee classes before opening. Its coordinator asks for a funded opening plan before circulating invitations. The quotation is EUR600; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    text: 'A nearby employers club will discuss the first employee classes before opening. Its coordinator asks for a funded opening plan before circulating invitations. The quotation is EUR600 for 18 invitations, sent for your first full week after opening; visitors pay ordinary prices and need available places. Keep EUR5,000 in cash after paying the quote.'
     defaultChoice: 'wait'
     choices:
       - id: 'prepare'
@@ -309,6 +310,7 @@ events:
         hours: 4
         effects:
           - type: 'guests'
+            onOpening: true
             segment: 'corporate'
             count: 18
             when:
@@ -330,7 +332,7 @@ events:
     from: 'none'
     sender: 'Your opening organiser'
     look: 'letter'
-    text: 'A designer can prepare a founding-members invitation evening. The invitations need a funded build, rather than a photograph of a shower fitting. The quotation is EUR700; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    text: 'A designer can prepare a founding-members invitation evening. The invitations need a funded build, rather than a photograph of a shower fitting. The quotation is EUR700 for 20 invitations, sent for your first full week after opening; visitors pay ordinary prices and need available places. Keep EUR5,000 in cash after paying the quote.'
     defaultChoice: 'wait'
     choices:
       - id: 'prepare'
@@ -338,6 +340,7 @@ events:
         hours: 4
         effects:
           - type: 'guests'
+            onOpening: true
             segment: 'young_professionals'
             count: 20
             when:
@@ -359,7 +362,7 @@ events:
     from: 'none'
     sender: 'Your opening organiser'
     look: 'letter'
-    text: 'Prospective members will attend a timetable-planning session with your first teacher. Without a funded build, there is no credible timetable to print. The quotation is EUR500; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    text: 'Prospective members will attend a timetable-planning session with your first teacher. Without a funded build, there is no credible timetable to print. The quotation is EUR500 for 14 invitations, sent for your first full week after opening; visitors pay ordinary prices and need available places. Keep EUR5,000 in cash after paying the quote.'
     defaultChoice: 'wait'
     choices:
       - id: 'prepare'
@@ -367,6 +370,7 @@ events:
         hours: 4
         effects:
           - type: 'guests'
+            onOpening: true
             segment: 'yoga_crowd'
             count: 14
             when:
@@ -388,7 +392,7 @@ events:
     from: 'none'
     sender: 'Your opening organiser'
     look: 'letter'
-    text: 'The local sports association offers a launch-planning mailing. Its organiser wants a funded opening date before recommending the studio. The quotation is EUR600; these are invitations, with ordinary prices and available places applying when people attend. Keep EUR5,000 in cash after paying the quote.'
+    text: 'The local sports association offers a launch-planning mailing. Its organiser wants a funded opening date before recommending the studio. The quotation is EUR600 for 16 invitations, sent for your first full week after opening; visitors pay ordinary prices and need available places. Keep EUR5,000 in cash after paying the quote.'
     defaultChoice: 'wait'
     choices:
       - id: 'prepare'
@@ -396,6 +400,7 @@ events:
         hours: 4
         effects:
           - type: 'guests'
+            onOpening: true
             segment: 'young_professionals'
             count: 16
             when:

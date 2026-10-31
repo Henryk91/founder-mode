@@ -404,3 +404,13 @@ The fitness event table is still unrun;full report remains step6 only,once.
 ### Final first pass
 
 The values above are those of outcome source a6060e0 (tag `plan5-fitness`), measured in `docs/autonomous5/reports/step4-fitness.md`. Plan 5 made no further value changes in its wrap up; the targets left open are in `docs/BACKLOG.md` for a later tuning plan.
+
+
+### Tuning 2: preparation invitation timing
+
+The five new preparation offers quote an audience and hold those invitations
+until the first full week after opening. Previously they sent immediate requests to a closed
+business and created complaints before it opened. Existing quoted fees and
+counts stay fixed for the timing measurement. At opening, ordinary admission,
+prices and capacity still apply; the preparation count is shown in the calendar.
+This corrects timing and does not guarantee a sale or a profitable campaign.

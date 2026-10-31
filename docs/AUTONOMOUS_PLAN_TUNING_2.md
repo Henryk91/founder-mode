@@ -7,6 +7,22 @@ It adds no new scenarios and no new features. It has two parts:
 - **Part A: speed.** Make the slow scenarios fast, with identical results on the same seeds.
 - **Part B: the 34 open targets** of the four leisure scenarios from plan 5 (Ausgesperrt, Fabriketage, Schweißperle, Griffig).
 
+## Henry's scope amendment, 31 October 2026
+
+This instruction supersedes the broader work and report requirements below.
+Finish the current pre-opening invitation fix and its tests. Then tune only:
+
+1. Fabriketage: weddings-viable runs win at least 20%.
+2. Ausgesperrt X1: building a new room every three months is not the best strategy.
+3. Griffig: careful bot wins at least 25%.
+
+At most two further rounds per goal, including bot changes. Stop all other
+target tuning and move every other open target to `docs/BACKLOG.md` as LOW
+priority. Run no event tables. At the end run only the main part of all four
+leisure scenarios on 1,000 seeds once; skip the full report. Prove the nine
+earlier games unchanged once at the end only if engine code changed.
+Write a short final report and create the annotated `tuning2-complete` tag.
+
 ## 0. Before anything else
 
 ### 0.1 Read, in this order

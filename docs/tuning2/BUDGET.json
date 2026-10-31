@@ -33,15 +33,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "no tests 22.1% ±2.6 (lowest corrected); top 48.4% passes its cap",
+      "closestFirstPass": "no tests 22.1% \u00b12.6 (lowest corrected); top 48.4% passes its cap",
       "baselineResult": {
         "value": "top tourism_part_time 48.4%; no tests 22.1%",
-        "margin": "±3.1; ±2.6",
+        "margin": "\u00b13.1; \u00b12.6",
         "met": "no"
       },
       "sharedRound1": {
         "value": "top leisure_quarterly_rooms 51.8%; no tests 27.0%",
-        "margin": "±3.1; ±2.8",
+        "margin": "\u00b13.1; \u00b12.8",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -54,15 +54,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "32.5 ±7.0 points (companies 27.7%, locals 60.2%, tourists 40.6%)",
+      "closestFirstPass": "32.5 \u00b17.0 points (companies 27.7%, locals 60.2%, tourists 40.6%)",
       "baselineResult": {
         "value": "32.5 points (companies 27.7%, locals 60.2%, tourists 40.6%)",
-        "margin": "±7.0",
+        "margin": "\u00b17.0",
         "met": "no"
       },
       "sharedRound1": {
         "value": "37.7 points (companies 21.3%, locals 59.0%, tourists 40.3%)",
-        "margin": "±6.8",
+        "margin": "\u00b16.8",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -82,10 +82,10 @@
           "measurement": "Pending main and affected event tables on 1000 paired seeds."
         }
       ],
-      "closestFirstPass": "reading +10.8, blind effort +8.9 ±2.8; round 1 +4.4 / +5.6 was closer to the blind limit",
+      "closestFirstPass": "reading +10.8, blind effort +8.9 \u00b12.8; round 1 +4.4 / +5.6 was closer to the blind limit",
       "baselineResult": {
         "value": "reading +10.8, blind effort +8.9",
-        "margin": "±2.8",
+        "margin": "\u00b12.8",
         "met": "no"
       },
       "baselineConfidenceAudit": {
@@ -96,7 +96,7 @@
       },
       "sharedRound1": {
         "value": "reading +14.9, blind effort +9.9",
-        "margin": "reading ±2.7; blind limit ±2.0",
+        "margin": "reading \u00b12.7; blind limit \u00b12.0",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -109,15 +109,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "review-blind +4.7 ±2.1; corrected baseline +2.2 came with 75.8% careful wins",
+      "closestFirstPass": "review-blind +4.7 \u00b12.1; corrected baseline +2.2 came with 75.8% careful wins",
       "baselineResult": {
         "value": "+4.7",
-        "margin": "±2.1",
+        "margin": "\u00b12.1",
         "met": "no"
       },
       "sharedRound1": {
         "value": "-30.8",
-        "margin": "±2.9",
+        "margin": "\u00b12.9",
         "pass": true,
         "source": "e7a8ece"
       }
@@ -130,15 +130,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "strict -3.4 ±2.7 overall; companies +3.8, locals -1.5, tourists -13.2; split not established",
+      "closestFirstPass": "strict -3.4 \u00b12.7 overall; companies +3.8, locals -1.5, tourists -13.2; split not established",
       "baselineResult": {
         "value": "strict ahead by -3.4 overall; companies +3.8, locals -1.5, tourists -13.2",
-        "margin": "±2.7",
+        "margin": "\u00b12.7",
         "met": "no"
       },
       "sharedRound1": {
         "value": "strict ahead by -5.2 overall; companies -4.1, locals -0.9, tourists -11.0",
-        "margin": "±2.4",
+        "margin": "\u00b12.4",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -151,15 +151,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "seasonal +1.9 ±2.2 on signed seeds; permanent +8.6 and part time +10.7 pass",
+      "closestFirstPass": "seasonal +1.9 \u00b12.2 on signed seeds; permanent +8.6 and part time +10.7 pass",
       "baselineResult": {
         "value": "permanent +8.6 (signed in 80.7%); seasonal +1.9 (signed in 83.8%); part time +10.7 (signed in 85.8%)",
-        "margin": "±3.0; ±2.2; ±2.7",
+        "margin": "\u00b13.0; \u00b12.2; \u00b12.7",
         "met": "no"
       },
       "sharedRound1": {
         "value": "permanent +3.8 (signed in 90.0%); seasonal +1.6 (signed in 90.2%); part time +6.7 (signed in 93.7%)",
-        "margin": "±2.6; ±2.1; ±2.6",
+        "margin": "\u00b12.6; \u00b12.1; \u00b12.6",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -172,15 +172,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "+16.5 ±2.8, taken in 98.7%; corrected baseline +12.5 came with 75.8% careful wins",
+      "closestFirstPass": "+16.5 \u00b12.8, taken in 98.7%; corrected baseline +12.5 came with 75.8% careful wins",
       "baselineResult": {
         "value": "second loan +16.5 against none (second loan taken in 98.7% of runs)",
-        "margin": "±2.8",
+        "margin": "\u00b12.8",
         "met": "no"
       },
       "sharedRound1": {
         "value": "second loan +9.9 against none (second loan taken in 84.5% of runs)",
-        "margin": "±2.4",
+        "margin": "\u00b12.4",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -193,15 +193,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "reckless 42.6% vs careful 38.7% owing, gap +3.9 ±4.3; first value round gap 7.1 (careful 55.7%)",
+      "closestFirstPass": "reckless 42.6% vs careful 38.7% owing, gap +3.9 \u00b14.3; first value round gap 7.1 (careful 55.7%)",
       "baselineResult": {
         "value": "ending owing: reckless 42.6%, careful 38.7% (gap +3.9); careful loan-caused misses 2.6%",
-        "margin": "±4.3; ±1.0",
+        "margin": "\u00b14.3; \u00b11.0",
         "met": "no"
       },
       "sharedRound1": {
         "value": "ending owing: reckless 44.2%, careful 34.2% (gap +10.0); careful loan-caused misses 1.1%",
-        "margin": "±4.3; ±0.6",
+        "margin": "\u00b14.3; \u00b10.6",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -222,15 +222,15 @@
           "measurement": "Pending; focused accounting tests pass."
         }
       ],
-      "closestFirstPass": "58.8 ±5.8 in round 1; final 62.2 (companies 72.0%, private parties 55.7%, weddings 9.7%)",
+      "closestFirstPass": "58.8 \u00b15.8 in round 1; final 62.2 (companies 72.0%, private parties 55.7%, weddings 9.7%)",
       "baselineResult": {
         "value": "62.2 points (companies 72.0%, private_parties 55.7%, weddings 9.7%)",
-        "margin": "±5.8",
+        "margin": "\u00b15.8",
         "met": "no"
       },
       "sharedRound1": {
         "value": "55.8 points (companies 59.6%, private_parties 36.2%, weddings 3.8%)",
-        "margin": "±5.6",
+        "margin": "\u00b15.6",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -250,10 +250,10 @@
           "measurement": "Pending main and affected event tables on 1000 paired seeds."
         }
       ],
-      "closestFirstPass": "reading +15.4, blind effort +15.9 ±2.3",
+      "closestFirstPass": "reading +15.4, blind effort +15.9 \u00b12.3",
       "baselineResult": {
         "value": "reading +15.4, blind effort +15.9",
-        "margin": "±2.3",
+        "margin": "\u00b12.3",
         "met": "no"
       },
       "baselineConfidenceAudit": {
@@ -264,7 +264,7 @@
       },
       "sharedRound1": {
         "value": "reading +5.8, blind effort +5.5",
-        "margin": "reading ±2.0; blind limit ±1.6",
+        "margin": "reading \u00b12.0; blind limit \u00b11.6",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -277,15 +277,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "strict +1.0 ±1.5 overall; companies 0.0, private +3.2, weddings -0.3",
+      "closestFirstPass": "strict +1.0 \u00b11.5 overall; companies 0.0, private +3.2, weddings -0.3",
       "baselineResult": {
         "value": "strict ahead by +1.0 overall; companies +0.0, private_parties +3.2, weddings -0.3",
-        "margin": "±1.5",
+        "margin": "\u00b11.5",
         "met": "no"
       },
       "sharedRound1": {
         "value": "strict ahead by +0.5 overall; companies +0.6, private_parties +1.7, weddings -0.9",
-        "margin": "±1.4",
+        "margin": "\u00b11.4",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -298,15 +298,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "round 1 31.2%, gap -11.5 ±2.1 (at limit); final 32.4%, gap -14.2 ±2.2",
+      "closestFirstPass": "round 1 31.2%, gap -11.5 \u00b12.1 (at limit); final 32.4%, gap -14.2 \u00b12.2",
       "baselineResult": {
         "value": "32.4%; gap -14.2",
-        "margin": "±2.9; ±2.2",
+        "margin": "\u00b12.9; \u00b12.2",
         "met": "no"
       },
       "sharedRound1": {
         "value": "33.0%; gap -0.8",
-        "margin": "±2.9; ±1.8",
+        "margin": "\u00b12.9; \u00b11.8",
         "pass": true,
         "source": "e7a8ece"
       }
@@ -319,15 +319,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "permanent 0 throughout; round 1 seasonal -0.3 ±1.4, part time -0.2 ±1.2",
+      "closestFirstPass": "permanent 0 throughout; round 1 seasonal -0.3 \u00b11.4, part time -0.2 \u00b11.2",
       "baselineResult": {
         "value": "permanent +0.0 (signed in 12.1%); seasonal -0.3 (signed in 39.7%); part time -0.4 (signed in 45.1%)",
-        "margin": "±0.0; ±0.9; ±1.2",
+        "margin": "\u00b10.0; \u00b10.9; \u00b11.2",
         "met": "no"
       },
       "sharedRound1": {
         "value": "permanent -0.8 (signed in 24.6%); seasonal +0.0 (signed in 28.5%); part time -1.9 (signed in 37.6%)",
-        "margin": "±1.1; ±0.0; ±1.7",
+        "margin": "\u00b11.1; \u00b10.0; \u00b11.7",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -340,15 +340,15 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "+35.9 ±3.0 (corrected); final +40.6 ±3.1, taken in 100%",
+      "closestFirstPass": "+35.9 \u00b13.0 (corrected); final +40.6 \u00b13.1, taken in 100%",
       "baselineResult": {
         "value": "second loan +40.6 against none (second loan taken in 100.0% of runs)",
-        "margin": "±3.1",
+        "margin": "\u00b13.1",
         "met": "no"
       },
       "sharedRound1": {
         "value": "second loan +11.0 against none (second loan taken in 56.8% of runs)",
-        "margin": "±2.0",
+        "margin": "\u00b12.0",
         "pass": false,
         "source": "e7a8ece"
       }
@@ -361,21 +361,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "28.8 ±7.3 points (corporate 62.1%, yoga 33.3%, young professionals 37.8%)",
+      "closestFirstPass": "28.8 \u00b17.3 points (corporate 62.1%, yoga 33.3%, young professionals 37.8%)",
       "baselineResult": {
         "value": "28.8 points (corporate 62.1%, yoga_crowd 33.3%, young_professionals 37.8%)",
-        "margin": "±7.3",
+        "margin": "\u00b17.3",
         "met": "no"
       },
       "sharedRound1": {
         "value": "23.2 points (corporate 60.3%, yoga_crowd 37.1%, young_professionals 45.1%)",
-        "margin": "±7.4",
+        "margin": "\u00b17.4",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "16.5 points (corporate 58.0%, yoga_crowd 41.5%, young_professionals 43.4%)",
-        "margin": "±7.5",
+        "margin": "\u00b17.5",
         "pass": true
       }
     },
@@ -428,10 +428,10 @@
           "measurement": "Pending main and affected event tables on 1000 paired seeds."
         }
       ],
-      "closestFirstPass": "reading +13.8, blind effort +12.6 ±2.3",
+      "closestFirstPass": "reading +13.8, blind effort +12.6 \u00b12.3",
       "baselineResult": {
         "value": "reading +13.8, blind effort +12.6",
-        "margin": "±2.3",
+        "margin": "\u00b12.3",
         "met": "no"
       },
       "baselineConfidenceAudit": {
@@ -442,13 +442,13 @@
       },
       "sharedRound1": {
         "value": "reading +17.8, blind effort +5.9",
-        "margin": "reading ±2.7; blind limit ±2.1",
+        "margin": "reading \u00b12.7; blind limit \u00b12.1",
         "pass": true,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "reading +18.3, blind effort +7.4",
-        "margin": "reading ±2.7; blind limit ±2.0",
+        "margin": "reading \u00b12.7; blind limit \u00b12.0",
         "pass": true
       }
     },
@@ -460,21 +460,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "hints -1.0 ±1.5; closest -0.8 ±1.1",
+      "closestFirstPass": "hints -1.0 \u00b11.5; closest -0.8 \u00b11.1",
       "baselineResult": {
         "value": "-1.0",
-        "margin": "±1.5",
+        "margin": "\u00b11.5",
         "met": "no"
       },
       "sharedRound1": {
         "value": "-2.8",
-        "margin": "±1.7",
+        "margin": "\u00b11.7",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "-3.1",
-        "margin": "±1.9",
+        "margin": "\u00b11.9",
         "pass": false
       }
     },
@@ -519,21 +519,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "permanent +1.2 ±1.4, seasonal +0.6 ±1.8, part time +3.3 ±1.5",
+      "closestFirstPass": "permanent +1.2 \u00b11.4, seasonal +0.6 \u00b11.8, part time +3.3 \u00b11.5",
       "baselineResult": {
         "value": "permanent +1.2 (signed in 42.1%); seasonal +0.6 (signed in 47.5%); part time +3.3 (signed in 91.1%)",
-        "margin": "±1.4; ±1.8; ±1.5",
+        "margin": "\u00b11.4; \u00b11.8; \u00b11.5",
         "met": "no"
       },
       "sharedRound1": {
         "value": "permanent +0.4 (signed in 53.4%); seasonal -0.6 (signed in 48.1%); part time +2.3 (signed in 96.5%)",
-        "margin": "±1.4; ±1.7; ±1.3",
+        "margin": "\u00b11.4; \u00b11.7; \u00b11.3",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "permanent +0.7 (signed in 55.0%); seasonal -0.4 (signed in 50.8%); part time +4.2 (signed in 97.2%)",
-        "margin": "±1.3; ±1.2; ±1.3",
+        "margin": "\u00b11.3; \u00b11.2; \u00b11.3",
         "pass": false
       }
     },
@@ -545,21 +545,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "-22.1 ±3.0; buy-only 34, no-buy-only 255, ties 711",
+      "closestFirstPass": "-22.1 \u00b13.0; buy-only 34, no-buy-only 255, ties 711",
       "baselineResult": {
         "value": "-22.1; buy-only 34, no-buy-only 255, ties 711",
-        "margin": "±3.0",
+        "margin": "\u00b13.0",
         "met": "no"
       },
       "sharedRound1": {
         "value": "-23.2; buy-only 42, no-buy-only 274, ties 684",
-        "margin": "±3.2",
+        "margin": "\u00b13.2",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "-22.7; buy-only 44, no-buy-only 271, ties 685",
-        "margin": "±3.2",
+        "margin": "\u00b13.2",
         "pass": false
       }
     },
@@ -571,21 +571,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "never match +0.1 ±1.6; 30,426 followers stopped in 945 runs; earlier -0.8 ±1.5 in a too-easy game",
+      "closestFirstPass": "never match +0.1 \u00b11.6; 30,426 followers stopped in 945 runs; earlier -0.8 \u00b11.5 in a too-easy game",
       "baselineResult": {
         "value": "+0.1; 30426 followers stopped in 945 runs",
-        "margin": "±1.6",
+        "margin": "\u00b11.6",
         "met": "no"
       },
       "sharedRound1": {
         "value": "-0.5; 28843 followers stopped in 930 runs",
-        "margin": "±1.5",
+        "margin": "\u00b11.5",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "+0.6; 27862 followers stopped in 918 runs",
-        "margin": "±1.7",
+        "margin": "\u00b11.7",
         "pass": false
       }
     },
@@ -597,21 +597,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "31.1 ±6.4 points (committed 12.9%, families 34.4%, students 44.0%)",
+      "closestFirstPass": "31.1 \u00b16.4 points (committed 12.9%, families 34.4%, students 44.0%)",
       "baselineResult": {
         "value": "31.1 points (committed 12.9%, families 34.4%, students 44.0%)",
-        "margin": "±6.4",
+        "margin": "\u00b16.4",
         "met": "no"
       },
       "sharedRound1": {
         "value": "19.5 points (committed 14.2%, families 27.7%, students 33.6%)",
-        "margin": "±6.3",
+        "margin": "\u00b16.3",
         "pass": true,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "22.8 points (committed 13.5%, families 28.9%, students 36.3%)",
-        "margin": "±6.4",
+        "margin": "\u00b16.4",
         "pass": false
       }
     },
@@ -665,10 +665,10 @@
         },
         "Formula round 1 reserved: opt-in opening invitation deferral; four prefixes prove premature refusals/reviews. Candidate not yet implemented/measured."
       ],
-      "closestFirstPass": "reading +2.6, blind effort +3.7 ±1.1; round 1 +2.0 / +2.7. Every event except the first wall moves outcomes by less than noise",
+      "closestFirstPass": "reading +2.6, blind effort +3.7 \u00b11.1; round 1 +2.0 / +2.7. Every event except the first wall moves outcomes by less than noise",
       "baselineResult": {
         "value": "reading +2.6, blind effort +3.7",
-        "margin": "±1.1",
+        "margin": "\u00b11.1",
         "met": "no"
       },
       "baselineConfidenceAudit": {
@@ -679,13 +679,13 @@
       },
       "sharedRound1": {
         "value": "reading -1.9, blind effort -3.3",
-        "margin": "reading ±1.8; blind limit ±1.6",
+        "margin": "reading \u00b11.8; blind limit \u00b11.6",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "reading -1.8, blind effort -3.1",
-        "margin": "reading ±1.8; blind limit ±1.7",
+        "margin": "reading \u00b11.8; blind limit \u00b11.7",
         "pass": false
       }
     },
@@ -697,21 +697,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "-0.5 ±1.0; closest round 2 -0.1 ±0.9",
+      "closestFirstPass": "-0.5 \u00b11.0; closest round 2 -0.1 \u00b10.9",
       "baselineResult": {
         "value": "-0.5",
-        "margin": "±1.0",
+        "margin": "\u00b11.0",
         "met": "no"
       },
       "sharedRound1": {
         "value": "-1.5",
-        "margin": "±1.4",
+        "margin": "\u00b11.4",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "-0.4",
-        "margin": "±1.2",
+        "margin": "\u00b11.2",
         "pass": false
       }
     },
@@ -723,21 +723,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "over +1.1 ±1.5, under -4.9 passes; corrected round 1 over -2.1 ±1.5 passed at limit",
+      "closestFirstPass": "over +1.1 \u00b11.5, under -4.9 passes; corrected round 1 over -2.1 \u00b11.5 passed at limit",
       "baselineResult": {
         "value": "over +1.1, under -4.9",
-        "margin": "±1.5, ±1.7",
+        "margin": "\u00b11.5, \u00b11.7",
         "met": "no"
       },
       "sharedRound1": {
         "value": "over +1.5, under -8.6",
-        "margin": "±1.8, ±1.9",
+        "margin": "\u00b11.8, \u00b11.9",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "over +1.4, under -8.5",
-        "margin": "±1.7, ±2.0",
+        "margin": "\u00b11.7, \u00b12.0",
         "pass": false
       }
     },
@@ -749,21 +749,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "strict -0.9 ±0.9 overall; committed -0.6, families -2.0, students 0",
+      "closestFirstPass": "strict -0.9 \u00b10.9 overall; committed -0.6, families -2.0, students 0",
       "baselineResult": {
         "value": "strict ahead by -0.9 overall; committed -0.6, families -2.0, students +0.0",
-        "margin": "±0.9",
+        "margin": "\u00b10.9",
         "met": "no"
       },
       "sharedRound1": {
         "value": "strict ahead by -0.4 overall; committed +2.2, families -1.2, students -2.1",
-        "margin": "±1.5",
+        "margin": "\u00b11.5",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "strict ahead by -2.1 overall; committed +1.6, families -5.0, students -2.7",
-        "margin": "±1.6",
+        "margin": "\u00b11.6",
         "pass": false
       }
     },
@@ -808,21 +808,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "permanent +4.5 ±1.5, seasonal +0.6 ±0.9, part time +1.2 ±1.0; round 2 all three passed",
+      "closestFirstPass": "permanent +4.5 \u00b11.5, seasonal +0.6 \u00b10.9, part time +1.2 \u00b11.0; round 2 all three passed",
       "baselineResult": {
         "value": "permanent +4.5 (signed in 81.5%); seasonal +0.6 (signed in 100.0%); part time +1.2 (signed in 86.5%)",
-        "margin": "±1.5; ±0.9; ±1.0",
+        "margin": "\u00b11.5; \u00b10.9; \u00b11.0",
         "met": "no"
       },
       "sharedRound1": {
         "value": "permanent +3.4 (signed in 70.3%); seasonal -0.5 (signed in 100.0%); part time +0.1 (signed in 100.0%)",
-        "margin": "±1.7; ±1.2; ±1.0",
+        "margin": "\u00b11.7; \u00b11.2; \u00b11.0",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "permanent +3.1 (signed in 70.3%); seasonal -0.3 (signed in 100.0%); part time -0.3 (signed in 100.0%)",
-        "margin": "±1.7; ±1.1; ±1.0",
+        "margin": "\u00b11.7; \u00b11.1; \u00b11.0",
         "pass": false
       }
     },
@@ -834,21 +834,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "+6.8 ±1.6, taken in 55.8%; round 1 +5.4 ±1.4 passed at limit",
+      "closestFirstPass": "+6.8 \u00b11.6, taken in 55.8%; round 1 +5.4 \u00b11.4 passed at limit",
       "baselineResult": {
         "value": "second loan +6.8 against none (second loan taken in 55.8% of runs)",
-        "margin": "±1.6",
+        "margin": "\u00b11.6",
         "met": "no"
       },
       "sharedRound1": {
         "value": "second loan +11.4 against none (second loan taken in 52.9% of runs)",
-        "margin": "±2.0",
+        "margin": "\u00b12.0",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "second loan +11.1 against none (second loan taken in 53.1% of runs)",
-        "margin": "±2.0",
+        "margin": "\u00b12.0",
         "pass": false
       }
     },
@@ -863,18 +863,18 @@
       "closestFirstPass": "boulder 91.8%, rope 31.5%, both 0.9% of 425 differing seeds",
       "baselineResult": {
         "value": "boulder_first 91.8% (287 sole,103 joint); rope_first 31.5% (35 sole,99 joint); both_first 0.9% (0 sole,4 joint); differing 425,all-outcome ties 575",
-        "margin": "±2.6; ±4.4; ±0.9",
+        "margin": "\u00b12.6; \u00b14.4; \u00b10.9",
         "met": "no"
       },
       "sharedRound1": {
         "value": "boulder_first 97.6% (349 sole,60 joint); rope_first 16.7% (10 sole,60 joint); both_first 0.0% (0 sole,0 joint); differing 419,all-outcome ties 581",
-        "margin": "±1.5; ±3.6; ±0.0",
+        "margin": "\u00b11.5; \u00b13.6; \u00b10.0",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "boulder_first 98.2% (384 sole,51 joint); rope_first 13.3% (8 sole,51 joint); both_first 0.0% (0 sole,0 joint); differing 443,all-outcome ties 557",
-        "margin": "±1.2; ±3.2; ±0.0",
+        "margin": "\u00b11.2; \u00b13.2; \u00b10.0",
         "pass": false
       }
     },
@@ -886,21 +886,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "half -1.4 ±0.9 (needs -3); double -1.4 ±1.0 passes; round 2 half -1.6 ±1.1",
+      "closestFirstPass": "half -1.4 \u00b10.9 (needs -3); double -1.4 \u00b11.0 passes; round 2 half -1.6 \u00b11.1",
       "baselineResult": {
         "value": "half -1.4; double -1.4",
-        "margin": "±0.9; ±1.0",
+        "margin": "\u00b10.9; \u00b11.0",
         "met": "no"
       },
       "sharedRound1": {
         "value": "half -1.8; double -2.7",
-        "margin": "±1.4; ±1.5",
+        "margin": "\u00b11.4; \u00b11.5",
         "pass": true,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "half -2.3; double -2.4",
-        "margin": "±1.2; ±1.4",
+        "margin": "\u00b11.2; \u00b11.4",
         "pass": true
       }
     },
@@ -912,21 +912,21 @@
       "valuesUsed": 0,
       "formulasUsed": 0,
       "changes": [],
-      "closestFirstPass": "all slots +1.0 ±0.7, none -4.0 ±1.9; round 2 all +0.5",
+      "closestFirstPass": "all slots +1.0 \u00b10.7, none -4.0 \u00b11.9; round 2 all +0.5",
       "baselineResult": {
         "value": "all +1.0; none -4.0",
-        "margin": "±0.7; ±1.9",
+        "margin": "\u00b10.7; \u00b11.9",
         "met": "no"
       },
       "sharedRound1": {
         "value": "all +1.1; none -11.2",
-        "margin": "±0.9; ±2.2",
+        "margin": "\u00b10.9; \u00b12.2",
         "pass": false,
         "source": "e7a8ece"
       },
       "sharedRound2": {
         "value": "all +1.2; none -11.7",
-        "margin": "±0.9; ±2.2",
+        "margin": "\u00b10.9; \u00b12.2",
         "pass": false
       }
     },
@@ -944,7 +944,7 @@
         "id": "X1",
         "text": "Products have a life: never building a second room loses at least 5 points, and building a new room every three months loses at least 3",
         "value": "one room -39.3; quarterly +11.7",
-        "margin": "±3.0; ±2.5",
+        "margin": "\u00b13.0; \u00b12.5",
         "pass": false
       }
     },
@@ -962,7 +962,7 @@
         "id": 16,
         "text": "L2. Borrowing for a temptation no segment requires (tourism_overborrow: every item the bank lists and the most working capital, early) loses clearly against borrowing only what the business needs: at least 3 points",
         "value": "-0.1",
-        "margin": "±2.8",
+        "margin": "\u00b12.8",
         "pass": false
       }
     },
@@ -980,7 +980,7 @@
         "id": "F1",
         "text": "Quiet-slot aggregator access beats all slots and no aggregator by at least 2 points each",
         "value": "all +0.9; none -41.7",
-        "margin": "±2.1; ±3.1",
+        "margin": "\u00b12.1; \u00b13.1",
         "pass": false
       }
     }
@@ -998,13 +998,13 @@
       {
         "scenario": "ausgesperrt",
         "target": "X1",
-        "value": "quarterly +11.7 ±2.5",
+        "value": "quarterly +11.7 \u00b12.5",
         "followUp": "Investigate with scope/portfolio and theme choice before accepting final source."
       },
       {
         "scenario": "ausgesperrt",
         "target": "T16",
-        "value": "overborrow -0.1 ±2.8",
+        "value": "overborrow -0.1 \u00b12.8",
         "followUp": "Investigate real temptation contribution; do not add a bot penalty."
       }
     ],
@@ -1012,14 +1012,14 @@
       {
         "scenario": "schweissperle",
         "change": "Hint off-season day tickets set equal to peak",
-        "reason": "T7 remains failing at -2.8 ±1.7; setting did not help. Restore the prior per-season ticket settings after the frozen source campaigns.",
+        "reason": "T7 remains failing at -2.8 \u00b11.7; setting did not help. Restore the prior per-season ticket settings after the frozen source campaigns.",
         "status": "reverted and measured",
         "resolvedBy": "c24b3ec; shared2 main evidence committed in 4373308"
       },
       {
         "scenario": "griffig",
         "change": "Hint off-season day tickets set equal to peak",
-        "reason": "T7 still fails at -1.5 ±1.4; setting did not fix the target. Restore previous ticket setting after frozen campaigns.",
+        "reason": "T7 still fails at -1.5 \u00b11.4; setting did not fix the target. Restore previous ticket setting after frozen campaigns.",
         "status": "reverted and measured",
         "resolvedBy": "c24b3ec; shared2 main evidence committed in 4373308"
       }
@@ -1034,7 +1034,7 @@
     "newRegression": {
       "scenario": "schweissperle",
       "target": "F1",
-      "value": "aggregator all +0.9 ±2.1; none -41.7 ±3.1",
+      "value": "aggregator all +0.9 \u00b12.1; none -41.7 \u00b13.1",
       "followUp": "Inspect actual peak occupancy in the fitness sub-step; preserve normal ticket/aggregator accounting."
     },
     "events": {
@@ -1072,5 +1072,32 @@
     "stoppedFitnessEventTasks": 60,
     "climbingShared2EventsStarted": false,
     "formulaRationale": "Values cannot defer an immediate request to opening. Opt-in preparation timing only; no value changes."
+  },
+  "henryScopeAmendment": {
+    "date": "2026-10-31",
+    "roundCapPerGoal": 2,
+    "includesBotChanges": true,
+    "goals": [
+      {
+        "scenario": "fabriketage",
+        "target": "weddings win >=20%",
+        "roundsUsed": 0
+      },
+      {
+        "scenario": "ausgesperrt",
+        "target": "X1 quarterly rooms not best",
+        "roundsUsed": 0
+      },
+      {
+        "scenario": "griffig",
+        "target": "careful win >=25%",
+        "roundsUsed": 0
+      }
+    ],
+    "eventTablesAllowed": false,
+    "fullReportAllowed": false,
+    "finalLeisureMainRuns": 0,
+    "finalProtectedProofRuns": 0,
+    "allOtherTargets": "LOW priority backlog; historical budgets below are inactive"
   }
 }

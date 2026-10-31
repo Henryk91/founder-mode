@@ -1186,3 +1186,9 @@ AUTONOMOUS: Shared2 completes 62 affected main policies on 1,000 paired seeds an
 ### Tuning 2 step 2: preparation invitations must wait for opening
 
 AUTONOMOUS: Four short prefixes prove that the ten new preparation cards send immediate requests while closed, causing 80 fitness or 155 climbing two-star reviews before opening. Stop remaining event work (fitness partial, climbing unstarted), preserve exact-source checkpoints, and correct the promised timing with opt-in queued invitations released once at first opening. Keep normal prices/capacity and all existing fees/counts. Values cannot add a payment/contact deadline, so conservatively reserve formula round 1 for both T5 targets and climbing T6; test and measure the corrected source before claiming success. All other guest effects retain current timing.
+
+### Tuning 2: Henry narrows the remaining scope
+
+AUTONOMOUS: Apply Henry's explicit 31 October instruction: finish the invitation fix, then only weddings >=20%, quarterly escape expansion not best, and Griffig careful >=25%, at most two further rounds each including bot changes. No event tables or full report; final four leisure main matrices once and protected nine once because engine changed. Defer every other open target LOW priority. These are owner-directed acceptance changes, not autonomous threshold restatements.
+
+AUTONOMOUS: A real four-prefix check finds construction completion too early to send the queued invitations: staffing was planned while closed. Release in the first full week after opening, after one planning turn; keep original invitation counts, costs, prices and capacity. Add a regression for no reviews or release on the construction-completion turn.

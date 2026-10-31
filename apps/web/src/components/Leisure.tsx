@@ -173,6 +173,13 @@ export function LeisureCalendar({ view }: { view: PlayerView }) {
           week: l.openingWeek ?? 0,
         })}
       </p>
+      {(l.openingInvitations?.length ?? 0) > 0 && (
+        <p>
+          {label('leisure.openingInvitations', stage, {
+            count: l.openingInvitations!.reduce((sum, invitation) => sum + invitation.count, 0),
+          })}
+        </p>
+      )}
       <p>
         {view.bookings!.rating === null
           ? label('tour.rating.none', stage)

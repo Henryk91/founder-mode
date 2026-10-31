@@ -358,6 +358,8 @@ export type BookingsState = {
    * any request, so they need a product with room. Absent in saves before step 5.
    */
   eventGuests?: Record<SegmentId, number>
+  /** Paid preparation invitations held until the first leisure opening, then sent once. */
+  openingInvitations?: Record<SegmentId, number>
   /**
    * Finished bookings older than a year, folded into totals per status, segment and channel
    * (step 6): only the post-mortem and the counts read them.
@@ -2742,6 +2744,8 @@ export type LeisurePlan = {
 }
 /** Observed visits and words only. Comfort, freshness scores and conversion chances stay hidden. */
 export type LeisureView = {
+  /** Quoted contacts waiting for first opening; ordinary prices and capacity still apply. */
+  openingInvitations?: { segmentId: SegmentId; count: number }[]
   hall?: NonNullable<LeisureState['hall']> & {
     visitHours: number
     deskRoleId: string

@@ -1,0 +1,63 @@
+{
+  "purpose": "Four timing prefixes, not a win-rate estimate",
+  "source": "8db1a539e909a30da5312d103b671c469da6d8b024dde2cf265fe7e05a2d6a9b",
+  "focusedTests": "6 engine + 4 content passed",
+  "rows": [
+    {
+      "scenario": "griffig",
+      "seed": "test-0",
+      "openingWeek": 26,
+      "reviewsAtConstructionCompletion": 0,
+      "pendingAtConstructionCompletion": {
+        "committed": 60,
+        "students": 70,
+        "families": 25
+      },
+      "pendingAfterFirstFullWeek": {},
+      "reviewsAfterFirstFullWeek": 24,
+      "ratingAfterFirstFullWeek": 1.8316731579023688
+    },
+    {
+      "scenario": "griffig",
+      "seed": "test-1",
+      "openingWeek": 22,
+      "reviewsAtConstructionCompletion": 0,
+      "pendingAtConstructionCompletion": {
+        "students": 70,
+        "families": 25,
+        "committed": 60
+      },
+      "pendingAfterFirstFullWeek": {},
+      "reviewsAfterFirstFullWeek": 34,
+      "ratingAfterFirstFullWeek": 3.7704432302063227
+    },
+    {
+      "scenario": "schweissperle",
+      "seed": "test-0",
+      "openingWeek": 13,
+      "reviewsAtConstructionCompletion": 0,
+      "pendingAtConstructionCompletion": {
+        "yoga_crowd": 26,
+        "corporate": 18,
+        "young_professionals": 36
+      },
+      "pendingAfterFirstFullWeek": {},
+      "reviewsAfterFirstFullWeek": 35,
+      "ratingAfterFirstFullWeek": 2.298285114289608
+    },
+    {
+      "scenario": "schweissperle",
+      "seed": "test-1",
+      "openingWeek": 13,
+      "reviewsAtConstructionCompletion": 0,
+      "pendingAtConstructionCompletion": {
+        "yoga_crowd": 26,
+        "corporate": 18,
+        "young_professionals": 36
+      },
+      "pendingAfterFirstFullWeek": {},
+      "reviewsAfterFirstFullWeek": 75,
+      "ratingAfterFirstFullWeek": 2.021290834838574
+    }
+  ]
+}

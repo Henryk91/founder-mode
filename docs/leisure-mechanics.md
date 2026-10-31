@@ -173,3 +173,13 @@ balance, flexible or company cancellation return both. Future noise restrictions
 refund both immediately, once. Service deducts both payments and settles platform
 commission once; negative adjustments are cash settlements rather than invoices.
 Unconfigured scenarios retain their previous payment timing and random draws.
+
+
+### Invitations prepared before opening
+
+A preparation card can pay for a quoted list of opening invitations. Those
+invitations wait until the first full week after opening, then ask for ordinary paid
+places once. They neither arrive at a closed building nor guarantee admission:
+prices, qualifications and available capacity still apply. The calendar shows
+how many invitations are waiting. Other inbox guest effects keep their existing
+timing. The opt-in rule and pending state are documented in `schema.md`.

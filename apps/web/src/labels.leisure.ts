@@ -129,6 +129,8 @@ export const LEISURE_LABELS = {
   'leisure.beforeOpening':
     'Not open yet. Design work and construction must finish before games can run.',
   'leisure.opened': 'Opened in week {week}.',
+  'leisure.openingInvitations':
+    'Opening invitations: {count}. They go out in your first full week after opening; visitors pay ordinary prices and need available places.',
   'leisure.buildProgress': '{name}: construction paid, {amount}; ready in week {week}.',
   'leisure.buildPrep':
     '{name}: {amount} committed. Finish the design work, then allow {weeks} weeks for construction.',

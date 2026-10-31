@@ -902,6 +902,13 @@ export function leisureView(s: GameState): LeisureView | null {
         }
       : {}),
     ...(l.foundingFollowing ? { foundingFollowing: { ...l.foundingFollowing } } : {}),
+    ...(s.bookings!.openingInvitations
+      ? {
+          openingInvitations: Object.entries(s.bookings!.openingInvitations)
+            .filter(([, count]) => count > 0)
+            .map(([segmentId, count]) => ({ segmentId, count })),
+        }
+      : {}),
     openingWeek: l.openingWeek,
     buildChoice: [...l.buildChoice],
     slots: c.slots.map((x) => ({ ...x })),

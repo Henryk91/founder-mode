@@ -679,6 +679,17 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     out.costsCents += leisure.costsCents
     out.revenueCents += leisure.revenueCents
     out.entries.push(...(leisure.entries ?? []))
+    if (
+      b.leisure!.openingWeek !== null &&
+      b.leisure!.openingWeek < week &&
+      Object.keys(b.openingInvitations ?? {}).length > 0
+    ) {
+      const sent = { ...b.eventGuests }
+      for (const [segment, count] of Object.entries(b.openingInvitations!))
+        sent[segment] = (sent[segment] ?? 0) + count
+      b = { ...b, eventGuests: sent, openingInvitations: {} }
+      state = { ...state, bookings: b }
+    }
   }
 
   // 2. Weather, or (plan 4) this week's day conditions and next week's forecast.
