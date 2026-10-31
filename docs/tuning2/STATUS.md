@@ -2,8 +2,8 @@
 
 ## Current
 Step: Finish invitation timing, then Henry's three remaining goals.
-Last commit: f9729a8, record premature preparation invitations before timing correction.
-Next action: Inspect wedding cash timing and escape expansion with short observed traces.
+Last commit: 33f0b1c, tested first-full-week invitations and Henry scope amendment.
+Next action: Run the final four leisure main matrices, then the nine protected units once.
 Henry's 31 October scope replaces the broader plan: at most two further rounds
 per goal, including bot changes. No event tables or full report.
 
@@ -25,7 +25,17 @@ Counters and historical budgets: BUDGET.json; Henry amendment takes precedence.
 - [ ] Short final report and annotated tuning2-complete tag.
 
 ## Running jobs and state
-Bot/event jobs stopped; no bot or browser/test jobs may overlap.
+Bot jobs finished; no bot or browser/test jobs may overlap.
+Griffig invitation-fix careful reference: 463/1,000 wins (46.3%), session 76827 exited 0.
+Venue and escape narrowed round 1: 82 focused bot tests and lint pass.
+Main-only measurements now running: V careful then E careful/quarterly, 1,000 seeds each.
+Logs: state/narrowed-r1-<scenario>.log; checkpoints state/narrowed-r1/.
+Round 1 finished; all jobs exited. Weddings 10.1%; E C46.2/Q51.8/PT52.3.
+Final allowed V/E round implemented; no third round. Griffig needs no tuning.
+Final gate: pnpm test passes (1,992 passed, 30 skipped), lint/typechecks pass.
+Seeds regenerated: 225 examples. All tests exited before starting bot jobs.
+Final logs: state/narrow-final-tests.log, narrow-final-lint.log, narrow-final-seeds.log.
+After gates: final four leisure main matrices once, then nine protected units once.
 Seed regeneration finished: 225 examples, only fitness/climbing rows changed.
 Lint/typechecks pass: state/opening-final-lint.log.
 Focused invitation tests: 6 engine +4 content pass.

@@ -299,3 +299,14 @@ for step 6, without inventing a formula penalty or exceeding the two value round
 ### Final first pass
 
 The values above are those of the tag `plan5-escape`, measured in `docs/autonomous5/reports/step2-escape.md`. Plan 5 made no further value changes in its wrap up; the targets left open are in `docs/BACKLOG.md` for a later tuning plan.
+
+### Tuning 2 narrowed X1 rounds, 31 October 2026
+
+The careful reader considers any existing familiar room and three packed weeks,
+rather than waiting for the newest theme to become familiar or guests to be
+refused. Round 1 gives careful 46.2%, quarterly 51.8% and part-time 52.3% on
+1,000 paired seeds; the 0.5-point lead over quarterly is inconclusive. The final
+allowed round also considers three full booked weeks in the public calendar
+within construction lead time. It uses capacity and bookings, never hidden
+demand, and retains the one-room and quarterly comparison rules. No room cost,
+capacity, rent, borrowing term or construction time changes.

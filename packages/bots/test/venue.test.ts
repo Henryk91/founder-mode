@@ -32,6 +32,28 @@ describe('venue players', () => {
       .create(spec, 'venue-opening-scope')
     expect(player.plan(view).loan!.apply!.items).toContain('av_tech')
   })
+  it('prepares observed weekday trade before opening even when weddings lead the plan', () => {
+    const view = getView(createGame(spec, 'mixed-opening'))
+    const companies = view.segments.find((s) => s.id === 'companies')!
+    companies.interviews = Array.from({ length: 3 }, () => ({
+      week: 1,
+      segmentId: companies.id,
+      bucketId: 'painful',
+      bucketName: 'Painful',
+      quote: 'A working projector.',
+      mentionedFeature: { id: 'av_tech', name: 'Installed AV', quote: 'A working projector.' },
+      budget: null,
+    }))
+    expect(view.bookings!.leisure!.openingWeek).toBeNull()
+    const requested = ['furniture', 'wedding_package']
+    expect(venueWanted(spec, view, CAREFUL_TOURISM, requested)).toContain('av_tech')
+    expect(venueWanted(spec, view, CAREFUL_TOURISM, requested)).toContain('conference_package')
+    expect(
+      venueWanted(spec, view, { ...CAREFUL_TOURISM, segment: 'weddings' }, requested),
+    ).not.toContain('av_tech')
+    companies.interviews = companies.interviews.slice(0, 2)
+    expect(venueWanted(spec, view, CAREFUL_TOURISM, requested)).not.toContain('av_tech')
+  })
   it('does not require spare cash for useful no-cost inbox work', () => {
     const view = getView(createGame(spec, 'venue-reader'))
     const first = view.inbox[0]!

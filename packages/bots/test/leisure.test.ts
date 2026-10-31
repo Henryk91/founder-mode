@@ -337,7 +337,7 @@ describe('Ausgesperrt players', () => {
     const cashOnly = strategies.find((s) => s.id === 'leisure_no_later_loan')!
     expect(runGame(scenario, cashOnly, 'test-0').loan?.second).toBe(false)
   })
-  it('adds capacity after repeated visible refusals, while preserving the comparison policies', () => {
+  it('adds capacity after repeated packed rooms, while preserving the comparison policies', () => {
     const view = getView(createGame(scenario, 'room-pressure'))
     const l = view.bookings!.leisure!
     l.buildChoice = ['heist']
@@ -354,7 +354,7 @@ describe('Ausgesperrt players', () => {
     expect(wanted()).toEqual(['heist'])
     l.history = [11, 12, 13].map((week) => ({
       week,
-      turnedAway: { locals: 5 },
+      turnedAway: { locals: 0 },
       joined: 0,
       cancelled: 0,
       active: 0,
@@ -370,7 +370,7 @@ describe('Ausgesperrt players', () => {
           productId: 'heist',
           slotId: 'weekend',
           visits: 14,
-          turnedAway: 5,
+          turnedAway: 0,
           aggregator: 0,
           load: 'packed' as const,
         },
@@ -387,6 +387,54 @@ describe('Ausgesperrt players', () => {
     expect(wanted()).toEqual(['heist', 'horror'])
     theme.word = 'known'
     expect(wanted()).toEqual(['heist', 'horror'])
+    unfinished.shipped = true
+    unfinished.remainingHours = 0
+    const newer = l.freshness.find((f) => f.productId === 'horror')!
+    newer.openedWeek = 13
+    newer.word = 'new'
+    expect(wanted()).toContain('munich_history')
+  })
+  it('anticipates three full booked weeks within construction lead time, without calendar expansion', () => {
+    const view = getView(createGame(scenario, 'future-room-pressure'))
+    const l = view.bookings!.leisure!
+    l.buildChoice = ['heist']
+    l.openingWeek = 10
+    view.week = 14
+    const first = view.product.features.find((f) => f.id === 'heist')!
+    first.shipped = true
+    first.remainingHours = 0
+    const theme = l.freshness.find((f) => f.productId === 'heist')!
+    theme.openedWeek = 10
+    theme.word = 'new'
+    l.history = []
+    const sample = {
+      productId: 'heist',
+      slotId: 'weekend',
+      week: 15,
+      capacity: 14,
+      booked: 14,
+      held: 0,
+    }
+    l.slotCalendar = [15, 16, 17].map((week) => ({
+      ...sample,
+      week,
+      booked: sample.capacity,
+      held: 0,
+    }))
+    const wanted = (rule = CAREFUL_TOURISM) =>
+      leisureWanted(scenario, view, rule, [], 'locals', 'future-room-pressure')
+    expect(wanted()).toHaveLength(2)
+    expect(wanted({ ...CAREFUL_TOURISM, leisure: { rooms: 'quarterly' } })).toEqual(['heist'])
+    expect(wanted({ ...CAREFUL_TOURISM, leisure: { rooms: 'one' } })).toEqual(['heist'])
+    l.slotCalendar = l.slotCalendar.slice(1)
+    expect(wanted()).toEqual(['heist'])
+    l.slotCalendar = [30, 31, 32].map((week) => ({
+      ...sample,
+      week,
+      booked: sample.capacity,
+      held: 0,
+    }))
+    expect(wanted()).toEqual(['heist'])
   })
   it('budgets all rebuilds together with construction finishing this week', () => {
     const view = getView(createGame(scenario, 'rebuild-budget'))

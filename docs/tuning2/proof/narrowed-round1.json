@@ -1,0 +1,70 @@
+{
+  "parts": "Only affected main policies, no events",
+  "seedPrefix": "test",
+  "runs": 1000,
+  "round": 1,
+  "source": "a097816f84be80b187e7ad9f9d864f875d0adf8d557bc1f13a4b1eb1f35da641",
+  "rows": [
+    {
+      "scenario": "fabriketage",
+      "strategy": "tourism_careful",
+      "runs": 1000,
+      "wins": 366,
+      "outcomesSHA256": "e3a1fb88587b0f07efd868a56c92f533e22ae9dd98b0f3b1e9b86e3e51e65084",
+      "weddingsViable": {
+        "wins": 32,
+        "runs": 318
+      }
+    },
+    {
+      "scenario": "ausgesperrt",
+      "strategy": "tourism_permanent",
+      "runs": 1000,
+      "wins": 471,
+      "outcomesSHA256": "87a7499076d6b9b131437ac25d56da9e0fc54142dc409384ce18221699b28100"
+    },
+    {
+      "scenario": "ausgesperrt",
+      "strategy": "leisure_quarterly_rooms",
+      "runs": 1000,
+      "wins": 518,
+      "outcomesSHA256": "d5317e0326a659be366633909e0663159f6cdd030d8fa18def47a43eb512ea65"
+    },
+    {
+      "scenario": "ausgesperrt",
+      "strategy": "tourism_careful",
+      "runs": 1000,
+      "wins": 462,
+      "outcomesSHA256": "08111ebfc15b2e81837a6eb4576913cfb757b58df9ef9ceb0a0811de1b1724c0"
+    },
+    {
+      "scenario": "ausgesperrt",
+      "strategy": "tourism_seasonal",
+      "runs": 1000,
+      "wins": 466,
+      "outcomesSHA256": "202071bd955f6362e81bd82b53e35940ef70653bb8c92d5c6d9095dae0b42354"
+    },
+    {
+      "scenario": "ausgesperrt",
+      "strategy": "tourism_part_time",
+      "runs": 1000,
+      "wins": 523,
+      "outcomesSHA256": "bf480c6227918f8edd10dd4bda060b3afdf66cd4b9d12b357b52fdf4b687e2bf"
+    }
+  ],
+  "paired": [
+    {
+      "strategy": "tourism_careful",
+      "against": "leisure_quarterly_rooms",
+      "differencePoints": -5.6000000000000005,
+      "margin95Points": 2.226071611341113
+    },
+    {
+      "strategy": "tourism_part_time",
+      "against": "leisure_quarterly_rooms",
+      "differencePoints": 0.5,
+      "margin95Points": 2.31175427063687
+    }
+  ],
+  "interpretation": "Wedding floor fails; part-time escape lead over quarterly inconclusive; final allowed round follows."
+}

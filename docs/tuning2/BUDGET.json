@@ -1081,17 +1081,24 @@
       {
         "scenario": "fabriketage",
         "target": "weddings win >=20%",
-        "roundsUsed": 0
+        "roundsUsed": 2,
+        "round1": "Prepare observed mixed-calendar equipment before opening, using three interviews; no economic values changed.",
+        "round1Result": "32/318 weddings-viable wins (10.1%), all careful 36.6%",
+        "round2": "Wedding lead window 26\u201370 -> 8\u201340 weeks, estimated mixed late/advance booking market; prices and costs unchanged."
       },
       {
         "scenario": "ausgesperrt",
         "target": "X1 quarterly rooms not best",
-        "roundsUsed": 0
+        "roundsUsed": 2,
+        "round1": "Expand after three packed weeks or any existing familiar room, not only newest-room wear; comparison policies unchanged.",
+        "round1Result": "Careful 46.2%, quarterly 51.8%, part time 52.3%; 0.5-point lead over quarterly inconclusive.",
+        "round2": "Consider three visibly full future weeks within construction lead time before starting another room; preserve comparison policies."
       },
       {
         "scenario": "griffig",
         "target": "careful win >=25%",
-        "roundsUsed": 0
+        "roundsUsed": 0,
+        "openingFixReference": "463/1000 wins, 46.3%; no further change required, pending final matrix."
       }
     ],
     "eventTablesAllowed": false,

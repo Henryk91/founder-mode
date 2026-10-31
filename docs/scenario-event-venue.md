@@ -299,3 +299,14 @@ on1,000 test seeds. The event table remains once-only after final values.
 ### Final first pass
 
 The values above are those of the tag `plan5-venue`, measured in `docs/autonomous5/reports/step3-venue.md`. Plan 5 made no further value changes in its wrap up; the targets left open are in `docs/BACKLOG.md` for a later tuning plan.
+
+### Tuning 2 narrowed wedding round, 31 October 2026
+
+Henry's remaining target is at least 20% wins in weddings-viable runs. The
+reader now prepares observed complementary weekday trade before opening. Its
+first narrowed measurement improves weddings from 12/318 (3.8%) to 32/318
+(10.1%). The final allowed round changes the estimated wedding enquiry lead
+window from 26–70 to 8–40 weeks, admitting late bookings for a newly opened
+venue as well as advance bookings. This is a simulation estimate, not a supplier
+quote. Prices, deposits, four-week balance deadline, capacity and costs stay as
+built. Final main-only measurement follows; no event table is requested.

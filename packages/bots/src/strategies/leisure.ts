@@ -76,25 +76,38 @@ export function leisureWanted(
     : compatible
   const opened = l.openingWeek
   const quarterly = rule.leisure?.rooms === 'quarterly'
-  const newest = l.freshness
-    .filter((f) => started.includes(f.productId) && f.openedWeek !== null)
-    .sort((a, b) => b.openedWeek! - a.openedWeek!)[0]
-  const known = newest !== undefined && newest.word !== 'new'
+  // An older room can need a successor while the newest one is still fresh.
+  const known = l.freshness.some(
+    (f) => started.includes(f.productId) && f.openedWeek !== null && f.word !== 'new',
+  )
+  // Construction takes weeks: repeated full slots are a signal before refusals arrive.
   const crowded =
     l.history
       .slice(-8)
-      .filter(
-        (week) =>
-          week.slots.some((slot) => slot.load === 'packed') &&
-          Object.values(week.turnedAway).some((n) => n > 0),
+      .filter((week) =>
+        week.slots.some((slot) => started.includes(slot.productId) && slot.load === 'packed'),
       ).length >= 3
+  const leadWeeks = Math.max(1, ...started.map((id) => c.buildOut?.[id]?.weeks ?? 1))
+  const forecastCrowded =
+    new Set(
+      l.slotCalendar
+        .filter(
+          (cell) =>
+            started.includes(cell.productId) &&
+            cell.week >= view.week &&
+            cell.week < view.week + leadWeeks &&
+            cell.capacity > 0 &&
+            cell.booked + cell.held >= cell.capacity * c.packedFrom,
+        )
+        .map((cell) => cell.week),
+    ).size >= 3
   const additionalOpeningArea =
     (l.minimumAreas[segment] ?? 1) > Math.max(first.length, started.length)
   const expansion =
     opened !== null &&
     (quarterly
       ? started.length < 1 + Math.floor((view.week - opened) / 13)
-      : ((known || crowded) &&
+      : ((known || crowded || forecastCrowded) &&
           started.every((id) => view.product.features.find((f) => f.id === id)?.shipped)) ||
         (l.minimumAreas[segment] ?? 1) > started.length)
   const need = rule.leisure?.rooms !== 'one' && (additionalOpeningArea || expansion)

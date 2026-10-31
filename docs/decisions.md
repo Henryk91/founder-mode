@@ -1192,3 +1192,11 @@ AUTONOMOUS: Four short prefixes prove that the ten new preparation cards send im
 AUTONOMOUS: Apply Henry's explicit 31 October instruction: finish the invitation fix, then only weddings >=20%, quarterly escape expansion not best, and Griffig careful >=25%, at most two further rounds each including bot changes. No event tables or full report; final four leisure main matrices once and protected nine once because engine changed. Defer every other open target LOW priority. These are owner-directed acceptance changes, not autonomous threshold restatements.
 
 AUTONOMOUS: A real four-prefix check finds construction completion too early to send the queued invitations: staffing was planned while closed. Release in the first full week after opening, after one planning turn; keep original invitation counts, costs, prices and capacity. Add a regression for no reviews or release on the construction-completion turn.
+
+### Tuning 2 narrowed round 1: mixed calendars and observed room pressure
+
+AUTONOMOUS: Count one round each for venue and escape, including bot changes under Henry's cap. Venue uses three public interviews to prepare complementary weekday business before opening rather than waiting for the fit-out; one-segment comparisons stay exclusive. Escape considers any familiar existing room and three packed weeks before refusing guests, allowing for construction lead time; quarterly/one-room comparison rules are preserved. No prices, costs, room capacities or borrowing terms change. Griffig careful is 463/1,000 after the invitation fix, so spend no Griffig round.
+
+### Tuning 2 narrowed round 2: final permitted changes
+
+AUTONOMOUS: Round 1 gives weddings 32/318 (10.1%), careful escape 46.2%, quarterly 51.8% and part-time 52.3%; the part-time lead is inconclusive. Spend the second and final round for each: wedding enquiries include estimated late bookings (8–40 weeks rather than 26–70), while escape considers three full future weeks inside the visible construction lead time. These address missed first-season receipts and delayed capacity decisions without invented costs or strategy penalties. Freeze source after tests; no third round, event table or full report. Griffig uses zero extra rounds (46.3% careful reference).

@@ -14,10 +14,10 @@ export function venueWanted(
   const l = view.bookings!.leisure!
   const noise = cfg.leisure!.noise!
   const needs = [...requested]
-  if (rule.tests && !rule.segment && l.openingWeek !== null) {
+  if (rule.tests && !rule.segment) {
     for (const segment of scenario.segments) {
       const notes = segmentNotes(scenario, view, segment.id)
-      if (notes.interviews < 4) continue
+      if (notes.interviews < 3) continue
       const mentions = notes.mentions.map(([id]) => id)
       needs.push(...mentions)
       const product = Object.entries(cfg.products).find(
