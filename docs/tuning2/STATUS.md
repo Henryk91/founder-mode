@@ -1,17 +1,19 @@
 # Tuning run 2 status
 
 ## Current
-Step: 2, shared2 main complete; event measurements running.
-Last commit: af228bb, record venue events and climbing staffing diagnostics.
-Next action: Monitor event session 95340; inspect and commit each completed table.
-Fitness and climbing remain before shared tuning decisions/milestone.
+Step: 2, correcting confirmed pre-opening invitation timing bug.
+Last commit: 51d33c2, record fitness aggregator diagnostic evidence.
+Next action: Add opt-in invitation deferral until first opening, with tests.
+Update the ten preparation cards and public queued-invitation status.
+All bot jobs are stopped; preserve shared2 results as the measured prior candidate.
 The capped-contact audit was incorrect; invitations add booking requests directly.
 No saturation guard is retained. Five fitness yoga targets are corrected.
 Correction source SHA256: e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5.
 Shared1 SHA256: a0a325a9e7978c04787ee556416217f01f5b50f0c76d4198054efef26bc70b17.
 Previous candidate gate: 1,980 pass, 30 skipped.
 Corrections: 104 focused bot tests pass; all leisure guest targets validated.
-Final correction gate: 1,979 passed, 30 skipped; lint/typechecks pass.
+Shared2 gate: 1,979 passed, 30 skipped; lint/typechecks pass.
+Opening-timing correction is not yet implemented or tested.
 Logs: state/step2-botfix-full-tests.log, step2-botfix-final-lint-2.log.
 
 Escape complete, 28 policies: careful 40.1%; T10 passes, T6/T15 still fail.
@@ -40,12 +42,15 @@ Seed regeneration session 55004 exited 0: 224 examples, older rows unchanged.
 Full tests session 96499 exited 0.
 Completed: shared2 main campaign session 56732 exited 0 (64,000 games).
 Event campaign 86174 stopped for resize after main finished.
-Active event campaign: session 95340, 8 workers, same source/checkpoints.
+Stopped event campaign 95340 and watcher 42076 for the confirmed timing fix.
+Processes verified exited; sessions returned 143. No bot jobs remain active.
+Escape/venue tables complete; fitness stopped at 60/119 saved tasks.
+Climbing shared2 events never started. Checkpoints preserved, never mix sources.
 Completed: climbing staff trace session 31462 exited 0, nine diagnostic games.
 Completed: fitness aggregator trace session 1116 exited 0, twelve games.
 Path: state/fitness-aggregator-trace/shared2/; log state/fitness-aggregator-trace.log.
 Path: state/climbing-staff-trace/shared2/; log state/climbing-staff-trace.log.
-Escape/venue finished; fitness running, then climbing.
+Escape/venue finished; remaining event work stopped for correction.
 No isolated T12 claim from concurrent campaign timings.
 Escape/venue careful references complete: both 1,000 results identical to shared1.
 Fitness 30/30 and climbing 32/32 main policies complete.
@@ -54,22 +59,27 @@ Climbing: C 26.5%; T5/K2 pass; T3/T6/T7/K1/K3 remain open.
 Manifest: proof/shared2-main-manifest.json.
 Escape events complete: 119 tasks, 107,768 forced games; 47/50 events judged.
 Venue events complete: 121 tasks, 77,274 forced games; 54/55 events judged.
-Fitness events: 25/119 tasks saved; then climbing.
+Fitness event candidate incomplete: 60/119 tasks saved, stopped for correction.
 Escape kids-first +3.9 ±2.4 versus fixed-heist reader; bot investigation queued.
 No tests or source edits while main/event jobs run.
 Stopped superseded seed session 65812 before the last two target corrections.
 Completed driver: state/shared1-main.sh.
-Next drivers: state/shared2-main.sh, state/shared2-events.sh.
+Completed/stopped drivers: state/shared2-main.sh, state/shared2-events.sh.
+Use fresh shared3 checkpoints after implementing and testing the correction.
 Logs: state/shared2-<scenario>-long.log and shared2-events-<scenario>.log.
 Checkpoints: state/shared2/ and state/events-shared2/.
 Do not run tests or browser jobs during bot/event campaigns.
 Source freeze for shared1 ended after all 13 units completed.
-Shared2 source is frozen at c24b3ec until main/event measurements finish.
+Shared2 source freeze ended deliberately after the timing bug was proven.
+Four prefix traces: state/opening-invite-trace/shared2/, session 49982 exited 0.
+Proof: proof/opening-invitation-timing.json.
+Before opening, the new cards caused 80 fitness / 155 climbing two-star reviews.
+T5 raw coverage passes are provisional; genuine preparation timing is not yet met.
 Baseline: tuning2-speed, state/round2/ (all 314 saved main tasks).
-Full report not started. No wide seeds; affected event tables now running.
-Active event driver: state/shared2-events.sh, per-scenario logs state/shared2-events-*.log.
+Full report not started. No wide seeds; no active event jobs.
+Stopped event driver: state/shared2-events.sh; do not resume on changed source.
 The corrected source needs a fresh careful reference before forcing event choices.
-Next checkpoints: state/shared2/ and state/events-shared2/, guarded by source.
+Preserved checkpoints: state/shared2/ and state/events-shared2/, guarded by source.
 
 Source gate: state/step2-shared-full-tests-2.log, step2-shared-final-lint.log.
 224 ending examples regenerated; every earlier-game row is unchanged.
@@ -84,7 +94,7 @@ Measurements: measurements/shared1-<scenario>.md; proof/shared1-*.json.
 Run-owned scratch tools: packages/bots/scratch/tuning2-*.tmp.ts.
 Names: profile, timings, main, replay, replay-saved, t12, baselines,
 review-fix, loan-scope, shared-main, events, fitness-trace, climbing-staff-trace,
-fitness-aggregator-trace.
+fitness-aggregator-trace, opening-invite-trace.
 All working state is under docs/tuning2/state/, never /tmp.
 No worktrees or branches created. Earlier run state remains untouched.
 
@@ -94,12 +104,14 @@ Three regressions also tracked with budgets: escape X1/T16, fitness F1.
 Details and closest results: docs/BACKLOG.md, section 3.
 Speed also measures Ausgesperrt and Fabriketage, whose final report timings exceed T12.
 T6 value round 1 in all four; T5 round 1 in fitness/climbing.
-Venue T3 uses formula round 1 for advance accounting. Other budgets unused.
+Venue T3 uses formula round 1 for advance accounting.
+Opening timing reserves formula 1 for both T5 targets and climbing T6.
 Numeric changes cannot implement a missing payment deadline or refund ledger.
 Per-target budget and closest baseline evidence: BUDGET.json.
 Speed budget: both rounds complete; no third round. Fitness/climbing T12 open.
 
 ## For Henry to review (non-blocking)
+- Preparation timing bug proven; correction next. proof/opening-invitation-timing.json.
 - Shared2 main evidence: fitness T3 improves; F1 regresses; step2-shared report.
 - Invitation audit corrected: no saturation filter; five yoga references fixed.
 - Shared targets remain provisional until event/scenario tuning finishes.

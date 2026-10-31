@@ -1,0 +1,1094 @@
+{
+  "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+  "purpose": "Four short prefixes establish invitation timing, not a win-rate estimate",
+  "finding": "New preparation invitations are consumed while closed and cause two-star complaints before opening",
+  "cases": [
+    {
+      "scenario": "griffig",
+      "seed": "test-0",
+      "records": [
+        {
+          "choices": [
+            {
+              "event": "opening_club_meeting",
+              "choice": "prepare",
+              "week": 9,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "committed",
+                  "count": 30,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5900
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -90000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            },
+            {
+              "event": "opening_student_contacts",
+              "choice": "prepare",
+              "week": 9,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "students",
+                  "count": 35,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5700
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -70000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 160000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "students",
+              "units": 35
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "committed",
+              "units": 30
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 65,
+              "added": 65
+            }
+          ],
+          "reviewsAfter": 65,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_family_walkthrough",
+              "choice": "prepare",
+              "week": 10,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "families",
+                  "count": 25,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5800
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -80000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 80000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "families",
+              "units": 30
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 90,
+              "added": 25
+            }
+          ],
+          "reviewsAfter": 90,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_course_contacts",
+              "choice": "prepare",
+              "week": 11,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "committed",
+                  "count": 30,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5900
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -90000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 90000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "students",
+              "units": 2
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "committed",
+              "units": 30
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "families",
+              "units": 5
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 120,
+              "added": 30
+            }
+          ],
+          "reviewsAfter": 120,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_neighbour_invites",
+              "choice": "prepare",
+              "week": 12,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "students",
+                  "count": 35,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5700
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -70000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 70000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "students",
+              "units": 37
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "families",
+              "units": 5
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 155,
+              "added": 35
+            }
+          ],
+          "reviewsAfter": 155,
+          "ratingAfter": 2
+        }
+      ]
+    },
+    {
+      "scenario": "griffig",
+      "seed": "test-1",
+      "records": [
+        {
+          "choices": [
+            {
+              "event": "opening_student_contacts",
+              "choice": "prepare",
+              "week": 9,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "students",
+                  "count": 35,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5700
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -70000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 70000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "students",
+              "units": 35
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 35,
+              "added": 35
+            }
+          ],
+          "reviewsAfter": 35,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_family_walkthrough",
+              "choice": "prepare",
+              "week": 10,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "families",
+                  "count": 25,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5800
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -80000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 80000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "students",
+              "units": 6
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "families",
+              "units": 33
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 60,
+              "added": 25
+            }
+          ],
+          "reviewsAfter": 60,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_course_contacts",
+              "choice": "prepare",
+              "week": 11,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "committed",
+                  "count": 30,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5900
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -90000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 90000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "students",
+              "units": 3
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "committed",
+              "units": 30
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "families",
+              "units": 8
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 90,
+              "added": 30
+            }
+          ],
+          "reviewsAfter": 90,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_club_meeting",
+              "choice": "prepare",
+              "week": 13,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "committed",
+                  "count": 30,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5900
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -90000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            },
+            {
+              "event": "opening_neighbour_invites",
+              "choice": "prepare",
+              "week": 13,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "students",
+                  "count": 35,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5700
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -70000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 160000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "students",
+              "units": 36
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "committed",
+              "units": 30
+            },
+            {
+              "kind": "turned_away",
+              "segmentId": "families",
+              "units": 8
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 155,
+              "added": 65
+            }
+          ],
+          "reviewsAfter": 155,
+          "ratingAfter": 2
+        }
+      ]
+    },
+    {
+      "scenario": "schweissperle",
+      "seed": "test-0",
+      "records": [
+        {
+          "choices": [
+            {
+              "event": "opening_teacher_meeting",
+              "choice": "prepare",
+              "week": 8,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "yoga_crowd",
+                  "count": 12,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5500
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -50000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 50000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "yoga_crowd",
+              "units": 12
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 12,
+              "added": 12
+            }
+          ],
+          "reviewsAfter": 12,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_office_contacts",
+              "choice": "prepare",
+              "week": 9,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "corporate",
+                  "count": 18,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5600
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -60000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 60000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "corporate",
+              "units": 18
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 30,
+              "added": 18
+            }
+          ],
+          "reviewsAfter": 30,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_member_evening",
+              "choice": "prepare",
+              "week": 10,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "young_professionals",
+                  "count": 20,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5700
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -70000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 70000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "young_professionals",
+              "units": 20
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 50,
+              "added": 20
+            }
+          ],
+          "reviewsAfter": 50,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_timetable_forum",
+              "choice": "prepare",
+              "week": 11,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "yoga_crowd",
+                  "count": 14,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5500
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -50000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 50000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "yoga_crowd",
+              "units": 14
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 64,
+              "added": 14
+            }
+          ],
+          "reviewsAfter": 64,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_local_invites",
+              "choice": "prepare",
+              "week": 12,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "young_professionals",
+                  "count": 16,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5600
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -60000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 60000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "young_professionals",
+              "units": 16
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 80,
+              "added": 16
+            }
+          ],
+          "reviewsAfter": 80,
+          "ratingAfter": 2
+        }
+      ]
+    },
+    {
+      "scenario": "schweissperle",
+      "seed": "test-1",
+      "records": [
+        {
+          "choices": [
+            {
+              "event": "opening_teacher_meeting",
+              "choice": "prepare",
+              "week": 8,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "yoga_crowd",
+                  "count": 12,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5500
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -50000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 50000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "yoga_crowd",
+              "units": 12
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 12,
+              "added": 12
+            }
+          ],
+          "reviewsAfter": 12,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_office_contacts",
+              "choice": "prepare",
+              "week": 9,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "corporate",
+                  "count": 18,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5600
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -60000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 60000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "corporate",
+              "units": 18
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 30,
+              "added": 18
+            }
+          ],
+          "reviewsAfter": 30,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_member_evening",
+              "choice": "prepare",
+              "week": 10,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "young_professionals",
+                  "count": 20,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5700
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -70000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 70000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "young_professionals",
+              "units": 20
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 50,
+              "added": 20
+            }
+          ],
+          "reviewsAfter": 50,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_timetable_forum",
+              "choice": "prepare",
+              "week": 11,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "yoga_crowd",
+                  "count": 14,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5500
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -50000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 50000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "yoga_crowd",
+              "units": 14
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 64,
+              "added": 14
+            }
+          ],
+          "reviewsAfter": 64,
+          "ratingAfter": 2
+        },
+        {
+          "choices": [
+            {
+              "event": "opening_local_invites",
+              "choice": "prepare",
+              "week": 12,
+              "open": null,
+              "effects": [
+                {
+                  "type": "guests",
+                  "segment": "young_professionals",
+                  "count": 16,
+                  "chance": 1,
+                  "when": [
+                    {
+                      "path": "loan.running",
+                      "op": ">=",
+                      "value": 1
+                    },
+                    {
+                      "path": "cashEur",
+                      "op": ">=",
+                      "value": 5600
+                    }
+                  ]
+                },
+                {
+                  "type": "cash",
+                  "amountCents": -60000,
+                  "chance": 1,
+                  "when": []
+                }
+              ]
+            }
+          ],
+          "afterOpeningWeek": null,
+          "ledgerOtherCostsCents": 60000,
+          "entries": [
+            {
+              "kind": "turned_away",
+              "segmentId": "young_professionals",
+              "units": 16
+            },
+            {
+              "kind": "review",
+              "rating": 2,
+              "reviews": 80,
+              "added": 16
+            }
+          ],
+          "reviewsAfter": 80,
+          "ratingAfter": 2
+        }
+      ]
+    }
+  ]
+}

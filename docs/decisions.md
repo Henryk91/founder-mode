@@ -1182,3 +1182,7 @@ AUTONOMOUS: The previous capped-reach explanation was wrong: inbox guests popula
 ### Tuning 2 step 2: keep new regressions explicit
 
 AUTONOMOUS: Shared2 completes 62 affected main policies on 1,000 paired seeds and two identical-source careful references. Track escape X1/T16 and fitness F1 as three regressions alongside the original 34 targets, with the same unused per-target caps; do not weaken thresholds or hide them among provisional passes. Resume the affected event tables from exact-source checkpoints with eight workers after the main jobs finish. No wide seeds, full report or extra economic round.
+
+### Tuning 2 step 2: preparation invitations must wait for opening
+
+AUTONOMOUS: Four short prefixes prove that the ten new preparation cards send immediate requests while closed, causing 80 fitness or 155 climbing two-star reviews before opening. Stop remaining event work (fitness partial, climbing unstarted), preserve exact-source checkpoints, and correct the promised timing with opt-in queued invitations released once at first opening. Keep normal prices/capacity and all existing fees/counts. Values cannot add a payment/contact deadline, so conservatively reserve formula round 1 for both T5 targets and climbing T6; test and measure the corrected source before claiming success. All other guest effects retain current timing.

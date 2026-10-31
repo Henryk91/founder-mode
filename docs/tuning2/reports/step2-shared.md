@@ -353,3 +353,28 @@ rate whenever the aggregator is joined, independently of enabled slots. Review
 whether access overlap should affect migration in both fitness and climbing.
 This is a possible formula issue, not an applied change or a claimed fix. No
 new budget round, threshold, outcome code or game value changed during the run.
+
+
+## Confirmed preparation timing bug; stop incomplete event work
+
+Four short prefixes (test0/1 in fitness/climbing) show the new preparation cards
+sending ordinary requests before opening. They are refused immediately and add
+80 two-star reviews per fitness example, 155 per climbing example, before any
+opening. Fees are paid without the promised future preparation benefit. This is
+a demonstrated timing error, not a capped-reach issue or a win-rate estimate.
+Evidence: ../proof/opening-invitation-timing.json.
+
+Stop the remaining shared2 event driver and its watcher; all owned workers are
+verified exited. Escape/venue tables remain complete; fitness stopped at 60/119
+saved tasks, climbing never started. Preserve checkpoints as prior-candidate
+evidence, not reusable results after a source change. Do not spend further games
+forcing choices on this known-broken preparation mechanic.
+
+Correct only the ten opt-in preparation effects: hold quoted invitations until
+first opening, then let ordinary prices, qualifications and capacity apply once.
+Other guest effects retain current timing. Add tests and a small public queued
+invitation count. Existing costs/counts stay fixed while the timing contribution
+is measured. Numeric changes cannot defer an immediate request: conservatively
+charge T5 formula round 1 in fitness/climbing and T6 formula round 1 in climbing;
+no fresh value round. Keep all previous raw target results, including regressions,
+and require a fresh same-source main reference before corrected event tables.

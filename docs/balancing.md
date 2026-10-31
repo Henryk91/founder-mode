@@ -7677,3 +7677,12 @@ own margins in `tuning2/proof/shared2-fabriketage-events.json`. Early fire-plan
 and inventory fees need a public-need/cash-timing bot review (+3.8 ±1.3 and
 +2.2 ±1.4 for defaults), while declining dinner furniture loses -9.7 ±2.0.
 Fitness and climbing event measurements continue; no wide seeds or full report.
+
+
+Shared2 preparation timing repro: four short prefixes show the new preparation
+invitations refused while closed, adding 80 fitness / 155 climbing two-star
+reviews before opening. [Evidence](tuning2/proof/opening-invitation-timing.json).
+Stop remaining event work: fitness has 60/119 saved tasks; climbing unstarted.
+Escape/venue tables remain complete. Correct opt-in invitation timing before
+further games; T5 coverage passes do not yet establish genuine preparation.
+No new target estimate, wide seeds or full report. All bot jobs are stopped.

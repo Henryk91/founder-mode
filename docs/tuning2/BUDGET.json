@@ -385,14 +385,15 @@
       "options": "Genuine preparation decisions in pre-opening weeks 8 to 12; no relabelled routine news",
       "status": "open",
       "valuesUsed": 1,
-      "formulasUsed": 0,
+      "formulasUsed": 1,
       "changes": [
         {
           "kind": "values",
           "round": 1,
           "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
           "measurement": "Pending main and affected event tables on 1000 paired seeds."
-        }
+        },
+        "Formula round 1 reserved: opt-in opening invitation deferral; four prefixes prove premature refusals/reviews. Candidate not yet implemented/measured."
       ],
       "closestFirstPass": "early 71.7% (closest 71.8%); year 2 92.9%",
       "baselineResult": {
@@ -620,14 +621,15 @@
       "options": "Genuine pre-opening preparation decisions; no relabelled routine news",
       "status": "open",
       "valuesUsed": 1,
-      "formulasUsed": 0,
+      "formulasUsed": 1,
       "changes": [
         {
           "kind": "values",
           "round": 1,
           "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
           "measurement": "Pending main and affected event tables on 1000 paired seeds."
-        }
+        },
+        "Formula round 1 reserved: opt-in opening invitation deferral; four prefixes prove premature refusals/reviews. Candidate not yet implemented/measured."
       ],
       "closestFirstPass": "early 82.6%; year 2 100%",
       "baselineResult": {
@@ -653,14 +655,15 @@
       "options": "Contextual trade-offs from the event table; no arbitrary effort penalties",
       "status": "open",
       "valuesUsed": 1,
-      "formulasUsed": 0,
+      "formulasUsed": 1,
       "changes": [
         {
           "kind": "values",
           "round": 1,
           "change": "Ten contextual invitation rewrites per scenario; five genuine funded-opening decisions each for fitness/climbing. Existing effect primitives only.",
           "measurement": "Pending main and affected event tables on 1000 paired seeds."
-        }
+        },
+        "Formula round 1 reserved: opt-in opening invitation deferral; four prefixes prove premature refusals/reviews. Candidate not yet implemented/measured."
       ],
       "closestFirstPass": "reading +2.6, blind effort +3.7 ±1.1; round 1 +2.0 / +2.7. Every event except the first wall moves outcomes by less than noise",
       "baselineResult": {
@@ -1022,7 +1025,7 @@
       }
     ]
   },
-  "nextBotCorrection": "After event evidence, assess Griffig invitation payback and fixed repair replies. No saturation filter. Resolve escape X1/T16 and fitness F1 regressions in their scenario steps.",
+  "nextBotCorrection": "Correct confirmed preparation invitation timing before further event games. No saturation filter. All bot jobs stopped; preserve existing candidate proof.",
   "sharedFollowUp": {
     "label": "shared2",
     "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
@@ -1060,5 +1063,14 @@
     }
   },
   "originalOpenTargetCount": 34,
-  "regressionTargetCount": 3
+  "regressionTargetCount": 3,
+  "openingTimingCorrection": {
+    "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+    "evidence": "proof/opening-invitation-timing.json",
+    "validation": "Four prefix traces; not a target estimate",
+    "status": "implementation next; shared2 event campaign stopped",
+    "stoppedFitnessEventTasks": 60,
+    "climbingShared2EventsStarted": false,
+    "formulaRationale": "Values cannot defer an immediate request to opening. Opt-in preparation timing only; no value changes."
+  }
 }
