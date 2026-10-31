@@ -1,0 +1,359 @@
+{
+  "source": "e932b7d232ab590b5fbee2a9afd217c771fb4ab259ce08efc31f0e1d03cf1bd5",
+  "purpose": "Two quiet-only and two all-only wins selected from main; not a win-rate sample",
+  "groups": {
+    "quietOnly": [
+      "test-8",
+      "test-36"
+    ],
+    "allOnly": [
+      "test-32",
+      "test-43"
+    ]
+  },
+  "rawPath": "docs/tuning2/state/fitness-aggregator-trace/shared2",
+  "examples": [
+    {
+      "seed": "test-8",
+      "quietAllCommonHorizon": 40,
+      "policies": {
+        "tourism_careful": {
+          "ending": "sustainable",
+          "endingWeek": 104,
+          "observedHorizon": 40,
+          "openedWeeks": 28,
+          "receiptsCents": 5499570,
+          "bookingCostsCents": 8099600,
+          "openSlotCountWeeks": {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 2,
+            "5": 25
+          },
+          "packedRows": 20,
+          "visits": 4692,
+          "aggregatorVisits": 2379,
+          "turnedAway": 356,
+          "endedReasons": {
+            "price": 7,
+            "crowding": 9,
+            "expired": 4,
+            "none": 0,
+            "aggregator": 4,
+            "january": 2
+          }
+        },
+        "fitness_aggregator_all": {
+          "ending": "bank_called",
+          "endingWeek": 40,
+          "observedHorizon": 40,
+          "openedWeeks": 28,
+          "receiptsCents": 5388870,
+          "bookingCostsCents": 8945400,
+          "openSlotCountWeeks": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 28
+          },
+          "packedRows": 15,
+          "visits": 4595,
+          "aggregatorVisits": 2369,
+          "turnedAway": 408,
+          "endedReasons": {
+            "none": 0,
+            "price": 8,
+            "expired": 6,
+            "aggregator": 0,
+            "crowding": 13,
+            "instructor": 4,
+            "january": 1
+          }
+        },
+        "fitness_aggregator_none": {
+          "ending": "bank_called",
+          "endingWeek": 32,
+          "observedHorizon": 32,
+          "openedWeeks": 20,
+          "receiptsCents": 1279800,
+          "bookingCostsCents": 7314000,
+          "openSlotCountWeeks": {
+            "0": 20
+          },
+          "packedRows": 4,
+          "visits": 1094,
+          "aggregatorVisits": 0,
+          "turnedAway": 62,
+          "endedReasons": {
+            "instructor": 0,
+            "none": 0,
+            "price": 2,
+            "expired": 7,
+            "crowding": 1,
+            "january": 0
+          }
+        }
+      }
+    },
+    {
+      "seed": "test-36",
+      "quietAllCommonHorizon": 48,
+      "policies": {
+        "tourism_careful": {
+          "ending": "sustainable",
+          "endingWeek": 104,
+          "observedHorizon": 48,
+          "openedWeeks": 36,
+          "receiptsCents": 9453540,
+          "bookingCostsCents": 8994900,
+          "openSlotCountWeeks": {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 26,
+            "5": 9
+          },
+          "packedRows": 28,
+          "visits": 8618,
+          "aggregatorVisits": 4020,
+          "turnedAway": 523,
+          "endedReasons": {
+            "expired": 26,
+            "price": 11,
+            "none": 0,
+            "crowding": 22,
+            "instructor": 3,
+            "january": 4,
+            "aggregator": 0
+          }
+        },
+        "fitness_aggregator_all": {
+          "ending": "bankrupt",
+          "endingWeek": 48,
+          "observedHorizon": 48,
+          "openedWeeks": 36,
+          "receiptsCents": 8425824,
+          "bookingCostsCents": 8718500,
+          "openSlotCountWeeks": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 36
+          },
+          "packedRows": 22,
+          "visits": 7965,
+          "aggregatorVisits": 4032,
+          "turnedAway": 563,
+          "endedReasons": {
+            "expired": 19,
+            "price": 9,
+            "none": 0,
+            "instructor": 2,
+            "crowding": 21,
+            "aggregator": 2,
+            "january": 8
+          }
+        },
+        "fitness_aggregator_none": {
+          "ending": "bank_called",
+          "endingWeek": 32,
+          "observedHorizon": 32,
+          "openedWeeks": 20,
+          "receiptsCents": 2493300,
+          "bookingCostsCents": 7656700,
+          "openSlotCountWeeks": {
+            "0": 20
+          },
+          "packedRows": 13,
+          "visits": 2075,
+          "aggregatorVisits": 0,
+          "turnedAway": 102,
+          "endedReasons": {
+            "expired": 15,
+            "instructor": 8,
+            "price": 3,
+            "none": 0,
+            "crowding": 8
+          }
+        }
+      }
+    },
+    {
+      "seed": "test-32",
+      "quietAllCommonHorizon": 44,
+      "policies": {
+        "tourism_careful": {
+          "ending": "bank_called",
+          "endingWeek": 44,
+          "observedHorizon": 44,
+          "openedWeeks": 32,
+          "receiptsCents": 6949484,
+          "bookingCostsCents": 9449400,
+          "openSlotCountWeeks": {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 2,
+            "5": 29
+          },
+          "packedRows": 25,
+          "visits": 5455,
+          "aggregatorVisits": 2868,
+          "turnedAway": 421,
+          "endedReasons": {
+            "crowding": 8,
+            "none": 0,
+            "price": 5,
+            "expired": 5,
+            "instructor": 3,
+            "january": 2
+          }
+        },
+        "fitness_aggregator_all": {
+          "ending": "sustainable",
+          "endingWeek": 104,
+          "observedHorizon": 44,
+          "openedWeeks": 32,
+          "receiptsCents": 7815005,
+          "bookingCostsCents": 8898600,
+          "openSlotCountWeeks": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 32
+          },
+          "packedRows": 24,
+          "visits": 6027,
+          "aggregatorVisits": 2935,
+          "turnedAway": 515,
+          "endedReasons": {
+            "price": 7,
+            "crowding": 8,
+            "none": 0,
+            "aggregator": 0,
+            "expired": 6,
+            "january": 3
+          }
+        },
+        "fitness_aggregator_none": {
+          "ending": "bank_called",
+          "endingWeek": 36,
+          "observedHorizon": 36,
+          "openedWeeks": 24,
+          "receiptsCents": 2983300,
+          "bookingCostsCents": 7826900,
+          "openSlotCountWeeks": {
+            "0": 24
+          },
+          "packedRows": 9,
+          "visits": 1817,
+          "aggregatorVisits": 0,
+          "turnedAway": 112,
+          "endedReasons": {
+            "price": 3,
+            "instructor": 2,
+            "none": 0,
+            "expired": 8,
+            "crowding": 1
+          }
+        }
+      }
+    },
+    {
+      "seed": "test-43",
+      "quietAllCommonHorizon": 96,
+      "policies": {
+        "tourism_careful": {
+          "ending": "bank_called",
+          "endingWeek": 96,
+          "observedHorizon": 96,
+          "openedWeeks": 84,
+          "receiptsCents": 27421663,
+          "bookingCostsCents": 12408400,
+          "openSlotCountWeeks": {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 2,
+            "4": 60,
+            "5": 21
+          },
+          "packedRows": 38,
+          "visits": 19682,
+          "aggregatorVisits": 10163,
+          "turnedAway": 248,
+          "endedReasons": {
+            "aggregator": 5,
+            "crowding": 28,
+            "price": 39,
+            "expired": 30,
+            "instructor": 12,
+            "none": 0,
+            "january": 5
+          }
+        },
+        "fitness_aggregator_all": {
+          "ending": "sustainable",
+          "endingWeek": 104,
+          "observedHorizon": 96,
+          "openedWeeks": 84,
+          "receiptsCents": 31236026,
+          "bookingCostsCents": 13427100,
+          "openSlotCountWeeks": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 84
+          },
+          "packedRows": 48,
+          "visits": 20809,
+          "aggregatorVisits": 10126,
+          "turnedAway": 500,
+          "endedReasons": {
+            "crowding": 47,
+            "none": 0,
+            "price": 37,
+            "aggregator": 10,
+            "expired": 30,
+            "instructor": 9,
+            "january": 6
+          }
+        },
+        "fitness_aggregator_none": {
+          "ending": "bank_called",
+          "endingWeek": 36,
+          "observedHorizon": 36,
+          "openedWeeks": 24,
+          "receiptsCents": 2867200,
+          "bookingCostsCents": 6974700,
+          "openSlotCountWeeks": {
+            "0": 24
+          },
+          "packedRows": 3,
+          "visits": 1722,
+          "aggregatorVisits": 0,
+          "turnedAway": 25,
+          "endedReasons": {
+            "price": 0,
+            "none": 0,
+            "crowding": 1,
+            "expired": 8,
+            "january": 0
+          }
+        }
+      }
+    }
+  ]
+}

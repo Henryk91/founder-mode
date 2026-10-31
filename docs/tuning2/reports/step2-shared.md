@@ -336,3 +336,20 @@ coaching allocation and alias capacity before changing wages or adding costs.
 These selected examples cannot estimate the target effect. Summary evidence:
 ../proof/shared2-griffig-staff-diagnostic.json; raw state/climbing-staff-trace/shared2/.
 No game code, values, formulas or thresholds changed.
+
+
+## Fitness aggregator diagnostic (12 games, no target estimate)
+
+Two quiet-only and two all-only winning examples from shared2 were replayed under
+careful, all-slot and no-aggregator policies for previously absent weekly data.
+Compare quiet/all to their common horizon; the no-aggregator examples end sooner.
+All-slot access creates more turnaways in these four selected examples, but
+check-ins and cash are not monotonic. These examples do not estimate F1 or prove
+which parameter causes it. Summary: ../proof/shared2-fitness-aggregator-diagnostic.json;
+raw data: state/fitness-aggregator-trace/shared2/.
+
+Read-only code finding: joining and churn apply the same membership migration
+rate whenever the aggregator is joined, independently of enabled slots. Review
+whether access overlap should affect migration in both fitness and climbing.
+This is a possible formula issue, not an applied change or a claimed fix. No
+new budget round, threshold, outcome code or game value changed during the run.

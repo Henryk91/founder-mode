@@ -2,7 +2,7 @@
 
 ## Current
 Step: 2, shared2 main complete; event measurements running.
-Last commit: 36cfae4, record shared escape event contributions and regression budgets.
+Last commit: af228bb, record venue events and climbing staffing diagnostics.
 Next action: Monitor event session 95340; inspect and commit each completed table.
 Fitness and climbing remain before shared tuning decisions/milestone.
 The capped-contact audit was incorrect; invitations add booking requests directly.
@@ -42,6 +42,8 @@ Completed: shared2 main campaign session 56732 exited 0 (64,000 games).
 Event campaign 86174 stopped for resize after main finished.
 Active event campaign: session 95340, 8 workers, same source/checkpoints.
 Completed: climbing staff trace session 31462 exited 0, nine diagnostic games.
+Completed: fitness aggregator trace session 1116 exited 0, twelve games.
+Path: state/fitness-aggregator-trace/shared2/; log state/fitness-aggregator-trace.log.
 Path: state/climbing-staff-trace/shared2/; log state/climbing-staff-trace.log.
 Escape/venue finished; fitness running, then climbing.
 No isolated T12 claim from concurrent campaign timings.
@@ -52,7 +54,7 @@ Climbing: C 26.5%; T5/K2 pass; T3/T6/T7/K1/K3 remain open.
 Manifest: proof/shared2-main-manifest.json.
 Escape events complete: 119 tasks, 107,768 forced games; 47/50 events judged.
 Venue events complete: 121 tasks, 77,274 forced games; 54/55 events judged.
-Fitness events running, then climbing.
+Fitness events: 25/119 tasks saved; then climbing.
 Escape kids-first +3.9 ±2.4 versus fixed-heist reader; bot investigation queued.
 No tests or source edits while main/event jobs run.
 Stopped superseded seed session 65812 before the last two target corrections.
@@ -81,7 +83,8 @@ Measurements: measurements/shared1-<scenario>.md; proof/shared1-*.json.
 
 Run-owned scratch tools: packages/bots/scratch/tuning2-*.tmp.ts.
 Names: profile, timings, main, replay, replay-saved, t12, baselines,
-review-fix, loan-scope, shared-main, events, fitness-trace, climbing-staff-trace.
+review-fix, loan-scope, shared-main, events, fitness-trace, climbing-staff-trace,
+fitness-aggregator-trace.
 All working state is under docs/tuning2/state/, never /tmp.
 No worktrees or branches created. Earlier run state remains untouched.
 
