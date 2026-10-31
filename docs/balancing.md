@@ -7609,7 +7609,7 @@ per slowest policy; they are not idle T12 measurements. Details and proof hashes
 No content values, formulas or policy choices changed. Full report not started.
 
 
-Tuning 2 final speed source, main-only proof in progress: Ausgesperrt 28,
-Fabriketage 29 and Schweißperle 30 policies × 1,000 paired test seeds match every
-saved result. Griffig and the nine earlier units follow. No wide seeds, events,
+Tuning 2 final speed source: all four leisure main matrices (119 policies ×
+1,000 paired test seeds) match every saved result. Kantino standard also matches
+all 11 policies; the other eight earlier units continue on the frozen source. No wide seeds, events,
 content values or economic formula changes; full report remains reserved for wrap up.

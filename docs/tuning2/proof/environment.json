@@ -1,0 +1,10 @@
+{
+  "node": "v20.19.5",
+  "platform": "darwin",
+  "arch": "arm64",
+  "availableCpus": 10,
+  "cpuModel": "Apple M5",
+  "memoryGiB": 16,
+  "proofWorkers": 8,
+  "idleT12Workers": 1
+}

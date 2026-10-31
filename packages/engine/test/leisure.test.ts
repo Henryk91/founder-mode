@@ -314,6 +314,21 @@ describe('leisure slots and crowding', () => {
     expect(leisureCapacity(s, 'basic_ordering', 'missing', 1)).toBe(0)
   })
 
+  it('keeps the alphabetical visit choice on capacity ties as reservations fill', () => {
+    const config = leisureConfig()
+    config.segments.medical!.slotShare = { evening: 1 }
+    config.segments.medical!.visitsPerWeek = 3
+    const s = withMember(open(game(config)), member({ segmentId: 'medical' }))
+    const before = structuredClone(s)
+    const result = leisureVisits(s, [], rng())
+    expect(result.added.map((b) => b.productId)).toEqual([
+      'allergy_filter',
+      'basic_ordering',
+      'allergy_filter',
+    ])
+    expect(s).toEqual(before)
+  })
+
   it('allows soft crowding up to the hard limit and reports packed load without exposing comfort', () => {
     const c = leisureConfig()
     c.products.basic_ordering!.comfort = { daytime: 2, evening: 2 }

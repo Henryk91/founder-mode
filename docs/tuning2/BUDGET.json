@@ -12,7 +12,7 @@
       "ausgesperrt",
       "fabriketage"
     ],
-    "round2": "518 engine tests, lint, 21 original-state replays and 3 profiles pass; final 13-unit main proof running"
+    "round2": "518 engine tests, lint, 21 original-state replays, 119000 leisure outcomes and Kantino standard pass; remaining earlier-unit proof active"
   },
   "targets": [
     {

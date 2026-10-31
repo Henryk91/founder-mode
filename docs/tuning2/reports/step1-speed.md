@@ -183,12 +183,24 @@ These are short profiles, not idle 1,000-run T12 judgements. Second and final
 main proof now runs 1,000 seeds per policy: four affected units first, then the
 nine earlier units. No full report, wide seeds or events are part of this proof.
 
-## Round 2 main proof (in progress)
+## Round 2 main proof
 
 Ausgesperrt 28, Fabriketage 29 and Schweißperle 30 policies each reproduce every
 complete result on 1,000 paired test seeds. Committed proof hashes:
 `../proof/round2-<scenario>-long.json`. Total: 87,000 identical results so far.
-Griffig and all nine earlier units are still pending.
+Griffig is now also complete: 32 policies × 1,000 paired seeds, every result
+identical. All four leisure units total 119,000 identical results. Kantino
+standard also reproduces all 11 policies / 11,000 results; the other eight
+earlier units remain in progress.
 
 Metadata-only availability check found all 314 main-policy baselines across the
 13 units, without playing any baseline games. Log: state/baseline-availability.log.
+
+The final speed source is ready to commit after 518 engine tests, lint, 21 original
+saved-state replays, and all four affected 1,000-seed main matrices. The nine
+earlier-unit campaign continues on the same frozen package bytes. No speed
+milestone is tagged until that proof, idle T12 and the full suite finish.
+
+Benchmark environment: Node v20.19.5, Darwin arm64, Apple M5, 10 available CPUs,
+16 GiB RAM. Main proof uses eight seed workers; T12 will use one. Metadata:
+`../proof/environment.json`.

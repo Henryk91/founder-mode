@@ -400,6 +400,9 @@ export function leisureProductCapacity(
   week: number,
 ): number {
   const cfg = s.scenario.bookings!
+  const pool = cfg.products[product]?.capacityOf ?? product
+  // The pool checks its own readiness, opening and requirements in leisureCapacity.
+  if (pool === product) return leisureCapacity(s, product, slot, week)
   const required = cfg.products[product]?.requires
   const allowedSlots = cfg.leisure?.products[product]?.availableSlots
   if (allowedSlots && !allowedSlots.includes(slot)) return 0
@@ -409,11 +412,8 @@ export function leisureProductCapacity(
     (required && !readyAt(s, required, week))
   )
     return 0
-  const pool = cfg.products[product]?.capacityOf ?? product
   const capacity = leisureCapacity(s, pool, slot, week)
-  return product !== pool && assetOf(cfg, product)
-    ? Math.floor(capacity * assetFactor(s, product, week))
-    : capacity
+  return assetOf(cfg, product) ? Math.floor(capacity * assetFactor(s, product, week)) : capacity
 }
 
 export function leisureRoom(
@@ -1387,23 +1387,28 @@ export function leisureVisits(
     slot: string,
     products?: readonly string[],
     levels?: readonly string[],
-  ) =>
-    Object.keys(c.products)
-      .sort()
-      .filter(
-        (id) =>
-          (!products || products.includes(id)) &&
-          (!c.qualifications || !input.scenario.bookings!.products[id]?.course) &&
-          (!c.qualifications ||
-            !input.scenario.bookings!.products[id]?.needsLevel ||
-            levels?.includes(input.scenario.bookings!.products[id]!.needsLevel!)) &&
-          input.scenario.bookings!.products[id]?.serves.includes(segmentId) &&
-          room(input, id, slot, week, segmentId) > 0 &&
-          leisureOpen(input, id, week),
+  ) => {
+    let selected: string | undefined
+    let most = 0
+    // Preserve the stable alphabetical tie-break without sorting or reevaluating room.
+    for (const [id] of configEntries(c.products)) {
+      const product = input.scenario.bookings!.products[id]
+      if (
+        (products && !products.includes(id)) ||
+        (c.qualifications && product?.course) ||
+        (c.qualifications && product?.needsLevel && !levels?.includes(product.needsLevel)) ||
+        !product?.serves.includes(segmentId)
       )
-      .sort(
-        (a, b) => room(input, b, slot, week, segmentId) - room(input, a, slot, week, segmentId),
-      )[0]
+        continue
+      const free = room(input, id, slot, week, segmentId)
+      if (free > most) {
+        selected = id
+        most = free
+      }
+    }
+    return selected
+  }
+
   const add = (
     segmentId: string,
     slotId: string,

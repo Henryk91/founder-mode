@@ -1,12 +1,13 @@
 # Tuning run 2 status
 
 ## Current
-Step: 1, final speed-source main proof.
-Last commit: 1fe1913, reuse sorted leisure content records with identical simulation outcomes.
-Next action: Finish the round 2 main campaign: four affected units, then nine earlier units.
+Step: 1, final speed-source earlier-game proof.
+Last commit: 12d1beb, preserve final speed-source proofs for escape venue and fitness.
+Next action: Finish the remaining earlier-game main comparisons.
 After all bot jobs exit, measure leisure T12 serially on the actual slowest policies.
-Round 2 complete: Ausgesperrt 28, Fabriketage 29, Schweißperle 30 policies.
-All 87,000 results identical. Griffig active; the nine earlier units follow.
+Round 2 leisure proof complete: 119 policies, all 119,000 results identical.
+Kantino standard also complete: 11 policies, 11,000 results identical.
+Kantino long active; the remaining seven earlier units follow.
 Ausgesperrt complete: all 28 policies / 28,000 results exactly match baseline.
 Fabriketage complete: all 29 policies / 29,000 results exactly match baseline.
 Schweißperle complete: all 30 policies / 30,000 results exactly match baseline.
