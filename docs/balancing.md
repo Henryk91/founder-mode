@@ -7634,3 +7634,16 @@ utilisation-based contracts, hint ticket pricing and contextual cards. Full gate
 Leisure T6 now uses the blind limit's own paired margin; all four saved baseline
 failures remain failures. No baseline games or full report were rerun. See
 `tuning2/reports/step2-shared.md` and `tuning2/BUDGET.json` for scope and budgets.
+
+
+Tuning 2 shared1 main measurement complete on e7a8ece: all four leisure units,
+119 policies × 1,000 paired test seeds. All nine protected units reproduce every
+field of 195,000 results. Full tables: [escape](tuning2/measurements/shared1-ausgesperrt.md),
+[venue](tuning2/measurements/shared1-fabriketage.md),
+[fitness](tuning2/measurements/shared1-schweissperle.md),
+[climbing](tuning2/measurements/shared1-griffig.md).
+Seven originally open targets meet their limits at this candidate, including
+at-the-limit results; escape X1 and T16 regress and require follow-up.
+The conditional reader wrongly pays for guest-only reminders after reach is
+saturated. Correct that assumption and restore the unsuccessful ticket experiment
+before event-table measurement. No event tables, wide seeds or full report started.

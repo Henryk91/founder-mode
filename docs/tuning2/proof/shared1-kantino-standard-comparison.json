@@ -1,0 +1,140 @@
+{
+  "source": "a0a325a9e7978c04787ee556416217f01f5b50f0c76d4198054efef26bc70b17",
+  "baseline": "tuning2-speed",
+  "protected": true,
+  "id": "kantino",
+  "mode": "standard",
+  "rows": [
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "random"
+      },
+      "same": true,
+      "beforeHash": "b87ed03ead4c410b6eaad3657bc707d378a5ff5d9fdfe56b63bc975174c11f02",
+      "afterHash": "b87ed03ead4c410b6eaad3657bc707d378a5ff5d9fdfe56b63bc975174c11f02",
+      "seconds": 9.513325331999999,
+      "baselineSeconds": 9.173762750000002,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "build_only"
+      },
+      "same": true,
+      "beforeHash": "295d386ddb4ace5c420ba70c7bf42ebb22525c0dd312ac8a236197bb3e53f04e",
+      "afterHash": "295d386ddb4ace5c420ba70c7bf42ebb22525c0dd312ac8a236197bb3e53f04e",
+      "seconds": 4.2703113340000005,
+      "baselineSeconds": 3.9903310409999992,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "sell_first"
+      },
+      "same": true,
+      "beforeHash": "cca20a5635a7dcea81725f73fb3b0b5501b2524186feb2768ee0a44db376ccf5",
+      "afterHash": "cca20a5635a7dcea81725f73fb3b0b5501b2524186feb2768ee0a44db376ccf5",
+      "seconds": 5.015512167000001,
+      "baselineSeconds": 4.810837082,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "validate_then_build"
+      },
+      "same": true,
+      "beforeHash": "8940e80ba2f94cf25b96fd3b57595350a92da083303989ca89c5ebd69ba3113a",
+      "afterHash": "8940e80ba2f94cf25b96fd3b57595350a92da083303989ca89c5ebd69ba3113a",
+      "seconds": 27.584612166,
+      "baselineSeconds": 26.302831457,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "validate_then_build_hire"
+      },
+      "same": true,
+      "beforeHash": "1233803d4d277ecb617ed89ead918606e1636c4a032e36a64e69129e28748c12",
+      "afterHash": "1233803d4d277ecb617ed89ead918606e1636c4a032e36a64e69129e28748c12",
+      "seconds": 23.290232292000002,
+      "baselineSeconds": 21.905108292,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "validate_then_build_early_hire"
+      },
+      "same": true,
+      "beforeHash": "94ec15c7583c9a64075a92cae5b8132862abf57f77303a92f86e96fc359b5ee9",
+      "afterHash": "94ec15c7583c9a64075a92cae5b8132862abf57f77303a92f86e96fc359b5ee9",
+      "seconds": 15.623977332,
+      "baselineSeconds": 14.847924542000003,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "presale_max"
+      },
+      "same": true,
+      "beforeHash": "225565ca57dfdce50623f486843b9444be93dfd64bfa00898db14e107492d60e",
+      "afterHash": "225565ca57dfdce50623f486843b9444be93dfd64bfa00898db14e107492d60e",
+      "seconds": 20.887650459,
+      "baselineSeconds": 19.841340752,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "price_aware"
+      },
+      "same": true,
+      "beforeHash": "16955ce67f9f99e183f724b09d8cb2041609d0afc909b91c673fee53c98e65fb",
+      "afterHash": "16955ce67f9f99e183f724b09d8cb2041609d0afc909b91c673fee53c98e65fb",
+      "seconds": 22.764926957999997,
+      "baselineSeconds": 21.695939959,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "overworker"
+      },
+      "same": true,
+      "beforeHash": "7ba20e0bf656323bc8fbd78d2b4f4ecf3463508dc899b0bfd02d41f23c36f711",
+      "afterHash": "7ba20e0bf656323bc8fbd78d2b4f4ecf3463508dc899b0bfd02d41f23c36f711",
+      "seconds": 4.123411666000002,
+      "baselineSeconds": 3.847313957999999,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "listed",
+        "id": "playtest"
+      },
+      "same": true,
+      "beforeHash": "953fb966867329503b59668085e83ac41d05b82c79d748f94a09d043db83ab1f",
+      "afterHash": "953fb966867329503b59668085e83ac41d05b82c79d748f94a09d043db83ab1f",
+      "seconds": 2.4103764159999956,
+      "baselineSeconds": 2.1975772919999996,
+      "seeds": 1000
+    },
+    {
+      "spec": {
+        "kind": "randomNoInbox"
+      },
+      "same": true,
+      "beforeHash": "741005f4570442014a07944bf6cf442f5e3233abfa077dfc0b7c1bea50d44fbc",
+      "afterHash": "741005f4570442014a07944bf6cf442f5e3233abfa077dfc0b7c1bea50d44fbc",
+      "seconds": 3.9253050410000037,
+      "baselineSeconds": 3.6386184159999995,
+      "seeds": 1000
+    }
+  ]
+}

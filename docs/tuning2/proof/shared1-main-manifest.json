@@ -1,0 +1,107 @@
+{
+  "source": "a0a325a9e7978c04787ee556416217f01f5b50f0c76d4198054efef26bc70b17",
+  "sourceCommit": "e7a8ece",
+  "baseline": "tuning2-speed",
+  "parts": "main",
+  "runsPerPolicy": 1000,
+  "totalPolicies": 314,
+  "protectedPolicies": 195,
+  "protectedResultsIdentical": 195000,
+  "leisureResultsMeasured": 119000,
+  "wideRuns": 0,
+  "eventTablesStarted": false,
+  "fullReportStarted": false,
+  "units": [
+    {
+      "id": "ausgesperrt",
+      "mode": "long",
+      "protected": false,
+      "policies": 28,
+      "identical": 0
+    },
+    {
+      "id": "fabriketage",
+      "mode": "long",
+      "protected": false,
+      "policies": 29,
+      "identical": 1
+    },
+    {
+      "id": "gratwanderung",
+      "mode": "long",
+      "protected": true,
+      "policies": 19,
+      "identical": 19
+    },
+    {
+      "id": "griffig",
+      "mode": "long",
+      "protected": false,
+      "policies": 32,
+      "identical": 0
+    },
+    {
+      "id": "hinterhof",
+      "mode": "long",
+      "protected": true,
+      "policies": 22,
+      "identical": 22
+    },
+    {
+      "id": "kantino",
+      "mode": "long",
+      "protected": true,
+      "policies": 24,
+      "identical": 24
+    },
+    {
+      "id": "kantino",
+      "mode": "standard",
+      "protected": true,
+      "policies": 11,
+      "identical": 11
+    },
+    {
+      "id": "leinenlos",
+      "mode": "long",
+      "protected": true,
+      "policies": 29,
+      "identical": 29
+    },
+    {
+      "id": "rueckenwind",
+      "mode": "long",
+      "protected": true,
+      "policies": 30,
+      "identical": 30
+    },
+    {
+      "id": "schweissperle",
+      "mode": "long",
+      "protected": false,
+      "policies": 30,
+      "identical": 0
+    },
+    {
+      "id": "seeblick",
+      "mode": "long",
+      "protected": true,
+      "policies": 22,
+      "identical": 22
+    },
+    {
+      "id": "tiefgang",
+      "mode": "long",
+      "protected": true,
+      "policies": 27,
+      "identical": 27
+    },
+    {
+      "id": "zollstock",
+      "mode": "standard",
+      "protected": true,
+      "policies": 11,
+      "identical": 11
+    }
+  ]
+}

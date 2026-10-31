@@ -127,3 +127,104 @@ driver: state/shared1-main.sh; per-unit state: state/shared1/<scenario>-<mode>/.
 Reporting metadata matches the normal CLI, including playtest, market build hours
 and first-season week. Nine protected units must reproduce every complete result
 against tuning2-speed; changed leisure units produce their full target tables.
+
+
+## Shared round 1: Ausgesperrt complete
+
+28 policies × 1,000 paired test seeds. Main only; no events or wide seeds.
+Full table: ../measurements/shared1-ausgesperrt.md. Careful 40.1% ±3.0;
+T10 passes (review-blind −30.8 ±2.9), T13 passes (naive 32.0%, gap −8.1 ±2.5).
+T6 fails: reading +14.9 ±2.7, blind gain +9.9, own blind-limit margin ±2.0.
+Later-loan gain improves from +16.5 to +9.9 ±2.4, taken in 84.5%; still fails.
+T3 spread 37.7 ±6.8; companies 21.3%, locals 59.0%, tourists 40.3%.
+Seasonal contracts +1.6 ±2.1 still fail the own-margin advantage criterion;
+permanent +3.8 ±2.6 and part time +6.7 ±2.6 pass.
+
+Passing-target regressions at this candidate: X1 quarterly rooms +11.7 ±2.5
+rather than losing at least 3; T16 temptation borrowing −0.1 ±2.8 rather than
+losing at least 3. Record both, investigate contributions and resolve before
+accepting the final source. Do not hide them behind improvements elsewhere or
+relax thresholds. Source remains frozen for the campaign; no further edits yet.
+The parallel 273.9 s T12 entry is distinct from step 1's isolated measurements.
+
+
+## Shared round 1: Fabriketage complete
+
+29 policies × 1,000 paired test seeds, main only. Full table:
+../measurements/shared1-fabriketage.md. Careful 33.8% ±2.9. T13 now passes:
+naive 33.0%, gap −0.8 ±1.8. This is a result, not a claim that the requested
+forward-calendar/cash-gap hint is already implemented; that remains step 3 work.
+T15 improves from +40.6 to +11.0 ±2.0, later loan taken in 56.8%; still fails.
+
+T3 fails: spread 55.8 ±5.6 (companies 59.6%, private 36.2%, weddings 3.8%).
+T6 fails: reading +5.8 ±2.0, blind +5.5, blind-limit margin ±1.6. T11 still
+has no established strict/flexible segment trade-off. T14 permanent −0.8 ±1.1,
+seasonal 0 ±0, part time −1.9 ±1.7, all fail. No passing venue target regressed.
+All four venue-specific targets remain passing. Further contributions and values
+are needed; early settlement alone does not make long-lead weddings viable.
+
+
+## Shared round 1: Schweißperle complete
+
+30 policies × 1,000 paired test seeds, main only. Full table:
+../measurements/shared1-schweissperle.md. Careful 47.8% ±3.1 (T1 at the limit).
+T5 now passes: early 87.3%, year two 91.2%. T6 passes at the limit: reading
++17.8 ±2.7, blind gain +5.9, own limit excess −0.03 ±2.07. T10 −7.1 ±1.8 passes.
+
+T3 spread 23.2 ±7.4 still fails (corporate 60.3%, yoga 37.1%, young 45.1%).
+T14 permanent +0.4 ±1.4, seasonal −0.6 ±1.7 fail; part time +2.3 ±1.3 passes.
+F3 reformers −23.2 ±3.2 remains open; F4 never matching −0.5 ±1.5, with 28,843
+followers stopped in 930 runs, remains open. No passing target regressed.
+
+The per-scenario ticket experiment does not fix T7 (−2.8 ±1.7). Restore the prior
+ticket setting after the frozen campaigns, remeasure the affected main policies,
+and record the price-curve limitation. Do not retain a failed fix or sweep prices.
+No change is made while the common-source campaign is active.
+
+
+## Shared round 1: Griffig complete
+
+32 policies × 1,000 paired test seeds, main only. Full table:
+../measurements/shared1-griffig.md. Careful 25.4% ±2.7 (T1 at the limit).
+T5 passes at 89.9% early / 100% year two. T3 passes at the limit: spread
+19.5 ±6.3 (committed 14.2%, families 27.7%, students 33.6%). Committed
+climbers and first-wall economics still need the planned scenario investigation.
+K2 passes at the limit: half setting −1.8 ±1.4, double −2.7 ±1.5.
+
+T6 fails its reading condition: reading −1.9 ±1.8, blind gain −3.3. Reading the
+new paid offers can be worse than taking defaults. Code audit: guests effects
+only add repeatGuest history, improving capped website/word-of-mouth reach;
+they do not directly add a booking request. The generic conditional reader treats
+those effects as helpful even after saturation. Correct this actual assumption
+before any arbitrary penalty or sweep of invitation counts/fees. Event-table
+contributions remain pending; no further change is applied during this campaign.
+
+T7 still fails at −1.5 ±1.4. The tested ticket setting does not fix either
+fitness or climbing and is marked for reversion after source-frozen work.
+Other open targets: T9 overstaffing +1.5 ±1.8; T11 no established policy split;
+T14 only permanent has a proven signed-seed benefit; T15 +11.4 ±2.0;
+K1 boulder 97.6%, rope 16.7%, both 0% of differing seeds; K3 all slots +1.1 ±0.9.
+No previously passing complete climbing target regressed.
+
+All four shared leisure matrices now total 119 policies / 119,000 complete
+paired games. The required nine protected units continue on the same source.
+
+
+## Complete shared1 main proof and next action
+
+All 13 units completed on the same package-source SHA256. The nine protected
+units reproduce every field of all 195,000 results exactly against tuning2-speed.
+All four leisure matrices total 119,000 newly measured results. Manifest and
+per-unit hashes: ../proof/shared1-main-manifest.json and shared1-*-comparison.json.
+This is main only, 1,000 paired seeds per policy; no wide seeds or events.
+
+Before event tables, correct the now-observed reader error under judgement rule 1:
+visible repeat-contact counts already show when the existing reach rule is
+saturated. A guest-only reminder then has no benefit; the reader currently pays
+for it whenever its authored condition is true. Use public observed counts and
+the fixed scenario rule, with no hidden demand, role or seed access. Keep choices
+with another actual benefit eligible. Restore the two ticket settings whose
+experiment did not fix T7. These are bot corrections, not another economic round.
+Then collect event-table evidence against a sensible, identical-source careful
+reference. The prepared event tool rejects any source mismatch; no event table
+has been run against the known-bad reader merely to repeat the main finding.

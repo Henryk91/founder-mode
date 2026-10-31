@@ -38,6 +38,12 @@
         "value": "top tourism_part_time 48.4%; no tests 22.1%",
         "margin": "±3.1; ±2.6",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "top leisure_quarterly_rooms 51.8%; no tests 27.0%",
+        "margin": "±3.1; ±2.8",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -53,6 +59,12 @@
         "value": "32.5 points (companies 27.7%, locals 60.2%, tourists 40.6%)",
         "margin": "±7.0",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "37.7 points (companies 21.3%, locals 59.0%, tourists 40.3%)",
+        "margin": "±6.8",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -81,6 +93,12 @@
         "blindLimitMargin": 2.0842449499892175,
         "blindLimitExcess": 5.300000000000002,
         "pass": false
+      },
+      "sharedRound1": {
+        "value": "reading +14.9, blind effort +9.9",
+        "margin": "reading ±2.7; blind limit ±2.0",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -96,6 +114,12 @@
         "value": "+4.7",
         "margin": "±2.1",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "-30.8",
+        "margin": "±2.9",
+        "pass": true,
+        "source": "e7a8ece"
       }
     },
     {
@@ -111,6 +135,12 @@
         "value": "strict ahead by -3.4 overall; companies +3.8, locals -1.5, tourists -13.2",
         "margin": "±2.7",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "strict ahead by -5.2 overall; companies -4.1, locals -0.9, tourists -11.0",
+        "margin": "±2.4",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -126,6 +156,12 @@
         "value": "permanent +8.6 (signed in 80.7%); seasonal +1.9 (signed in 83.8%); part time +10.7 (signed in 85.8%)",
         "margin": "±3.0; ±2.2; ±2.7",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "permanent +3.8 (signed in 90.0%); seasonal +1.6 (signed in 90.2%); part time +6.7 (signed in 93.7%)",
+        "margin": "±2.6; ±2.1; ±2.6",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -141,6 +177,12 @@
         "value": "second loan +16.5 against none (second loan taken in 98.7% of runs)",
         "margin": "±2.8",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "second loan +9.9 against none (second loan taken in 84.5% of runs)",
+        "margin": "±2.4",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -156,6 +198,12 @@
         "value": "ending owing: reckless 42.6%, careful 38.7% (gap +3.9); careful loan-caused misses 2.6%",
         "margin": "±4.3; ±1.0",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "ending owing: reckless 44.2%, careful 34.2% (gap +10.0); careful loan-caused misses 1.1%",
+        "margin": "±4.3; ±0.6",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -179,6 +227,12 @@
         "value": "62.2 points (companies 72.0%, private_parties 55.7%, weddings 9.7%)",
         "margin": "±5.8",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "55.8 points (companies 59.6%, private_parties 36.2%, weddings 3.8%)",
+        "margin": "±5.6",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -207,6 +261,12 @@
         "blindLimitMargin": 1.8440569145229762,
         "blindLimitExcess": 10.766666666666671,
         "pass": false
+      },
+      "sharedRound1": {
+        "value": "reading +5.8, blind effort +5.5",
+        "margin": "reading ±2.0; blind limit ±1.6",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -222,6 +282,12 @@
         "value": "strict ahead by +1.0 overall; companies +0.0, private_parties +3.2, weddings -0.3",
         "margin": "±1.5",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "strict ahead by +0.5 overall; companies +0.6, private_parties +1.7, weddings -0.9",
+        "margin": "±1.4",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -237,6 +303,12 @@
         "value": "32.4%; gap -14.2",
         "margin": "±2.9; ±2.2",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "33.0%; gap -0.8",
+        "margin": "±2.9; ±1.8",
+        "pass": true,
+        "source": "e7a8ece"
       }
     },
     {
@@ -252,6 +324,12 @@
         "value": "permanent +0.0 (signed in 12.1%); seasonal -0.3 (signed in 39.7%); part time -0.4 (signed in 45.1%)",
         "margin": "±0.0; ±0.9; ±1.2",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "permanent -0.8 (signed in 24.6%); seasonal +0.0 (signed in 28.5%); part time -1.9 (signed in 37.6%)",
+        "margin": "±1.1; ±0.0; ±1.7",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -267,6 +345,12 @@
         "value": "second loan +40.6 against none (second loan taken in 100.0% of runs)",
         "margin": "±3.1",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "second loan +11.0 against none (second loan taken in 56.8% of runs)",
+        "margin": "±2.0",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -282,6 +366,12 @@
         "value": "28.8 points (corporate 62.1%, yoga_crowd 33.3%, young_professionals 37.8%)",
         "margin": "±7.3",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "23.2 points (corporate 60.3%, yoga_crowd 37.1%, young_professionals 45.1%)",
+        "margin": "±7.4",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -304,6 +394,12 @@
         "value": "71.7%; year 2 92.9%",
         "margin": "",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "87.3%; year 2 91.2%",
+        "margin": "",
+        "pass": true,
+        "source": "e7a8ece"
       }
     },
     {
@@ -332,6 +428,12 @@
         "blindLimitMargin": 1.8849544173681112,
         "blindLimitExcess": 8.000000000000004,
         "pass": false
+      },
+      "sharedRound1": {
+        "value": "reading +17.8, blind effort +5.9",
+        "margin": "reading ±2.7; blind limit ±2.1",
+        "pass": true,
+        "source": "e7a8ece"
       }
     },
     {
@@ -347,6 +449,12 @@
         "value": "-1.0",
         "margin": "±1.5",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "-2.8",
+        "margin": "±1.7",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -369,6 +477,12 @@
         "workers": 1,
         "status": "fail",
         "outcomesIdentical": true
+      },
+      "sharedRound1": {
+        "value": "428.4 s per 1000 runs",
+        "margin": "",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -384,6 +498,12 @@
         "value": "permanent +1.2 (signed in 42.1%); seasonal +0.6 (signed in 47.5%); part time +3.3 (signed in 91.1%)",
         "margin": "±1.4; ±1.8; ±1.5",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "permanent +0.4 (signed in 53.4%); seasonal -0.6 (signed in 48.1%); part time +2.3 (signed in 96.5%)",
+        "margin": "±1.4; ±1.7; ±1.3",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -399,6 +519,12 @@
         "value": "-22.1; buy-only 34, no-buy-only 255, ties 711",
         "margin": "±3.0",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "-23.2; buy-only 42, no-buy-only 274, ties 684",
+        "margin": "±3.2",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -414,6 +540,12 @@
         "value": "+0.1; 30426 followers stopped in 945 runs",
         "margin": "±1.6",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "-0.5; 28843 followers stopped in 930 runs",
+        "margin": "±1.5",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -429,6 +561,12 @@
         "value": "31.1 points (committed 12.9%, families 34.4%, students 44.0%)",
         "margin": "±6.4",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "19.5 points (committed 14.2%, families 27.7%, students 33.6%)",
+        "margin": "±6.3",
+        "pass": true,
+        "source": "e7a8ece"
       }
     },
     {
@@ -451,6 +589,12 @@
         "value": "82.6%; year 2 100.0%",
         "margin": "",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "89.9%; year 2 100.0%",
+        "margin": "",
+        "pass": true,
+        "source": "e7a8ece"
       }
     },
     {
@@ -479,6 +623,12 @@
         "blindLimitMargin": 1.1044522221948359,
         "blindLimitExcess": 2.833333333333335,
         "pass": false
+      },
+      "sharedRound1": {
+        "value": "reading -1.9, blind effort -3.3",
+        "margin": "reading ±1.8; blind limit ±1.6",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -494,6 +644,12 @@
         "value": "-0.5",
         "margin": "±1.0",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "-1.5",
+        "margin": "±1.4",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -509,6 +665,12 @@
         "value": "over +1.1, under -4.9",
         "margin": "±1.5, ±1.7",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "over +1.5, under -8.6",
+        "margin": "±1.8, ±1.9",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -524,6 +686,12 @@
         "value": "strict ahead by -0.9 overall; committed -0.6, families -2.0, students +0.0",
         "margin": "±0.9",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "strict ahead by -0.4 overall; committed +2.2, families -1.2, students -2.1",
+        "margin": "±1.5",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -546,6 +714,12 @@
         "workers": 1,
         "status": "fail",
         "outcomesIdentical": true
+      },
+      "sharedRound1": {
+        "value": "590.3 s per 1000 runs",
+        "margin": "",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -561,6 +735,12 @@
         "value": "permanent +4.5 (signed in 81.5%); seasonal +0.6 (signed in 100.0%); part time +1.2 (signed in 86.5%)",
         "margin": "±1.5; ±0.9; ±1.0",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "permanent +3.4 (signed in 70.3%); seasonal -0.5 (signed in 100.0%); part time +0.1 (signed in 100.0%)",
+        "margin": "±1.7; ±1.2; ±1.0",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -576,6 +756,12 @@
         "value": "second loan +6.8 against none (second loan taken in 55.8% of runs)",
         "margin": "±1.6",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "second loan +11.4 against none (second loan taken in 52.9% of runs)",
+        "margin": "±2.0",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -591,6 +777,12 @@
         "value": "boulder_first 91.8% (287 sole,103 joint); rope_first 31.5% (35 sole,99 joint); both_first 0.9% (0 sole,4 joint); differing 425,all-outcome ties 575",
         "margin": "±2.6; ±4.4; ±0.9",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "boulder_first 97.6% (349 sole,60 joint); rope_first 16.7% (10 sole,60 joint); both_first 0.0% (0 sole,0 joint); differing 419,all-outcome ties 581",
+        "margin": "±1.5; ±3.6; ±0.0",
+        "pass": false,
+        "source": "e7a8ece"
       }
     },
     {
@@ -606,6 +798,12 @@
         "value": "half -1.4; double -1.4",
         "margin": "±0.9; ±1.0",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "half -1.8; double -2.7",
+        "margin": "±1.4; ±1.5",
+        "pass": true,
+        "source": "e7a8ece"
       }
     },
     {
@@ -621,6 +819,12 @@
         "value": "all +1.0; none -4.0",
         "margin": "±0.7; ±1.9",
         "met": "no"
+      },
+      "sharedRound1": {
+        "value": "all +1.1; none -11.2",
+        "margin": "±0.9; ±2.2",
+        "pass": false,
+        "source": "e7a8ece"
       }
     }
   ],
@@ -630,7 +834,35 @@
     "parts": "main",
     "runs": 1000,
     "protectedBaseline": "tuning2-speed",
-    "measurement": "Not started; source frozen on launch",
-    "fullReportStarted": false
-  }
+    "measurement": "Complete: 119000 leisure results; 195000 protected results identical. Manifest proof/shared1-main-manifest.json.",
+    "fullReportStarted": false,
+    "source": "a0a325a9e7978c04787ee556416217f01f5b50f0c76d4198054efef26bc70b17",
+    "regressions": [
+      {
+        "scenario": "ausgesperrt",
+        "target": "X1",
+        "value": "quarterly +11.7 ±2.5",
+        "followUp": "Investigate with scope/portfolio and theme choice before accepting final source."
+      },
+      {
+        "scenario": "ausgesperrt",
+        "target": "T16",
+        "value": "overborrow -0.1 ±2.8",
+        "followUp": "Investigate real temptation contribution; do not add a bot penalty."
+      }
+    ],
+    "pendingReversions": [
+      {
+        "scenario": "schweissperle",
+        "change": "Hint off-season day tickets set equal to peak",
+        "reason": "T7 remains failing at -2.8 ±1.7; setting did not help. Restore the prior per-season ticket settings after the frozen source campaigns."
+      },
+      {
+        "scenario": "griffig",
+        "change": "Hint off-season day tickets set equal to peak",
+        "reason": "T7 still fails at -1.5 ±1.4; setting did not fix the target. Restore previous ticket setting after frozen campaigns."
+      }
+    ]
+  },
+  "nextBotCorrection": "Compare public repeat-contact counts with the existing saturated reach rule before buying guest-only reminders; restore failed ticket settings. No new value/formula round."
 }
