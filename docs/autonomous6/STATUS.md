@@ -3,11 +3,12 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, leisure scenarios. Leinen los done (reports/step3-leinenlos.md, tag
-plan6-leinenlos). Running run-leis-m1.sh (label leis-m1, progress leis-m1.progress): careful,
-never_move, always_move, never_second, always_second on 1,000 seeds for Ausgesperrt, Fabriketage,
-Schweisperle, Griffig in that order. Then per scenario in that order: O1, O2, E1 (e1.py), S1
-(targets6.py), cmp.py; tune at most 2 rounds each; full set, seeds, tests, lint, report, tag.
+Next action: step 3, leisure scenarios. leis-m1 (1,000 seeds, five strategies): O1 and O2 met in
+all four; E1 met except Fabriketage (week 49); S1 not shown anywhere (not tuned). Careful:
+Ausgesperrt 43.0, Fabriketage 39.5, Schweisperle 55.1, Griffig 46.3. Fabriketage E1 round 1 at
+the latest commit (10 months). Running run-fb-r1.sh (progress fb-r1.progress): Fabriketage careful
+(label fb-r1), then full sets for Ausgesperrt, Schweisperle, Griffig (label leis-full). Then
+Fabriketage full set, pnpm seeds, tests, lint, four reports, tags plan6-<id>, then plan6-stages.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
