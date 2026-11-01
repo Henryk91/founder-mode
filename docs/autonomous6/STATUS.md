@@ -1,17 +1,19 @@
 # Autonomous run 6 status
 
 ## Current
-Step: Step 1, price realism: measuring all strategies after bot round 2 (f4d3b3b)
-Last commit on main: see git log (bot round 2 f4d3b3b, decisions 3cf4c71)
-Next action: when ../founder-mode-plan6-state/step1-full.progress says ALLDONE, run
-`python3 ../founder-mode-plan6-state/summfull.py step1-full` (careful, blind, T7, top strategy).
-Then a value round for playability where careful is over 45% (Gratwanderung 50.0 so far):
-lower that scenario's clamp max (300-seed diagnostic: max 1.2 cut careful about 2 points).
-Then: fix the three tourism fingerprints in packages/engine/test/long.test.ts, `pnpm seeds`,
-full `pnpm test` and `pnpm lint`, step 1 report, tag plan6-price.
-Then merge plan6-step2 into main (keep main's round 2 pricing in tourism.ts on conflict),
-run the step 2 protected proof (main part, every scenario), tag plan6-engine,
-then merge plan6-step3 (Rueckenwind) and continue step 3.
+Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
+Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
+Next action: when step1-full.progress says ALLDONE, read `python3 summfull.py step1-full` in
+../founder-mode-plan6-state for the four leisure scenarios. When step1-v1.progress says ALLDONE,
+read `python3 summfull.py step1-v1` (needs step1a price-blind only for the old script; summfull
+reads blind from the same label). If careful is still over 45% in those three, value round 2:
+clamp top 1.0 there. Leisure scenarios over the band get their own value round.
+Then: P1 diagnostic (`scratch/p1.tmp.ts`, run in the run checkout), fix the three tourism
+fingerprints in packages/engine/test/long.test.ts, `pnpm seeds`, full test and lint, step 1
+report docs/autonomous6/reports/step1-price.md, tag plan6-price.
+Then merge plan6-step2 into main (keep main's round 2 pricing block in tourism.ts on conflict),
+step 2 protected proof (main part, every scenario, 1,000 seeds), tag plan6-engine.
+Then merge plan6-step3 and continue step 3 scenario by scenario (measure, tune, report).
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
@@ -32,8 +34,11 @@ Branches (all local, never pushed):
 - plan6-step2: step 2 engine, UI, tests (packages/engine/test/secondSites.test.ts) and shared
   bot rules (never_second, always_second, gear, boat purchase, run result fields).
   Its tourism.ts still has step 1's round 1 pricing: on merge keep main's round 2 block.
-- plan6-step3: plan6-step2 plus Rueckenwind stages 3 to 5, second beach, rescue boat purchase,
-  gear wear, office.yaml offers, three drawings. Not yet measured or tested in full.
+- plan6-step3: plan6-step2 plus draft content for all seven scenarios: stages 3 to 5 (Leinen
+  los 2 to 4 plus the second gulet as an asset), offers, 21 drawings, Rueckenwind's rescue boat
+  purchase and gear wear, Tiefgang's second boat, the office browser test extended (not run).
+  Content tests pass. Engine tests packages/engine/test/rueckenwindStages.test.ts pass.
+  Not measured. Other scenarios' stage tests still to write.
 
 Known red tests on main (expected until step 1 ends):
 the three tourism fingerprints in packages/engine/test/long.test.ts and the docs/seeds.md examples.
@@ -57,6 +62,9 @@ step1-full (f4d3b3b), careful / blind / T7 / top:
 - gratwanderung 50.0 / 51.8 / -1.8 / seasonal 55.4
 - hinterhof 36.4 / 38.0 / -1.6 / always_strict 39.3
 - seeblick 36.2 / 37.5 / -1.3 / naive_careful 38.4
+- rueckenwind 49.7 / 52.8 / -3.1 / price_blind 52.8
+- tiefgang 36.0 / 35.9 / +0.1 / naive_careful 38.4
+- leinenlos 49.5 / 53.4 / -3.9 / price_blind 53.4
 Pre-existing: Schweissperle careful 55.7% and Griffig boulder_first 70.7% at baseline.
 
 ## Baseline
