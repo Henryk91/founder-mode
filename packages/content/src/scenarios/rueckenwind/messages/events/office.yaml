@@ -65,16 +65,18 @@ events:
     once: false
     cooldownWeeks: 12
     openWeeks: 8
-    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    # Plan 6 S1, round 1: from the kite base too (stage 3 or 4, 12 weeks there), so that a careful
+    # run can reach it within two years.
+    when: [office.stage >= 3, office.weeksAtStage >= 12, office.busy == 0]
     trigger: [tour.peakTurnedAwayWeeks >= 2]
     from: none
     sender: The town hall of Pollença
     look: official
     text: >-
       Guests were turned away at the peak again, and the next bay has a beach spot going. A
-      second station costs 1,200 EUR a month more and 30,000 EUR to set up, with its own hire and
-      lessons. It needs an instructor on contract there, or you, and it will take some guests
-      from this bay as well as bringing new ones.
+      second station takes the rent to 4,600 EUR a month and costs 30,000 EUR to set up, with its
+      own hire and lessons. It needs an instructor on contract there, or you, and it will take
+      some guests from this bay as well as bringing new ones.
     defaultChoice: stay
     choices:
       - id: move
