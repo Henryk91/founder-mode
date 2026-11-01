@@ -969,6 +969,15 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         continue
       }
       if (!event.choices.some((c) => c.effects.some((fx) => fx.type === 'asset'))) continue
+      // Plan 6: a second unit (a second boat), by the bot's second rule.
+      const second = event.choices
+        .flatMap((c) => c.effects)
+        .find((fx) => fx.type === 'asset' && cfg.assets?.[fx.id]?.secondOf)
+      if (second?.type === 'asset') {
+        const choice = secondUnitChoice(view, event, second.id)
+        if (choice) out.push({ messageId: m.id, choiceId: choice })
+        continue
+      }
       if (cfg.leisure?.classStaffing) {
         const l = view.bookings!.leisure!
         const needRoom =
@@ -1012,6 +1021,37 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       if (choice) out.push({ messageId: m.id, choiceId: choice.id })
     }
     return out
+  }
+
+  /**
+   * Plan 6 (target B1): the answer to a second unit's offer. `always` takes the first option
+   * listed at once; `never` leaves it; the careful bot leases (or manages, where that is the only
+   * option) once the peak has turned guests away in 3 of the last 8 weeks, the run has a season
+   * left, and the money covers the lease's first payment and three months of fixed costs.
+   */
+  function secondUnitChoice(
+    view: PlayerView,
+    event: Scenario['events'][number],
+    id: string,
+  ): string | null {
+    const mode = rule.second ?? 'careful'
+    if (mode === 'never') return null
+    const options = event.choices.filter((c) =>
+      c.effects.some((fx) => fx.type === 'asset' && fx.id === id && fx.option !== 'none'),
+    )
+    if (mode === 'always') return options[0]?.id ?? null
+    const a = cfg.assets?.[id]
+    const lease = options.find((c) =>
+      c.effects.some((fx) => fx.type === 'asset' && fx.option === 'lease'),
+    )
+    const pick = lease ?? options[0]
+    if (!pick || !a) return null
+    const upfront = a.lease ? Math.round(a.lease.seasonCents * a.lease.upfrontShare) : 0
+    const enough =
+      view.office.peakTurnedAwayWeeks >= 3 &&
+      scenario.maxWeeks - view.week >= 26 &&
+      view.company.cashCents >= upfront + 3 * view.company.monthlyFixedCostsCents
+    return enough ? pick.id : null
   }
 
   /**
