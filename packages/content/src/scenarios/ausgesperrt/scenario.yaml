@@ -390,6 +390,71 @@ officeStages:
     oneOffCents: 800000
     moveWeeks: 2
     qualityBonus: 0.1
+  # Plan 6 (docs/plan6-features.md section 2.4): offered by the inbox (office.yaml). Each stage
+  # lists all its effects, the earlier stages' included. Rents and fit-outs are estimates;
+  # deposits three months of the added rent.
+  - id: group_lounge
+    name: A lounge with a bar for groups
+    # The basement plus 1,200 a month for the room next door (est.).
+    monthlyCents: 170000
+    oneOffCents: 2500000
+    depositCents: 360000
+    moveWeeks: 3
+    qualityBonus: 0.1
+    # Groups stay for a drink: about 25 EUR of margin a group (est.).
+    ancillaryCentsPerUnit:
+      heist: 2500
+      horror: 2500
+      munich_history: 2500
+      kids_adventure: 2500
+      vr_room: 2500
+    # Companies like somewhere to debrief (est. +15%).
+    segmentFactors: { companies: 1.15 }
+  - id: flagship_site
+    name: A flagship site near the city centre
+    # The lounge plus 6,000 a month for a ground floor by the Viktualienmarkt (est.).
+    monthlyCents: 770000
+    # Two rooms rebuilt there (est.).
+    oneOffCents: 6000000
+    depositCents: 1800000
+    moveWeeks: 6
+    qualityBonus: 0.1
+    ancillaryCentsPerUnit:
+      heist: 2500
+      horror: 2500
+      munich_history: 2500
+      kids_adventure: 2500
+      vr_room: 2500
+    # Tourists find you (est. +60%), and some walk in off the street.
+    segmentFactors: { companies: 1.15, tourists: 1.6 }
+    walkIns: { segment: tourists, leadsPerWeek: 0.5 }
+  - id: second_site
+    name: A second site in another district
+    # The flagship plus 2,500 a month for a basement in Schwabing (est.).
+    monthlyCents: 1020000
+    # Two rooms of the best themes again, about 80% of the first site's rooms (est.).
+    oneOffCents: 5000000
+    depositCents: 750000
+    moveWeeks: 8
+    qualityBonus: 0.1
+    ancillaryCentsPerUnit:
+      heist: 2500
+      horror: 2500
+      munich_history: 2500
+      kids_adventure: 2500
+      vr_room: 2500
+    segmentFactors: { companies: 1.15, tourists: 1.6 }
+    walkIns: { segment: tourists, leadsPerWeek: 0.5 }
+    # Plan 6 (section 4): a fresh pool of local groups; tourists stay in the centre. Open with a
+    # game master on contract there, or you.
+    secondSite:
+      name: The Schwabing site
+      capacity: { heist: 49, horror: 49 }
+      reach: { min: 0.5, max: 0.8 }
+      reachBySegment: { tourists: 0.3 }
+      cannibalisation: { min: 0.1, max: 0.25 }
+      reviewsWithoutFounder: 0.2
+    needsContract: game_master
 office:
   noticeWeeks: 13
   moveHoursPerWeek: 4
@@ -397,6 +462,8 @@ organisedAt:
   - covers_all_costs
 establishedAt:
   monthsCoveringAll: 8
+  # Plan 6: or on moving into stage 4 (target E1).
+  officeStage: 4
 loan:
   bankName: Isartal Savings Bank
   bridgeMonthsHint: 4
