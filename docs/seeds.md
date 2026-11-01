@@ -156,10 +156,10 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | tiefgang (long) | bank_called | `tourism_reckless` | `ending-16` | 104 |
 | leinenlos (long) | sustainable | `tourism_careful` | `ending-2` | 104 |
 | leinenlos (long) | sustainable | `tourism_careful` | `ending-4` | 104 |
-| leinenlos (long) | sustainable | `tourism_careful` | `ending-5` | 104 |
-| leinenlos (long) | still_searching | `tourism_careful` | `ending-16` | 104 |
-| leinenlos (long) | still_searching | `tourism_careful` | `ending-24` | 104 |
-| leinenlos (long) | still_searching | `tourism_careful` | `ending-29` | 104 |
+| leinenlos (long) | sustainable | `tourism_careful` | `ending-6` | 104 |
+| leinenlos (long) | still_searching | `tourism_careful` | `ending-5` | 104 |
+| leinenlos (long) | still_searching | `tourism_careful` | `ending-11` | 104 |
+| leinenlos (long) | still_searching | `tourism_careful` | `ending-13` | 104 |
 | leinenlos (long) | bankrupt | `tourism_no_tests` | `ending-1` | 19 |
 | leinenlos (long) | bankrupt | `tourism_no_tests` | `ending-2` | 19 |
 | leinenlos (long) | bankrupt | `tourism_no_tests` | `ending-3` | 19 |
@@ -169,9 +169,9 @@ Any change to the engine, to scenario values or texts, or to a bot strategy can 
 | leinenlos (long) | shut_down | `shut_down@10` | `ending-1` | 10 |
 | leinenlos (long) | shut_down | `shut_down@10` | `ending-2` | 10 |
 | leinenlos (long) | shut_down | `shut_down@10` | `ending-3` | 10 |
-| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-1` | 67 |
-| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-11` | 71 |
-| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-16` | 52 |
+| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-9` | 59 |
+| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-11` | 56 |
+| leinenlos (long) | bank_called | `tourism_gulet_buy` | `ending-15` | 53 |
 | ausgesperrt (long) | sustainable | `tourism_careful` | `ending-2` | 104 |
 | ausgesperrt (long) | sustainable | `tourism_careful` | `ending-3` | 104 |
 | ausgesperrt (long) | sustainable | `tourism_careful` | `ending-6` | 104 |

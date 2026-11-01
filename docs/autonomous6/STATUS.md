@@ -3,11 +3,12 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, Leinen los. Targets after round 2 (ll-r2): O1 −0.1, O2 5.3, E1 met (week
-55), B1 met (7 careful wins with the gulet; always adding −3.0), careful 47.7 (over band, reported).
-Running run-ll-full.sh (label ll-full). Then pnpm seeds, tests, lint, report
-reports/step3-leinenlos.md, tag plan6-leinenlos.
-Then in order: Ausgesperrt, Fabriketage, Schweisperle, Griffig.
+Next action: step 3, Ausgesperrt. Leinen los done (reports/step3-leinenlos.md, tag
+plan6-leinenlos). Offer check done (careful gets the group lounge offer in 20 of 20 seeds).
+Measure with careful, never_move, always_move, never_second, always_second on 1,000 seeds (baseline
+label step1-full); leisure strategies may differ, so check the policy list first. Compute O1, O2, E1
+(e1.py), S1 (targets6.py), cmp.py; tune at most 2 rounds each; full set, seeds, tests, lint,
+report, tag plan6-ausgesperrt. Then Fabriketage, Schweisperle, Griffig.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
