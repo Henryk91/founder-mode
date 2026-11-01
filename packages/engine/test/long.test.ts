@@ -36,11 +36,12 @@ describe('long mode in the content', () => {
     // rounds, and in plan 3 steps 1 and 2 (office stages); protected again from `plan3-tuned`.
     // After review, the established look moved from a stage flag to `establishedAt` (months
     // covering all costs, tuned for target E1): content only, the games are the same.
-    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('e3da9598d7b4bce2')
+    // Plan 6 step 1 adds elasticity to all three (price realism).
+    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('11fec90ee8ea7cd8')
     // Tuning 1 step 5: Hinterhof's upkeep of its services (T2) and Seeblick's strict policy
     // conversions (T11).
-    expect(scenarioHash(loadScenario('hinterhof'))).toBe('57453c04c480e3ba')
-    expect(scenarioHash(loadScenario('seeblick'))).toBe('396a4154f356ae1e')
+    expect(scenarioHash(loadScenario('hinterhof'))).toBe('c81576b953f0f957')
+    expect(scenarioHash(loadScenario('seeblick'))).toBe('4a494859268941c3')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })
