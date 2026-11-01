@@ -370,9 +370,17 @@ function splitServed(
   const cfg = state.scenario.bookings!
   const out = new Map<string, { units: number; grossCents: number }>()
   for (const [p, x] of served) {
-    const units = assetsOf(cfg, p)
-    if (units.length === 1) {
-      out.set(`${units[0]![0]}|${p}`, { ...x })
+    const all = assetsOf(cfg, p)
+    if (all.length === 1) {
+      out.set(`${all[0]![0]}|${p}`, { ...x })
+      continue
+    }
+    // Only units working this week serve guests: a second unit not taken (or out of its months)
+    // takes none, and with one working unit (or none) the first takes all, as with one asset.
+    const units = all.filter(([id, a]) => unitFactor(state, id, a, state.week) > 0)
+    if (units.length <= 1) {
+      const [id] = units[0] ?? all[0]!
+      out.set(`${id}|${p}`, { ...x })
       continue
     }
     let left = x.units

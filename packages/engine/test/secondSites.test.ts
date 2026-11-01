@@ -2,7 +2,7 @@ import { loadScenario, type Scenario } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
 import { createGame, endWeek, getView, replay, shutDown, toSave, validatePlan } from '../src/index'
 import { buildPostMortem } from '../src/postmortem'
-import { assetFactor } from '../src/systems/assets'
+import { assetFactor, assetsUsed } from '../src/systems/assets'
 import { conditionValue } from '../src/systems/conditions'
 import { isWorn, replaceWorn } from '../src/systems/fleet'
 import { capacityAt, openSecondSite, secondSiteShare } from '../src/systems/bookings'
@@ -162,6 +162,28 @@ describe('a second unit of an asset', () => {
     expect(assetFactor(one, 'wreck_dives', w)).toBe(1)
     expect(assetFactor(two, 'wreck_dives', w)).toBe(2)
     expect(assetFactor(withOption(one, 'second_boat', 'share'), 'wreck_dives', w)).toBe(1.5)
+  })
+
+  it('serves nobody on a second unit not taken, so the first pays its crew and owner', () => {
+    const s = createGame(twoBoats(), 'serve')
+    // A managed first boat (a share: a fraction of the capacity) and no second boat: every
+    // served guest is the first boat's, and the seat fee is paid on all of them, also beyond
+    // the plain capacity times the share (the week's capacity has more factors than that).
+    let w = 1
+    while (assetFactor(withOption(s, 'dive_boat', 'share'), 'wreck_dives', w) === 0) w++
+    const shared = withOption({ ...s, week: w }, 'dive_boat', 'share')
+    const served = new Map([['wreck_dives', { units: 500, grossCents: 5_000_000 }]])
+    const alone = {
+      ...shared.scenario,
+      bookings: {
+        ...shared.scenario.bookings!,
+        assets: { dive_boat: shared.scenario.bookings!.assets!.dive_boat! },
+      },
+    }
+    const one = assetsUsed({ ...shared, scenario: alone }, served)
+    const two = assetsUsed(shared, served)
+    expect(two.costsCents).toBe(one.costsCents)
+    expect(two.state.bookings!.assets!.second_boat!.weeksUsed).toBe(0)
   })
 
   it('shows the second unit and reads it in conditions', () => {
