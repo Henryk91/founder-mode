@@ -443,7 +443,10 @@ function makeMessage(
             ? -e.amountCents
             : e.type === 'officeMove'
               ? officeOneOff(state, e.stage)
-              : 0),
+              : // Plan 6: new gear at its replacement cost.
+                e.type === 'replaceWorn'
+                ? (state.scenario.bookings?.products[e.product]?.wear?.replaceCents ?? 0)
+                : 0),
         0,
       ),
       possibleCostCents: c.effects.reduce(
