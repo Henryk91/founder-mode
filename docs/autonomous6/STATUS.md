@@ -3,12 +3,11 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: leisure round done (step1-lv1): Griffig careful 45.4, boulder_first 69.5 (clamp 1.0
-kept); Schweisperle unchanged at 55.1, clamp reverted to 1.6 at 71e5f2b (memberships, predates plan
-6, for Henry). Tourism value round 2 (acb9824, clamp 1.0 in gratwanderung, leinenlos) is running as
-run-step1-v2.sh. When step1-v2.progress says ALLDONE, read `python3 summfull.py step1-v2`. That
-ends step 1's playability budget; anything still outside the band is reported.
-Then: P1 diagnostic (`scratch/p1.tmp.ts`, run in the run checkout), fix the three tourism
+Next action: step 1 playability budget spent. Final: Gratwanderung 42.8, Rueckenwind 44.8, Griffig
+45.4 (boulder_first 69.5) in band; Leinen los 48.9 and Schweisperle 55.1 (both over band, both
+reported). P1 diagnostic running in the run checkout at d5e3bfc, logs p1-grat.log and p1-lein.log
+in the state folder.
+Then: fix the three tourism
 fingerprints in packages/engine/test/long.test.ts, `pnpm seeds`, full test and lint, step 1
 report docs/autonomous6/reports/step1-price.md, tag plan6-price.
 Then merge plan6-step2 into main (keep main's round 2 pricing block in tourism.ts on conflict),
