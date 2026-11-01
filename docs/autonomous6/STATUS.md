@@ -3,8 +3,18 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 2 done, protected proof 13/13 games identical, tagged plan6-engine.
-Then merge plan6-step3 and continue step 3 scenario by scenario (measure, tune, report).
+Next action: step 3, Rückenwind. plan6-step3 merged at 002fa55. Fixes since: stage 3 offers at
+stage 1 or 2 in Rückenwind, Tiefgang and the four leisure scenarios (70641f7, careful never saw
+stages 3 to 5 otherwise); always_second takes every offer at once (a0d07c6). Office browser test
+passes (its 8 second-site cases skip: no always_second run reaches Rückenwind's stage 5 in 60
+seeds). Seeds tests are red until `pnpm seeds` at the end of each scenario.
+Running: run-rw-m1.sh (label rw-m1): careful, never_move, always_move, never_second,
+always_second on 1,000 seeds. Read O1 (careful minus never_move >= -1), O2 (always_move at least
+3 below careful), E1 (targets6.py), S1 (second site open in careful runs; always_second at least 3
+below careful). Diagnostics (20 to 30 seeds): careful moves to stage 3 in about 2 of 30 runs,
+around week 73, because it waits for a year's surplus; stage 5 is out of its reach in 104 weeks.
+Then the other six scenarios in order: Tiefgang, Leinen los, Ausgesperrt, Fabriketage,
+Schweisperle, Griffig.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
