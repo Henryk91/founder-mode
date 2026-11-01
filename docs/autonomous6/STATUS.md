@@ -3,12 +3,10 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, Tiefgang. tg-m1 (1,000 seeds): careful 23.7 (step 1: 36.0), never_move 23.7,
-always_move 16.9, never_second 35.9, always_second 15.1. O1 0.0 met, O2 6.8 met, E1 met (73.4% of
-wins, 4.2% of losses, week 86.5). Careful leased the second boat in 589 runs: bot fix committed at
-058879d (second boat only when a year's surplus carries a season of it). Running run-tg-b1.sh
-(label tg-b1: careful, never_move, always_move). Then check B1 (careful wins with the boat; always
-adding loses 3+) and S1 (site opened by careful 0 runs at tg-m1), the full set, seeds, report, tag.
+Next action: step 3, Tiefgang. After the bot fix (tg-b1): careful 35.9, never_move 36.0,
+always_move 25.5, E1 met, B1 met (boat in 4 careful wins, always_second 15.1), S1 not tuned (see
+decisions). Running run-tg-full.sh (label tg-full), the full strategy set. Then pnpm seeds, tests,
+lint, report reports/step3-tiefgang.md, tag plan6-tiefgang.
 Then in order: Leinen los, Ausgesperrt, Fabriketage, Schweisperle, Griffig.
 
 ## Checklist
