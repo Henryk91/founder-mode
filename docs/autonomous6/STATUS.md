@@ -26,7 +26,9 @@ Then merge plan6-step3 and continue step 3 scenario by scenario (measure, tune, 
 Bot runs use a run checkout: ../founder-mode-plan6-run (git worktree, detached), checked out by
 each run script at the commit it measures. Harness: packages/bots/scratch/plan6-main.tmp.ts
 (ignored; copy in both checkouts). Diagnostics: packages/bots/scratch/diag.tmp.ts (300 seeds).
-Results: ../founder-mode-plan6-state/<label>/<scenario>-<mode>/ (comparison.json, main.md).
+Results: ../founder-mode-plan6-state/<label>/<scenario>-<mode>/ (comparison.json, main.md, targets.json).
+Summaries: `python3 summfull.py <label>` (careful, blind, T7, top) and
+`python3 targets6.py <label> <scenario>` (playability, S1/B1 pairs, every report target).
 Running: run-step1-full.sh (all strategies, 10 bookings scenarios, f4d3b3b).
 
 Branches (all local, never pushed):
