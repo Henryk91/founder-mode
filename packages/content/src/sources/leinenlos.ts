@@ -12,6 +12,7 @@ import leinenlosProduct from '../scenarios/leinenlos/messages/events/product.yam
 import leinenlosFinance from '../scenarios/leinenlos/messages/events/finance.yaml?raw'
 import leinenlosFounder from '../scenarios/leinenlos/messages/events/founder.yaml?raw'
 import leinenlosTeam from '../scenarios/leinenlos/messages/events/team.yaml?raw'
+import leinenlosOffice from '../scenarios/leinenlos/messages/events/office.yaml?raw'
 import leinenlosNames from '../scenarios/leinenlos/messages/company_names.yaml?raw'
 import { FUNDING_EVENTS, NO_EVENTS, TOURISM_EVENTS } from './shared'
 
@@ -33,4 +34,5 @@ export const sources: ScenarioSources = {
   sharedEvents: TOURISM_EVENTS,
   longEvents: NO_EVENTS,
   fundingEvents: FUNDING_EVENTS,
+  officeEvents: leinenlosOffice,
 }
