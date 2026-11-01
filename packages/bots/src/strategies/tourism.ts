@@ -143,14 +143,15 @@ const HINT_OFF = 0.85
  */
 const HINT_OFF_AT_HINTS = new Set(['hinterhof', 'seeblick', 'rueckenwind'])
 /**
- * Plan 6 (price realism): where requests answer the price, the off season and shoulder prices
- * follow how full those weeks are. Below `IDLE_LOAD` of the places booked in the next weeks of
- * that season, they drop to `IDLE_SHARE` of the hints; above `FULL_LOAD`, they rise to the hints'
- * level. The peak price stays at the hints: a discount fills nothing when the weeks are full.
+ * Plan 6 (price realism): where requests answer the price, each season's price follows how full
+ * its next weeks are on the calendar. Above `FULL_LOAD` of the places booked, the hints' level (a
+ * discount fills nothing when the weeks are full); below `IDLE_LOAD`, `IDLE_SHARE` of the hints;
+ * between, `MID_SHARE`. Seasons not on the calendar yet keep the usual share.
  */
 const IDLE_LOAD = 0.5
 const FULL_LOAD = 0.85
 const IDLE_SHARE = 0.75
+const MID_SHARE = 0.9
 /** Weeks of a season, nearest first, that count for its load. */
 const LOAD_WEEKS = 4
 const MIN_HINTS = 3
@@ -181,7 +182,7 @@ const CABIN_PLACES = 14
 function seasonLoad(
   view: PlayerView,
   scenario: Scenario,
-  season: 'off' | 'shoulder',
+  season: 'peak' | 'off' | 'shoulder',
 ): number | null {
   const cfg = scenario.bookings!
   const monthAt = (week: number) => {
@@ -1499,17 +1500,17 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
             base * (1 + MAX_PRICE_STEP),
             Math.max(base * (1 - MAX_PRICE_STEP), median),
           )
-          const peak = Math.max(100, Math.round((mean * HINT_PEAK) / 100) * 100)
           const offDefault = HINT_OFF_AT_HINTS.has(scenario.id) ? 1 : HINT_OFF
           const elastic = cfg.elasticity !== undefined
-          const share = (season: 'off' | 'shoulder', normal: number) => {
+          const share = (season: 'peak' | 'off' | 'shoulder', normal: number) => {
             if (!elastic) return normal
             const load = seasonLoad(view, scenario, season)
             if (load === null) return normal
-            if (load < IDLE_LOAD) return Math.min(normal, IDLE_SHARE)
-            return load > FULL_LOAD ? 1 : normal
+            if (load < IDLE_LOAD) return IDLE_SHARE
+            return load > FULL_LOAD ? HINT_PEAK : MID_SHARE
           }
           const round = (share: number) => Math.max(100, Math.round((mean * share) / 100) * 100)
+          const peak = round(share('peak', HINT_PEAK))
           const off = round(share('off', offDefault))
           const shoulder = cfg.shoulderMonths
             ? round(share('shoulder', (HINT_PEAK + offDefault) / 2))
