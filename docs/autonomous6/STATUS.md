@@ -3,12 +3,11 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, Ausgesperrt. Leinen los done (reports/step3-leinenlos.md, tag
-plan6-leinenlos). Offer check done (careful gets the group lounge offer in 20 of 20 seeds).
-Measure with careful, never_move, always_move, never_second, always_second on 1,000 seeds (baseline
-label step1-full); leisure strategies may differ, so check the policy list first. Compute O1, O2, E1
-(e1.py), S1 (targets6.py), cmp.py; tune at most 2 rounds each; full set, seeds, tests, lint,
-report, tag plan6-ausgesperrt. Then Fabriketage, Schweisperle, Griffig.
+Next action: step 3, leisure scenarios. Leinen los done (reports/step3-leinenlos.md, tag
+plan6-leinenlos). Running run-leis-m1.sh (label leis-m1, progress leis-m1.progress): careful,
+never_move, always_move, never_second, always_second on 1,000 seeds for Ausgesperrt, Fabriketage,
+Schweisperle, Griffig in that order. Then per scenario in that order: O1, O2, E1 (e1.py), S1
+(targets6.py), cmp.py; tune at most 2 rounds each; full set, seeds, tests, lint, report, tag.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
