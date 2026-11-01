@@ -7,9 +7,11 @@ import type { MessageView, PlayerView } from '@founder-mode/engine'
  * hire wanted, guests turned away for lack of room, a sustained profit) and the money covers the
  * one-off plus half a year of the added rent and two months of today's costs, and the surplus
  * (last month's; a seasonal business's over the last year) carries the added rent twice over. `never` declines
- * every offer (target O1), `always` accepts each at once (target O2).
+ * every offer (target O1), `always` accepts each at once (target O2). Plan 6: `never_second`
+ * plays like `careful` but declines a second site, `always_second` like `careful` but takes a
+ * second site the week it is offered (target S1).
  */
-export type OfficeRule = 'careful' | 'never' | 'always'
+export type OfficeRule = 'careful' | 'never' | 'always' | 'never_second' | 'always_second'
 
 /** Months of added rent, and of today's fixed costs, a careful move keeps in hand. */
 const RENT_MONTHS = 6
@@ -19,7 +21,14 @@ const COST_MONTHS = 2
 /** Weeks of the last 8 with guests turned away that make a tourism move worth it. */
 const TURNED_AWAY_WEEKS = 3
 
-export type Offer = { stage: string; number: number; choiceId: string; needsContract?: string }
+export type Offer = {
+  stage: string
+  number: number
+  choiceId: string
+  needsContract?: string
+  /** Plan 6: the stage opens a second site. */
+  secondSite?: boolean
+}
 
 /** The offers in a scenario's events: event id to the stage it moves to and the choice. */
 export function officeOffers(scenario: Scenario): Map<string, Offer> {
@@ -35,6 +44,7 @@ export function officeOffers(scenario: Scenario): Map<string, Offer> {
         number,
         choiceId: c.id,
         ...(stage.needsContract ? { needsContract: stage.needsContract } : {}),
+        ...(stage.secondSite ? { secondSite: true } : {}),
       })
     }
   }
@@ -127,7 +137,9 @@ export function answerOffers(
     if (!offer || m.answeredChoiceId !== null || view.office.busy) continue
     const c = m.choices.find((x) => x.id === offer.choiceId)
     if (!c || c.hours > left) continue
-    if (rule === 'careful') {
+    if (rule === 'never_second' && offer.secondSite) continue
+    const takeAtOnce = rule === 'always' || (rule === 'always_second' && offer.secondSite)
+    if (!takeAtOnce) {
       if (!moveIsReal(view, offer, wantsHire)) continue
       if (money(view) < moveNeedsCents(view, m, offer)) continue
       const surplus = view.bookings ? yearSurplusCents(view) : surplusCents(view)
@@ -154,7 +166,8 @@ export function stageToFinance(
   for (const m of view.inbox) {
     const offer = offers.get(m.eventId)
     if (!offer || m.answeredChoiceId !== null || !financeable.has(offer.stage)) continue
-    if (rule === 'always') return offer.stage
+    if (rule === 'always' || (rule === 'always_second' && offer.secondSite)) return offer.stage
+    if (rule === 'never_second' && offer.secondSite) continue
     if (!moveIsReal(view, offer, false)) continue
     if (money(view) >= moveNeedsCents(view, m, offer)) continue
     return offer.stage
