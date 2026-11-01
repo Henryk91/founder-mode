@@ -1,4 +1,4 @@
-import type { BookingsPlan, BookingsView, PlayerView } from '@founder-mode/engine'
+import type { BookingsPlan, BookingsView, PlayerView, SeasonPrices } from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { count, label, type Voice, voiceOf } from '../labels'
 import { noBookings } from '../store'
@@ -309,7 +309,16 @@ export function PricesPlan() {
       <MembershipPrices />
       <LeisurePrices />
       <LeisureHolds />
-      <Writing>{label(b.peak ? 'tour.prices.peakNow' : 'tour.prices.offNow', stage)}</Writing>
+      <Writing>
+        {label(
+          b.peak
+            ? 'tour.prices.peakNow'
+            : b.shoulder
+              ? 'tour.prices.shoulderNow'
+              : 'tour.prices.offNow',
+          stage,
+        )}
+      </Writing>
       {!b.leisure?.slotPrices &&
         b.segments.flatMap((s) => {
           const now = draft.prices[s.id] ?? b.prices[s.id]!
@@ -317,7 +326,13 @@ export function PricesPlan() {
           const priced = b.products.filter(
             (p) => p.shipped && p.serves.includes(s.id) && p.priceFactor !== 1,
           )
-          const price = b.peak ? now.peak : now.off
+          const price = b.peak ? now.peak : b.shoulder ? (now.shoulder ?? now.off) : now.off
+          // Plan 6: a shoulder price where the scenario has shoulder months.
+          const seasons = b.shoulderMonths
+            ? (['peak', 'shoulder', 'off'] as const)
+            : (['peak', 'off'] as const)
+          const at = (p: SeasonPrices, season: (typeof seasons)[number]) =>
+            season === 'shoulder' ? (p.shoulder ?? p.off) : p[season]
           const products =
             priced.length > 0
               ? [
@@ -332,9 +347,9 @@ export function PricesPlan() {
               : []
           return [
             ...products,
-            ...(['peak', 'off'] as const).map((season) => {
+            ...seasons.map((season) => {
               // Steps follow the price this week started with, so they hold still while tapping.
-              const { step, big } = priceSteps(b.prices[s.id]![season])
+              const { step, big } = priceSteps(at(b.prices[s.id]!, season))
               return (
                 <Market
                   key={`${s.id}-${season}`}
@@ -344,7 +359,7 @@ export function PricesPlan() {
                   control={
                     <Stepper
                       stage={stage}
-                      value={now[season]}
+                      value={at(now, season)}
                       onChange={(v) =>
                         set({
                           prices: {
@@ -360,9 +375,9 @@ export function PricesPlan() {
                       step={step}
                       bigStep={big}
                       formatStep={(c) => formatEuro(c)}
-                      display={formatEuro(now[season])}
+                      display={formatEuro(at(now, season))}
                       min={NICE_STEPS[0]!}
-                      max={b.prices[s.id]![season] * 3}
+                      max={at(b.prices[s.id]!, season) * 3}
                     />
                   }
                 />

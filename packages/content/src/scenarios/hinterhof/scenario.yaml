@@ -426,6 +426,8 @@ bookings:
   startWeekOfYear: 1
   seasonNoise: 0.15
   # Summer, the Oktoberfest and December.
+  # Plan 6: requests answer the price (docs/plan6-features.md section 1).
+  elasticity: { clamp: { min: 0.5, max: 1.6 } }
   peakMonths: [6, 7, 9, 10, 12]
   policyWeeks: 4
   weather:
@@ -471,6 +473,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.4
+      elasticity: { min: 0.8, max: 1.5 }
     evening_locals:
       # Plan 2 step 4, round 1: inside a wider version of the spec's 40 to 160 range. Dinner was
       # viable in only 7% of report seeds while lunch reached 30%; the restaurant as a whole won
@@ -489,6 +492,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.6
+      elasticity: { min: 0.8, max: 1.5 }
     tourists:
       # Plan 2 step 4, round 1: visitors also sat below lunch without helping the no-tests bot,
       # which builds for the first segment. A modestly broader reachable range (est.).
@@ -506,6 +510,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.8
+      elasticity: { min: 0.8, max: 1.5 }
   products:
     fit_out:
       capacity: 0

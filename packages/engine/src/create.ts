@@ -1,7 +1,7 @@
 import { initialLeisureChoices } from './systems/inbox'
 import { initialLoan } from './systems/loan'
 import { Rng, seedRng } from './rng'
-import { initBookings } from './systems/bookings'
+import { drawElasticity, initBookings } from './systems/bookings'
 import { emptyFunding, emptyHiddenFunding } from './systems/funding'
 import { drawHiddenSegments } from './systems/market'
 import { moveOffice } from './systems/office'
@@ -50,7 +50,7 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       waitsForChase: [],
       teamSkills: {},
       funding: emptyHiddenFunding({ scenario }),
-      bookings: tourism?.hidden ?? null,
+      bookings: tourism ? { ...tourism.hidden, ...drawElasticity(scenario, seed) } : null,
     },
     knowledge: Object.fromEntries(scenario.segments.map((s) => [s.id, []])),
     product: initialProduct({ scenario }),

@@ -760,6 +760,15 @@ const labels = {
   'pm.office.down': 'down {amount}',
   'pm.office.same': 'no change',
   'pm.office.moving': 'The move was not finished when the run ended.',
+  'pm.prices.title': 'Prices by season',
+  'pm.prices.season.peak': 'Peak',
+  'pm.prices.season.shoulder': 'Shoulder',
+  'pm.prices.season.off': 'Off season',
+  'pm.prices.line':
+    '{season}, weeks {from} to {to}: {price} per booking unit, {requests} requests and {bookings} bookings a week.',
+  'pm.prices.noPrice': 'nothing booked',
+  'pm.prices.before':
+    'The same season before: {price}, {requests} requests and {bookings} bookings a week.',
   'results.entry.loan_payment':
     'Loan payment {amount}, of which {interest} interest. Still owed: {balance}.',
   'results.entry.loan_missed.one':
@@ -875,6 +884,9 @@ const labels = {
   'tour.outreach.what': 'outreach hours for {segment}',
   'tour.prices.peakNow': 'Peak season prices apply this month.',
   'tour.prices.offNow': 'Off season prices apply this month.',
+  'tour.prices.shoulderNow': 'Shoulder season prices apply this month.',
+  'tour.prices.shoulder': '{segment}, shoulder season',
+  'tour.prices.what.shoulder': 'the shoulder season price for {segment}',
   'tour.prices.peak': '{segment}, peak',
   'tour.prices.off': '{segment}, off season',
   'tour.prices.what.peak': 'the peak price for {segment}',

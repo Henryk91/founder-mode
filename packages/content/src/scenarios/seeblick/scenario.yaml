@@ -424,6 +424,8 @@ loan:
 bookings:
   startWeekOfYear: 44
   seasonNoise: 0.15
+  # Plan 6: requests answer the price (docs/plan6-features.md section 1).
+  elasticity: { clamp: { min: 0.5, max: 1.6 } }
   peakMonths: [6, 7, 8, 9]
   policyWeeks: 4
   weather:
@@ -473,6 +475,7 @@ bookings:
       capacityShare: { peak: 1, off: 0.35 }
       invoiced: false
       reviewWeight: 0.8
+      elasticity: { min: 0.8, max: 1.5 }
     project_guests:
       # Plan 2 step 4, round 3: round 2 left project guests highest at 36.7%, against 21.2% for
       # groups. Keep the spec's floor and trim only its estimated upper reach.
@@ -490,6 +493,7 @@ bookings:
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.4
+      elasticity: { min: 0.2, max: 0.6 }
     groups:
       # Whole house bookings of two to four nights: 24 to 48 room nights each. Spec 0.1 to 0.6
       # bookings a week; about one a week at peak here, a wedding most summer weekends (decisions,
@@ -515,6 +519,7 @@ bookings:
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.3
+      elasticity: { min: 0.2, max: 0.6 }
   products:
     rooms:
       # Twelve doubles, seven nights.

@@ -344,8 +344,8 @@ export type BookingsState = {
   hostingReliefHours?: number
   leisure?: LeisureState
   bookings: Booking[]
-  /** Price per unit per segment, for peak and off season months. */
-  prices: Record<SegmentId, { peak: number; off: number }>
+  /** Price per unit per segment, for peak and off season months (plan 6: and shoulder months). */
+  prices: Record<SegmentId, SeasonPrices>
   policy: Policy
   policySinceWeek: number
   platformListed: boolean
@@ -370,6 +370,8 @@ export type BookingsState = {
   /** This week's weather once it happened, and the forecast shown for next week. */
   weather: WeatherState | null
   forecast: WeatherState
+  /** Plan 6: requests and bookings by the week asked for. Only with price elasticity. */
+  requestLog?: Record<number, RequestWeek>
   /** Requests turned away for lack of room, per week (the last 12 weeks). */
   turnedAway: { week: number; segmentId: SegmentId; units: number }[]
   /** Plan 2 step 1a: vouchers sold. Absent before any was. */
@@ -485,8 +487,22 @@ export type ReturnRequest = {
   products: FeatureId[]
 }
 
+/** A price per unit by season. `shoulder` only where the scenario names shoulder months. */
+export type SeasonPrices = { peak: number; off: number; shoulder?: number }
+
+/** Plan 6: what was asked for and booked for one week, by the week guests come. */
+export type RequestWeek = {
+  requests: number
+  bookings: number
+  units: number
+  /** Price times units of the bookings made, for an average price. */
+  revenueCents: number
+}
+
 export type HiddenBookings = {
   leisure?: HiddenLeisure
+  /** Plan 6: each segment's drawn elasticity. Absent unless the scenario sets it. */
+  elasticity?: Record<SegmentId, number>
   base: Record<SegmentId, number>
   /** Twelve monthly multipliers per segment, the drawn season curve. */
   season: Record<SegmentId, number[]>
@@ -507,7 +523,7 @@ export type BookingsPlan = {
   leisure?: LeisurePlan
   shifts: Record<string, number>
   founderShifts: Record<string, number>
-  prices: Record<SegmentId, { peak: number; off: number }>
+  prices: Record<SegmentId, SeasonPrices>
   policy: Policy | null
   platform: boolean | null
   partnerships: SegmentId[]
@@ -1492,6 +1508,9 @@ export type BookingsView = {
   weekOfYear: number
   month: number
   peak: boolean
+  /** Plan 6: whether this month uses the shoulder price, and the shoulder months. */
+  shoulder?: boolean
+  shoulderMonths?: number[]
   weather: WeatherState | null
   forecast: WeatherState
   policy: Policy
@@ -1502,7 +1521,7 @@ export type BookingsView = {
   outreachHoursFull: number
   rating: number | null
   reviews: number
-  prices: Record<SegmentId, { peak: number; off: number }>
+  prices: Record<SegmentId, SeasonPrices>
   segments: {
     id: SegmentId
     unit: 'person' | 'group' | 'cover' | 'night'
@@ -2477,6 +2496,23 @@ export type AbroadEconomics = {
   tender: { bid: 'higher' | 'same' | 'hotel'; kept: boolean; week: number } | null
 }
 
+/** Plan 6: one price season (a run of weeks with the same price season) in the post-mortem. */
+export type PriceSeasonTotals = {
+  weeks: number
+  /** The average price per unit booked for these weeks, or null when nothing was booked. */
+  priceCents: number | null
+  requests: number
+  bookings: number
+}
+
+export type PriceSeasonLine = PriceSeasonTotals & {
+  season: 'peak' | 'shoulder' | 'off'
+  fromWeek: number
+  toWeek: number
+  /** The same season before it (a year earlier), or null for the first. */
+  before: PriceSeasonTotals | null
+}
+
 export type PostMortem = {
   leisure?: LeisureView
   scenarioId: string
@@ -2532,6 +2568,8 @@ export type PostMortem = {
   }
   /** Plan 3: each office stage reached by an offer, oldest first. */
   office: OfficeEconomics[]
+  /** Plan 6: each price season of the run, oldest first. Absent without price elasticity. */
+  priceSeasons?: PriceSeasonLine[]
   /** Leads that walked in at an office, and the customers they became, per office and market. */
   walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]
   /**

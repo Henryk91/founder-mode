@@ -436,6 +436,8 @@ loan:
 bookings:
   startWeekOfYear: 31
   seasonNoise: 0.15
+  # Plan 6: requests answer the price (docs/plan6-features.md section 1).
+  elasticity: { clamp: { min: 0.5, max: 1.6 } }
   peakMonths:
     - 1
     - 2
@@ -500,6 +502,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.8
+      elasticity: { min: 0.8, max: 1.5 }
     tourists:
       base:
         min: 8
@@ -539,6 +542,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.7
+      elasticity: { min: 0.8, max: 1.5 }
     companies:
       base:
         min: 4
@@ -578,6 +582,7 @@ bookings:
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.4
+      elasticity: { min: 0.2, max: 0.6 }
   products:
     heist:
       capacity: 49

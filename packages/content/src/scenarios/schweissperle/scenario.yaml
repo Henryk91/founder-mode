@@ -436,6 +436,8 @@ loan:
 bookings:
   startWeekOfYear: 27
   seasonNoise: 0.15
+  # Plan 6: requests answer the price (docs/plan6-features.md section 1).
+  elasticity: { clamp: { min: 0.5, max: 1.6 } }
   peakMonths:
     - 1
     - 9
@@ -496,6 +498,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.8
+      elasticity: { min: 0.8, max: 1.5 }
     yoga_crowd:
       base:
         min: 1
@@ -534,6 +537,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.8
+      elasticity: { min: 0.8, max: 1.5 }
     corporate:
       base:
         min: 1
@@ -572,6 +576,7 @@ bookings:
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.8
+      elasticity: { min: 0.2, max: 0.6 }
   products:
     fit_out:
       capacity: 0

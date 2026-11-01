@@ -444,6 +444,8 @@ loan:
 bookings:
   startWeekOfYear: 9
   seasonNoise: 0.15
+  # Plan 6: requests answer the price (docs/plan6-features.md section 1).
+  elasticity: { clamp: { min: 0.5, max: 1.6 } }
   peakMonths:
     - 3
     - 4
@@ -509,6 +511,7 @@ bookings:
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.65
+      elasticity: { min: 0.2, max: 0.6 }
     weddings:
       base:
         min: 0.5
@@ -548,6 +551,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.85
+      elasticity: { min: 0.2, max: 0.6 }
     private_parties:
       base:
         min: 1
@@ -587,6 +591,7 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.75
+      elasticity: { min: 0.8, max: 1.5 }
   products:
     fit_out:
       capacity: 7

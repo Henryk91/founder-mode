@@ -1,6 +1,11 @@
 import { leisureView } from './systems/leisure'
 import { stageNumber } from './systems/office'
-import { bookingTotals, bookingsRevenueOrSubscriptions } from './systems/bookings'
+import {
+  bookingTotals,
+  bookingsRevenueOrSubscriptions,
+  monthOf,
+  priceSeasonOf,
+} from './systems/bookings'
 import { assetsEconomics } from './systems/assets'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
@@ -25,6 +30,8 @@ import type {
   PostMortem,
   PostMortemCause,
   PostMortemCauseId,
+  PriceSeasonLine,
+  PriceSeasonTotals,
   SegmentId,
   SuggestionId,
   WeekPlan,
@@ -119,11 +126,67 @@ export function buildPostMortem(state: GameState): PostMortem {
       loans: loanEconomics(state),
     },
     office: officeEconomics(state),
+    ...(state.scenario.bookings?.elasticity ? { priceSeasons: priceSeasons(state) } : {}),
     walkIns: walkInCounts(state),
     sources: sourceCounts(state),
     guests: guestsEconomics(state),
     luck,
   }
+}
+
+/**
+ * Plan 6: the run's weeks in runs of one price season, each with its average price, requests and
+ * bookings for those weeks, against the same season before it. Weeks after the last played one
+ * are left out.
+ */
+export function priceSeasons(state: GameState): PriceSeasonLine[] {
+  const cfg = state.scenario.bookings
+  const log = state.bookings?.requestLog
+  if (!cfg || !log) return []
+  const out: PriceSeasonLine[] = []
+  const last = new Map<PriceSeasonLine['season'], PriceSeasonTotals>()
+  let units = 0
+  let revenue = 0
+  const close = () => {
+    const line = out.at(-1)
+    if (!line) return
+    line.priceCents = units > 0 ? Math.round(revenue / units) : null
+    line.before = last.get(line.season) ?? null
+    last.set(line.season, {
+      weeks: line.weeks,
+      priceCents: line.priceCents,
+      requests: line.requests,
+      bookings: line.bookings,
+    })
+  }
+  for (let w = 1; w <= state.week; w++) {
+    const season = priceSeasonOf(cfg, monthOf(state.scenario, w))
+    const x = log[w]
+    if (out.at(-1)?.season !== season) {
+      close()
+      out.push({
+        season,
+        fromWeek: w,
+        toWeek: w,
+        weeks: 0,
+        priceCents: null,
+        requests: 0,
+        bookings: 0,
+        before: null,
+      })
+      units = 0
+      revenue = 0
+    }
+    const line = out.at(-1)!
+    line.toWeek = w
+    line.weeks++
+    line.requests += x?.requests ?? 0
+    line.bookings += x?.bookings ?? 0
+    units += x?.units ?? 0
+    revenue += x?.revenueCents ?? 0
+  }
+  close()
+  return out
 }
 
 /**

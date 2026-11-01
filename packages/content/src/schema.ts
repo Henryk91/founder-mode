@@ -341,8 +341,13 @@ export const BookingSegmentSchema = z.object({
   base: rangeOf(z.number().nonnegative()),
   // What one unit is, for the screen: a person, a group, a cover, a room night.
   unit: z.enum(['person', 'group', 'cover', 'night']),
-  // Starting price per unit, in peak and off season months.
-  price: z.object({ peak: Cents.positive(), off: Cents.positive() }),
+  // Starting price per unit, in peak and off season months, and (plan 6) in the scenario's
+  // shoulder months, where it names them.
+  price: z.object({
+    peak: Cents.positive(),
+    off: Cents.positive(),
+    shoulder: Cents.positive().optional(),
+  }),
   // Units per request.
   size: IntRange,
   // Weeks between the request and the week it books.
@@ -373,6 +378,9 @@ export const BookingSegmentSchema = z.object({
   invoiced: z.boolean().default(false),
   // How much reviews move its demand (section 5).
   reviewWeight: z.number().nonnegative(),
+  // Plan 6 (price realism): how strongly the number of requests answers the price, drawn per run
+  // (hidden). Needs the scenario's `elasticity` block. Absent: requests ignore the price's level.
+  elasticity: rangeOf(z.number().nonnegative()).optional(),
   // Plan 4: levels its guests already hold (certified divers), for products with `needsLevel`.
   levels: z.array(Id).optional(),
 })
@@ -1042,6 +1050,14 @@ export const BookingsConfigSchema = z.object({
   seasonNoise: Share,
   // Months that use the peak price (others use the off season price).
   peakMonths: z.array(z.number().int().min(1).max(12)),
+  // Plan 6: months that use the shoulder price, for segments that set one (others use the off
+  // season price there). Absent: two seasons only.
+  shoulderMonths: z.array(z.number().int().min(1).max(12)).optional(),
+  // Plan 6 (price realism, docs/plan6-features.md section 1): requests per week are multiplied by
+  // (price / willingness to pay) ^ -elasticity, kept within the clamp. Absent: off.
+  elasticity: z
+    .object({ clamp: z.object({ min: z.number().positive(), max: z.number().positive() }) })
+    .optional(),
   // Weeks a cancellation policy must stay before it can change.
   policyWeeks: z.number().int().positive(),
   // One weather per week, or (plan 4) `conditions` by the half day: exactly one of the two.

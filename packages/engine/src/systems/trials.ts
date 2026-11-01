@@ -19,14 +19,15 @@ import { priceCurve } from './market'
 const isShipped = (state: GameState, id: string) =>
   state.product.features.some((f) => f.id === id && f.shippedWeek !== null)
 
-/** The segment's price per unit this week (peak or off season). */
+/** The segment's price per unit this week (peak, shoulder or off season). */
 function segmentPrice(state: GameState, segmentId: SegmentId): number {
   const cfg = state.scenario.bookings!
   const p = state.bookings?.prices[segmentId]
   if (!p) return 0
   const woy = ((cfg.startWeekOfYear - 1 + state.week - 1) % 52) + 1
   const month = Math.min(12, Math.floor(((woy - 1) * 12) / 52) + 1)
-  return cfg.peakMonths.includes(month) ? p.peak : p.off
+  if (cfg.peakMonths.includes(month)) return p.peak
+  return cfg.shoulderMonths?.includes(month) ? (p.shoulder ?? p.off) : p.off
 }
 
 /** Chance a person of a segment responds: honest about its pain, and about the price asked. */

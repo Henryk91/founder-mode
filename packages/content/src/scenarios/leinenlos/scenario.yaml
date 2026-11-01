@@ -365,6 +365,9 @@ bookings:
   # winter, months ahead (tuning 1).
   requestsAhead: true
   seasonNoise: 0.2
+  shoulderMonths: [5, 6, 9, 10]
+  # Plan 6: requests answer the price (docs/plan6-features.md section 1).
+  elasticity: { clamp: { min: 0.5, max: 1.6 } }
   peakMonths: [7, 8]
   policyWeeks: 4
   # Weather along the coast, one slot a day (docs/scenario-gulet.md section 5, est.).
@@ -473,7 +476,7 @@ bookings:
       # (tuning 1).
       base: { min: 8, max: 30 }
       unit: person
-      price: { peak: 95000, off: 75000 }
+      price: { peak: 95000, off: 75000, shoulder: 85000 }
       size: { min: 1, max: 4 }
       leadWeeks: { min: 2, max: 20 }
       # June to September.
@@ -485,12 +488,13 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.7
+      elasticity: { min: 0.6, max: 1.2 }
     private_charters:
       # 0.2 to 1.0 boats a week at peak, sixteen places each (5 to 20 places in plan 4; the spec
       # with requests ahead, tuning 1).
       base: { min: 3.2, max: 16 }
       unit: person
-      price: { peak: 85000, off: 60000 }
+      price: { peak: 85000, off: 60000, shoulder: 72500 }
       size: { min: 16, max: 16 }
       leadWeeks: { min: 4, max: 20 }
       # July and August, school holidays.
@@ -502,11 +506,12 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.5
+      elasticity: { min: 0.2, max: 0.6 }
     retreats:
       # 0.1 to 0.5 groups a week at peak, twelve to sixteen places.
       base: { min: 1.5, max: 7 }
       unit: person
-      price: { peak: 50000, off: 50000 }
+      price: { peak: 50000, off: 50000, shoulder: 50000 }
       size: { min: 12, max: 16 }
       leadWeeks: { min: 12, max: 40 }
       # May, June, September and October.
@@ -518,6 +523,7 @@ bookings:
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.4
+      elasticity: { min: 0.2, max: 0.6 }
   products:
     blue_cruise:
       # Eight cabins, sixteen places, one departure a week, May to October.

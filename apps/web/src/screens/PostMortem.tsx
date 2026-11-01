@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import type {
+  PriceSeasonLine,
+  PriceSeasonTotals,
   HireEconomicsView,
   Activity,
   ChainItem,
@@ -395,6 +397,12 @@ export function PostMortem({ desk }: { desk: boolean }) {
                 })}
         </p>
       ))}
+      {(pm.priceSeasons ?? []).map((x) => (
+        <p key={`price-${x.fromWeek}`}>
+          {priceSeasonText(x, stage)}
+          {x.before && <> {priceSeasonBefore(x.before, stage)}</>}
+        </p>
+      ))}
       {money.funding && money.funding.pitchedTooEarly > 0 && (
         <p>{count('pm.money.tooEarly', stage, money.funding.pitchedTooEarly)}</p>
       )}
@@ -515,6 +523,29 @@ export function PostMortem({ desk }: { desk: boolean }) {
 }
 
 /** The name of a post-mortem source key: `outreach:<channel>`, `team:<channel>`, or a source. */
+/** Plan 6: requests and bookings a week, to one decimal place. */
+const perWeek = (n: number, weeks: number) => (weeks > 0 ? (n / weeks).toFixed(1) : '0')
+
+/** Plan 6: one price season's line: its weeks, average price, requests and bookings a week. */
+function priceSeasonText(x: PriceSeasonLine, stage: Voice): string {
+  return label('pm.prices.line', stage, {
+    season: label(`pm.prices.season.${x.season}`, stage),
+    from: x.fromWeek,
+    to: x.toWeek,
+    price: x.priceCents === null ? label('pm.prices.noPrice', stage) : formatEuro(x.priceCents),
+    requests: perWeek(x.requests, x.weeks),
+    bookings: perWeek(x.bookings, x.weeks),
+  })
+}
+
+function priceSeasonBefore(x: PriceSeasonTotals, stage: Voice): string {
+  return label('pm.prices.before', stage, {
+    price: x.priceCents === null ? label('pm.prices.noPrice', stage) : formatEuro(x.priceCents),
+    requests: perWeek(x.requests, x.weeks),
+    bookings: perWeek(x.bookings, x.weeks),
+  })
+}
+
 /** How money in changed over an office stay, in words: up, down or no change. */
 function officeDifference(
   o: { revenueBeforeCents: number; revenueAfterCents: number },

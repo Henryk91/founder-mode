@@ -1204,3 +1204,23 @@ AUTONOMOUS: Round 1 gives weddings 32/318 (10.1%), careful escape 46.2%, quarter
 ### Tuning 2 capped completion
 
 AUTONOMOUS: Stop at Henry's two-round caps: weddings 33/318 (10.4% +/-3.4), below 20%; escape tourism_part_time 52.3%, quarterly 51.8%; paired gap +0.5 +/-2.3 points, ranking second but inconclusive; Griffig 463/1000 (46.3% +/-3.1), above 25% with no extra tuning. Preserve these results without relabelling misses as successes. Finish after one four-leisure main matrix and one nine-game protected proof; 119,000 leisure games and 195,000 identical protected outcomes on one source. No event tables or full report under the amendment. Other open targets remain LOW priority; tag tuning2-complete marks the capped run's completion, not universal target closure.
+
+## Plan 6, step 1: price realism
+
+AUTONOMOUS: The volume factor's reference is the segment's drawn willingness to pay (with product factors where a refit raises it). The engine has no seasonal willingness to pay; the season curve already shapes demand by month.
+
+AUTONOMOUS: Requests answer the price of the weeks they ask for: the factor is averaged over the segment's lead weeks (weighted by those weeks' season where requests follow it), and each request's lead is drawn by those weights, so a cheap off season draws requests towards it.
+
+AUTONOMOUS: The existing conversion is unchanged as the spec says. Outside leisure it multiplies demand by the curve at the peak price (as before); the new factor uses each target week's own season price.
+
+AUTONOMOUS: Elasticity is drawn from its own stream of the seed (`seed|elasticity`), so switching it on moves no other draw. Powers use `powPos` (plain arithmetic, like `expNeg`), not `Math.pow`, which is not specified to the last bit.
+
+AUTONOMOUS: In leisure scenarios the factor applies to drop-in requests only (not to membership joins, which have their own prices), using the slot-weighted price basis the leisure curve reads.
+
+AUTONOMOUS: The post-mortem compares each price season with the same season a year before, not the season just before it: off season against peak would mostly show the season, not the price.
+
+AUTONOMOUS: Elasticity ranges follow the spec's table per segment kind. Departures: Griffig's committed climbers 0.4 to 0.9 (they climb whatever it costs, more than families); Gratwanderung's school groups 0.6 to 1.2 (budget bound, like families); Hinterhof's office lunch 0.8 to 1.5 (locals). Clamp 0.5 to 1.6 everywhere.
+
+AUTONOMOUS: Shoulder months: Rückenwind April, May and October; Tiefgang April, May, October and November; Leinen los May, June, September and October (its spec). Starting shoulder prices sit halfway between peak and off, rounded to 5 EUR.
+
+AUTONOMOUS: The careful bot, where elasticity is on, prices off season and shoulder from the load of the next four weeks of that season on the calendar: under half booked, 75% of the hints; over 85%, the hints' level; otherwise as before. Peak stays at the hints. The price-blind bot is unchanged (the T7 comparison).

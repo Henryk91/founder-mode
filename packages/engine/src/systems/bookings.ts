@@ -26,7 +26,8 @@ import {
 } from './leisure'
 import type { OfficeStage } from '@founder-mode/content'
 import type { BookingsConfig, Scenario, WeatherState } from '@founder-mode/content'
-import type { Rng } from '../rng'
+import { Rng, seedRng } from '../rng'
+import { powPos } from '../math'
 import type {
   BookingTotal,
   Booking,
@@ -34,6 +35,8 @@ import type {
   BookingsState,
   AbroadView,
   BookingsView,
+  RequestWeek,
+  SeasonPrices,
   ConditionsWeek,
   LadderYear,
   FeatureId,
@@ -172,7 +175,13 @@ export function initBookings(
     if (!b) continue
     base[seg.id] = rng.range(b.base.min, b.base.max)
     season[seg.id] = b.season.map((m) => m * rng.range(1 - cfg.seasonNoise, 1 + cfg.seasonNoise))
-    prices[seg.id] = { ...b.price }
+    prices[seg.id] = {
+      peak: b.price.peak,
+      off: b.price.off,
+      ...(cfg.shoulderMonths && b.price.shoulder !== undefined
+        ? { shoulder: b.price.shoulder }
+        : {}),
+    }
     repeatGuests[seg.id] = 0
   }
   // Plan 4: day conditions instead of the weather; the weather fields stay at a fixed value.
@@ -417,6 +426,18 @@ export function bookedUnits(state: GameState, id: FeatureId, week: number): numb
     .reduce((t, b) => t + b.units, 0)
 }
 
+/** Plan 6: the price season of a month: peak, shoulder (where the scenario names it) or off. */
+export function priceSeasonOf(cfg: BookingsConfig, month: number): 'peak' | 'shoulder' | 'off' {
+  if (cfg.peakMonths.includes(month)) return 'peak'
+  return cfg.shoulderMonths?.includes(month) ? 'shoulder' : 'off'
+}
+
+/** A season's price: the shoulder price falls back to the off season price where none is set. */
+export function seasonPrice(p: SeasonPrices, season: 'peak' | 'shoulder' | 'off'): number {
+  if (season === 'peak') return p.peak
+  return season === 'shoulder' ? (p.shoulder ?? p.off) : p.off
+}
+
 /** The price per unit a segment pays for a week, by its season. */
 export function priceFor(
   state: GameState,
@@ -428,7 +449,85 @@ export function priceFor(
   const p =
     (slot ? state.bookings!.leisure?.slotPrices?.[segmentId]?.[slot] : undefined) ??
     state.bookings!.prices[segmentId]!
-  return cfg.peakMonths.includes(monthOf(state.scenario, week)) ? p.peak : p.off
+  return seasonPrice(p, priceSeasonOf(cfg, monthOf(state.scenario, week)))
+}
+
+/**
+ * Plan 6: each segment's elasticity, drawn from its own stream of the seed so that switching it
+ * on moves no other draw. Empty unless the scenario sets `elasticity`.
+ */
+export function drawElasticity(
+  scenario: Scenario,
+  seed: string,
+): { elasticity?: Record<SegmentId, number> } {
+  const cfg = scenario.bookings
+  if (!cfg?.elasticity) return {}
+  const rng = new Rng(seedRng(`${seed}|elasticity`))
+  const elasticity: Record<SegmentId, number> = {}
+  for (const seg of scenario.segments) {
+    const e = cfg.segments[seg.id]?.elasticity
+    if (e) elasticity[seg.id] = rng.range(e.min, e.max)
+  }
+  return { elasticity }
+}
+
+/**
+ * Plan 6: the volume factor for a price against what the segment would pay:
+ * (price / wtp) ^ -elasticity, within the scenario's clamp. 1 without elasticity.
+ */
+export function volumeFactor(
+  cfg: BookingsConfig,
+  elasticity: number | undefined,
+  ratio: number,
+): number {
+  if (!cfg.elasticity || elasticity === undefined || !(ratio > 0)) return 1
+  const { min, max } = cfg.elasticity.clamp
+  return Math.min(max, Math.max(min, powPos(ratio, -elasticity)))
+}
+
+/**
+ * Plan 6: a segment's volume factor for each week its requests can ask for (by lead time), each
+ * weighted by that week's season where requests follow it (`ahead`). `mean` multiplies the
+ * requests; `weights` draw each request's lead. Null without elasticity.
+ */
+function priceVolume(
+  state: GameState,
+  segmentId: SegmentId,
+  week: number,
+  wtp: number,
+  ahead: readonly number[] | null,
+): { mean: number; weights: number[]; sum: number } | null {
+  const cfg = bookingsConfig(state)!
+  const elasticity = state.hidden.bookings?.elasticity?.[segmentId]
+  const s = cfg.segments[segmentId]
+  if (!cfg.elasticity || elasticity === undefined || !s) return null
+  const leisureCurve = cfg.leisure?.slotPrices || cfg.leisure?.wtpBasis === 'monthly'
+  const shares = cfg.leisure?.segments[segmentId]?.slotShare
+  const ratioAt = (w: number) => {
+    if (!leisureCurve) return priceFor(state, segmentId, w) / wtp
+    if (!shares) return leisurePriceBasis(state, segmentId, priceFor(state, segmentId, w)) / wtp
+    let total = 0
+    let weight = 0
+    for (const [slot, share] of Object.entries(shares)) {
+      total +=
+        (share * leisurePriceBasis(state, segmentId, priceFor(state, segmentId, w, slot))) / wtp
+      weight += share
+    }
+    return weight > 0 ? total / weight : 1
+  }
+  const n = s.leadWeeks.max - s.leadWeeks.min + 1
+  const weights: number[] = []
+  let seasonSum = 0
+  let sum = 0
+  for (let k = 0; k < n; k++) {
+    const w = Math.min(week + s.leadWeeks.min + k, state.scenario.maxWeeks)
+    const season = ahead ? ahead[k]! : 1
+    const x = season * volumeFactor(cfg, elasticity, ratioAt(w))
+    weights.push(x)
+    seasonSum += season
+    sum += x
+  }
+  return { mean: seasonSum > 0 ? sum / seasonSum : 1, weights, sum }
 }
 
 /** Whether a plan's bookings part can be carried out. */
@@ -455,6 +554,11 @@ export function bookingsValid(state: GameState, plan: WeekPlan): boolean {
   for (const [seg, price] of Object.entries(p.prices)) {
     if (!state.bookings.prices[seg] || !count(price.peak) || !count(price.off)) return false
     if (price.peak === 0 || price.off === 0) return false
+    if (
+      price.shoulder !== undefined &&
+      (!cfg.shoulderMonths || !count(price.shoulder) || price.shoulder === 0)
+    )
+      return false
   }
   if (p.policy !== null && p.policy !== state.bookings.policy) {
     if (state.week - state.bookings.policySinceWeek < cfg.policyWeeks) return false
@@ -615,7 +719,9 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
 
   // 1. Settings.
   b.prices = { ...b.prices }
-  for (const [seg, price] of Object.entries(p.prices)) b.prices[seg] = { ...price }
+  // A plan that leaves out the shoulder price keeps the one set before (plan 6).
+  for (const [seg, price] of Object.entries(p.prices))
+    b.prices[seg] = { ...b.prices[seg], ...price }
   if (p.policy !== null && p.policy !== b.policy)
     b = { ...b, policy: p.policy, policySinceWeek: week }
   if (p.platform !== null) b.platformListed = p.platform
@@ -858,6 +964,20 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     return Math.min(free, Math.floor(cap) - (heldBySeg.get(segKey(seg, id, w)) ?? 0))
   }
   let sentLost = 0
+  // Plan 6: requests and bookings by the week asked for, where price elasticity is on.
+  const requestLog: Record<number, RequestWeek> | null = cfg.elasticity
+    ? { ...(b.requestLog ?? {}) }
+    : null
+  const logWeek = (w: number, add: Partial<RequestWeek>) => {
+    if (!requestLog) return
+    const was = requestLog[w] ?? { requests: 0, bookings: 0, units: 0, revenueCents: 0 }
+    requestLog[w] = {
+      requests: was.requests + (add.requests ?? 0),
+      bookings: was.bookings + (add.bookings ?? 0),
+      units: was.units + (add.units ?? 0),
+      revenueCents: was.revenueCents + (add.revenueCents ?? 0),
+    }
+  }
   const wtpRaised = Object.values(cfg.products).some((x) => x.wtpFactor)
   const byAppeal = Object.values(cfg.products).some((x) => x.appeal !== undefined)
   for (const seg of state.scenario.segments) {
@@ -894,12 +1014,16 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       state = joinLeisure({ ...state, bookings: b }, seg.id, units, rng)
       b = state.bookings!
     }
+    // Plan 6: fewer ask when the price of the weeks they would come is high against what they
+    // would pay, more when it is low; their weeks lean towards the cheaper ones.
+    const priced = priceVolume(state, seg.id, week, wtp, ahead)
+    const asked = units * (priced?.mean ?? 1)
     const meanSize = (s.size.min + s.size.max) / 2
     // Guests sent by an inbox answer ask like anyone else, in groups of the usual size.
     const sent = b.eventGuests?.[seg.id] ?? 0
     const sentRequests = sent > 0 ? Math.max(1, Math.round(sent / meanSize)) : 0
     const ownRequests = randomRound(
-      (units *
+      (asked *
         (cfg.leisure?.memberships ? 1 - (cfg.leisure.segments[seg.id]?.memberShare ?? 0) : 1)) /
         meanSize,
       rng,
@@ -911,7 +1035,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
             {
               id,
               n: randomRound(
-                (units * prod.ownDemand) /
+                (asked * prod.ownDemand) /
                   (prod.requestSize ? (prod.requestSize.min + prod.requestSize.max) / 2 : meanSize),
                 rng,
               ),
@@ -932,13 +1056,16 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       const requestSize = only ? (cfg.products[only]?.requestSize ?? s.size) : s.size
       let size = rng.int(requestSize.min, requestSize.max)
       const levels = personLevels(state, seg.id, rng)
-      const lead = ahead
-        ? s.leadWeeks.min + drawIndex(ahead, aheadSum, rng)
-        : rng.int(s.leadWeeks.min, s.leadWeeks.max)
+      const lead = priced
+        ? s.leadWeeks.min + drawIndex(priced.weights, priced.sum, rng)
+        : ahead
+          ? s.leadWeeks.min + drawIndex(ahead, aheadSum, rng)
+          : rng.int(s.leadWeeks.min, s.leadWeeks.max)
       let target = week + lead
       const slot = leisureSlot(state, seg.id, rng)
       const platform = reach.total > 0 && rng.chance(reach.platform / reach.total)
       if (target > state.scenario.maxWeeks) continue
+      logWeek(target, { requests: 1 })
       if (cfg.leisure?.slotPrices || cfg.leisure?.wtpBasis === 'monthly') {
         if (!leisureSellsSlot(state, seg.id, slot)) continue
         if (
@@ -1053,6 +1180,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         if (!hold.accepted || hold.held) continue
       }
       bookings.push(booking)
+      logWeek(target, { bookings: 1, units: size, revenueCents: booking.priceCents * size })
       out.revenueCents += deposit
       held.set(heldKey(pick.id, target), (held.get(heldKey(pick.id, target)) ?? 0) + size)
       if (s.capacityShare) {
@@ -2120,6 +2248,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       ),
       repeatGuests,
       turnedAway,
+      ...(requestLog ? { requestLog } : {}),
       rating,
       reviews,
       eventGuests: {},
@@ -2292,6 +2421,12 @@ export function bookingsView(state: GameState): BookingsView | null {
     weekOfYear: woy,
     month,
     peak: cfg.peakMonths.includes(month),
+    ...(cfg.shoulderMonths
+      ? {
+          shoulder: priceSeasonOf(cfg, month) === 'shoulder',
+          shoulderMonths: [...cfg.shoulderMonths],
+        }
+      : {}),
     weather: b.weather,
     forecast: b.forecast,
     policy: b.policy,

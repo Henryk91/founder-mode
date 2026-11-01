@@ -371,6 +371,9 @@ loan:
 bookings:
   startWeekOfYear: 6
   seasonNoise: 0.2
+  shoulderMonths: [4, 5, 10, 11]
+  # Plan 6: requests answer the price (docs/plan6-features.md section 1).
+  elasticity: { clamp: { min: 0.5, max: 1.6 } }
   peakMonths: [6, 7, 8, 9]
   policyWeeks: 4
   # The sea off Larnaca, two slots a day (docs/scenario-dive.md section 3, est.): boat dives run
@@ -443,7 +446,7 @@ bookings:
       base: { min: 10, max: 34 }
       unit: person
       # A try dive (est. 80); the opening price list, a little low and the same all year (T7).
-      price: { peak: 7000, off: 7000 }
+      price: { peak: 7000, off: 7000, shoulder: 7000 }
       size: { min: 1, max: 3 }
       leadWeeks: { min: 0, max: 1 }
       # June to September, high in August.
@@ -454,12 +457,13 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.6
+      elasticity: { min: 0.8, max: 1.5 }
     certified_divers:
       # 30 to 120 dives a week at peak (spec), in packages of four to ten.
       base: { min: 46, max: 150 }
       unit: person
       # A dive (est. 60); the opening price list, a little low and the same all year (T7).
-      price: { peak: 5500, off: 5500 }
+      price: { peak: 5500, off: 5500, shoulder: 5500 }
       size: { min: 4, max: 10 }
       leadWeeks: { min: 1, max: 12 }
       # April to November, peaks in May, June, September and October.
@@ -471,13 +475,14 @@ bookings:
       weatherSensitive: false
       invoiced: false
       reviewWeight: 0.7
+      elasticity: { min: 0.6, max: 1.2 }
       levels: [open_water, advanced]
     dive_clubs:
       # 0.1 to 0.6 groups a week at peak of about 140 dives each (spec).
       base: { min: 60, max: 160 }
       unit: person
       # A dive in a club week (est. 50); the opening price list (T7).
-      price: { peak: 5400, off: 5400 }
+      price: { peak: 5400, off: 5400, shoulder: 5500 }
       # A group of eight to twelve, five to eight dives each (spec 8 to 20 divers, ten dives).
       size: { min: 40, max: 100 }
       # Spec 12 to 40 weeks ahead; 8 to 30 while tuning (T3 round 2).
@@ -492,6 +497,7 @@ bookings:
       weatherSensitive: false
       invoiced: true
       reviewWeight: 0.3
+      elasticity: { min: 0.2, max: 0.6 }
       levels: [open_water, advanced]
   products:
     try_dive:

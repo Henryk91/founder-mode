@@ -142,6 +142,17 @@ const HINT_OFF = 0.85
  * the careful bot then won 48.2% (decisions, tuning 1 step 4).
  */
 const HINT_OFF_AT_HINTS = new Set(['hinterhof', 'seeblick', 'rueckenwind'])
+/**
+ * Plan 6 (price realism): where requests answer the price, the off season and shoulder prices
+ * follow how full those weeks are. Below `IDLE_LOAD` of the places booked in the next weeks of
+ * that season, they drop to `IDLE_SHARE` of the hints; above `FULL_LOAD`, they rise to the hints'
+ * level. The peak price stays at the hints: a discount fills nothing when the weeks are full.
+ */
+const IDLE_LOAD = 0.5
+const FULL_LOAD = 0.85
+const IDLE_SHARE = 0.75
+/** Weeks of a season, nearest first, that count for its load. */
+const LOAD_WEEKS = 4
 const MIN_HINTS = 3
 /** The most a price moves at once from the hints. */
 const MAX_PRICE_STEP = 0.3
@@ -163,6 +174,40 @@ const WHOLE_BOAT = 12
 const WHOLE_FILL = 0.75
 const CABIN_FILL = 0.85
 const CABIN_PLACES = 14
+/**
+ * Plan 6: the share of places booked in the nearest weeks of a price season on the calendar, or
+ * null when none of the weeks shown is in it. The calendar and the dates are on the screen.
+ */
+function seasonLoad(
+  view: PlayerView,
+  scenario: Scenario,
+  season: 'off' | 'shoulder',
+): number | null {
+  const cfg = scenario.bookings!
+  const monthAt = (week: number) => {
+    const woy = ((cfg.startWeekOfYear - 1 + week - 1) % 52) + 1
+    return Math.min(12, Math.floor(((woy - 1) * 12) / 52) + 1)
+  }
+  const seasonAt = (week: number) => {
+    const m = monthAt(week)
+    if (cfg.peakMonths.includes(m)) return 'peak'
+    return cfg.shoulderMonths?.includes(m) ? 'shoulder' : 'off'
+  }
+  const weeks = [...new Set(view.bookings!.calendar.flatMap((c) => c.cells.map((x) => x.week)))]
+    .filter((w) => w > view.week && seasonAt(w) === season)
+    .sort((a, b) => a - b)
+    .slice(0, LOAD_WEEKS)
+  let booked = 0
+  let capacity = 0
+  for (const c of view.bookings!.calendar)
+    for (const x of c.cells)
+      if (weeks.includes(x.week)) {
+        booked += x.booked
+        capacity += x.capacity
+      }
+  return capacity > 0 ? booked / capacity : null
+}
+
 /** A product costing this share of its price or more is not worth adding (step 6). */
 const THIN_MARGIN_SHARE = 0.5
 /** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
@@ -1455,10 +1500,23 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
             Math.max(base * (1 - MAX_PRICE_STEP), median),
           )
           const peak = Math.max(100, Math.round((mean * HINT_PEAK) / 100) * 100)
-          const offShare = HINT_OFF_AT_HINTS.has(scenario.id) ? 1 : HINT_OFF
-          const off = Math.max(100, Math.round((mean * offShare) / 100) * 100)
+          const offDefault = HINT_OFF_AT_HINTS.has(scenario.id) ? 1 : HINT_OFF
+          const elastic = cfg.elasticity !== undefined
+          const share = (season: 'off' | 'shoulder', normal: number) => {
+            if (!elastic) return normal
+            const load = seasonLoad(view, scenario, season)
+            if (load === null) return normal
+            if (load < IDLE_LOAD) return Math.min(normal, IDLE_SHARE)
+            return load > FULL_LOAD ? 1 : normal
+          }
+          const round = (share: number) => Math.max(100, Math.round((mean * share) / 100) * 100)
+          const off = round(share('off', offDefault))
+          const shoulder = cfg.shoulderMonths
+            ? round(share('shoulder', (HINT_PEAK + offDefault) / 2))
+            : undefined
           const now = bv.prices[id]
-          if (!now || now.peak !== peak || now.off !== off) plan.prices[id] = { peak, off }
+          if (!now || now.peak !== peak || now.off !== off || now.shoulder !== shoulder)
+            plan.prices[id] = { peak, off, ...(shoulder !== undefined ? { shoulder } : {}) }
         }
       }
 
