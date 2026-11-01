@@ -324,11 +324,51 @@ officeStages:
   - id: harbour_desk
     name: A desk in the harbour office
     monthlyCents: 0
+  # Plan 6 (docs/plan6-features.md section 2.3): offered by the inbox (office.yaml). Each stage
+  # lists all its effects, the earlier stages' included. Rents and one-offs are estimates;
+  # deposits three months of the added rent. The second gulet (the spec's stage 5) is the boat's
+  # second unit (assets), not an office move (decisions, plan 6 step 3).
+  - id: harbour_shop
+    name: Your own office with a shopfront on the harbour
+    monthlyCents: 60000
+    oneOffCents: 600000
+    depositCents: 180000
+    moveWeeks: 2
+    energyPerWeek: 1
+    # Holidaymakers in town walk in and book cabins.
+    walkIns: { segment: cabin_guests, leadsPerWeek: 0.4 }
+  - id: crew_house
+    name: A crew house and a store
+    # The shop plus 900 a month (est.).
+    monthlyCents: 150000
+    oneOffCents: 1000000
+    depositCents: 270000
+    moveWeeks: 3
+    energyPerWeek: 1
+    walkIns: { segment: cabin_guests, leadsPerWeek: 0.4 }
+    # Owners only: the crew sleeps and stores the food ashore, a tenth cheaper.
+    assetCrewFactor: 0.9
+  - id: munich_desk
+    name: A sales desk with a travel agency in Munich
+    # The crew house plus 1,200 a month for a desk at Reisebüro Seewind (est.).
+    monthlyCents: 270000
+    oneOffCents: 500000
+    depositCents: 360000
+    moveWeeks: 2
+    energyPerWeek: 1
+    walkIns: { segment: cabin_guests, leadsPerWeek: 0.4 }
+    assetCrewFactor: 0.9
+    # Cabin guests and charters from Germany book through a face they know (est. +15%).
+    segmentFactors: { cabin_guests: 1.15, private_charters: 1.15 }
+
+# Plan 6: moving and giving notice.
+office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
 # Spec 8 (6 was tried for E1 and brought the look in year 1); 10 in tuning 1 (12 and more kept it
-# from half the wins: a streak cannot cross the second winter).
-establishedAt: { monthsCoveringAll: 10 }
+# from half the wins: a streak cannot cross the second winter); plan 6: or on moving into stage 4
+# (target E1).
+establishedAt: { monthsCoveringAll: 10, officeStage: 4 }
 
 # The bank loan: only for owning, and only once the Turkish company exists (the purchase needs it).
 loan:
@@ -352,7 +392,7 @@ loan:
   missedFeeCents: 10000
   earlyFeeShare: 0.01
   maxLoans: 2
-  items: [gulet_purchase, luxury_refit]
+  items: [gulet_purchase, second_gulet_purchase, luxury_refit]
   workingCapitalMonths: 3
 
 # Bookings (docs/tourism-proposal.md, docs/abroad-mechanics.md). Week 1 is the first week of
@@ -441,6 +481,34 @@ bookings:
         capacity: 1
         unitCents: 0
         # Spec 75%; 70% after round 2.
+        revenueShare: 0.7
+        peakRule: { months: [7, 8], shoulderMonths: [5, 6, 9, 10], needWeeks: 3, byWeek: 13 }
+    # Plan 6 (section 3): a second gulet, offered once charters or cabins were turned away at
+    # the peak. Its own option, crew, upkeep and breakdowns. The founder hosts one cruise a week:
+    # the second needs a hired host (the host role) or its guests are not served.
+    second_gulet:
+      name: The second gulet
+      secondOf: gulet
+      products: [blue_cruise, charter_contracts]
+      buy:
+        product: second_gulet_purchase
+        upkeepMonthlyCents: 125000
+        crewWeekCents: 355000
+        haulOut: { month: 2, weeks: 4, cents: 1500000 }
+        breakdown: { weekly: 0.01, perYear: 0.001, weeks: { min: 1, max: 2 }, repairCents: 800000 }
+        ageYears: 20
+        valueLossPerYear: 0.05
+      lease:
+        # "Rüzgar Gülü" with its crew, the same terms as Deniz Yıldızı (est.).
+        seasonCents: 11000000
+        upfrontShare: 0.15
+        months: [5, 6, 7, 8, 9, 10]
+        minMonths: 6
+        crewWeekCents: 180000
+      share:
+        # Managing "Yakamoz" for Kaptan Murat's cousin, on Murat's terms.
+        capacity: 1
+        unitCents: 0
         revenueShare: 0.7
         peakRule: { months: [7, 8], shoulderMonths: [5, 6, 9, 10], needWeeks: 3, byWeek: 13 }
   # Selling a week (docs/scenario-gulet.md section 6). Held weeks sell no cabins, only the whole
@@ -573,6 +641,11 @@ bookings:
     gulet_purchase:
       # A used gulet with eight cabins (est.; spec 450,000 for 24 m; an older, smaller one at
       # 300,000 in round 1 and 200,000 in G1 round 1: the bank's own-money rule left no way to buy).
+      capacity: 0
+      oneOffCents: 20000000
+      requires: local_company
+    second_gulet_purchase:
+      # Plan 6 (section 3): a second used gulet, the same price (est.).
       capacity: 0
       oneOffCents: 20000000
       requires: local_company

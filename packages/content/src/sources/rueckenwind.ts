@@ -12,6 +12,7 @@ import rueckenwindProduct from '../scenarios/rueckenwind/messages/events/product
 import rueckenwindFinance from '../scenarios/rueckenwind/messages/events/finance.yaml?raw'
 import rueckenwindFounder from '../scenarios/rueckenwind/messages/events/founder.yaml?raw'
 import rueckenwindTeam from '../scenarios/rueckenwind/messages/events/team.yaml?raw'
+import rueckenwindOffice from '../scenarios/rueckenwind/messages/events/office.yaml?raw'
 import rueckenwindNames from '../scenarios/rueckenwind/messages/company_names.yaml?raw'
 import { FUNDING_EVENTS, NO_EVENTS, TOURISM_EVENTS } from './shared'
 
@@ -33,4 +34,5 @@ export const sources: ScenarioSources = {
   sharedEvents: TOURISM_EVENTS,
   longEvents: NO_EVENTS,
   fundingEvents: FUNDING_EVENTS,
+  officeEvents: rueckenwindOffice,
 }

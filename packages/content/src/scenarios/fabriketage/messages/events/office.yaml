@@ -28,3 +28,89 @@ events:
         label: Keep the top floor
         hours: 0
         effects: []
+
+  # Plan 6 (docs/plan6-features.md section 2.5): offers of stages 3 to 5. Each arrives for sure in
+  # the first week a trigger holds (and `when` holds), and comes back 12 weeks later if one still
+  # holds. Accepting pays the one-off at once, unless the bank's plan paid it, and moves the rent.
+  - id: office_catering_kitchen_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Your landlord
+    look: official
+    text: >-
+      Now that the floors pay their way, or events are being turned away, the old canteen could
+      become your own catering kitchen: 70,000 EUR to fit out and 5,500 EUR a month more, rent and
+      a chef included. You keep about 30% of the catering instead of a caterer's 10%. A bad dinner
+      becomes your bad dinner.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Build the kitchen
+        hours: 4
+        effects:
+          - { type: officeMove, stage: catering_kitchen }
+      - id: stay
+        label: Keep the caterers
+        hours: 0
+        effects: []
+
+  - id: office_planning_team_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Mareike, a wedding planner tired of freelancing
+    look: letter
+    text: >-
+      You keep turning events away, and Mareike offers to run a full-service planning team: 10,000
+      EUR to set up and 3,500 EUR a month more for her as event manager. Weddings and companies pay
+      about 15% more for an event someone else worries about. Parties do not.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Hire Mareike's team
+        hours: 2
+        effects:
+          - { type: officeMove, stage: planning_team }
+      - id: stay
+        label: Plan the events yourself
+        hours: 0
+        effects: []
+
+  - id: office_second_venue_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: An agent for a hall in Giesing
+    look: official
+    text: >-
+      Events were turned away at the peak again, and a hall in Giesing is free: 4,000 EUR a month
+      more and 72,000 EUR to fit out. Parties and companies from that side of the river would come.
+      It needs an event host on contract there, or you, and some of your own bookings will move
+      there too.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Open the second venue
+        hours: 2
+        effects:
+          - { type: officeMove, stage: second_venue }
+      - id: stay
+        label: One hall is plenty
+        hours: 0
+        effects: []

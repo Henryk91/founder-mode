@@ -344,10 +344,89 @@ officeStages:
     # Walk-ins about a third more, and lockers that wind regulars like.
     walkIns: { segment: hotel_guests, leadsPerWeek: 0.15 }
     segmentFactors: { wind_regulars: 1.1 }
+  # Plan 6 (docs/plan6-features.md section 2.1): offered by the inbox (office.yaml). Each stage
+  # lists all its effects, the earlier stages' included. Rents and fit-outs are estimates;
+  # deposits three months of the added rent.
+  - id: kite_base
+    name: A small base at the kite spot
+    # The station plus 700 a month for a hut and a parking space at Es Racó (est.).
+    monthlyCents: 160000
+    oneOffCents: 1500000
+    depositCents: 210000
+    moveWeeks: 3
+    energyPerWeek: 1
+    walkIns: { segment: hotel_guests, leadsPerWeek: 0.15 }
+    segmentFactors: { wind_regulars: 1.1 }
+    # Courses run from the spot: no van trip, and half as many kite places again.
+    capacity: { kite_trips: 3 }
+    dayTripCostFactor: { kite_trips: 0 }
+    staffFactors: { wing_kite_instructor: 1.5 }
+  - id: watersports_centre
+    name: A watersports centre with a café and a rental shop
+    # The base's rent plus 1,800 a month (est.).
+    monthlyCents: 340000
+    oneOffCents: 4000000
+    depositCents: 540000
+    moveWeeks: 4
+    energyPerWeek: 2
+    # Walk-ins two fifths up, hire half as big again, and a café margin per guest (est.).
+    walkIns: { segment: hotel_guests, leadsPerWeek: 0.21 }
+    segmentFactors: { wind_regulars: 1.1 }
+    capacity: { kite_trips: 3, paddle_kayak_hire: 140, rig_hire: 20 }
+    dayTripCostFactor: { kite_trips: 0 }
+    staffFactors: { wing_kite_instructor: 1.5 }
+    ancillaryCentsPerUnit:
+      paddle_kayak_hire: 150
+      paddle_lessons: 250
+      snorkel_trips: 250
+      kayak_tours: 250
+      windsurf_courses: 300
+      modern_gear: 1000
+  - id: second_beach
+    name: A second beach spot in another bay
+    # The centre's rent plus 1,200 a month for a second station (est.).
+    monthlyCents: 460000
+    # A station, lockers and a second set of hire boards: about 80% of the first site's (est.).
+    oneOffCents: 3000000
+    depositCents: 360000
+    moveWeeks: 6
+    energyPerWeek: 2
+    walkIns: { segment: hotel_guests, leadsPerWeek: 0.21 }
+    segmentFactors: { wind_regulars: 1.1 }
+    capacity: { kite_trips: 3, paddle_kayak_hire: 140, rig_hire: 20 }
+    dayTripCostFactor: { kite_trips: 0 }
+    staffFactors: { wing_kite_instructor: 1.5 }
+    ancillaryCentsPerUnit:
+      paddle_kayak_hire: 150
+      paddle_lessons: 250
+      snorkel_trips: 250
+      kayak_tours: 250
+      windsurf_courses: 300
+      modern_gear: 1000
+    # Plan 6 (section 4): its own hire and lessons, a new bay's hotel guests and learners, some
+    # taken from the first bay (hidden per run). Open with an instructor on contract there, or
+    # with you.
+    secondSite:
+      name: The Pollença station
+      capacity:
+        paddle_kayak_hire: 140
+        paddle_lessons: 56
+        snorkel_trips: 70
+        kayak_tours: 56
+        windsurf_courses: 21
+      reach: { min: 0.5, max: 0.8 }
+      reachBySegment: { wind_regulars: 0.5 }
+      cannibalisation: { min: 0.1, max: 0.25 }
+      reviewsWithoutFounder: 0.2
+    needsContract: instructor
+
+# Plan 6: moving and giving notice.
+office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
-# Plan 3: the established look once money in has covered all costs for these months in a row.
-establishedAt: { monthsCoveringAll: 8 }
+# Plan 3: the established look once money in has covered all costs for these months in a row;
+# plan 6: or on moving into stage 4 (target E1).
+establishedAt: { monthsCoveringAll: 8, officeStage: 4 }
 
 # The bank loan (docs/loan-proposal.md): for gear, the rescue boat and the first spring.
 loan:
@@ -374,7 +453,7 @@ loan:
   maxLoans: 2
   # The bank lends against the plan: gear, the rescue boat, the eFoil fleet (the temptation), and
   # working capital of at most three months of fixed costs (est.).
-  items: [catamaran, wing_foil, kite_trips, modern_gear, efoil_fleet]
+  items: [catamaran, wing_foil, kite_trips, modern_gear, rescue_boat_purchase, efoil_fleet]
   workingCapitalMonths: 3
 
 # Bookings (docs/tourism-proposal.md, docs/abroad-mechanics.md). Week 1 is the first week of
@@ -569,6 +648,8 @@ bookings:
       # Three sets at 2,800 each (est.).
       oneOffCents: 840000
       unitCostCents: 1500
+      # Plan 6: wings and boards last about two seasons of courses (est.).
+      wear: { lifeUses: 450, wornCapacity: 0.7, wornReview: 0.3, replaceCents: 750000 }
       course:
         level: wing_basic
         sameStay: { share: 0.25, products: [modern_gear] }
@@ -581,11 +662,21 @@ bookings:
       wholeWeek: true
       oneOffCents: 2000000
       unitCostCents: 2000
+      # Plan 6 (section 5): about two seasons of weeks out (est.); worn sets break and look it.
+      # New sets for about 1,150 each after trading the old ones in (est.).
+      wear: { lifeUses: 400, wornCapacity: 0.7, wornReview: 0.3, replaceCents: 1600000 }
     rescue_boat:
       capacity: 0
       # Leased in season at 900 a month (est.), spread over the year with fuel: about 600 a
-      # month. Buying one (18,000) is left out of this pass (decisions, plan 4 step 2).
+      # month.
       monthlyCents: 60000
+    rescue_boat_purchase:
+      # Plan 6 (section 5): a used rigid inflatable with an outboard (18,000, est.). It takes over
+      # the lease: insurance, mooring and fuel about 250 a month (est.).
+      capacity: 0
+      oneOffCents: 1800000
+      monthlyCents: 25000
+      replaces: rescue_boat
     online_booking:
       capacity: 0
       monthlyCents: 4000
@@ -602,6 +693,8 @@ bookings:
       # Three kite sets at 1,900 and radio helmets (est.).
       oneOffCents: 600000
       unitCostCents: 1000
+      # Plan 6: kites go brittle in the sun in about two seasons (est.).
+      wear: { lifeUses: 180, wornCapacity: 0.7, wornReview: 0.3, replaceCents: 520000 }
       # The van, fuel and the parking at the spot, per trip day (4,000 in plan 4; tuning 1, W2).
       dayTrip: { perTrip: 3, days: 3, costCents: 7000 }
       course:

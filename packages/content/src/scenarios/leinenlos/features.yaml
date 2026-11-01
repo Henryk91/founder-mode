@@ -79,6 +79,12 @@
   bugsOnShip: { min: 0, max: 1 }
   mention: The best captains own their boats. The rest manage someone else's dreams.
 
+- id: second_gulet_purchase
+  name: Buy a second gulet
+  buildHours: 20
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Two boats in the harbour, and the charter agents stop asking whether you have dates.
+
 - id: luxury_refit
   name: Air conditioning, a new teak deck and a deck jacuzzi
   buildHours: 30

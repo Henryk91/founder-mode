@@ -28,3 +28,89 @@ events:
         label: Keep the present desk
         hours: 0
         effects: []
+
+  # Plan 6 (docs/plan6-features.md section 2.4): offers of stages 3 to 5. Each arrives for sure in
+  # the first week a trigger holds (and `when` holds), and comes back 12 weeks later if one still
+  # holds. Accepting pays the one-off at once, unless the bank's plan paid it, and moves the rent.
+  - id: office_group_lounge_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: The bar upstairs, closing
+    look: letter
+    text: >-
+      Now that the rooms pay their way, or groups are being turned away, the bar upstairs offers
+      its back room as a lounge for your groups: 1,200 EUR a month more and 25,000 EUR for the
+      counter and the deposit. Groups stay for a drink afterwards, and companies like somewhere to
+      argue about who solved it.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the lounge
+        hours: 2
+        effects:
+          - { type: officeMove, stage: group_lounge }
+      - id: stay
+        label: Groups can argue on the pavement
+        hours: 0
+        effects: []
+
+  - id: office_flagship_site_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: An agent for a ground floor near the Viktualienmarkt
+    look: official
+    text: >-
+      You keep turning groups away, and a ground floor near the city centre is to let: 6,000 EUR a
+      month more and 60,000 EUR to rebuild two rooms there. Tourists find you, some walk in off the
+      street. It is a lot of rent for people who only come once.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Move to the city centre
+        hours: 2
+        effects:
+          - { type: officeMove, stage: flagship_site }
+      - id: stay
+        label: Stay in the basement
+        hours: 0
+        effects: []
+
+  - id: office_second_site_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: A landlord in Schwabing
+    look: letter
+    text: >-
+      Groups were turned away at the peak again, and a basement in Schwabing is free: 2,500 EUR a
+      month more and 50,000 EUR for two rooms of your best themes. Locals there have not played
+      them yet. It needs a game master on contract there, or you, and some of your groups will
+      simply go there instead.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Open in Schwabing
+        hours: 2
+        effects:
+          - { type: officeMove, stage: second_site }
+      - id: stay
+        label: One basement is plenty
+        hours: 0
+        effects: []

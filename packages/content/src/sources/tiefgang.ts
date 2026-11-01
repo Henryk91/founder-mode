@@ -12,6 +12,7 @@ import tiefgangProduct from '../scenarios/tiefgang/messages/events/product.yaml?
 import tiefgangFinance from '../scenarios/tiefgang/messages/events/finance.yaml?raw'
 import tiefgangFounder from '../scenarios/tiefgang/messages/events/founder.yaml?raw'
 import tiefgangTeam from '../scenarios/tiefgang/messages/events/team.yaml?raw'
+import tiefgangOffice from '../scenarios/tiefgang/messages/events/office.yaml?raw'
 import tiefgangNames from '../scenarios/tiefgang/messages/company_names.yaml?raw'
 import { FUNDING_EVENTS, NO_EVENTS, TOURISM_EVENTS } from './shared'
 
@@ -33,4 +34,5 @@ export const sources: ScenarioSources = {
   sharedEvents: TOURISM_EVENTS,
   longEvents: NO_EVENTS,
   fundingEvents: FUNDING_EVENTS,
+  officeEvents: tiefgangOffice,
 }

@@ -29,3 +29,88 @@ events:
         label: Keep the two-room studio
         hours: 0
         effects: []
+
+  # Plan 6 (docs/plan6-features.md section 2.6): offers of stages 3 to 5. Each arrives for sure in
+  # the first week a trigger holds (and `when` holds), and comes back 12 weeks later if one still
+  # holds. Accepting pays the one-off at once, unless the bank's plan paid it, and moves the rent.
+  - id: office_changing_rooms_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Your landlord
+    look: official
+    text: >-
+      Now that the studio pays its way, or classes are turning people away, the back half of the
+      shop next door could hold proper changing rooms and a reception: 1,500 EUR a month more and
+      35,000 EUR to build. Before-work members stay longer when there is a shower, reviews improve,
+      and the desk takes some of your hours.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Build the changing rooms
+        hours: 4
+        effects:
+          - { type: officeMove, stage: changing_rooms }
+      - id: stay
+        label: Members can shower at home
+        hours: 0
+        effects: []
+
+  - id: office_flagship_studio_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: An agent for a corner unit on the high street
+    look: official
+    text: >-
+      You keep turning members away, and a corner unit on the high street is to let: 4,000 EUR a
+      month more and 50,000 EUR for a studio with a café and a retail corner. Passers-by walk in,
+      intro offers convert better, and the café earns on every visit. Leggings are sold separately.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Move to the high street
+        hours: 2
+        effects:
+          - { type: officeMove, stage: flagship_studio }
+      - id: stay
+        label: Stay where members know you
+        hours: 0
+        effects: []
+
+  - id: office_second_studio_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: A landlord in Haidhausen
+    look: letter
+    text: >-
+      Classes were full at the peak again, and a shop in Haidhausen is free: 3,000 EUR a month more
+      and 40,000 EUR for bikes, mats and a fit-out. It needs someone on the front desk on contract
+      there, or you, and some of your members live closer to it than to you.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Open a second studio
+        hours: 2
+        effects:
+          - { type: officeMove, stage: second_studio }
+      - id: stay
+        label: One studio is plenty
+        hours: 0
+        effects: []

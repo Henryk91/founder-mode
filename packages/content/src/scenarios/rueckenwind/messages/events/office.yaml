@@ -1,0 +1,167 @@
+# Plan 6 (docs/plan6-features.md section 2.1): offers of office stages 3 to 5. Each arrives for
+# sure in the first week a trigger holds (and `when` holds), and comes back 12 weeks later if one
+# still holds. The text names the condition, the costs and the effect. Accepting pays the one-off
+# at once, unless the bank's plan paid it, and moves the rent from now.
+events:
+  - id: office_kite_base_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Toni at Es Racó
+    look: letter
+    text: >-
+      Now that the station pays its way, or guests are being turned away, Toni offers his hut and
+      a parking space at the kite spot: 700 EUR a month more and 15,000 EUR for the hut, the
+      racks and the deposit. Kite courses run from the spot, with no van, and half as many places
+      again. The van will miss nothing about the coast road.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the hut at the kite spot
+        hours: 2
+        effects:
+          - { type: officeMove, stage: kite_base }
+      - id: stay
+        label: Keep driving the van
+        hours: 0
+        effects: []
+
+  - id: office_watersports_centre_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Hotel Sa Platgeta
+    look: official
+    text: >-
+      You keep turning guests away, so the hotel next door offers its old beach bar as a
+      watersports centre with a café and a rental shop: 1,800 EUR a month more and 40,000 EUR to
+      fit out. Two fifths more walk-ins, hire half as big again, and a café that earns on every
+      guest. It only pays if the hire is what runs out.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Build the watersports centre
+        hours: 2
+        effects:
+          - { type: officeMove, stage: watersports_centre }
+      - id: stay
+        label: Stay at the station
+        hours: 0
+        effects: []
+
+  - id: office_second_beach_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: The town hall of Pollença
+    look: official
+    text: >-
+      Guests were turned away at the peak again, and the next bay has a beach spot going. A
+      second station costs 1,200 EUR a month more and 30,000 EUR to set up, with its own hire and
+      lessons. It needs an instructor on contract there, or you, and it will take some guests
+      from this bay as well as bringing new ones.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Open the second beach
+        hours: 2
+        effects:
+          - { type: officeMove, stage: second_beach }
+      - id: stay
+        label: One bay is plenty
+        hours: 0
+        effects: []
+
+  # Plan 6 (section 5): worn gear. Replacing is a choice: worn sets break more and review lower.
+  - id: gear_worn_modern_gear
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 4
+    trigger: [worn.modern_gear >= 1]
+    from: none
+    sender: Your beach hand
+    look: note
+    text: >-
+      The weekly gear for the regulars is worn out: two booms cracked this week, and a guest asked
+      whether the sail was vintage. New sets cost 16,000 EUR after trading the old ones in. Worn
+      sets keep working, mostly.
+    defaultChoice: keep
+    choices:
+      - id: replace
+        label: Buy new sets
+        hours: 2
+        effects:
+          - { type: replaceWorn, product: modern_gear }
+      - id: keep
+        label: Patch them up
+        hours: 0
+        effects: []
+
+  - id: gear_worn_wing_foil
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 4
+    trigger: [worn.wing_foil >= 1]
+    from: none
+    sender: Your wing instructor
+    look: note
+    text: >-
+      The wings are tired: the leading edges sag, and one of the boards has a soft spot nobody
+      wants to stand on. New wings and boards cost 7,500 EUR. The old ones still fly, just not
+      very far.
+    defaultChoice: keep
+    choices:
+      - id: replace
+        label: Buy new wings
+        hours: 1
+        effects:
+          - { type: replaceWorn, product: wing_foil }
+      - id: keep
+        label: Keep flying the old ones
+        hours: 0
+        effects: []
+
+  - id: gear_worn_kite_trips
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 4
+    trigger: [worn.kite_trips >= 1]
+    from: none
+    sender: Your kite instructor
+    look: note
+    text: >-
+      Two seasons of sun have made the kites brittle, and the radio helmets crackle more than they
+      talk. New kites and helmets cost 5,200 EUR. Students notice when a kite has more tape than
+      fabric.
+    defaultChoice: keep
+    choices:
+      - id: replace
+        label: Buy new kites
+        hours: 1
+        effects:
+          - { type: replaceWorn, product: kite_trips }
+      - id: keep
+        label: Tape them up
+        hours: 0
+        effects: []

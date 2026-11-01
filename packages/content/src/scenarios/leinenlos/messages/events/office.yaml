@@ -1,0 +1,145 @@
+# Plan 6 (docs/plan6-features.md sections 2.3 and 3): offers of office stages 2 to 4, and the
+# second gulet. Each office offer arrives for sure in the first week a trigger holds (and `when`
+# holds), and comes back 12 weeks later if one still holds. The text names the condition, the
+# costs and the effect. Accepting pays the one-off at once, unless the bank's plan paid it, and
+# moves the rent from now.
+events:
+  - id: office_harbour_shop_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 1, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Ayşe at the carpet shop
+    look: letter
+    text: >-
+      Now that the cruises pay their way, or guests are being turned away, Ayşe is giving up the
+      shop next to hers on the harbour: 600 EUR a month and 6,000 EUR for the deposit, a sign and
+      a desk. Holidaymakers in town walk in and book cabins. They also ask about carpets, which is
+      Ayşe's plan.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the shopfront
+        hours: 2
+        effects:
+          - { type: officeMove, stage: harbour_shop }
+      - id: stay
+        label: Keep the desk in the harbour office
+        hours: 0
+        effects: []
+
+  - id: office_crew_house_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 2, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: The harbour office
+    look: official
+    text: >-
+      You keep turning guests away, and a house with a store behind the harbour is to let: 900 EUR
+      a month more and 10,000 EUR to fit out. A crew that sleeps and stores the food ashore costs a
+      tenth less. That saving only exists if the gulet and its crew are yours.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the crew house
+        hours: 2
+        effects:
+          - { type: officeMove, stage: crew_house }
+      - id: stay
+        label: The crew sleeps on board
+        hours: 0
+        effects: []
+
+  - id: office_munich_desk_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Reisebüro Seewind, Munich
+    look: letter
+    text: >-
+      You keep turning guests away, and a travel agency in Munich offers you a desk and its window:
+      1,200 EUR a month more and 5,000 EUR for the brochures and the launch evening. Cabin guests
+      and charters from Germany book better through a face they know, about 15% better. The window
+      faces a bakery, which helps.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the desk in Munich
+        hours: 2
+        effects:
+          - { type: officeMove, stage: munich_desk }
+      - id: stay
+        label: Sell from Fethiye
+        hours: 0
+        effects: []
+
+  - id: second_gulet_offer
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 26
+    openWeeks: 8
+    when: [asset.secondNone == 1, asset.none == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 3]
+    from: none
+    sender: The harbour office
+    look: letter
+    text: >-
+      Charters or cabins were turned away at the peak again. You could manage "Yakamoz" for Kaptan
+      Murat's cousin on his terms, or lease "Rüzgar Gülü" for 110,000 EUR a season with its crew.
+      Buying a second boat needs about 200,000 EUR. You host one cruise a week; the second needs a
+      hired host.
+    defaultChoice: later
+    choices:
+      - id: manage
+        label: Manage Yakamoz as well
+        hours: 2
+        effects:
+          - { type: asset, id: second_gulet, option: share }
+      - id: lease
+        label: Lease Rüzgar Gülü
+        hours: 4
+        effects:
+          - { type: asset, id: second_gulet, option: lease }
+      - id: later
+        label: One boat is plenty
+        hours: 0
+
+  - id: second_gulet_engine_failure
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 3
+    trigger: [asset.secondBroken == 1]
+    openWeeks: 1
+    from: none
+    sender: Your second captain
+    look: note
+    text: >-
+      The second gulet's engine failed off Göcek, politely, with nobody in the water. A mechanic
+      can fix it this week for 8,000 EUR; otherwise it waits for parts and the next cruises do not
+      sail.
+    defaultChoice: wait
+    choices:
+      - id: repair
+        label: Repair it now
+        hours: 4
+        effects:
+          - { type: assetRepair, id: second_gulet }
+      - id: wait
+        label: Wait for the parts
+        hours: 0

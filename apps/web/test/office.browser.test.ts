@@ -23,7 +23,22 @@ import { axe, cut } from './screen'
  * scenario by its careful bot, until an offer is on the desk or a move is under way, then opened with every tab and notebook section at
  * 375, 390, 430 and 1440 px in Chrome and WebKit: nothing cut short, axe clean.
  */
-const SCENARIOS: ScenarioId[] = ['kantino', 'gratwanderung', 'hinterhof', 'seeblick']
+const SCENARIOS: ScenarioId[] = [
+  'kantino',
+  'gratwanderung',
+  'hinterhof',
+  'seeblick',
+  // Plan 6: the newer scenarios' stages, and a second site (below).
+  'rueckenwind',
+  'tiefgang',
+  'leinenlos',
+  'ausgesperrt',
+  'fabriketage',
+  'schweissperle',
+  'griffig',
+]
+/** Plan 6: a run that reached the second beach, played by the always-moving bot. */
+const SECOND_SITE: ScenarioId = 'rueckenwind'
 const WIDTHS = [375, 390, 430, 1440]
 
 /**
@@ -55,10 +70,32 @@ function save(id: ScenarioId): SaveFile {
   throw new Error(`${id}: no seed gets an office offer`)
 }
 
+/** Plan 6: the first seed whose always-moving run has a second site open, still going. */
+function secondSiteSave(id: ScenarioId): SaveFile | null {
+  const scenario = loadScenario(id, 'long')
+  const strategy = TOURISM_STRATEGIES.find((s) => s.id === 'tourism_always_second')!
+  for (let i = 1; i < 60; i++) {
+    const seed = `second-${i}`
+    let state = createGame(scenario, seed)
+    const player = strategy.create(scenario, seed)
+    while (state.status === 'running' && !getView(state).office.secondSite) {
+      for (const a of player.respond?.(getView(state)) ?? []) {
+        state = respond(state, a.messageId, a.choiceId)
+      }
+      const r = endWeek(state, player.plan(getView(state)))
+      player.observe?.(r.report, getView(r.state))
+      state = r.state
+    }
+    if (state.status === 'running') return toSave(state)
+  }
+  return null
+}
+
 describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 office screens', () => {
   let server: ViteDevServer
   let url = ''
   const files = new Map<ScenarioId, SaveFile>()
+  let second: SaveFile | null = null
 
   beforeAll(async () => {
     server = await createServer({
@@ -69,7 +106,8 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 office screens', () => {
     await server.listen()
     url = server.resolvedUrls?.local[0] ?? ''
     for (const id of SCENARIOS) files.set(id, save(id))
-  }, 300_000)
+    second = secondSiteSave(SECOND_SITE)
+  }, 900_000)
 
   afterAll(async () => {
     await server?.close()
@@ -122,12 +160,53 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 3 office screens', () => {
               text += await page.evaluate(() => document.body.innerText)
               for (const v of await axe(page)) found.push(`axe ${tab}: ${v.id} ${v.nodes[0]}`)
             }
-            expect(text).toMatch(/stage [1-5] of 5/)
+            expect(text).toMatch(/stage [1-5] of [45]/)
             expect(text).toMatch(/Rent/)
             expect(found).toEqual([])
             await page.close()
           }, 180_000)
         }
+
+      // Plan 6: both sites side by side and the founder's site switch.
+      for (const width of WIDTHS)
+        it(`shows ${SECOND_SITE}'s second site at ${width} px`, async ({ skip }) => {
+          if (!second) skip()
+          const page = await browser.newPage({ viewport: { width, height: 900 } })
+          await page.goto(url)
+          await page.evaluate(
+            ([id, file]) => {
+              localStorage.clear()
+              localStorage.setItem(`founder-mode.save.v1.${id}.long`, JSON.stringify(file))
+              localStorage.setItem('founder-mode.scenario.v1', id as string)
+              localStorage.setItem('founder-mode.mode.v1', 'long')
+            },
+            [SECOND_SITE, second!] as const,
+          )
+          await page.reload()
+          await page.getByRole('button', { name: 'Continue' }).click()
+          const dismiss = page.getByRole('button', { name: 'Dismiss' })
+          if (await dismiss.count()) await dismiss.first().click()
+          const found: string[] = []
+          let text = ''
+          const tabs =
+            width < 1200 ? await page.locator('nav button').allTextContents() : ['the desk']
+          for (const tab of tabs) {
+            if (width < 1200)
+              await page.locator('nav button').filter({ hasText: tab }).first().click()
+            for (let i = 0; i < 30; i++) {
+              const closed = page.locator('section button[aria-expanded="false"]')
+              if (!(await closed.count())) break
+              await closed.first().click()
+            }
+            found.push(...(await cut(page, tab)))
+            text += await page.evaluate(() => document.body.innerText)
+            for (const v of await axe(page)) found.push(`axe ${tab}: ${v.id} ${v.nodes[0]}`)
+          }
+          expect(text).toMatch(/Where you work this week/)
+          expect(text).toMatch(/Pollença/)
+          expect(found).toEqual([])
+          await page.close()
+        }, 180_000)
     })
   }
 })

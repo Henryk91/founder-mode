@@ -26,3 +26,88 @@ events:
         label: Keep the current hall layout
         hours: 0
         effects: []
+
+  # Plan 6 (docs/plan6-features.md section 2.7): offers of stages 3 to 5. Each arrives for sure in
+  # the first week a trigger holds (and `when` holds), and comes back 12 weeks later if one still
+  # holds. Accepting pays the one-off at once, unless the bank's plan paid it, and moves the rent.
+  - id: office_outdoor_boulders_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Your landlord
+    look: official
+    text: >-
+      Now that the hall pays its way, or climbers are being turned away, the yard behind it could
+      become an outdoor bouldering area: 800 EUR a month and 45,000 EUR for blocks, mats and the
+      deposit. Students and families keep coming in summer, when a hot hall loses half of them.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Build the outdoor area
+        hours: 4
+        effects:
+          - { type: officeMove, stage: outdoor_boulders }
+      - id: stay
+        label: Summer is for lakes
+        hours: 0
+        effects: []
+
+  - id: office_training_centre_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: The district climbing club
+    look: letter
+    text: >-
+      You keep turning climbers away, and the climbing club wants your training area as its home:
+      no more rent and 20,000 EUR for boards and coaching licences. Committed climbers join a team
+      and pay team fees, and competitions fill a Saturday or two. The teenagers will want a speaker.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Become the club's home
+        hours: 2
+        effects:
+          - { type: officeMove, stage: training_centre }
+      - id: stay
+        label: Keep the training area open to all
+        hours: 0
+        effects: []
+
+  - id: office_second_hall_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: An agent for a hall in Moosach
+    look: official
+    text: >-
+      Climbers were turned away at the peak again, and a smaller hall in Moosach could take
+      bouldering only: 3,500 EUR a month more and 176,000 EUR for walls, mats and a fit-out. It
+      needs someone on the desk on contract there, or you, and some of your regulars will find it
+      closer than you.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Open a second hall
+        hours: 2
+        effects:
+          - { type: officeMove, stage: second_hall }
+      - id: stay
+        label: One hall is plenty
+        hours: 0
+        effects: []
