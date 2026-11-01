@@ -463,6 +463,20 @@ export const BookingProductSchema = z.object({
   // segments would pay this much more (their willingness to pay times the factor).
   closesAsset: z.object({ asset: Id, weeks: z.number().int().positive() }).optional(),
   wtpFactor: z.record(Id, z.number().positive()).optional(),
+  // Plan 6 (Rückenwind's fleet): shipping it takes over this product (a rescue boat bought
+  // instead of leased): it counts as shipped from then, and its monthly cost ends.
+  replaces: Id.optional(),
+  // Plan 6: gear that wears out. After `lifeUses` units served it is worn: its capacity is
+  // multiplied by `wornCapacity` (more of it breaks) and its guests' reviews drop by `wornReview`,
+  // until it is replaced at `replaceCents` (an inbox answer, effect `replaceWorn`).
+  wear: z
+    .object({
+      lifeUses: z.number().int().positive(),
+      wornCapacity: Share,
+      wornReview: z.number().nonnegative(),
+      replaceCents: Cents.nonnegative(),
+    })
+    .optional(),
 })
 
 // Plan 2 step 1b: a contract instead of shifts booked week by week. Permanent and part time staff
@@ -689,6 +703,10 @@ export const AssetSchema = z.object({
   name: z.string().min(1),
   // Products that run on it.
   products: z.array(Id).min(1),
+  // Plan 6 (docs/plan6-features.md section 3): the second unit of another asset (a second boat).
+  // It runs the same products, adding its own capacity, with its own option, costs and
+  // breakdowns. At most one second unit per asset.
+  secondOf: Id.optional(),
   // Owning: the purchase is this product (its prep hours the paperwork, its one-off the price, a
   // loan item where the bank lists it, `requires` a local company where one is needed).
   buy: z
@@ -1272,6 +1290,14 @@ export const CONDITION_PATHS = [
   'asset.shared',
   'asset.none',
   'asset.broken',
+  // Plan 6: the scenario's second unit (an asset with `secondOf`): 1 when there is one and it is
+  // not taken yet, or taken (bought, leased or shared), or owned and broken down this week; 0
+  // otherwise or without one. And 1 while
+  // the company works from a stage with a second site.
+  'asset.secondNone',
+  'asset.secondTaken',
+  'asset.secondBroken',
+  'office.twoSites',
 ] as const
 
 /** Paths about a message's sender: they make sense only once a message has a sender. */
@@ -1281,11 +1307,16 @@ export const SENDER_PATHS: readonly ConditionPath[] = ['sender.overdue', 'sender
  * an event whose text says "if there were a room to marry in" can say so in its conditions.
  */
 export const SHIPPED_PREFIX = 'shipped.'
+/** Plan 6: `worn.<product id>` reads 1 while that product's gear is worn out, else 0. */
+export const WORN_PREFIX = 'worn.'
 export type FixedConditionPath = (typeof CONDITION_PATHS)[number]
-export type ConditionPath = FixedConditionPath | `shipped.${string}`
+export type ConditionPath = FixedConditionPath | `shipped.${string}` | `worn.${string}`
 /** The feature a `shipped.<id>` path asks about, or null for any other path. */
 export const shippedFeature = (path: ConditionPath): string | null =>
   path.startsWith(SHIPPED_PREFIX) ? path.slice(SHIPPED_PREFIX.length) : null
+/** The product a `worn.<id>` path asks about, or null for any other path. */
+export const wornProduct = (path: ConditionPath): string | null =>
+  path.startsWith(WORN_PREFIX) ? path.slice(WORN_PREFIX.length) : null
 export const CONDITION_OPS = ['>=', '<=', '>', '<', '==', '!='] as const
 export type ConditionOp = (typeof CONDITION_OPS)[number]
 export type Condition = { path: ConditionPath; op: ConditionOp; value: number }
@@ -1293,12 +1324,12 @@ export type Condition = { path: ConditionPath; op: ConditionOp; value: number }
 /** Parses `customers.count >= 1`. Returns null for anything outside the closed grammar. */
 export function parseCondition(text: string): Condition | null {
   const m =
-    /^\s*([A-Za-z.]+|shipped\.[a-z][a-z0-9_]*)\s*(>=|<=|==|!=|>|<)\s*(-?\d+(?:\.\d+)?)\s*$/.exec(
+    /^\s*([A-Za-z.]+|(?:shipped|worn)\.[a-z][a-z0-9_]*)\s*(>=|<=|==|!=|>|<)\s*(-?\d+(?:\.\d+)?)\s*$/.exec(
       text,
     )
   if (!m) return null
   const path = m[1] as ConditionPath
-  const feature = shippedFeature(path)
+  const feature = shippedFeature(path) ?? wornProduct(path)
   if (
     feature !== null
       ? !/^[a-z][a-z0-9_]*$/.test(feature)
@@ -1382,6 +1413,8 @@ export const EffectSchema = z.discriminatedUnion('type', [
   }),
   // Plan 4: a broken asset repaired at its repair cost, open again from next week.
   z.object({ type: z.literal('assetRepair'), id: Id, ...fx }),
+  // Plan 6: worn gear replaced at its replacement cost, as good as new from next week.
+  z.object({ type: z.literal('replaceWorn'), product: Id, ...fx }),
   z.object({
     type: z.literal('fixedCost'),
     id: Id,
@@ -1565,6 +1598,38 @@ export const OfficeStageSchema = z.object({
   // Tourism: the stage's capacity, reach and segment effects need a running contract in this
   // role (someone stationed there); without one they are off that week.
   needsContract: Id.optional(),
+  // Plan 6 (docs/plan6-features.md section 4): a second location. While it is open its capacity
+  // adds to the products', demand grows by its new reach less what it takes from the first site
+  // (both drawn per run, hidden), and reviews from the site the founder is not at are lower. It
+  // is open while someone holds `needsContract` (a manager) or the founder works there.
+  secondSite: z
+    .object({
+      name: z.string().min(1),
+      capacity: z.record(Id, z.number().int().nonnegative()),
+      reach: rangeOf(z.number().nonnegative()),
+      // Per segment, the drawn reach is multiplied by this (resort beginners from the big hotels).
+      reachBySegment: z.record(Id, z.number().nonnegative()).optional(),
+      cannibalisation: rangeOf(z.number().min(0).max(1)),
+      reviewsWithoutFounder: z.number().nonnegative(),
+    })
+    .optional(),
+  // Plan 6, stages 3 to 5 of the newer scenarios. Tourism: money earned per unit served of a
+  // product on top of its price (a café, a bar, team fees), net of its own costs.
+  ancillaryCentsPerUnit: z.record(Id, Cents.nonnegative()).optional(),
+  // Tourism: a day trip's cost per trip day multiplied by this (a base at the spot: no van).
+  dayTripCostFactor: z.record(Id, Share).optional(),
+  // Tourism: what a segment would pay, multiplied by this (a planning team, a dive hotel).
+  wtpFactors: z.record(Id, z.number().positive()).optional(),
+  // Tourism: for these segments, the season's dip below its peak is multiplied by `factor` (an
+  // outdoor area halves the summer dip).
+  seasonFlatten: z.object({ segments: z.array(Id).min(1), factor: Share }).optional(),
+  // Tourism: an owned asset's crew costs multiplied by this (a crew house).
+  assetCrewFactor: Share.optional(),
+  // Leisure: a segment's base monthly churn multiplied by this (changing rooms and a reception).
+  churnFactors: z.record(Id, z.number().positive()).optional(),
+  // Leisure: an extra's share of its gross, instead of its own (an in-house kitchen's margin in
+  // place of a caterer's commission).
+  extraShares: z.record(Id, Share).optional(),
 })
 export type OfficeStage = z.infer<typeof OfficeStageSchema>
 
@@ -1722,7 +1787,11 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     }
     const products = s.bookings?.products ?? {}
     const roles = s.bookings?.roles ?? {}
-    for (const id of [...Object.keys(o.capacity ?? {}), ...(o.weatherPlanFor ?? [])]) {
+    for (const id of [
+      ...Object.keys(o.capacity ?? {}),
+      ...(o.weatherPlanFor ?? []),
+      ...Object.keys(o.secondSite?.capacity ?? {}),
+    ]) {
       if (!products[id]) issue(`unknown product ${id}`, ['officeStages', i])
     }
     for (const id of [...Object.keys(o.staffFactors ?? {}), ...Object.keys(o.contractMax ?? {})]) {
@@ -1733,6 +1802,8 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
     }
     if ((o.depositCents ?? 0) > (o.oneOffCents ?? 0))
       issue('deposit above the one-off', ['officeStages', i])
+    if (o.secondSite && !o.needsContract)
+      issue('a second site needs a manager role', ['officeStages', i, 'secondSite'])
   })
   const featureIdSet = new Set(s.features.map((x) => x.id))
   const checkShipped = (conditions: readonly Condition[], path: (string | number)[]) => {
@@ -2050,6 +2121,14 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
       for (const p of a.products) if (!bk.products[p]) issue(`unknown product ${p}`, at)
       if (a.buy && !bk.products[a.buy.product]) issue(`unknown product ${a.buy.product}`, at)
       if (!a.buy && !a.lease && !a.share) issue('an asset needs an option', at)
+      if (a.secondOf) {
+        const first = bk.assets?.[a.secondOf]
+        if (!first || first.secondOf) issue(`unknown first unit ${a.secondOf}`, at)
+        else if (first.products.join() !== a.products.join())
+          issue('a second unit runs the same products as the first', at)
+        if (Object.values(bk.assets ?? {}).filter((x) => x.secondOf === a.secondOf).length > 1)
+          issue('at most one second unit per asset', at)
+      }
     }
     s.events.forEach((e, i) => {
       for (const ch of e.choices) {

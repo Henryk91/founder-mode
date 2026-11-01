@@ -1,5 +1,6 @@
 import type { LeisureConfig } from '@founder-mode/content'
 import type { Rng } from '../rng'
+import { stageInEffect } from './bookings'
 import type { Booking, GameState, LeisureExtraTotals, LeisureState, LeisureView } from '../types'
 
 const entries = <T>(value: Record<string, T>) =>
@@ -143,6 +144,8 @@ export function finishVenue(
     entries(l.extras ?? {}).map(([id, total]) => [id, { ...total }]),
   )
   const current: Record<string, LeisureExtraTotals> = {}
+  // Plan 6: a stage can keep a bigger share of an extra (an in-house kitchen).
+  const shares = stageInEffect(input).extraShares
   let receiptsCents = 0
   let costsCents = 0
   for (const [id, extra] of entries(c.extras ?? {})) {
@@ -156,7 +159,7 @@ export function finishVenue(
         if (!term) continue
         const units = Math.min(b.units, remaining)
         remaining -= units
-        const receipt = units * Math.round(term.grossCents * term.revenueShare)
+        const receipt = units * Math.round(term.grossCents * (shares?.[id] ?? term.revenueShare))
         const cost = units * term.unitCostCents
         total.units += units
         total.receiptsCents += receipt

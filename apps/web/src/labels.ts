@@ -641,6 +641,11 @@ const labels = {
   'results.entry.asset_broke':
     '{asset} broke down: out until week {week}, {booked} booked meanwhile. A repair costs {amount}.',
   'results.entry.asset_repaired': '{asset} repaired for {amount}.',
+  'asset.revenue': 'Its guests',
+  'asset.revenueValue': '{amount} over {weeks} weeks',
+  'results.entry.gear_worn':
+    'The {name} gear is worn out. More of it breaks, and the guests notice the patches. New gear is a choice, not an emergency. Yet.',
+  'results.entry.gear_replaced': 'New {name} gear for {amount}. It still smells of the shop.',
   'results.entry.asset_haul_out': '{asset} is out of the water for {weeks} weeks: {amount}.',
   'results.entry.asset_taken_back': "{asset}'s owner kept some places back this week.",
   'results.entry.cruise_cancelled.moved':
@@ -733,6 +738,18 @@ const labels = {
   'office.prepaid': 'Paid for by the bank: {names}. Taking its offer costs nothing more.',
   'office.giveNotice': 'Give notice ({weeks} weeks)',
   'office.noticeBooked': 'Notice this week',
+  'office.site.founderAt': 'Where you work this week',
+  'office.site.first': 'At {name}',
+  'office.site.second': 'At {name}',
+  'office.site.line':
+    'The site without you runs on staff and gets slightly worse reviews. The second site opens only with you there or a manager on contract.',
+  'office.site.firstMoney': 'Money in, four weeks, {name}',
+  'office.site.secondMoney': 'Money in, four weeks, {name}',
+  'office.site.share': 'Second site, share of places',
+  'office.site.closed':
+    'The second site is closed this week: no manager on contract and you are not there.',
+  'office.site.youThere': 'You work at {name} this week.',
+  'office.site.youHere': 'You work at the first site; {name} runs on its manager.',
   'office.noticeLine':
     'Rent runs until the notice ends; then the deposit comes back and you go back one stage.',
   'office.offers':
@@ -760,6 +777,11 @@ const labels = {
   'pm.office.down': 'down {amount}',
   'pm.office.same': 'no change',
   'pm.office.moving': 'The move was not finished when the run ended.',
+  'pm.site.line':
+    '{name}, open from week {week}: {open} weeks open, {closed} closed, {there} with you there. Its part of money in was {revenue}; after the guests it took from the first site (a {took}% share, against {reach}% new reach) it added {added}. Extra rent {rent}, fit-out {oneOff}.',
+  'pm.asset.unit': '{name}: {weeks} weeks used, {revenue} from its guests, {costs} in costs.',
+  'pm.gear.line':
+    '{name} gear: {uses} uses on the current set (worn after {life}), replaced {replaced} times for {cost}, {worn} weeks on worn gear.',
   'pm.prices.title': 'Prices by season',
   'pm.prices.season.peak': 'Peak',
   'pm.prices.season.shoulder': 'Shoulder',

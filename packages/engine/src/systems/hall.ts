@@ -103,8 +103,13 @@ export function hallCapacity(
   const c = s.scenario.bookings?.leisure,
     p = c?.products[id]?.simultaneous
   if (!c?.hall || !p) return undefined
-  const factor = comfort ? (c.hall.comfortByStage?.[stageInEffect(s).id] ?? 1) : 1
-  const people = comfort ? Math.min(p.hard, p.comfort * factor) : p.hard
+  const stage = stageInEffect(s)
+  const factor = comfort ? (c.hall.comfortByStage?.[stage.id] ?? 1) : 1
+  // Plan 6: an open second hall adds its own people at once to an area.
+  const extra = stage.secondSite?.capacity[id] ?? 0
+  const hard = p.hard + extra
+  const comfortable = extra > 0 ? (p.comfort * factor * hard) / p.hard : p.comfort * factor
+  const people = comfort ? Math.min(hard, comfortable) : hard
   return Math.floor((people * hallHours(s, id, slot, week)) / c.hall.visitHours)
 }
 

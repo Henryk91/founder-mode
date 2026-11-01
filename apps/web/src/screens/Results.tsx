@@ -191,6 +191,13 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         asset: asset(entry.assetId),
         amount: formatEuro(entry.costCents),
       })
+    case 'gear_worn':
+      return label('results.entry.gear_worn', stage, { name: product(entry.productId) })
+    case 'gear_replaced':
+      return label('results.entry.gear_replaced', stage, {
+        name: product(entry.productId),
+        amount: formatEuro(entry.costCents),
+      })
     case 'asset_haul_out':
       return label('results.entry.asset_haul_out', stage, {
         asset: asset(entry.assetId),
@@ -541,7 +548,10 @@ function place(entry: ReportEntry): [Group, number] {
     case 'asset_option':
     case 'asset_broke':
     case 'asset_haul_out':
+    case 'gear_worn':
       return ['money', 8]
+    case 'gear_replaced':
+      return ['money', 5]
     case 'asset_repaired':
     case 'asset_taken_back':
     case 'friction':

@@ -1,3 +1,4 @@
+import { isWorn } from './fleet'
 import type { Condition, ConditionPath, FixedConditionPath } from '@founder-mode/content'
 import { bookingsRevenueOrSubscriptions } from './bookings'
 import type { GameState } from '../types'
@@ -8,7 +9,7 @@ import { isOverdue, isUnpaid, maxOverdueDays } from './invoices'
 import { monthOf } from './bookings'
 import { venueComplaints } from './venue'
 import { monthsCovering, runwayWeeks } from './finance'
-import { desksFree, officeBusy, stageNumber } from './office'
+import { currentStage, desksFree, officeBusy, stageNumber } from './office'
 import { occupancyPct, turnedAwayWeeks } from './bookings'
 import { canBookDemo } from './sales'
 
@@ -16,6 +17,10 @@ import { canBookDemo } from './sales'
  * The feature a `shipped.<id>` path asks about, or null for any other path (plan 2 audit). The
  * same rule as the content package's, here because the engine takes content as data only.
  */
+/** Plan 6: the product a `worn.<id>` path asks about, or null for any other path. */
+export const wornProduct = (path: ConditionPath): string | null =>
+  path.startsWith('worn.') ? path.slice('worn.'.length) : null
+
 export const shippedFeature = (path: ConditionPath): string | null =>
   path.startsWith('shipped.') ? path.slice('shipped.'.length) : null
 
@@ -29,6 +34,11 @@ export type ConditionSender = { targetId: string | null } | null
 
 /** Plan 4: the state of the scenario's first asset, or null without assets. */
 const firstAsset = (s: GameState) => Object.values(s.bookings?.assets ?? {})[0] ?? null
+/** Plan 6: the state of the scenario's second unit, or null without one. */
+const secondUnit = (s: GameState) => {
+  const id = Object.entries(s.scenario.bookings?.assets ?? {}).find(([, a]) => a.secondOf)?.[0]
+  return id ? (s.bookings?.assets?.[id] ?? null) : null
+}
 
 const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSender) => number> = {
   week: (s) => s.week,
@@ -114,6 +124,16 @@ const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSe
   'asset.leased': (s) => (firstAsset(s)?.option === 'lease' ? 1 : 0),
   'asset.shared': (s) => (firstAsset(s)?.option === 'share' ? 1 : 0),
   'asset.none': (s) => (firstAsset(s)?.option === 'none' ? 1 : 0),
+  'asset.secondNone': (s) => (secondUnit(s)?.option === 'none' ? 1 : 0),
+  'asset.secondTaken': (s) => {
+    const u = secondUnit(s)
+    return u && u.option !== 'none' ? 1 : 0
+  },
+  'asset.secondBroken': (s) => {
+    const u = secondUnit(s)
+    return u?.option === 'buy' && u.brokenUntil >= s.week ? 1 : 0
+  },
+  'office.twoSites': (s) => (currentStage(s).secondSite ? 1 : 0),
   'asset.broken': (s) => {
     const a = firstAsset(s)
     return a?.option === 'buy' && a.brokenUntil >= s.week ? 1 : 0
@@ -172,6 +192,8 @@ export function conditionValue(
     const f = state.product.features.find((x) => x.id === feature)
     return f && f.shippedWeek !== null ? 1 : 0
   }
+  const worn = wornProduct(path)
+  if (worn !== null) return isWorn(state, worn) ? 1 : 0
   return METRICS[path as FixedConditionPath](state, sender)
 }
 

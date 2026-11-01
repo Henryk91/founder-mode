@@ -3,7 +3,7 @@ import { Rng } from './rng'
 import { resolveExperiments, runInterviews, startExperiments } from './systems/experiments'
 import { applyFinanceWeek, closeLedger, noExtras } from './systems/finance'
 import { applyFounderWeek, hoursByActivity, livingCostsFor } from './systems/founder'
-import { applyBookings } from './systems/bookings'
+import { applyBookings, openSecondSite, secondSiteShare } from './systems/bookings'
 import { resolveTrials, startTrials, trialsCostCents } from './systems/trials'
 import { applyFunding } from './systems/funding'
 import { applyLoan } from './systems/loan'
@@ -22,7 +22,13 @@ import {
 import { checkEnding } from './systems/endings'
 import { checkMilestones } from './systems/milestones'
 import { reachesEstablished } from './systems/uiStage'
-import { applyOfficeWeek, applyWalkIns, energyPerWeek } from './systems/office'
+import {
+  applyOfficeWeek,
+  applyWalkIns,
+  energyPerWeek,
+  hasSecondSite,
+  recordSecondSite,
+} from './systems/office'
 import type { GameState, ReportEntry, WeekPlan, WeekReport } from './types'
 import { interviewView } from './view'
 
@@ -129,6 +135,11 @@ export function endWeek(
     // 6. Tourism: requests, bookings, this week's guests, the roster and reviews (step 4).
     const tourism = applyBookings(state, plan, rng)
     state = tourism.state
+    // Plan 6: the second site's week, by its share of the capacity.
+    if (hasSecondSite(state)) {
+      const open = openSecondSite(state) !== null
+      state = recordSecondSite(state, open, open ? secondSiteShare(state) : 0, tourism.revenueCents)
+    }
     entries.push(...tourism.entries)
     extras.voucherCents = (extras.voucherCents ?? 0) + (tourism.voucherCents ?? 0)
     extras.bookingRevenueCents += tourism.revenueCents

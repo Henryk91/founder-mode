@@ -373,7 +373,9 @@ export function leisureCapacity(s: GameState, id: string, slot: string, week: nu
   const total = p.classPlaces
     ? Object.values(s.bookings?.leisure?.timetable[id] ?? {}).reduce((n, x) => n + x * places, 0)
     : Object.values(p.capacity).reduce((n, x) => n + x, 0)
-  const bonus = stageInEffect(s).capacity?.[id] ?? 0
+  const inEffect = stageInEffect(s)
+  // Plan 6: an open second site adds its capacity like a stage does.
+  const bonus = (inEffect.capacity?.[id] ?? 0) + (inEffect.secondSite?.capacity[id] ?? 0)
   const f = s.bookings?.leisure?.freshness[id]
   const loss =
     f?.lastRefreshWeek === week ? (cfgOf(s)?.freshness?.[id]?.refresh.lostCapacity?.[slot] ?? 0) : 0
@@ -1267,7 +1269,10 @@ export function billLeisure(
       const drivers = [
         {
           reason: 'price' as const,
-          chance: segment.churn + segment.priceChurn * Math.max(0, m.priceCents / wtp - 1),
+          chance:
+            // Plan 6: a stage with changing rooms and a reception keeps some members longer.
+            segment.churn * (stageInEffect(input).churnFactors?.[m.segmentId] ?? 1) +
+            segment.priceChurn * Math.max(0, m.priceCents / wtp - 1),
         },
         {
           reason: 'crowding' as const,

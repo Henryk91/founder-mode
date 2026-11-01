@@ -1,3 +1,4 @@
+import { replaceWorn } from './fleet'
 import { loseLeisureInstructor } from './leisure'
 import type { Effect, ScenarioEvent } from '@founder-mode/content'
 import type { Rng } from '../rng'
@@ -269,6 +270,12 @@ function applyEffect(
       out.entries.push(...done.entries)
       return done.state
     }
+    case 'replaceWorn': {
+      const done = replaceWorn(state, effect.product)
+      out.costsCents += done.costCents
+      out.entries.push(...done.entries)
+      return done.state
+    }
     case 'fixedCost': {
       if (state.company.fixedCosts.some((c) => c.id === effect.id)) return state
       const cost = { id: effect.id, name: effect.name, monthlyCents: effect.monthlyCents }
@@ -436,7 +443,10 @@ function makeMessage(
             ? -e.amountCents
             : e.type === 'officeMove'
               ? officeOneOff(state, e.stage)
-              : 0),
+              : // Plan 6: new gear at its replacement cost.
+                e.type === 'replaceWorn'
+                ? (state.scenario.bookings?.products[e.product]?.wear?.replaceCents ?? 0)
+                : 0),
         0,
       ),
       possibleCostCents: c.effects.reduce(

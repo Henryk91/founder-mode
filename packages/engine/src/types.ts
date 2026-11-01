@@ -370,6 +370,8 @@ export type BookingsState = {
   /** This week's weather once it happened, and the forecast shown for next week. */
   weather: WeatherState | null
   forecast: WeatherState
+  /** Plan 6: gear that wears, per product: units served since new, replacements, weeks worn. */
+  wear?: Record<FeatureId, { uses: number; replacements: number; wornWeeks: number }>
   /** Plan 6: requests and bookings by the week asked for. Only with price elasticity. */
   requestLog?: Record<number, RequestWeek>
   /** Requests turned away for lack of room, per week (the last 12 weeks). */
@@ -434,6 +436,8 @@ export type AssetState = {
   weeksUsed: number
   /** Everything spent on it over the run: fees, upkeep, crew, repairs, haul-outs (not the price). */
   costCents: number
+  /** Plan 6: gross revenue of the guests it carried, where the asset has a second unit. */
+  revenueCents?: number
 }
 
 /** Plan 4: a week of day conditions: per slot id, the state of each day, Monday first. */
@@ -503,6 +507,11 @@ export type HiddenBookings = {
   leisure?: HiddenLeisure
   /** Plan 6: each segment's drawn elasticity. Absent unless the scenario sets it. */
   elasticity?: Record<SegmentId, number>
+  /**
+   * Plan 6: a second site's new reach and the share of the first site's demand it takes, as
+   * shares of the first site's demand. Absent unless a stage has a second site.
+   */
+  secondSite?: { reach: number; cannibalisation: number }
   base: Record<SegmentId, number>
   /** Twelve monthly multipliers per segment, the drawn season curve. */
   season: Record<SegmentId, number[]>
@@ -624,6 +633,23 @@ export type OfficeState = {
   /** Stages whose one-off a loan paid for (bought at payout). */
   prepaid: string[]
   stays: OfficeStay[]
+  /** Plan 6: where the founder works while there are two sites. Absent: the first. */
+  founderAt?: 'first' | 'second'
+  /** Plan 6: the second site's weeks and money, once it opened. */
+  secondSite?: SecondSiteRecord
+}
+
+/** Plan 6: what the second site did, week by week added up. */
+export type SecondSiteRecord = {
+  openedWeek: number
+  weeksOpen: number
+  /** Weeks it was closed: no manager on contract and the founder at the first site. */
+  weeksClosed: number
+  weeksFounderThere: number
+  /** Its part of money in (by its share of the capacity), and what it added after it took
+   *  guests from the first site. */
+  revenueCents: number
+  addedCents: number
 }
 
 export type FeatureProgress = {
@@ -1090,7 +1116,11 @@ export type WeekPlan = {
   /** The bank loan (step 6). Missing means no change. */
   loan?: LoanPlan
   /** Plan 3: give notice on the office stage. Missing means no. */
-  office?: { notice: boolean }
+  office?: {
+    notice: boolean
+    /** Plan 6: where the founder works this week while there are two sites. */
+    founderAt?: 'first' | 'second'
+  }
 }
 
 /**
@@ -1549,6 +1579,8 @@ export type BookingsView = {
     wholeWeek: boolean
     /** Plan 4: a unit costs the segment's price times this. */
     priceFactor: number
+    /** Plan 6: gear that wears: units served since new, of its lifetime; null otherwise. */
+    wear: { uses: number; lifeUses: number; worn: boolean; replaceCents: number } | null
   }[]
   /** Plan 4: day conditions, courses, trips and the tender; null without day conditions. */
   abroad: AbroadView | null
@@ -1677,6 +1709,9 @@ export type AssetView = {
       } | null
     } | null
   }
+  /** Plan 6: the first unit's id for a second unit, and gross revenue where there are two. */
+  secondOf: string | null
+  revenueCents: number | null
 }
 
 /** Plan 4: the abroad mechanics as the player sees them. */
@@ -1769,6 +1804,24 @@ export type OfficeView = {
   occupancyPct: number
   /** Stages a loan paid for, by name: accepting their offer costs nothing more. */
   prepaid: string[]
+  /** Plan 6: the second site, once the company has moved to the stage with one. */
+  secondSite: SecondSiteView | null
+}
+
+export type SecondSiteView = {
+  name: string
+  /** Open this week: a manager on contract, or the founder there. */
+  open: boolean
+  founderAt: 'first' | 'second'
+  needsRole: string
+  /** Its capacity per product, and its share of all capacity. */
+  capacity: Record<FeatureId, number>
+  sharePct: number
+  /** Money in over the last four weeks, split by the share of capacity. */
+  revenueLast4FirstCents: number
+  revenueLast4SecondCents: number
+  weeksOpen: number
+  weeksClosed: number
 }
 
 /** Raising money as the player sees it. The investors' confidence shows only as their mood. */
@@ -2066,6 +2119,8 @@ export type ReportEntry =
   /** Plan 4: an owned asset broke down until `untilWeek`; repairing it costs `repairCents`. */
   | { kind: 'asset_broke'; assetId: string; untilWeek: number; repairCents: number; booked: number }
   | { kind: 'asset_repaired'; assetId: string; costCents: number }
+  | { kind: 'gear_worn'; productId: FeatureId }
+  | { kind: 'gear_replaced'; productId: FeatureId; costCents: number }
   | { kind: 'asset_haul_out'; assetId: string; weeks: number; costCents: number }
   | { kind: 'asset_taken_back'; assetId: string }
   /** Plan 4: a cruise week below the minimum to sail, cancelled three weeks out. */
@@ -2391,6 +2446,27 @@ export type FundingEconomics = {
 
 /** A loan in the post-mortem: what it cost, what it paid for, and how it ended. */
 /** Plan 3: one office stage in the post-mortem: when, what it cost, what changed. */
+/** Plan 6: a product's gear in the post-mortem. */
+export type GearLine = {
+  productId: FeatureId
+  uses: number
+  lifeUses: number
+  replacements: number
+  replaceCents: number
+  wornWeeks: number
+}
+
+/** Plan 6: the second site in the post-mortem. */
+export type SecondSiteEconomics = SecondSiteRecord & {
+  name: string
+  /** Its rent over the first site's (per month) times the months it was rented, and its one-off. */
+  rentCents: number
+  oneOffCents: number
+  /** The share of the first site's demand it took, and its new reach (now shown). */
+  cannibalisation: number
+  reach: number
+}
+
 export type OfficeEconomics = {
   place: string
   stage: number
@@ -2481,6 +2557,9 @@ export type AssetEconomics = {
   costCents: number
   weeksUsed: number
   breakdowns: number
+  /** Plan 6: the first unit's id for a second unit, and gross revenue where there are two. */
+  secondOf: string | null
+  revenueCents: number | null
 }
 
 /** Plan 4: the post-mortem's lines on the abroad mechanics. */
@@ -2568,6 +2647,10 @@ export type PostMortem = {
   }
   /** Plan 3: each office stage reached by an offer, oldest first. */
   office: OfficeEconomics[]
+  /** Plan 6: the second site, if one opened. */
+  secondSite?: SecondSiteEconomics
+  /** Plan 6: gear that wears, per product. Absent without it. */
+  gear?: GearLine[]
   /** Plan 6: each price season of the run, oldest first. Absent without price elasticity. */
   priceSeasons?: PriceSeasonLine[]
   /** Leads that walked in at an office, and the customers they became, per office and market. */

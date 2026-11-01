@@ -7,7 +7,7 @@ import {
   officeBusy,
   stageNumber,
 } from './systems/office'
-import { occupancyPct, turnedAwayWeeks } from './systems/bookings'
+import { occupancyPct, openSecondSite, secondSiteShare, turnedAwayWeeks } from './systems/bookings'
 import { monthsCovering } from './systems/finance'
 import { bookingsRevenueOrSubscriptions, bookingsView } from './systems/bookings'
 import { fundingView } from './systems/funding'
@@ -46,6 +46,7 @@ import type {
   ChannelId,
   GameState,
   OfficeView,
+  SecondSiteView,
   InterviewEvidence,
   InterviewView,
   InvoiceStatus,
@@ -511,6 +512,30 @@ export function officeView(state: GameState): OfficeView {
     peakTurnedAwayWeeks: turnedAwayWeeks(state, true),
     occupancyPct: occupancyPct(state),
     prepaid: office.prepaid.map(nameOf),
+    secondSite: secondSiteView(state),
+  }
+}
+
+/** Plan 6: the second site side by side with the first, once the company moved there. */
+function secondSiteView(state: GameState): SecondSiteView | null {
+  const site = currentStage(state).secondSite
+  if (!site || !state.bookings) return null
+  const open = openSecondSite(state) !== null
+  const share = open ? secondSiteShare(state) : 0
+  const last4 = state.ledger.slice(-4).reduce((t, l) => t + l.revenueCents, 0)
+  const second = Math.round(last4 * share)
+  const record = state.company.office.secondSite
+  return {
+    name: site.name,
+    open,
+    founderAt: state.company.office.founderAt ?? 'first',
+    needsRole: currentStage(state).needsContract!,
+    capacity: { ...site.capacity },
+    sharePct: Math.round(share * 100),
+    revenueLast4FirstCents: last4 - second,
+    revenueLast4SecondCents: second,
+    weeksOpen: record?.weeksOpen ?? 0,
+    weeksClosed: record?.weeksClosed ?? 0,
   }
 }
 

@@ -38,6 +38,8 @@ export type TourismRule = {
   roster: 'careful' | 'over' | 'under'
   /** Prices from interview hints per season, or the starting price all year. */
   pricing: 'hints' | 'fixed'
+  /** Plan 6: a second boat: by its fill (careful, the default), never, or at the first offer. */
+  second?: 'careful' | 'never' | 'always'
   /** Fixes snags and keeps a margin on the roster; false ignores both (reviews blind). */
   reviews: boolean
   /** Cancellation policy: chosen by what the bot sees, or always one. */
@@ -914,6 +916,15 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         event.choices.find((c) =>
           c.effects.some((fx) => fx.type === 'asset' && fx.option === option),
         )
+      // Plan 6: worn gear replaced while the money covers it twice and the run has a season left.
+      const replace = event.choices.find((c) => c.effects.some((fx) => fx.type === 'replaceWorn'))
+      if (replace) {
+        const cost = m.choices.find((c) => c.id === replace.id)?.costCents ?? 0
+        const weeksLeft = scenario.maxWeeks - view.week
+        if (view.company.cashCents > cost * 2 && weeksLeft > 16)
+          out.push({ messageId: m.id, choiceId: replace.id })
+        continue
+      }
       const repair = event.choices.find((c) => c.effects.some((fx) => fx.type === 'assetRepair'))
       if (repair) {
         const cost = view.bookings?.assets[0]?.terms.buy?.repairCents ?? 0
@@ -921,6 +932,15 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
         continue
       }
       if (!event.choices.some((c) => c.effects.some((fx) => fx.type === 'asset'))) continue
+      // Plan 6: a second unit (a second boat), by the bot's second rule.
+      const second = event.choices
+        .flatMap((c) => c.effects)
+        .find((fx) => fx.type === 'asset' && cfg.assets?.[fx.id]?.secondOf)
+      if (second?.type === 'asset') {
+        const choice = secondUnitChoice(view, event, second.id)
+        if (choice) out.push({ messageId: m.id, choiceId: choice })
+        continue
+      }
       if (cfg.leisure?.classStaffing) {
         const l = view.bookings!.leisure!
         const needRoom =
@@ -964,6 +984,37 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       if (choice) out.push({ messageId: m.id, choiceId: choice.id })
     }
     return out
+  }
+
+  /**
+   * Plan 6 (target B1): the answer to a second unit's offer. `always` takes the first option
+   * listed at once; `never` leaves it; the careful bot leases (or manages, where that is the only
+   * option) once the peak has turned guests away in 3 of the last 8 weeks, the run has a season
+   * left, and the money covers the lease's first payment and three months of fixed costs.
+   */
+  function secondUnitChoice(
+    view: PlayerView,
+    event: Scenario['events'][number],
+    id: string,
+  ): string | null {
+    const mode = rule.second ?? 'careful'
+    if (mode === 'never') return null
+    const options = event.choices.filter((c) =>
+      c.effects.some((fx) => fx.type === 'asset' && fx.id === id && fx.option !== 'none'),
+    )
+    if (mode === 'always') return options[0]?.id ?? null
+    const a = cfg.assets?.[id]
+    const lease = options.find((c) =>
+      c.effects.some((fx) => fx.type === 'asset' && fx.option === 'lease'),
+    )
+    const pick = lease ?? options[0]
+    if (!pick || !a) return null
+    const upfront = a.lease ? Math.round(a.lease.seasonCents * a.lease.upfrontShare) : 0
+    const enough =
+      view.office.peakTurnedAwayWeeks >= 3 &&
+      scenario.maxWeeks - view.week >= 26 &&
+      view.company.cashCents >= upfront + 3 * view.company.monthlyFixedCostsCents
+    return enough ? pick.id : null
   }
 
   /**
@@ -1508,6 +1559,21 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
       plan.outreach[target] = (plan.outreach[target] ?? 0) + b.free
       b.free = 0
     }
+    // Plan 6: with two sites, the founder works at the second while no manager is on contract
+    // there (the always-second bot only; the careful bot opens one only with a manager).
+    const site = view.office.secondSite
+    if (site && rule.office === 'always_second') {
+      const managed = bv.contracts.some((c) => c.roleId === site.needsRole && c.working)
+      b.plan.office = { notice: false, founderAt: managed ? 'first' : 'second' }
+    }
+    // Plan 6: a product that takes over a leased one (a rescue boat bought) once the money
+    // covers it with four months of fixed costs to spare.
+    for (const [id, p] of Object.entries(cfg.products)) {
+      if (!p.replaces || !bv.products.find((x) => x.id === p.replaces)?.shipped) continue
+      if (bv.products.find((x) => x.id === id)?.shipped) continue
+      if (view.company.cashCents - p.oneOffCents < 4 * view.company.monthlyFixedCostsCents) continue
+      b.build(id, b.free)
+    }
     if (cfg.leisure) planLeisure(view, b, plan, rule)
     if (cfg.leisure?.classStaffing) priceFitness(scenario, view, plan, rule)
     if (cfg.leisure?.hall) priceClimbing(scenario, view, plan, rule)
@@ -1537,14 +1603,24 @@ const tourism = (
   description: string,
   rule: TourismRule,
   scenarios?: string[],
+  needs?: (scenario: Scenario) => boolean,
 ): Strategy => ({
   id,
   description,
   model: 'bookings',
   ...(scenarios ? { scenarios } : {}),
+  ...(needs ? { needs } : {}),
   ...(rule.loan !== undefined || rule.refitLoan ? { needsLoan: true } : {}),
   create: (scenario, seed) => tourismPlayer(scenario, rule, seed),
 })
+
+/** Plan 6: the scenario has a second site (a stage) or a second unit of an asset. */
+function hasSecond(scenario: Scenario): boolean {
+  return (
+    scenario.officeStages.some((o) => o.secondSite) ||
+    Object.values(scenario.bookings?.assets ?? {}).some((a) => a.secondOf)
+  )
+}
 
 /** The careful bot answering one event the same way every time (the event table, item 18). */
 export const tourismForced = (eventId: string, choiceId: string): Strategy =>
@@ -1726,6 +1802,21 @@ export const TOURISM_STRATEGIES: Strategy[] = [
     'tourism_always_move',
     'Plays like tourism_careful but accepts every offer of a bigger place at once, and lists it in the bank plan where there is one (plan 3, target O2).',
     { ...CAREFUL_TOURISM, office: 'always' },
+  ),
+  // Plan 6 (targets S1 and B1): only where a stage opens a second site or an asset has a second unit.
+  tourism(
+    'tourism_never_second',
+    'Plays like tourism_careful but never opens a second site or takes a second boat (plan 6, targets S1 and B1).',
+    { ...CAREFUL_TOURISM, office: 'never_second', second: 'never' },
+    undefined,
+    hasSecond,
+  ),
+  tourism(
+    'tourism_always_second',
+    'Plays like tourism_careful but opens a second site the week it is offered, working there itself while no manager is on contract, and takes a second boat at the first offer (plan 6, targets S1 and B1).',
+    { ...CAREFUL_TOURISM, office: 'always_second', second: 'always' },
+    undefined,
+    hasSecond,
   ),
   tourism('tourism_always_strict', 'Plays like tourism_careful with a strict policy all run.', {
     ...CAREFUL_TOURISM,

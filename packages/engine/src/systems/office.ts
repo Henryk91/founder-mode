@@ -1,5 +1,5 @@
-import type { ChannelId, OfficeStage } from '@founder-mode/content'
-import type { Rng } from '../rng'
+import type { ChannelId, OfficeStage, Scenario } from '@founder-mode/content'
+import { Rng, seedRng } from '../rng'
 import type { GameState, Modifier, OfficeStay, ReportEntry, WeekPlan } from '../types'
 import { OddsTally } from './odds'
 import { addLeads } from './sales'
@@ -138,10 +138,34 @@ export function canGiveNotice(state: GameState): boolean {
   return !!stay && stay.stage === state.company.officeStage && stay.leftWeek === null
 }
 
+/** Plan 6: the company works from a stage with a second site (moved in). */
+export const hasSecondSite = (state: Pick<GameState, 'scenario' | 'company'>): boolean =>
+  currentStage(state).secondSite !== undefined
+
 /** Whether a plan's office part can be carried out. */
 export function officePlanValid(state: GameState, plan: WeekPlan): boolean {
+  if (plan.office?.founderAt !== undefined && !hasSecondSite(state)) return false
   if (!plan.office?.notice) return true
   return canGiveNotice(state)
+}
+
+/**
+ * Plan 6: a second site's new reach and the share of the first site's demand it takes, drawn from
+ * their own stream of the seed so that adding a second site moves no other draw.
+ */
+export function drawSecondSite(
+  scenario: Scenario,
+  seed: string,
+): { secondSite?: { reach: number; cannibalisation: number } } {
+  const site = scenario.officeStages.find((o) => o.secondSite)?.secondSite
+  if (!site) return {}
+  const rng = new Rng(seedRng(`${seed}|second-site`))
+  return {
+    secondSite: {
+      reach: rng.range(site.reach.min, site.reach.max),
+      cannibalisation: rng.range(site.cannibalisation.min, site.cannibalisation.max),
+    },
+  }
 }
 
 /** Monthly revenue over the last four weeks, for the stays' before and after. */
@@ -232,6 +256,10 @@ export function applyOfficeWeek(
   const stays = (f: (s: OfficeStay) => OfficeStay) =>
     office().stays.map((s, i, all) => (i === all.length - 1 ? f(s) : s))
 
+  // Plan 6: where the founder works this week, while there are two sites.
+  if (plan.office?.founderAt && hasSecondSite(state))
+    setOffice({ founderAt: plan.office.founderAt })
+
   const move = office().move
   if (move && week >= move.readyWeek) {
     // The rent moved at acceptance; moveOffice keeps it and lays the new stage's effects.
@@ -260,6 +288,8 @@ export function applyOfficeWeek(
       const left = currentStage(state)
       const back = previousStage(state)
       if (back) state = moveOffice(state, back.id)
+      // Plan 6: giving up the second site brings the founder back to the first.
+      if (left.secondSite && office().founderAt) setOffice({ founderAt: 'first' })
       out.incomeCents += left.depositCents ?? 0
       setOffice({
         notice: null,
@@ -279,6 +309,47 @@ export function applyOfficeWeek(
   }
   out.state = state
   return out
+}
+
+/**
+ * Plan 6, after the bookings step: the second site's week. `open` and `share` come from the
+ * bookings step's view of it (stage in effect, its share of capacity); `revenueCents` is the
+ * week's money in from guests.
+ */
+export function recordSecondSite(
+  state: GameState,
+  open: boolean,
+  share: number,
+  revenueCents: number,
+): GameState {
+  if (!hasSecondSite(state)) return state
+  const office = state.company.office
+  const drawn = state.hidden.bookings?.secondSite
+  const was = office.secondSite ?? {
+    openedWeek: state.week,
+    weeksOpen: 0,
+    weeksClosed: 0,
+    weeksFounderThere: 0,
+    revenueCents: 0,
+    addedCents: 0,
+  }
+  // What the site added: its reach over the demand with both open, less what it took.
+  const added =
+    open && drawn
+      ? Math.round(
+          (revenueCents * (drawn.reach - drawn.cannibalisation)) /
+            Math.max(0.01, 1 - drawn.cannibalisation + drawn.reach),
+        )
+      : 0
+  const record = {
+    ...was,
+    weeksOpen: was.weeksOpen + (open ? 1 : 0),
+    weeksClosed: was.weeksClosed + (open ? 0 : 1),
+    weeksFounderThere: was.weeksFounderThere + (office.founderAt === 'second' ? 1 : 0),
+    revenueCents: was.revenueCents + (open ? Math.round(revenueCents * share) : 0),
+    addedCents: was.addedCents + added,
+  }
+  return { ...state, company: { ...state.company, office: { ...office, secondSite: record } } }
 }
 
 /** A loan bought this stage's fit-out (plan 3): accepting its offer costs nothing more. */

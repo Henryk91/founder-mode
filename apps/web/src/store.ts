@@ -237,6 +237,8 @@ export type UiActions = {
   setLoan(change: Partial<LoanPlan>): void
   /** Plan 3: give notice on the office stage this week, or take it back. */
   setOfficeNotice(on: boolean): void
+  /** Plan 6: where the founder works this week while there are two sites. */
+  setFounderAt(site: 'first' | 'second'): void
   /** Answers a message now: its hours count at once, its effects land when the week ends. */
   answer(messageId: string, choiceId: string): void
   /** First step of shutting down: shows the question. Nothing happens to the run yet. */
@@ -780,7 +782,13 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         editPlan((p) => ({ ...p, bookings: { ...(p.bookings ?? noBookings()), ...change } })),
       setLoan: (change) =>
         editPlan((p) => ({ ...p, loan: { ...(p.loan ?? noLoan()), ...change } })),
-      setOfficeNotice: (on) => editPlan((p) => ({ ...p, office: { notice: on } })),
+      setOfficeNotice: (on) =>
+        editPlan((p) => ({
+          ...p,
+          office: { ...(p.office?.founderAt ? { founderAt: p.office.founderAt } : {}), notice: on },
+        })),
+      setFounderAt: (site) =>
+        editPlan((p) => ({ ...p, office: { notice: p.office?.notice ?? false, founderAt: site } })),
       answer(messageId, choiceId) {
         if (!game || game.status !== 'running') return
         try {

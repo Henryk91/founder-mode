@@ -4,7 +4,7 @@ import { Rng, seedRng } from './rng'
 import { drawElasticity, initBookings } from './systems/bookings'
 import { emptyFunding, emptyHiddenFunding } from './systems/funding'
 import { drawHiddenSegments } from './systems/market'
-import { moveOffice } from './systems/office'
+import { drawSecondSite, moveOffice } from './systems/office'
 import { initialProduct } from './systems/product'
 import type { GameState, Scenario } from './types'
 import { ENGINE_VERSION } from './version'
@@ -50,7 +50,13 @@ export function createGame(scenario: Scenario, seed: string): GameState {
       waitsForChase: [],
       teamSkills: {},
       funding: emptyHiddenFunding({ scenario }),
-      bookings: tourism ? { ...tourism.hidden, ...drawElasticity(scenario, seed) } : null,
+      bookings: tourism
+        ? {
+            ...tourism.hidden,
+            ...drawElasticity(scenario, seed),
+            ...drawSecondSite(scenario, seed),
+          }
+        : null,
     },
     knowledge: Object.fromEntries(scenario.segments.map((s) => [s.id, []])),
     product: initialProduct({ scenario }),

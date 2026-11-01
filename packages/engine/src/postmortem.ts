@@ -7,6 +7,7 @@ import {
   priceSeasonOf,
 } from './systems/bookings'
 import { assetsEconomics } from './systems/assets'
+import { gearLines } from './systems/fleet'
 import { bucketFor, interviewsOf } from './systems/experiments'
 import { monthlyFixedCostsCents, runwayWeeks } from './systems/finance'
 import { companyValueCents, founderShareBp, fundingHours } from './systems/funding'
@@ -32,6 +33,7 @@ import type {
   PostMortemCauseId,
   PriceSeasonLine,
   PriceSeasonTotals,
+  SecondSiteEconomics,
   SegmentId,
   SuggestionId,
   WeekPlan,
@@ -127,10 +129,39 @@ export function buildPostMortem(state: GameState): PostMortem {
     },
     office: officeEconomics(state),
     ...(state.scenario.bookings?.elasticity ? { priceSeasons: priceSeasons(state) } : {}),
+    ...secondSiteLine(state),
+    ...(gearLines(state) ? { gear: gearLines(state)! } : {}),
     walkIns: walkInCounts(state),
     sources: sourceCounts(state),
     guests: guestsEconomics(state),
     luck,
+  }
+}
+
+/**
+ * Plan 6: the second site, if one opened: its weeks, its part of money in, what it added after
+ * taking guests from the first site, its extra rent while rented and its one-off.
+ */
+function secondSiteLine(state: GameState): { secondSite?: SecondSiteEconomics } {
+  const record = state.company.office.secondSite
+  const drawn = state.hidden.bookings?.secondSite
+  const i = state.scenario.officeStages.findIndex((o) => o.secondSite)
+  if (!record || !drawn || i < 1) return {}
+  const stage = state.scenario.officeStages[i]!
+  const before = state.scenario.officeStages[i - 1]!
+  const weeksPerMonth = state.scenario.finance.weeksPerMonth
+  const rented = state.company.office.stays
+    .filter((x) => x.stage === stage.id)
+    .reduce((t, x) => t + ((x.leftWeek ?? state.week) - x.acceptedWeek), 0)
+  return {
+    secondSite: {
+      ...record,
+      name: stage.secondSite!.name,
+      rentCents: Math.round(((stage.monthlyCents - before.monthlyCents) * rented) / weeksPerMonth),
+      oneOffCents: stage.oneOffCents ?? 0,
+      cannibalisation: drawn.cannibalisation,
+      reach: drawn.reach,
+    },
   }
 }
 

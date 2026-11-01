@@ -397,6 +397,47 @@ export function PostMortem({ desk }: { desk: boolean }) {
                 })}
         </p>
       ))}
+      {pm.secondSite && (
+        <p>
+          {label('pm.site.line', stage, {
+            name: pm.secondSite.name,
+            week: pm.secondSite.openedWeek,
+            open: pm.secondSite.weeksOpen,
+            closed: pm.secondSite.weeksClosed,
+            there: pm.secondSite.weeksFounderThere,
+            revenue: formatEuro(pm.secondSite.revenueCents),
+            added: formatEuro(pm.secondSite.addedCents),
+            rent: formatEuro(pm.secondSite.rentCents),
+            oneOff: formatEuro(pm.secondSite.oneOffCents),
+            took: Math.round(pm.secondSite.cannibalisation * 100),
+            reach: Math.round(pm.secondSite.reach * 100),
+          })}
+        </p>
+      )}
+      {(pm.guests?.assets ?? [])
+        .filter((a) => a.revenueCents !== null && a.option !== 'none')
+        .map((a) => (
+          <p key={`asset-${a.id}`}>
+            {label('pm.asset.unit', stage, {
+              name: a.name,
+              weeks: a.weeksUsed,
+              revenue: formatEuro(a.revenueCents ?? 0),
+              costs: formatEuro(a.costCents),
+            })}
+          </p>
+        ))}
+      {(pm.gear ?? []).map((g) => (
+        <p key={`gear-${g.productId}`}>
+          {label('pm.gear.line', stage, {
+            name: pm.names.features[g.productId] ?? g.productId,
+            uses: g.uses,
+            life: g.lifeUses,
+            replaced: g.replacements,
+            cost: formatEuro(g.replaceCents * g.replacements),
+            worn: g.wornWeeks,
+          })}
+        </p>
+      ))}
       {(pm.priceSeasons ?? []).map((x) => (
         <p key={`price-${x.fromWeek}`}>
           {priceSeasonText(x, stage)}

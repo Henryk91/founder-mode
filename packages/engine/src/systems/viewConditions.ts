@@ -1,6 +1,6 @@
 import type { Condition, ConditionPath, FixedConditionPath } from '@founder-mode/content'
 import type { MessageView, PlayerView } from '../types'
-import { conditionHolds, shippedFeature } from './conditions'
+import { conditionHolds, shippedFeature, wornProduct } from './conditions'
 
 /**
  * Condition paths read from the player's view (situational events, step 3). Every path reads the
@@ -84,6 +84,14 @@ const VIEW_METRICS: Record<FixedConditionPath, (v: PlayerView, m: MessageView | 
   'asset.shared': (v) => (v.bookings?.assets[0]?.option === 'share' ? 1 : 0),
   'asset.none': (v) => (v.bookings?.assets[0]?.option === 'none' ? 1 : 0),
   'asset.broken': (v) => (v.bookings?.assets[0]?.broken ? 1 : 0),
+  'asset.secondNone': (v) =>
+    v.bookings?.assets.find((a) => a.secondOf)?.option === 'none' ? 1 : 0,
+  'asset.secondTaken': (v) => {
+    const u = v.bookings?.assets.find((a) => a.secondOf)
+    return u && u.option !== 'none' ? 1 : 0
+  },
+  'asset.secondBroken': (v) => (v.bookings?.assets.find((a) => a.secondOf)?.broken ? 1 : 0),
+  'office.twoSites': (v) => (v.office.secondSite ? 1 : 0),
   'sender.overdue': (v, m) =>
     m && v.invoices.some((i) => i.customerName === m.fromName && i.status === 'overdue') ? 1 : 0,
   'sender.silent': (v, m) =>
@@ -105,6 +113,8 @@ export function viewConditionValue(
   if (feature !== null) {
     return view.product.features.some((f) => f.id === feature && f.shipped) ? 1 : 0
   }
+  const worn = wornProduct(path)
+  if (worn !== null) return view.bookings?.products.find((p) => p.id === worn)?.wear?.worn ? 1 : 0
   return VIEW_METRICS[path as FixedConditionPath](view, message)
 }
 

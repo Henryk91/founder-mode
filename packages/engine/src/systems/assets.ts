@@ -1,6 +1,7 @@
 import type { AssetConfig, BookingsConfig, Scenario } from '@founder-mode/content'
 import type { Rng } from '../rng'
 import { costFactor } from './abroad'
+import { currentStage } from './office'
 import type {
   AssetEconomics,
   AssetOption,
@@ -63,12 +64,18 @@ export function initAssets(cfg: BookingsConfig): Record<string, AssetState> | un
   )
 }
 
-/** The asset a product runs on, if any. */
+/** The asset a product runs on, if any: the first unit where there are two (plan 6). */
 export function assetOf(cfg: BookingsConfig, product: FeatureId): [string, AssetConfig] | null {
   for (const [id, a] of Object.entries(cfg.assets ?? {})) {
-    if (a.products.includes(product)) return [id, a]
+    if (a.products.includes(product) && !a.secondOf) return [id, a]
   }
   return null
+}
+
+/** Plan 6: every unit a product runs on, the first unit first. */
+export function assetsOf(cfg: BookingsConfig, product: FeatureId): [string, AssetConfig][] {
+  const all = Object.entries(cfg.assets ?? {}).filter(([, a]) => a.products.includes(product))
+  return [...all.filter(([, a]) => !a.secondOf), ...all.filter(([, a]) => a.secondOf)]
 }
 
 /** An owned asset is out of the water for its haul-out in this week. */
@@ -85,9 +92,14 @@ export function hauledOut(scenario: Scenario, a: AssetConfig, week: number): boo
 export function assetFactor(state: GameState, product: FeatureId, week: number): number {
   const cfg = state.scenario.bookings
   if (!cfg?.assets) return 1
-  const found = assetOf(cfg, product)
-  if (!found) return 1
-  const [id, a] = found
+  const units = assetsOf(cfg, product)
+  if (units.length === 0) return 1
+  // Plan 6: a second unit adds its own share to the first's.
+  return units.reduce((t, [id, a]) => t + unitFactor(state, id, a, week), 0)
+}
+
+/** One unit's share of a product's capacity in a week (see `assetFactor`). */
+export function unitFactor(state: GameState, id: string, a: AssetConfig, week: number): number {
   const s = state.bookings?.assets?.[id]
   if (!s) return 0
   const month = monthAt(state.scenario, week)
@@ -311,26 +323,73 @@ export function assetsUsed(
   if (!cfg?.assets || !b?.assets) return { state, costsCents: 0 }
   let costs = 0
   const assets = { ...b.assets }
+  const split = splitServed(state, served)
   for (const [id, a] of Object.entries(cfg.assets)) {
     const s = assets[id]!
     let units = 0
     let gross = 0
     for (const p of a.products) {
-      units += served.get(p)?.units ?? 0
-      gross += served.get(p)?.grossCents ?? 0
+      units += split.get(`${id}|${p}`)?.units ?? 0
+      gross += split.get(`${id}|${p}`)?.grossCents ?? 0
     }
     if (units === 0) continue
     let cost = 0
-    if (s.option === 'buy') cost += Math.round((a.buy?.crewWeekCents ?? 0) * localF(state, 'roles'))
+    if (s.option === 'buy')
+      cost += Math.round(
+        (a.buy?.crewWeekCents ?? 0) *
+          localF(state, 'roles') *
+          // Plan 6: a crew house makes an owner's crew a little cheaper.
+          (currentStage(state).assetCrewFactor ?? 1),
+      )
     if (s.option === 'lease')
       cost += Math.round((a.lease?.crewWeekCents ?? 0) * localF(state, 'roles'))
     if (s.option === 'share' && a.share) {
       cost += units * a.share.unitCents + Math.round(gross * a.share.revenueShare)
     }
-    assets[id] = { ...s, weeksUsed: s.weeksUsed + 1, costCents: s.costCents + cost }
+    assets[id] = {
+      ...s,
+      weeksUsed: s.weeksUsed + 1,
+      costCents: s.costCents + cost,
+      ...(a.secondOf || Object.values(cfg.assets).some((x) => x.secondOf === id)
+        ? { revenueCents: (s.revenueCents ?? 0) + gross }
+        : {}),
+    }
     costs += cost
   }
   return { state: { ...state, bookings: { ...b, assets } }, costsCents: costs }
+}
+
+/**
+ * Plan 6: a week's served units and gross revenue per unit and product: the first unit fills up to
+ * its share of the capacity, the second takes the rest. One unit takes all of it, as before.
+ */
+function splitServed(
+  state: GameState,
+  served: Map<FeatureId, { units: number; grossCents: number }>,
+): Map<string, { units: number; grossCents: number }> {
+  const cfg = state.scenario.bookings!
+  const out = new Map<string, { units: number; grossCents: number }>()
+  for (const [p, x] of served) {
+    const units = assetsOf(cfg, p)
+    if (units.length === 1) {
+      out.set(`${units[0]![0]}|${p}`, { ...x })
+      continue
+    }
+    let left = x.units
+    for (const [k, [id, a]] of units.entries()) {
+      const room =
+        k === units.length - 1
+          ? left
+          : Math.min(
+              left,
+              Math.floor((cfg.products[p]?.capacity ?? 0) * unitFactor(state, id, a, state.week)),
+            )
+      left -= room
+      const share = x.units > 0 ? room / x.units : 0
+      out.set(`${id}|${p}`, { units: room, grossCents: Math.round(x.grossCents * share) })
+    }
+  }
+  return out
 }
 
 /** The assets for the view. */
@@ -363,6 +422,8 @@ export function assetsView(state: GameState): AssetView[] {
       breakdowns: s.breakdowns,
       weeksUsed: s.weeksUsed,
       costCents: s.costCents,
+      secondOf: a.secondOf ?? null,
+      revenueCents: s.revenueCents ?? null,
       leaseMinUntil:
         s.option === 'lease' && a.lease && s.leaseFromWeek !== null
           ? s.leaseFromWeek + a.lease.minMonths * WEEKS_PER_MONTH - 1
@@ -431,6 +492,8 @@ export function assetsEconomics(state: GameState): AssetEconomics[] | undefined 
       costCents: s.costCents,
       weeksUsed: s.weeksUsed,
       breakdowns: s.breakdowns,
+      secondOf: a.secondOf ?? null,
+      revenueCents: s.revenueCents ?? null,
     }
   })
 }

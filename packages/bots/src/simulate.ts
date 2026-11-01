@@ -72,6 +72,10 @@ export type RunResult = {
   office: { offered: number[]; taken: number[] }
   /** Plan 3: the week the screens turned established, or null. */
   establishedWeek: number | null
+  /** Plan 6: the second site, where one opened (absent otherwise, so other results stay alike). */
+  secondSite?: { openedWeek: number; weeksOpen: number; addedCents: number }
+  /** Plan 6: the second unit of an asset, where one was taken. */
+  secondUnit?: { sinceWeek: number; option: string; weeksUsed: number; revenueCents: number }
   strategy: string
   seed: string
   ending: EndingId
@@ -330,6 +334,36 @@ const monthlyRevenue = (s: GameState) =>
   s.customers.filter((c) => c.churnedWeek === null).reduce((t, c) => t + c.priceCentsPerMonth, 0)
 
 /** Plays one full run. Throws if a strategy produces an invalid plan, which is a bot bug. */
+/** Plan 6: the second site and second unit fields of a run's result, where there were any. */
+function secondResults(state: GameState): Pick<RunResult, 'secondSite' | 'secondUnit'> {
+  const site = state.company.office.secondSite
+  const unitId = Object.entries(state.scenario.bookings?.assets ?? {}).find(
+    ([, a]) => a.secondOf,
+  )?.[0]
+  const unit = unitId ? state.bookings?.assets?.[unitId] : undefined
+  return {
+    ...(site
+      ? {
+          secondSite: {
+            openedWeek: site.openedWeek,
+            weeksOpen: site.weeksOpen,
+            addedCents: site.addedCents,
+          },
+        }
+      : {}),
+    ...(unit && unit.option !== 'none'
+      ? {
+          secondUnit: {
+            sinceWeek: unit.sinceWeek,
+            option: unit.option,
+            weeksUsed: unit.weeksUsed,
+            revenueCents: unit.revenueCents ?? 0,
+          },
+        }
+      : {}),
+  }
+}
+
 export function runGame(real: Scenario, strategy: Strategy, seed: string): RunResult {
   const scenario = strategy.adapt ? strategy.adapt(real) : real
   let state = createGame(scenario, seed)
@@ -484,6 +518,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     ending: state.ending ?? 'still_searching',
     office: { offered: officeOffered, taken: [...new Set(officeTaken)].sort() },
     establishedWeek,
+    ...secondResults(state),
     weeks: state.week,
     viableSegment: viable?.[0] ?? '',
     roles: Object.fromEntries(
