@@ -378,6 +378,7 @@ function splitServed(
     // Only units working this week serve guests: a second unit not taken (or out of its months)
     // takes none, and with one working unit (or none) the first takes all, as with one asset.
     const units = all.filter(([id, a]) => unitFactor(state, id, a, state.week) > 0)
+    if (all.length === 0) continue
     if (units.length <= 1) {
       const [id] = units[0] ?? all[0]!
       out.set(`${id}|${p}`, { ...x })
