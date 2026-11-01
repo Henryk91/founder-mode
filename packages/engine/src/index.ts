@@ -74,6 +74,8 @@ export type {
   PlanIssue,
   PostMortem,
   PriceSeasonLine,
+  SecondSiteView,
+  SecondSiteEconomics,
   PriceSeasonTotals,
   SeasonPrices,
   GuestsEconomics,

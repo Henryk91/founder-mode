@@ -1,3 +1,4 @@
+import { replaceWorn } from './fleet'
 import { loseLeisureInstructor } from './leisure'
 import type { Effect, ScenarioEvent } from '@founder-mode/content'
 import type { Rng } from '../rng'
@@ -265,6 +266,12 @@ function applyEffect(
     }
     case 'assetRepair': {
       const done = repairAsset(state, effect.id)
+      out.costsCents += done.costCents
+      out.entries.push(...done.entries)
+      return done.state
+    }
+    case 'replaceWorn': {
+      const done = replaceWorn(state, effect.product)
       out.costsCents += done.costCents
       out.entries.push(...done.entries)
       return done.state

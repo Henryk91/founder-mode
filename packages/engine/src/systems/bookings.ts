@@ -28,6 +28,7 @@ import type { OfficeStage } from '@founder-mode/content'
 import type { BookingsConfig, Scenario, WeatherState } from '@founder-mode/content'
 import { Rng, seedRng } from '../rng'
 import { powPos } from '../math'
+import { addUses, isWorn, wearFactor, wornPenalty } from './fleet'
 import type {
   BookingTotal,
   Booking,
@@ -304,6 +305,8 @@ export function stageInEffect(
     const role = stage.needsContract
     if (
       !role ||
+      // Plan 6: a second site is open while the founder works there, manager or not.
+      (stage.secondSite && state.company.office.founderAt === 'second') ||
       (state.bookings?.contracts ?? []).some(
         (c) => c.roleId === role && contractWorks(state, c, state.week),
       )
@@ -313,6 +316,42 @@ export function stageInEffect(
     i--
   }
   return stages[0]!
+}
+
+/** Plan 6: the second site open this week (its stage in effect), or null. */
+export function openSecondSite(
+  state: Pick<GameState, 'scenario' | 'company' | 'bookings' | 'week'>,
+): NonNullable<OfficeStage['secondSite']> | null {
+  return stageInEffect(state).secondSite ?? null
+}
+
+/** Plan 6: the open second site's share of the capacity of the products it adds to. */
+export function secondSiteShare(state: GameState): number {
+  const site = openSecondSite(state)
+  if (!site) return 0
+  let own = 0
+  let all = 0
+  for (const [id, n] of Object.entries(site.capacity)) {
+    own += n
+    all += capacityAt(state, id, state.week)
+  }
+  return all > 0 ? Math.min(1, own / all) : 0
+}
+
+/** Plan 6: demand with a second site open: its new reach, less what it takes from the first. */
+function siteDemandFactor(state: GameState): number {
+  const drawn = state.hidden.bookings?.secondSite
+  if (!drawn || !openSecondSite(state)) return 1
+  return Math.max(0, 1 - drawn.cannibalisation + drawn.reach)
+}
+
+/** Plan 6: the review penalty for guests at the site the founder is not at, by its share. */
+function secondSitePenalty(state: GameState): number {
+  const site = openSecondSite(state)
+  if (!site) return 0
+  const share = secondSiteShare(state)
+  const away = state.company.office.founderAt === 'second' ? 1 - share : share
+  return site.reviewsWithoutFounder * away
 }
 
 /**
@@ -384,9 +423,18 @@ export function capacityAt(state: GameState, pool: FeatureId, week: number): num
     return cfg.leisure.slots.reduce((n, slot) => n + leisureCapacity(state, pool, slot.id, week), 0)
   const r = cfg.renovation
   // Plan 3: an office stage adds seats, rooms or gear.
-  const staged = (cfg.products[pool]?.capacity ?? 0) + (stageInEffect(state).capacity?.[pool] ?? 0)
+  const stage = stageInEffect(state)
+  const staged =
+    (cfg.products[pool]?.capacity ?? 0) +
+    (stage.capacity?.[pool] ?? 0) +
+    // Plan 6: an open second site adds its own.
+    (stage.secondSite?.capacity[pool] ?? 0)
   // Plan 4: a product that runs on an asset has the share of capacity the asset gives.
-  const base = cfg.assets ? Math.floor(staged * assetFactor(state, pool, week)) : staged
+  const assetBase = cfg.assets ? Math.floor(staged * assetFactor(state, pool, week)) : staged
+  // Plan 6: worn gear breaks more: less of it works.
+  const base = cfg.products[pool]?.wear
+    ? Math.floor(assetBase * wearFactor(state, pool))
+    : assetBase
   if (!r || r.product !== pool) return base
   return Math.max(0, base - r.unitsPerRoom * roomsUnderWorks(state, week))
 }
@@ -833,6 +881,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   let loan = state.loan
   if (loan && roomsPaid > 0) loan = { ...loan, roomsBought: (loan.roomsBought ?? 0) - roomsPaid }
   const stages: string[] = []
+  const replaced: FeatureId[] = []
   for (const f of state.product.features) {
     const prod = cfg.products[f.id]
     if (!prod || f.shippedWeek !== week) continue
@@ -843,6 +892,26 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     if (prod.monthlyCents > 0 && !fixedCosts.some((c) => c.id === `product_${f.id}`)) {
       const name = state.scenario.features.find((x) => x.id === f.id)?.name ?? f.id
       fixedCosts = [...fixedCosts, { id: `product_${f.id}`, name, monthlyCents: prod.monthlyCents }]
+    }
+    // Plan 6: a product that takes over another (a boat bought instead of leased) ends its
+    // monthly cost and counts as it from now.
+    if (prod.replaces) {
+      const old = prod.replaces
+      fixedCosts = fixedCosts.filter((c) => c.id !== `product_${old}`)
+      replaced.push(old)
+    }
+  }
+  if (replaced.length > 0) {
+    state = {
+      ...state,
+      product: {
+        ...state.product,
+        features: state.product.features.map((x) =>
+          replaced.includes(x.id) && x.shippedWeek === null
+            ? { ...x, progressHours: Math.max(x.progressHours, 0), shippedWeek: week }
+            : x,
+        ),
+      },
     }
   }
   state = {
@@ -979,6 +1048,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
   }
   const wtpRaised = Object.values(cfg.products).some((x) => x.wtpFactor)
+  const siteFactor = siteDemandFactor(state)
   const byAppeal = Object.values(cfg.products).some((x) => x.appeal !== undefined)
   for (const seg of state.scenario.segments) {
     const s = cfg.segments[seg.id]
@@ -1009,7 +1079,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       reviewFactor(state, seg.id) *
       weatherF *
       roleFactor(seg.id) *
-      (stageInEffect(state).segmentFactors?.[seg.id] ?? 1)
+      (stageInEffect(state).segmentFactors?.[seg.id] ?? 1) *
+      siteFactor
     if (cfg.leisure?.memberships) {
       state = joinLeisure({ ...state, bookings: b }, seg.id, units, rng)
       b = state.bookings!
@@ -2199,6 +2270,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
           seaDays -
           friction.penalty -
           floorPenalty -
+          secondSitePenalty(state) -
+          wornPenalty(state, served) -
           leisureFinished.reviewPenalty +
           rng.normal(r.noiseSd),
       ),
@@ -2209,6 +2282,13 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       reviews += added
       out.entries.push({ kind: 'review', rating, reviews, added })
     }
+  }
+
+  // Plan 6: the units served wear the gear that wears.
+  if (Object.values(cfg.products).some((x) => x.wear)) {
+    const worn = addUses({ ...state, bookings: b }, served)
+    b = worn.state.bookings!
+    out.entries.push(...worn.entries)
   }
 
   // Plan 4: guests of a cruise cancelled below the minimum, refunded, say so.
@@ -2476,6 +2556,14 @@ export function bookingsView(state: GameState): BookingsView | null {
         : null,
       wholeWeek: prod.wholeWeek ?? false,
       priceFactor: prod.priceFactor ?? 1,
+      wear: prod.wear
+        ? {
+            uses: b.wear?.[id]?.uses ?? 0,
+            lifeUses: prod.wear.lifeUses,
+            worn: isWorn(state, id),
+            replaceCents: prod.wear.replaceCents,
+          }
+        : null,
     })),
     abroad: abroadView(state),
     assets: assetsView(state),

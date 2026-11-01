@@ -74,9 +74,12 @@ export function AssetCard() {
   if (!view || assets.length === 0) return null
   return (
     <>
-      {assets.map((a) => (
-        <AssetSection key={a.id} view={view} asset={a} />
-      ))}
+      {assets
+        // Plan 6: a second unit shows once it is taken.
+        .filter((a) => !a.secondOf || a.option !== 'none')
+        .map((a) => (
+          <AssetSection key={a.id} view={view} asset={a} />
+        ))}
     </>
   )
 }
@@ -144,6 +147,15 @@ function AssetSection({ view, asset: a }: { view: PlayerView; asset: AssetView }
       )}
       {a.option !== 'none' && (
         <Stat name={label('asset.spent', stage)} value={formatEuro(a.costCents)} />
+      )}
+      {a.revenueCents !== null && a.option !== 'none' && (
+        <Stat
+          name={label('asset.revenue', stage)}
+          value={label('asset.revenueValue', stage, {
+            amount: formatEuro(a.revenueCents),
+            weeks: a.weeksUsed,
+          })}
+        />
       )}
       <h3 className={styles.title}>{label('asset.options', stage)}</h3>
       <ul className={styles.list}>

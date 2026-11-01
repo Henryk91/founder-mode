@@ -111,8 +111,65 @@ export function OfficePlan() {
           <Writing>{label('office.noticeLine', stage)}</Writing>
         </>
       )}
+      <SecondSitePlan />
       {o.stage < o.stages && <Writing>{label('office.offers', stage)}</Writing>}
       <HintLine term="office" hint={label('plan.hint.office', stage)} />
+    </>
+  )
+}
+
+/** Plan 6: the second site in the Plan: both sites side by side, and where the founder works. */
+function SecondSitePlan() {
+  const view = useGame((s) => s.view)
+  const planned = useGame((s) => s.plan.office?.founderAt)
+  const setFounderAt = useGame((s) => s.setFounderAt)
+  const site = view?.office.secondSite
+  if (!view || !site) return null
+  const stage = voiceOf(view)
+  const at = planned ?? site.founderAt
+  return (
+    <>
+      <SecondSiteFacts view={view} />
+      <Writing>{label('office.site.founderAt', stage)}</Writing>
+      <Choices>
+        {(['first', 'second'] as const).map((x) => (
+          <button
+            key={x}
+            type="button"
+            aria-pressed={at === x}
+            className={`${styles.chip} ${at === x ? styles.chipOn : ''}`}
+            onClick={() => setFounderAt(x)}
+          >
+            {x === 'first'
+              ? label('office.site.first', stage, { name: view.office.name })
+              : label('office.site.second', stage, { name: site.name })}
+          </button>
+        ))}
+      </Choices>
+      <Writing>{label('office.site.line', stage)}</Writing>
+    </>
+  )
+}
+
+/** Plan 6: the two sites' money in over four weeks, and whether the second is open. */
+function SecondSiteFacts({ view }: { view: PlayerView }) {
+  const stage = voiceOf(view)
+  const site = view.office.secondSite!
+  return (
+    <>
+      <Row
+        label={label('office.site.firstMoney', stage, { name: view.office.name })}
+        note={formatEuro(site.revenueLast4FirstCents)}
+      />
+      <Row
+        label={label('office.site.secondMoney', stage, { name: site.name })}
+        note={formatEuro(site.revenueLast4SecondCents)}
+      />
+      <Row
+        label={label('office.site.share', stage)}
+        note={label('office.occupancyValue', stage, { pct: site.sharePct })}
+      />
+      {!site.open && <Writing warn>{label('office.site.closed', stage)}</Writing>}
     </>
   )
 }
@@ -163,6 +220,25 @@ export function OfficeCard() {
             deposit: formatEuro(o.notice.depositCents),
           })}
         </p>
+      )}
+      {o.secondSite && (
+        <>
+          {stat(
+            label('office.site.secondMoney', stage, { name: o.secondSite.name }),
+            formatEuro(o.secondSite.revenueLast4SecondCents),
+          )}
+          <p className={styles.hint}>
+            {label(
+              o.secondSite.open
+                ? o.secondSite.founderAt === 'second'
+                  ? 'office.site.youThere'
+                  : 'office.site.youHere'
+                : 'office.site.closed',
+              stage,
+              { name: o.secondSite.name },
+            )}
+          </p>
+        </>
       )}
       {o.canGiveNotice && <p className={styles.hint}>{label('office.noticeLine', stage)}</p>}
     </section>
