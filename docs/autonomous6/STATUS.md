@@ -3,11 +3,10 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, Leinen los. splitServed fixed (8af428c, 094ebac); Tiefgang win rates
-unchanged but always_move 24.2 (report updated, tag stands). ll-m2: careful 47.8, never_move 48.9,
-always_move 42.3, E1 median week 49 (miss), B1 missed. Round 1 committed at eacd10b (E1 11 months;
-careful may manage a second gulet after a year in profit). Running run-ll-r1.sh (label ll-r1,
-five strategies). Round 2 if needed; then the full set, seeds, tests, lint, report, tag.
+Next action: step 3, Leinen los. ll-r1: E1 met (week 55), O1 −0.1, second gulet in 7 careful
+wins, always adding loses only 1.4. B1 round 2 committed at 6d03841 (managed second gulet: owner
+keeps 80%). Running run-ll-r2.sh (label ll-r2: careful, always_move, never_second, always_second).
+That ends B1's budget. Then the full set, pnpm seeds, tests, lint, report, tag plan6-leinenlos.
 Then in order: Ausgesperrt, Fabriketage, Schweisperle, Griffig.
 
 ## Checklist
