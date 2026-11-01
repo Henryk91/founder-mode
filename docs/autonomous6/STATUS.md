@@ -3,10 +3,10 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, Leinen los. ll-r1: E1 met (week 55), O1 −0.1, second gulet in 7 careful
-wins, always adding loses only 1.4. B1 round 2 committed at 6d03841 (managed second gulet: owner
-keeps 80%). Running run-ll-r2.sh (label ll-r2: careful, always_move, never_second, always_second).
-That ends B1's budget. Then the full set, pnpm seeds, tests, lint, report, tag plan6-leinenlos.
+Next action: step 3, Leinen los. Targets after round 2 (ll-r2): O1 −0.1, O2 5.3, E1 met (week
+55), B1 met (7 careful wins with the gulet; always adding −3.0), careful 47.7 (over band, reported).
+Running run-ll-full.sh (label ll-full). Then pnpm seeds, tests, lint, report
+reports/step3-leinenlos.md, tag plan6-leinenlos.
 Then in order: Ausgesperrt, Fabriketage, Schweisperle, Griffig.
 
 ## Checklist
