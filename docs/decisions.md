@@ -1232,3 +1232,25 @@ AUTONOMOUS: Diagnostics on 300 test seeds (Gratwanderung, Hinterhof, Seeblick; n
 AUTONOMOUS: Reading: with constant elasticity the best price does not depend on the season unless capacity binds, and most revenue comes from segments with elasticity near or below 1, so an off season discount gives away more than it brings. Price-blind keeps the designers' starting prices, which are already seasonal in most scenarios and sit at 86 to 99% of what guests pay. T7 therefore measures interview hints against well-set starting prices, not seasonal pricing against a flat price. Not restated (rule 7 forbids restating for a miss); listed for Henry.
 
 AUTONOMOUS: Bot round 2 (kept): a segment with guests turned away in the last four weeks prices at the hints at the peak, 0.95 shoulder, 0.9 off; one with room at 0.9, 0.85 and 0.8. It follows the plan's "hold when full, lower when idle" from a fact on screen.
+
+## Plan 6, step 2: second sites, second units and the fleet
+
+AUTONOMOUS: A second location is an office stage with a `secondSite` block, so it reuses the stage machinery (offer, one-off, rent, fit-out weeks as moving weeks, notice, losing the fit-out). Its capacity adds to the products', and demand is multiplied by 1 - cannibalisation + reach (both drawn per run from their own stream, hidden). The engine does not keep two calendars: bookings share one pool, and the view and the post-mortem split money by the second site's share of capacity. Keeping the intent (side by side, what it added) without rebuilding the calendar.
+
+AUTONOMOUS: The second site is open while someone holds the stage's `needsContract` role (the manager) or the founder works there that week (a plan choice). Guests at the site without the founder review 0.2 lower, weighted by that site's share of capacity. With the founder at the second site the first runs on staff and takes the penalty instead.
+
+AUTONOMOUS: A second unit of an asset is a second asset entry with `secondOf`, running the same products. Capacity is the sum of the units' shares; served units fill the first unit before the second for crew costs and the post-mortem's revenue per boat. Each unit has its own option, upkeep, crew, breakdowns and haul-out.
+
+AUTONOMOUS: Rückenwind's rescue boat is bought through a product that `replaces` the leased one (its rent ends and it counts as shipped). Gear wear is per product: a lifetime in units served, then less capacity and lower reviews until replaced through an inbox answer (`replaceWorn`). Buying more sets is not modelled: a set is replaced, not added to (the stage capacities add room instead).
+
+AUTONOMOUS: Optional stage effects added for stages 3 to 5: money per unit served (cafés, bars, team fees), day trip cost factor, what segments would pay, a shallower season dip, owner's crew costs, members' base churn, an extra's share (an in-house kitchen), and second-site reach by segment. A second climbing hall adds people at once to its areas.
+
+## Plan 6, step 3: content decisions
+
+AUTONOMOUS: The "manager role" of each second site is an existing contract role stationed there: an instructor (Rückenwind, Tiefgang), a game master (Ausgesperrt), an event host (Fabriketage), the front desk (Schweißperle) and the desk (Griffig). The careful bot already takes a stage that needs a contract only once such a contract runs.
+
+AUTONOMOUS: Fabriketage's chef and event manager are paid in their stages' monthly cost (4,000 and 3,500 EUR a month, est.), not as roster roles: they serve no units, and a role without units would not be rostered.
+
+AUTONOMOUS: Leinen los's spec stage 5 (a second gulet) is the gulet's second unit, offered by the asset system (manage, lease or buy), not an office move: its costs are the boat's own terms. The Office card shows four stages there. The founder hosts one cruise a week, so the second boat's guests need a hired host shift (the existing host role), or they are not served and reviews suffer.
+
+AUTONOMOUS: Left out where the engine has no matching mechanic: Leinen los's shopfront "sales hours a quarter lower" (walk-in cabin sales only) and the crew house's "extra day trip on change days" (crew costs a tenth lower only); Griffig's "summer visits" and competitions (the halved summer dip and team fees only); Tiefgang's "packages sold by the week" (a fifth better conversion only).
