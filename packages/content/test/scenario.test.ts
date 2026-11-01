@@ -406,7 +406,10 @@ describe('content', () => {
                       : // Plan 4: an asset's terms (a seat, a month's lease, the price, a repair).
                         fx.type === 'asset' || fx.type === 'assetRepair'
                         ? assetAmounts(s, fx.id).map(eur)
-                        : [],
+                        : // Plan 6: new gear at its replacement cost.
+                          fx.type === 'replaceWorn'
+                          ? [eur(s.bookings?.products[fx.product]?.wear?.replaceCents ?? 0)]
+                          : [],
             ),
           ),
         )
