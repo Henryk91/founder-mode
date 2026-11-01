@@ -10,7 +10,7 @@ events:
     once: false
     cooldownWeeks: 12
     openWeeks: 6
-    when: [office.stage == 2, office.busy == 0]
+    when: [office.stage <= 2, office.busy == 0]
     trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
     from: none
     sender: The harbour master's office

@@ -172,8 +172,12 @@ describe('a second unit of an asset', () => {
     expect(conditionValue(taken, 'asset.secondTaken')).toBe(1)
     const view = getView(taken).bookings!.assets.find((a) => a.id === 'second_boat')!
     expect(view.secondOf).toBe('dive_boat')
+    // Tiefgang offers a second boat from plan 6 step 3; a scenario without one reads 0.
     expect(
       conditionValue(createGame(loadScenario('tiefgang', 'long'), 'x'), 'asset.secondNone'),
+    ).toBe(1)
+    expect(
+      conditionValue(createGame(loadScenario('gratwanderung', 'long'), 'x'), 'asset.secondNone'),
     ).toBe(0)
   })
 

@@ -48,7 +48,7 @@ describe('Rückenwind: stages 3 to 5', () => {
     expect(scenario().establishedAt?.officeStage).toBe(4)
   })
 
-  it('offers the kite base to a busy beach station, with its costs on the card', () => {
+  it('offers the kite base to a busy beach, with its costs on the card', () => {
     const s = endWeek(busyAt('kite', 'beach_station'), plan()).state
     const m = offer(s, 'office_kite_base_offer')!
     expect(m).toBeDefined()
@@ -57,9 +57,9 @@ describe('Rückenwind: stages 3 to 5', () => {
       .choices.find((c) => c.id === 'move')!
     expect(move.costCents).toBe(1_500_000)
     expect(move.monthlyCostCents).toBe(70_000)
-    // Not to the container: the beach station comes first.
+    // From the container too: the beach station is a one-time offer that may have been declined.
     const early = endWeek(busyAt('early', 'container_flag'), plan()).state
-    expect(offer(early, 'office_kite_base_offer')).toBeUndefined()
+    expect(offer(early, 'office_kite_base_offer')).toBeDefined()
   })
 
   it('moves in after its weeks: more kite places and no van costs', () => {
