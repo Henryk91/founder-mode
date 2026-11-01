@@ -1813,7 +1813,7 @@ export const TOURISM_STRATEGIES: Strategy[] = [
   ),
   tourism(
     'tourism_always_second',
-    'Plays like tourism_careful but opens a second site the week it is offered, working there itself while no manager is on contract, and takes a second boat at the first offer (plan 6, targets S1 and B1).',
+    'Plays like tourism_careful but accepts every offer of a bigger place at once, so it opens a second site as early as a run can, working there itself while no manager is on contract, and takes a second boat at the first offer (plan 6, targets S1 and B1).',
     { ...CAREFUL_TOURISM, office: 'always_second', second: 'always' },
     undefined,
     hasSecond,

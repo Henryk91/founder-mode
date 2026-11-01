@@ -8,8 +8,9 @@ import type { MessageView, PlayerView } from '@founder-mode/engine'
  * one-off plus half a year of the added rent and two months of today's costs, and the surplus
  * (last month's; a seasonal business's over the last year) carries the added rent twice over. `never` declines
  * every offer (target O1), `always` accepts each at once (target O2). Plan 6: `never_second`
- * plays like `careful` but declines a second site, `always_second` like `careful` but takes a
- * second site the week it is offered (target S1).
+ * plays like `careful` but declines a second site; `always_second` takes every offer at once, as
+ * `always`, so that it reaches the second site as early as a run can (target S1: opening it in
+ * year 1 loses).
  */
 export type OfficeRule = 'careful' | 'never' | 'always' | 'never_second' | 'always_second'
 
@@ -138,7 +139,7 @@ export function answerOffers(
     const c = m.choices.find((x) => x.id === offer.choiceId)
     if (!c || c.hours > left) continue
     if (rule === 'never_second' && offer.secondSite) continue
-    const takeAtOnce = rule === 'always' || (rule === 'always_second' && offer.secondSite)
+    const takeAtOnce = rule === 'always' || rule === 'always_second'
     if (!takeAtOnce) {
       if (!moveIsReal(view, offer, wantsHire)) continue
       if (money(view) < moveNeedsCents(view, m, offer)) continue
@@ -166,7 +167,7 @@ export function stageToFinance(
   for (const m of view.inbox) {
     const offer = offers.get(m.eventId)
     if (!offer || m.answeredChoiceId !== null || !financeable.has(offer.stage)) continue
-    if (rule === 'always' || (rule === 'always_second' && offer.secondSite)) return offer.stage
+    if (rule === 'always' || rule === 'always_second') return offer.stage
     if (rule === 'never_second' && offer.secondSite) continue
     if (!moveIsReal(view, offer, false)) continue
     if (money(view) >= moveNeedsCents(view, m, offer)) continue
