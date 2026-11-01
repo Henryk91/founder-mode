@@ -1010,18 +1010,21 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     )
     if (mode === 'always') return options[0]?.id ?? null
     const a = cfg.assets?.[id]
-    const lease = options.find((c) =>
-      c.effects.some((fx) => fx.type === 'asset' && fx.option === 'lease'),
-    )
-    const pick = lease ?? options[0]
+    const by = (option: string) =>
+      options.find((c) => c.effects.some((fx) => fx.type === 'asset' && fx.option === option))
+    // Managing someone else's boat has no fixed fee (Leinen los): it comes first, then a lease.
+    const share = a?.share ? by('share') : undefined
+    const lease = by('lease')
+    const pick = share ?? lease ?? options[0]
     if (!pick || !a) return null
-    const upfront = a.lease ? Math.round(a.lease.seasonCents * a.lease.upfrontShare) : 0
+    const upfront = !share && a.lease ? Math.round(a.lease.seasonCents * a.lease.upfrontShare) : 0
     // Plan 6 (B1, bot fix): a season of the second boat (fee and crew) must be carried by the
     // last year's surplus, as an office move must carry its rent; a full peak alone lost 12
-    // points in Tiefgang.
-    const seasonCost = a.lease
-      ? a.lease.seasonCents + Math.round(a.lease.crewWeekCents * 4.33 * a.lease.months.length)
-      : 0
+    // points in Tiefgang. A managed boat needs a year in profit.
+    const seasonCost =
+      !share && a.lease
+        ? a.lease.seasonCents + Math.round(a.lease.crewWeekCents * 4.33 * a.lease.months.length)
+        : 0
     const surplus = yearSurplusCents(view)
     const enough =
       view.office.peakTurnedAwayWeeks >= 3 &&

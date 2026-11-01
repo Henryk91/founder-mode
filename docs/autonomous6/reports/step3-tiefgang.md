@@ -19,15 +19,15 @@ Tag `plan6-tiefgang`.
 
 ## Targets
 
-1,000 test seeds, main part, long mode. Labels: tg-m1, tg-b1 (after the bot fix), tg-full (all strategies).
+1,000 test seeds, main part, long mode. Labels: tg-m1, tg-b1 (after the bot fix), tg-full (all strategies), tg-full2 (all strategies again after the engine fix to `splitServed`, which Leinen los found: the same win rates except always_move, 25.5 to 24.2, and always_second, 15.1 to 15.0).
 
 | Target | Result | |
 |---|---|---|
 | O1 | careful 35.9, never_move 36.0 (−0.1) | met |
-| O2 | always_move 25.5 (−10.4) | met |
+| O2 | always_move 24.2 (−11.7) | met |
 | E1 | 72.4% of careful wins (±4.6), 5.6% of losses (±1.8), median week 88 | met |
 | B1: the second boat appears in some careful wins | leased in 4 careful runs, all won | met |
-| B1: always adding it loses at least 3 points | always_second 15.1 (−20.8); inbox_effort and always_buy, which take it in 789 and 459 runs, lost 7.3 and 15.2 points against step 1 | met |
+| B1: always adding it loses at least 3 points | always_second 15.0 (−20.9); inbox_effort and always_buy, which take it in 789 and 459 runs, lost 7.3 and 15.2 points against step 1 | met |
 | S1 | the careful bot never opens the Protaras centre; always_second opened it in 99 runs, none in year 1 | not shown |
 | Playability | careful 35.9, top naive_careful 38.4 | in band |
 
@@ -37,7 +37,7 @@ S1 was not tuned, for Rückenwind's reason: the careful bot moves only after a y
 
 Against step1-full:
 
-- always_move fell from 36.0 to 25.5 (O2).
+- always_move fell from 36.0 to 24.2 (O2).
 - always_buy fell from 32.0 to 16.8, inbox_effort from 34.7 to 27.4, and no_tests from 14.9 to 5.1. All three take the second boat by their own rules.
 - Everything else is within 0.5 points.
 

@@ -367,8 +367,8 @@ office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 organisedAt: [covers_all_costs]
 # Spec 8 (6 was tried for E1 and brought the look in year 1); 10 in tuning 1 (12 and more kept it
 # from half the wins: a streak cannot cross the second winter); plan 6: or on moving into stage 4
-# (target E1).
-establishedAt: { monthsCoveringAll: 10, officeStage: 4 }
+# (target E1), and 11 months (round 1: with 10 the careful bot's median week was 49).
+establishedAt: { monthsCoveringAll: 11, officeStage: 4 }
 
 # The bank loan: only for owning, and only once the Turkish company exists (the purchase needs it).
 loan:
