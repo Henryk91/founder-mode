@@ -1627,6 +1627,9 @@ export const OfficeStageSchema = z.object({
   assetCrewFactor: Share.optional(),
   // Leisure: a segment's base monthly churn multiplied by this (changing rooms and a reception).
   churnFactors: z.record(Id, z.number().positive()).optional(),
+  // Leisure: an extra's share of its gross, instead of its own (an in-house kitchen's margin in
+  // place of a caterer's commission).
+  extraShares: z.record(Id, Share).optional(),
 })
 export type OfficeStage = z.infer<typeof OfficeStageSchema>
 
