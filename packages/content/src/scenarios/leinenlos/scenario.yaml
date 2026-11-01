@@ -506,10 +506,11 @@ bookings:
         minMonths: 6
         crewWeekCents: 180000
       share:
-        # Managing "Yakamoz" for Kaptan Murat's cousin, on Murat's terms.
+        # Managing "Yakamoz" for Kaptan Murat's cousin. He keeps 80%, more than Murat (B1, round
+        # 2: at 70% always adding a second boat lost only 1.4 points).
         capacity: 1
         unitCents: 0
-        revenueShare: 0.7
+        revenueShare: 0.8
         peakRule: { months: [7, 8], shoulderMonths: [5, 6, 9, 10], needWeeks: 3, byWeek: 13 }
   # Selling a week (docs/scenario-gulet.md section 6). Held weeks sell no cabins, only the whole
   # boat. Below the minimum (in cabins of two) three weeks out, a week is cancelled: guests get a
