@@ -1,6 +1,7 @@
 import type { AssetConfig, BookingsConfig, Scenario } from '@founder-mode/content'
 import type { Rng } from '../rng'
 import { costFactor } from './abroad'
+import { currentStage } from './office'
 import type {
   AssetEconomics,
   AssetOption,
@@ -333,7 +334,13 @@ export function assetsUsed(
     }
     if (units === 0) continue
     let cost = 0
-    if (s.option === 'buy') cost += Math.round((a.buy?.crewWeekCents ?? 0) * localF(state, 'roles'))
+    if (s.option === 'buy')
+      cost += Math.round(
+        (a.buy?.crewWeekCents ?? 0) *
+          localF(state, 'roles') *
+          // Plan 6: a crew house makes an owner's crew a little cheaper.
+          (currentStage(state).assetCrewFactor ?? 1),
+      )
     if (s.option === 'lease')
       cost += Math.round((a.lease?.crewWeekCents ?? 0) * localF(state, 'roles'))
     if (s.option === 'share' && a.share) {

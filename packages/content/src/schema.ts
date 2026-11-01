@@ -1605,10 +1605,26 @@ export const OfficeStageSchema = z.object({
       name: z.string().min(1),
       capacity: z.record(Id, z.number().int().nonnegative()),
       reach: rangeOf(z.number().nonnegative()),
+      // Per segment, the drawn reach is multiplied by this (resort beginners from the big hotels).
+      reachBySegment: z.record(Id, z.number().nonnegative()).optional(),
       cannibalisation: rangeOf(z.number().min(0).max(1)),
       reviewsWithoutFounder: z.number().nonnegative(),
     })
     .optional(),
+  // Plan 6, stages 3 to 5 of the newer scenarios. Tourism: money earned per unit served of a
+  // product on top of its price (a café, a bar, team fees), net of its own costs.
+  ancillaryCentsPerUnit: z.record(Id, Cents.nonnegative()).optional(),
+  // Tourism: a day trip's cost per trip day multiplied by this (a base at the spot: no van).
+  dayTripCostFactor: z.record(Id, Share).optional(),
+  // Tourism: what a segment would pay, multiplied by this (a planning team, a dive hotel).
+  wtpFactors: z.record(Id, z.number().positive()).optional(),
+  // Tourism: for these segments, the season's dip below its peak is multiplied by `factor` (an
+  // outdoor area halves the summer dip).
+  seasonFlatten: z.object({ segments: z.array(Id).min(1), factor: Share }).optional(),
+  // Tourism: an owned asset's crew costs multiplied by this (a crew house).
+  assetCrewFactor: Share.optional(),
+  // Leisure: a segment's base monthly churn multiplied by this (changing rooms and a reception).
+  churnFactors: z.record(Id, z.number().positive()).optional(),
 })
 export type OfficeStage = z.infer<typeof OfficeStageSchema>
 

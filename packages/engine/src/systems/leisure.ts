@@ -1269,7 +1269,10 @@ export function billLeisure(
       const drivers = [
         {
           reason: 'price' as const,
-          chance: segment.churn + segment.priceChurn * Math.max(0, m.priceCents / wtp - 1),
+          chance:
+            // Plan 6: a stage with changing rooms and a reception keeps some members longer.
+            segment.churn * (stageInEffect(input).churnFactors?.[m.segmentId] ?? 1) +
+            segment.priceChurn * Math.max(0, m.priceCents / wtp - 1),
         },
         {
           reason: 'crowding' as const,

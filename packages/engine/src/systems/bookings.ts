@@ -339,10 +339,19 @@ export function secondSiteShare(state: GameState): number {
 }
 
 /** Plan 6: demand with a second site open: its new reach, less what it takes from the first. */
-function siteDemandFactor(state: GameState): number {
+function siteDemandFactor(state: GameState, segmentId: SegmentId): number {
   const drawn = state.hidden.bookings?.secondSite
-  if (!drawn || !openSecondSite(state)) return 1
-  return Math.max(0, 1 - drawn.cannibalisation + drawn.reach)
+  const site = openSecondSite(state)
+  if (!drawn || !site) return 1
+  const reach = drawn.reach * (site.reachBySegment?.[segmentId] ?? 1)
+  return Math.max(0, 1 - drawn.cannibalisation + reach)
+}
+
+/** Plan 6: a season value with the stage's flattening for this segment (a shallower dip). */
+function flattened(state: GameState, segmentId: SegmentId, season: number): number {
+  const f = stageInEffect(state).seasonFlatten
+  if (!f || !f.segments.includes(segmentId) || season >= 1) return season
+  return 1 - (1 - season) * f.factor
 }
 
 /** Plan 6: the review penalty for guests at the site the founder is not at, by its share. */
@@ -1048,15 +1057,17 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
   }
   const wtpRaised = Object.values(cfg.products).some((x) => x.wtpFactor)
-  const siteFactor = siteDemandFactor(state)
+  const stageNow = stageInEffect(state)
   const byAppeal = Object.values(cfg.products).some((x) => x.appeal !== undefined)
   for (const seg of state.scenario.segments) {
     const s = cfg.segments[seg.id]
     if (!s) continue
     const reach = reachOf(state, seg.id, p)
     const baseWtp = state.hidden.segments[seg.id]?.wtpCents ?? 1
-    // Plan 4: a shipped refit raises what some guests would pay.
-    const wtp = wtpRaised ? wtpWithFactors(state, seg.id, baseWtp) : baseWtp
+    // Plan 4: a shipped refit raises what some guests would pay; plan 6: so can a stage.
+    const wtp =
+      (wtpRaised ? wtpWithFactors(state, seg.id, baseWtp) : baseWtp) *
+      (stageNow.wtpFactors?.[seg.id] ?? 1)
     const price = b.prices[seg.id]?.peak ?? 1
     const weatherF = s.weatherSensitive && cfg.weather ? cfg.weather.demand[weather] : 1
     // Tuning 1: with `requestsAhead`, the season of the weeks asked for (each lead time alike),
@@ -1064,13 +1075,17 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     const curve = hiddenB.season[seg.id] ?? []
     const ahead = cfg.requestsAhead
       ? Array.from({ length: s.leadWeeks.max - s.leadWeeks.min + 1 }, (_, k) =>
-          seasonAt(curve, weekOfYear(state.scenario, week + s.leadWeeks.min + k)),
+          flattened(
+            state,
+            seg.id,
+            seasonAt(curve, weekOfYear(state.scenario, week + s.leadWeeks.min + k)),
+          ),
         )
       : null
     const aheadSum = ahead ? ahead.reduce((t, x) => t + x, 0) : 0
     const units =
       (hiddenB.base[seg.id] ?? 0) *
-      (ahead ? aheadSum / ahead.length : seasonAt(curve, woy)) *
+      (ahead ? aheadSum / ahead.length : flattened(state, seg.id, seasonAt(curve, woy))) *
       reach.total *
       fitOf(state, seg.id) *
       (cfg.leisure?.slotPrices || cfg.leisure?.wtpBasis === 'monthly'
@@ -1079,8 +1094,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       reviewFactor(state, seg.id) *
       weatherF *
       roleFactor(seg.id) *
-      (stageInEffect(state).segmentFactors?.[seg.id] ?? 1) *
-      siteFactor
+      (stageNow.segmentFactors?.[seg.id] ?? 1) *
+      siteDemandFactor(state, seg.id)
     if (cfg.leisure?.memberships) {
       state = joinLeisure({ ...state, bookings: b }, seg.id, units, rng)
       b = state.bookings!
@@ -1655,7 +1670,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         }
       }
       const served = Math.min(units, done * trip.perTrip)
-      const cost = run * trip.costCents
+      // Plan 6: a base at the spot saves the van.
+      const cost = Math.round(
+        run * trip.costCents * (stageInEffect(state).dayTripCostFactor?.[id] ?? 1),
+      )
       tripCosts += cost
       trips = {
         ...trips,
@@ -1800,6 +1818,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     why.set(id, reason)
   }
   let servedUnits = 0
+  let ancillary = 0
+  const ancillaryRates = stageInEffect(state).ancillaryCentsPerUnit
   let staffCancelled = 0
   let soldOut = 0
   let closedForWorks = 0
@@ -1834,6 +1854,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       x.status = 'served'
       servedUnits += x.units
       served.push(x)
+      // Plan 6: a café, a bar or team fees earn on top of the price.
+      ancillary += x.units * (ancillaryRates?.[x.productId] ?? 0)
     } else {
       x.status = 'company_cancelled'
       const unavailableAsset =
@@ -1857,6 +1879,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       else staffCancelled += x.units
     }
   }
+  if (ancillary > 0) out.revenueCents += ancillary
   // Food prepared and not served is lost (plan 2 step 1c): its food cost is paid all the same.
   // Plan 3: a stage with a cold room keeps some of it.
   const wasteFactor = stageInEffect(state).wasteFactor ?? 1
