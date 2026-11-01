@@ -3,11 +3,11 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, Tiefgang. After the bot fix (tg-b1): careful 35.9, never_move 36.0,
-always_move 25.5, E1 met, B1 met (boat in 4 careful wins, always_second 15.1), S1 not tuned (see
-decisions). Running run-tg-full.sh (label tg-full), the full strategy set. Then pnpm seeds, tests,
-lint, report reports/step3-tiefgang.md, tag plan6-tiefgang.
-Then in order: Leinen los, Ausgesperrt, Fabriketage, Schweisperle, Griffig.
+Next action: step 3, Leinen los. Tiefgang done (reports/step3-tiefgang.md, tag plan6-tiefgang).
+Measure with careful, never_move, always_move, never_second, always_second on 1,000 seeds (baseline
+label step1-v2), compute O1, O2, E1 (e1.py), S1/B1 (targets6.py), cmp.py for strategy changes; tune
+at most 2 rounds each; full set, pnpm seeds, tests, lint, report, tag plan6-leinenlos.
+Then in order: Ausgesperrt, Fabriketage, Schweisperle, Griffig.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
