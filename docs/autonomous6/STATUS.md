@@ -3,12 +3,13 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step1-full done (leisure: Fabriketage 39.5/top 40.7 and Ausgesperrt 43.4/top 53.7 in
-band; Griffig careful 51.0, boulder_first 73.1; Schweisperle careful 55.1, top 60.9). Leisure value
-round 1 committed at 84c91b1 (clamp top 1.0 in griffig, schweissperle); queued as
-run-step1-lv1.sh (label step1-lv1), starts when step1-v1.progress says ALLDONE. When both are
-done, read `python3 summfull.py step1-v1` and `python3 summfull.py step1-lv1`. If careful is
-still over 45% in the three tourism scenarios, value round 2: clamp top 1.0 there.
+Next action: step1-v1 (clamp 1.1): Gratwanderung careful 46.5, Rueckenwind 44.8 (in band, keeps
+1.1), Leinen los 48.4. Value round 2 committed at acb9824 (clamp 1.0 in gratwanderung, leinenlos),
+queued as run-step1-v2.sh after the leisure round run-step1-lv1.sh (84c91b1, clamp 1.0 in griffig,
+schweissperle). When step1-v2.progress says ALLDONE, read `python3 summfull.py step1-lv1` and
+`python3 summfull.py step1-v2`. That ends the tuning budget for playability in step 1; any
+scenario still outside the band is reported, and careful over 55% or a strategy over 70% is a
+hard stop unless it predates plan 6 (Schweisperle 55.7%, Griffig boulder_first 70.7% at baseline).
 Then: P1 diagnostic (`scratch/p1.tmp.ts`, run in the run checkout), fix the three tourism
 fingerprints in packages/engine/test/long.test.ts, `pnpm seeds`, full test and lint, step 1
 report docs/autonomous6/reports/step1-price.md, tag plan6-price.
