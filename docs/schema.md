@@ -1376,3 +1376,11 @@ specified. Optional `LeisureView.openingInvitations` copies `{segmentId, count}`
 rows for the public preparation status. No demand or conversion probability is
 exposed. The ten new fitness/climbing preparation cards opt in; earlier content
 and saves without the flag keep their existing behaviour.
+
+### Plan 6 step 1: price realism (engine 0.14.0, off unless a scenario's YAML sets `elasticity`)
+
+- Content: `BookingsConfig.elasticity?: { clamp: { min, max } }` switches it on. `BookingSegment.elasticity?: { min, max }` (drawn per run), `BookingsConfig.shoulderMonths?: number[]` and `BookingSegment.price.shoulder?` (the shoulder price; absent: the off season price applies in shoulder months).
+- State: `SeasonPrices = { peak, off, shoulder? }` for `BookingsState.prices`, `BookingsPlan.prices` and `BookingsView.prices`; a plan that leaves out the shoulder keeps the one set before. `HiddenBookings.elasticity?: Record<SegmentId, number>`, drawn from the stream `seed|elasticity` so no other draw moves. `BookingsState.requestLog?: Record<week, RequestWeek>` (`requests`, `bookings`, `units`, `revenueCents` by the week asked for), only with elasticity.
+- Requests per week are multiplied by `clamp((price / willingness to pay) ^ -elasticity)`, averaged over the segment's lead weeks (each weighted by its season where requests follow it); each request's lead is drawn by those weights. Leisure: drop-in requests only, by the slot-weighted price basis. Conversion is unchanged.
+- View: `BookingsView.shoulder?` (this month uses the shoulder price) and `shoulderMonths?`.
+- Post-mortem: `PostMortem.priceSeasons?: PriceSeasonLine[]` (`season`, `fromWeek`, `toWeek`, `weeks`, average `priceCents` booked, `requests`, `bookings`, and `before`: the same season a year earlier).
