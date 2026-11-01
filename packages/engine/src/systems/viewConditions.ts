@@ -90,6 +90,7 @@ const VIEW_METRICS: Record<FixedConditionPath, (v: PlayerView, m: MessageView | 
     const u = v.bookings?.assets.find((a) => a.secondOf)
     return u && u.option !== 'none' ? 1 : 0
   },
+  'asset.secondBroken': (v) => (v.bookings?.assets.find((a) => a.secondOf)?.broken ? 1 : 0),
   'office.twoSites': (v) => (v.office.secondSite ? 1 : 0),
   'sender.overdue': (v, m) =>
     m && v.invoices.some((i) => i.customerName === m.fromName && i.status === 'overdue') ? 1 : 0,
