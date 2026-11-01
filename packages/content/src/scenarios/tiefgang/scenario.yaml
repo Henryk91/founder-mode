@@ -333,11 +333,63 @@ officeStages:
     walkIns: { segment: resort_beginners, leadsPerWeek: 0.15 }
     # Try dives at any time and shorter courses: more places a week.
     capacity: { try_dive: 40, entry_course: 12 }
+  # Plan 6 (docs/plan6-features.md section 2.2): offered by the inbox (office.yaml). Each stage
+  # lists all its effects, the earlier stages' included. Rents and fit-outs are estimates;
+  # deposits three months of the added rent.
+  - id: harbour_base
+    name: A base at the harbour next to the boat
+    # The centre's rent plus 900 a month for a store on the quay (est.).
+    monthlyCents: 210000
+    oneOffCents: 1200000
+    depositCents: 270000
+    moveWeeks: 2
+    energyPerWeek: 1
+    walkIns: { segment: resort_beginners, leadsPerWeek: 0.15 }
+    # Boats leave half an hour sooner and the gear stays on board: three trips a morning, not two.
+    capacity: { try_dive: 40, entry_course: 12, wreck_dives: 84, advanced_course: 12 }
+  - id: dive_hotel
+    name: A package partnership with a dive hotel
+    # No more rent: the hotel sells your dives in its packages (est. 8,000 for the paperwork,
+    # the photos and a season of their agent's attention).
+    monthlyCents: 210000
+    oneOffCents: 800000
+    moveWeeks: 2
+    energyPerWeek: 1
+    walkIns: { segment: resort_beginners, leadsPerWeek: 0.15 }
+    capacity: { try_dive: 40, entry_course: 12, wreck_dives: 84, advanced_course: 12 }
+    # Certified divers and clubs book packages by the week (est. a fifth more).
+    segmentFactors: { certified_divers: 1.2, dive_clubs: 1.2 }
+  - id: protaras_centre
+    name: A second centre in Protaras
+    # The partnership plus 1,500 a month for a shop in Protaras (est.).
+    monthlyCents: 360000
+    # About 80% of the first centre's fit-out (est.).
+    oneOffCents: 2000000
+    depositCents: 450000
+    moveWeeks: 6
+    energyPerWeek: 1
+    walkIns: { segment: resort_beginners, leadsPerWeek: 0.15 }
+    capacity: { try_dive: 40, entry_course: 12, wreck_dives: 84, advanced_course: 12 }
+    segmentFactors: { certified_divers: 1.2, dive_clubs: 1.2 }
+    # Plan 6 (section 4): beginners from the big hotels; the wreck is 50 minutes away, so few
+    # certified divers or clubs come for it. Open with an instructor on contract there, or you.
+    secondSite:
+      name: The Protaras centre
+      capacity: { try_dive: 80, entry_course: 24, shore_dives: 56 }
+      reach: { min: 0.5, max: 0.8 }
+      reachBySegment: { resort_beginners: 1.2, certified_divers: 0.4, dive_clubs: 0.3 }
+      cannibalisation: { min: 0.1, max: 0.25 }
+      reviewsWithoutFounder: 0.2
+    needsContract: instructor
+
+# Plan 6: moving and giving notice.
+office: { noticeWeeks: 13, moveHoursPerWeek: 4 }
 
 organisedAt: [covers_all_costs]
 # Plan 3: the established look once money in has covered all costs for these months in a row
-# (8 until tuning 1; 7 after the upkeep of step 2 kept E1 under 40% of the wins).
-establishedAt: { monthsCoveringAll: 7 }
+# (8 until tuning 1; 7 after the upkeep of step 2 kept E1 under 40% of the wins); plan 6: or on
+# moving into stage 4 (target E1).
+establishedAt: { monthsCoveringAll: 7, officeStage: 4 }
 
 # The bank loan (docs/loan-proposal.md): for the boat, nitrox and the first spring.
 loan:
@@ -362,7 +414,7 @@ loan:
   maxLoans: 2
   # The boat, nitrox, technical diving (the temptation), and working capital of at most three
   # months of fixed costs (est.).
-  items: [boat_purchase, nitrox, tech_diving]
+  items: [boat_purchase, second_boat_purchase, nitrox, tech_diving]
   workingCapitalMonths: 3
 
 # Bookings (docs/tourism-proposal.md, docs/abroad-mechanics.md). Week 1 is the first week of
@@ -431,6 +483,27 @@ bookings:
         unitCents: 3000
         revenueShare: 0
         takeBack: { chance: 0.4, share: 0.17, months: [6, 7, 8, 9] }
+    # Plan 6 (section 3): a second boat, offered once the first is full at the peak. Its own
+    # option, skipper, upkeep and breakdowns; no seats to share (Andreas has one spare boat).
+    second_boat:
+      name: The second dive boat
+      secondOf: dive_boat
+      products: [wreck_dives, advanced_course]
+      buy:
+        product: second_boat_purchase
+        upkeepMonthlyCents: 85800
+        crewWeekCents: 78000
+        haulOut: { month: 1, weeks: 3, cents: 250000 }
+        breakdown: { weekly: 0.01, perYear: 0.002, weeks: { min: 1, max: 3 }, repairCents: 300000 }
+        ageYears: 12
+        valueLossPerYear: 0.08
+      lease:
+        # Marios's boat, the same terms as Andreas's (est.).
+        seasonCents: 2400000
+        upfrontShare: 0
+        months: [4, 5, 6, 7, 8, 9, 10, 11]
+        minMonths: 8
+        crewWeekCents: 78000
   # Activity platforms take 20 to 30% (2025); 22% here.
   platform: { name: Divebook, commission: 0.22 }
   website: { product: online_booking, repeatsFull: 150 }
@@ -599,6 +672,10 @@ bookings:
       appeal: 0.05
     boat_purchase:
       # A used 11 m dive boat (est.). 55,000 was tried for D3 and made owning worse.
+      capacity: 0
+      oneOffCents: 7000000
+    second_boat_purchase:
+      # Plan 6 (section 3): a second used boat, the same price (est.).
       capacity: 0
       oneOffCents: 7000000
   roles:

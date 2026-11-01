@@ -1,0 +1,139 @@
+# Plan 6 (docs/plan6-features.md sections 2.2 and 3): offers of office stages 3 to 5, and the
+# second boat. Each office offer arrives for sure in the first week a trigger holds (and `when`
+# holds), and comes back 12 weeks later if one still holds. The text names the condition, the
+# costs and the effect. Accepting pays the one-off at once, unless the bank's plan paid it, and
+# moves the rent from now.
+events:
+  - id: office_harbour_base_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 6
+    when: [office.stage == 2, office.busy == 0]
+    trigger: [months.coveringAll >= 2, tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: The harbour master's office
+    look: official
+    text: >-
+      Now that the centre pays its way, or divers are being turned away, a store on the quay next
+      to the boat is free: 900 EUR a month more and 12,000 EUR for racks, a compressor line and the
+      deposit. Boats leave half an hour sooner with the gear already on board, so three trips fit
+      into a morning instead of two.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Take the store on the quay
+        hours: 2
+        effects:
+          - { type: officeMove, stage: harbour_base }
+      - id: stay
+        label: Keep carrying tanks down the hill
+        hours: 0
+        effects: []
+
+  - id: office_dive_hotel_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 3, office.weeksAtStage >= 12, office.busy == 0]
+    trigger: [tour.turnedAwayWeeks >= 3]
+    from: none
+    sender: Hotel Thalassa, Ayia Napa
+    look: letter
+    text: >-
+      You keep turning divers away, so a dive hotel offers to sell your dives in its weekly
+      packages. It costs no more rent and 8,000 EUR for the paperwork and the photos. Certified
+      divers and clubs book by the week and convert a fifth better; beginners never read the
+      package anyway.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Sign the package deal
+        hours: 2
+        effects:
+          - { type: officeMove, stage: dive_hotel }
+      - id: stay
+        label: Sell your own dives
+        hours: 0
+        effects: []
+
+  - id: office_protaras_centre_offer
+    area: founder
+    weight: 1
+    once: false
+    cooldownWeeks: 12
+    openWeeks: 8
+    when: [office.stage == 4, office.weeksAtStage >= 16, office.busy == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: A landlord in Protaras
+    look: letter
+    text: >-
+      Divers were turned away at the peak again, and a shop by the big hotels in Protaras is to
+      let: 1,500 EUR a month more and 20,000 EUR to fit out. Beginners from the hotels would come,
+      but the wreck is 50 minutes away. It needs an instructor on contract there, or you, and it
+      will take some guests from Larnaka as well as bringing new ones.
+    defaultChoice: stay
+    choices:
+      - id: move
+        label: Open in Protaras
+        hours: 2
+        effects:
+          - { type: officeMove, stage: protaras_centre }
+      - id: stay
+        label: One centre is plenty
+        hours: 0
+        effects: []
+
+  - id: second_boat_offer
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 26
+    openWeeks: 6
+    when: [asset.secondNone == 1, asset.none == 0]
+    trigger: [tour.peakTurnedAwayWeeks >= 2]
+    from: none
+    sender: Captain Marios Charalambous
+    look: letter
+    text: >-
+      Your boat was full at the peak and divers stood on the quay. Marios will lease you his boat
+      from April to November at 3,000 EUR a month with a skipper you pay. Buying a second one is in
+      the plan, for about 70,000 EUR. A second boat only pays in the weeks it fills.
+    defaultChoice: later
+    choices:
+      - id: lease
+        label: Lease a second boat
+        hours: 2
+        effects:
+          - { type: asset, id: second_boat, option: lease }
+      - id: later
+        label: One boat is enough
+        hours: 0
+
+  - id: second_boat_breakdown
+    area: finance
+    weight: 1
+    once: false
+    cooldownWeeks: 3
+    trigger: [asset.secondBroken == 1]
+    openWeeks: 1
+    from: none
+    sender: The harbour mechanic
+    look: note
+    text: >-
+      The second boat's engine has joined the first in its opinion of the coast. A repair this
+      week costs 3,000 EUR; otherwise it waits for parts and the divers booked on it go home.
+    defaultChoice: wait
+    choices:
+      - id: repair
+        label: Repair it now
+        hours: 2
+        effects:
+          - { type: assetRepair, id: second_boat }
+      - id: wait
+        label: Wait for the parts
+        hours: 0

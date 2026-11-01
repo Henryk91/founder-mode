@@ -78,3 +78,9 @@
   buildHours: 10
   bugsOnShip: { min: 0, max: 1 }
   mention: Your own boat would be nice. Partner boats leave when the partner feels like it.
+
+- id: second_boat_purchase
+  name: Buy a second dive boat
+  buildHours: 10
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Two boats, and nobody waits on the quay while the first one is full.
