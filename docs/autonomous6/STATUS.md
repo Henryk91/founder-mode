@@ -3,9 +3,11 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 1 done and tagged plan6-price. Merge plan6-step2 into main (schema.md: keep both
-appended sections; check tourism.ts keeps main's round 2 pricing block).
-Then step 2 protected proof (main part, every scenario, 1,000 seeds), tag plan6-engine.
+Next action: plan6-step2 merged at 8c82200 (schema.md both sections kept, tourism.ts kept round 2),
+bots test fixed for `needs` at 340bf1a; tests and lint pass. Step 2 protected proof running as
+run-step2-proof.sh (label step2-proof, progress step2-proof.progress): each scenario's main part
+against its last step 1 result (protected games against tuning2:narrowed-final). When ALLDONE,
+check every comparison.json shows all rows same, write reports/step2-engine.md, tag plan6-engine.
 Then merge plan6-step3 and continue step 3 scenario by scenario (measure, tune, report).
 
 ## Checklist
