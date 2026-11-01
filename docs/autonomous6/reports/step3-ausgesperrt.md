@@ -43,7 +43,7 @@ T7 is −7.9 (price-blind 50.9).
 
 ## Checks
 
-CHECKS
+`pnpm seeds` was rerun (no change). `pnpm lint` passes. `pnpm test`: 1,454 non-web tests pass; in the web project, one climbing browser case (scrappy at 375 px, a 15 s wait) timed out once and all 24 climbing cases passed on rerun, as in Rückenwind (flaky, unrelated). The content and engine changes reach only this scenario, so no protected proof was needed (plan section 1.3); the full report in step 4 covers it.
 
 ## For Henry to review
 
