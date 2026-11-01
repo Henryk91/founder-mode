@@ -12,9 +12,12 @@ describe('tourism bots (step 4)', () => {
   it('play only the bookings model, and subscription bots never play it', () => {
     for (const t of TOURISM_STRATEGIES) {
       // The loan bots play only where a scenario offers a bank loan (step 6).
-      expect(playsIn(t, scenario)).toBe(!t.needsLoan && !t.scenarios)
+      // Plan 6: the second-site bots play only where a stage offers a second site or unit.
+      const needs = (s: Parameters<NonNullable<typeof t.needs>>[0]) => !t.needs || t.needs(s)
+      expect(playsIn(t, scenario)).toBe(!t.needsLoan && !t.scenarios && needs(scenario))
       // Plan 4: a scenario's own bots play only there.
-      expect(playsIn(t, loadScenario('hinterhof'))).toBe(!t.scenarios)
+      const hinterhof = loadScenario('hinterhof')
+      expect(playsIn(t, hinterhof)).toBe(!t.scenarios && needs(hinterhof))
       expect(playsIn(t, loadScenario('kantino', 'long'))).toBe(false)
     }
     const validate = STRATEGIES.find((s) => s.id === 'validate_then_build')!
