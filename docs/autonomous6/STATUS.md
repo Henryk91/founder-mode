@@ -3,18 +3,12 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, Rückenwind. plan6-step3 merged at 002fa55. Fixes since: stage 3 offers at
-stage 1 or 2 in Rückenwind, Tiefgang and the four leisure scenarios (70641f7, careful never saw
-stages 3 to 5 otherwise); always_second takes every offer at once (a0d07c6). Office browser test
-passes (its 8 second-site cases skip: no always_second run reaches Rückenwind's stage 5 in 60
-seeds). Seeds tests are red until `pnpm seeds` at the end of each scenario.
-rw-m1 (1,000 seeds): O1 +2.8, O2 37.8 points, E1 met (47.6% of wins, 4.7% of losses, week 91),
-careful 45.2. S1 round 1 (second beach from stage 3, rw-r1): year-1 opening loses 80.7 points
-(met); careful reaches it in 1 run, so "pays in some runs" not shown; round 2 not spent (decisions).
-Running: run-rw-full.sh (label rw-full), Rückenwind's full strategy set once. Then: pnpm seeds,
-full test and lint, report docs/autonomous6/reports/step3-rueckenwind.md, tag plan6-rueckenwind.
-Then the other six scenarios in order: Tiefgang, Leinen los, Ausgesperrt, Fabriketage,
-Schweisperle, Griffig.
+Next action: step 3, Tiefgang. Rückenwind done (reports/step3-rueckenwind.md, tag
+plan6-rueckenwind). Offer check done for Tiefgang: careful gets the harbour base offer in 19 of 20
+seeds. Measure with careful, never_move, always_move, never_second, always_second on 1,000 seeds
+(baseline label step1-full), compute O1, O2, E1 (e1.py), S1 and B1 (targets6.py), tune at most 2
+rounds each, then the full strategy set, pnpm seeds, tests, lint, report, tag plan6-tiefgang.
+Then in order: Leinen los, Ausgesperrt, Fabriketage, Schweisperle, Griffig.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
