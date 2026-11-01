@@ -384,6 +384,53 @@ officeStages:
     oneOffCents: 4000000
     moveWeeks: 6
     qualityBonus: 0.1
+  # Plan 6 (docs/plan6-features.md section 2.7): offered by the inbox (office.yaml). Each stage
+  # lists all its effects, the earlier stages' included. Rents and fit-outs are estimates;
+  # deposits three months of the added rent.
+  - id: outdoor_boulders
+    name: An outdoor bouldering area beside the hall
+    # 800 a month for the yard behind the hall (est.).
+    monthlyCents: 80000
+    oneOffCents: 4500000
+    depositCents: 240000
+    moveWeeks: 8
+    qualityBonus: 0.1
+    # Students and families still come in summer: their summer dip is halved.
+    seasonFlatten: { segments: [students, families], factor: 0.5 }
+  - id: training_centre
+    name: 'A training centre: youth teams and competitions'
+    # No more rent: the training area becomes a club's home (est. 20,000 for the boards and
+    # the coaching licences).
+    monthlyCents: 80000
+    oneOffCents: 2000000
+    moveWeeks: 4
+    qualityBonus: 0.1
+    seasonFlatten: { segments: [students, families], factor: 0.5 }
+    # Committed climbers join a team (est. a fifth better), and team fees come with their visits.
+    segmentFactors: { committed: 1.2 }
+    ancillaryCentsPerUnit: { training_area: 300 }
+  - id: second_hall
+    name: A second, smaller bouldering hall in another district
+    # The yard plus 3,500 a month for a hall in Moosach (est.).
+    monthlyCents: 430000
+    # Walls, mats and a fit-out: about 80% of the first hall's boulders and basics (est.).
+    oneOffCents: 17600000
+    depositCents: 1050000
+    moveWeeks: 12
+    qualityBonus: 0.1
+    seasonFlatten: { segments: [students, families], factor: 0.5 }
+    segmentFactors: { committed: 1.2 }
+    ancillaryCentsPerUnit: { training_area: 300 }
+    # Plan 6 (section 4): bouldering only, for a new district's students and families. Open with
+    # someone on the desk on contract there, or you.
+    secondSite:
+      name: The Moosach boulder hall
+      capacity: { boulder_area: 70 }
+      reach: { min: 0.5, max: 0.8 }
+      reachBySegment: { committed: 0.5 }
+      cannibalisation: { min: 0.1, max: 0.25 }
+      reviewsWithoutFounder: 0.2
+    needsContract: desk
 office:
   noticeWeeks: 13
   moveHoursPerWeek: 4
@@ -391,6 +438,8 @@ organisedAt:
   - covers_all_costs
 establishedAt:
   monthsCoveringAll: 8
+  # Plan 6: or on moving into stage 4 (target E1).
+  officeStage: 4
 loan:
   bankName: Isartal Savings Bank
   bridgeMonthsHint: 6
