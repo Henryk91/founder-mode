@@ -3,11 +3,12 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: when step1-full.progress says ALLDONE, read `python3 summfull.py step1-full` in
-../founder-mode-plan6-state for the four leisure scenarios. When step1-v1.progress says ALLDONE,
-read `python3 summfull.py step1-v1` (needs step1a price-blind only for the old script; summfull
-reads blind from the same label). If careful is still over 45% in those three, value round 2:
-clamp top 1.0 there. Leisure scenarios over the band get their own value round.
+Next action: step1-full done (leisure: Fabriketage 39.5/top 40.7 and Ausgesperrt 43.4/top 53.7 in
+band; Griffig careful 51.0, boulder_first 73.1; Schweisperle careful 55.1, top 60.9). Leisure value
+round 1 committed at 84c91b1 (clamp top 1.0 in griffig, schweissperle); queued as
+run-step1-lv1.sh (label step1-lv1), starts when step1-v1.progress says ALLDONE. When both are
+done, read `python3 summfull.py step1-v1` and `python3 summfull.py step1-lv1`. If careful is
+still over 45% in the three tourism scenarios, value round 2: clamp top 1.0 there.
 Then: P1 diagnostic (`scratch/p1.tmp.ts`, run in the run checkout), fix the three tourism
 fingerprints in packages/engine/test/long.test.ts, `pnpm seeds`, full test and lint, step 1
 report docs/autonomous6/reports/step1-price.md, tag plan6-price.
