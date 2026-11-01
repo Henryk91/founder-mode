@@ -1291,10 +1291,12 @@ export const CONDITION_PATHS = [
   'asset.none',
   'asset.broken',
   // Plan 6: the scenario's second unit (an asset with `secondOf`): 1 when there is one and it is
-  // not taken yet, or taken (bought, leased or shared); 0 otherwise or without one. And 1 while
+  // not taken yet, or taken (bought, leased or shared), or owned and broken down this week; 0
+  // otherwise or without one. And 1 while
   // the company works from a stage with a second site.
   'asset.secondNone',
   'asset.secondTaken',
+  'asset.secondBroken',
   'office.twoSites',
 ] as const
 

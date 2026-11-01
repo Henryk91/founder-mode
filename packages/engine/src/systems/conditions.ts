@@ -129,6 +129,10 @@ const METRICS: Record<FixedConditionPath, (state: GameState, sender: ConditionSe
     const u = secondUnit(s)
     return u && u.option !== 'none' ? 1 : 0
   },
+  'asset.secondBroken': (s) => {
+    const u = secondUnit(s)
+    return u?.option === 'buy' && u.brokenUntil >= s.week ? 1 : 0
+  },
   'office.twoSites': (s) => (currentStage(s).secondSite ? 1 : 0),
   'asset.broken': (s) => {
     const a = firstAsset(s)
