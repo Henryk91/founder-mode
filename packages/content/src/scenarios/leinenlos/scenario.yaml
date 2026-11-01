@@ -366,8 +366,9 @@ bookings:
   requestsAhead: true
   seasonNoise: 0.2
   shoulderMonths: [5, 6, 9, 10]
-  # Plan 6: requests answer the price (docs/plan6-features.md section 1).
-  elasticity: { clamp: { min: 0.5, max: 1.6 } }
+  # Plan 6: requests answer the price (docs/plan6-features.md section 1). The clamp's top is
+  # 1.1, not 1.6: the careful bot won about 50% with 1.6 (playability, value round 1).
+  elasticity: { clamp: { min: 0.5, max: 1.1 } }
   peakMonths: [7, 8]
   policyWeeks: 4
   # Weather along the coast, one slot a day (docs/scenario-gulet.md section 5, est.).
