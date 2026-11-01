@@ -2,23 +2,18 @@
 
 Everything planned or discussed that no plan builds yet. When a plan picks an item up, move it to that plan. When a plan leaves something out or opens an issue, add it here.
 
-Last updated: 1 November 2026, completion of Henry’s capped tuning 2 scope.
+Last updated: 1 November 2026, completion of plan 6 (price realism, office stages, second sites and boats).
 
 ## 1. Left out of plan 4 (the abroad scenarios)
 
 | Item | Notes |
 |---|---|
-| Office stages 3 to 5 for Rückenwind and Tiefgang | Specs have stages 1 and 2 only. Stage 3 is the cheapest to add next |
-| Office stages beyond stage 1 for Leinen los | The boat options are its progression for now |
-| A second boat | A fleet of gulets or two dive boats |
 | Motorised watersports | Water skiing, towed rides, jet skis. Decided against for Rückenwind |
 | A choice of base for the dive centre | Larnaca (near the wreck) or Protaras (near the hotels). Fixed on Larnaca |
 | A currency system | Everything is in euros. Turkey's rising local costs are a flat step in year 2 |
 | Package travel law for the gulet | Selling cruises from Germany may count as package travel, with insolvency insurance |
 | New mockups or a new visual style for the abroad screens | Plan 4 reuses existing components |
 | Tuning beyond the first-pass budget | Plan 4's open targets are in section 3 |
-| Buying the rescue boat in Rückenwind | Leased in season only; the asset mechanic could carry it |
-| Gear as a fleet in Rückenwind | Buying more boards and rigs is one purchase per product, not a growing fleet |
 | A separate skipper and crew on the roster | Crew is a cost per week the boat is used; the roster cannot require several roles together |
 | A shop and compressor help role in Tiefgang | An event's summer job instead |
 | Three seasons of prices | The engine has peak and off season; the abroad specs have a shoulder |
@@ -31,8 +26,6 @@ Plan 5 (`docs/AUTONOMOUS_PLAN_5.md`) built the escape room, event venue, fitness
 
 | Item | Notes |
 |---|---|
-| Office stages 3 to 5 for the leisure scenarios | Specs have stages 1 and 2 only |
-| A second location for any of them | A second studio, a second gym |
 | A full gym with machines | The fitness studio is classes only |
 | Personal training, physiotherapy or a shop as products | |
 | A real booking or access-control integration | |
@@ -55,7 +48,7 @@ Left open by tuning plan 1 (`docs/AUTONOMOUS_PLAN_TUNING_1.md`), with the closes
 | Leinen los | T3 (retreats and charters) | 68.0 points (retreats 11.4%) | Retreats pay their balance before sailing; a shoulder-season lease |
 | Leinen los | G1 (buying best somewhere) | 6.3% of differing seeds | Owned crew at 3,000 a week passes (21.7%) but lets the no-tests bot win 12.9%; pair with upkeep for unasked-for products |
 | Leinen los | G3 (holding weeks) | never holding -0.3 ±0.9 | Charters book the peak first with requests ahead; restate G3 or let cabin guests book further ahead |
-| Leinen los | E1 (established look) | 48.9% of wins, median week 48 | Closed months not breaking the streak; restate the week rule for runs whose first season ends after week 52 |
+| Leinen los | E1 (established look) | Met in plan 6: 52.2% of careful wins, median week 55 (11 months or the Munich desk) | Done; kept here for the record |
 | Leinen los | T7 (seasonal pricing) | -0.2 ±1.7 | Flat off-season prices give +3.0, but the careful bot then wins 48.2% (T1) |
 
 Targets that do not apply as written: Leinen los T9, T14, T15 to T18; every abroad scenario T15, T20, T21 (one office stage, no second loan).
@@ -171,7 +164,6 @@ are retained for context; final main tables hold the current measured candidate.
 | Item | Notes |
 |---|---|
 | Zollstock long mode | With funding and office stages |
-| Price realism: demand that responds to price | Each segment acts as one buyer, so a price below its willingness to pay wins almost nobody new (tuning plan 1 finding behind T7). Real off-season discounts bring more bookings because buyers differ. Proposed: a lower price raises the number of requests, not only the chance of a yes. Touches every bookings scenario; needs its own plan |
 | The next batch of 60-week changes | Chasing invoices with a risk of chasing too early; automatic reminders |
 | Summarised inbox reports in the established look | From the old established mockup |
 | Cofounders | |
@@ -203,3 +195,21 @@ Venue:
 - Fabriketage: collect guest balances before service (weddings four weeks, private one week) with cancellation/refund accounting; currently on-service settlement.
 - Fabriketage: separately book the smaller 60-person room; currently the lower floor is conference breakout space only.
 - Fabriketage: supplier quality/choice beyond authored incidents, and capital cost/refund timing beyond the existing cash-basis ending window.
+
+## Left open by plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`) built price realism, office stages for the seven newer scenarios, second sites, second boats and Rückenwind's fleet. Details in `docs/autonomous6/reports/final.md`.
+
+| Item | Closest result | Options |
+|---|---|---|
+| T7 / P2 (seasonal pricing pays 2 to 10 points) | −7.9 to +1.2 in the ten bookings scenarios | Starting prices already sit at 86 to 99% of what guests pay; lower or flatten them, or restate T7 against flat prices |
+| P1 (price is a lever) | Partly met: discounting wins some runs and loses others, but the 1.0 clamps keep the effect small; not shown in Leinen los | A wider clamp once playability allows |
+| S1 (a second site pays for some players) | No careful player reaches stage 5 in two years in any scenario | Make the second site a year-3 option, or let the careful move rule look at less than a year of history |
+| Moving at once goes bankrupt | always_move wins 0% in Fabriketage and Schweißperle (the first stage offer can come around week 13 or 32) | A later floor for the first offer, such as after the first season |
+| Leinen los careful 47.7% | Over the 25 to 45% band since step 1 | A second playability round |
+| Schweißperle careful 55.1%, naive_careful 60.8% | As before plan 6 (55.7%) | Membership economics, not prices |
+| Griffig boulder_first 71.3%, overstaffing 64.2% | As before plan 6 (70.7%, 63.2%) | Tuning 2 target K1 |
+| Ausgesperrt leisure_vr_first_year | Fell from 33.4% to 25.7% with the stages | Not investigated |
+| Leinen los always_manage | Fell from 32.4% to 23.9% without using the second gulet | Not investigated |
+| A third boat or a third site | Out of scope for plan 6 | |
+

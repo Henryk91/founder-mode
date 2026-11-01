@@ -307,3 +307,10 @@ Not found from a current source, so still estimates: the beach licence fee and h
 | Permanent and part time contracts | | 525 and 320 a week, as fijos discontinuos: working and paid May to October, asleep and unpaid in between (tuning 1, T14) | 1,500 a month gross in 14 payments with employer costs (est.); the Spanish permanent contract for seasonal work |
 | Demand | | hotel guests 76 to 200, learners 8.5 to 29.5, wind regulars 4.3 to 16 a week at peak (about 5% under plan 4) | Tuning 1: the contracts that sleep made every bot win more (T1, T2) |
 
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.1 here. Shoulder months April, May and October, with a shoulder price halfway between peak and off.
+- **Stages 3 to 5 (step 3):** the kite base at Es Racó (700 EUR a month more, 15,000 EUR: kite courses from the spot with no van, half as many places again), the watersports centre (1,800 EUR more, 40,000 EUR: walk-ins, hire and a café; the established look) and the second beach at Pollença (rent 4,600 EUR a month, 30,000 EUR; needs an instructor on contract or the founder). The stage offers arrive at stage 1 or 2 (the stage 2 step is a one-time offer many players decline). The second beach is offered from stage 3 or 4 after 12 weeks there.
+- **The fleet (steps 2 and 3):** the rescue boat can be bought (it replaces the hired one); modern gear, wing foils and kite trips wear out and can be replaced.

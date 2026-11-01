@@ -784,6 +784,15 @@ Open issues are in `docs/autonomous2/STATUS.md`.
 - Ausgesperrt (escape room), Fabriketage (event venue), Schweißperle (class studio) and Griffig (climbing hall), each with its own bots and targets (X1 to X4, V1 to V4, F1 to F5, K1 to K5), UI parts on the existing notebook and calendar components, and scene drawings. Office stages 1 and 2 only. The protected games were proven unchanged after every shared change.
 - A first tuning pass only. Its 34 open targets, with closest results and options, are in `docs/BACKLOG.md` for a later tuning plan.
 
+### After plan 5: plan 6
+
+`docs/AUTONOMOUS_PLAN_6.md` (spec `docs/plan6-features.md`) added price realism, office stages for the seven newer scenarios, second sites and second boats (reports in `docs/autonomous6/reports/`, summary in `docs/autonomous6/reports/final.md`):
+
+- Price realism: each segment of a bookings scenario draws a hidden elasticity per run, so requests respond to price within a clamped range, and the abroad scenarios gain a shoulder season. The post-mortem compares each season's price and requests with the year before.
+- Office stages 3 to 5 for Rückenwind, Tiefgang and the four leisure scenarios, and stages 2 to 4 for Leinen los (`docs/office-stages.md` section 7), with scene drawings and offers.
+- Engine for a second site at stage 5 (open while a manager works there or the founder does), second units of an asset (Tiefgang's second dive boat, Leinen los's second gulet) and Rückenwind's fleet (a bought rescue boat and gear that wears out).
+- Targets O1, O2 and E1 hold for every new stage; S1 is not reachable for a careful player within two years, and seasonal pricing (T7) does not pay against good starting prices. Open points are in `docs/BACKLOG.md`.
+
 ## 10. How to start with Claude Code
 
 1. Create an empty repo, add this file as `docs/IMPLEMENTATION_PLAN.md` and the provided `CLAUDE.md` at the root.

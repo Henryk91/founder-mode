@@ -106,3 +106,24 @@ After the review of plan 3, the established look comes once money coming in has 
 | E1 | The established look marks a company that has made it: the careful bot reaches it in at least 40% of its winning runs, in clearly fewer of its losing runs (the losing share plus its margin below the winning share less its margin), and its median week falls in year 2 (after week 52), in each long mode scenario |
 
 **E1 restated.** The first wording asked for 40 to 80% of winning runs and a median week of 60 to 90. That band was a rough guess, not the intent: Hinterhof's high share (93.6%) comes almost entirely from winning runs (2.7% of its losing runs), which is exactly what the look should mean. The months are tuned per scenario between 4 and 8 and kept: Kantino long 8, Gratwanderung 7, Hinterhof 8, Seeblick 8 (`docs/decisions.md`, plan 3 review).
+
+## 7. Stages 3 to 5 in the newer scenarios (plan 6)
+
+Plan 6 added stages to the seven newer scenarios, as specified in `docs/plan6-features.md` section 2. The rules of section 2 apply, with two additions:
+
+- **A second site at stage 5.** The stage names a site with its own capacity, reach and cannibalisation. It is open while a manager role works there on contract, or while the founder works there (`founderAt` in the week plan). Giving notice closes it.
+- **The first offer comes at stage 1 or 2.** Stage 2 in these scenarios is a one-time offer that many players decline, so the stage 3 offer does not wait for it.
+
+| Scenario | Stage 3 | Stage 4 (established look) | Stage 5 (second site) |
+|---|---|---|---|
+| Rückenwind | Kite base | Watersports centre | Pollença beach |
+| Tiefgang | Harbour base | Dive hotel partnership | Protaras centre |
+| Leinen los | Harbour shop (stage 2), crew house (3) | Munich desk | none: the second gulet instead |
+| Ausgesperrt | Group lounge | Flagship site | Schwabing site |
+| Fabriketage | Catering kitchen | Planning team | Giesing hall |
+| Schweißperle | Changing rooms and reception | Flagship studio | Haidhausen studio |
+| Griffig | Outdoor boulders | Training centre | Moosach boulder hall |
+
+Costs, offers and texts are in each scenario's YAML and `messages/events/office.yaml`; the specs' "What changed in plan 6" sections summarise them.
+
+Targets O1 (a careful mover loses at most a point against never moving), O2 (always moving loses at least 3) and E1 (the established look) hold in all seven. S1 (a second site that pays for some players) is not shown for the careful player in any of them: its first move waits for a year's surplus, so stage 5 lies beyond a two-year game. Results: `docs/autonomous6/reports/step3-*.md`.

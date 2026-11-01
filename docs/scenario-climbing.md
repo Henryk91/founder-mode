@@ -335,3 +335,10 @@ This corrects timing and does not guarantee a sale or a profitable campaign.
 ### Tuning 2 narrowed completion, 1 November 2026
 
 Henry retained only the careful-bot floor of 25%. After the invitation timing fix, the final main matrix gives 463/1000 (46.3% +/-3.1), passing that floor. No further Griffig tuning round was used; all other open targets are LOW priority in the backlog.
+
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.0 here.
+- **Stages 3 to 5 (step 3):** an outdoor bouldering area (45,000 EUR), a training centre for youth teams and competitions (20,000 EUR; the established look) and the Moosach boulder hall (176,000 EUR; a second hall that needs the desk on contract or the founder). The stage offers arrive at stage 1 or 2 (the stage 2 step is a one-time offer many players decline).

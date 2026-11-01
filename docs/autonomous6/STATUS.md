@@ -1,12 +1,14 @@
 # Autonomous run 6 status
 
 ## Current
-Step: Step 4, the full report
-Last commit on main: (this commit) Plan 6 step 3: leisure reports, tags plan6-<id> and plan6-stages
-Next action: start ../founder-mode-plan6-state/plan6-full-driver.sh <this commit> (one scenario and
-mode per process, 1,000 seeds, 10,000 wide seeds, events; Kantino long adds team and funding;
-checkpoints in full-campaign/<unit>, log full-campaign/driver.log; a rerun resumes). Then copy
-docs/balancing.md from the run checkout, pnpm seeds, docs, final report, cleanup, plan6-complete.
+Step: Step 4, the full report running; docs written
+Last commit on main: (this commit) Plan 6 step 4: docs
+Next action: wait for ../founder-mode-plan6-state/plan6-full-driver.sh (started at c5f832a; log
+full-campaign/driver.log; a rerun with the same commit resumes from checkpoints). Then copy
+docs/balancing.md from ../founder-mode-plan6-run, check the protected and unchanged sections against
+the step reports, pnpm seeds, write reports/final.md, clean up the run worktree and state folder,
+tag plan6-complete. Docs (office-stages section 7, scenario specs, IMPLEMENTATION_PLAN, README,
+BACKLOG) are done.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
@@ -24,7 +26,7 @@ each run script at the commit it measures. Harness: packages/bots/scratch/plan6-
 Results: ../founder-mode-plan6-state/<label>/<scenario>-<mode>/ (comparison.json, main.md, targets.json).
 Summaries: summfull.py <label>, targets6.py <label> <scenario>, e1.py <label> <scenario>,
 cmp.py <dir> <base dir>.
-Running: nothing until the full report starts.
+Running: plan6-full-driver.sh (13 units, c5f832a).
 All step branches are merged into main; nothing is pushed.
 
 ## Step 3 leisure results (1,000 test seeds, main part, long mode)

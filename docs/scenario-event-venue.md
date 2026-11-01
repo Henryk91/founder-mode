@@ -310,3 +310,10 @@ window from 26–70 to 8–40 weeks, admitting late bookings for a newly opened
 venue as well as advance bookings. This is a simulation estimate, not a supplier
 quote. Prices, deposits, four-week balance deadline, capacity and costs stay as
 built. Final main-only measurement: 33/318 (10.4% +/-3.4), below 20%; both allowed rounds exhausted. No event table was run under the amendment.
+
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.6 here.
+- **Stages 3 to 5 (step 3):** an in-house catering kitchen (70,000 EUR), a full-service planning team (10,000 EUR; the established look) and the Giesing hall (72,000 EUR; a second venue that needs an event host on contract or the founder). The stage offers arrive at stage 1 or 2 (the stage 2 step is a one-time offer many players decline). The established look by months now needs 10 months covering all costs (was 8).

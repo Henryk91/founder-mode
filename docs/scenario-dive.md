@@ -279,3 +279,10 @@ Not found from a current source, so still estimates: the shop's rent, boat price
 | Upkeep of products | none beyond the stated costs | the entry course 600 a month (pool hire, rental sets), the advanced course 300, nitrox 300 (estimates) | Tuning 1 (T2): a product nobody books should still cost something; the no-tests bot built everything for free |
 | The established look | after 8 months covering all costs | after 7 | Tuning 1, after the upkeep (E1) |
 
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.6 here. Shoulder months April, May, October and November, with a shoulder price halfway between peak and off.
+- **Stages 3 to 5 (step 3):** the harbour base, the dive hotel partnership (the established look) and the Protaras centre (a second site; needs an instructor on contract or the founder). The stage offers arrive at stage 1 or 2 (the stage 2 step is a one-time offer many players decline).
+- **The second dive boat (steps 2 and 3):** leased at 24,000 EUR a season plus crew, or bought on a loan; offered once the first boat turns divers away at the peak. It can break down.

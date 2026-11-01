@@ -312,3 +312,10 @@ demand, and retains the one-room and quarterly comparison rules. No room cost,
 capacity, rent, borrowing term or construction time changes.
 
 Final main measurement: tourism_part_time 52.3%, quarterly 51.8%; paired gap +0.5 +/-2.3 points. Quarterly ranks second, but the paired difference is inconclusive. Both permitted rounds are spent.
+
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.6 here.
+- **Stages 3 to 5 (step 3):** a lounge with a bar for groups (25,000 EUR), a flagship site near the city centre (60,000 EUR; the established look) and the Schwabing site (50,000 EUR; a second site that needs a game master on contract or the founder). The stage offers arrive at stage 1 or 2 (the stage 2 step is a one-time offer many players decline).

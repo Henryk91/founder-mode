@@ -259,3 +259,10 @@ Three of the money values are kept for playability rather than for realism:
 - **Your 30% for managing an owner's gulet.** Management deals on the coast are usually a commission on what you sell, often nearer 15 to 25% (estimate, not checked). 30% keeps managing a survivable first season rather than a slow way to go bankrupt.
 - **A 200,000 EUR gulet with the bank lending 80%.** Optimistic for a 20-year-old wooden boat bought by a new, foreign-owned Turkish company: banks lend less against old boats and new companies, and a 24 m gulet in good order costs far more (the spec's 450,000). Kept so that owning is a real option in a 104 week game; the post-mortem counts the boat at its resale value.
 
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.0 here. Shoulder months May, June, September and October, with a shoulder price halfway between peak and off.
+- **Stages 2 to 4 (step 3):** the harbour shop (walk-in cabin guests), the crew house (owners' crew a tenth cheaper) and the Munich desk (more guests from Germany; the established look, which now needs 11 months covering all costs or the Munich desk).
+- **The second gulet (steps 2 and 3):** the boat's second unit, managed (the owner keeps 80%), leased or bought. It stands in for the spec's stage 5.

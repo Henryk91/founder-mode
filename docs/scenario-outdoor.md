@@ -223,3 +223,9 @@ The game uses 5 to 8 school groups a week at peak; this spec estimated 0.3 to 1.
 No source counts the classes that book a guided outdoor day in one Alpine region in June and July. Our arithmetic, every step an estimate: if Bavaria has about a sixth of German hostel nights (1.5 million) and 41% are schools, that is about 600,000 school nights, or about 6,000 class trips of 25 pupils and four nights a year. If the Alpine hostels take a quarter and May to July a third of those, about 40 to 50 classes a week stay in the Bavarian Alps in early summer, before counting day trips and other lodgings. A new operator reaching a tenth to a sixth of them would see 4 to 8 a week.
 
 So the sources make the game's 5 to 8 groups a week plausible, but they do not establish it: the Bavarian hostel share and the Alpine share are our assumptions, and the issue is recorded as not closed. Options: ask DJH Bayern for school nights by hostel and month; keep 5 to 8 labelled "estimate (derived)"; or tune school demand down toward 2 to 4 groups and give schools another lever (a higher price per class, or a partnership with the hostels).
+
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.0 here. Value round 2 lowered the top from 1.6 so that cheap prices do not carry the careful player over the band.

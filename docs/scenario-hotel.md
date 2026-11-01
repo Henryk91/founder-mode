@@ -195,3 +195,9 @@ Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/off
 
 - **T7:** the careful bot prices the off season at the level guests state, not 0.85 of it; below what guests would pay a discount won almost nobody. T7 +5.7.
 - **T11:** project guests convert 0.8 under a strict cancellation policy (was 0.85: firms book rooms they may need to move); groups 1.0 (was 0.95: a group books its date on a contract with a deposit anyway). Strict leads for groups and leisure, flexible for project guests. Estimates.
+
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.6 here.

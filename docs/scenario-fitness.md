@@ -414,3 +414,10 @@ business and created complaints before it opened. Existing quoted fees and
 counts stay fixed for the timing measurement. At opening, ordinary admission,
 prices and capacity still apply; the preparation count is shown in the calendar.
 This corrects timing and does not guarantee a sale or a profitable campaign.
+
+## What changed in plan 6
+
+Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`, spec `docs/plan6-features.md`). Measurements: `docs/autonomous6/reports/`.
+
+- **Price realism (step 1):** each segment draws a hidden elasticity per run, so a lower price brings more requests and a higher one fewer. The volume factor is clamped to 0.5 to 1.6 here. A top of 1.0 was tried and changed nothing: the studio wins through memberships, which elasticity does not touch.
+- **Stages 3 to 5 (step 3):** proper changing rooms and a reception (35,000 EUR), a flagship studio with a café and a retail corner (50,000 EUR; the established look) and the Haidhausen studio (40,000 EUR; a second studio that needs the front desk on contract or the founder). The stage offers arrive at stage 1 or 2 (the stage 2 step is a one-time offer many players decline).
