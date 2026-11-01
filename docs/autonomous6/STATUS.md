@@ -1,9 +1,11 @@
 # Autonomous run 6 status
 
 ## Current
-Step: Step 1, price realism
-Last commit: see git log (step 0 set up)
-Next action: Read the bookings engine's demand and price code, then build the elasticity volume factor (spec section 1).
+Step: Step 1, price realism (built, measuring)
+Last commit: 86cddc7 Plan 6 step 1: price elasticity, shoulder prices and season lines
+Next action: Read the step1a results (careful and price-blind, 10 bookings scenarios; protected proof).
+Then tune P2/T7 and playability, run all strategies once per scenario,
+update the three tourism fingerprints in long.test.ts, run pnpm seeds, and tag plan6-price.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
@@ -13,8 +15,14 @@ Next action: Read the bookings engine's demand and price code, then build the el
 - [ ] Step 4: wrap up (tag plan6-complete)
 
 ## Running jobs and state
-None.
-State folder for checkpoints, when needed: ../founder-mode-plan6-state/ (never /tmp).
+Bot runs use a run checkout: ../founder-mode-plan6-run (git worktree, detached).
+It must be at the commit being measured (git -C ../founder-mode-plan6-run checkout --detach <hash>).
+Harness: packages/bots/scratch/plan6-main.tmp.ts (ignored; copy in both checkouts).
+Results: ../founder-mode-plan6-state/<label>/<scenario>-<mode>/ (comparison.json, main.md).
+Running: ../founder-mode-plan6-state/run-step1a.sh, progress in step1a.progress.
+
+Known red tests at 86cddc7 (expected until step 1 ends):
+the three tourism fingerprints in packages/engine/test/long.test.ts and the docs/seeds.md examples.
 
 ## Baseline
 Results committed at tuning2-complete. Nothing rerun.
