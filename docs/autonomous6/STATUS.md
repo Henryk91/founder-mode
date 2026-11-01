@@ -3,20 +3,14 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 1 playability budget spent. Final: Gratwanderung 42.8, Rueckenwind 44.8, Griffig
-45.4 (boulder_first 69.5) in band; Leinen los 48.9 and Schweisperle 55.1 (both over band, both
-reported). P1 diagnostic running in the run checkout at d5e3bfc, logs p1-grat.log and p1-lein.log
-in the state folder.
-Then: fix the three tourism
-fingerprints in packages/engine/test/long.test.ts, `pnpm seeds`, full test and lint, step 1
-report docs/autonomous6/reports/step1-price.md, tag plan6-price.
-Then merge plan6-step2 into main (keep main's round 2 pricing block in tourism.ts on conflict),
-step 2 protected proof (main part, every scenario, 1,000 seeds), tag plan6-engine.
+Next action: step 1 done and tagged plan6-price. Merge plan6-step2 into main (schema.md: keep both
+appended sections; check tourism.ts keeps main's round 2 pricing block).
+Then step 2 protected proof (main part, every scenario, 1,000 seeds), tag plan6-engine.
 Then merge plan6-step3 and continue step 3 scenario by scenario (measure, tune, report).
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
-- [ ] Step 1: price realism (tag plan6-price)
+- [x] Step 1: price realism (tag plan6-price, report reports/step1-price.md)
 - [ ] Step 2: second sites, second boats, fleet engine (tag plan6-engine)
 - [ ] Step 3: stages per scenario (tags plan6-<scenario>, then plan6-stages)
 - [ ] Step 4: wrap up (tag plan6-complete)
