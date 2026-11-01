@@ -1,4 +1,10 @@
-import { answerOffers, officeOffers, stageToFinance, type OfficeRule } from '../office'
+import {
+  answerOffers,
+  officeOffers,
+  stageToFinance,
+  yearSurplusCents,
+  type OfficeRule,
+} from '../office'
 import type { Scenario } from '@founder-mode/content'
 import {
   viewConditionsHold,
@@ -1010,10 +1016,19 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
     const pick = lease ?? options[0]
     if (!pick || !a) return null
     const upfront = a.lease ? Math.round(a.lease.seasonCents * a.lease.upfrontShare) : 0
+    // Plan 6 (B1, bot fix): a season of the second boat (fee and crew) must be carried by the
+    // last year's surplus, as an office move must carry its rent; a full peak alone lost 12
+    // points in Tiefgang.
+    const seasonCost = a.lease
+      ? a.lease.seasonCents + Math.round(a.lease.crewWeekCents * 4.33 * a.lease.months.length)
+      : 0
+    const surplus = yearSurplusCents(view)
     const enough =
       view.office.peakTurnedAwayWeeks >= 3 &&
       scenario.maxWeeks - view.week >= 26 &&
-      view.company.cashCents >= upfront + 3 * view.company.monthlyFixedCostsCents
+      view.company.cashCents >= upfront + 3 * view.company.monthlyFixedCostsCents &&
+      surplus !== null &&
+      12 * surplus >= seasonCost
     return enough ? pick.id : null
   }
 
