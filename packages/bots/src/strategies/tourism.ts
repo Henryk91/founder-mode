@@ -143,17 +143,14 @@ const HINT_OFF = 0.85
  */
 const HINT_OFF_AT_HINTS = new Set(['hinterhof', 'seeblick', 'rueckenwind'])
 /**
- * Plan 6 (price realism): where requests answer the price, each season's price follows how full
- * its next weeks are on the calendar. Above `FULL_LOAD` of the places booked, the hints' level (a
- * discount fills nothing when the weeks are full); below `IDLE_LOAD`, `IDLE_SHARE` of the hints;
- * between, `MID_SHARE`. Seasons not on the calendar yet keep the usual share.
+ * Plan 6 (price realism): where requests answer the price, a segment that had guests turned away
+ * in the last four weeks keeps the hints' level at the peak (raising it wins nothing back once
+ * the weeks are full) and 0.9 of it off season; one with room left prices at 0.9 at the peak and
+ * 0.8 off season, to fill it. The shoulder sits between. Tried on 300 seeds against holding the
+ * old shares, deeper discounts and pricing by the calendar's load (decisions, plan 6 step 1).
  */
-const IDLE_LOAD = 0.5
-const FULL_LOAD = 0.85
-const IDLE_SHARE = 0.75
-const MID_SHARE = 0.9
-/** Weeks of a season, nearest first, that count for its load. */
-const LOAD_WEEKS = 4
+const ROOM_SHARES = { peak: 0.9, shoulder: 0.85, off: 0.8 }
+const FULL_SHARES = { peak: 1, shoulder: 0.95, off: 0.9 }
 const MIN_HINTS = 3
 /** The most a price moves at once from the hints. */
 const MAX_PRICE_STEP = 0.3
@@ -175,40 +172,6 @@ const WHOLE_BOAT = 12
 const WHOLE_FILL = 0.75
 const CABIN_FILL = 0.85
 const CABIN_PLACES = 14
-/**
- * Plan 6: the share of places booked in the nearest weeks of a price season on the calendar, or
- * null when none of the weeks shown is in it. The calendar and the dates are on the screen.
- */
-function seasonLoad(
-  view: PlayerView,
-  scenario: Scenario,
-  season: 'peak' | 'off' | 'shoulder',
-): number | null {
-  const cfg = scenario.bookings!
-  const monthAt = (week: number) => {
-    const woy = ((cfg.startWeekOfYear - 1 + week - 1) % 52) + 1
-    return Math.min(12, Math.floor(((woy - 1) * 12) / 52) + 1)
-  }
-  const seasonAt = (week: number) => {
-    const m = monthAt(week)
-    if (cfg.peakMonths.includes(m)) return 'peak'
-    return cfg.shoulderMonths?.includes(m) ? 'shoulder' : 'off'
-  }
-  const weeks = [...new Set(view.bookings!.calendar.flatMap((c) => c.cells.map((x) => x.week)))]
-    .filter((w) => w > view.week && seasonAt(w) === season)
-    .sort((a, b) => a - b)
-    .slice(0, LOAD_WEEKS)
-  let booked = 0
-  let capacity = 0
-  for (const c of view.bookings!.calendar)
-    for (const x of c.cells)
-      if (weeks.includes(x.week)) {
-        booked += x.booked
-        capacity += x.capacity
-      }
-  return capacity > 0 ? booked / capacity : null
-}
-
 /** A product costing this share of its price or more is not worth adding (step 6). */
 const THIN_MARGIN_SHARE = 0.5
 /** Months of fixed costs a careful borrower adds to what the plan needs, and keeps in reserve. */
@@ -1501,20 +1464,16 @@ export function tourismPlayer(scenario: Scenario, rule: TourismRule, seed = ''):
             Math.max(base * (1 - MAX_PRICE_STEP), median),
           )
           const offDefault = HINT_OFF_AT_HINTS.has(scenario.id) ? 1 : HINT_OFF
-          const elastic = cfg.elasticity !== undefined
-          const share = (season: 'peak' | 'off' | 'shoulder', normal: number) => {
-            if (!elastic) return normal
-            const load = seasonLoad(view, scenario, season)
-            if (load === null) return normal
-            if (load < IDLE_LOAD) return IDLE_SHARE
-            return load > FULL_LOAD ? HINT_PEAK : MID_SHARE
-          }
+          const full = (bv.segments.find((x) => x.id === id)?.turnedAwayLast4 ?? 0) > 0
+          const shares = cfg.elasticity
+            ? full
+              ? FULL_SHARES
+              : ROOM_SHARES
+            : { peak: HINT_PEAK, shoulder: (HINT_PEAK + offDefault) / 2, off: offDefault }
           const round = (share: number) => Math.max(100, Math.round((mean * share) / 100) * 100)
-          const peak = round(share('peak', HINT_PEAK))
-          const off = round(share('off', offDefault))
-          const shoulder = cfg.shoulderMonths
-            ? round(share('shoulder', (HINT_PEAK + offDefault) / 2))
-            : undefined
+          const peak = round(shares.peak)
+          const off = round(shares.off)
+          const shoulder = cfg.shoulderMonths ? round(shares.shoulder) : undefined
           const now = bv.prices[id]
           if (!now || now.peak !== peak || now.off !== off || now.shoulder !== shoulder)
             plan.prices[id] = { peak, off, ...(shoulder !== undefined ? { shoulder } : {}) }
