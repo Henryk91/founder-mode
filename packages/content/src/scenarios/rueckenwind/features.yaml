@@ -67,6 +67,12 @@
   bugsOnShip: { min: 0, max: 1 }
   mention: On a windy day I want to know somebody with an engine is watching.
 
+- id: rescue_boat_purchase
+  name: Buying the rescue boat
+  buildHours: 4
+  bugsOnShip: { min: 0, max: 1 }
+  mention: Your own boat at the spot. Nobody else's schedule, nobody else's fuel gauge.
+
 - id: online_booking
   name: Online booking with instant confirmation
   buildHours: 15
