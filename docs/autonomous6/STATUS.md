@@ -3,10 +3,12 @@
 ## Current
 Step: Step 1, price realism: all-strategy run (f4d3b3b) finishing; value round 1 queued (23f0483)
 Last commit on main: 23f0483 value round 1, clamp top 1.1 in Gratwanderung, Rueckenwind, Leinen los
-Next action: step 3, Leinen los. Tiefgang done (reports/step3-tiefgang.md, tag plan6-tiefgang).
-Measure with careful, never_move, always_move, never_second, always_second on 1,000 seeds (baseline
-label step1-v2), compute O1, O2, E1 (e1.py), S1/B1 (targets6.py), cmp.py for strategy changes; tune
-at most 2 rounds each; full set, pnpm seeds, tests, lint, report, tag plan6-leinenlos.
+Next action: step 3, Leinen los. ll-m1 showed careful = never_move = 76.1 (step 1: 48.9): an engine
+bug in splitServed (an untaken second unit took guests at no cost), fixed at 8af428c and 094ebac,
+regression test in secondSites.test.ts. Running run-fix.sh (progress fix.progress): Tiefgang full
+set again (label tg-full2, compared with tg-full: if all rows are the same, the Tiefgang report and
+tag stand; if not, update reports/step3-tiefgang.md), then Leinen los five strategies (label ll-m2).
+Seeds tests red for Leinen los until pnpm seeds.
 Then in order: Ausgesperrt, Fabriketage, Schweisperle, Griffig.
 
 ## Checklist
