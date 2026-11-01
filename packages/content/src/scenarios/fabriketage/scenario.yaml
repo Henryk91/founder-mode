@@ -455,7 +455,8 @@ office:
 organisedAt:
   - covers_all_costs
 establishedAt:
-  monthsCoveringAll: 8
+  # Plan 6 E1 round 1: 10 months (with 8 the careful bot's median week was 49, in year 1).
+  monthsCoveringAll: 10
   # Plan 6: or on moving into stage 4 (target E1).
   officeStage: 4
 loan:
