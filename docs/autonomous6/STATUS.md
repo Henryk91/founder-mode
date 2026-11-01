@@ -8,11 +8,11 @@ stage 1 or 2 in Rückenwind, Tiefgang and the four leisure scenarios (70641f7, c
 stages 3 to 5 otherwise); always_second takes every offer at once (a0d07c6). Office browser test
 passes (its 8 second-site cases skip: no always_second run reaches Rückenwind's stage 5 in 60
 seeds). Seeds tests are red until `pnpm seeds` at the end of each scenario.
-rw-m1 (1,000 seeds): careful 45.2, never_move 42.4, always_move 7.4, never_second 45.2,
-always_second 7.4. O1, O2, E1 met (e1.py in the state folder); S1 missed (careful opened the second
-site in 0 runs). S1 round 1 committed (second beach from stage 3): running run-rw-r1.sh (label
-rw-r1, careful, always_move, never_second, always_second). If careful still never opens it, round
-2 or report it.
+rw-m1 (1,000 seeds): O1 +2.8, O2 37.8 points, E1 met (47.6% of wins, 4.7% of losses, week 91),
+careful 45.2. S1 round 1 (second beach from stage 3, rw-r1): year-1 opening loses 80.7 points
+(met); careful reaches it in 1 run, so "pays in some runs" not shown; round 2 not spent (decisions).
+Running: run-rw-full.sh (label rw-full), Rückenwind's full strategy set once. Then: pnpm seeds,
+full test and lint, report docs/autonomous6/reports/step3-rueckenwind.md, tag plan6-rueckenwind.
 Then the other six scenarios in order: Tiefgang, Leinen los, Ausgesperrt, Fabriketage,
 Schweisperle, Griffig.
 
