@@ -1,14 +1,9 @@
 # Autonomous run 6 status
 
 ## Current
-Step: Step 4, the full report running; docs written
-Last commit on main: (this commit) Plan 6 step 4: docs
-Next action: wait for ../founder-mode-plan6-state/plan6-full-driver.sh (started at c5f832a; log
-full-campaign/driver.log; a rerun with the same commit resumes from checkpoints). Then copy
-docs/balancing.md from ../founder-mode-plan6-run, check the protected and unchanged sections against
-the step reports, pnpm seeds, write reports/final.md, clean up the run worktree and state folder,
-tag plan6-complete. Docs (office-stages section 7, scenario specs, IMPLEMENTATION_PLAN, README,
-BACKLOG) are done.
+Step: done (tag plan6-complete)
+Last commit on main: Plan 6 complete
+Next action: none. Summary in reports/final.md; open points in docs/BACKLOG.md.
 
 ## Checklist
 - [x] Step 0: set up (tag plan6-baseline)
@@ -17,7 +12,7 @@ BACKLOG) are done.
 - [x] Step 3: stages per scenario (tags plan6-<scenario>, then plan6-stages)
   - [x] Rueckenwind, Tiefgang, Leinen los (tags made, reports written)
   - [x] Ausgesperrt, Fabriketage, Schweissperle, Griffig (tags made, reports written)
-- [ ] Step 4: wrap up (tag plan6-complete)
+- [x] Step 4: wrap up (tag plan6-complete)
 
 ## Running jobs and state
 Bot runs use a run checkout: ../founder-mode-plan6-run (git worktree, detached), checked out by
@@ -26,7 +21,7 @@ each run script at the commit it measures. Harness: packages/bots/scratch/plan6-
 Results: ../founder-mode-plan6-state/<label>/<scenario>-<mode>/ (comparison.json, main.md, targets.json).
 Summaries: summfull.py <label>, targets6.py <label> <scenario>, e1.py <label> <scenario>,
 cmp.py <dir> <base dir>.
-Running: plan6-full-driver.sh (13 units, c5f832a).
+Running: nothing. The run worktree and state folder were removed.
 All step branches are merged into main; nothing is pushed.
 
 ## Step 3 leisure results (1,000 test seeds, main part, long mode)
