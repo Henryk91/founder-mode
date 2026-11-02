@@ -57,6 +57,24 @@ The full plan is in `docs/IMPLEMENTATION_PLAN.md`. Follow its phases in order an
 - Record design or tuning decisions in `docs/decisions.md` in one or two lines each.
 - Stop at the end of each phase and summarise.
 
+## Order of work for plans that build and tune
+
+These rules override any plan file that asks for a different order.
+
+1. **Build everything first.** Make all content, engine and bot changes for every scenario in the plan before measuring anything.
+2. **Measure once, all together.** One run of every affected scenario, with the careful bot and only the strategies the targets need.
+3. **Fix shared code before tuning.** Fix every engine or shared bot bug that run shows, then measure again once. A shared fix after tuning undoes earlier measurements.
+4. **Tune in batches.** Scenarios are independent, so one round changes every scenario that needs it at once, and one run measures them all. Within one scenario, keep changes small enough to tell what moved.
+5. **One full strategy set at the end,** then the full report once if the bot budget calls for it.
+6. **Do not commit a fix before its tests pass.**
+
+## Paperwork
+
+- **One report per plan** (`final.md`). No separate report per scenario or step unless the plan's reader asks for it.
+- **Write each number once.** The report holds results; `docs/decisions.md` holds only decisions, in one line each, pointing at the report. Do not copy results into specs, backlog and status as well.
+- **Status file:** update it when a step ends or a long job starts, in the same commit as other work. Never make a commit that only updates status.
+- **Chat updates:** two or three lines. Do not repeat what a report already says.
+
 ## Writing style for game text
 
 - Short messages, 2 to 4 sentences, dry humour
