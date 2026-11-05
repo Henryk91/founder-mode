@@ -1456,6 +1456,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   }
   let cancelledUnits = 0
   let keptUnits = 0
+  let keptCents = 0
   let weatherClosed = 0
   // This week's open bookings change in place, as since step 4 (copying them made the restaurant
   // 40% slower; plan 4 step 1).
@@ -1473,6 +1474,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       if ((x.policy ?? b.policy) === 'strict') {
         x.status = 'cancelled_paid'
         keptUnits += x.units
+        keptCents += x.units * x.priceCents
       } else {
         x.status = 'cancelled'
         cancelledUnits += x.units
@@ -2191,6 +2193,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       kind: 'bookings_cancelled',
       units: cancelledUnits + keptUnits,
       kept: keptUnits > 0,
+      ...(keptCents > 0 ? { keptCents } : {}),
     })
   }
   if (staffCancelled > 0)

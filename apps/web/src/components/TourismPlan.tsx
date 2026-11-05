@@ -151,6 +151,17 @@ export function RosterPlan() {
               })}
         </Writing>
       ))}
+      {/* Plan 8, H-08: what the player has seen of walk-in demand, as a range. */}
+      {b.servedByWeek.length >= 2 && (
+        <Writing>
+          {label('tour.roster.seen', stage, {
+            low: Math.min(...b.servedByWeek),
+            high: Math.max(...b.servedByWeek),
+            weeks: b.servedByWeek.length,
+            turned: b.segments.reduce((t, x) => t + x.turnedAwayLast4, 0),
+          })}
+        </Writing>
+      )}
       {/* Plan 8, finding 12: bookings of products the shifts do not cover are still shown. */}
       {b.thisWeek
         .filter((t) => t.booked > 0 && !staffed(b, t.productId))

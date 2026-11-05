@@ -4,7 +4,7 @@ import { createGame, getView } from '@founder-mode/engine'
 import { thingsThatNeedYou } from '../src/screens/Inbox'
 import { entryText } from '../src/screens/Results'
 import { priceSteps } from '../src/steps'
-import { label } from '../src/labels'
+import { label, voiceOf } from '../src/labels'
 
 const view = getView(createGame(loadScenario('kantino'), 'screens-words'))
 
@@ -88,5 +88,38 @@ describe('Plan 8 batch 1: roster preview with hires', () => {
       hire: [{ roleId: role.id, kind: role.contracts[0]!.kind }],
     })[0]!
     expect(withHire.kitchen).toBeGreaterThan(without.kitchen)
+  })
+})
+
+describe('Plan 8 batch 2 wording', () => {
+  it('R-06: a strict policy cancellation says how much was kept', () => {
+    const text = entryText(
+      { kind: 'bookings_cancelled', units: 7, kept: true, keptCents: 210_000 },
+      view,
+    )
+    expect(text).toContain('7 guests cancelled and paid anyway')
+    expect(text).toContain('€2,100 kept')
+  })
+
+  it('finding 14: the lease says what is paid when', () => {
+    const text = label('asset.terms.lease', 'scrappy', {
+      season: '€110,000',
+      months: 'May to October',
+      min: 6,
+      upfront: '€16,500',
+      crew: '€1,800',
+    })
+    expect(text).toContain('€16,500 is paid when you sign')
+    expect(text).toContain('€1,800 a week used')
+  })
+
+  it('finding 15: the tourism notice names no sales pipeline', () => {
+    const tourism = getView(createGame(loadScenario('hinterhof'), 'words'))
+    const voice = voiceOf({ scenarioId: tourism.scenarioId, company: { uiStage: 'organised' } })
+    const text = label('results.organised.text', voice)
+    expect(text).not.toMatch(/pipeline|demo|trial/i)
+    expect(label('results.organised.text', 'organised')).toContain(
+      'Who pays tab is now called Pipeline',
+    )
   })
 })

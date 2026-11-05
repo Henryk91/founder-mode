@@ -124,6 +124,19 @@ export function LoanPlan() {
                 },
               )}`}
           </Writing>
+          {/* Plan 8, F-06: what the money is waiting for, from the builds the loan pays. */}
+          {l.offerSchedule && (view.bookings?.leisure?.builds ?? []).some((b) => !b.complete) && (
+            <Writing>
+              {label('loan.offer.timeline', stage, {
+                payout: l.offerSchedule.payoutWeek,
+                works: (view.bookings?.leisure?.builds ?? [])
+                  .filter((b) => !b.complete)
+                  .map((b) => `${b.name} (${b.weeks})`)
+                  .join(', '),
+                cash: formatEuro(view.company.cashCents),
+              })}
+            </Writing>
+          )}
           <Choices>
             {chip(
               draft.accept,

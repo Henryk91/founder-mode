@@ -6,6 +6,9 @@ Last updated: 5 November 2026, plan 8 (fixes from the QA runs).
 
 ## 0. Left out of plan 8 (QA findings)
 
+- G-08 (contract hours per role, headcount of team contracts) and H-06 (server contract price against casual shifts): they change balance, so they wait for a balance plan.
+- 20 (quote private charters per boat-week), 22 (say "four-week months" where money is per month, explain the "last 13 months" goal) and 25 (a booking ledger): optional, not done.
+- F-04 (Fabriketage 2.5 stars from 4 reviews before any event): not reproduced; reviews are only written in weeks with guests served, so open evenings and test listings may count. Needs a seeded trace.
 - S-02 rest: direct number entry (the game is tap only) and "apply to all slots" (a feature).
 
 | Item | Notes |

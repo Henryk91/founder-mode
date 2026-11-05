@@ -741,7 +741,23 @@ function MarketCard({
     [
       label('pm.market.landing', stage),
       m.landing
-        ? label('pm.market.landingValue', stage, m.landing)
+        ? m.landing.each && m.landing.each.length > 1
+          ? `${m.landing.each
+              .map((e) =>
+                label('pm.market.landingEach', stage, {
+                  budget: formatEuro(e.budgetCents),
+                  signups: e.signups,
+                  visitors: e.visitors,
+                }),
+              )
+              .join('; ')}; ${label('pm.market.landingAll', stage, {
+              signups: m.landing.signups,
+              visitors: m.landing.visitors,
+            })}`
+          : label('pm.market.landingValue', stage, {
+              signups: m.landing.signups,
+              visitors: m.landing.visitors,
+            })
         : label('pm.market.notTried', stage),
     ],
     ...(m.landing && weakLanding
@@ -750,11 +766,24 @@ function MarketCard({
     [
       label('pm.market.presale', stage),
       m.presale
-        ? label('pm.market.presaleValue', stage, {
-            commits: m.presale.commits,
-            prospects: m.presale.prospects,
-            price: formatEuro(m.presale.priceCents),
-          })
+        ? m.presale.each && m.presale.each.length > 1
+          ? `${m.presale.each
+              .map((e) =>
+                label('pm.market.presaleEach', stage, {
+                  price: formatEuro(e.priceCents),
+                  commits: e.commits,
+                  prospects: e.prospects,
+                }),
+              )
+              .join('; ')}; ${label('pm.market.presaleAll', stage, {
+              commits: m.presale.commits,
+              prospects: m.presale.prospects,
+            })}`
+          : label('pm.market.presaleValue', stage, {
+              commits: m.presale.commits,
+              prospects: m.presale.prospects,
+              price: formatEuro(m.presale.priceCents),
+            })
         : label('pm.market.notTried', stage),
     ],
     [

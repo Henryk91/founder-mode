@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPostMortem, getView, shutDown, type GameState } from '../src/index'
+import { buildPostMortem, endWeek, getView, shutDown, type GameState } from '../src/index'
 import { informedPlan, newGame, play, plan, quietKantino, richKantino } from './helpers'
 
 /** A run that does nothing until the money runs out. */
@@ -158,5 +158,29 @@ describe('post-mortem: price', () => {
         overPrice: true,
       }),
     )
+  })
+
+  it('K19: a hire that started is in the chain with its monthly pay', () => {
+    let s = newGame('pm-hire', quietKantino())
+    s = endWeek(s, plan({ searchRole: 'developer' })).state
+    s = endWeek(s, plan()).state
+    s = endWeek(s, plan()).state
+    s = endWeek(s, plan({ hire: s.team.candidates[0]!.id })).state
+    s = play(s, 80, () => plan())
+    expect(s.ending).not.toBeNull()
+    const hire = buildPostMortem(s).chain.find((c) => c.kind === 'hire_started')
+    expect(hire?.cents ?? 0).toBeGreaterThan(0)
+  })
+
+  it('K4: each pre-sale batch keeps its own price and size', () => {
+    let s = newGame('pm-presale', quietKantino())
+    const segment = Object.keys(s.hidden.segments)[0]!
+    s = endWeek(s, plan({ presales: { [segment]: 1 }, priceCentsPerMonth: 45_000 })).state
+    s = endWeek(s, plan({ presales: { [segment]: 1 }, priceCentsPerMonth: 1_000 })).state
+    s = play(s, 90, () => plan())
+    const presale = buildPostMortem(s).markets.find((m) => m.segmentId === segment)!.presale!
+    expect(presale.each).toHaveLength(2)
+    expect(presale.each!.map((e) => e.priceCents).sort((a, b) => a - b)).toEqual([1_000, 45_000])
+    expect(presale.each!.reduce((t, e) => t + e.prospects, 0)).toBe(presale.prospects)
   })
 })

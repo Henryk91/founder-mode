@@ -45,6 +45,28 @@ The step 3 UI checks (axe at four widths in two browsers, all UI stages) were **
 | K21, K24 defaults | yes | yes | `MessageView.ifIgnored`: default answer, cost, hours lost; shown on open letters |
 | S-02 steppers | yes | partly | Price steps scale with the amount; opening hours get a +4. Direct entry (the game is tap only) and apply-to-all (a feature) go to the backlog |
 
+Batch 2 (explanations):
+
+| Finding | Fixed | How |
+|---|---|---|
+| G-05 | yes (text) | The "not open yet" note names the areas that open the hall; auto-belays and boards do not |
+| G-07 | yes | Membership offers split "Available now" and "Included once built" |
+| F-03 | yes (label) | Fabriketage's header says advances and hold fees are included in money in |
+| F-04 | no | Not reproduced by reading the code; in the backlog |
+| F-06 | yes | The loan offer shows the payout week, the builds still to finish with their construction weeks, and cash today |
+| R-03 | yes (label) | The price stepper says it is a reference price and lists each product's multiple |
+| R-06 | partly | The kept-anyway line shows the amount; delivered and refunded per activity not itemised |
+| H-08 | yes | The roster shows the range served and guests turned away |
+| K22 | yes | The candidate list states the full-month pay rule |
+| K19 | yes | The post-mortem chain shows hires with their monthly pay and office moves |
+| K15 | yes | "Talk to more people" is left out when deposits are the lesson |
+| K4 | yes | Post-mortem lists each pre-sale batch and landing test with its own price or budget |
+| K5 | yes | The reply message no longer says "first email" |
+| 14 | yes (text) | The lease line says the upfront share and when it is paid |
+| 15, K20 | yes | Tourism organised-stage notice in tourism words; the Pipeline rename is announced; the Help text no longer names Finance; the tourism word check also catches "pipeline" |
+| G-08, H-06 | moved to backlog | They change balance |
+| 20, 22, 25 | not done | Optional |
+
 ## Invariant test first results
 
 Run after the new totals existed: no scenario failed (13 scenario/mode pairs, at least 50 runs each). The old report sum (`Numbers`) did not include booking costs, loan payments or one-offs, which is the cause of findings 1 to 3.

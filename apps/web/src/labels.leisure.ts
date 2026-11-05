@@ -33,7 +33,8 @@ export const LEISURE_LABELS = {
   'leisure.offerPack':
     '{visits} visits per pack, valid for {weeks} weeks. Unused visits remain owed until expiry.',
   'leisure.offerFrequency': 'Typical weekly visits: {n}.',
-  'leisure.offerProducts': 'Includes: {products}.',
+  'leisure.offerProducts': 'Available now: {products}.',
+  'leisure.offerProductsLater': 'Included once built: {products}.',
   'leisure.offerPrepare': 'Prepare this offer in the building section before selling it.',
   'leisure.offerPrices':
     'Prices change new agreements. Existing members keep their agreed price and term.',

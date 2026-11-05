@@ -49,11 +49,28 @@ export function MembershipPrices() {
             )}
             {offer.products && (
               <Writing>
-                {label('leisure.offerProducts', stage, {
-                  products: offer.products
-                    .map((id) => view.product.features.find((f) => f.id === id)?.name ?? id)
-                    .join(', '),
-                })}
+                {/* Plan 8, G-07: what is built is available now; the rest comes once it is built. */}
+                {[true, false]
+                  .map((built) => {
+                    const names = offer
+                      .products!.filter(
+                        (id) =>
+                          (view.product.features.find((f) => f.id === id)?.shipped ?? false) ===
+                          built,
+                      )
+                      .map((id) => view.product.features.find((f) => f.id === id)?.name ?? id)
+                    return names.length === 0
+                      ? ''
+                      : label(
+                          built ? 'leisure.offerProducts' : 'leisure.offerProductsLater',
+                          stage,
+                          {
+                            products: names.join(', '),
+                          },
+                        )
+                  })
+                  .filter((t) => t !== '')
+                  .join(' ')}
               </Writing>
             )}
             {!ready && <Writing>{label('leisure.offerPrepare', stage)}</Writing>}

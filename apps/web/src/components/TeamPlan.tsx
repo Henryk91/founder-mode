@@ -65,6 +65,7 @@ export function TeamPlan() {
       {team.candidates.length > 0 && team.canHire && (
         <>
           <SubHeading>{label('team.candidates', stage)}</SubHeading>
+          <Writing>{label('team.payRule', stage)}</Writing>
           {team.candidates.map((c) => {
             const booked = plan.hire === c.id
             const role = team.roles.find((r) => r.id === c.role)

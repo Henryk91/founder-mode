@@ -72,6 +72,9 @@ export const WORDS = [
   /\bshipped\b/i,
   /\bleads?\b/i,
   /\btrials?\b/i,
+  // Plan 8, finding 15: the organised stage's notice and board words.
+  /\bpipeline\b/i,
+  /\bdemos? (?:that )?turn\b/i,
 ]
 
 /** Where a listed word is right: fixed costs do run per month. */

@@ -32,18 +32,18 @@ describe('long mode in the content', () => {
     // feature is named; Zollstock's referrals 0.09 after tuning); the long block does not touch
     // them. Before: 2dda4b4b1831c529
     // and 7f5bf30195d531db (engine 0.14.0, C2a).
-    expect(scenarioHash(loadScenario('kantino'))).toBe('d3fc5b40a439e926')
-    expect(scenarioHash(loadScenario('zollstock'))).toBe('898eb32ca5dff2a6')
+    expect(scenarioHash(loadScenario('kantino'))).toBe('2ce9f8828eb19804')
+    expect(scenarioHash(loadScenario('zollstock'))).toBe('e76f26089d24fd46')
     // The tourism scenarios change in plan 2 steps 1 to 4 and the plan 2 audit's open-issue
     // rounds, and in plan 3 steps 1 and 2 (office stages); protected again from `plan3-tuned`.
     // After review, the established look moved from a stage flag to `establishedAt` (months
     // covering all costs, tuned for target E1): content only, the games are the same.
     // Plan 6 step 1 adds elasticity to all three (price realism).
-    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('11fec90ee8ea7cd8')
+    expect(scenarioHash(loadScenario('gratwanderung'))).toBe('774b0ba1836dc4bb')
     // Tuning 1 step 5: Hinterhof's upkeep of its services (T2) and Seeblick's strict policy
     // conversions (T11).
-    expect(scenarioHash(loadScenario('hinterhof'))).toBe('c81576b953f0f957')
-    expect(scenarioHash(loadScenario('seeblick'))).toBe('4a494859268941c3')
+    expect(scenarioHash(loadScenario('hinterhof'))).toBe('7de26920169cff6e')
+    expect(scenarioHash(loadScenario('seeblick'))).toBe('0591df749606c8ce')
     expect(loadScenario('kantino').mode).toBeUndefined()
     expect('modes' in loadScenario('kantino')).toBe(false)
   })

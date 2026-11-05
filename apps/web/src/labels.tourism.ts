@@ -49,6 +49,8 @@ const shared = (w: Words): Overrides => ({
   },
 
   'results.in.customers': 'From guests',
+  'results.organised.text':
+    'The notes have been tidied into a proper booking desk: enquiries, quotes, deposits and confirmed bookings. A few tabs and plan sections have new names: the calendar, the roster and the channels. Everything else stays as scruffy as before.',
 
   // The headline (item 5): a tourism measure instead of customers. Money has a window too.
   'stat.revenue': 'Takings, last 4 weeks',
@@ -370,9 +372,9 @@ const SEEBLICK: Overrides = {
   'results.entry.cancelled.one': '{n} room night cancelled.',
   'results.entry.cancelled.other': '{n} room nights cancelled.',
   'results.entry.cancelled_kept.one':
-    '{n} room night cancelled and paid anyway, as your policy says.',
+    '{n} room night cancelled and paid anyway, as your policy says: {amount} kept.',
   'results.entry.cancelled_kept.other':
-    '{n} room nights cancelled and paid anyway, as your policy says.',
+    '{n} room nights cancelled and paid anyway, as your policy says: {amount} kept.',
   'results.entry.company_cancelled.staff.one':
     'You had to cancel {n} room night: not enough people on the roster.',
   'results.entry.company_cancelled.staff.other':
@@ -479,7 +481,7 @@ const TIEFGANG: Overrides = {
   'help.week.4':
     'Every fourth week is a month end, when the shop, other fixed costs and loan payments go out. Divers pay at booking; clubs pay a deposit and the rest by invoice after their week.',
   'help.week.1':
-    'Plan your hours. A normal week is 50 h, and up to 65 h is possible if you accept the energy cost. Your own dives count too. The sea decides what runs: check the forecast on My week, and the boat on Finance.',
+    'Plan your hours. A normal week is 50 h, and up to 65 h is possible if you accept the energy cost. Your own dives count too. The sea decides what runs: check the forecast on the plan tab, and the boat on the money tab.',
   'pm.guests.cancelled':
     'You cancelled {company} places for the sea, the boat or a short roster; divers cancelled {guest}.',
 }
@@ -529,7 +531,7 @@ const LEINENLOS: Overrides = {
   'help.week.4':
     'Every fourth week is a month end, when the desk, other fixed costs and any lease or loan payments go out. Prices are in euros; costs here are really paid in lira and rise in the second season.',
   'help.week.1':
-    'Plan your hours. A normal week is 50 h, and up to 65 h is possible if you accept the energy cost. Hosting a cruise yourself takes the whole week. The boat is on Finance; the season, week by week, on My week.',
+    'Plan your hours. A normal week is 50 h, and up to 65 h is possible if you accept the energy cost. Hosting a cruise yourself takes the whole week. The boat is on the money tab; the season, week by week, on the plan tab.',
   'pm.guests.cancelled':
     'You cancelled {company} places for the boat, the minimum to sail or a short roster; guests cancelled {guest}.',
 }
@@ -639,6 +641,7 @@ const FABRIKETAGE: Overrides = {
   },
   'plan.hint.build':
     'Prepare the work, fund its quote and allow the stated wait. Forward bookings need a ready date.',
+  'stat.revenue': 'Money in, last 4 weeks (advances included)',
   'leisure.beforeOpening':
     'Not open yet. Finish and fund the fit-out, then allow its stated construction time. Future events can reserve dates after readiness.',
   'leisure.buildPrep': '{name}: {amount} committed. Finish preparation, then allow {weeks} weeks.',
@@ -764,7 +767,7 @@ const GRIFFIG: Overrides = {
   'plan.hint.prices':
     'Set day-ticket prices and new membership terms. Check included areas,skills and usable slots before selling access.',
   'leisure.beforeOpening':
-    'Not open yet. Complete the common fit-out and at least one chosen area. Other areas may finish later.',
+    'Not open yet. Complete the common fit-out and at least one climbing area: bouldering, rope walls or the children’s area. Auto-belay lines and training boards do not open the hall on their own. Other areas may finish later.',
   'market.trials.title': 'Listings and open days',
   'help.week.1':
     'Research climbers and prepare the first-wall choice and bank plan. Fund common fit-out as well as the walls. Once open,set hall hours and pay desk cover in the rota;independent rope access requires belay skills.',

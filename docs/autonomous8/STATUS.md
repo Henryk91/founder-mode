@@ -2,8 +2,8 @@
 
 ## Current
 Step: step 3 continued after plan8-complete (Henry asked to finish it in three batches)
-Last commit: Plan 8 step 3 batch 1
-Next action: batch 2 (G-05, G-07, F-03, F-04, F-06, R-03, R-06, H-08, K22, K19, K15, K4, K5, finding 14, findings 15 and K20); then batch 3 (optional 20, 22, 25); then UI checks, main-part proof, tag plan8-screens-complete.
+Last commit: Plan 8 step 3 batch 2
+Next action: UI checks (axe, no cut-off, 375/390/430/1440 px, Chromium and WebKit, three stages), main part of every scenario on 1,000 seeds, tag plan8-screens-complete. Batch 3 (20, 22, 25) not done.
 
 ## Checklist
 - [x] Step 0: set up (tag plan8-baseline)

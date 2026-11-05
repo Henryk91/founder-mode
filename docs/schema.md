@@ -1425,3 +1425,11 @@ and saves without the flag keep their existing behaviour.
 - `PlayerView.spend` (money available now, product start costs, room cost); `LoanView.largestCents`, `borrowedCents`, `offerSchedule`, `offerInterestCents`.
 - `PlanIssue` `cannot_afford`; `ReportEntry` `deposits_refunded`; `cruise_cancelled` gains `refundCents`, `moveCents`; `PostMortemCause.bankTrigger`.
 - Engine exports `weekTotals`, `dropUnaffordable`, `leftForCents`.
+
+Plan 8 step 3 additions (view data only; no engine rule changed):
+
+- `ReportEntry`: `hire_agreed` (name, role, startWeek); `guests_served.newDepositsCents`; `bookings_cancelled.keptCents`.
+- `LeadView.deposit` (amount and refund week of a committed prospect); `MessageView.ifIgnored` (the default answer's label, cost, monthly cost and lost hours).
+- `MarketTruth.landing.each` and `presale.each`: each test with its own budget or price and size.
+- `ChainItem` kind `office_moved`; `hire_started` items carry the monthly pay in `cents`.
+

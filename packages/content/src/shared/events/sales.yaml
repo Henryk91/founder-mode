@@ -106,8 +106,8 @@ events:
     from: lead
     sender: Prospect
     text: >-
-      {name} has replied to your first email with questions. Seven of them, numbered, with
-      sub-points.
+      {name} has come back to you after your first contact with questions. Seven of them,
+      numbered, with sub-points.
     defaultChoice: later
     choices:
       - id: answer

@@ -50,6 +50,7 @@ function terms(a: AssetView, stage: Voice): { option: string; text: string }[] {
         season: formatEuro(t.lease.seasonCents),
         months: monthSpan(t.lease.months),
         min: t.lease.minMonths,
+        upfront: formatEuro(Math.round(t.lease.seasonCents * t.lease.upfrontShare)),
         crew: formatEuro(t.lease.crewWeekCents),
       }),
     })

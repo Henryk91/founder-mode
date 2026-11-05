@@ -36,7 +36,7 @@ describe('membership and timetable interface', () => {
     expect(html).toContain('10 visits per pack, valid for 26 weeks')
     expect(html).toContain('Monthly fee, annual term')
     expect(html).toContain('52 weeks agreed; 4 weeks’ notice')
-    expect(html).toContain('Includes: Reformer pilates')
+    expect(html).toContain('Included once built: Reformer pilates')
     expect(html).not.toMatch(/premiumInterest|wtpFactor|shareRange/)
     expect(
       s.getState().view!.bookings!.leisure!.members.find((m) => m.offerId === 'class_pack')!.visits,

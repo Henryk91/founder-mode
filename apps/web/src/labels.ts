@@ -518,6 +518,8 @@ const labels = {
   'loan.arriving': 'The bank pays out {amount} at the month end.',
   'loan.offer':
     '{bank} offers {amount} at {rate}% a year over {years} years, then {payment} a month.',
+  'loan.offer.timeline':
+    'Timeline: the money arrives in week {payout}. Preparation and construction come after it (weeks of construction in brackets): {works}. The business opens when the fit-out and one area are done. Company cash today: {cash}.',
   'loan.offer.free':
     'For the first {free} months you pay interest only, {interest} a month, and the debt stays at {amount}.',
   'loan.offer.schedule':
@@ -693,9 +695,10 @@ const labels = {
   'results.entry.feature_ready.snags.other': '{name} is ready, with {n} snags to sort out.',
   'results.entry.cancelled.one': '{n} guest cancelled.',
   'results.entry.cancelled.other': '{n} guests cancelled.',
-  'results.entry.cancelled_kept.one': '{n} guest cancelled and paid anyway, as your policy says.',
+  'results.entry.cancelled_kept.one':
+    '{n} guest cancelled and paid anyway, as your policy says: {amount} kept.',
   'results.entry.cancelled_kept.other':
-    '{n} guests cancelled and paid anyway, as your policy says.',
+    '{n} guests cancelled and paid anyway, as your policy says: {amount} kept.',
   'results.entry.company_cancelled.staff.one':
     'You had to cancel {n} guest: not enough people on the roster.',
   'results.entry.company_cancelled.staff.other':
@@ -963,13 +966,14 @@ const labels = {
   'asset.terms.manage':
     "Manage the owner's boat: no fixed cost, the owner keeps {share}% of what you sell and pays the crew.",
   'asset.terms.lease':
-    'Lease: {season} a season, {months}, at least {min} months, the crew {crew} a week used.',
+    'Lease: {season} a season, {months}, at least {min} months. {upfront} is paid when you sign, the rest in equal parts at the month ends of the season. On top, running costs of {crew} a week used, paid in the week.',
   'asset.terms.buy':
     'Buy: {price}, then {upkeep} a month in upkeep and the crew {crew} a week used. Breakdowns and the haul-out are yours.',
   'asset.switch': "A change comes with the owner's offer each winter.",
   'asset.switch.buy':
     'A change comes with the owner\'s offer each winter. To buy, get "{product}" ready, with the bank if needed.',
-  'tour.prices.products': 'At this price: {list}',
+  'tour.prices.products':
+    'This is a reference price. Each product sells at a multiple of it: {list}',
   'tour.forecast.slot': '{slot}: {states}',
   'tour.runsOn': '{product} runs on {n} of {total} {slot}',
   'tour.runsOn.slots': 'slots',
@@ -983,6 +987,8 @@ const labels = {
   'tour.ladder':
     'Courses this year: {students} finished, {same} booked their next step, {back} came back from last year ({direct} directly).',
   'tour.ladder.none': "No courses finished yet. Graduates are next season's guests.",
+  'tour.roster.seen':
+    'Served in the last {weeks} weeks: between {low} and {high} a week. Turned away in the last 4 weeks: {turned}. Demand varies from week to week.',
   'tour.roster.other': '{product}: {booked} booked, not counted against the shifts below',
   'tour.roster.short': '{product}: {booked} booked, the roster covers only {covers}',
   'tour.roster.pay': '{amount} a shift, {available} available',
@@ -1210,6 +1216,8 @@ const labels = {
   'team.offer': 'Make an offer',
   'team.offerBooked': 'Offer made. Tap to take it back.',
   'team.member': 'Your {role}',
+  'team.payRule':
+    'Pay is a fixed monthly cost: the full month is charged at the first month end after they start, even if they start part way through it.',
   'team.starts': 'Offer accepted. Starts in week {week}, then {amount} a month.',
   'team.letGo': 'Let go ({cost})',
   'team.letGoBooked': 'Let go this week. Tap to cancel.',
@@ -1443,7 +1451,7 @@ const labels = {
   'milestone.allDone': 'Every milestone reached. Now keep it that way.',
   'results.organised.title': 'Getting organised',
   'results.organised.text':
-    'The sticky notes have been promoted to a sales pipeline, with a proper board and the share of demos that turn into trials. Everything else stays as scruffy as before.',
+    'The sticky notes have been promoted to a sales pipeline, with a proper board and the share of demos that turn into trials. The Who pays tab is now called Pipeline. Everything else stays as scruffy as before.',
   'results.milestones.one': 'Milestone reached',
   'results.milestones.other': 'Milestones reached',
   'pm.heading.milestones': 'Milestones',
@@ -1538,7 +1546,8 @@ const labels = {
   'pm.chain.customer_lost_price':
     '{name} left over the price. {customers} customers, {revenue} a month.',
   'pm.chain.feature_shipped': 'Shipped {feature}.',
-  'pm.chain.hire_started': '{name} started.',
+  'pm.chain.hire_started': '{name} started. {amount} a month.',
+  'pm.chain.office_moved': 'You moved to {name}. {amount} a month.',
   'pm.chain.hire_let_go': '{name} left the team.',
   'pm.chain.price_changed': 'New price: {price} a month.',
   'pm.chain.energy_low': 'Energy fell to {low} or below. Everything got harder.',
@@ -1567,9 +1576,13 @@ const labels = {
   'pm.market.saidValue.other': '{bucket} ({n} interviews)',
   'pm.market.notAsked': 'Nobody asked',
   'pm.market.landing': 'Landing test',
+  'pm.market.landingEach': 'ads {budget}: {signups} of {visitors}',
+  'pm.market.landingAll': '{signups} of {visitors} in all',
   'pm.market.landingValue': '{signups} of {visitors} visitors signed up',
   'pm.market.landingWeak': 'About that test',
   'pm.market.presale': 'Pre-sale',
+  'pm.market.presaleEach': '{price}: {commits} of {prospects}',
+  'pm.market.presaleAll': '{commits} of {prospects} in all',
   'pm.market.presaleValue': '{commits} of {prospects} paid a deposit at {price}',
   'pm.market.notTried': 'Not tried',
   'pm.market.wtp': 'Would pay',

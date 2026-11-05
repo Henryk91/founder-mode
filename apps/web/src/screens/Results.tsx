@@ -281,6 +281,7 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         entry.kept ? 'results.entry.cancelled_kept' : 'results.entry.cancelled',
         stage,
         entry.units,
+        { amount: formatEuro(entry.keptCents ?? 0) },
       )
     case 'company_cancelled':
       return count(`results.entry.company_cancelled.${entry.reason}`, stage, entry.units)

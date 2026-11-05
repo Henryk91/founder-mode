@@ -619,7 +619,7 @@ const item = (week: number, kind: ChainKind, extra: Partial<ChainItem> = {}): Ch
 const CHAIN_RULES: Record<PostMortemCauseId, { keep: ChainKind[]; also: ChainKind[] }> = {
   bankrupt_no_customers: {
     keep: ['savings_empty'],
-    also: ['feature_shipped', 'price_changed', 'hire_started', 'lead_declined'],
+    also: ['feature_shipped', 'price_changed', 'hire_started', 'office_moved', 'lead_declined'],
   },
   bankrupt_hire: {
     keep: ['hire_started'],
@@ -632,7 +632,10 @@ const CHAIN_RULES: Record<PostMortemCauseId, { keep: ChainKind[]; also: ChainKin
     ],
   },
   bankrupt_churn: { keep: ['savings_empty'], also: ['customer_lost', 'customer_stopped_paying'] },
-  bank_called: { keep: ['savings_empty'], also: ['feature_shipped', 'price_changed'] },
+  bank_called: {
+    keep: ['savings_empty'],
+    also: ['feature_shipped', 'price_changed', 'hire_started', 'office_moved'],
+  },
   bankrupt_while_raising: {
     keep: ['savings_empty'],
     also: ['customer_lost', 'customer_stopped_paying', 'customer_won', 'hire_started'],
@@ -649,6 +652,8 @@ const CHAIN_RULES: Record<PostMortemCauseId, { keep: ChainKind[]; also: ChainKin
       'customer_won',
       'invoice_written_off',
       'price_changed',
+      'hire_started',
+      'office_moved',
     ],
   },
   burnout: {
@@ -716,8 +721,21 @@ function chainCandidates(state: GameState, cause: PostMortemCause): ChainItem[] 
       out.push(item(f.shippedWeek, 'feature_shipped', { featureId: f.id }))
   }
   for (const m of state.team.members) {
-    if (m.startWeek <= state.week) out.push(item(m.startWeek, 'hire_started', { name: m.name }))
+    if (m.startWeek <= state.week) {
+      // Plan 8, K19: the pay it added, so the timeline shows what the hire cost each month.
+      const pay = state.company.fixedCosts.find((c) => c.id === salaryId(m))?.monthlyCents ?? null
+      out.push(item(m.startWeek, 'hire_started', { name: m.name, cents: pay }))
+    }
     if (m.letGoWeek !== null) out.push(item(m.letGoWeek, 'hire_let_go', { name: m.name }))
+  }
+  // Plan 8, K19: a bigger office is a new monthly cost, so it belongs in the story.
+  for (const stay of state.company.office.stays) {
+    if (stay.movedWeek === null) continue
+    const stage = state.scenario.officeStages.find((o) => o.id === stay.stage)
+    if (stage && stage.monthlyCents > 0)
+      out.push(
+        item(stay.movedWeek, 'office_moved', { name: stage.name, cents: stage.monthlyCents }),
+      )
   }
   let price = state.scenario.start.priceCentsPerMonth
   for (const a of state.actionLog) {
@@ -833,6 +851,11 @@ function marketTruth(state: GameState, segmentId: SegmentId): MarketTruth {
           tests: landing.length,
           visitors: landing.reduce((t, e) => t + e.visitors, 0),
           signups: landing.reduce((t, e) => t + e.signups, 0),
+          each: landing.map((e) => ({
+            budgetCents: e.budgetCents,
+            visitors: e.visitors,
+            signups: e.signups,
+          })),
         }
       : null,
     presale: presale.length
@@ -841,6 +864,11 @@ function marketTruth(state: GameState, segmentId: SegmentId): MarketTruth {
           prospects: presale.reduce((t, e) => t + e.prospects, 0),
           commits: presale.reduce((t, e) => t + e.commits, 0),
           priceCents: presale.at(-1)!.priceCents,
+          each: presale.map((e) => ({
+            priceCents: e.priceCents,
+            prospects: e.prospects,
+            commits: e.commits,
+          })),
         }
       : null,
     wtpCents: Math.round(hidden.wtpCents / 1000) * 1000,
@@ -1168,7 +1196,13 @@ function buildSuggestions(
   const won = cause.id === 'sustainable'
   const rules: [SuggestionId, boolean][] = [
     ['compare_markets', focusMarket !== null && !focusViable && presold < 2],
-    ['talk_more', focusMarket !== null && focusMarket.interviews < FEW_INTERVIEWS],
+    // Plan 8, K15: when deposits are the specific lesson, "talk to more people" is left out.
+    [
+      'talk_more',
+      focusMarket !== null &&
+        focusMarket.interviews < FEW_INTERVIEWS &&
+        !(!focusViable && presold < 2),
+    ],
     ['watch_energy', cause.id === 'burnout'],
     [
       'listen_features',

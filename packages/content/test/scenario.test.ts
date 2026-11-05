@@ -648,7 +648,7 @@ describe('content', () => {
     it('an unknown placeholder in the intro or a note', () => {
       const intro = base.intro.replace('{savings:eur}', '{salary:eur}')
       expect(() => parseScenario({ ...base, intro })).toThrow(/unknown placeholder \{salary:eur\}/)
-      const notes = base.intro.replace('{n} leads', '{count} leads')
+      const notes = base.intro.replace('{n}', '{count}')
       expect(() => parseScenario({ ...base, intro: notes })).toThrow(/unknown placeholder/)
     })
 

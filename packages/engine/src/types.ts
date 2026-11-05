@@ -2213,7 +2213,7 @@ export type ReportEntry =
       commissionCents: number
     }
   /** Guests who cancelled: paid anyway under a strict policy (`kept`). */
-  | { kind: 'bookings_cancelled'; units: number; kept: boolean }
+  | { kind: 'bookings_cancelled'; units: number; kept: boolean; keptCents?: number }
   | {
       kind: 'company_cancelled'
       units: number
@@ -2474,6 +2474,7 @@ export type ChainKind =
   | 'customer_stopped_paying'
   | 'feature_shipped'
   | 'hire_started'
+  | 'office_moved'
   | 'hire_let_go'
   | 'price_changed'
   | 'energy_low'
@@ -2518,8 +2519,21 @@ export type MarketTruth = {
   saidBucketId: BucketId | null
   /** Interviews in the top bucket. */
   topBucketCount: number
-  landing: { tests: number; visitors: number; signups: number } | null
-  presale: { batches: number; prospects: number; commits: number; priceCents: number } | null
+  landing: {
+    tests: number
+    visitors: number
+    signups: number
+    /** Plan 8, K4: each test with its own ad budget and size. */
+    each?: { budgetCents: number; visitors: number; signups: number }[]
+  } | null
+  presale: {
+    batches: number
+    prospects: number
+    commits: number
+    priceCents: number
+    /** Plan 8, K4: each batch with its own price and size. */
+    each?: { priceCents: number; prospects: number; commits: number }[]
+  } | null
   /** Willingness to pay, rounded to 10 EUR. */
   wtpCents: number
   customersWon: number
