@@ -53,7 +53,7 @@ describe('app smoke test', () => {
       store.getState().setInterviews('coworking', 2)
       store.getState().endWeek()
       const results = html(store)
-      expect(results).toContain(`Week ${i + 1}`)
+      expect(results).toContain(`Results of week ${i + 1}`)
       expect(results).toContain('You spoke to 2 people at Coworking spaces')
       expect(results).toContain('Next week')
       // Ending another week from the results screen would skip its report.
@@ -124,7 +124,7 @@ describe('onboarding', () => {
     expect(seen[0]).toContain('€14,250')
     expect(seen[0]).toContain('€675')
     expect(seen[0]).toContain('€2,700')
-    expect(seen[0]).toContain('about seven months')
+    expect(seen[0]).toContain('about seven four-week months')
     expect(seen[1]).toContain('Kantino is software')
     expect(seen[2]).toContain('small offices, coworking spaces and medical practices')
     expect(seen[3]).toContain('Last 60 weeks')
@@ -158,7 +158,7 @@ describe('onboarding', () => {
     store.getState().setInterviews('coworking', 2)
     store.getState().endWeek()
     store.getState().dismissReport()
-    expect(html(store)).toContain('You have 2 interviews behind you')
+    expect(html(store)).toContain('Interviews behind you: 2')
     for (let i = 0; i < 3; i++) {
       store.getState().endWeek()
       store.getState().dismissReport()

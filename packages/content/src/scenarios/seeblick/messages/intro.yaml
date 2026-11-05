@@ -36,9 +36,9 @@ founderNotes:
     Week {week}. Still no evidence about who will stay. Your savings pay {living:eur} a week
     either way.
   only_interviews: >-
-    You have {n} conversations behind you. Everybody loves the view; the view does not pay.
+    Conversations so far: {n}. Everybody loves the view; the view does not pay.
   built_unseen: >-
     Something is ready to sell and nobody knows it exists. Guests do not find a lake village by
     accident in November.
   leads_only: >-
-    You have {n} enquiries. An enquiry is not a room night.
+    Enquiries so far: {n}. An enquiry is not a room night.

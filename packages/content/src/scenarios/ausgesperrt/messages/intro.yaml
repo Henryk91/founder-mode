@@ -24,6 +24,6 @@ intro:
 founderNotes:
   first_week: Week 1. Four doors, no puzzles. Pick a theme, speak to people and start the build.
   no_evidence: Week {week}. Still no evidence about who will play. The landlord has evidence about the rent.
-  only_interviews: You have {n} conversations. Everybody knows a good puzzle until you ask them to pay for one.
+  only_interviews: 'Conversations so far: {n}. Everybody knows a good puzzle until you ask them to pay for one.'
   built_unseen: A room is ready and nobody knows where it is. Basements rarely advertise themselves.
-  leads_only: You have {n} enquiries. None has found the payment button yet.
+  leads_only: 'Enquiries so far: {n}. None has found the payment button yet.'

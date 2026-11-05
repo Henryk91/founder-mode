@@ -26,6 +26,6 @@ founderNotes:
   first_week: Week 1. The hall is empty. Decide what opens first and what the bank must finance.
   no_evidence: Week {week}. Nobody has told you which walls they will pay to use. The quotations
     remain enthusiastic.
-  only_interviews: You have {n} conversations. Admiring a route is easier than buying a membership.
+  only_interviews: 'Conversations so far: {n}. Admiring a route is easier than buying a membership.'
   built_unseen: An area is ready. People still need to know where the door is.
-  leads_only: You have {n} enquiries. The rental shoes are waiting for feet.
+  leads_only: 'Enquiries so far: {n}. The rental shoes are waiting for feet.'

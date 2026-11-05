@@ -230,7 +230,7 @@ const labels = {
   'money.priceNow': 'Now: {price} per month',
   'money.priceNew': 'From this week: {price} per month',
 
-  'results.title': 'Week {week}',
+  'results.title': 'Results of week {week}',
   'results.hours': '{hours} h planned. Energy {before} to {after}.',
   'results.hoursLow': '{hours} h planned. Energy {before} to {after}, which is low.',
   'results.quiet': 'A quiet week.',
@@ -599,7 +599,7 @@ const labels = {
   'plan.chase.booked.other': '{n} invoices chased ({hours})',
   'plan.forced':
     '{hours} of this week are already gone, thanks to a fine or something you promised.',
-  'plan.committed': '{hours} are already spent on answers in your inbox.',
+  'plan.committed': 'Already spent on answers in your inbox: {hours}.',
   'plan.team': 'Team',
   'plan.teamSummary': 'Searching for a {role} costs {hours}. Set it under Hiring on the Plan tab.',
   'plan.issue.presale_cap': 'No pre-sale batches left in that market.',
@@ -1250,7 +1250,7 @@ const labels = {
   'end.shut_down': 'You closed the company on purpose. Tidy, and sadly final.',
   'stat.cash': 'Cash',
   'stat.runway': 'Runway',
-  'stat.revenue': 'Monthly revenue',
+  'stat.revenue': 'Revenue a month (MRR)',
   'stat.revenue.short': 'Revenue',
   'stat.customers': 'Customers',
   'stat.guests': 'Guests, last 4 weeks',

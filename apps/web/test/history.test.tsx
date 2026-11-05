@@ -246,7 +246,7 @@ describe('plan 7: Past weeks', () => {
     for (const r of reports) expect(page).toContain(`Week ${r.week}`)
     store.getState().openPastWeek(7)
     const week7 = text(store)
-    expect(week7).toContain('Week 7')
+    expect(week7).toContain('Results of week 7')
     expect(week7).toContain('Back to help')
     store.getState().openPastWeek(null)
     expect(text(store)).toContain('Past weeks')

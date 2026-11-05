@@ -35,8 +35,8 @@ founderNotes:
     Week {week}. Still no evidence about who will book. Your savings pay {living:eur} a week
     either way.
   only_interviews: >-
-    You have {n} conversations behind you. Saying a mountain day sounds lovely is free.
+    Conversations so far: {n}. Saying a mountain day sounds lovely is free.
   built_unseen: >-
     Something is ready to sell and nobody knows it exists. Guests rarely find a garage by accident.
   leads_only: >-
-    You have {n} enquiries. An enquiry is not a booking.
+    Enquiries so far: {n}. An enquiry is not a booking.

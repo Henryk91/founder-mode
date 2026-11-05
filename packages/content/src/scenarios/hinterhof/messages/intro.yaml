@@ -35,8 +35,8 @@ founderNotes:
     Week {week}. Still no evidence about who will eat here. Your savings pay {living:eur} a week
     either way.
   only_interviews: >-
-    You have {n} conversations behind you. Everybody loves a new restaurant until it opens.
+    Conversations so far: {n}. Everybody loves a new restaurant until it opens.
   built_unseen: >-
     Something is ready to serve and nobody knows it exists. The street does not read your mind.
   leads_only: >-
-    You have {n} enquiries. An enquiry is not a cover.
+    Enquiries so far: {n}. An enquiry is not a cover.

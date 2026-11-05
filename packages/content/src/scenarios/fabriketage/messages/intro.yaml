@@ -26,6 +26,6 @@ intro:
 founderNotes:
   first_week: Week 1. A floor, a lift and a quotation. Speak to people and prepare the bank plan.
   no_evidence: Week {week}. Nobody has asked about the dates yet. The landlord has asked about the rent.
-  only_interviews: You have {n} conversations. A preference for exposed brick is not a deposit.
+  only_interviews: 'Conversations so far: {n}. A preference for exposed brick is not a deposit.'
   built_unseen: The floor is ready. It needs people who know which door to use.
-  leads_only: You have {n} enquiries. The calendar is still mostly pencil.
+  leads_only: 'Enquiries so far: {n}. The calendar is still mostly pencil.'

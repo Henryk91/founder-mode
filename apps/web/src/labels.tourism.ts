@@ -48,7 +48,9 @@ const shared = (w: Words): Overrides => ({
     established: 'Distribution',
   },
 
-  // The headline (item 5): a tourism measure instead of customers.
+  // The headline (item 5): a tourism measure instead of customers. Money has a window too.
+  'stat.revenue': 'Takings, last 4 weeks',
+  'stat.revenue.short': 'Takings',
   'stat.guests': 'Guests, last 4 weeks',
   'stat.guests.short': 'Guests',
 
@@ -738,7 +740,7 @@ const SCHWEISSPERLE: Overrides = {
 
 const GRIFFIG: Overrides = {
   ...SCHWEISSPERLE,
-  'stat.guests': 'Hall visits,last 4 weeks',
+  'stat.guests': 'Hall visits, last 4 weeks',
   'stat.guests.short': 'Visits',
   'tab.calendar': { scrappy: 'Walls', organised: 'Walls', established: 'Hall access' },
   'tab.pipeline': { scrappy: 'Walls', organised: 'Walls', established: 'Hall access' },

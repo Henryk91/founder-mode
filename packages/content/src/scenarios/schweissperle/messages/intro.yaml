@@ -26,6 +26,6 @@ intro:
 founderNotes:
   first_week: Week 1. Two rooms, several quotations and a timetable still in pencil.
   no_evidence: Week {week}. People have admired the windows. Ask when they can actually attend.
-  only_interviews: You have {n} conversations. An enthusiastic reply is not a recurring payment.
+  only_interviews: 'Conversations so far: {n}. An enthusiastic reply is not a recurring payment.'
   built_unseen: The studio is ready. The first class still needs to find the door.
-  leads_only: You have {n} enquiries. Their calendars have not agreed with yours yet.
+  leads_only: 'Enquiries so far: {n}. Their calendars have not agreed with yours yet.'
