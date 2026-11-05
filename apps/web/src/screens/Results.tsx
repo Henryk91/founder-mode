@@ -14,7 +14,10 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
     view.bookings?.products.find((p) => p.id === id)?.name ??
     view.product.features.find((f) => f.id === id)?.name ??
     id
-  const asset = (id: string) => view.bookings?.assets.find((x) => x.id === id)?.name ?? id
+  const assetName = (id: string) => view.bookings?.assets.find((x) => x.id === id)?.name ?? id
+  // Mid-sentence an article loses its capital: "You use the gulet", not "You use The gulet".
+  const asset = assetName
+  const assetMid = (id: string) => assetName(id).replace(/^The /, 'the ')
   switch (entry.kind) {
     case 'savings_transfer':
     case 'founder_draw':
@@ -178,7 +181,10 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       })
     case 'asset_option':
       return label(`results.entry.asset_option.${entry.option}`, stage, {
-        asset: asset(entry.assetId),
+        asset:
+          entry.option === 'share' || entry.option === 'none'
+            ? assetMid(entry.assetId)
+            : asset(entry.assetId),
         amount: formatEuro(entry.costCents),
       })
     case 'asset_broke':

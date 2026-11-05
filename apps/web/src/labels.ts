@@ -946,7 +946,7 @@ const labels = {
   'asset.haulOut': 'Next haul-out',
   'asset.value': 'It would sell for',
   'asset.breakdowns': 'Breakdowns so far',
-  'asset.spent': 'Spent on it so far',
+  'asset.spent': 'Running costs since you bought it',
   'asset.options': 'The options',
   'asset.current': '{text} (this is yours)',
   'asset.terms.share':
@@ -1405,6 +1405,7 @@ const labels = {
   'worry.outOfMoney': 'Week {week}: we are out of money.',
   'worry.toTheEnd': 'At this pace the money lasts to week {week}, and not a week longer.',
   'worry.unlessPays': 'Unless {name} pays.',
+  'worry.smallPay': '{name} may pay {amount}, which changes little.',
   'worry.unlessSigns': 'Unless {name} signs.',
   'worry.orSigns': 'Or {name} signs.',
   'worry.safe': 'Money is not shrinking. Do not get used to it.',

@@ -285,10 +285,27 @@ export function worry(view: PlayerView, stage: Voice): string | null {
   if (view.week + runway > view.maxWeeks)
     return label('worry.toTheEnd', stage, { week: view.maxWeeks })
   const parts = [label('worry.outOfMoney', stage, { week: view.week + runway })]
-  const owes = view.invoices.find((i) => i.status === 'overdue')
+  // Plan 8, K1: a payment is named only if it is worth a week of what the company and the
+  // founder spend; a smaller one is said to change little.
+  const week =
+    view.company.monthlyFixedCostsCents / (view.company.monthlyFixedCostsCents > 0 ? 4 : 1) +
+    view.founder.livingCostCentsPerWeek
+  const late = view.invoices.filter((i) => i.status === 'overdue')
+  const worth = (cents: number) => Math.max(week, cents) === cents
+  const owes = late.find((i) => worth(i.amountCents))
+  const small = late.find((i) => !worth(i.amountCents))
   if (owes) parts.push(label('worry.unlessPays', stage, { name: owes.customerName }))
+  else if (small)
+    parts.push(
+      label('worry.smallPay', stage, {
+        name: small.customerName,
+        amount: formatEuro(small.amountCents),
+      }),
+    )
   const trial = view.leads.find((l) => l.stage === 'trial')
   if (trial)
-    parts.push(label(owes ? 'worry.orSigns' : 'worry.unlessSigns', stage, { name: trial.name }))
+    parts.push(
+      label(owes || small ? 'worry.orSigns' : 'worry.unlessSigns', stage, { name: trial.name }),
+    )
   return parts.join(' ')
 }
