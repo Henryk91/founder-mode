@@ -1,6 +1,7 @@
 import type { BookingsPlan, LeisureView, PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { label, voiceOf } from '../labels'
+import { priceSteps } from '../steps'
 import { useGame } from '../useGame'
 import { Choices, Market, SubHeading, Writing } from './Ruled'
 import { MembershipFacts } from './Memberships'
@@ -351,7 +352,8 @@ export function LeisurePrices() {
                           value={now[season]}
                           min={100}
                           max={Math.max(now[season], prices[slot.id]![season] * 3)}
-                          step={500}
+                          step={priceSteps(now[season]).step}
+                          bigStep={priceSteps(now[season]).big}
                           names={{ minus: 'tour.prices.minus', plus: 'tour.prices.plus' }}
                           display={formatEuro(now[season])}
                           formatStep={formatEuro}

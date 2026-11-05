@@ -53,8 +53,20 @@ export function coverage(b: BookingsView, p: BookingsPlan) {
     .map((t) => {
       const product = b.products.find((x) => x.id === t.productId)!
       // Contract staff working this week count with the shifts (plan 2).
+      // Plan 8, H-05: contracts signed in this plan start this week and count too.
       const contract = (role: string) =>
-        b.contracts.filter((c) => c.roleId === role && c.working).reduce((n, c) => n + c.shifts, 0)
+        b.contracts
+          .filter((c) => c.roleId === role && c.working)
+          .reduce((n, c) => n + c.shifts, 0) +
+        (p.hire ?? [])
+          .filter((h) => h.roleId === role)
+          .reduce(
+            (n, h) =>
+              n +
+              (b.roles.find((r) => r.id === role)?.contracts.find((o) => o.kind === h.kind)
+                ?.shifts ?? 0),
+            0,
+          )
       const side = (floor: boolean) =>
         b.roles
           .filter((r) => (r.kind === 'floor') === floor)
@@ -139,6 +151,17 @@ export function RosterPlan() {
               })}
         </Writing>
       ))}
+      {/* Plan 8, finding 12: bookings of products the shifts do not cover are still shown. */}
+      {b.thisWeek
+        .filter((t) => t.booked > 0 && !staffed(b, t.productId))
+        .map((t) => (
+          <Writing key={t.productId}>
+            {label('tour.roster.other', stage, {
+              product: b.products.find((x) => x.id === t.productId)?.name ?? t.productId,
+              booked: t.booked,
+            })}
+          </Writing>
+        ))}
       {b.roles.map((r) => {
         const n = draft.shifts[r.id] ?? 0
         return (
@@ -279,22 +302,9 @@ export function GuestsPlan() {
 }
 
 /** Steps for money, in cents: whole euros a price list would use. */
-const NICE_STEPS = [100, 200, 500, 1000, 2500, 5000, 10_000, 25_000, 50_000, 100_000]
-const nice = (target: number) => NICE_STEPS.filter((s) => s <= target).at(-1) ?? NICE_STEPS[0]!
+import { NICE_STEPS, priceSteps } from '../steps'
 
-/**
- * A small and a large step scaled to a price: about 3% and 15% of it, as round euro amounts, the
- * large one at least five small ones. A 2,800 EUR team day moves by 50 or 250, an 85 EUR hike
- * by 2 or 10.
- */
-export function priceSteps(cents: number): { step: number; big: number } {
-  const step = nice(cents * 0.03)
-  const big = Math.max(
-    nice(cents * 0.15),
-    NICE_STEPS.find((s) => s >= step * 5)!,
-  )
-  return { step, big }
-}
+export { priceSteps }
 
 /** Prices per segment, for peak and off season, and the cancellation policy. */
 export function PricesPlan() {
@@ -990,6 +1000,7 @@ export function CruisePlan() {
           ]}
         />
       )}
+      {m && move && <Writing>{label('cruise.minSail.moveNote', stage)}</Writing>}
       {c.weeks.slice(0, 8).map((w) => {
         const sellable = !w.closed && !w.chartered && w.sold === 0
         return (

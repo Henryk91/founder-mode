@@ -421,7 +421,7 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('accessibility in the browser', () => {
       // End week by keyboard: focus lands on the week's results.
       await page.getByRole('button', { name: 'End week' }).focus()
       await page.keyboard.press('Enter')
-      expect((await focused()).text).toMatch(/^Week 1$/)
+      expect((await focused()).text).toMatch(/^Results of week 1$/)
       await page.close()
     },
     90_000,

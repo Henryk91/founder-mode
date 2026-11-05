@@ -1,5 +1,6 @@
 import type { LeisureView, PlayerView } from '@founder-mode/engine'
 import { formatEuro } from '../format'
+import { priceSteps } from '../steps'
 import { label, voiceOf } from '../labels'
 import { useGame } from '../useGame'
 import { Choices, Market, SubHeading, Writing } from './Ruled'
@@ -98,7 +99,8 @@ export function MembershipPrices() {
                   value={now.priceCents}
                   min={100}
                   max={Math.max(now.priceCents, offer.priceCents * 3)}
-                  step={500}
+                  step={priceSteps(now.priceCents).step}
+                  bigStep={priceSteps(now.priceCents).big}
                   names={{ minus: 'tour.prices.minus', plus: 'tour.prices.plus' }}
                   display={formatEuro(now.priceCents)}
                   formatStep={formatEuro}

@@ -1476,6 +1476,8 @@ export type LeadView = {
   referredBy: string | null
   /** For a lead a team member found: that member's id, else null. */
   foundBy: string | null
+  /** Plan 8, K10: for a committed prospect, the deposit paid and the week it is paid back if the product is not ready. */
+  deposit: { amountCents: number; refundWeek: number } | null
 }
 
 export type CustomerView = {
@@ -1525,6 +1527,14 @@ export type MessageView = {
   choices: MessageChoice[]
   /** The choice made this week, still to take effect when the week ends. */
   answeredChoiceId: string | null
+  /** Plan 8, K21 and K24: what happens if it is left until its last week. */
+  ifIgnored?: {
+    label: string
+    costCents: number
+    monthlyCostCents: number
+    /** Hours of next week's time it takes. */
+    lostHours: number
+  } | null
 }
 
 export type CandidateView = {
@@ -1965,7 +1975,11 @@ export type LoanView = {
   application: (LoanTerms & { decideWeek: number }) | null
   offer: (LoanTerms & { rateBp: number; paymentCents: number; week: number }) | null
   /** Plan 8, finding 23: the dates of an offer accepted this week. */
-  offerSchedule: { payoutWeek: number; firstInterestWeek: number; firstRepaymentWeek: number } | null
+  offerSchedule: {
+    payoutWeek: number
+    firstInterestWeek: number
+    firstRepaymentWeek: number
+  } | null
   /** What the offer costs in interest alone, each month. */
   offerInterestCents: number
   accepted: (LoanTerms & { rateBp: number }) | null
@@ -2182,6 +2196,7 @@ export type ReportEntry =
     }
   | { kind: 'presale_result'; segmentId: SegmentId; prospects: number; commits: number }
   | { kind: 'candidates_ready'; role: TeamRoleId; count: number }
+  | { kind: 'hire_agreed'; name: string; role: TeamRoleId; startWeek: number }
   | { kind: 'hire_started'; name: string; role: TeamRoleId }
   | { kind: 'member_let_go'; name: string; costCents: number }
   | { kind: 'team_output'; role: TeamRoleId; hours: number }
@@ -2189,7 +2204,14 @@ export type ReportEntry =
   | { kind: 'weather'; weather: WeatherState }
   | { kind: 'bookings_new'; segmentId: SegmentId; bookings: number; units: number }
   | { kind: 'turned_away'; segmentId: SegmentId; units: number }
-  | { kind: 'guests_served'; units: number; revenueCents: number; commissionCents: number }
+  | {
+      kind: 'guests_served'
+      units: number
+      revenueCents: number
+      /** Plan 8: deposits of bookings made this week, within `revenueCents`. */
+      newDepositsCents?: number
+      commissionCents: number
+    }
   /** Guests who cancelled: paid anyway under a strict policy (`kept`). */
   | { kind: 'bookings_cancelled'; units: number; kept: boolean }
   | {

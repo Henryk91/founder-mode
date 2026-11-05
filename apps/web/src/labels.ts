@@ -216,6 +216,8 @@ const labels = {
   'money.savings': 'Your savings',
   'money.monthlyRevenue': 'Monthly revenue',
   'money.fixedCosts': 'Company costs per month (tools, accountant, salaries)',
+  'money.queuedMonthly': 'More per month once this week ends (your answers)',
+  'money.queuedOnce': 'To pay when this week ends (your answers)',
   'money.freelance': 'Freelancer, billed every week',
   'money.living': 'Your living costs (your savings, or the company once it pays you)',
   'money.livingValue': '{week} a week, {month} a month',
@@ -564,6 +566,8 @@ const labels = {
   'market.tally': '{feature}: asked for by {k} of {n}',
   'pipeline.empty':
     'Nobody yet. Leads appear here once you spend outreach hours on the Plan tab. Those who ask for a demo can be booked here.',
+  'pipeline.deposit':
+    'Paid {amount} up front. Waiting for what they asked for; paid back in week {week} if it is not ready. They may need more.',
   'pipeline.noCustomers':
     'No paying customers yet. A lead becomes one after a demo and a trial. Someone who paid a deposit starts paying once what they asked for is ready.',
   'money.historyNone': 'Nothing yet. A line appears here after every week you end.',
@@ -663,6 +667,7 @@ const labels = {
     'Pre-sale in {segment}: {commits} of {prospects} prospects would pay.',
   'results.entry.candidates_ready.one': 'One {role} candidate is ready to meet.',
   'results.entry.candidates_ready.other': '{n} {role} candidates are ready to meet.',
+  'results.entry.hire_agreed': '{name} accepted your offer and starts in week {week}.',
   'results.entry.hire_started': '{name} started work today. The coffee runs out twice as fast now.',
   'results.entry.member_let_go': '{name} is gone. It cost {amount}.',
   'results.entry.team_output.developer': 'Your developer put in {hours} build hours.',
@@ -675,6 +680,7 @@ const labels = {
   'results.entry.bookings_new.other': '{n} new bookings from {segment}.',
   'results.entry.turned_away.one': '{n} guest from {segment} found no room and went elsewhere.',
   'results.entry.turned_away.other': '{n} guests from {segment} found no room and went elsewhere.',
+  'results.entry.guests_served.deposits': 'Deposits for new bookings came in as well: {deposits}.',
   'results.entry.guests_served.one': '{n} guest served: {amount} paid on the day.',
   'results.entry.guests_served.other': '{n} guests served: {amount} paid on the day.',
   'results.entry.guests_served_invoiced.one':
@@ -924,8 +930,8 @@ const labels = {
   'cruise.minSail.locked': 'Changed lately, fixed for now',
   'cruise.minSail.any': 'Any',
   'cruise.minSail.min': '{n} cabins',
-  'cruise.minSail.move':
-    'Move guests to a partner boat ({amount} a cabin, and their deposits go back to them)',
+  'cruise.minSail.move': 'Move guests to a partner boat ({amount} a cabin)',
+  'cruise.minSail.moveNote': 'Their deposits go back to them as well.',
   'cruise.hint': 'A held week sells no cabins, only the whole boat.',
   'cruise.calendar': 'The season',
   'tour.ladderLine': 'The ladder: {steps}',
@@ -977,6 +983,7 @@ const labels = {
   'tour.ladder':
     'Courses this year: {students} finished, {same} booked their next step, {back} came back from last year ({direct} directly).',
   'tour.ladder.none': "No courses finished yet. Graduates are next season's guests.",
+  'tour.roster.other': '{product}: {booked} booked, not counted against the shifts below',
   'tour.roster.short': '{product}: {booked} booked, the roster covers only {covers}',
   'tour.roster.pay': '{amount} a shift, {available} available',
   'tour.roster.what': 'shifts for {role}',
@@ -1032,6 +1039,7 @@ const labels = {
   'tour.calendar.cell': '{booked} of {capacity}',
   'tour.calendar.cellLast': '{booked} of {capacity}, last year {last}',
   'tour.calendar.closed': 'not running',
+  'tour.calendar.idle': 'Not on the calendar, no guests of their own: {names}.',
   'tour.forecast.good': 'Next week: looks good.',
   'tour.forecast.mixed': 'Next week: mixed.',
   'tour.forecast.bad': 'Next week: looks bad.',
@@ -1183,6 +1191,7 @@ const labels = {
   'inbox.from': 'From {name}',
   'inbox.fromRole': '{name} ({role})',
   'inbox.expires': 'Answer by week {week}, or it answers itself.',
+  'inbox.ignored': 'If you leave it: {choice} ({cost}).',
   'inbox.answered': 'Your answer: {choice}. It takes effect when you end the week.',
   'inbox.noRoom': 'Not enough free hours this week.',
   'inbox.hoursLeft': '{n} h still free this week.',
@@ -1201,6 +1210,7 @@ const labels = {
   'team.offer': 'Make an offer',
   'team.offerBooked': 'Offer made. Tap to take it back.',
   'team.member': 'Your {role}',
+  'team.starts': 'Offer accepted. Starts in week {week}, then {amount} a month.',
   'team.letGo': 'Let go ({cost})',
   'team.letGoBooked': 'Let go this week. Tap to cancel.',
   'team.devWork': 'The developer builds',

@@ -45,6 +45,13 @@ export function Money() {
     </div>
   )
 
+  // Plan 8, K17: what the answers chosen this week add, before the week ends.
+  const chosen = view.inbox
+    .filter((m) => m.answeredChoiceId !== null)
+    .map((m) => m.choices.find((c) => c.id === m.answeredChoiceId))
+  const queuedMonthly = chosen.reduce((sum, c) => sum + (c?.monthlyCostCents ?? 0), 0)
+  const queuedOnce = chosen.reduce((sum, c) => sum + (c?.costCents ?? 0), 0)
+
   return (
     <>
       <BankStatement view={view} />
@@ -57,6 +64,8 @@ export function Money() {
         {stat('money.savings', founder.savingsCents)}
         {stat('money.monthlyRevenue', view.monthlyRevenueCents)}
         {stat('money.fixedCosts', company.monthlyFixedCostsCents)}
+        {queuedMonthly > 0 && stat('money.queuedMonthly', queuedMonthly)}
+        {queuedOnce > 0 && stat('money.queuedOnce', queuedOnce)}
         {company.freelanceCentsPerWeek > 0 &&
           stat('money.freelance', company.freelanceCentsPerWeek)}
         <div className={styles.rowHead}>

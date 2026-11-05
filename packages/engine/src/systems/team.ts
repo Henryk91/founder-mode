@@ -230,6 +230,12 @@ export function applyTeam(
           letGoWeek: null,
         },
       ]
+      entries.push({
+        kind: 'hire_agreed',
+        name: candidate.name,
+        role: candidate.role,
+        startWeek: week + cfg.startWeeks,
+      })
       candidates = []
       search = null
     }

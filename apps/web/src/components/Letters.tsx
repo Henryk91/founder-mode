@@ -103,6 +103,26 @@ function Answer({ message: m, view, freeHours, onAnswer }: Props) {
       ) : (
         <p className={styles.expires}>{label('inbox.expires', stage, { week: m.expiresWeek })}</p>
       )}
+      {m.ifIgnored && (
+        <p className={styles.expires}>
+          {label('inbox.ignored', stage, {
+            choice: m.ifIgnored.label,
+            cost: [
+              m.ifIgnored.costCents > 0 ? formatEuro(m.ifIgnored.costCents) : '',
+              m.ifIgnored.monthlyCostCents > 0
+                ? label('inbox.cost.monthly', stage, {
+                    amount: formatEuro(m.ifIgnored.monthlyCostCents),
+                  })
+                : '',
+              m.ifIgnored.lostHours > 0
+                ? label('unit.hours', stage, { n: m.ifIgnored.lostHours })
+                : '',
+            ]
+              .filter((x) => x !== '')
+              .join(', '),
+          })}
+        </p>
+      )}
       <div className={styles.choices}>
         {m.choices.map((c) => (
           <button

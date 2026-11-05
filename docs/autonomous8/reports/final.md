@@ -28,6 +28,23 @@ Reproduced = a test fails before the fix. "Not done" items stay in `docs/BACKLOG
 
 The step 3 UI checks (axe at four widths in two browsers, all UI stages) were **not run**.
 
+## Step 3 continued (after plan8-complete)
+
+`plan8-complete` was set before step 3 was finished; Henry then asked for the rest in batches. Batch 1 (full `pnpm test` and lint run; the browser tests, not run in the first pass, found four wording and layout slips, all fixed):
+
+| Finding | Reproduced | Fixed | How |
+|---|---|---|---|
+| K17 Money preview | yes | yes | Money card adds this week's answers: more per month, to pay at week end |
+| K6 demo count | yes | yes | Inbox counts only demos not yet booked in the plan |
+| H-05 roster preview | yes (test) | yes | Contracts signed in the plan count towards what the roster covers |
+| 9 deposits on the day | yes | yes | `guests_served.newDepositsCents`; text separates "paid on the day" from new deposits |
+| 11, R-04 calendars | yes | yes | Cruise scenarios show the boat-week calendar only; products with no room of their own named in one line |
+| 12 charter coverage | yes | yes | Bookings of products the shifts do not cover get their own roster line |
+| K7 accepted hire | yes | yes | `hire_agreed` entry; team card shows the start week and pay |
+| K10 deposit cards | yes | yes | `LeadView.deposit` (amount, refund week); "they may need more" |
+| K21, K24 defaults | yes | yes | `MessageView.ifIgnored`: default answer, cost, hours lost; shown on open letters |
+| S-02 steppers | yes | partly | Price steps scale with the amount; opening hours get a +4. Direct entry (the game is tap only) and apply-to-all (a feature) go to the backlog |
+
 ## Invariant test first results
 
 Run after the new totals existed: no scenario failed (13 scenario/mode pairs, at least 50 runs each). The old report sum (`Numbers`) did not include booking costs, loan payments or one-offs, which is the cause of findings 1 to 3.

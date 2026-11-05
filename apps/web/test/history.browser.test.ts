@@ -85,7 +85,7 @@ describe.skipIf(!CHROMIUM && !WEBKIT)('plan 7: Past weeks in the browser', () =>
             const violations = [...(await axe(page))]
             await page.getByRole('button', { name: /^Week 7/ }).click()
             await page
-              .getByRole('heading', { name: /Week 7/ })
+              .getByRole('heading', { name: /week 7/i })
               .first()
               .waitFor()
             found.push(...(await cut(page, 'week 7')))

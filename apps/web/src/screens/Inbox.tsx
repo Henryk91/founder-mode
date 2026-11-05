@@ -57,7 +57,8 @@ type Need = { text: string; tab: Tab }
 function NeedsYou({ view, free }: { view: PlayerView; free: number }) {
   const setTab = useGame((s) => s.setTab)
   const stage = voiceOf(view)
-  const needs = thingsThatNeedYou(view, free, stage)
+  const booked = useGame((s) => s.plan.demos)
+  const needs = thingsThatNeedYou(view, free, stage, booked)
   if (needs.length === 0) return null
   return (
     <section className={styles.card} aria-label={count('needs.title', stage, needs.length)}>
@@ -72,7 +73,12 @@ function NeedsYou({ view, free }: { view: PlayerView; free: number }) {
   )
 }
 
-export function thingsThatNeedYou(view: PlayerView, free: number, stage: Voice): Need[] {
+export function thingsThatNeedYou(
+  view: PlayerView,
+  free: number,
+  stage: Voice,
+  booked: string[] = [],
+): Need[] {
   const needs: Need[] = []
   const lastWeek = view.inbox.filter(
     (m) => m.answeredChoiceId === null && m.expiresWeek <= view.week,
@@ -80,7 +86,8 @@ export function thingsThatNeedYou(view: PlayerView, free: number, stage: Voice):
   if (lastWeek > 0) needs.push({ text: count('needs.lastWeek', stage, lastWeek), tab: 'inbox' })
   const overdue = view.invoices.filter((i) => i.status === 'overdue').length
   if (overdue > 0) needs.push({ text: count('needs.overdue', stage, overdue), tab: 'money' })
-  const demos = view.leads.filter((l) => l.canBookDemo).length
+  // Plan 8, K6: demos already booked in the plan no longer need you.
+  const demos = view.leads.filter((l) => l.canBookDemo && !booked.includes(l.id)).length
   if (demos > 0) needs.push({ text: count('needs.demos', stage, demos), tab: 'pipeline' })
   const silent = view.leads.filter((l) => l.stage === 'trial' && l.silent).length
   if (silent > 0) needs.push({ text: count('needs.silent', stage, silent), tab: 'pipeline' })

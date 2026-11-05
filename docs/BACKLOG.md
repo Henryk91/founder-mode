@@ -6,6 +6,8 @@ Last updated: 5 November 2026, plan 8 (fixes from the QA runs).
 
 ## 0. Left out of plan 8 (QA findings)
 
+- S-02 rest: direct number entry (the game is tap only) and "apply to all slots" (a feature).
+
 | Item | Notes |
 |---|---|
 | Hosting fatigue (19) and feature effect descriptions (24) | Leinen los QA |

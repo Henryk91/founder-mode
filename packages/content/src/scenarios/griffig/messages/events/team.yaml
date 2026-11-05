@@ -283,7 +283,7 @@ events:
             rating: 5
             count: 1
       - id: leave
-        label: Wait for a customer to report a fault
+        label: Wait for a climber to report a fault
         hours: 0
         effects:
           - type: review

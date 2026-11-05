@@ -141,6 +141,7 @@ describe('the reader reads declared conditions (step 3)', () => {
       channel: null,
       referredBy: null,
       foundBy: null,
+      deposit: null,
     }
     const full = { ...base, leads: Array.from({ length: 9 }, (_, i) => ({ ...lead, id: `l${i}` })) }
     expect(fromConditions(event('podcast_invite'), full, message('podcast_invite'))).toBe('decline')

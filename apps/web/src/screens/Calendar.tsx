@@ -18,6 +18,14 @@ export function Calendar() {
   if (!view?.bookings) return null
   const b = view.bookings
   const stage = voiceOf(view)
+  // A product with no room of its own (equipment, invoicing) never has a calendar; one that is
+  // only out of season keeps its row.
+  const idle = b.calendar.filter(
+    (c) =>
+      (b.products.find((p) => p.id === c.productId)?.capacity ?? 1) === 0 &&
+      c.cells.every((cell) => cell.capacity === 0),
+  )
+  const running = b.calendar.filter((c) => !idle.includes(c))
   return (
     <>
       <ClassTimetable />
@@ -47,12 +55,24 @@ export function Calendar() {
               ? label('tour.rating.none', stage)
               : label('tour.rating', stage, { rating: b.rating.toFixed(1), reviews: b.reviews })}
           </p>
+          {idle.length > 0 && !b.cruise && (
+            <p className={styles.hint}>
+              {label('tour.calendar.idle', stage, {
+                names: idle
+                  .map((c) => b.products.find((p) => p.id === c.productId)?.name)
+                  .join(', '),
+              })}
+            </p>
+          )}
           {b.calendar.length === 0 && (
             <p className={styles.hint}>{label('tour.calendar.empty', stage)}</p>
           )}
           {stageOf(stage) === 'established' && b.calendar.length > 0 && <HeatGrid view={view} />}
+          {/* Plan 8, 11 and R-04: with a cruise calendar the boat-weeks are shown there, and a
+              product that never runs (equipment, invoicing) is named once, not given a calendar. */}
           {stageOf(stage) !== 'established' &&
-            b.calendar.map((c) => {
+            !b.cruise &&
+            running.map((c) => {
               const product = b.products.find((p) => p.id === c.productId)
               return (
                 <div key={c.productId}>

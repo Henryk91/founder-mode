@@ -47,6 +47,7 @@ import { lossViews } from './systems/losses'
 import { spendView } from './systems/afford'
 import { outreachLines } from './channels'
 import type {
+  MessageView,
   ChannelId,
   GameState,
   OfficeView,
@@ -184,6 +185,7 @@ export function getView(state: GameState): PlayerView {
           ...(prepaidMove(state, m.eventId, c.id) ? { costCents: 0 } : {}),
         })),
         answeredChoiceId: m.status === 'answered' ? m.choiceId : null,
+        ifIgnored: ignoredView(state, m),
       })),
     team: teamView(state),
     funding: fundingView(state),
@@ -242,6 +244,13 @@ export function getView(state: GameState): PlayerView {
         l.referredBy === undefined
           ? null
           : (state.customers.find((c) => c.id === l.referredBy)?.name ?? null),
+      deposit:
+        l.stage === 'committed' && l.depositCents !== undefined
+          ? {
+              amountCents: l.depositCents,
+              refundWeek: l.stageSinceWeek + scenario.experiments.presale.refundWeeks,
+            }
+          : null,
       foundBy: l.source === 'team' ? (l.foundBy ?? state.team.members[0]?.id ?? null) : null,
     })),
     customers: activeCustomers(state).map((c) => ({
@@ -558,4 +567,24 @@ function prepaidMove(state: GameState, eventId: string, choiceId: string): boole
     .find((e) => e.id === eventId)
     ?.choices.find((c) => c.id === choiceId)
   return !!choice?.effects.some((f) => f.type === 'officeMove' && prepaid.includes(f.stage))
+}
+
+/** Plan 8: the default choice of an open message, with what it costs and the hours it takes. */
+function ignoredView(
+  state: GameState,
+  m: GameState['inbox'][number],
+): NonNullable<MessageView['ifIgnored']> | null {
+  if (m.status !== 'open') return null
+  const event = state.scenario.events.find((e) => e.id === m.eventId)
+  const choice = m.choices.find((c) => c.id === event?.defaultChoice)
+  const effects = event?.choices.find((c) => c.id === event.defaultChoice)?.effects ?? []
+  if (!choice) return null
+  const lostHours = effects.reduce((n, e) => n + (e.type === 'lostHours' ? e.hours : 0), 0)
+  if (choice.costCents === 0 && choice.monthlyCostCents === 0 && lostHours === 0) return null
+  return {
+    label: choice.label,
+    costCents: choice.costCents,
+    monthlyCostCents: choice.monthlyCostCents,
+    lostHours,
+  }
 }

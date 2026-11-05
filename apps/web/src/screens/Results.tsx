@@ -109,6 +109,11 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       return count('results.entry.candidates_ready', stage, entry.count, {
         role: label(`team.role.${entry.role}`, stage).toLowerCase(),
       })
+    case 'hire_agreed':
+      return label('results.entry.hire_agreed', stage, {
+        name: entry.name,
+        week: entry.startWeek,
+      })
     case 'hire_started':
       return label('results.entry.hire_started', stage, { name: entry.name })
     case 'member_let_go':
@@ -249,8 +254,11 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
       const invoiced = view.invoices
         .filter((i) => i.issuedWeek === view.week - 1)
         .reduce((t, i) => t + i.amountCents, 0)
+      // Plan 8, finding 9: deposits of bookings made this week are not paid on the day.
+      const deposits = entry.newDepositsCents ?? 0
       const vars = {
-        amount: formatEuro(entry.revenueCents),
+        amount: formatEuro(entry.revenueCents - deposits),
+        deposits: formatEuro(deposits),
         invoiced: formatEuro(invoiced),
         commission: formatEuro(entry.commissionCents),
       }
@@ -260,9 +268,13 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         entry.units,
         vars,
       )
-      return entry.commissionCents > 0
-        ? `${served} ${label('results.entry.guests_served.platform', stage, vars)}`
-        : served
+      const platform =
+        entry.commissionCents > 0
+          ? ` ${label('results.entry.guests_served.platform', stage, vars)}`
+          : ''
+      const extra =
+        deposits > 0 ? ` ${label('results.entry.guests_served.deposits', stage, vars)}` : ''
+      return `${served}${platform}${extra}`
     }
     case 'bookings_cancelled':
       return count(
@@ -622,6 +634,7 @@ function place(entry: ReportEntry): [Group, number] {
     case 'landing_result':
     case 'presale_result':
       return ['learning', 6]
+    case 'hire_agreed':
     case 'hire_started':
       return ['founder', 8]
     case 'member_let_go':

@@ -154,6 +154,14 @@ function MemberCard(props: {
         label={member.name}
         note={label('team.perMonth', stage, { amount: formatEuro(member.monthlyCents) })}
       />
+      {!member.working && (
+        <Writing>
+          {label('team.starts', stage, {
+            week: member.startWeek,
+            amount: formatEuro(member.monthlyCents),
+          })}
+        </Writing>
+      )}
       {member.managementHours > 0 && (
         <Writing>
           {label('team.manage', stage, {

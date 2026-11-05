@@ -64,6 +64,7 @@ export function HallPlan() {
                 stage={stage}
                 value={requested[slot.id] ?? slot.hours}
                 max={slot.hours}
+                {...(slot.hours >= 12 ? { bigStep: 4 } : {})}
                 what={label('hall.openWhat', stage, { slot: slot.name })}
                 onChange={(n) =>
                   set({ leisure: { ...draft, openHours: { ...requested, [slot.id]: n } } })

@@ -48,6 +48,8 @@ const shared = (w: Words): Overrides => ({
     established: 'Distribution',
   },
 
+  'results.in.customers': 'From guests',
+
   // The headline (item 5): a tourism measure instead of customers. Money has a window too.
   'stat.revenue': 'Takings, last 4 weeks',
   'stat.revenue.short': 'Takings',

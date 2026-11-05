@@ -744,6 +744,8 @@ export type BookingsOutcome = {
   oneOffCents?: number
   /** Plan 8: what guests served (or kept under a strict policy) this week were worth, net of commission. */
   earnedCents?: number
+  /** Plan 8, finding 9: deposits of bookings made this week, within `revenueCents`. */
+  newDepositsCents?: number
   /** Plan 2: what the vouchers redeemed this week were sold for (earned now, paid before). */
   voucherRedeemedCents: number
   voucherCents?: number
@@ -1278,6 +1280,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       bookings.push(booking)
       logWeek(target, { bookings: 1, units: size, revenueCents: booking.priceCents * size })
       out.revenueCents += deposit
+      out.newDepositsCents = (out.newDepositsCents ?? 0) + deposit
       held.set(heldKey(pick.id, target), (held.get(heldKey(pick.id, target)) ?? 0) + size)
       if (s.capacityShare) {
         const k = segKey(seg.id, pick.id, target)
@@ -2179,6 +2182,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       kind: 'guests_served',
       units: servedUnits,
       revenueCents: out.revenueCents,
+      newDepositsCents: out.newDepositsCents ?? 0,
       commissionCents: commission,
     })
   }

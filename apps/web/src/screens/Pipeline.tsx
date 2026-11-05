@@ -91,6 +91,14 @@ export function Pipeline() {
           {l.stage === 'trial' && ` · ${count('pipeline.trialWeeks', stage, l.weeksInStage)}`}
           {l.stage === 'committed' && ` · ${count('pipeline.depositWeeks', stage, l.weeksInStage)}`}
         </span>
+        {l.deposit && (
+          <span className={board.note}>
+            {label('pipeline.deposit', stage, {
+              amount: formatEuro(l.deposit.amountCents),
+              week: l.deposit.refundWeek,
+            })}
+          </span>
+        )}
         {l.silent && <span className={styles.badge}>{label('pipeline.silent', stage)}</span>}
         {l.canFollowUp && (
           <button

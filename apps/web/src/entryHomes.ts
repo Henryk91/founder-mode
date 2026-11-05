@@ -48,6 +48,7 @@ export const ENTRY_HOMES: Record<ReportEntry['kind'], EntryHome> = {
   bugs_fixed: at('Plan: Build and fix (bugs left)', false),
   // Team and freelancers
   candidates_ready: at('Plan: Team (candidates)'),
+  hire_agreed: at('Plan: Team (members)'),
   hire_started: at('Plan: Team (members)'),
   member_let_go: at('Plan: Team (members)', false),
   team_output: past(),
