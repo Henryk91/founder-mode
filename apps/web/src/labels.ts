@@ -238,6 +238,15 @@ const labels = {
   'results.cashNow': 'Company cash now',
   'results.in': 'Company received',
   'results.out': 'Company paid',
+  'results.in.customers': 'From customers',
+  'results.in.other': 'Other money in',
+  'results.in.financing': 'Loans and investment',
+  'results.in.transfers': 'Moved from your savings',
+  'results.out.running': 'Fixed costs, ads and fees',
+  'results.out.staff': 'Freelancers',
+  'results.out.products': 'Shifts, supplies and one-off buys',
+  'results.out.loan': 'Loan repayments, interest and fees',
+  'results.out.draw': 'Towards your living costs',
   'results.living': 'Living costs from your savings',
   'results.savingsNow': 'Your savings now',
   'results.continue': 'Next week',
@@ -285,7 +294,7 @@ const labels = {
   'end.growing':
     'Week {max}. Still burning money, but there is a year of it in the bank and revenue is growing. The investors are happy, for now.',
   'end.bank_called':
-    'The bank called the loan after a second missed payment. Your guarantee, your savings and your evenings now belong to the bank.',
+    'The bank called the loan after a missed payment, with the money gone or a second miss in a row. Your guarantee, your savings and your evenings now belong to the bank.',
   'end.stats': 'Weeks played: {weeks}. Customers now: {customers}.',
   'intro.step': 'Card {n} of {total}',
   'intro.next': 'Next',
@@ -1481,6 +1490,8 @@ const labels = {
     'The money ran out in week {week}, after you had raised. Revenue peaked at {peak} a month against costs of {costs}: the investment bought time, not customers.',
   'pm.cause.bank_called':
     'In week {week} the bank called the loan after two missed payments in a row. Repayments start whether the guests come or not.',
+  'pm.cause.bank_called_broke':
+    'In week {week} the money ran out with a loan payment missed, and the bank called the loan. Repayments start whether the guests come or not.',
   'pm.cause.growing':
     'Week {week}. The company still costs more than it earns, but revenue is growing and the money lasts another year.',
   'pm.cause.shut_down_flat':

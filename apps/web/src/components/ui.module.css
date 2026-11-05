@@ -526,3 +526,10 @@
   background: var(--accent);
   color: var(--on-accent);
 }
+
+/* A part of the line above it: smaller, muted, indented. */
+.partRow {
+  padding-left: 12px;
+  color: var(--ink-muted);
+  font-size: 13px;
+}

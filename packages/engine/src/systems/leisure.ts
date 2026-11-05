@@ -553,13 +553,20 @@ export function beginLeisure(
   input: GameState,
   plan: WeekPlan,
   rng: Rng,
-): { state: GameState; costsCents: number; revenueCents: number; entries?: ReportEntry[] } {
+): {
+  state: GameState
+  costsCents: number
+  oneOffCents?: number
+  revenueCents: number
+  entries?: ReportEntry[]
+} {
   const c = cfgOf(input)
   const original = input.bookings?.leisure
   if (!c || !original) return { state: input, costsCents: 0, revenueCents: 0 }
   const p = plan.bookings?.leisure
   const week = input.week
   let costsCents = 0
+  let oneOffCents = 0
   let revenueCents = 0
   const permitEntries: ReportEntry[] = []
   const l: LeisureState = {
@@ -681,7 +688,11 @@ export function beginLeisure(
     const f = input.product.features.find((x) => x.id === id)
     if (!f?.readyWeek || l.buildPaid.includes(id)) continue
     if (loan?.bought?.includes(id)) loan = { ...loan, bought: loan.bought.filter((x) => x !== id) }
-    else costsCents += input.scenario.bookings!.products[id]?.oneOffCents ?? 0
+    else {
+      const oneOff = input.scenario.bookings!.products[id]?.oneOffCents ?? 0
+      costsCents += oneOff
+      oneOffCents += oneOff
+    }
     l.buildPaid.push(id)
   }
   for (const [id, permit] of configEntries(c.permits)) {
@@ -749,6 +760,7 @@ export function beginLeisure(
   return {
     state,
     costsCents,
+    oneOffCents,
     revenueCents,
     ...(permitEntries.length ? { entries: permitEntries } : {}),
   }

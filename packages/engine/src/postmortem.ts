@@ -592,6 +592,13 @@ function buildCause(state: GameState): PostMortemCause {
     coveredPercent: costs > 0 ? Math.round((100 * revenue) / costs) : 0,
     coveredWeek: covered?.week ?? null,
     runwayWeeks: runwayWeeks(state),
+    ...(ending === 'bank_called'
+      ? {
+          bankTrigger: (state.loan?.loans ?? []).some((l) => l.status === 'called')
+            ? ('missed_twice' as const)
+            : ('out_of_money' as const),
+        }
+      : {}),
   }
 }
 

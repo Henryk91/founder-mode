@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { InterviewView, PlayerView, ReportEntry, WeekReport } from '@founder-mode/engine'
+import { weekTotals } from '@founder-mode/engine'
 import { LossReason } from '../components/Losses'
 import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type Voice, voiceOf } from '../labels'
@@ -868,19 +869,34 @@ function InterviewSummary({
 
 function Numbers({ report, stage }: { report: WeekReport; stage: Voice }) {
   const l = report.ledger
-  const received = l.revenueCents + l.otherIncomeCents + l.transferCents + l.autoTransferCents
-  const paid =
-    l.fixedCostsCents + l.freelanceCents + l.founderDrawCents + l.adSpendCents + l.otherCostsCents
+  // Plan 8: the totals come from the same ledger that moves cash, so the lines add up.
+  const t = weekTotals(l)
   const row = (key: LabelKey, cents: number, good = false) => (
     <div className={styles.rowHead}>
       <span>{label(key, stage)}</span>
       <span className={`${styles.mono} ${good ? styles.good : ''}`}>{formatEuro(cents)}</span>
     </div>
   )
+  const part = (key: LabelKey, cents: number) =>
+    cents !== 0 && (
+      <div className={`${styles.rowHead} ${styles.partRow}`}>
+        <span>{label(key, stage)}</span>
+        <span className={styles.mono}>{formatEuro(cents)}</span>
+      </div>
+    )
   return (
     <div className={styles.group}>
-      {row('results.in', received, received > 0)}
-      {row('results.out', paid)}
+      {row('results.in', t.received.totalCents, t.received.totalCents > 0)}
+      {part('results.in.customers', t.received.customersCents)}
+      {part('results.in.other', t.received.otherCents)}
+      {part('results.in.financing', t.received.financingCents)}
+      {part('results.in.transfers', t.received.transfersCents)}
+      {row('results.out', t.paid.totalCents)}
+      {part('results.out.running', t.paid.runningCents)}
+      {part('results.out.staff', t.paid.staffCents)}
+      {part('results.out.products', t.paid.productsCents)}
+      {part('results.out.loan', t.paid.loanCents)}
+      {part('results.out.draw', t.paid.drawCents)}
       {row('results.cashNow', l.cashEndCents)}
       {row('results.living', l.livingCostsCents - l.founderDrawCents)}
       {row('results.savingsNow', l.savingsEndCents)}

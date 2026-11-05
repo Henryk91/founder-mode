@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { createGame, endWeek, getView, validatePlan } from '../src/index'
 import { netChangeCents } from '../src/systems/finance'
 import { hoursByActivity } from '../src/systems/founder'
-import { loanEconomics } from '../src/postmortem'
+import { buildPostMortem, loanEconomics } from '../src/postmortem'
 import { annuityCents, dueCents, judgeLoan, runRateBp } from '../src/systems/loan'
 import type { GameState, LoanPlan, Scenario, WeekPlan } from '../src/types'
 import { plan } from './helpers'
@@ -125,7 +125,7 @@ describe('the bank loan', () => {
     expect(dueCents(loan).principal).toBe(0)
     const next = playUntil(s, {}, (x) => x.loan!.loans[0]!.months === 1)
     expect(next.loan!.loans[0]!.interestPaidCents).toBe(
-      Math.round((2_000_000 * loan.rateBp) / 10_000 / 12),
+      Math.round((2_000_000 * loan.rateBp) / 10_000 / 13),
     )
     expect(next.loan!.loans[0]!.balanceCents).toBe(2_000_000)
   })
@@ -157,6 +157,27 @@ describe('the bank loan', () => {
     expect(balance).toBe(0)
   })
 
+  it('charges a year of 13 four-week periods at the stated yearly rate, no more (plan 8, S-03)', () => {
+    const balance = 26_000_000
+    const rateBp = 598
+    const yearOfInterest =
+      13 *
+      dueCents({
+        balanceCents: balance,
+        rateBp,
+        months: 0,
+        graceMonths: 99,
+        paymentCents: 0,
+        termMonths: 99,
+      } as never).interest
+    expect(Math.abs(yearOfInterest - (balance * rateBp) / 10_000)).toBeLessThan(13)
+    // The annuity over a whole year of periods clears the balance at that same rate.
+    let b = 1_000_000
+    const pay = annuityCents(b, rateBp, 26)
+    for (let m = 0; m < 26; m++) b = b + Math.round((b * rateBp) / 10_000 / 13) - pay
+    expect(Math.abs(b)).toBeLessThan(100)
+  })
+
   it('misses a payment the company and savings cannot meet, and the second ends the run', () => {
     // A quiet inbox, so only the loan payment is in question.
     const quiet = withLoan()
@@ -177,6 +198,29 @@ describe('the bank loan', () => {
     expect(s.status).toBe('running')
     s = playUntil(s, {}, (x) => x.status === 'ended')
     expect(s.ending).toBe('bank_called')
+    // Plan 8, G-02: the post-mortem names the real trigger, not "two missed payments" by default.
+    const trigger = buildPostMortem(s).cause.bankTrigger
+    expect(trigger).toBe(
+      s.loan!.loans.some((l) => l.status === 'called') ? 'missed_twice' : 'out_of_money',
+    )
+  })
+
+  it('names running out of money as the trigger when only one payment was missed', () => {
+    const quiet = withLoan()
+    const scenario = { ...quiet, inbox: { ...quiet.inbox, drawChance: 0, guaranteeBelowOpen: 0 } }
+    let s = borrow(createGame(scenario, 'miss-broke'), { ...terms, graceMonths: 0 })
+    s = {
+      ...s,
+      company: {
+        ...s.company,
+        cashCents: 0,
+        fixedCosts: [{ id: 'rent', name: 'Rent', monthlyCents: 100_000 }],
+      },
+      founder: { ...s.founder, savingsCents: 0, livingCostCentsPerWeek: 0 },
+    }
+    s = playUntil(s, {}, (x) => x.status === 'ended')
+    expect(s.loan!.loans[0]!.missedInRow).toBe(1)
+    expect(buildPostMortem(s).cause.bankTrigger).toBe('out_of_money')
   })
 
   it('tells the post-mortem what each loan cost and how it ended', () => {

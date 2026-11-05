@@ -900,6 +900,8 @@ class Text {
             runway: count('unit.weeks', this.stage, c.runwayWeeks),
           })
     }
+    if (c.id === 'bank_called' && c.bankTrigger === 'out_of_money')
+      return label('pm.cause.bank_called_broke', this.stage, vars)
     if (c.id === 'bankrupt_churn' && c.customersStoppedPaying > 0)
       return label('pm.cause.bankrupt_churn_unpaid', this.stage, vars)
     return label(`pm.cause.${c.id}`, this.stage, vars)

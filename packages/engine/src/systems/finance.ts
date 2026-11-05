@@ -10,8 +10,8 @@ import type {
 } from '../types'
 import { activeCustomers } from './customers'
 import { chaseInvoices, isUnpaid, issueInvoices, settleInvoices } from './invoices'
-import { settleLoans } from './loan'
-import { freelanceMonthlyCents } from './team'
+import { dueCents, settleLoans } from './loan'
+import { freelanceMonthlyCents, roleTerms, salaryId } from './team'
 
 export function monthlyFixedCostsCents(state: GameState): number {
   return state.company.fixedCosts.reduce((sum, c) => sum + c.monthlyCents, 0)
@@ -46,6 +46,8 @@ export type WeekExtras = {
   bookingRevenueCents: number
   /** Tourism: shifts, unit costs and products' one-off costs. Company costs. */
   bookingCostsCents: number
+  /** Plan 8: the part of `bookingCostsCents` that is a one-off buy. */
+  oneOffCents?: number
   /** Plan 2: vouchers sold (cash, a liability) and redeemed (earned, paid before). */
   voucherCents?: number
   voucherRedeemedCents?: number
@@ -183,6 +185,10 @@ export function applyFinanceWeek(
     bookingRevenueCents: extras.bookingRevenueCents,
     // A loan's listed products and rooms, bought as the money arrives, are company costs too.
     bookingCostsCents: extras.bookingCostsCents + loans.money.itemsCents,
+    ...(extras.oneOffCents || loans.money.itemsCents
+      ? { oneOffCents: (extras.oneOffCents ?? 0) + loans.money.itemsCents }
+      : {}),
+    ...(extras.depositsCents ? { depositsCents: extras.depositsCents } : {}),
     ...(extras.voucherCents ? { voucherCents: extras.voucherCents } : {}),
     ...(extras.voucherRedeemedCents ? { voucherRedeemedCents: extras.voucherRedeemedCents } : {}),
     loanInCents: loans.money.inCents,
@@ -221,6 +227,63 @@ export function applyFinanceWeek(
     issued,
     writtenOff: settled.writtenOff,
     stopped,
+  }
+}
+
+/**
+ * Plan 8: the week's money as the report shows it, from the same ledger that moves cash, so the
+ * lines add up. Company cash: `received` less `paid` is its change; transfers between company and
+ * savings, loans paid out and investment are lines of their own, not customer money.
+ */
+export type WeekTotals = {
+  received: {
+    customersCents: number
+    otherCents: number
+    financingCents: number
+    transfersCents: number
+    totalCents: number
+  }
+  paid: {
+    /** Fixed costs, ads and other costs of the week. */
+    runningCents: number
+    /** The freelancer's bill. */
+    staffCents: number
+    /** Shifts, unit costs and products' one-off costs (tourism and leisure). */
+    productsCents: number
+    /** Loan principal, interest and fees. */
+    loanCents: number
+    /** What the company paid towards the founder's living costs. */
+    drawCents: number
+    totalCents: number
+  }
+}
+
+export function weekTotals(l: WeekLedger): WeekTotals {
+  const customersCents = l.revenueCents + (l.voucherCents ?? 0)
+  const otherCents = l.otherIncomeCents
+  const financingCents = l.loanInCents + l.investmentCents
+  const transfersCents = l.transferCents + l.autoTransferCents
+  const runningCents = l.fixedCostsCents + l.adSpendCents + l.otherCostsCents
+  const staffCents = l.freelanceCents
+  const productsCents = l.bookingCostsCents
+  const loanCents = l.loanPrincipalCents + l.loanInterestCents + l.loanFeeCents
+  const drawCents = l.founderDrawCents
+  return {
+    received: {
+      customersCents,
+      otherCents,
+      financingCents,
+      transfersCents,
+      totalCents: customersCents + otherCents + financingCents + transfersCents,
+    },
+    paid: {
+      runningCents,
+      staffCents,
+      productsCents,
+      loanCents,
+      drawCents,
+      totalCents: runningCents + staffCents + productsCents + loanCents + drawCents,
+    },
   }
 }
 
@@ -282,25 +345,51 @@ export function closeLedger(state: GameState, hours: HoursByActivity): GameState
 }
 
 /**
- * Runway: whole weeks until company cash plus personal savings reach zero, at the net change of
- * the last four weeks (`netChangeCents`: money actually received less everything paid), so one
- * month end with its fixed costs is always in the window. Before four weeks have been played it
- * counts the known costs with no income at all; invoiced revenue never counts. Null ("Covered")
- * when that pace does not shrink the money. Never more than the weeks left in the run.
+ * Runway (plan 8, one rule for every scenario): whole weeks until company cash plus personal
+ * savings reach zero, played forward week by week from what is known. Income is recurring only:
+ * what customers paid over the last four weeks, without pre-sale deposits (owed back, not a
+ * pace). Costs are the obligations ahead on their dates: living costs every week, fixed costs
+ * (rent, salaries already running, the bank's payment) at each month end, hires agreed but not
+ * yet started from their start week, the freelancer's booked hours, ads and shifts at the last
+ * four weeks' pace. One-offs are left out both ways: a loan paid out, an investment, a financed
+ * or one-off purchase, a fine. Before four weeks have been played no income counts at all.
+ * Null ("Covered") when the pace does not shrink the money; never more than the weeks left.
  */
 export function runwayWeeks(state: GameState): number | null {
-  const weeksPerMonth = state.scenario.finance.weeksPerMonth
-  const net =
-    state.ledger.length >= weeksPerMonth
-      ? state.ledger.slice(-weeksPerMonth).reduce((sum, l) => sum + netChangeCents(l), 0)
-      : -monthlyCompanyCostsCents(state) - state.founder.livingCostCentsPerWeek * weeksPerMonth
-  if (net >= 0) return null
-  const total = state.company.cashCents + Math.max(0, state.founder.savingsCents)
-  if (total <= 0) return 0
-  // Weeks still to play after the last one played.
-  const left = Math.max(0, state.scenario.maxWeeks - (state.ledger.at(-1)?.week ?? 0))
-  // total / (-net / weeksPerMonth), kept in integers.
-  return Math.min(left, Math.floor((total * weeksPerMonth) / -net))
+  const wpm = state.scenario.finance.weeksPerMonth
+  const lastWeek = state.ledger.at(-1)?.week ?? 0
+  const left = Math.max(0, state.scenario.maxWeeks - lastWeek)
+  const window = state.ledger.length >= wpm ? state.ledger.slice(-wpm) : []
+  const income = window.reduce((t, l) => t + l.revenueCents - (l.depositsCents ?? 0), 0) / wpm
+  const running =
+    window.reduce((t, l) => t + l.adSpendCents + l.bookingCostsCents - (l.oneOffCents ?? 0), 0) /
+    wpm
+  const weekly =
+    income - running - freelanceMonthlyCents(state) / wpm - state.founder.livingCostCentsPerWeek
+  const fixed = monthlyFixedCostsCents(state)
+  const pending = state.team.members
+    .filter(
+      (m) => m.letGoWeek === null && !state.company.fixedCosts.some((c) => c.id === salaryId(m)),
+    )
+    .map((m) => ({ from: m.startWeek, cents: roleTerms(state, m).monthlyCents }))
+  const loanDue = (state.loan?.loans ?? [])
+    .filter((l) => l.status === 'running')
+    .reduce((t, l) => {
+      const due = dueCents(l)
+      return t + due.interest + due.principal
+    }, 0)
+  let balance = state.company.cashCents + Math.max(0, state.founder.savingsCents)
+  if (balance <= 0) return 0
+  for (let w = lastWeek + 1; w <= state.scenario.maxWeeks; w++) {
+    balance += weekly
+    if (w % wpm === 0) {
+      balance -= fixed + loanDue
+      for (const h of pending) if (h.from <= w) balance -= h.cents
+    }
+    if (balance < 0) return Math.min(left, Math.max(0, w - 1 - lastWeek))
+  }
+  const steadyMonth = weekly * wpm - fixed - loanDue - pending.reduce((t, h) => t + h.cents, 0)
+  return steadyMonth >= 0 ? null : left
 }
 
 /**

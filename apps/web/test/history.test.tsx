@@ -140,6 +140,12 @@ const MADE: { entry: ReportEntry; id: ScenarioId; mode: GameMode }[] = [
     id: 'tiefgang',
     mode: 'long',
   },
+  { entry: { kind: 'round_stopped', round: 'angel' }, id: 'kantino', mode: 'long' },
+  {
+    entry: { kind: 'terms_withdrawn', name: 'Seedwerk', reason: 'runway' },
+    id: 'kantino',
+    mode: 'long',
+  },
   { entry: { kind: 'friction', groups: 2 }, id: 'leinenlos', mode: 'long' },
   {
     entry: { kind: 'cruise_cancelled', week: 30, cabins: 4, moved: true, costCents: 50_000 },

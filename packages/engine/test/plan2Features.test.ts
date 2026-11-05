@@ -409,4 +409,34 @@ describe('the bank lends against a plan (plan 2 step 2)', () => {
     expect(after.ledger.find((l) => l.week === shipWeek)!.bookingCostsCents).toBeLessThan(6_000_000)
     expect(after.loan!.bought).toEqual([])
   })
+
+  it('never buys an item twice when it is finished before the money arrives (plan 8, H-01)', () => {
+    const t = { termMonths: 84, graceMonths: 6, items: ['fit_out'], rooms: 0 }
+    let state = endWeek(
+      createGame(rich('hinterhof'), 'plan-h01'),
+      plan(lp(null, { planHours: 30 })),
+    ).state
+    state = endWeek(
+      state,
+      plan(lp({ ...t, workingCapitalCents: 1_000_000, amountCents: 7_000_000 })),
+    ).state
+    for (let i = 0; i < 6 && !state.loan!.offer; i++) state = endWeek(state, plan()).state
+    state = endWeek(state, plan(lp(null, { accept: true }))).state
+    expect(state.loan!.accepted).not.toBeNull()
+    // The item is finished (and so charged) before the payout.
+    state = {
+      ...state,
+      product: {
+        ...state.product,
+        features: state.product.features.map((f) =>
+          f.id === 'fit_out' ? { ...f, shippedWeek: state.week } : f,
+        ),
+      },
+    }
+    for (let i = 0; i < 6 && state.loan!.loans.length === 0; i++)
+      state = endWeek(state, plan()).state
+    const payout = state.ledger.find((l) => l.loanInCents > 0)!
+    expect(payout.bookingCostsCents).toBeLessThan(6_000_000)
+    expect(state.loan!.bought ?? []).toEqual([])
+  })
 })

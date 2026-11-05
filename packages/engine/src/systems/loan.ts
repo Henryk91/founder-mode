@@ -147,16 +147,22 @@ export function judgeLoan(state: GameState, terms: LoanTerms): LoanRefusal | nul
   return null
 }
 
+/**
+ * A "month" is four weeks, so a year holds 13 of them. The yearly rate is spread over those 13
+ * periods, so a year of interest is the stated rate and no more (plan 8, S-03).
+ */
+export const PERIODS_PER_YEAR = 13
+
 /** The fixed monthly payment that clears `balance` in `months` at a yearly rate in basis points. */
 export function annuityCents(balance: number, rateBp: number, months: number): number {
   if (months <= 0) return balance
-  const r = rateBp / 10_000 / 12
+  const r = rateBp / 10_000 / PERIODS_PER_YEAR
   if (r === 0) return Math.ceil(balance / months)
   return Math.ceil((balance * r) / (1 - Math.pow(1 + r, -months)))
 }
 
 const monthlyInterest = (balance: number, rateBp: number) =>
-  Math.round((balance * rateBp) / 10_000 / 12)
+  Math.round((balance * rateBp) / 10_000 / PERIODS_PER_YEAR)
 
 /** What a loan asks at its next month end: interest only in the free months, then the annuity. */
 export function dueCents(loan: Loan): { interest: number; principal: number } {
@@ -427,16 +433,16 @@ export function settleLoans(
     })
     money.inCents += accepted.amountCents
     // A plan's products and rooms are bought as the money arrives; only the working capital stays.
-    const unpaidItems = state.bookings?.leisure
-      ? (accepted.items ?? []).filter((id) => !state.bookings!.leisure!.buildPaid.includes(id))
-      : accepted.items
-    money.itemsCents += planItemsCents(
-      state,
-      state.bookings?.leisure ? { ...accepted, items: unpaidItems ?? [] } : accepted,
-    )
+    // An item already built or paid before the money arrived (finished in an earlier week or in
+    // this very week) was charged then; the loan must not buy it a second time (plan 8, H-01).
+    const paidAlready = (id: string) =>
+      (state.bookings?.leisure?.buildPaid.includes(id) ?? false) ||
+      state.product.features.some((f) => f.id === id && f.shippedWeek !== null)
+    const unpaidItems = (accepted.items ?? []).filter((id) => !paidAlready(id))
+    money.itemsCents += planItemsCents(state, { ...accepted, items: unpaidItems })
     entries.push({ kind: 'loan_paid_out', amountCents: accepted.amountCents, name: cfg.bankName })
     if (accepted.items?.length || accepted.rooms) {
-      bought = [...bought, ...(unpaidItems ?? [])]
+      bought = [...bought, ...unpaidItems]
       roomsBought += accepted.rooms ?? 0
     }
     if (accepted.stage) prepaidStage = accepted.stage

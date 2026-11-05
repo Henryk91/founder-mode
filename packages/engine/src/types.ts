@@ -1005,6 +1005,10 @@ export type WeekLedger = {
   bookingRevenueCents: number
   /** Tourism: shifts, unit costs and products' one-off costs, company costs in the win test. */
   bookingCostsCents: number
+  /** Plan 8: the part of `bookingCostsCents` that is a one-off buy (a product, rooms), not a running cost. */
+  oneOffCents?: number
+  /** Plan 8: pre-sale and trial deposits within `revenueCents`: owed back, not a recurring income. */
+  depositsCents?: number
   /** Plan 2: vouchers sold this week. Cash, but a liability: never revenue, never in runway. */
   voucherCents?: number
   /** Plan 2: what the vouchers redeemed this week were sold for, counted as earned in the win test. */
@@ -2403,6 +2407,8 @@ export type PostMortemCause = {
   coveredWeek: number | null
   /** Runway when the run ended, for a shut down. */
   runwayWeeks: number | null
+  /** Plan 8: why the bank called the loan, when it did: two misses in a row, or no money left. */
+  bankTrigger?: 'missed_twice' | 'out_of_money'
 }
 
 export type ChainKind =

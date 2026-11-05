@@ -47,7 +47,7 @@ describe('app smoke test', () => {
     expect(plan).toContain('Week 1 of 60')
     expect(plan).toContain('End week')
     expect(plan).toContain('Talk to people')
-    expect(text(store)).toContain('Runway 29 weeks')
+    expect(text(store)).toContain('Runway 30 weeks')
 
     for (let i = 0; i < 3; i++) {
       store.getState().setInterviews('coworking', 2)
@@ -197,7 +197,7 @@ describe('onboarding', () => {
     expect(html(store)).not.toContain('Got it')
     // The terms are tappable on screen.
     const page = html(store)
-    expect(text(store)).toContain('Runway 29 weeks')
+    expect(text(store)).toContain('Runway 30 weeks')
     // The planner has no "?" of its own; its hours and energy rules live in Help.
     expect(page).not.toMatch(/aria-label="(Energy|Hours): What does this mean\?"/)
     store.getState().openHelp()

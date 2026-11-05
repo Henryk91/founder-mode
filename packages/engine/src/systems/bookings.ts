@@ -740,6 +740,8 @@ export type BookingsOutcome = {
   revenueCents: number
   /** Shifts, unit costs and products' one-off costs this week: company costs. */
   costsCents: number
+  /** Plan 8: the part of `costsCents` that is a one-off buy (products, rooms, builds). */
+  oneOffCents?: number
   /** Plan 2: what the vouchers redeemed this week were sold for (earned now, paid before). */
   voucherRedeemedCents: number
   voucherCents?: number
@@ -824,6 +826,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     ]
     roomsPaid = Math.min(n, input.loan?.roomsBought ?? 0)
     out.costsCents += (n - roomsPaid) * reno.centsPerRoom
+    out.oneOffCents = (out.oneOffCents ?? 0) + (n - roomsPaid) * reno.centsPerRoom
     out.entries.push({
       kind: 'works_started',
       rooms: n,
@@ -840,6 +843,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     state = leisure.state
     b = state.bookings!
     out.costsCents += leisure.costsCents
+    out.oneOffCents = (out.oneOffCents ?? 0) + (leisure.oneOffCents ?? 0)
     out.revenueCents += leisure.revenueCents
     out.entries.push(...(leisure.entries ?? []))
     if (
@@ -896,7 +900,10 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     if (!prod || f.shippedWeek !== week) continue
     if (loan?.bought?.includes(f.id)) {
       loan = { ...loan, bought: loan.bought.filter((x) => x !== f.id) }
-    } else if (!b.leisure?.buildPaid.includes(f.id)) out.costsCents += prod.oneOffCents
+    } else if (!b.leisure?.buildPaid.includes(f.id)) {
+      out.costsCents += prod.oneOffCents
+      out.oneOffCents = (out.oneOffCents ?? 0) + prod.oneOffCents
+    }
     if (prod.stage) stages.push(prod.stage)
     if (prod.monthlyCents > 0 && !fixedCosts.some((c) => c.id === `product_${f.id}`)) {
       const name = state.scenario.features.find((x) => x.id === f.id)?.name ?? f.id

@@ -121,8 +121,9 @@ describe('finance', () => {
   it('estimates runway from known costs before a month has been played', () => {
     const s = newGame()
     // 6,000 cash + 9,500 savings. Per month: 270 fixed + 4 * 450 living = 2,070.
-    expect(runwayWeeks(s)).toBe(Math.floor((2_325_000 * 4) / 310_500))
-    expect(getView(s).company.runwayWeeks).toBe(29)
+    // Played forward on dates (plan 8): living costs weekly, fixed costs at each month end.
+    expect(runwayWeeks(s)).toBe(30)
+    expect(getView(s).company.runwayWeeks).toBe(30)
     const withCustomer = {
       ...s,
       customers: [
@@ -138,7 +139,7 @@ describe('finance', () => {
       ],
     }
     // Invoiced revenue never counts: only money received does, and none has been yet.
-    expect(runwayWeeks(withCustomer)).toBe(29)
+    expect(runwayWeeks(withCustomer)).toBe(30)
   })
 
   it('computes runway on cash plus savings from the net change of the last 4 weeks', () => {
@@ -146,8 +147,51 @@ describe('finance', () => {
     const after = play(newGame(), 4, () => plan())
     expect(after.company.cashCents).toBe(859_500)
     expect(after.founder.savingsCents).toBe(1_155_000)
-    expect(runwayWeeks(after)).toBe(Math.floor(((859_500 + 1_155_000) * 4) / 310_500))
-    expect(getView(after).company.runwayWeeks).toBe(25)
+    expect(runwayWeeks(after)).toBe(26)
+    expect(getView(after).company.runwayWeeks).toBe(26)
+  })
+
+  it('counts a hire agreed but not started from its start week (plan 8, K2)', () => {
+    const s = play(newGame(), 4, () => plan())
+    const before = runwayWeeks(s)!
+    const hired = {
+      ...s,
+      team: {
+        ...s.team,
+        members: [
+          {
+            id: 'm1',
+            name: 'Ada',
+            role: 'salesperson' as const,
+            offerWeek: s.week,
+            startWeek: s.week + 2,
+            letGoWeek: null,
+          },
+        ],
+      },
+    }
+    expect(runwayWeeks(hired)!).toBeLessThan(before)
+  })
+
+  it('leaves one-offs out of the pace: a loan, a financed buy and deposits (plan 8, finding 5, K3)', () => {
+    const s = play(newGame(), 4, () => plan())
+    const base = runwayWeeks(s)
+    const last = s.ledger.at(-1)!
+    const noisy = {
+      ...s,
+      ledger: [
+        ...s.ledger.slice(0, -1),
+        {
+          ...last,
+          revenueCents: last.revenueCents + 135_000,
+          depositsCents: 135_000,
+          bookingCostsCents: last.bookingCostsCents + 20_000_000,
+          oneOffCents: 20_000_000,
+          loanInCents: 20_000_000,
+        },
+      ],
+    }
+    expect(runwayWeeks(noisy)).toBe(base)
   })
 
   it('is not changed by moving savings into the company', () => {

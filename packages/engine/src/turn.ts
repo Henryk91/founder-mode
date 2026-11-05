@@ -145,6 +145,7 @@ export function endWeek(
     extras.voucherCents = (extras.voucherCents ?? 0) + (tourism.voucherCents ?? 0)
     extras.bookingRevenueCents += tourism.revenueCents
     extras.bookingCostsCents += tourism.costsCents
+    extras.oneOffCents = (extras.oneOffCents ?? 0) + (tourism.oneOffCents ?? 0)
     extras.voucherRedeemedCents = (extras.voucherRedeemedCents ?? 0) + tourism.voucherRedeemedCents
   } else {
     // 6. Sales: demos, trials, new leads, ghosting. A working salesperson helps.
