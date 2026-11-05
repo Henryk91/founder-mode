@@ -1417,3 +1417,11 @@ and saves without the flag keep their existing behaviour.
 - Engine: `replayWithReports(scenario, save)` replays as `replay` does and returns every week's `WeekReport` too. Reports are never stored in the save.
 - Web store: `pastReports: WeekReport[]` (rebuilt on Continue, appended on End week, empty in a new run) and `pastWeek` with `openPastWeek(week | null)`. Help lists Past weeks, newest first; a week opens its report as the results showed it.
 - `apps/web/src/entryHomes.ts`: `ENTRY_HOMES`, every `ReportEntry` kind with the screen that keeps it (or `past weeks`) and whether a decision depends on it. Typed over every kind.
+
+### Plan 8 (engine 0.16.0)
+
+- `WeekLedger`: optional `oneOffCents` (part of `bookingCostsCents`), `depositsCents` (within `revenueCents`), `earnedCents` (guests served, net of commission).
+- `Booking.policy`: the cancellation policy when it was booked.
+- `PlayerView.spend` (money available now, product start costs, room cost); `LoanView.largestCents`, `borrowedCents`, `offerSchedule`, `offerInterestCents`.
+- `PlanIssue` `cannot_afford`; `ReportEntry` `deposits_refunded`; `cruise_cancelled` gains `refundCents`, `moveCents`; `PostMortemCause.bankTrigger`.
+- Engine exports `weekTotals`, `dropUnaffordable`, `leftForCents`.
