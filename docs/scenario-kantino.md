@@ -261,3 +261,13 @@ Reasons in `docs/decisions.md`, plan 3 steps 1, 2 and 4; the stages in `docs/off
 - **Office stages 3 to 5:** a small office in a back courtyard (1,500 EUR a month, 6,000 to move in, four desks), an office floor (3,800 a month, 15,000, six desks, a week off each hire's search) and a front desk with a meeting room (7,500 a month, 25,000, ten desks, a team of up to eight, coworking operators convert better). Offered by letter: the courtyard once someone works for you or the money has covered two months, the floor when the desks are full or after three profitable months, the front desk after a funding round or at a team of four. Rents are Munich estimates.
 - **Bots:** the careful bot moves only when the desks stop a hire it wants and last month's surplus carries twice the added rent. Measured, an office never pays a solo founder at Kantino's size, so it rarely moves (targets 38 to 40, O1 to O3; O1 restated after review: moving at the right time costs at most 1 point).
 - **The established look:** once money coming in has covered all costs, the founder's living costs included, for eight months in a row, on moving into office stage 4, or once a funding round has closed (target E1).
+
+## 14. What changed in plan 7 (60 weeks and long mode), and why
+
+Spec `docs/plan7-sales-feedback.md`; reasons in `docs/decisions.md`, "Plan 7"; results in `docs/autonomous7/reports/final.md`. Engine 0.15.0.
+
+- **Fair tiredness:** the window counts effective hours, not raw ones, so more hours in a week or every week never find fewer leads. A channel shows a word beside it: fresh, tiring or worn out.
+- **Several channels per market:** the plan holds hours per market and channel. Old saves with one channel per market are converted on load.
+- **Reasons for losses:** every loss has a hidden cause (price, missing feature, quality, no need). About a fifth give a reason unprompted; "Ask why" (1 h, within 4 weeks) gets an answer from about two thirds. Polite markets (the trap) bend the truth more than blunt ones. The post-mortem sets what they said against the real causes.
+- **Long mode:** the market saturation floor is 0.2 (was 0.3), tuned so the careful bot stays in its band.
+- **Past weeks:** earlier weekly reports can be reopened from Help; cancelled customers sit in the Pipeline's lost list.

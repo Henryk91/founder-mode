@@ -2,7 +2,7 @@
 
 Everything planned or discussed that no plan builds yet. When a plan picks an item up, move it to that plan. When a plan leaves something out or opens an issue, add it here.
 
-Last updated: 1 November 2026, completion of plan 6 (price realism, office stages, second sites and boats).
+Last updated: 5 November 2026, completion of plan 7 (channels, reasons for losses, past weeks).
 
 ## 1. Left out of plan 4 (the abroad scenarios)
 
@@ -213,3 +213,14 @@ Plan 6 (`docs/AUTONOMOUS_PLAN_6.md`) built price realism, office stages for the 
 | Leinen los always_manage | Fell from 32.4% to 23.9% without using the second gulet | Not investigated |
 | A third boat or a third site | Out of scope for plan 6 | |
 
+
+## Left open by plan 7
+
+Details in `docs/autonomous7/reports/final.md`.
+
+| Item | Closest result | Options |
+|---|---|---|
+| R1 (asking pays 2 points, Kantino) | +1.2 (±1.6) | A stronger payoff for a named missing feature, or restate the target |
+| Kantino long careful 45.4% | At the limit of 25 to 45% | One more market-floor round |
+| Zollstock price search 47.1% | Above the 45% cap of target 17 | Another referral step, or restate the cap |
+| Timing targets 30 and 37 (Kantino long) | 184 s and 178 s with nine bot processes running | Re-time on an idle machine |

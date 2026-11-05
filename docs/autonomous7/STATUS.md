@@ -1,16 +1,16 @@
 # Autonomous run 7 status
 
 ## Current
-Step: Step 3, measured and tuned; full report of the three games next
-Last commit: Plan 7 step 3: tuning (Zollstock referrals, Kantino long market floor)
-Next action: Full report, one process per game, at this commit: Kantino, Zollstock (standard parts, 10,000 wide seeds, events), Kantino long with parts named incl. team and funding. Then the bookings proof (main, 1,000 seeds).
+Step: done (tag plan7-complete)
+Last commit: Plan 7 complete
+Next action: none. Summary in reports/final.md; open points in docs/BACKLOG.md.
 
 ## Checklist
 - [x] Step 0: set up (tag plan7-baseline)
 - [x] Step 1: channels (tag plan7-channels); playability measured with steps 2 and 2b (CLAUDE.md order of work)
 - [x] Step 2: reasons for losses (tag plan7-reasons)
 - [x] Step 2b: nothing in the weekly report is lost (tag plan7-history)
-- [ ] Step 3: wrap up (tag plan7-complete)
+- [x] Step 3: wrap up (tag plan7-complete)
 
 ## Running jobs and state
 VM run: state, logs and checkpoints in ~/fm-state/ (never /tmp).
@@ -26,10 +26,7 @@ Quick checks, Kantino 60 weeks, main part, 1,000 seeds (test prefix), only the s
 - R1 (asking pays) is only at the limit: +1.2 points (±1.6) at 1,000 seeds after two bot rounds and one formula round. Confirm at the end; options in the final report.
 - Kantino long careful 45.4% (±3.1): at the limit of its 25 to 45% band after two rounds.
 
-## Pending on Henry's Mac
-- Browser tests (Chromium and WebKit) and visual checks: Playwright browsers cannot be installed in this VM, so they skip here.
-
 ## For Henry to review (non-blocking)
-None yet.
+See reports/final.md.
 
 ## Stopped

@@ -186,3 +186,9 @@ Keep the rules from the Kantino content pass: at least a third of events favour 
 Early weeks should feel harder than Kantino, because cold email fails and the player has to go out in person. Once three or four well served customers exist, referrals should make the second half of a winning run noticeably easier than in Kantino. A founder who builds for the trap segment gets friendly interviews, few customers, and no referrals.
 
 This is a back of the envelope expectation. The bot report is the real answer.
+
+## 12. What changed in plan 7, and why
+
+Same engine changes as Kantino (`docs/scenario-kantino.md`, section 14): fair tiredness with words, hours per market and channel, reasons for losses with "Ask why", Past weeks. Reasons in `docs/decisions.md`, "Plan 7".
+
+Tuning: the referral rate is 0.09 (was 0.11), because spreading hours over channels made the careful bot's price search too strong (target 17 caps it at 45%). Results in `docs/autonomous7/reports/final.md`.
