@@ -284,6 +284,11 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         people: entry.people,
       })
     case 'voucher_result':
+      if (entry.sold === 0)
+        return label('results.entry.voucher_result.none', stage, {
+          segment: segment(entry.segmentId),
+          prospects: entry.prospects,
+        })
       return label('results.entry.voucher_result', stage, {
         segment: segment(entry.segmentId),
         sold: entry.sold,

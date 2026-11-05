@@ -136,7 +136,10 @@ function summaries(view: PlayerView, p: WeekPlan, stage: Voice): Record<SectionI
     view.team.candidates.length === 0 &&
     members.length === 0
   const team = view.team.search
-    ? label('plan.sum.searching', stage, { week: view.team.search.readyWeek })
+    ? label('plan.sum.searching', stage, {
+        week: view.team.search.readyWeek,
+        next: view.team.search.readyWeek + 1,
+      })
     : p.searchRole !== null
       ? label('plan.sum.search', stage, { role: label(`team.role.${p.searchRole}`, stage) })
       : view.team.candidates.length > 0

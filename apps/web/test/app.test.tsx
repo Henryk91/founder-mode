@@ -312,8 +312,8 @@ describe('playtest fixes', () => {
     const store = fresh('living')
     store.getState().endWeek()
     const page = html(store)
-    expect(page).toContain('Living costs from your savings')
-    expect(page).toMatch(/Living costs from your savings<\/span><span[^>]*>€675</)
+    expect(page).toContain('Your living costs')
+    expect(page).toMatch(/Your living costs<\/span><span[^>]*>€675</)
     expect(page).toMatch(/Your savings now<\/span><span[^>]*>€13,575</)
   })
 
