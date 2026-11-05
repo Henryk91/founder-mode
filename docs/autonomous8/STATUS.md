@@ -1,9 +1,9 @@
 # Autonomous run 8 status
 
 ## Current
-Step: 0 done; starting step 1.0 (H-01, G-02/F-02, S-03)
+Step: 1 (money bugs, ledger done; P-01 and playability check open)
 Last commit: Plan 8 step 0: set up
-Next action: Reproduce H-01 (double charge of a purchase finishing in the payout week) with a test, then fix.
+Next action: finish the step 1 main-part check (tourism scenarios with --mode all, in scratchpad m1), then P-01 (affordability of plan expenses), then tag plan8-ledger.
 
 ## Checklist
 - [x] Step 0: set up (tag plan8-baseline)
@@ -13,7 +13,8 @@ Next action: Reproduce H-01 (double charge of a purchase finishing in the payout
 - [ ] Step 4: wrap up (tag plan8-complete)
 
 ## Findings
-(none yet)
+H-01 reproduced yes, fixed yes (loan buys only unpaid items). G-02/F-02 reproduced yes (cash below zero with one miss ends as bank called; text said two), fixed yes (post-mortem names trigger). S-03 fixed (13 periods). Ledger totals, forecast, invariant test: done, passing in every scenario/mode.
+P-01 (added by Henry mid-run): not started; next after the step 1 playability check.
 
 ## For Henry to review (non-blocking)
 

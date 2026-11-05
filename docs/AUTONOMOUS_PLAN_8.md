@@ -191,7 +191,13 @@ To the backlog, not this plan: the balance observations (Griffig's break-even in
 
 ### 3.8 Order of work
 
-Findings that cost the player money or end runs wrongly come first, in step 1: H-01, G-02 and F-02, S-03. They change outcomes in every scenario with a loan; check playability there.
+Added by Henry during the run, step 1 with H-01 (same area):
+
+| # | Finding | Expected |
+|---|---|---|
+| P-01 | The player can add an expense they cannot pay (a 200,000 boat bought before an accepted loan has paid out) | Any purchase, one-off cost or other expense chosen in the plan can be added only if the money available now covers it: company cash, plus savings where the game moves them in automatically. Money not yet received (an accepted loan not yet paid out) does not count. Several expenses in one week must fit together, each reducing what is left. An expense that does not fit has its control disabled with the reason and the amount missing ("Needs 200,000; you have 48,000"). Bots follow the same rule. Reproduce first, regression tests, check playability where outcomes change |
+
+Findings that cost the player money or end runs wrongly come first, in step 1: H-01, P-01, G-02 and F-02, S-03. They change outcomes in every scenario with a loan; check playability there.
 
 ## 4. Step 1: money bugs first, then one ledger and a test that it adds up
 
