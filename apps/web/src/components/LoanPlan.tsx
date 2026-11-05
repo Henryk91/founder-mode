@@ -59,7 +59,8 @@ export function LoanPlan() {
   const waiting = l.canApplyFrom !== null && view.week < l.canApplyFrom
   const apply = draft.apply ??
     form ?? {
-      amountCents: l.minCents,
+      // A plan starts empty: its amount is what its items add up to (plan 8, finding 7).
+      amountCents: l.plan ? 0 : l.minCents,
       termMonths: l.termMonths[0]!,
       graceMonths: l.graceMonths[0]!,
     }
@@ -105,8 +106,23 @@ export function LoanPlan() {
               rate: pct(l.offer.rateBp),
               payment: formatEuro(l.offer.paymentCents),
               years: l.offer.termMonths / 12,
-              free: l.offer.graceMonths,
             })}
+            {l.offer.graceMonths > 0 &&
+              ` ${label('loan.offer.free', stage, {
+                free: l.offer.graceMonths,
+                interest: formatEuro(l.offerInterestCents),
+                amount: formatEuro(l.offer.amountCents),
+              })}`}
+            {l.offerSchedule &&
+              ` ${label(
+                l.offer.graceMonths > 0 ? 'loan.offer.schedule' : 'loan.offer.scheduleNoFree',
+                stage,
+                {
+                  payout: l.offerSchedule.payoutWeek,
+                  interest: l.offerSchedule.firstInterestWeek,
+                  repay: l.offerSchedule.firstRepaymentWeek,
+                },
+              )}`}
           </Writing>
           <Choices>
             {chip(
@@ -206,7 +222,7 @@ export function LoanPlan() {
                         apply.graceMonths === m,
                         m === 0
                           ? label('loan.graceNone', stage)
-                          : label('loan.months', stage, { n: m }),
+                          : label('loan.graceMonths', stage, { n: m }),
                         () => change({ ...apply, graceMonths: m }),
                       ),
                     )}
@@ -234,6 +250,21 @@ export function LoanPlan() {
               own: formatEuro(l.ownMoneyCents),
             })}
           </Writing>
+          {apply.amountCents > 0 && (
+            <Writing
+              warn={
+                l.ownMoneyCents <
+                l.ownShare * (l.ownMoneyCents + l.borrowedCents + apply.amountCents)
+              }
+            >
+              {label('loan.ownNow', stage, {
+                share: Math.round(
+                  (100 * l.ownMoneyCents) / (l.ownMoneyCents + l.borrowedCents + apply.amountCents),
+                ),
+              })}
+            </Writing>
+          )}
+          <Writing>{label('loan.largest', stage, { largest: formatEuro(l.largestCents) })}</Writing>
         </>
       )}
       <HintLine term="loan" hint={label('plan.hint.loan', stage)} />
@@ -344,20 +375,32 @@ function PlanForm({
           <Stepper
             stage={stage}
             value={wc}
-            onChange={(v) => change(sum({ workingCapitalCents: v }))}
+            onChange={(v) =>
+              // The bank's steps, or exactly its cap (plan 8, finding 6).
+              change(
+                sum({
+                  workingCapitalCents:
+                    v >= plan.workingCapitalMaxCents
+                      ? plan.workingCapitalMaxCents
+                      : Math.floor(v / l.stepCents) * l.stepCents,
+                }),
+              )
+            }
             what={label('loan.workingCapital', stage)}
             names={{ minus: 'loan.amount.minus', plus: 'loan.amount.plus' }}
             step={l.stepCents}
             formatStep={(c) => formatEuro(c)}
             display={formatEuro(wc)}
-            max={Math.floor(plan.workingCapitalMaxCents / l.stepCents) * l.stepCents}
+            max={plan.workingCapitalMaxCents}
           />
         }
       />
       <Writing warn={apply.amountCents > 0 && apply.amountCents < l.minCents}>
-        {apply.amountCents > 0 && apply.amountCents < l.minCents
-          ? label('loan.planTooSmall', stage, { min: formatEuro(l.minCents) })
-          : label('loan.planTotal', stage, { amount: formatEuro(apply.amountCents) })}
+        {apply.amountCents === 0
+          ? label('loan.planEmpty', stage, { min: formatEuro(l.minCents) })
+          : apply.amountCents < l.minCents
+            ? label('loan.planTooSmall', stage, { min: formatEuro(l.minCents) })
+            : label('loan.planTotal', stage, { amount: formatEuro(apply.amountCents) })}
       </Writing>
     </>
   )

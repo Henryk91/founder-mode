@@ -410,6 +410,41 @@ describe('the bank lends against a plan (plan 2 step 2)', () => {
     expect(after.loan!.bought).toEqual([])
   })
 
+  it('lets working capital reach exactly the cap when it is not a step (plan 8, finding 6)', () => {
+    const s = endWeek(
+      createGame(quiet('hinterhof'), 'plan-wc'),
+      plan(lp(null, { planHours: 30 })),
+    ).state
+    const cap = getView(s).loan!.plan!.workingCapitalMaxCents
+    const step = getView(s).loan!.stepCents
+    // Make the cap fall between steps.
+    const odd = {
+      ...s,
+      company: { ...s.company, fixedCosts: [{ id: 'x', name: 'x', monthlyCents: 96_000 }] },
+    }
+    const oddCap = getView(odd).loan!.plan!.workingCapitalMaxCents
+    expect(oddCap).toBeLessThan(step)
+    expect(oddCap).toBeGreaterThan(0)
+    const ok = (wc: number, over: object = {}) =>
+      validatePlan(
+        odd,
+        plan(
+          lp({
+            termMonths: 84,
+            graceMonths: 6,
+            items: ['fit_out'],
+            workingCapitalCents: wc,
+            amountCents: 6_000_000 + wc,
+            ...over,
+          }),
+        ),
+      ).filter((i) => i.code === 'invalid_loan').length === 0
+    expect(cap).toBeGreaterThan(0)
+    // An off-step amount other than the cap is refused; the cap itself is not.
+    expect(ok(oddCap)).toBe(true)
+    expect(ok(oddCap - 1)).toBe(false)
+  })
+
   it('lets a player add only expenses the money now covers (plan 8, P-01)', () => {
     const base = createGame(quiet('hinterhof'), 'plan-p01')
     const price = base.scenario.bookings!.products.fit_out!.oneOffCents

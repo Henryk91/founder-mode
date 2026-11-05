@@ -514,7 +514,17 @@ const labels = {
   'loan.missedWarn': 'A payment was missed. Miss the next one and the bank calls the loan.',
   'loan.arriving': 'The bank pays out {amount} at the month end.',
   'loan.offer':
-    '{bank} offers {amount} at {rate}% a year over {years} years, {free} months without repayments, then {payment} a month.',
+    '{bank} offers {amount} at {rate}% a year over {years} years, then {payment} a month.',
+  'loan.offer.free':
+    'For the first {free} months you pay interest only, {interest} a month, and the debt stays at {amount}.',
+  'loan.offer.schedule':
+    'Accepted now, it is paid out in week {payout}. The first interest is due in week {interest}, and repayments start in week {repay}.',
+  'loan.offer.scheduleNoFree':
+    'Accepted now, it is paid out in week {payout}, and the first payment is due in week {interest}.',
+  'loan.planEmpty': 'List what the loan is for. The bank lends {min} at least.',
+  'loan.largest':
+    'Today the bank would lend {largest} at most, given your own money and what guests have paid.',
+  'loan.ownNow': 'With this loan, {share}% of the money in the company would be yours.',
   'loan.accept': 'Accept',
   'loan.acceptBooked': 'Accepting',
   'loan.decline': 'Decline',
@@ -532,7 +542,8 @@ const labels = {
   'loan.amount.plus': 'Borrow {step} more',
   'loan.term': 'Pay back over',
   'loan.years': '{n} years',
-  'loan.grace': 'Repayment-free start',
+  'loan.grace': 'Interest only at the start',
+  'loan.graceMonths': 'Interest only, {n} months',
   'loan.graceNone': 'None',
   'loan.months': '{n} months',
   'loan.applyChip': 'Apply ({hours} meeting)',

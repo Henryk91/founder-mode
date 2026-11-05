@@ -1951,6 +1951,10 @@ export type LoanView = {
   /** The bank's own money rule, as it states it. */
   ownShare: number
   ownMoneyCents: number
+  /** Plan 8, F-05: the most the bank would lend now, on its own-money rule and the ceiling. */
+  largestCents: number
+  /** Still owed on running loans. */
+  borrowedCents: number
   minCents: number
   maxCents: number
   stepCents: number
@@ -1960,6 +1964,10 @@ export type LoanView = {
   canApplyFrom: number | null
   application: (LoanTerms & { decideWeek: number }) | null
   offer: (LoanTerms & { rateBp: number; paymentCents: number; week: number }) | null
+  /** Plan 8, finding 23: the dates of an offer accepted this week. */
+  offerSchedule: { payoutWeek: number; firstInterestWeek: number; firstRepaymentWeek: number } | null
+  /** What the offer costs in interest alone, each month. */
+  offerInterestCents: number
   accepted: (LoanTerms & { rateBp: number }) | null
   refusal: { reason: LoanRefusal; week: number } | null
   loans: {

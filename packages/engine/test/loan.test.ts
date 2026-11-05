@@ -178,6 +178,30 @@ describe('the bank loan', () => {
     expect(Math.abs(b)).toBeLessThan(100)
   })
 
+  it('shows the dates of an offer and the largest loan the bank would give (plan 8, 23 and F-05)', () => {
+    let s = createGame(withLoan(), 'sched')
+    s = endWeek(s, plan(lp({ planHours: 20, apply: terms }))).state
+    s = playUntil(s, {}, (x) => x.loan!.offer !== null)
+    const v = getView(s).loan!
+    const wpm = s.scenario.finance.weeksPerMonth
+    expect(v.offerSchedule!.payoutWeek % wpm).toBe(0)
+    expect(v.offerSchedule!.payoutWeek).toBeGreaterThanOrEqual(s.week)
+    expect(v.offerSchedule!.firstInterestWeek).toBe(v.offerSchedule!.payoutWeek + wpm)
+    expect(v.offerSchedule!.firstRepaymentWeek).toBe(
+      v.offerSchedule!.payoutWeek + wpm * (terms.graceMonths + 1),
+    )
+    expect(v.offerInterestCents).toBe(
+      Math.round((terms.amountCents * v.offer!.rateBp) / 10_000 / 13),
+    )
+    // The largest loan passes the bank's own rules; one cent more does not.
+    const big = (cents: number) => ({ ...terms, amountCents: cents })
+    const fresh = createGame(withLoan(), 'largest')
+    const most = getView(fresh).loan!.largestCents
+    expect(most).toBeGreaterThan(0)
+    expect(judgeLoan(fresh, big(most))).toBeNull()
+    expect(judgeLoan(fresh, big(most + 100))).not.toBeNull()
+  })
+
   it('misses a payment the company and savings cannot meet, and the second ends the run', () => {
     // A quiet inbox, so only the loan payment is in question.
     const quiet = withLoan()

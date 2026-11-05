@@ -213,7 +213,10 @@ export function loanValid(state: GameState, plan: WeekPlan): boolean {
       if (!Number.isInteger(rooms) || rooms < 0 || rooms > roomsToFinance(state)) return false
       if (t.stage !== undefined && !canFinanceStage(state, t.stage)) return false
       const wc = t.workingCapitalCents ?? 0
-      if (!Number.isInteger(wc) || wc < 0 || wc % cfg.stepCents !== 0) return false
+      // Plan 8, finding 6: in the bank's steps, or exactly its cap when the cap is not a step.
+      const cap = workingCapitalMaxCents(state)
+      if (!Number.isInteger(wc) || wc < 0) return false
+      if (wc % cfg.stepCents !== 0 && wc !== cap) return false
       if (t.amountCents !== planItemsCents(state, t) + wc) return false
     } else if (t.amountCents % cfg.stepCents !== 0) return false
     if (!cfg.termMonths.includes(t.termMonths) || !cfg.graceMonths.includes(t.graceMonths)) {
@@ -473,6 +476,20 @@ export const loanMissed = (state: GameState) =>
 export const loanCalled = (state: GameState) =>
   (state.loan?.loans ?? []).some((l) => l.status === 'called')
 
+/**
+ * Plan 8, finding 23: when a loan accepted now pays out, when its first interest is due, and
+ * when repayments of the capital start. Payments fall on month ends, a month after the payout.
+ */
+export function loanSchedule(state: GameState, graceMonths: number) {
+  const wpm = state.scenario.finance.weeksPerMonth
+  const payoutWeek = Math.ceil(state.week / wpm) * wpm
+  return {
+    payoutWeek,
+    firstInterestWeek: payoutWeek + wpm,
+    firstRepaymentWeek: payoutWeek + wpm * (graceMonths + 1),
+  }
+}
+
 /** What the player sees of the loan: the plan, the application, the offer, the loans. */
 export function loanView(state: GameState): LoanView | null {
   const cfg = loanConfig(state)
@@ -510,6 +527,17 @@ export function loanView(state: GameState): LoanView | null {
     meetingHours: cfg.meetingHours,
     ownShare: cfg.ownShare,
     ownMoneyCents: ownMoneyCents(state),
+    // Plan 8, F-05: what the bank's rules allow now, so a rejection is not a surprise.
+    largestCents: Math.max(
+      0,
+      Math.min(
+        cfg.maxCents,
+        Math.floor((ownMoneyCents(state) * (1 - cfg.ownShare)) / cfg.ownShare) -
+          borrowedCents(state),
+        ceilingCents(state) - borrowedCents(state),
+      ),
+    ),
+    borrowedCents: borrowedCents(state),
     minCents: cfg.minCents,
     maxCents: cfg.maxCents,
     stepCents: cfg.stepCents,
@@ -518,6 +546,8 @@ export function loanView(state: GameState): LoanView | null {
     canApplyFrom: l.refusal !== null ? l.refusal.week + cfg.retryWeeks : null,
     application: l.application,
     offer: l.offer,
+    offerSchedule: l.offer ? loanSchedule(state, l.offer.graceMonths) : null,
+    offerInterestCents: l.offer ? monthlyInterest(l.offer.amountCents, l.offer.rateBp) : 0,
     accepted: l.accepted,
     refusal: l.refusal,
     loans: l.loans.map((x) => {
