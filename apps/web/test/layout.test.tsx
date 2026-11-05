@@ -256,7 +256,9 @@ describe('plan tab', () => {
     store.getState().setBuild('basic_ordering', 10)
     store.getState().setOutreach('coworking', 'phone', 6)
     // The bar carries no text of its own, so it says in words what it shows.
-    expect(html(store)).toMatch(/aria-label="Sales 6 h, Building 10 h, Learning 4 h, free \d+ h"/)
+    expect(html(store)).toMatch(
+      /aria-label="Sales 6 h, Building 10 h, Learning 4 h, free \d+ h, A normal week is \d+ h, at most \d+ h"/,
+    )
   })
 
   it('repeats last week on one tap, without one-off decisions', () => {

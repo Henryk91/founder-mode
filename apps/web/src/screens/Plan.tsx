@@ -394,7 +394,8 @@ function PlanHeader({ children }: { children?: React.ReactNode }) {
     ...ACTIVITIES.filter(({ id }) => byActivity[id] > 0).map(
       ({ id, key }) => `${label(key, stage)} ${label('unit.hours', stage, { n: byActivity[id] })}`,
     ),
-    `${label('plan.act.free', stage)} ${label('unit.hours', stage, { n: Math.max(0, founder.maxHoursPerWeek - planned) })}`,
+    `${label('plan.act.free', stage)} ${label('unit.hours', stage, { n: Math.max(0, base - planned) })}`,
+    label('plan.hours.limits', stage, { base, max: founder.maxHoursPerWeek }),
   ].join(', ')
 
   return (

@@ -358,6 +358,7 @@ const labels = {
   'note.dismiss': 'Dismiss',
   'plan.hours': '{planned} of {base} h',
   'plan.hours.planned': ' planned',
+  'plan.hours.limits': 'A normal week is {base} h, at most {max} h',
   'plan.band': '{hours} · {free} free',
   'plan.more': 'more',
   'plan.hint.talk': '{hours} each, answers at week end.',
