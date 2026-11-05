@@ -40,6 +40,7 @@ import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type Voice, voiceOf } from '../labels'
 import type { PlanSection as SectionId } from '../store'
 import { HoursBarOutOfView } from '../layout/hoursBar'
+import { leftFor, needsText } from '../spend'
 import { useGame } from '../useGame'
 import styles from '../components/ui.module.css'
 import plan from './Plan.module.css'
@@ -514,6 +515,7 @@ function TalkBody({ free }: { free: number }) {
 function TestBody({ free }: { free: number }) {
   const view = useGame((s) => s.view)!
   const landing = useGame((s) => s.plan.landing)
+  const plan = useGame((s) => s.plan)
   const presales = useGame((s) => s.plan.presales)
   const setLanding = useGame((s) => s.setLanding)
   const setPresales = useGame((s) => s.setPresales)
@@ -530,23 +532,30 @@ function TestBody({ free }: { free: number }) {
         const budget = landing[seg.id] ?? 0
         // Long mode allows a few tests per market; the 60 week game has no limit (null).
         const used = seg.landingTestsLeft !== null && seg.landingTestsLeft <= 0
+        const cheapest = costs.landingBudgetsCents[0] ?? 0
+        const have = leftFor(view, plan, `landing:${seg.id}`)
+        const brokeNote = budget === 0 && cheapest > have ? needsText(stage, cheapest, have) : null
+        const leftNote =
+          seg.landingTestsLeft === null
+            ? undefined
+            : count('plan.landing.left', stage, seg.landingTestsLeft)
         return (
           <Market
             key={seg.id}
             label={seg.name}
-            note={
-              seg.landingTestsLeft === null
-                ? undefined
-                : count('plan.landing.left', stage, seg.landingTestsLeft)
-            }
+            note={[leftNote, brokeNote].filter(Boolean).join(' ') || undefined}
             choices={choices.map((cents) => {
               const on = budget === cents
+              const short = !on && cents > leftFor(view, plan, `landing:${seg.id}`)
               return (
                 <button
                   key={cents}
                   type="button"
                   aria-pressed={on}
-                  disabled={!on && cents > 0 && budget === 0 && (used || free < costs.landingHours)}
+                  disabled={
+                    (!on && cents > 0 && budget === 0 && (used || free < costs.landingHours)) ||
+                    (cents > 0 && short)
+                  }
                   className={`${styles.chip} ${on ? styles.chipOn : ''}`}
                   onClick={() => setLanding(seg.id, cents)}
                 >
@@ -623,6 +632,7 @@ function productNote(view: PlayerView, id: string, stage: Voice): string | undef
 function BuildBody({ free }: { free: number }) {
   const view = useGame((s) => s.view)!
   const build = useGame((s) => s.plan.build)
+  const plan = useGame((s) => s.plan)
   const bugFixHours = useGame((s) => s.plan.bugFixHours)
   const setBuild = useGame((s) => s.setBuild)
   const setBugFixHours = useGame((s) => s.setBugFixHours)
@@ -659,11 +669,16 @@ function BuildBody({ free }: { free: number }) {
             f.readyWeek !== null ||
             value > 0 ||
             space.used + startingSpaces + (space.uses[f.id] ?? 0) <= space.max
+          // Plan 8, P-01: a product that costs money to start needs that money now.
+          const price = view.spend.startCents[f.id] ?? 0
+          const left = leftFor(view, plan, `build:${f.id}`)
+          const broke = price > 0 && value === 0 && left < price
+          const base = fits ? productNote(view, f.id, stage) : label('leisure.spaceFull', stage)
           return (
             <FeatureRow
               key={f.id}
               name={f.name}
-              note={fits ? productNote(view, f.id, stage) : label('leisure.spaceFull', stage)}
+              note={broke ? [base, needsText(stage, price, left)].filter(Boolean).join('. ') : base}
               progressHours={f.progressHours}
               buildHours={f.buildHours}
               progressText={label('plan.progress', stage, {
@@ -682,7 +697,7 @@ function BuildBody({ free }: { free: number }) {
                 display={plannedText(value, stage)}
                 hoursValue
                 step={5}
-                max={fits ? Math.min(f.remainingHours, value + free) : value}
+                max={fits && !broke ? Math.min(f.remainingHours, value + free) : value}
                 onChange={(n) => setBuild(f.id, n)}
               />
             </FeatureRow>

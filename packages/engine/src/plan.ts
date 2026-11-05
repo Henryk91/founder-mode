@@ -1,3 +1,4 @@
+import { firstUnaffordable, spendInfo } from './systems/afford'
 import { officePlanValid } from './systems/office'
 import { waitsForCompany } from './systems/assets'
 import { landingTestsUsed, presaleBatchesUsed } from './systems/experiments'
@@ -187,6 +188,17 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
     (!Number.isInteger(plan.priceCentsPerMonth) || plan.priceCentsPerMonth <= 0)
   ) {
     issues.push({ code: 'invalid_price' })
+  }
+
+  // Plan 8, P-01: expenses must fit the money available now, each reducing what is left.
+  const unaffordable = firstUnaffordable(spendInfo(state), plan)
+  if (unaffordable) {
+    issues.push({
+      code: 'cannot_afford',
+      key: unaffordable.key,
+      needsCents: unaffordable.needsCents,
+      haveCents: unaffordable.haveCents,
+    })
   }
 
   const { landing, presale } = state.scenario.experiments

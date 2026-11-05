@@ -1265,6 +1265,8 @@ export type PlanIssue =
   | { code: 'invalid_funding' }
   | { code: 'invalid_bookings' }
   | { code: 'invalid_loan' }
+  /** Plan 8, P-01: an expense the money now cannot cover together with the ones before it. */
+  | { code: 'cannot_afford'; key: string; needsCents: number; haveCents: number }
   /** Plan 3: notice cannot be given now (no stage to leave, a move or notice under way). */
   | { code: 'invalid_office' }
   /** Long mode: the market has had every landing test allowed. */
@@ -1274,6 +1276,13 @@ export type PlanIssue =
 // What the UI receives. Contains no hidden values.
 
 export type PlayerView = {
+  /** Plan 8, P-01: the money expenses can be paid from now, and what starting each product costs. */
+  spend: {
+    availableCents: number
+    startCents: Record<string, number>
+    roomCents: number
+    roomsPaid: number
+  }
   scenarioId: string
   scenarioName: string
   /** `standard` (60 weeks) or `long` (104 weeks). */

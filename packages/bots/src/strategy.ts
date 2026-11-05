@@ -1,5 +1,6 @@
 import type { GameMode, Scenario } from '@founder-mode/content'
 import {
+  dropUnaffordable,
   emptyPlan,
   outreachLines,
   type ChannelId,
@@ -355,6 +356,29 @@ export class ChannelLog {
       }
     }
     return best
+  }
+}
+
+/**
+ * Plan 8, P-01: bots follow the player's rule. An expense the money now cannot cover (together
+ * with the ones before it in the plan) is dropped from the plan, as the plan screen would not let
+ * a player add it.
+ */
+export function followsMoney(strategy: Strategy): Strategy {
+  return {
+    ...strategy,
+    create(scenario, seed) {
+      const player = strategy.create(scenario, seed)
+      return new Proxy(player, {
+        get(target, key) {
+          if (key === 'plan') {
+            return (view: PlayerView) => dropUnaffordable(view.spend, target.plan(view))
+          }
+          const value = Reflect.get(target, key, target)
+          return typeof value === 'function' ? value.bind(target) : value
+        },
+      })
+    },
   }
 }
 

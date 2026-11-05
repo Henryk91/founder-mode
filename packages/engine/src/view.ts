@@ -44,6 +44,7 @@ import { selectFounderNote } from './systems/guidance'
 import { maxBugFixHours } from './systems/product'
 import { canBookDemo, canFollowUp, marketTiredness } from './systems/sales'
 import { lossViews } from './systems/losses'
+import { spendView } from './systems/afford'
 import { outreachLines } from './channels'
 import type {
   ChannelId,
@@ -67,6 +68,7 @@ export function getView(state: GameState): PlayerView {
   return {
     scenarioId: state.scenarioId,
     scenarioName: scenario.name,
+    spend: spendView(state),
     mode: scenario.mode ?? 'standard',
     seed: state.seed,
     week: state.week,

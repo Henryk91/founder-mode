@@ -1,6 +1,6 @@
 import { loadScenario, type Scenario } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
-import { createGame, endWeek, getView, validatePlan } from '../src/index'
+import { createGame, dropUnaffordable, endWeek, getView, validatePlan } from '../src/index'
 import { profitableOverMonths } from '../src/systems/finance'
 import { hoursByActivity } from '../src/systems/founder'
 import type { BookingsPlan, GameState, WeekPlan } from '../src/types'
@@ -408,6 +408,68 @@ describe('the bank lends against a plan (plan 2 step 2)', () => {
     const shipWeek = after.product.features.find((f) => f.id === 'fit_out')!.shippedWeek!
     expect(after.ledger.find((l) => l.week === shipWeek)!.bookingCostsCents).toBeLessThan(6_000_000)
     expect(after.loan!.bought).toEqual([])
+  })
+
+  it('lets a player add only expenses the money now covers (plan 8, P-01)', () => {
+    const base = createGame(quiet('hinterhof'), 'plan-p01')
+    const price = base.scenario.bookings!.products.fit_out!.oneOffCents
+    expect(price).toBeGreaterThan(base.company.cashCents + base.founder.savingsCents)
+    // An accepted loan that has not paid out is not money yet.
+    const accepted = {
+      ...base,
+      loan: {
+        ...base.loan!,
+        accepted: {
+          amountCents: 7_000_000,
+          termMonths: 84,
+          graceMonths: 6,
+          rateBp: 500,
+          items: ['fit_out'],
+        },
+      },
+    }
+    const issues = validatePlan(accepted, plan({ build: { fit_out: 5 } }))
+    expect(issues).toContainEqual(
+      expect.objectContaining({ code: 'cannot_afford', key: 'build:fit_out', needsCents: price }),
+    )
+    // The view says what is available and what starting costs.
+    expect(getView(accepted).spend.availableCents).toBe(
+      base.company.cashCents + base.founder.savingsCents,
+    )
+    expect(getView(accepted).spend.startCents.fit_out).toBe(price)
+    // With the money in hand it fits; a second expense then has to fit what is left.
+    const rich = {
+      ...base,
+      company: { ...base.company, cashCents: price + 5_000 },
+      founder: { ...base.founder, savingsCents: 0 },
+    }
+    expect(validatePlan(rich, plan({ build: { fit_out: 5 } }))).toEqual([])
+    const budget = rich.scenario.experiments.landing.budgetsCents[0]!
+    expect(budget).toBeGreaterThan(5_000)
+    expect(
+      validatePlan(
+        rich,
+        plan({
+          build: { fit_out: 5 },
+          landing: { [Object.keys(rich.hidden.segments)[0]!]: budget },
+        }),
+      ),
+    ).toContainEqual(expect.objectContaining({ code: 'cannot_afford' }))
+    // Once the loan has paid for it, the item costs nothing more to start.
+    const paid = {
+      ...rich,
+      company: { ...rich.company, cashCents: 0 },
+      founder: { ...rich.founder, savingsCents: 0 },
+      loan: { ...base.loan!, bought: ['fit_out'] },
+    }
+    expect(validatePlan(paid, plan({ build: { fit_out: 5 } }))).toEqual([])
+    // Bots follow the same rule.
+    expect(
+      validatePlan(
+        accepted,
+        dropUnaffordable(getView(accepted).spend, plan({ build: { fit_out: 5 } })),
+      ),
+    ).toEqual([])
   })
 
   it('never buys an item twice when it is finished before the money arrives (plan 8, H-01)', () => {

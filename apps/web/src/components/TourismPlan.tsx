@@ -1,6 +1,7 @@
 import type { BookingsPlan, BookingsView, PlayerView, SeasonPrices } from '@founder-mode/engine'
 import { formatEuro } from '../format'
 import { count, label, type Voice, voiceOf } from '../labels'
+import { leftFor, needsText } from '../spend'
 import { noBookings } from '../store'
 import { useGame } from '../useGame'
 import { Choices, HintLine, Market, SubHeading, Writing } from './Ruled'
@@ -739,10 +740,15 @@ export function RenovationPlan() {
   const view = useGame((s) => s.view)
   const draft = useGame((s) => s.plan.bookings) ?? noBookings()
   const set = useGame((s) => s.setBookings)
+  const plan = useGame((s) => s.plan)
   const r = view?.bookings?.renovation
   if (!view || !r) return null
   const stage = voiceOf(view)
   const n = draft.renovate ?? 0
+  // Plan 8, P-01: each room costs money now; rooms a loan bought are paid already.
+  const left = leftFor(view, plan, 'rooms')
+  const affordable =
+    r.centsPerRoom > 0 ? Math.floor(left / r.centsPerRoom) + view.spend.roomsPaid : r.canStart
   const planned = r.canStart > 0 || r.renovated > 0 || r.inProgress.length > 0
   return (
     <>
@@ -778,10 +784,20 @@ export function RenovationPlan() {
                     ? label('tour.reno.none', stage)
                     : count('tour.reno.rooms', stage, n, { amount: formatEuro(n * r.centsPerRoom) })
                 }
-                max={r.canStart}
+                max={Math.min(r.canStart, Math.max(n, affordable))}
               />
             }
           />
+          {affordable < r.canStart && (
+            <Writing>
+              {needsText(
+                stage,
+                (Math.max(n, affordable) + 1) * r.centsPerRoom -
+                  view.spend.roomsPaid * r.centsPerRoom,
+                left,
+              )}
+            </Writing>
+          )}
         </>
       )}
     </>

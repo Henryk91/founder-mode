@@ -15,7 +15,7 @@ import {
   type HireEconomics,
   type WeekReport,
 } from '@founder-mode/engine'
-import type { Strategy } from './strategy'
+import { followsMoney, type Strategy } from './strategy'
 
 /** Week at which the playtest numbers are compared. */
 export const CHECK_WEEK = 15
@@ -365,7 +365,8 @@ function secondResults(state: GameState): Pick<RunResult, 'secondSite' | 'second
   }
 }
 
-export function runGame(real: Scenario, strategy: Strategy, seed: string): RunResult {
+export function runGame(real: Scenario, played: Strategy, seed: string): RunResult {
+  const strategy = followsMoney(played)
   const scenario = strategy.adapt ? strategy.adapt(real) : real
   let state = createGame(scenario, seed)
   const player = strategy.create(scenario, seed)

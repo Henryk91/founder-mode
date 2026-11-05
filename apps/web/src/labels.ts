@@ -238,6 +238,7 @@ const labels = {
   'results.cashNow': 'Company cash now',
   'results.in': 'Company received',
   'results.out': 'Company paid',
+  'afford.needs': 'Needs {needs}; you have {have}.',
   'results.in.customers': 'From customers',
   'results.in.other': 'Other money in',
   'results.in.financing': 'Loans and investment',

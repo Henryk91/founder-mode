@@ -1,4 +1,4 @@
-import type { Strategy } from '../strategy'
+import { followsMoney, type Strategy } from '../strategy'
 import { buildOnly } from './buildOnly'
 import { playtest } from './playtest'
 import { random } from './random'
@@ -38,4 +38,4 @@ export const STRATEGIES: Strategy[] = [
   ...['raise_on_traction', 'raise_early', 'raise_always', 'raise_late'].map(fundingVariant),
   // Tourism's bookings model only.
   ...TOURISM_STRATEGIES,
-]
+].map(followsMoney)
