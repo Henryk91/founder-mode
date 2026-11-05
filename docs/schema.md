@@ -53,6 +53,7 @@ type GameState = {
   customers: Customer[]                      // every customer ever won, oldest first
   ledger: WeekLedger[]                       // one entry per resolved week
   actionLog: LoggedAction[]
+  outreachWindow?: { week; hours: Record<'segment/channel', number> }[]   // plan 7
   eventLog: LoggedEvent[]
 }
 ```
@@ -237,7 +238,7 @@ type WeekPlan = {
   interviews: Record<SegmentId, number>   // interviews per segment, 2 h each
   build: Record<FeatureId, number>        // build hours per feature
   bugFixHours: number                     // fixHoursPerBug hours remove one bug
-  outreach: Record<SegmentId, { channel: ChannelId; hours: number }>   // one channel per segment
+  outreach: Record<SegmentId, Partial<Record<ChannelId, number>>>   // hours per segment and channel (plan 7)
   demos: string[]                         // lead ids in stage 'demo', demoHours each
   restHours: number                       // counts as planned hours
   transferToCompanyCents: number          // from personal savings
@@ -373,7 +374,8 @@ type SegmentView = {
   name: string
   description: string
   interviews: InterviewView[]     // sample size = interviews.length
-  lastChannel: ChannelId | null   // outreach channel of the latest plan that had one for this segment
+  lastChannel: ChannelId | null   // channel with the most hours in the latest plan with outreach here
+  channelTiredness: Partial<Record<ChannelId, ChannelTiredness>>   // plan 7: fresh, tiring or worn_out
 }
 
 type InterviewView = {
@@ -1393,3 +1395,25 @@ and saves without the flag keep their existing behaviour.
 - Rules: a second site is open while its role has a working contract or the founder works there; its capacity adds to the products' (a climbing hall's: people at once); demand is multiplied by `1 - cannibalisation + reach x reachBySegment`; reviews drop by `reviewsWithoutFounder` times the share of capacity at the site without the founder. Asset capacity is the sum of the units' shares; served units fill the first unit before the second.
 - View: `OfficeView.secondSite: SecondSiteView | null` (name, open, founderAt, needsRole, capacity, share, money in over four weeks per site, weeks open and closed). `AssetView.secondOf`, `revenueCents`. `BookingsView.products[].wear` (uses, life, worn, replacement cost). `ReportEntry` `gear_worn`, `gear_replaced`.
 - Post-mortem: `PostMortem.secondSite?: SecondSiteEconomics` (the record, extra rent, fit-out, and the drawn cannibalisation and reach), `PostMortem.gear?: GearLine[]`; `AssetEconomics.secondOf`, `revenueCents`.
+
+### Plan 7 step 1: channels (engine 0.15.0, the subscription games only)
+
+- Plan: `WeekPlan.outreach: Record<SegmentId, OutreachHours>` with `OutreachHours = Partial<Record<ChannelId, number>>`, any channels of a market in one week. `outreachLines(plan, segmentOrder)` lists them (markets in scenario order, channels in `CHANNEL_ORDER`), `outreachTotal(plan)` adds them up (`channels.ts`). `PlanIssue` `invalid_number` names `outreach.<segment>.<channel>`.
+- Saves: `migrateSave(save)` turns the old `{ channel, hours }` per market into `{ [channel]: hours }`; `replay` calls it first. A save from engine 0.14.0 is still refused by `saveProblem` (outcomes changed).
+- Tiredness: `GameState.outreachWindow` holds the founder's outreach hours per `segment/channel` as they counted for finding leads, for the weeks still inside the saturation window. `recentOutreach` reads it, so an hour that counted at `saturatedFactor` uses the window up only by that fraction: more hours never find fewer leads, in a week or at a steady pace. The salesperson's and freelancer's outreach counts against the founder's hours of the same week, as before, and is not kept in the window.
+- View: `SegmentView.channelTiredness` per channel for the coming week, from the window: `fresh` (under half of `saturationHours x saturationWeeks` used), `tiring` (half to all), `worn_out` (all of it). Empty in the bookings games. `lastChannel` is the channel with the most hours in the latest plan with outreach in the market.
+
+### Plan 7 step 2: reasons for losses (engine 0.15.0, on where `sales.losses` is set: Kantino and Zollstock, both modes)
+
+- Content: `SalesConfig.losses?: { unpromptedShare, answerShare, askHours, askWeeks, honesty: { min, max } }`; `Scenario.lossReasons?: Record<SegmentId, Record<LossReasonKind, string[]>>` from `messages/loss_reasons.yaml` (3 to 5 texts per segment and kind; `{need}` names a missing feature); `Feature.missing?` (the feature in a customer's words). `LossReasonKind`: `price`, `missing_feature`, `quality`, `no_need` (real causes) and `budget_freeze`, `bad_timing`, `next_year` (softer reasons).
+- State: `GameState.losses?: Loss[]` (`id`, `kind` lead or customer, `refId`, `name`, `segmentId`, `week`, `tag` (the lead's `LostReason`, or `cancelled` / `stopped_paying`), `paidWeeks`, `askable`, `stated: StatedReason | null`, `askedWeek`, `unanswered`). Hidden: `hidden.lossCauses?: Record<lossId, { cause: LossCause, featureId }>`, `LossCause` = the four real causes plus `silent` and `stopped_paying`.
+- Rules (`systems/losses.ts`, `recordLosses` after churn): every lead lost and customer who left this week gets a loss. Cause: a trial's no over the price and a price churn are `price`; silence is `silent`; a refund is the missing must have; a decline is drawn by the fit's shortfalls (must haves missing, quality below the start, pain below the least pain of the most pained role), and when none falls short by the price ratio against the pain left; a churn by the parts of its chance (base, misfit split by shortfalls, bugs). With `unpromptedShare` they say something at once. `WeekPlan.askWhy?: string[]` (`askHours` each, selling hours) asks within `askWeeks` weeks; with `answerShare` the answer is there the next week, else `unanswered`. A stated reason is the cause with chance `honesty.max - (max - min) x politeness`, else a soft reason; a missing feature is named. Every draw uses its own stream (`seed|loss|id`, `seed|ask|id`), so the rest of the game does not move. `PlanIssue` `invalid_ask`.
+- Report: `lead_update`, `customer_churned` and `invoice_written_off` (service stopped) carry `lossId`.
+- View: `PlayerView.losses: LossView[]` newest first (`segmentName`, `canAsk`, `askUntilWeek`), never the cause. `costs.askWhyHours` (null when off) and `costs.askWhyWeeks`.
+- Post-mortem: `PostMortem.lossReasons?: LossReasonsLine[]` per market: `losses`, `unsaid`, `said` (kind, count, real causes with counts) and `unsaidReal`.
+
+### Plan 7 step 2b: nothing in the weekly report is lost (UI only)
+
+- Engine: `replayWithReports(scenario, save)` replays as `replay` does and returns every week's `WeekReport` too. Reports are never stored in the save.
+- Web store: `pastReports: WeekReport[]` (rebuilt on Continue, appended on End week, empty in a new run) and `pastWeek` with `openPastWeek(week | null)`. Help lists Past weeks, newest first; a week opens its report as the results showed it.
+- `apps/web/src/entryHomes.ts`: `ENTRY_HOMES`, every `ReportEntry` kind with the screen that keeps it (or `past weeks`) and whether a decision depends on it. Typed over every kind.

@@ -35,6 +35,8 @@ describe('bots', () => {
       'price_aware',
       'overworker',
       'playtest',
+      'one_channel',
+      'never_ask',
       'validate_then_build_solo',
       'validate_then_build_savings_hire',
       'validate_then_build_part_time',
@@ -98,7 +100,26 @@ describe('bots', () => {
     const input = { engineVersion: 'x', runs: 2, seedPrefix: 'r', strategies }
     const targets = evaluateTargets(input)
     expect(targets.map((t) => t.id)).toEqual([
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      'M2',
+      'R1',
     ])
     // Without the extra runs, the targets that need them are not measured.
     expect(targets.find((t) => t.id === 10)!.value).toBe('-')

@@ -1,7 +1,9 @@
 import { currentStage } from './office'
 import type { Rng } from '../rng'
+import { outreachLines } from '../channels'
 import type {
   ChannelId,
+  ChannelTiredness,
   Customer,
   GameState,
   Lead,
@@ -145,19 +147,51 @@ export function addLeads(
 
 /**
  * The founder's outreach hours per `segment/channel` in the weeks before this one that are still
- * inside the saturation window.
+ * inside the saturation window, as they counted for finding leads (plan 7: hours that counted at
+ * a fraction use up the window only by that fraction, so more hours never find fewer leads).
  */
 export function recentOutreach(state: GameState): Map<string, number> {
   const from = state.week - state.scenario.sales.saturationWeeks + 1
   const spent = new Map<string, number>()
-  for (const a of state.actionLog) {
-    if (a.type !== 'endWeek' || a.week < from) continue
-    for (const [seg, out] of Object.entries(a.plan.outreach)) {
-      const key = `${seg}/${out.channel}`
-      spent.set(key, (spent.get(key) ?? 0) + out.hours)
+  for (const w of state.outreachWindow ?? []) {
+    if (w.week < from || w.week >= state.week) continue
+    for (const [key, hours] of Object.entries(w.hours)) {
+      spent.set(key, (spent.get(key) ?? 0) + hours)
     }
   }
   return spent
+}
+
+/**
+ * How tired a market is of a channel for the coming week (plan 7, spec 1.3), from the founder's
+ * outreach there in the window: under half the budget used is fresh, up to all of it tiring, and
+ * at or over it worn out (every extra hour counts at a fraction).
+ */
+export function channelTiredness(
+  state: GameState,
+  segmentId: SegmentId,
+  channel: ChannelId,
+): ChannelTiredness {
+  return tirednessOf(recentOutreach(state).get(`${segmentId}/${channel}`) ?? 0, state)
+}
+
+function tirednessOf(used: number, state: GameState): ChannelTiredness {
+  const limit = state.scenario.sales.saturationHours * state.scenario.sales.saturationWeeks
+  if (used < limit / 2) return 'fresh'
+  if (used < limit) return 'tiring'
+  return 'worn_out'
+}
+
+/** Every channel's tiredness in one market, in channel order. */
+export function marketTiredness(
+  state: GameState,
+  segmentId: SegmentId,
+  channels: readonly ChannelId[],
+): Partial<Record<ChannelId, ChannelTiredness>> {
+  const used = recentOutreach(state)
+  return Object.fromEntries(
+    channels.map((c) => [c, tirednessOf(used.get(`${segmentId}/${c}`) ?? 0, state)]),
+  )
 }
 
 /**
@@ -386,11 +420,13 @@ export function applySales(
     selling: number
     foundBy?: string
   }[] = []
-  for (const seg of state.scenario.segments) {
-    const out = plan.outreach[seg.id]
-    if (out && out.hours > 0) {
-      items.push({ segmentId: seg.id, ...out, source: 'outreach', selling: sellingAtStart })
-    }
+  // Plan 7: any number of channels per market, markets in scenario order, channels in order.
+  for (const line of outreachLines(
+    plan,
+    state.scenario.segments.map((s) => s.id),
+  )) {
+    if (!state.scenario.segments.some((s) => s.id === line.segmentId)) continue
+    items.push({ ...line, source: 'outreach', selling: sellingAtStart })
   }
   for (const t of team) {
     if (!t.outreach) continue
@@ -410,9 +446,11 @@ export function applySales(
       selling: freelance.selling,
     })
   }
-  // Hours already spent per market and channel in the saturation window, this week's included.
+  // Hours already counted per market and channel in the saturation window, this week's included.
   const spent = recentOutreach(state)
   const limit = cfg.saturationHours * cfg.saturationWeeks
+  // The founder's hours as they counted this week, for the window of the weeks to come.
+  const counted: Record<string, number> = {}
   for (const item of items) {
     const response =
       (state.hidden.segments[item.segmentId]?.channelResponse[item.channel] ?? 0) *
@@ -420,8 +458,9 @@ export function applySales(
       marketFactor(state, item.segmentId)
     const key = `${item.segmentId}/${item.channel}`
     const before = spent.get(key) ?? 0
-    spent.set(key, before + item.hours)
     const hours = effectiveHours(before, item.hours, limit, cfg.saturatedFactor)
+    spent.set(key, before + hours)
+    if (item.source === 'outreach') counted[key] = (counted[key] ?? 0) + hours
     const mean = hours * response * (cfg.sellingBase + item.selling) * tired
     const count = randomRound(mean, rng)
     odds.count('leads', item.segmentId, mean, count)
@@ -449,6 +488,12 @@ export function applySales(
       wornOut: hours < item.hours,
     })
   }
+  // Keep only the weeks that still count next week.
+  const keepFrom = week - cfg.saturationWeeks + 2
+  const outreachWindow = [
+    ...(state.outreachWindow ?? []).filter((w) => w.week >= keepFrom),
+    ...(Object.keys(counted).length > 0 ? [{ week, hours: counted }] : []),
+  ]
   return {
     state: {
       ...state,
@@ -456,6 +501,7 @@ export function applySales(
       leads,
       customers,
       eventLog: [...state.eventLog, ...odds.events()],
+      outreachWindow,
     },
     entries,
     refundsCents,

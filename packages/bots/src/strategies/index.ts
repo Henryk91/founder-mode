@@ -5,6 +5,8 @@ import { random } from './random'
 import { sellFirst } from './sellFirst'
 import { TOURISM_STRATEGIES } from './tourism'
 import {
+  neverAsk,
+  oneChannel,
   overworker,
   presaleMax,
   priceAware,
@@ -27,6 +29,9 @@ export const STRATEGIES: Strategy[] = [
   priceAware,
   overworker,
   playtest,
+  // Plan 7, 60 week games only.
+  oneChannel,
+  neverAsk,
   // Long mode only.
   ...TEAM_VARIANTS.map((v) => teamVariant(v.id)),
   // Long mode with funding: the four raising bots (the update policies run in the funding part).

@@ -167,7 +167,10 @@ describe('invoices', () => {
       amountCents: 30_000,
       name: 'Kunde customer_1',
       serviceStopped: true,
+      // Plan 7: the customer who stopped paying is in the lost list.
+      lossId: 'loss_1',
     })
+    expect(getView(r.state).losses[0]).toMatchObject({ tag: 'stopped_paying', askable: false })
     expect(getView(r.state).invoices[0]!.status).toBe('written_off')
     expect(getView(r.state).receivablesCents).toBe(0)
   })

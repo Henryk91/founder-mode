@@ -5,6 +5,7 @@ import type { ScenarioSources } from '../parse'
 import zollstockScenario from '../scenarios/zollstock/scenario.yaml?raw'
 import zollstockFeatures from '../scenarios/zollstock/features.yaml?raw'
 import zollstockQuotes from '../scenarios/zollstock/messages/interview_quotes.yaml?raw'
+import zollstockLosses from '../scenarios/zollstock/messages/loss_reasons.yaml?raw'
 import zollstockIntro from '../scenarios/zollstock/messages/intro.yaml?raw'
 import zollstockValidation from '../scenarios/zollstock/messages/events/validation.yaml?raw'
 import zollstockSales from '../scenarios/zollstock/messages/events/sales.yaml?raw'
@@ -20,6 +21,7 @@ export const sources: ScenarioSources = {
   scenario: zollstockScenario,
   features: zollstockFeatures,
   interviewQuotes: zollstockQuotes,
+  lossReasons: zollstockLosses,
   companyNames: zollstockNames,
   intro: zollstockIntro,
   events: {

@@ -1,5 +1,14 @@
 import { spawn, type ChildProcess } from 'node:child_process'
-import { resolve } from 'node:path'
+import { createHash } from 'node:crypto'
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from 'node:fs'
+import { join, resolve } from 'node:path'
 import { loadScenario, type GameMode, type Scenario, type ScenarioId } from '@founder-mode/content'
 import { runGame, type RunResult } from './simulate'
 import { strategyOf, type StrategySpec } from './specs'
@@ -38,6 +47,65 @@ export type TaskDone = { results: RunResult[]; seconds: number }
 const CHUNK = 250
 
 /**
+ * Optional checkpoints (`BOT_CHECKPOINT_DIR`): every finished chunk is written there, keyed by
+ * the source of the engine, content and bots and by the chunk itself, and a later run with the
+ * same source reads it back instead of playing it again. For machines that stop long runs part
+ * way (plan 7's VM). Timings of reused chunks are those of the run that played them.
+ */
+const CHECKPOINTS = process.env['BOT_CHECKPOINT_DIR'] || null
+
+let sourceHashCache: string | null = null
+/** A hash of every source file of the engine, content and bots packages. */
+function sourceHash(): string {
+  if (sourceHashCache) return sourceHashCache
+  const hash = createHash('sha1')
+  const root = resolve(import.meta.dirname, '../..')
+  const walk = (dir: string) => {
+    for (const name of readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
+      a.name < b.name ? -1 : 1,
+    )) {
+      const path = join(dir, name.name)
+      if (name.isDirectory()) walk(path)
+      else {
+        hash.update(path.slice(root.length))
+        hash.update(readFileSync(path))
+      }
+    }
+  }
+  for (const pkg of ['engine', 'content', 'bots']) walk(join(root, pkg, 'src'))
+  sourceHashCache = hash.digest('hex')
+  return sourceHashCache
+}
+
+function checkpointPath(job: Job): string | null {
+  if (!CHECKPOINTS) return null
+  const key = createHash('sha1')
+    .update(
+      JSON.stringify([sourceHash(), job.scenarioId, job.mode, job.spec, job.seedPrefix, job.seeds]),
+    )
+    .digest('hex')
+  return join(CHECKPOINTS, `${key}.json`)
+}
+
+function readCheckpoint(job: Job): JobDone | null {
+  const path = checkpointPath(job)
+  if (!path || !existsSync(path)) return null
+  try {
+    return { ...(JSON.parse(readFileSync(path, 'utf8')) as JobDone), id: job.id }
+  } catch {
+    return null
+  }
+}
+
+function writeCheckpoint(job: Job, done: JobDone): void {
+  const path = checkpointPath(job)
+  if (!path) return
+  mkdirSync(CHECKPOINTS!, { recursive: true })
+  writeFileSync(`${path}.part`, JSON.stringify(done))
+  renameSync(`${path}.part`, path)
+}
+
+/**
  * Plays every task, split into chunks of seeds over `processes` child processes. Each run depends
  * only on its scenario, strategy and seed, so the results are the same as playing in one process.
  * With one process everything runs here, without children.
@@ -48,6 +116,7 @@ export async function runTasks(
   onTaskDone?: (task: Task, done: TaskDone) => void,
 ): Promise<TaskDone[]> {
   const done: TaskDone[] = tasks.map(() => ({ results: [], seconds: 0 }))
+  const settleLater: [Job & { task: number; at: number }, JobDone][] = []
   const chunks = (t: Task) => Math.ceil(taskSeeds(t).length / CHUNK)
   const jobs: (Job & { task: number; at: number })[] = tasks.flatMap((t, task) =>
     Array.from({ length: chunks(t) }, (_, c) => ({
@@ -62,6 +131,12 @@ export async function runTasks(
     })),
   )
   jobs.forEach((j, i) => (j.id = i))
+  // Chunks played before (checkpoints) settle first; only the others are played.
+  const toPlay = jobs.filter((job) => {
+    const saved = readCheckpoint(job)
+    if (saved) settleLater.push([job, saved])
+    return !saved
+  })
 
   // Chunks of one task may finish in any order; keep them sorted by seed.
   const byTask = tasks.map(() => new Map<number, JobDone>())
@@ -75,10 +150,15 @@ export async function runTasks(
     }
     onTaskDone?.(tasks[job.task]!, done[job.task]!)
   }
+  for (const [job, saved] of settleLater) settle(job, saved)
+  const played = (job: Job & { task: number; at: number }, result: JobDone) => {
+    writeCheckpoint(job, result)
+    settle(job, result)
+  }
 
   if (processes <= 1) {
     const scenarios = new Map<string, Scenario>()
-    for (const job of jobs) {
+    for (const job of toPlay) {
       const key = `${job.scenarioId}/${job.mode}`
       const scenario = scenarios.get(key) ?? loadScenario(job.scenarioId, job.mode)
       scenarios.set(key, scenario)
@@ -86,7 +166,7 @@ export async function runTasks(
       const start = performance.now()
       const results = []
       for (const i of job.seeds) results.push(runGame(scenario, strategy, `${job.seedPrefix}-${i}`))
-      settle(job, { id: job.id, results, seconds: (performance.now() - start) / 1000 })
+      played(job, { id: job.id, results, seconds: (performance.now() - start) / 1000 })
     }
     return done
   }
@@ -95,7 +175,7 @@ export async function runTasks(
   const worker = resolve(import.meta.dirname, 'worker.ts')
   let next = 0
   await Promise.all(
-    Array.from({ length: Math.min(processes, jobs.length) }, () => {
+    Array.from({ length: Math.min(processes, toPlay.length) }, () => {
       return new Promise<void>((resolveChild, reject) => {
         const child: ChildProcess = spawn(process.execPath, [viteNode, worker], {
           cwd: resolve(import.meta.dirname, '..'),
@@ -103,14 +183,14 @@ export async function runTasks(
         })
         let current: (Job & { task: number; at: number }) | null = null
         const send = () => {
-          current = jobs[next++] ?? null
+          current = toPlay[next++] ?? null
           if (current) {
             child.send({ ...current, task: undefined, at: undefined })
           } else child.kill()
         }
         child.on('message', (m: JobDone | { ready: true }) => {
           if ('ready' in m) return send()
-          if (current) settle(current, m)
+          if (current) played(current, m)
           send()
         })
         child.on('exit', (code) =>

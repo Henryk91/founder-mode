@@ -13,7 +13,7 @@ import {
   emptyPlan,
   endWeek,
   getView,
-  replay,
+  replayWithReports,
   respond,
   saveProblem,
   shutDown,
@@ -149,6 +149,15 @@ export type UiState = {
   shutDownAsked: boolean
   /** Plan sections the player opened this week. All start closed. */
   openSections: PlanSection[]
+  /** Plan 7: the Pipeline's lost list shows every loss, not only the newest. */
+  showAllLost: boolean
+  /**
+   * Plan 7 step 2b: every resolved week's report of this run, oldest first. Rebuilt when a save is
+   * continued, kept in memory, never stored in the save.
+   */
+  pastReports: WeekReport[]
+  /** The earlier week whose report is open from Help's Past weeks, or null. */
+  pastWeek: number | null
   /** True when there is a resolved week whose plan can be repeated. */
   canRepeat: boolean
   /** How many of the report's notable moments the player has already tapped through. */
@@ -205,6 +214,8 @@ export type UiActions = {
   prevIntro(): void
   openHelp(): void
   closeHelp(): void
+  /** Opens an earlier week's report from Help's Past weeks, or closes it with null. */
+  openPastWeek(week: number | null): void
   openExplain(key: ExplainKey): void
   closeExplain(): void
   dismissNote(id: string): void
@@ -214,6 +225,9 @@ export type UiActions = {
   setBugFixHours(hours: number): void
   setOutreach(segmentId: string, channel: ChannelId, hours: number): void
   toggleDemo(leadId: string): void
+  /** Plan 7: asks a lost lead or customer why this week, or takes it back. */
+  toggleAskWhy(lossId: string): void
+  setShowAllLost(all: boolean): void
   setRestHours(hours: number): void
   setTransferCents(cents: number): void
   /** Ad budget in cents for a landing page test, 0 for none. */
@@ -500,11 +514,14 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       })
     }
 
-    const begin = (state: GameState) => {
+    const begin = (state: GameState, reports: WeekReport[] = []) => {
       game = state
       refresh({
         plan: emptyPlan(),
         report: null,
+        pastReports: reports,
+        pastWeek: null,
+        showAllLost: false,
         tab: 'plan',
         saveNotice: null,
         introStep: null,
@@ -538,6 +555,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       dismissedNotes: [],
       shutDownAsked: false,
       openSections: [],
+      showAllLost: false,
+      pastReports: [],
+      pastWeek: null,
       canRepeat: false,
       momentsSeen: 0,
       postMortem: null,
@@ -646,8 +666,8 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
           return
         }
         try {
-          const state = replay(scenario, file)
-          begin(state)
+          const { state, reports } = replayWithReports(scenario, file)
+          begin(state, reports)
           noteSave(state)
           set({ recent: played(id), sheetOpen: false })
         } catch {
@@ -713,8 +733,9 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
       },
       prevIntro: () =>
         set((s) => ({ introStep: s.introStep === null ? null : Math.max(0, s.introStep - 1) })),
-      openHelp: () => set({ helpOpen: true, explain: null }),
-      closeHelp: () => set({ helpOpen: false }),
+      openHelp: () => set({ helpOpen: true, explain: null, pastWeek: null }),
+      closeHelp: () => set({ helpOpen: false, pastWeek: null }),
+      openPastWeek: (week) => set({ pastWeek: week }),
       openExplain: (key) => set({ explain: key }),
       closeExplain: () => set({ explain: null }),
       dismissNote: (id) =>
@@ -728,7 +749,25 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         editPlan((p) => ({ ...p, build: { ...p.build, [featureId]: hours } })),
       setBugFixHours: (hours) => editPlan((p) => ({ ...p, bugFixHours: hours })),
       setOutreach: (segmentId, channel, hours) =>
-        editPlan((p) => ({ ...p, outreach: { ...p.outreach, [segmentId]: { channel, hours } } })),
+        editPlan((p) => {
+          // Plan 7: hours per market and channel; a market with no hours left drops out.
+          const market = { ...p.outreach[segmentId] }
+          if (hours > 0) market[channel] = hours
+          else delete market[channel]
+          const outreach = { ...p.outreach }
+          if (Object.keys(market).length > 0) outreach[segmentId] = market
+          else delete outreach[segmentId]
+          return { ...p, outreach }
+        }),
+      toggleAskWhy: (lossId) =>
+        editPlan((p) => {
+          const asks = p.askWhy ?? []
+          const next = asks.includes(lossId) ? asks.filter((x) => x !== lossId) : [...asks, lossId]
+          const rest = { ...p }
+          delete (rest as { askWhy?: string[] }).askWhy
+          return next.length > 0 ? { ...rest, askWhy: next } : rest
+        }),
+      setShowAllLost: (all) => set({ showAllLost: all }),
       toggleDemo: (leadId) =>
         editPlan((p) => ({
           ...p,
@@ -820,6 +859,7 @@ export function createGameStore(deps: StoreDeps): StoreApi<GameStore> {
         refresh({
           plan: next,
           report: result.report,
+          pastReports: [...get().pastReports, result.report],
           shutDownAsked: false,
           openSections: [],
           momentsSeen: 0,

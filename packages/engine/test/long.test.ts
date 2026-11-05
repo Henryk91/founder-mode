@@ -28,10 +28,12 @@ const quietLong = (): Scenario => {
 
 describe('long mode in the content', () => {
   it('leaves the 60 week scenarios as the 60 week values make them', () => {
-    // The fingerprints of engine 0.14.0 (energy slope and never-pays shares, C2a); the long
-    // block does not touch them.
-    expect(scenarioHash(loadScenario('kantino'))).toBe('2dda4b4b1831c529')
-    expect(scenarioHash(loadScenario('zollstock'))).toBe('7f5bf30195d531db')
+    // The fingerprints of plan 7 (reasons for losses: their texts and settings, and how a missing
+    // feature is named; Zollstock's referrals 0.09 after tuning); the long block does not touch
+    // them. Before: 2dda4b4b1831c529
+    // and 7f5bf30195d531db (engine 0.14.0, C2a).
+    expect(scenarioHash(loadScenario('kantino'))).toBe('d3fc5b40a439e926')
+    expect(scenarioHash(loadScenario('zollstock'))).toBe('898eb32ca5dff2a6')
     // The tourism scenarios change in plan 2 steps 1 to 4 and the plan 2 audit's open-issue
     // rounds, and in plan 3 steps 1 and 2 (office stages); protected again from `plan3-tuned`.
     // After review, the established look moved from a stage flag to `establishedAt` (months
@@ -122,7 +124,8 @@ describe('long mode in the engine', () => {
       1 - Math.floor(size / 2) / size,
     )
     const all = Array.from({ length: size }, (_, i) => openLead(i + 1, 'coworking'))
-    expect(marketFactor({ ...s, leads: all }, 'coworking')).toBe(0.3)
+    // Plan 7 tuning: the floor was 0.3.
+    expect(marketFactor({ ...s, leads: all }, 'coworking')).toBe(0.2)
     // The 60 week game never saturates.
     const std = createGame(loadScenario('kantino'), 'saturation')
     expect(marketFactor({ ...std, leads: all }, 'coworking')).toBe(1)

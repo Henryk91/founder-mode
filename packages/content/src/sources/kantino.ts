@@ -5,6 +5,7 @@ import type { ScenarioSources } from '../parse'
 import kantinoScenario from '../scenarios/kantino/scenario.yaml?raw'
 import kantinoFeatures from '../scenarios/kantino/features.yaml?raw'
 import kantinoQuotes from '../scenarios/kantino/messages/interview_quotes.yaml?raw'
+import kantinoLosses from '../scenarios/kantino/messages/loss_reasons.yaml?raw'
 import kantinoIntro from '../scenarios/kantino/messages/intro.yaml?raw'
 import kantinoValidation from '../scenarios/kantino/messages/events/validation.yaml?raw'
 import kantinoSales from '../scenarios/kantino/messages/events/sales.yaml?raw'
@@ -21,6 +22,7 @@ export const sources: ScenarioSources = {
   scenario: kantinoScenario,
   features: kantinoFeatures,
   interviewQuotes: kantinoQuotes,
+  lossReasons: kantinoLosses,
   companyNames: kantinoNames,
   intro: kantinoIntro,
   events: {

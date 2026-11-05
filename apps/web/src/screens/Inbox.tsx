@@ -1,5 +1,6 @@
 import type { PlayerView } from '@founder-mode/engine'
 import { Letter } from '../components/Letters'
+import { LossAnswers } from '../components/Losses'
 import { MilestoneBar } from '../components/MilestoneBar'
 import { count, label, type Voice, voiceOf } from '../labels'
 import type { Tab } from '../store'
@@ -27,6 +28,7 @@ export function Inbox(props: { desk?: boolean }) {
           : label(props.desk ? 'inbox.deskTitle.zero' : 'inbox.title', stage)}
       </h2>
       {!props.desk && <NeedsYou view={view} free={free} />}
+      <LossAnswers view={view} />
       {view.inbox.length === 0 && (
         <section
           className={`${styles.card} ${styles.sticky}`}

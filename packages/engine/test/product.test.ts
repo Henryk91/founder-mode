@@ -81,7 +81,7 @@ describe('product', () => {
       s,
       plan({
         build: { basic_ordering: 30 },
-        outreach: { coworking: { channel: 'phone', hours: 30 } },
+        outreach: { coworking: { phone: 30 } },
         restHours: 6,
       }),
     )

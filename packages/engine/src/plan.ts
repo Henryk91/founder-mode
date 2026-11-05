@@ -4,6 +4,7 @@ import { landingTestsUsed, presaleBatchesUsed } from './systems/experiments'
 import { isOverdue } from './systems/invoices'
 import { maxBugFixHours } from './systems/product'
 import { canBookDemo, canFollowUp } from './systems/sales'
+import { canAsk } from './systems/losses'
 import { plannedHours } from './systems/founder'
 import { bookingsValid, cloneBookingsPlan } from './systems/bookings'
 import { cloneFundingPlan, fundingValid } from './systems/funding'
@@ -40,6 +41,7 @@ export function clonePlan(plan: WeekPlan): WeekPlan {
     build: { ...plan.build },
     outreach: Object.fromEntries(Object.entries(plan.outreach).map(([k, v]) => [k, { ...v }])),
     demos: [...plan.demos],
+    ...(plan.askWhy ? { askWhy: [...plan.askWhy] } : {}),
     landing: { ...plan.landing },
     presales: { ...plan.presales },
     chase: [...plan.chase],
@@ -140,10 +142,28 @@ export function validatePlan(state: GameState, plan: WeekPlan): PlanIssue[] {
       issues.push({ code: 'unknown_segment', segmentId })
       continue
     }
-    if (!Object.hasOwn(hidden.channelResponse, out.channel)) {
-      issues.push({ code: 'invalid_channel', segmentId })
+    if (typeof out !== 'object' || out === null) {
+      issues.push({ code: 'invalid_number', field: `outreach.${segmentId}` })
+      continue
     }
-    if (!isCount(out.hours)) issues.push({ code: 'invalid_number', field: `outreach.${segmentId}` })
+    for (const [channel, hours] of Object.entries(out)) {
+      if (!Object.hasOwn(hidden.channelResponse, channel)) {
+        issues.push({ code: 'invalid_channel', segmentId })
+      }
+      if (!isCount(hours)) {
+        issues.push({ code: 'invalid_number', field: `outreach.${segmentId}.${channel}` })
+      }
+    }
+  }
+
+  // Plan 7: Ask why, once per loss, while it can be asked.
+  const seenAsks = new Set<string>()
+  for (const lossId of plan.askWhy ?? []) {
+    const loss = state.losses?.find((l) => l.id === lossId)
+    if (!loss || !canAsk(state, loss) || seenAsks.has(lossId)) {
+      issues.push({ code: 'invalid_ask', lossId })
+    }
+    seenAsks.add(lossId)
   }
 
   const seenDemos = new Set<string>()

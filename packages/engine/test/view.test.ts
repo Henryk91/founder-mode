@@ -81,7 +81,7 @@ describe('hidden boundary', () => {
       const p = plan({
         interviews: i < 3 ? { [seg[i % 3]!]: 2 } : {},
         landing: i === 1 ? { [seg[0]!]: 30_000 } : {},
-        outreach: { [seg[1]!]: { channel: 'in_person', hours: 20 } },
+        outreach: { [seg[1]!]: { in_person: 20 } },
         searchRole: i === 2 ? 'developer' : null,
         hire: v.team.candidates[0]?.id ?? null,
         chase: v.invoices
@@ -153,15 +153,16 @@ describe('hidden boundary', () => {
     expect(JSON.parse(JSON.stringify(v))).toEqual(v)
   })
 
-  it('remembers the outreach channel last picked for each segment', () => {
+  it('remembers the outreach channel last used for each segment', () => {
     let s = newGame()
     expect(getView(s).segments.every((x) => x.lastChannel === null)).toBe(true)
-    s = endWeek(s, plan({ outreach: { coworking: { channel: 'in_person', hours: 10 } } })).state
-    s = endWeek(s, plan({ outreach: { medical: { channel: 'phone', hours: 0 } } })).state
+    s = endWeek(s, plan({ outreach: { coworking: { in_person: 10 } } })).state
+    s = endWeek(s, plan({ outreach: { medical: { phone: 0 } } })).state
     s = endWeek(s, plan()).state
     const channel = (id: string) => getView(s).segments.find((x) => x.id === id)!.lastChannel
     expect(channel('coworking')).toBe('in_person')
-    expect(channel('medical')).toBe('phone')
+    // Plan 7: a channel with no hours is not used.
+    expect(channel('medical')).toBeNull()
     expect(channel('small_offices')).toBeNull()
   })
 })

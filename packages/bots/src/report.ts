@@ -447,7 +447,43 @@ export function evaluateTargets(
     pricingTarget(input),
     pricingSpreadTarget(input),
     freelanceTarget(input),
+    ...plan7Targets(input),
   ]
+}
+
+/**
+ * Plan 7 (`docs/plan7-sales-feedback.md` section 5), where their bots ran: M2, the careful bot
+ * spreading its outreach beats `one_channel` by at least 2 points; R1, the careful bot that asks
+ * why beats `never_ask` by at least 2 points. Same seeds; within its own margin of the limit counts
+ * as at the limit.
+ */
+function plan7Targets(input: ReportInput): Target[] {
+  const careful = find(input, 'validate_then_build')
+  const out: Target[] = []
+  const against = (id: string, label: string, text: string) => {
+    const other = find(input, id)
+    if (!careful || !other) return
+    const all = careful.results.map((_, i) => i)
+    const { change, margin } = pairedOn(other, careful, all)
+    out.push({
+      id: label,
+      text,
+      value: `${change >= 0 ? '+' : ''}${change.toFixed(1)} points`,
+      margin: fmtMargin(margin),
+      pass: change + margin >= 2,
+    })
+  }
+  against(
+    'one_channel',
+    'M2',
+    'Spreading pays: the careful bot (spreading hours when a channel tires) beats one_channel (one channel per market) by at least 2 points',
+  )
+  against(
+    'never_ask',
+    'R1',
+    'Asking pays: the careful bot (asks after losses it can afford the hour for) beats never_ask by at least 2 points',
+  )
+  return out
 }
 
 type FreelanceSplit = { label: string; seeds: number[] }

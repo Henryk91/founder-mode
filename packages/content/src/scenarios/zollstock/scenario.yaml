@@ -119,10 +119,21 @@ sales:
     cap: 0.6
   # Happy customers recommend you to the trade next door (spec section 6).
   referral:
-    # Tuning round 2: was 0.08.
-    chancePerFit: 0.11
+    # Tuning round 2: was 0.08. Plan 7 round 1: was 0.11 (fair channel tiredness made selling
+    # easier; the price search won 48.3%, over target 17's 45%).
+    chancePerFit: 0.09
     chancePerBug: 0.01
     demoBonus: 0.6
+
+  # Plan 7: reasons for losses. About a fifth say why unprompted; asking costs an hour within four
+  # weeks, two thirds answer the next week. Honesty falls with politeness: blunt markets about
+  # 0.85 to 0.9, polite ones 0.55 to 0.65 (est.), otherwise a softer reason.
+  losses:
+    unpromptedShare: 0.2
+    answerShare: 0.67
+    askHours: 1
+    askWeeks: 4
+    honesty: { min: 0.35, max: 0.92 }
 
 team:
   searchHours: 6

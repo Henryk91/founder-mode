@@ -1,6 +1,7 @@
 import { count, label, type LabelKey, voiceOf } from '../labels'
 import { fillText } from '../texts'
 import { useGame } from '../useGame'
+import { WeekSummary } from '../screens/Results'
 import styles from './ui.module.css'
 
 const WEEK_STEPS = [
@@ -15,8 +16,10 @@ const WEEK_STEPS = [
 export function Help() {
   const view = useGame((s) => s.view)
   const close = useGame((s) => s.closeHelp)
+  const pastWeek = useGame((s) => s.pastWeek)
   if (!view) return null
   const stage = voiceOf(view)
+  if (pastWeek !== null) return <PastWeek week={pastWeek} />
   const goal = view.guidance.intro.find((c) => c.id === 'goal')
   const { founder } = view
   const energyVars = {
@@ -63,8 +66,63 @@ export function Help() {
         <p>{label('help.hours.bar', stage)}</p>
         <p>{label('explain.energy.text', stage, energyVars)}</p>
       </section>
+      <PastWeeks />
       <button type="button" className={`${styles.button} ${styles.primary}`} onClick={close}>
         {label('help.close', stage)}
+      </button>
+    </>
+  )
+}
+
+/**
+ * Plan 7 step 2b: every earlier week of the run, newest first, each a tap away from its report as
+ * it was on the day. Rebuilt from the save when a run is continued; never stored.
+ */
+function PastWeeks() {
+  const view = useGame((s) => s.view)!
+  const reports = useGame((s) => s.pastReports)
+  const open = useGame((s) => s.openPastWeek)
+  const stage = voiceOf(view)
+  if (reports.length === 0) return null
+  return (
+    <section className={styles.card} aria-labelledby="help-past">
+      <h2 id="help-past" className={styles.title}>
+        {label('help.pastWeeks', stage)}
+      </h2>
+      <p className={styles.hint}>{label('help.pastWeeks.hint', stage)}</p>
+      <ul className={styles.list} data-past-weeks>
+        {[...reports].reverse().map((r) => (
+          <li key={r.week}>
+            <button type="button" className={styles.linkRow} onClick={() => open(r.week)}>
+              <span>{label('help.pastWeek', stage, { week: r.week })}</span>
+              <span className={styles.linkTab}>{label('help.pastWeek.open', stage)}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+/** One earlier week's report, as the results showed it, with a way back to the list. */
+function PastWeek({ week }: { week: number }) {
+  const view = useGame((s) => s.view)!
+  const report = useGame((s) => s.pastReports.find((r) => r.week === week))
+  const open = useGame((s) => s.openPastWeek)
+  const stage = voiceOf(view)
+  return (
+    <>
+      {report ? (
+        <WeekSummary report={report} view={view} />
+      ) : (
+        <p className={styles.handText}>{label('help.pastWeek.missing', stage, { week })}</p>
+      )}
+      <button
+        type="button"
+        className={`${styles.button} ${styles.primary}`}
+        onClick={() => open(null)}
+      >
+        {label('help.pastWeeks.back', stage)}
       </button>
     </>
   )

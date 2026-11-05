@@ -272,7 +272,7 @@ describe('plan tab', () => {
     store.getState().repeatLastWeek()
     const plan = store.getState().plan
     expect(plan.interviews).toEqual({ medical: 2 })
-    expect(plan.outreach).toEqual({ coworking: { channel: 'in_person', hours: 8 } })
+    expect(plan.outreach).toEqual({ coworking: { in_person: 8 } })
     expect(plan.restHours).toBe(3)
     expect(plan.transferToCompanyCents).toBe(0)
     expect(plan.searchRole).toBeNull()

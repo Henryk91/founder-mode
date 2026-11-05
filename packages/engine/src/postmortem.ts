@@ -1,3 +1,5 @@
+import { outreachLines } from './channels'
+import { lossReasonLines } from './systems/losses'
 import { leisureView } from './systems/leisure'
 import { stageNumber } from './systems/office'
 import {
@@ -129,6 +131,9 @@ export function buildPostMortem(state: GameState): PostMortem {
     },
     office: officeEconomics(state),
     ...(state.scenario.bookings?.elasticity ? { priceSeasons: priceSeasons(state) } : {}),
+    ...(state.scenario.sales.losses && !state.bookings
+      ? { lossReasons: lossReasonLines(state) }
+      : {}),
     ...secondSiteLine(state),
     ...(gearLines(state) ? { gear: gearLines(state)! } : {}),
     walkIns: walkInCounts(state),
@@ -528,7 +533,7 @@ function focusMarket(state: GameState, plans: WeekPlan[]): Focus | null {
     return needing.length === 1 ? needing[0]?.id : undefined
   }
   for (const plan of plans) {
-    for (const [seg, o] of Object.entries(plan.outreach)) add(selling, seg, o.hours)
+    for (const o of outreachLines(plan)) add(selling, o.segmentId, o.hours)
     for (const id of plan.demos) add(selling, segmentOfLead(id), sales.demoHours)
     for (const id of plan.followUps) add(selling, segmentOfLead(id), sales.followUpHours)
     for (const [featureId, h] of Object.entries(plan.build)) add(building, onlyFor(featureId), h)

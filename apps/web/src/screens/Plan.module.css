@@ -369,6 +369,17 @@
   }
 }
 
+/* Channel rows of a market stay stacked, one line each, whatever the width. */
+@container planner (min-width: 700px) {
+  .market.marketStack {
+    display: block;
+  }
+
+  .market.marketStack > .row {
+    flex: none;
+  }
+}
+
 :global([data-layout='desk']) .row > .label,
 :global([data-layout='desk']) .row > .wrapped {
   flex: 0 0 var(--label-w);

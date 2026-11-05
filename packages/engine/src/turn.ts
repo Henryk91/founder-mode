@@ -10,6 +10,7 @@ import { applyLoan } from './systems/loan'
 import { drawMessages, resolveMessages } from './systems/inbox'
 import { applyProduct } from './systems/product'
 import { applyChurn, applyReferrals, applySales } from './systems/sales'
+import { recordLosses } from './systems/losses'
 import {
   applyFreelance,
   applyTeam,
@@ -223,6 +224,11 @@ export function endWeek(
     const churn = applyChurn(state, rng)
     state = churn.state
     entries.push(...churn.entries)
+    // Plan 7: a record of every loss this week, with its cause and what they said, and the
+    // answers to this week's Ask why.
+    const losses = recordLosses(input, state, plan, entries)
+    state = losses.state
+    entries.splice(0, entries.length, ...losses.entries)
   }
   state = closeLedger(state, activity)
 

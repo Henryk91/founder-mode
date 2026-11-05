@@ -6,6 +6,7 @@ import {
   type ScenarioId,
 } from '@founder-mode/content'
 import {
+  outreachLines,
   viewConditionsHold,
   type ChannelId,
   type MessageView,
@@ -29,6 +30,8 @@ const BUG_LIMIT = 3
 const BUG_FIX_HOURS = 8
 /** Leads per hour need this many hours on a channel before the bot trusts them. */
 const CHANNEL_TRIAL_HOURS = 10
+/** Plan 7: the careful bot spreads its outreach over channels in steps of this many hours. */
+const SPREAD_STEP = 2
 /** Give up on a market after this many weeks of selling without a customer there. */
 const PIVOT_AFTER_WEEKS = 12
 /** Overdue invoices chased per week. */
@@ -59,6 +62,8 @@ const LANDING_MARKETS = 2
 
 /** Open leads in the chosen market followed up per week, silent ones first. */
 const FOLLOW_UPS_PER_WEEK = 6
+/** Plan 7: lost leads and customers the careful bot asks why, at most, each week. */
+const ASK_PER_WEEK = 1
 /**
  * Payback hire: weeks from extra outreach to money in the bank (demo, trial, invoice, payment),
  * the skill assumed before candidates are seen, and the months of salary the founder must hold.
@@ -623,6 +628,18 @@ export type Behaviours = {
   chaseBy?: 'team' | 'founder'
   /** Plan 3: office stage offers (`office.ts`). Missing: careful. */
   office?: OfficeRule
+  /**
+   * Plan 7: how the founder's outreach in a market uses the channels. `spread` (the default): hours
+   * go where they find the most leads, so a fresh channel takes over when the best one tires.
+   * `one`: every hour on the one best channel, as before plan 7 (target M2).
+   */
+  channels?: 'spread' | 'one'
+  /**
+   * Plan 7: ask lost leads and customers in its markets why (up to `ASK_PER_WEEK` a week, before
+   * outreach), and count a missing feature they name like an interview's mention. Missing: true.
+   * False: never asks (target R1), though it still reads reasons given unprompted.
+   */
+  ask?: boolean
 }
 
 /**
@@ -1279,19 +1296,58 @@ export function validatingPlayer(
   }
 
   /**
+   * The founder's outreach in one market. A channel tried for under `CHANNEL_TRIAL_HOURS` gets every
+   * hour first, as before. Then, with `channels: 'one'`, every hour goes on the channel that finds
+   * the most leads now. Otherwise (plan 7) the hours go in steps of `SPREAD_STEP` to the channel
+   * where each step finds the most leads: its leads per hour so far times what the step counts for
+   * after this week's steps there (fully while the channel is fresh enough, at the worn out fraction
+   * beyond). So when the best channel tires, the rest of the hours move to a fresh one.
+   */
+  const sell = (b: PlanBuilder, view: PlayerView, market: string, hours: number) => {
+    if (hours <= 0) return
+    const trial = view.channels.find((c) => channels.hours(market, c) < CHANNEL_TRIAL_HOURS)
+    if (trial !== undefined || (behaviours.channels ?? 'spread') === 'one') {
+      b.outreach(market, channels.choose(market, view.channels, CHANNEL_TRIAL_HOURS, hours), hours)
+      return
+    }
+    const split: Partial<Record<ChannelId, number>> = {}
+    let left = hours
+    while (left > 0) {
+      const step = Math.min(SPREAD_STEP, left)
+      let best: ChannelId | null = null
+      let bestLeads = -1
+      for (const c of view.channels) {
+        const now = split[c] ?? 0
+        const leads =
+          channels.rate(market, c) *
+          (channels.effective(market, c, now + step) - channels.effective(market, c, now))
+        if (leads > bestLeads) {
+          best = c
+          bestLeads = leads
+        }
+      }
+      if (best === null) break
+      split[best] = (split[best] ?? 0) + step
+      left -= step
+    }
+    for (const c of view.channels) if (split[c]) b.outreach(market, c, split[c])
+  }
+
+  /**
    * Long mode: once the founder's outreach is planned, each salesperson and a freelance
    * salesperson take the channel in their market that finds the most leads after the hours
    * already planned on it this week, so they do not wear out the founder's channel.
    */
   const placeHelpers = (b: PlanBuilder, view: PlayerView) => {
     if (!long) return
+    // Hours planned this week as they count (plan 7: the window holds counted hours).
     const planned = new Map<string, Partial<Record<ChannelId, number>>>()
     const add = (segmentId: string, channel: ChannelId, hours: number) => {
       const m = planned.get(segmentId) ?? {}
-      m[channel] = (m[channel] ?? 0) + hours
+      m[channel] = (m[channel] ?? 0) + channels.effective(segmentId, channel, hours, m[channel])
       planned.set(segmentId, m)
     }
-    for (const [seg, out] of Object.entries(b.plan.outreach)) add(seg, out.channel, out.hours)
+    for (const o of outreachLines(b.plan)) add(o.segmentId, o.channel, o.hours)
     for (const m of view.team.members) {
       const task = b.plan.teamTasks[m.id]
       if (task?.kind !== 'outreach') continue
@@ -1706,7 +1762,10 @@ export function validatingPlayer(
       }
       if (prices) b.price(prices.price(view, target))
       const notes = segmentNotes(scenario, view, target)
-      const wanted = notes.mentions.map(([f]) => f)
+      // Plan 7: a missing feature a lost lead or customer named counts as a mention.
+      const wanted = [
+        ...new Set([...notes.mentions.map(([f]) => f), ...namedMissing(view, target)]),
+      ]
       const unshipped = wanted.filter(
         (f) => !view.product.features.find((x) => x.id === f)?.shipped,
       )
@@ -1745,9 +1804,15 @@ export function validatingPlayer(
       raising(b, view)
       b.demos(bookableLeads(view, target))
       b.demos(bookableLeads(view))
+      // Plan 7: ask why, one loss a week, while the market may still hide what it needs: before
+      // its first customer there, or while its must haves are not all known and built.
+      const customersThere = view.customers.filter((c) => c.segmentId === target).length
+      const learning = customersThere === 0 || wanted.length < 3 || unshipped.length > 0
+      if ((behaviours.ask ?? true) && learning) b.askWhy(ASK_PER_WEEK, target)
       if (behaviours.followUps) b.followUp(FOLLOW_UPS_PER_WEEK, target)
       if (behaviours.followUps && second !== null) b.followUp(FOLLOW_UPS_PER_WEEK, second)
-      if (view.product.bugs >= BUG_LIMIT) b.fixBugs(BUG_FIX_HOURS)
+      // Plan 7: a recent loss there that blamed bugs gets every bug fixed now.
+      if (view.product.bugs >= BUG_LIMIT || blamedBugs(view, target)) b.fixBugs(BUG_FIX_HOURS)
       // Keep listening until a few different features have come up.
       if (wanted.length < 3 && notes.interviews < 20) b.interviews(target, 3)
       for (const f of unshipped) b.build(f, MAX_BUILD_HOURS - (b.plan.build[f] ?? 0))
@@ -1781,14 +1846,11 @@ export function validatingPlayer(
       // With the second market's features built, half of the outreach goes there.
       if (second !== null && secondReady && b.free > 0) {
         secondSince ??= view.week
-        const half = Math.floor(b.free / 2)
-        const channel = channels.choose(second, view.channels, CHANNEL_TRIAL_HOURS, half)
-        b.outreach(second, channel, half)
+        sell(b, view, second, Math.floor(b.free / 2))
       }
       if (unshipped.length <= 1 && wanted.length > 0) {
         sellingSince ??= view.week
-        const channel = channels.choose(target, view.channels, CHANNEL_TRIAL_HOURS, b.free)
-        b.outreach(target, channel, b.free)
+        sell(b, view, target, b.free)
       }
 
       placeHelpers(b, view)
@@ -1796,6 +1858,7 @@ export function validatingPlayer(
       const customersHere = view.customers.filter((c) => c.segmentId === target).length
       if (
         refuted ||
+        (customersHere === 0 && toldNoNeed(view, target)) ||
         (sellingSince !== null &&
           view.week - sellingSince >= PIVOT_AFTER_WEEKS &&
           customersHere === 0)
@@ -1810,21 +1873,22 @@ export function validatingPlayer(
     observe(report) {
       if (lastPlan) channels.record(lastPlan, report)
       // The first market's founder outreach, for expansion: weeks where only the founder sold there.
-      const out = target !== null ? lastPlan?.outreach[target] : undefined
+      const out = target !== null ? (lastPlan?.outreach[target] ?? {}) : {}
+      const hours = Object.values(out).reduce((t, h) => t + (h ?? 0), 0)
       const teamThere =
         lastPlan !== null &&
         Object.values(lastPlan.teamTasks).some(
           (t) => t.kind === 'outreach' && t.segmentId === target,
         )
-      if (behaviours.expand && out && out.hours > 0 && !teamThere) {
+      if (behaviours.expand && hours > 0 && !teamThere) {
         const leads = report.entries.reduce(
           (t, e) =>
-            e.kind === 'new_leads' && e.segmentId === target && e.channel === out.channel
+            e.kind === 'new_leads' && e.segmentId === target && (out[e.channel] ?? 0) > 0
               ? t + e.count
               : t,
           0,
         )
-        firstRates.push({ hours: out.hours, leads })
+        firstRates.push({ hours, leads })
       }
       if (prices && lastView) prices.observe(lastView, report, target)
     },
@@ -1832,7 +1896,7 @@ export function validatingPlayer(
 }
 
 const DESCRIPTION =
-  'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells on its best channel, follows up with up to six open leads there a week, and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
+  'Interviews every market in week 1. In week 2 pitches one pre-sale batch in the market its interviews favour, runs landing page tests in the top two, and starts the feature everyone asks for. When those tests do not separate the two markets, it runs one larger test in each. Pitches every pre-sale batch its chosen market allows, one a week. Drops a tested market when another drew clearly more landing sign ups (1.5 standard errors), or after two pre-sale batches without a deposit. Builds what its market asks for, sells where its channels find the most leads (moving hours to a fresh channel when one tires), follows up with up to six open leads there a week, asks up to three lost leads or customers there a week why (a missing feature they name counts like a mention in an interview), and moves on after 12 weeks of selling without a customer. Sorts the books when the accountant asks, chases three late invoices a week, and reads the inbox (`readInbox`).'
 
 /** What the careful bot adds in long mode: the reference team rule. */
 export const LONG_TEAM_TEXT = ` In long mode it also builds a team. It looks for a hire once its cash and savings grew over the last four weeks, would pay what the hire adds to the monthly loss for ${HIRE_RUNWAY_MONTHS} months, and at least ${HIRE_HORIZON_WEEKS} weeks would be left once the hire starts: a developer while the features its market asks for need ${BACKLOG_HOURS} h or more, else a salesperson, full time, the best impression. The next search waits until the newest hire has worked ${SETTLE_WEEKS} weeks. The newest hire is let go once the runway shown falls below ${LET_GO_MONTHS} months, and a developer once every feature has shipped. It takes a bigger office when its offer arrives and the reason is real: its hiring rule wants someone and every desk or place is taken, or, for the first office, three months that paid all costs; and cash and savings cover the move, six months of the added rent and two months of today's costs.`
@@ -2109,6 +2173,67 @@ export function fixedPrice(multiple: number): Strategy {
     description: `validate_then_build at ${multiple} times the default price from week 1.`,
     create: (scenario) => validatingPlayer(scenario, 50, () => new FixedPrice(multiple)),
   }
+}
+
+/** Plan 7: features that lost leads and customers of a market said they missed, oldest first. */
+export function namedMissing(view: PlayerView, segmentId: string): string[] {
+  const out: string[] = []
+  for (const l of [...view.losses].reverse()) {
+    const f = l.segmentId === segmentId ? l.stated?.featureId : null
+    if (f && !out.includes(f)) out.push(f)
+  }
+  return out
+}
+
+/** Plan 7: whether a loss in this market in the last `BLAME_WEEKS` weeks said it was the bugs. */
+export function blamedBugs(view: PlayerView, segmentId: string): boolean {
+  return (
+    view.product.bugs >= BUG_LIMIT - 1 &&
+    view.losses.some(
+      (l) =>
+        l.segmentId === segmentId &&
+        l.stated?.kind === 'quality' &&
+        l.stated.week > view.week - BLAME_WEEKS,
+    )
+  )
+}
+/**
+ * Plan 7: whether the market's lost leads and customers say clearly that it does not need the
+ * product: at least `NO_NEED_SAID` said so, more than named anything the product could fix (a
+ * missing feature, bugs, the price). Softer reasons say nothing either way.
+ */
+export function toldNoNeed(view: PlayerView, segmentId: string): boolean {
+  let noNeed = 0
+  let fixable = 0
+  for (const l of view.losses) {
+    if (l.segmentId !== segmentId || !l.stated) continue
+    if (l.stated.kind === 'no_need') noNeed++
+    else if (['price', 'missing_feature', 'quality'].includes(l.stated.kind)) fixable++
+  }
+  return noNeed >= NO_NEED_SAID && noNeed > fixable
+}
+const NO_NEED_SAID = 3
+
+/** Plan 7: how long a loss that blamed the bugs keeps the careful bot fixing them. */
+const BLAME_WEEKS = 4
+
+/** Plan 7, target R1: the careful bot that never asks why. */
+export const neverAsk: Strategy = {
+  id: 'never_ask',
+  modes: ['standard'],
+  description:
+    'Plays like validate_then_build, but never asks a lost lead or customer why. It still reads the reasons some give unprompted.',
+  create: (scenario) => validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, ask: false }),
+}
+
+/** Plan 7, target M2: the careful bot with every outreach hour of a market on one channel. */
+export const oneChannel: Strategy = {
+  id: 'one_channel',
+  modes: ['standard'],
+  description:
+    'Plays like validate_then_build, but puts every outreach hour of a market on its one best channel each week, as every bot did before plan 7, even when that channel is worn out.',
+  create: (scenario) =>
+    validatingPlayer(scenario, 50, null, { ...ALL_BEHAVIOURS, channels: 'one' }),
 }
 
 export const overworker: Strategy = {

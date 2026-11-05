@@ -63,7 +63,7 @@ describe('founder', () => {
         const s = newGame(`tired${i}`)
         const r = endWeek(
           { ...s, founder: { ...s.founder, energy } },
-          plan({ outreach: { coworking: { channel: 'in_person', hours: 40 } } }),
+          plan({ outreach: { coworking: { in_person: 40 } } }),
         )
         total += r.state.leads.length
       }

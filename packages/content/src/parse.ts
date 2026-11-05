@@ -8,6 +8,8 @@ export type ScenarioSources = {
   scenario: string
   features: string
   interviewQuotes: string
+  /** Plan 7: what lost leads and customers say (`messages/loss_reasons.yaml`), subscriptions only. */
+  lossReasons?: string
   companyNames: string
   intro: string
   /**
@@ -132,6 +134,7 @@ export function parseScenario(sources: ScenarioSources, mode: GameMode = 'standa
     events,
     features: parse(sources.features),
     interviewQuotes: parse(sources.interviewQuotes),
+    ...(sources.lossReasons ? { lossReasons: parse(sources.lossReasons) } : {}),
     companyNames: parse(sources.companyNames),
   })
 }

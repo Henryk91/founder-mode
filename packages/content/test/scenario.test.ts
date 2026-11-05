@@ -5,6 +5,7 @@ import {
   eventsIn,
   FOUNDER_NOTE_IDS,
   loadScenario,
+  LOSS_REASON_KINDS,
   parseCondition,
   parseScenario,
   SCENARIO_IDS,
@@ -27,11 +28,13 @@ const allSources = (id: (typeof SCENARIO_IDS)[number]) => {
     events,
     sharedEvents,
     longEvents,
+    lossReasons,
   } = scenarioSources(id)
   return [
     scenario,
     features,
     interviewQuotes,
+    ...(lossReasons ? [lossReasons] : []),
     companyNames,
     intro,
     ...Object.values(events),
@@ -130,6 +133,38 @@ describe('content', () => {
     for (const text of allSources(id)) expect(text).not.toContain('—')
   })
 
+  // Plan 7: reasons for losses, in the subscription games only.
+  it.each(SUBSCRIPTION_IDS)(
+    '%s: 3 to 5 loss reasons of 2 to 4 sentences per segment and kind, a missing feature named',
+    (id) => {
+      for (const mode of scenarioModes(id)) {
+        const s = loadScenario(id, mode)
+        expect(s.sales.losses).toBeDefined()
+        for (const seg of s.segments) {
+          for (const kind of LOSS_REASON_KINDS) {
+            const texts = s.lossReasons![seg.id]![kind]!
+            expect(texts.length).toBeGreaterThanOrEqual(3)
+            expect(texts.length).toBeLessThanOrEqual(5)
+            for (const t of texts) {
+              const sentences = t.split(/(?<=[.!?])\s+/).filter(Boolean).length
+              expect(sentences, t).toBeGreaterThanOrEqual(2)
+              expect(sentences, t).toBeLessThanOrEqual(4)
+              expect(t).not.toMatch(/[—–]/)
+              expect(t.includes('{need}')).toBe(kind === 'missing_feature')
+            }
+          }
+        }
+        for (const f of s.features) expect(f.missing, f.id).toBeTruthy()
+      }
+    },
+  )
+
+  it.each(TOURISM_IDS)('%s: no reasons for losses (the bookings games have reviews)', (id) => {
+    const s = loadScenario(id)
+    expect(s.sales.losses).toBeUndefined()
+    expect(s.lossReasons).toBeUndefined()
+  })
+
   it.each(SUBSCRIPTION_IDS)(
     '%s: at least 400 company names per segment, none ending in a number',
     (id) => {
@@ -169,7 +204,7 @@ describe('content', () => {
       'photo_reports',
       'client_marketplace',
     ])
-    expect(s.sales.referral).toEqual({ chancePerFit: 0.11, chancePerBug: 0.01, demoBonus: 0.6 })
+    expect(s.sales.referral).toEqual({ chancePerFit: 0.09, chancePerBug: 0.01, demoBonus: 0.6 })
     expect(s.experiments.landing).toMatchObject({ signupBase: 0.01, signupPerPain: 0.08 })
     expect(s.start).toEqual(loadScenario('kantino').start)
     expect(s.officeStages[1]).toMatchObject({

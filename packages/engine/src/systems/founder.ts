@@ -1,4 +1,6 @@
+import { outreachTotal } from '../channels'
 import { leisureHours } from './leisure'
+import { askHours } from './losses'
 import type { FounderState, GameState, HoursByActivity, Scenario, WeekPlan } from '../types'
 import { bookingsHours, hostingHours } from './bookings'
 import { fundingHours } from './funding'
@@ -50,7 +52,8 @@ export function hoursByActivity(
     building: sum(Object.values(plan.build)) + plan.bugFixHours + leisureHours(state, plan),
     selling:
       bookingsHours(state, plan) +
-      sum(Object.values(plan.outreach).map((o) => o.hours)) +
+      outreachTotal(plan) +
+      askHours(state, plan) +
       plan.demos.length * scenario.sales.demoHours +
       plan.followUps.length * scenario.sales.followUpHours,
     admin:

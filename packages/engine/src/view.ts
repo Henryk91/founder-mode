@@ -1,3 +1,4 @@
+import { CHANNELS } from './channels'
 import { loanView } from './systems/loan'
 import {
   canGiveNotice,
@@ -41,7 +42,9 @@ import {
 import { activeCustomers } from './systems/customers'
 import { selectFounderNote } from './systems/guidance'
 import { maxBugFixHours } from './systems/product'
-import { canBookDemo, canFollowUp } from './systems/sales'
+import { canBookDemo, canFollowUp, marketTiredness } from './systems/sales'
+import { lossViews } from './systems/losses'
+import { outreachLines } from './channels'
 import type {
   ChannelId,
   GameState,
@@ -54,12 +57,6 @@ import type {
   TeamView,
   FreelanceView,
 } from './types'
-
-// Compile time check that every channel of the scenario schema is listed.
-const CHANNEL_ORDER = { cold_email: 0, phone: 1, in_person: 2 } satisfies Record<ChannelId, number>
-const CHANNELS = (Object.keys(CHANNEL_ORDER) as ChannelId[]).sort(
-  (a, b) => CHANNEL_ORDER[a] - CHANNEL_ORDER[b],
-)
 
 /**
  * The only way game data reaches the UI. Builds every field explicitly from observable state
@@ -128,6 +125,9 @@ export function getView(state: GameState): PlayerView {
       presaleMaxBatches: scenario.experiments.presale.maxBatchesPerSegment,
       presaleRefundWeeks: scenario.experiments.presale.refundWeeks,
       followUpHours: scenario.sales.followUpHours,
+      askWhyHours:
+        scenario.sales.losses && !scenario.bookings ? scenario.sales.losses.askHours : null,
+      askWhyWeeks: scenario.sales.losses?.askWeeks ?? 0,
       saturationHours: scenario.sales.saturationHours,
       saturationWeeks: scenario.sales.saturationWeeks,
       presaleWeeks: scenario.experiments.presale.weeks,
@@ -218,6 +218,7 @@ export function getView(state: GameState): PlayerView {
         }
       }),
     },
+    losses: lossViews(state),
     leads: state.leads.map((l) => ({
       id: l.id,
       name: l.name,
@@ -301,6 +302,7 @@ export function getView(state: GameState): PlayerView {
         scenario.experiments.presale.maxBatchesPerSegment - presaleBatchesUsed(state, seg.id),
       ),
       lastChannel: lastChannel(state, seg.id),
+      channelTiredness: state.bookings ? {} : marketTiredness(state, seg.id, CHANNELS),
       landingTestsLeft:
         scenario.experiments.landing.maxTestsPerSegment === undefined
           ? null
@@ -430,12 +432,19 @@ function freelanceView(state: GameState): FreelanceView {
   }
 }
 
-/** The outreach channel of the latest plan that had one for this segment. */
+/**
+ * The channel with the most outreach hours for this segment in the latest plan that had any, the
+ * first in channel order on a tie.
+ */
 function lastChannel(state: GameState, segmentId: string): ChannelId | null {
   for (let i = state.actionLog.length - 1; i >= 0; i--) {
     const action = state.actionLog[i]
-    const out = action?.type === 'endWeek' ? action.plan.outreach[segmentId] : undefined
-    if (out) return out.channel
+    if (action?.type !== 'endWeek') continue
+    const lines = outreachLines(action.plan).filter((l) => l.segmentId === segmentId)
+    if (lines.length === 0) continue
+    let best = lines[0]!
+    for (const l of lines) if (l.hours > best.hours) best = l
+    return best.channel
   }
   return null
 }

@@ -1,0 +1,96 @@
+# Plan 7: what a lost lead or a customer who cancels says, per segment and reason. The first four
+# kinds are real causes, the last three the softer things people say instead. `{need}` is the
+# missing feature in their own words (features.yaml `missing`). 3 to 5 texts each, 2 to 4
+# sentences, dry. Office managers, coworking hosts and practice managers, in that order.
+
+small_offices:
+  price:
+    - It is a lot of money for lunch. Our managing director looked at the invoice and went quiet, which is worse than shouting.
+    - We added it up. For that price the team can carry on arguing about pizza for free.
+    - Nice tool, wrong price. We are an agency, we bill by the hour and we know what an hour costs.
+    - Finance said no. Not to lunch, to the monthly fee. Lunch is still allowed.
+  missing_feature:
+    - We needed {need}. Without it the spreadsheet stays, and so does the office manager's mood.
+    - Honestly, it came down to {need}. Everything else was fine, that was the bit we could not do without.
+    - We asked around the office and the answer was {need}. You did not have it yet, so the spreadsheet won.
+  quality:
+    - It broke twice in the trial week, both times at half past eleven. Hungry people are not forgiving.
+    - Orders went missing and someone ate a colleague's salad by mistake. We cannot have that again.
+    - Too many little glitches. The team lost faith in it before they lost faith in the spreadsheet.
+  no_need:
+    - Turns out lunch is not really a problem for us. Most people just go to the bakery downstairs.
+    - We tried it and nobody missed the old way enough to switch. That says more about us than you.
+    - Half the team works from home now. The other half eats at their desks. There is nothing left to organise.
+  budget_freeze:
+    - There is a budget freeze until further notice. Even the coffee beans need a signature now.
+    - All new tools are on hold this quarter. Please do not take it personally, we have also stopped buying pens.
+    - Our managing director froze every subscription after a bad month. Yours was one of many.
+  bad_timing:
+    - It is just bad timing. We are moving offices and nobody can think about lunch right now.
+    - We are in the middle of a big pitch. Ask me again when we have slept.
+    - The timing is wrong. Half the team is on holiday and the other half is pretending not to be.
+  next_year:
+    - Maybe next year. We will look at it again when we do the budget.
+    - Not now, perhaps in the new year. I have put it in my notes, which is where things go to wait.
+    - Let us talk again next year. I mean that, mostly.
+
+coworking:
+  price:
+    - Our margins are thin and our members are thinner on patience. The monthly fee did not fit.
+    - We charge members for desks, not for lunch software. At that price the maths does not work.
+    - I like it, but I cannot pass the cost on and I cannot eat it either. So to speak.
+    - It costs more than our coffee machine lease. The coffee machine has more fans.
+  missing_feature:
+    - We needed {need}. Without it I would be doing it by hand, and I did not open a coworking space to do sums.
+    - It all came down to {need}. Without it I end up doing the sums by hand on Fridays.
+    - Without {need} it is just another list on the community board. We have plenty of those.
+  quality:
+    - It went down on a Monday, which is when every member orders at once. They told me all about it.
+    - Too many orders came out wrong. A member got someone else's falafel and wrote a review about it.
+    - It kept logging people out. Our members already have twelve passwords and opinions about each.
+  no_need:
+    - Our members sort out lunch themselves. Freelancers like choosing, it turns out.
+    - Nobody asked for it after the first week. The food trucks outside are doing the job.
+    - Honestly, lunch is not our problem. Wi-Fi is our problem. Lunch is fine.
+  budget_freeze:
+    - The owners have frozen all new spending until the new floor is let. Sorry.
+    - We are not adding any services this quarter. The budget is promised to the new standing desks.
+    - No new subscriptions until occupancy is back up. I am told this is temporary.
+  bad_timing:
+    - We are renovating the kitchen, so it is bad timing. Lunch is chaos anyway for a month.
+    - The timing is off. We have a new community manager starting and she should decide.
+    - It is our busiest season for events. Ask me when the bunting is down.
+  next_year:
+    - Next year, maybe. Members change every few months and so do our plans.
+    - Let us revisit it next year when we open the second floor. It will be quieter then, or at least louder somewhere else.
+    - I would rather look at it again in the spring. Or next year. Spring next year.
+
+medical:
+  price:
+    - The practice partners felt the monthly fee was too high. They were very polite about it, which is how I know they meant it.
+    - It is more than we spend on lunch itself. Our accountant found that hard to explain to anyone.
+    - We are a small practice with a careful budget. This did not fit in it.
+  missing_feature:
+    - We needed {need}. With our patients and our hours, that part is not optional.
+    - It really came down to {need}. The team liked the rest, but that was the deciding point.
+    - Without {need} the nurses would still be juggling it on paper. I could not ask them to do both.
+  quality:
+    - It crashed during the morning rush. We do not have time for that between patients.
+    - There were too many errors with the orders. In a practice, small mistakes upset people quickly.
+    - The system was unreliable on our computers. Our IT man sighed for a whole week.
+  no_need:
+    - On reflection we manage fine as we are. Most of the team brings lunch from home.
+    - Lunch is not really a problem for us. Patients are, but that is a different product.
+    - We realised nobody really wants to change the routine. The routine is a sandwich.
+  budget_freeze:
+    - Unfortunately our budget is frozen until the end of the quarter. It was lovely meeting you.
+    - The partners have paused all new expenses for now. Please do not take it personally.
+    - There is no budget for new tools this year, I am afraid. We even postponed the new chairs.
+  bad_timing:
+    - It is just not the right time for us. We are short of staff this winter.
+    - The timing is difficult. We have an inspection coming up and nothing else gets a look in.
+    - We are changing our booking system, so everything else waits. Sorry to be a bother.
+  next_year:
+    - Perhaps next year, when things are calmer. Do keep in touch.
+    - We would like to look at it again next year. Really, we would.
+    - Maybe in the new year. I will mention it at the next partners' meeting, the one after this one.

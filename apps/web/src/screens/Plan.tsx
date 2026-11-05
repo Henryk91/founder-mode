@@ -1,4 +1,10 @@
-import type { ChannelId, PlanIssue, PlayerView, WeekPlan } from '@founder-mode/engine'
+import {
+  outreachLines,
+  outreachTotal,
+  type PlanIssue,
+  type PlayerView,
+  type WeekPlan,
+} from '@founder-mode/engine'
 import { useContext, useEffect, useRef } from 'react'
 import { FounderNote } from '../components/FounderNote'
 import { LeisureUpkeep, leisurePlanHours } from '../components/Leisure'
@@ -55,7 +61,8 @@ export function hoursByActivity(
 ): Record<Activity, number> {
   const { costs } = view
   const sales =
-    sum(Object.values(p.outreach).map((o) => o.hours)) +
+    outreachTotal(p) +
+    (p.askWhy?.length ?? 0) * (costs.askWhyHours ?? 0) +
     p.demos.length * costs.demoHours +
     p.followUps.length * costs.followUpHours
   const build = sum(Object.values(p.build)) + p.bugFixHours + leisurePlanHours(view, p.bookings)
@@ -78,9 +85,10 @@ function sectionHours(view: PlayerView, p: WeekPlan): Record<SectionId, number> 
       sum(Object.values(p.presales)) * costs.presaleHoursPerBatch +
       trialsHours(view, p.bookings),
     build: sum(Object.values(p.build)) + p.bugFixHours + leisurePlanHours(view, p.bookings),
-    sell: sum(Object.values(p.outreach).map((o) => o.hours)),
+    sell: outreachTotal(p),
     demos:
       p.demos.length * costs.demoHours +
+      (p.askWhy?.length ?? 0) * (costs.askWhyHours ?? 0) +
       p.followUps.length * costs.followUpHours +
       p.chase.length * costs.chaseHours,
     roster: rosterHours(view, p.bookings),
@@ -104,14 +112,21 @@ function summaries(view: PlayerView, p: WeekPlan, stage: Voice): Record<SectionI
   const landing = Object.values(p.landing).filter((b) => b > 0).length
   const batches = sum(Object.values(p.presales))
   const features = view.product.features.filter((f) => (p.build[f.id] ?? 0) > 0).map((f) => f.name)
-  const outreach = Object.entries(p.outreach)
-    .filter(([, o]) => o.hours > 0)
-    .map(([id, o]) =>
+  // Plan 7: one entry per market, naming every channel with hours there.
+  const lines = outreachLines(
+    p,
+    view.segments.map((s) => s.id),
+  )
+  const outreach = view.segments.flatMap((seg) => {
+    const used = lines.filter((l) => l.segmentId === seg.id)
+    if (used.length === 0) return []
+    return [
       label('plan.sum.outreach', stage, {
-        channel: label(`channel.${o.channel}`, stage),
-        segment: segment(id),
+        channel: used.map((l) => label(`channel.${l.channel}`, stage)).join(' + '),
+        segment: segment(seg.id),
       }),
-    )
+    ]
+  })
   const members = view.team.members
   // Nothing under way in hiring: the line then names the freelancer alone, if there is one.
   const idle =
@@ -153,6 +168,9 @@ function summaries(view: PlayerView, p: WeekPlan, stage: Voice): Record<SectionI
       ...(p.demos.length > 0 ? [count('plan.sum.demos', stage, p.demos.length)] : []),
       ...(p.followUps.length > 0 ? [count('plan.sum.followUps', stage, p.followUps.length)] : []),
       ...(p.chase.length > 0 ? [count('plan.sum.chase', stage, p.chase.length)] : []),
+      ...((p.askWhy?.length ?? 0) > 0
+        ? [count('plan.sum.askWhy', stage, p.askWhy?.length ?? 0)]
+        : []),
     ]),
     team: freelanceLine ? (idle ? freelanceLine : `${team}, ${freelanceLine}`) : team,
     roster: rosterSummary(view, p.bookings, stage),
@@ -698,6 +716,10 @@ function BuildBody({ free }: { free: number }) {
   )
 }
 
+/**
+ * Plan 7: each market is one card with a row per channel: its stepper and how tired the market is
+ * of that channel for the coming week.
+ */
 function SellBody({ free }: { free: number }) {
   const view = useGame((s) => s.view)!
   const outreach = useGame((s) => s.plan.outreach)
@@ -706,35 +728,39 @@ function SellBody({ free }: { free: number }) {
   return (
     <>
       {view.segments.map((seg) => {
-        const out = outreach[seg.id]
-        const channel: ChannelId = out?.channel ?? seg.lastChannel ?? view.channels[0] ?? 'phone'
-        const hours = out?.hours ?? 0
+        const out = outreach[seg.id] ?? {}
+        const total = sum(Object.values(out).map((h) => h ?? 0))
         return (
-          <Market
-            key={seg.id}
-            label={seg.name}
-            control={
-              <Stepper
-                stage={stage}
-                value={hours}
-                what={label('stepper.what.outreach', stage, { segment: seg.name })}
-                max={hours + free}
-                display={label('unit.hours', stage, { n: hours })}
-                onChange={(n) => setOutreach(seg.id, channel, n)}
-              />
-            }
-            choices={view.channels.map((c) => (
-              <button
-                key={c}
-                type="button"
-                aria-pressed={c === channel}
-                className={`${styles.chip} ${c === channel ? styles.chipOn : ''}`}
-                onClick={() => setOutreach(seg.id, c, hours)}
-              >
-                {label(`channel.${c}`, stage)}
-              </button>
-            ))}
-          />
+          <div key={seg.id} className={`${plan.market} ${plan.marketStack}`} data-market={seg.id}>
+            <Row
+              label={seg.name}
+              note={total > 0 ? label('unit.hours', stage, { n: total }) : undefined}
+            />
+            {view.channels.map((c) => {
+              const hours = out[c] ?? 0
+              const tired = seg.channelTiredness[c]
+              const name = label(`channel.${c}`, stage)
+              return (
+                <Row
+                  key={c}
+                  label={name}
+                  note={tired ? label(`plan.tired.${tired}`, stage) : undefined}
+                >
+                  <Stepper
+                    stage={stage}
+                    value={hours}
+                    what={label('stepper.what.channel', stage, {
+                      channel: name,
+                      segment: seg.name,
+                    })}
+                    max={hours + free}
+                    display={label('unit.hours', stage, { n: hours })}
+                    onChange={(n) => setOutreach(seg.id, c, n)}
+                  />
+                </Row>
+              )
+            })}
+          </div>
         )
       })}
       <HintLine term="sell" hint={label('plan.hint.sell', stage)} />
@@ -789,6 +815,13 @@ function DemosBody({ free }: { free: number }) {
         <Writing>
           {count('plan.chase.booked', stage, p.chase.length, {
             hours: hours(p.chase.length * costs.chaseHours),
+          })}
+        </Writing>
+      )}
+      {(p.askWhy?.length ?? 0) > 0 && (
+        <Writing>
+          {count('plan.askWhy.booked', stage, p.askWhy?.length ?? 0, {
+            hours: hours((p.askWhy?.length ?? 0) * (costs.askWhyHours ?? 0)),
           })}
         </Writing>
       )}

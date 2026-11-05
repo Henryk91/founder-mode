@@ -121,6 +121,15 @@ sales:
     chancePerFit: 0
     chancePerBug: 0
     demoBonus: 0
+  # Plan 7: reasons for losses. About a fifth say why unprompted; asking costs an hour within four
+  # weeks, two thirds answer the next week. Honesty falls with politeness: blunt markets about
+  # 0.85 to 0.9, polite ones 0.55 to 0.65 (est.), otherwise a softer reason.
+  losses:
+    unpromptedShare: 0.2
+    answerShare: 0.67
+    askHours: 1
+    askWeeks: 4
+    honesty: { min: 0.35, max: 0.92 }
 
 team:
   searchHours: 6
@@ -332,7 +341,8 @@ modes:
         - { week: 53, centsPerWeek: 74250 }
     sales:
       # Markets run out of new leads: response falls with the share of companies already found.
-      marketSaturation: { floor: 0.3 }
+      # Plan 7 rounds 1 and 2: floor was 0.3 (fair channel tiredness put the careful bot at 47.8%).
+      marketSaturation: { floor: 0.2 }
       # A channel wears out after 24 h a week over three weeks (12 in the 60 week game), so a
       # salesperson beside the founder is not selling only in worn out channels (C3, plan 3.1).
       saturationHours: 24

@@ -6,3 +6,6 @@ coverage
 .vite
 *.tsbuildinfo
 packages/bots/scratch/
+
+# Raw 3D asset packs (CC0), not committed
+tools/assets-raw/

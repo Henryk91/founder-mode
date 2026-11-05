@@ -1,5 +1,6 @@
 import type { Scenario } from '@founder-mode/content'
 import {
+  outreachTotal,
   assetsEconomics,
   bookingTotals,
   createGame,
@@ -460,7 +461,7 @@ export function runGame(real: Scenario, strategy: Strategy, seed: string): RunRe
     }
     firstReport ??= result.report
     hours += result.report.plannedHours
-    for (const o of Object.values(plan.outreach)) outreachHours += o.hours
+    outreachHours += outreachTotal(plan)
     minEnergy = Math.min(minEnergy, state.founder.energy)
     peak = Math.max(peak, monthlyRevenue(state))
     peakCustomers = Math.max(

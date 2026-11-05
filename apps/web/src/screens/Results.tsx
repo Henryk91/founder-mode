@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { InterviewView, PlayerView, ReportEntry, WeekReport } from '@founder-mode/engine'
+import { LossReason } from '../components/Losses'
 import { formatEnergy, formatEuro } from '../format'
 import { count, label, type LabelKey, type Voice, voiceOf } from '../labels'
 import { useGame } from '../useGame'
@@ -704,7 +705,7 @@ export function Results() {
   )
 }
 
-function WeekSummary({ report, view }: { report: WeekReport; view: PlayerView }) {
+export function WeekSummary({ report, view }: { report: WeekReport; view: PlayerView }) {
   const stage = voiceOf(view)
   const groups = groupWeek(report, view, stage)
   return (
@@ -770,7 +771,21 @@ export function groupWeek(report: WeekReport, view: PlayerView, stage: Voice): [
   }
   report.entries.forEach((e, i) => {
     const [group, priority] = place(e)
-    lines[group].push({ key: `e${i}`, priority, node: entryText(e, view) })
+    // Plan 7: a loss shows what they said, or no reason with Ask why.
+    const lossId = 'lossId' in e ? e.lossId : undefined
+    const loss = lossId ? view.losses.find((l) => l.id === lossId) : undefined
+    lines[group].push({
+      key: `e${i}`,
+      priority,
+      node: loss ? (
+        <>
+          <div>{entryText(e, view)}</div>
+          <LossReason loss={loss} view={view} />
+        </>
+      ) : (
+        entryText(e, view)
+      ),
+    })
   })
   const bySegment = new Map<string, InterviewView[]>()
   for (const iv of report.interviews) {

@@ -2,12 +2,13 @@ import type {
   ChannelId,
   ContractKind,
   GameMode,
+  LossReasonKind,
   MessageLook,
   Scenario,
   TeamRoleId,
 } from '@founder-mode/content'
 
-export type { GameMode, Scenario, TeamRoleId }
+export type { GameMode, LossReasonKind, Scenario, TeamRoleId }
 
 export type SegmentId = string
 export type FeatureId = string
@@ -69,6 +70,8 @@ export type GameState = {
     teamSkills: Record<string, number>
     /** Funding (long mode): each investor's appetite, and the investors' confidence (0 to 1). */
     funding: HiddenFunding
+    /** Plan 7: the real cause of every loss, by loss id (and the feature, when one was missing). */
+    lossCauses?: Record<string, { cause: LossCause; featureId: string | null }>
     /** Tourism: each segment's demand at peak and season curve, and next week's true weather. */
     bookings: HiddenBookings | null
   }
@@ -97,6 +100,13 @@ export type GameState = {
   ledger: WeekLedger[]
   /** Everything needed to rebuild this state from the seed. */
   actionLog: LoggedAction[]
+  /**
+   * Plan 7: the founder's outreach hours as they counted for finding leads, per `segment/channel`,
+   * in the weeks still inside the saturation window. Missing means none.
+   */
+  outreachWindow?: { week: number; hours: Record<string, number> }[]
+  /** Plan 7: every lost lead and every customer who left, oldest first. Missing means none. */
+  losses?: Loss[]
   /** Random outcomes with their expected values, for the post-mortem. */
   eventLog: LoggedEvent[]
   /** Milestones reached, in the order they were reached. */
@@ -710,6 +720,48 @@ export type Lead = {
 /** `price`: the trial ended in a no that the lead put down to the price. */
 export type LostReason = 'declined' | 'price' | 'silent' | 'refunded'
 
+/**
+ * Plan 7: why a lead was really lost or a customer really left (hidden during the run; the
+ * post-mortem shows it against what they said).
+ */
+export type LossCause =
+  'price' | 'missing_feature' | 'quality' | 'no_need' | 'silent' | 'stopped_paying'
+
+/** What a lost lead or customer said: a real cause or a softer reason, with their words. */
+export type StatedReason = {
+  kind: LossReasonKind
+  /** The feature they named, when they said one was missing. */
+  featureId: string | null
+  text: string
+  /** Week the reason reached the player: the loss's week, or the week after asking. */
+  week: number
+  /** Said when asked, not with the loss. */
+  asked: boolean
+}
+
+/** Plan 7: a lost lead or a customer who left, as the player knows it. */
+export type Loss = {
+  id: string
+  kind: 'lead' | 'customer'
+  /** The lead's or the customer's id. */
+  refId: string
+  name: string
+  segmentId: SegmentId
+  /** Week of the loss. */
+  week: number
+  /** The lead's lost tag, or for a customer `cancelled` or `stopped_paying`. */
+  tag: LostReason | 'cancelled' | 'stopped_paying'
+  /** A customer's weeks as a paying customer; null for a lead. */
+  paidWeeks: number | null
+  /** Whether a reason can be asked for: not from a lead that went silent or a customer who stopped paying. */
+  askable: boolean
+  stated: StatedReason | null
+  /** Week the player asked why, or null. */
+  askedWeek: number | null
+  /** Asked, and no answer came. */
+  unanswered: boolean
+}
+
 export type Customer = {
   id: string
   leadId: string
@@ -1066,6 +1118,16 @@ export type MoneyMovement = { kind: MoneyMovementKind; amountCents: number }
 // ---------------------------------------------------------------------------
 // Player input
 
+/** Outreach hours per channel in one market. Missing or 0: no outreach on that channel. */
+export type OutreachHours = Partial<Record<ChannelId, number>>
+
+/**
+ * How tired a market is of one channel for the coming week, from the founder's own outreach there
+ * in the window (plan 7): under half the window's budget used, half to all of it, or over it, when
+ * extra hours count at a fraction.
+ */
+export type ChannelTiredness = 'fresh' | 'tiring' | 'worn_out'
+
 export type WeekPlan = {
   /** Number of interviews per segment. */
   interviews: Record<SegmentId, number>
@@ -1073,10 +1135,15 @@ export type WeekPlan = {
   build: Record<FeatureId, number>
   /** Hours spent fixing bugs. */
   bugFixHours: number
-  /** Outreach per segment: one channel and the hours spent on it. */
-  outreach: Record<SegmentId, { channel: ChannelId; hours: number }>
+  /**
+   * Outreach hours per segment and channel (plan 7: any number of channels in one week). Before
+   * engine 0.15.0 a segment held one channel (`{ channel, hours }`); `migrateSave` converts those.
+   */
+  outreach: Record<SegmentId, OutreachHours>
   /** Ids of leads in the demo stage to hold a demo with this week. */
   demos: string[]
+  /** Plan 7: ids of losses to ask why (one founder hour each). Missing means none. */
+  askWhy?: string[]
   restHours: number
   /** Personal savings to move into the company this week. */
   transferToCompanyCents: number
@@ -1170,6 +1237,8 @@ export type PlanIssue =
   | { code: 'game_over' }
   | { code: 'invalid_number'; field: string }
   | { code: 'unknown_segment'; segmentId: string }
+  /** Plan 7: a loss that cannot be asked about (unknown, not askable, asked, answered, too old). */
+  | { code: 'invalid_ask'; lossId: string }
   | { code: 'unknown_feature'; featureId: string }
   | { code: 'feature_shipped'; featureId: string }
   | { code: 'build_exceeds_remaining'; featureId: string; remainingHours: number }
@@ -1262,6 +1331,9 @@ export type PlayerView = {
     presaleMaxBatches: number
     presaleRefundWeeks: number
     followUpHours: number
+    /** Plan 7: hours to ask a lost lead or customer why, and the weeks it can be asked; null when off. */
+    askWhyHours: number | null
+    askWhyWeeks: number
     /** Outreach on one channel in one market works fully up to this many hours a week, on average over `saturationWeeks`. */
     saturationHours: number
     saturationWeeks: number
@@ -1299,6 +1371,8 @@ export type PlayerView = {
   channels: ChannelId[]
   product: ProductView
   leads: LeadView[]
+  /** Plan 7: every loss, newest first, with what they said. Empty in the bookings games. */
+  losses: LossView[]
   customers: CustomerView[]
   /** Customers won over the run, and of those the ones who left (churned or stopped paying). */
   customersWon: number
@@ -1409,6 +1483,15 @@ export type InvoiceView = {
   overdueWeeks: number
   paidWeek: number | null
   canChase: boolean
+}
+
+/** Plan 7: a loss as the player sees it. Never the real cause. */
+export type LossView = Loss & {
+  segmentName: string
+  /** Ask why is possible this week. */
+  canAsk: boolean
+  /** Last week in which it can still be asked. */
+  askUntilWeek: number
 }
 
 export type MessageView = {
@@ -2003,8 +2086,13 @@ export type SegmentView = {
   presaleBatchesLeft: number
   /** Landing page tests still allowed in this market (long mode), or null for no limit. */
   landingTestsLeft: number | null
-  /** Outreach channel picked for this segment in the latest plan that had one, else null. */
+  /**
+   * The channel with the most outreach hours for this segment in the latest plan that had any
+   * (the first in channel order on a tie), else null.
+   */
   lastChannel: ChannelId | null
+  /** Plan 7: how tired this market is of each channel for the coming week. Empty in bookings games. */
+  channelTiredness: Partial<Record<ChannelId, ChannelTiredness>>
 }
 
 export type InterviewView = {
@@ -2050,7 +2138,14 @@ export type ReportEntry =
   | { kind: 'revenue'; amountCents: number; customers: number }
   | { kind: 'invoices_issued'; amountCents: number; count: number }
   /** `serviceStopped`: this write off ended the customer (they stopped paying). */
-  | { kind: 'invoice_written_off'; amountCents: number; name: string; serviceStopped: boolean }
+  | {
+      kind: 'invoice_written_off'
+      amountCents: number
+      name: string
+      serviceStopped: boolean
+      /** Plan 7: the loss record, when the service stopped. */
+      lossId?: string
+    }
   | { kind: 'ad_spend'; amountCents: number }
   | {
       kind: 'landing_result'
@@ -2207,7 +2302,15 @@ export type ReportEntry =
       /** Some of the hours went beyond the channel's saturation and found fewer people. */
       wornOut: boolean
     }
-  | { kind: 'lead_update'; change: LeadChange; leadId: string; name: string; segmentId: SegmentId }
+  | {
+      kind: 'lead_update'
+      change: LeadChange
+      leadId: string
+      name: string
+      segmentId: SegmentId
+      /** Plan 7: the loss record, when this update lost the lead. */
+      lossId?: string
+    }
   /** Leads that walked in at the office (`place` is the office stage's name). */
   | { kind: 'walk_in_leads'; segmentId: SegmentId; count: number; place: string }
   /** Plan 3: an office stage's offer accepted; the move completes in `readyWeek`. */
@@ -2235,6 +2338,8 @@ export type ReportEntry =
       segmentId: SegmentId
       /** The customer said the price was why they left. */
       overPrice: boolean
+      /** Plan 7: the loss record of this customer (stated reason, Ask why). */
+      lossId?: string
     }
 
 // ---------------------------------------------------------------------------
@@ -2592,6 +2697,23 @@ export type PriceSeasonLine = PriceSeasonTotals & {
   before: PriceSeasonTotals | null
 }
 
+/** Plan 7: one market's stated reasons against the real causes, for the post-mortem. */
+export type LossReasonsLine = {
+  segmentId: SegmentId
+  /** Every loss in the market: lost leads and customers who left. */
+  losses: number
+  /** Losses that gave no reason, unprompted or asked. */
+  unsaid: number
+  /** Each reason said, most often first, with the real causes behind it, most often first. */
+  said: {
+    kind: LossReasonKind
+    count: number
+    real: { cause: LossCause; featureId: string | null; count: number }[]
+  }[]
+  /** Real causes of the losses that gave no reason, most often first. */
+  unsaidReal: { cause: LossCause; featureId: string | null; count: number }[]
+}
+
 export type PostMortem = {
   leisure?: LeisureView
   scenarioId: string
@@ -2653,6 +2775,11 @@ export type PostMortem = {
   gear?: GearLine[]
   /** Plan 6: each price season of the run, oldest first. Absent without price elasticity. */
   priceSeasons?: PriceSeasonLine[]
+  /**
+   * Plan 7: per market with losses, what lost leads and customers said against what was really
+   * behind it. Absent where losses give no reasons (the bookings games).
+   */
+  lossReasons?: LossReasonsLine[]
   /** Leads that walked in at an office, and the customers they became, per office and market. */
   walkIns: { place: string; segmentId: SegmentId; leads: number; customers: number }[]
   /**

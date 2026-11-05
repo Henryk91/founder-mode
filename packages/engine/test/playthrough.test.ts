@@ -78,7 +78,7 @@ describe('a full run with product and sales', () => {
     const s = play(newGame('no-build'), 40, (x) => ({
       ...informedPlan(x),
       build: {},
-      outreach: { small_offices: { channel: 'cold_email', hours: 30 } },
+      outreach: { small_offices: { cold_email: 30 } },
       demos: x.leads
         .filter((l) => l.stage === 'demo' && l.silentSinceWeek === null)
         .slice(0, 5)

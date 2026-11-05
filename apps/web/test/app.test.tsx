@@ -331,19 +331,32 @@ describe('playtest fixes', () => {
     expect(html(store)).toContain('Now: €600 per month')
   })
 
-  it('keeps the outreach channel from week to week', () => {
+  it('shows every channel of every market with how tired it is (plan 7)', () => {
     const store = fresh('channel')
-    store.getState().setOutreach('coworking', 'in_person', 5)
+    store.getState().setOutreach('coworking', 'in_person', 20)
+    store.getState().setOutreach('coworking', 'phone', 4)
+    expect(store.getState().plan.outreach).toEqual({ coworking: { in_person: 20, phone: 4 } })
     store.getState().endWeek()
     store.getState().dismissReport()
     expect(store.getState().plan.outreach).toEqual({})
     store.getState().toggleSection('sell')
     const page = html(store)
-    // The coworking row shows In person selected, the others the first channel.
-    const pressed = [...page.matchAll(/aria-pressed="true"[^>]*>([^<]+)</g)]
-      .map((m) => m[1])
-      .filter((text) => text !== 'No test')
-    expect(pressed).toEqual(['Cold email', 'In person', 'Cold email'])
+    const view = store.getState().view!
+    // A stepper per market and channel.
+    for (const seg of view.segments) {
+      for (const c of ['Cold email', 'Phone', 'In person']) {
+        expect(page).toContain(`aria-label="More hours for ${seg.name} (${c})"`)
+      }
+    }
+    // 20 of the 36 h window used in person: over half. The phone's 4 h and the rest are fresh.
+    const coworking = view.segments.find((s) => s.id === 'coworking')!
+    expect(coworking.channelTiredness).toEqual({
+      cold_email: 'fresh',
+      phone: 'fresh',
+      in_person: 'tiring',
+    })
+    expect(page.match(/>tiring</g)?.length).toBe(1)
+    expect(page.match(/>fresh</g)?.length).toBe(view.segments.length * 3 - 1)
   })
 })
 

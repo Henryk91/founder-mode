@@ -27,11 +27,12 @@ describe('accessible names', () => {
     const feature = store.getState().view!.product.features.find((f) => !f.shipped)!.name
     expect(page).toContain(`aria-label="More interviews with ${segment}"`)
     expect(page).toContain(`aria-label="Fewer interviews with ${segment}"`)
-    expect(page).toContain(`aria-label="More hours for ${segment}"`)
+    expect(page).toContain(`aria-label="More hours for ${segment} (Cold email)"`)
+    expect(page).toContain(`aria-label="More hours for ${segment} (In person)"`)
     expect(page).toContain(`aria-label="More pre-sale batches for ${segment}"`)
     expect(page).toContain(`aria-label="5 more hours on ${feature}"`)
     expect(page).toContain('aria-label="More rest hours"')
-    expect(page).toContain(`role="group" aria-label="Hours for ${segment}"`)
+    expect(page).toContain(`role="group" aria-label="Hours for ${segment} (Phone)"`)
     // No button is left with a bare "More" or "Less".
     expect(page).not.toMatch(/aria-label="(More|Less|Much more|Much less)"/)
   })

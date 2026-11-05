@@ -56,10 +56,7 @@ describe('outreach', () => {
     const runs = 200
     for (let i = 0; i < runs; i++) {
       const s = newGame(`outreach-${i}`)
-      const r = endWeek(
-        s,
-        plan({ outreach: { small_offices: { channel: 'cold_email', hours: 12 } } }),
-      )
+      const r = endWeek(s, plan({ outreach: { small_offices: { cold_email: 12 } } }))
       total += r.state.leads.length
       const entry = r.report.entries.find((e) => e.kind === 'new_leads')
       expect(entry).toMatchObject({ segmentId: 'small_offices', channel: 'cold_email' })
@@ -75,12 +72,13 @@ describe('outreach', () => {
 
   it('finds fewer leads per hour beyond the saturation hours on one channel', () => {
     // One week alone stays within 3 x 12 h; three weeks of 30 h on the same channel do not.
-    const inPerson = { coworking: { channel: 'in_person' as const, hours: 30 } }
+    const inPerson = { coworking: { in_person: 30 } }
     let s = newGame('window')
     for (let i = 0; i < 2; i++) s = endWeek(s, plan({ outreach: inPerson })).state
-    expect(recentOutreach(s).get('coworking/in_person')).toBe(60)
+    // Plan 7: the window holds hours as they counted, 30 and then 6 + 24 x 0.3.
+    expect(recentOutreach(s).get('coworking/in_person')).toBeCloseTo(43.2, 10)
     s = endWeek(s, plan()).state
-    expect(recentOutreach(s).get('coworking/in_person')).toBe(30)
+    expect(recentOutreach(s).get('coworking/in_person')).toBeCloseTo(13.2, 10)
     expect(effectiveHours(0, 10, 12, 0.3)).toBe(10)
     expect(effectiveHours(0, 20, 12, 0.3)).toBeCloseTo(12 + 8 * 0.3, 10)
     expect(effectiveHours(12, 5, 12, 0.3)).toBeCloseTo(1.5, 10)
@@ -88,7 +86,7 @@ describe('outreach', () => {
       let total = 0
       for (let i = 0; i < 200; i++) {
         const s = newGame(`sat-${i}`)
-        const out = { coworking: { channel: 'in_person' as const, hours } }
+        const out = { coworking: { in_person: hours } }
         total += endWeek(s, plan({ outreach: out })).state.leads.length
       }
       return total
@@ -101,7 +99,7 @@ describe('outreach', () => {
   it('gives every lead a distinct name without a number, even in a long run', () => {
     let s = newGame('names', richKantino())
     for (let i = 0; i < 59; i++) {
-      s = endWeek(s, plan({ outreach: { coworking: { channel: 'in_person', hours: 50 } } })).state
+      s = endWeek(s, plan({ outreach: { coworking: { in_person: 50 } } })).state
     }
     const names = s.leads.map((l) => l.name)
     expect(new Set(names).size).toBe(names.length)
@@ -159,7 +157,7 @@ describe('outreach', () => {
   })
 
   it('does not run without hours', () => {
-    const r = endWeek(newGame(), plan({ outreach: { coworking: { channel: 'phone', hours: 0 } } }))
+    const r = endWeek(newGame(), plan({ outreach: { coworking: { phone: 0 } } }))
     expect(r.state.leads).toEqual([])
     expect(r.report.entries.some((e) => e.kind === 'new_leads')).toBe(false)
   })
@@ -385,9 +383,9 @@ describe('lead names', () => {
         s,
         plan({
           outreach: {
-            small_offices: { channel: 'cold_email', hours: 15 },
-            coworking: { channel: 'in_person', hours: 15 },
-            medical: { channel: 'phone', hours: 15 },
+            small_offices: { cold_email: 15 },
+            coworking: { in_person: 15 },
+            medical: { phone: 15 },
           },
         }),
       ).state

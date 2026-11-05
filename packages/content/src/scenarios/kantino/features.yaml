@@ -5,45 +5,53 @@
   buildHours: 40
   bugsOnShip: { min: 2, max: 3 }
   mention: Honestly, just one list where everyone adds their lunch would already be a miracle.
+  missing: one list where everyone adds their lunch
 
 - id: invoice_export
   name: Invoice export for accounting
   buildHours: 25
   bugsOnShip: { min: 1, max: 2 }
   mention: Our accountant would need a proper invoice at the end of the month, or she will hunt me down.
+  missing: a proper invoice for the accountant
 
 - id: chat_integration
   name: Order reminders in team chat
   buildHours: 20
   bugsOnShip: { min: 1, max: 2 }
   mention: Nobody reads email here. If it does not ping them in the team chat, it does not exist.
+  missing: reminders in the team chat
 
 - id: multi_site
   name: Several locations in one account
   buildHours: 45
   bugsOnShip: { min: 2, max: 3 }
   mention: We run three buildings. I am not logging into three accounts every morning.
+  missing: all our buildings in one account
 
 - id: member_billing
   name: Charge each member separately
   buildHours: 50
   bugsOnShip: { min: 2, max: 3 }
   mention: Each tenant has to pay for their own lunch. We are a coworking space, not a charity.
+  missing: each member paying for their own lunch
 
 - id: allergy_filter
   name: Allergy and diet filter
   buildHours: 30
   bugsOnShip: { min: 1, max: 2 }
   mention: Half the team has an allergy and the other half has opinions. It needs to filter for that.
+  missing: a filter for allergies and diets
 
 - id: shift_schedule
   name: Orders by shift
   buildHours: 35
   bugsOnShip: { min: 1, max: 2 }
   mention: The early shift eats at eleven and the late shift at two. One order a day does not work for us.
+  missing: orders for each shift
 
 - id: supplier_portal
   name: Portal for restaurants
   buildHours: 60
   bugsOnShip: { min: 2, max: 3 }
   mention: It would be nice if the restaurants could log in too, I suppose. Not that I would pay for it.
+  missing: the restaurants logging in themselves

@@ -1,6 +1,7 @@
 import type { GameMode, Scenario } from '@founder-mode/content'
 import {
   emptyPlan,
+  outreachLines,
   type ChannelId,
   type PlayerView,
   type WeekPlan,
@@ -65,6 +66,25 @@ export class PlanBuilder {
   }
 
   /** Follows up with open leads, silent ones first, up to `max` of them, optionally in one market. */
+  /**
+   * Plan 7: asks up to `max` lost leads or customers why, newest first, in one market or all, as
+   * long as the hours allow. Returns how many.
+   */
+  askWhy(max: number, segmentId?: string): number {
+    const hours = this.view.costs.askWhyHours
+    if (hours === null) return 0
+    let n = 0
+    for (const loss of this.view.losses) {
+      if (n >= max || this.free < hours) break
+      if (!loss.canAsk || (segmentId !== undefined && loss.segmentId !== segmentId)) continue
+      if (this.plan.askWhy?.includes(loss.id)) continue
+      this.plan.askWhy = [...(this.plan.askWhy ?? []), loss.id]
+      this.free -= hours
+      n++
+    }
+    return n
+  }
+
   followUp(max: number, segmentId?: string): number {
     const open = this.view.leads.filter(
       (l) =>
@@ -156,15 +176,12 @@ export class PlanBuilder {
     return h
   }
 
-  /** One channel per segment; a second call for the same segment adds hours on its channel. */
+  /** Adds outreach hours on one channel in one market (plan 7: any channels in one week). */
   outreach(segmentId: string, channel: ChannelId, hours: number): number {
     const h = Math.max(0, Math.min(hours, this.free))
     if (h === 0) return 0
-    const prev = this.plan.outreach[segmentId]
-    this.plan.outreach[segmentId] = {
-      channel: prev?.channel ?? channel,
-      hours: (prev?.hours ?? 0) + h,
-    }
+    const prev = this.plan.outreach[segmentId] ?? {}
+    this.plan.outreach[segmentId] = { ...prev, [channel]: (prev[channel] ?? 0) + h }
     this.free -= h
     return h
   }
@@ -245,11 +262,12 @@ export function segmentNotes(
 /**
  * Tracks new leads per outreach hour by segment and channel, from week reports. Hours are counted
  * as they work for finding leads: beyond the scenario's saturation window an hour counts for less,
- * so a channel that was worn out does not look bad for good.
+ * so a channel that was worn out does not look bad for good. Plan 7: the window holds the hours as
+ * they counted, as the engine's does, which a player can work out from their own plans.
  */
 export class ChannelLog {
   private readonly stats = new Map<string, { hours: number; leads: number }>()
-  /** Founder outreach hours per week, oldest first, as `segment/channel` to hours. */
+  /** Founder outreach hours per week as they counted, oldest first, as `segment/channel` to hours. */
   private readonly weeks: Map<string, number>[] = []
 
   constructor(private readonly sales: Scenario['sales']) {}
@@ -266,7 +284,7 @@ export class ChannelLog {
 
   /**
    * Hours that would count for finding leads if `hours` were spent on the channel now, after
-   * `already` hours planned on it this week by someone else.
+   * `already` counted hours planned on it this week by someone else.
    */
   effective(segmentId: string, channel: ChannelId, hours: number, already = 0): number {
     const before = this.recentHours(segmentId, channel) + already
@@ -274,20 +292,27 @@ export class ChannelLog {
     return full + (hours - full) * this.sales.saturatedFactor
   }
 
+  /** Hours that still count fully on a channel this week, after `already` counted hours. */
+  freshHours(segmentId: string, channel: ChannelId, already = 0): number {
+    return Math.max(0, this.limit - this.recentHours(segmentId, channel) - already)
+  }
+
   record(plan: WeekPlan, report: WeekReport): void {
     const week = new Map<string, number>()
+    for (const o of outreachLines(plan)) {
+      const key = `${o.segmentId}/${o.channel}`
+      week.set(key, this.effective(o.segmentId, o.channel, o.hours))
+    }
+    // The founder's lines come first in the report, one per market and channel.
+    const seen = new Set<string>()
     for (const e of report.entries) {
       if (e.kind !== 'new_leads') continue
-      const out = plan.outreach[e.segmentId]
-      if (!out || out.channel !== e.channel) continue
       const key = `${e.segmentId}/${e.channel}`
-      const counted = this.effective(e.segmentId, e.channel, out.hours)
+      const counted = week.get(key)
+      if (counted === undefined || seen.has(key)) continue
+      seen.add(key)
       const s = this.stats.get(key) ?? { hours: 0, leads: 0 }
       this.stats.set(key, { hours: s.hours + counted, leads: s.leads + e.count })
-    }
-    for (const [seg, out] of Object.entries(plan.outreach)) {
-      const key = `${seg}/${out.channel}`
-      week.set(key, (week.get(key) ?? 0) + out.hours)
     }
     this.weeks.push(week)
   }

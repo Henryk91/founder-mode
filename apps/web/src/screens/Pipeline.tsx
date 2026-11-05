@@ -1,4 +1,5 @@
 import type { LeadStage, LeadView, PlayerView } from '@founder-mode/engine'
+import { LostList } from '../components/Losses'
 import { formatEuro } from '../format'
 import { count, label, type LabelKey, type Voice, voiceOf, stageOf } from '../labels'
 import { useGame } from '../useGame'
@@ -174,7 +175,8 @@ export function Pipeline() {
           </div>
         )}
       </section>
-      {lost.length > 0 && (
+      {view.costs.askWhyHours !== null && <LostList view={view} />}
+      {view.costs.askWhyHours === null && lost.length > 0 && (
         <section className={styles.card}>
           <h3 className={styles.subtitle}>
             {label('pipeline.group.lost', stage)} ({lost.length})

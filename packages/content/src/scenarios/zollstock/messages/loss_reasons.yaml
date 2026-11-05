@@ -1,0 +1,95 @@
+# Plan 7: what a lost lead or a customer who cancels says, per segment and reason. The first four
+# kinds are real causes, the last three the softer things people say instead. `{need}` is the
+# missing feature in their own words (features.yaml `missing`). 3 to 5 texts each, 2 to 4
+# sentences, dry. Small trade crews, contractors and property maintenance firms, in that order:
+# people who work with their hands and have little patience for software.
+
+small_crews:
+  price:
+    - Too dear. For that money I can buy a decent drill every month and the drill does not need updates.
+    - I did the sums on the back of a quote. Your price lost.
+    - It is a lot for a firm of four. My accountant laughed, and he never laughs.
+  missing_feature:
+    - I needed {need}. Without it I am back to the wall calendar, so I stayed with the wall calendar.
+    - It was {need}, plain and simple. The rest was fine, but that is the bit I use every day.
+    - Without {need} there was no deal. I do not have time to do half of it on paper and half on a phone.
+  quality:
+    - It froze on site twice. Once in a customer's kitchen, with the customer watching. Never again.
+    - Too buggy. My lads stopped opening it after it lost a whole Tuesday.
+    - It kept crashing on my old phone. I am not buying a new phone for an app.
+  no_need:
+    - Turns out I do not need it. We are four people and I can still shout.
+    - The pencil and the book are doing fine. I gave it a go, nobody missed it.
+    - Work comes in by word of mouth and I plan it in my head. Nothing to fix there.
+  budget_freeze:
+    - Money is tight this quarter. The van needs a new clutch first.
+    - No new spending until the big job pays. They are taking their time.
+    - I have frozen everything that is not tools or diesel. Sorry, mate.
+  bad_timing:
+    - Bad timing. We are flat out until the end of the month and I cannot learn anything new.
+    - Not now. My apprentice just left and I am doing two jobs.
+    - Wrong moment. It is the busy season, ask me when it rains.
+  next_year:
+    - Maybe next year. Ring me in January, I will be bored.
+    - Next year perhaps, when the new lad has settled in. He still thinks a spirit level is a drink.
+    - Let us talk next year. I mean it, probably.
+
+contractors:
+  price:
+    - The price did not stack up against what we save. We ran the numbers twice.
+    - Too expensive for what it does. We pay for software that pays for itself.
+    - Our office looked at the fee and said no. They also said no to the coffee machine, so do not feel bad.
+  missing_feature:
+    - We needed {need}. With several crews out at once, that is the whole point.
+    - It came down to {need}. Without it the site managers ring me anyway, so what is the app for?
+    - It did not have {need}. We are not running a one man band, and the tool should know that.
+  quality:
+    - It lost two jobs from the plan and a crew drove to the wrong site. That is a day's wages gone.
+    - Too many errors. The site managers stopped trusting it after the first week.
+    - It was slow and kept falling over. On site you need things that work in the rain.
+  no_need:
+    - On reflection our planner and her whiteboard do the job. She was not keen on change either.
+    - We do not have the problem we thought we had. The crews know where to go.
+    - We tried it and went back to the old way within a week. Nobody complained about going back.
+  budget_freeze:
+    - All new spending is frozen until the next big contract is signed. That could be a while.
+    - The bank wants us to tighten up for a while. New software is first on the list to wait.
+    - We have a spending freeze until the end of the quarter. Even overtime needs a signature.
+  bad_timing:
+    - The timing is wrong. We are in the middle of a large refurbishment and nobody has a spare hour.
+    - Bad moment, we are taking on two new crews. Too many new things at once.
+    - Not now. Our office manager is on leave and she decides these things.
+  next_year:
+    - Maybe next year, when we review our systems. We review them every year and change nothing, but still.
+    - Let us look at it again next year. Put me down for a call in February.
+    - Next year perhaps. This one is already spoken for.
+
+maintenance:
+  price:
+    - The monthly fee was more than we could justify to the owners. They count every euro.
+    - It is too expensive for our margins. Maintenance pays slowly and not very well.
+    - Our managing director felt the price was too high for what we would use. He was very nice about it.
+  missing_feature:
+    - We needed {need}. The landlords ask for it and we cannot keep doing it by hand.
+    - It came down to {need}, really. That is what the contracts are judged on.
+    - Without {need} the clipboards stay. The clipboards are what we wanted rid of.
+  quality:
+    - It had too many problems in the trial. A checklist vanished halfway through a building.
+    - Our caretakers found it unreliable. Once they stop trusting it, they never open it again.
+    - It crashed on the tablets on site more than once. We cannot explain that to a landlord.
+  no_need:
+    - We found our current routine works well enough. The caretakers know the buildings by heart.
+    - On reflection we do not really need it. The same buildings, the same people, the same jobs.
+    - It turned out the landlords are happy with what we send now. So there was no reason to change.
+  budget_freeze:
+    - There is a budget freeze until the new contracts come in. I hope you understand.
+    - The owners have stopped all new subscriptions for now. It is not about you.
+    - We are under a spending freeze this quarter. Please keep in touch.
+  bad_timing:
+    - It is not the right time. We are taking over three new buildings and everyone is busy.
+    - The timing is unfortunate, we have an audit coming. Perhaps after that.
+    - We are short staffed this month. New things will have to wait.
+  next_year:
+    - Perhaps next year, when the contracts are renewed. We will know more about our budget then.
+    - We would like to look at it again next year. Do get in touch then.
+    - Maybe next year. I have put a note in the diary, the big one.

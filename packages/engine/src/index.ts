@@ -14,11 +14,21 @@ export { buildPostMortem, fundingEconomics } from './postmortem'
 export { bookingTotals } from './systems/bookings'
 export { assetsEconomics } from './systems/assets'
 export type { HireEconomics } from './systems/team'
-export { replay, saveProblem, toSave } from './save'
+export { migrateSave, replay, replayWithReports, saveProblem, toSave } from './save'
+export { channelTiredness } from './systems/sales'
+export { CHANNEL_ORDER, CHANNELS, outreachLines, outreachTotal } from './channels'
 export { scenarioHash } from './hash'
 
 export type {
   ChannelId,
+  ChannelTiredness,
+  Loss,
+  LossCause,
+  LossReasonKind,
+  LossReasonsLine,
+  LossView,
+  StatedReason,
+  OutreachHours,
   CandidateView,
   CustomerView,
   EndingId,

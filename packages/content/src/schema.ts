@@ -127,7 +127,39 @@ export const SalesConfigSchema = z.object({
   // Long mode (Phase 9): a market runs out of new leads. Outreach response there is multiplied by
   // max(floor, 1 - leads found there so far / the market's reachable companies). Absent: off.
   marketSaturation: z.object({ floor: Share }).optional(),
+  // Plan 7: reasons for losses. A lost lead or a customer who cancels gives a short reason
+  // unprompted with chance `unpromptedShare`. Asking why costs `askHours` founder hours, within
+  // `askWeeks` weeks of the loss, and gets an answer the next week with chance `answerShare`. A
+  // stated reason is the real cause with chance honesty.max - (honesty.max - honesty.min) *
+  // politeness, else a softer one. The texts are in `messages/loss_reasons.yaml`. Absent: off.
+  losses: z
+    .object({
+      unpromptedShare: Share,
+      answerShare: Share,
+      askHours: z.number().int().positive(),
+      askWeeks: z.number().int().positive(),
+      honesty: z.object({ min: Share, max: Share }),
+    })
+    .optional(),
 })
+
+/** Plan 7: what a lost lead or customer can say: a real cause, or a softer reason. */
+export const LOSS_REASON_KINDS = [
+  'price',
+  'missing_feature',
+  'quality',
+  'no_need',
+  'budget_freeze',
+  'bad_timing',
+  'next_year',
+] as const
+export const LossReasonKind = z.enum(LOSS_REASON_KINDS)
+export type LossReasonKind = z.infer<typeof LossReasonKind>
+// segment id -> reason kind -> 3 to 5 texts; `{need}` names a missing feature
+export const LossReasonsSchema = z.record(
+  Id,
+  z.record(LossReasonKind, z.array(z.string().min(1)).min(3).max(5)),
+)
 
 export const LandingConfigSchema = z.object({
   hours: z.number().int().positive(),
@@ -1517,6 +1549,9 @@ export const FeatureSchema = z.object({
   bugsOnShip: IntRange,
   // What an interviewee says when they ask for this feature in their own words.
   mention: z.string().min(1),
+  // Plan 7: how a lost lead or customer names this feature when it was what they missed, in their
+  // own words, to fill `{need}` in a loss reason. Absent: the feature's name.
+  missing: z.string().min(1).optional(),
 })
 
 export const CompanyNamePartsSchema = z.object({
@@ -1744,6 +1779,8 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
   features: z.array(FeatureSchema).min(1),
   events: z.array(EventSchema),
   interviewQuotes: InterviewQuotesSchema,
+  // Plan 7: what lost leads and customers say, per segment and reason (with `sales.losses`).
+  lossReasons: LossReasonsSchema.optional(),
   // segment id -> two word lists; a lead's name is one word from each, joined by a space
   companyNames: z.record(Id, CompanyNamePartsSchema),
   intro: z.object({ cards: z.array(IntroCardSchema).min(1) }),
@@ -2280,6 +2317,19 @@ export const ScenarioSchema = ScenarioFileSchema.extend({
         issue(`no quotes for ${seg.id}/${b.id}`, ['interviewQuotes'])
       }
     }
+  }
+  // Plan 7: loss reasons for every segment and kind once the scenario switches them on.
+  if (s.sales.losses) {
+    for (const seg of s.segments) {
+      for (const kind of LOSS_REASON_KINDS) {
+        if (!s.lossReasons?.[seg.id]?.[kind]?.length) {
+          issue(`no loss reasons for ${seg.id}/${kind}`, ['lossReasons'])
+        }
+      }
+    }
+  }
+  for (const segId of Object.keys(s.lossReasons ?? {})) {
+    if (!segmentIds.has(segId)) issue(`loss reasons for unknown segment ${segId}`, ['lossReasons'])
   }
 })
 

@@ -17,7 +17,8 @@ export function repeatPlan(last: WeekPlan, view: PlayerView): WeekPlan {
   }
   plan.bugFixHours = Math.min(last.bugFixHours, view.product.fixableHours)
   for (const [id, out] of Object.entries(last.outreach)) {
-    if (out.hours > 0) plan.outreach[id] = { ...out }
+    const kept = Object.fromEntries(Object.entries(out).filter(([, h]) => (h ?? 0) > 0))
+    if (Object.keys(kept).length > 0) plan.outreach[id] = kept
   }
   for (const seg of view.segments) {
     const budget = last.landing[seg.id] ?? 0

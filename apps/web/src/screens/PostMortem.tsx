@@ -203,6 +203,55 @@ export function PostMortem({ desk }: { desk: boolean }) {
     </section>
   )
 
+  // Plan 7: what lost leads and customers said, against what was really behind it.
+  const lossLines = pm.lossReasons ?? null
+  const lossReasons = lossLines && (
+    <section className={`${ui.card} ${styles.paper}`} aria-labelledby="pm-losses">
+      <h2 id="pm-losses" className={styles.head}>
+        {label('pm.heading.losses', stage)}
+      </h2>
+      {lossLines.length === 0 ? (
+        <p>{label('pm.losses.none', stage)}</p>
+      ) : (
+        <ul className={styles.lines}>
+          {lossLines.map((m) => (
+            <li key={m.segmentId} data-losses={m.segmentId}>
+              {count('pm.losses.market', stage, m.losses, {
+                segment: t.segment(m.segmentId),
+                said: m.losses - m.unsaid,
+              })}
+              {m.said.map((x) => (
+                <div key={x.kind}>
+                  {label('pm.losses.said', stage, {
+                    n: x.count,
+                    total: m.losses,
+                    reason: label(`pm.losses.reason.${x.kind}`, stage),
+                    real: realList(x.real),
+                  })}
+                </div>
+              ))}
+              {m.unsaid > 0 && (
+                <div>
+                  {count('pm.losses.unsaid', stage, m.unsaid, { real: realList(m.unsaidReal) })}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p>{label('pm.losses.lesson', stage)}</p>
+    </section>
+  )
+  function realList(real: { cause: string; featureId: string | null; count: number }[]): string {
+    return real
+      .map((r) =>
+        count(`pm.losses.real.${r.cause as 'price'}`, stage, r.count, {
+          feature: r.featureId ? t.feature(r.featureId).toLowerCase() : '',
+        }),
+      )
+      .join(', ')
+  }
+
   const total = pm.hours.total
   const share = (a: Activity) =>
     total > 0 ? Math.round((100 * pm.hours.byActivity[a]) / total) : 0
@@ -536,6 +585,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
             </div>
             <div className={styles.col}>
               {misreads}
+              {lossReasons}
               {hours}
               {moneyFold}
               {luck}
@@ -551,6 +601,7 @@ export function PostMortem({ desk }: { desk: boolean }) {
             {guests}
             {pm.leisure && <LeisureSummary leisure={pm.leisure} view={view} />}
             {misreads}
+            {lossReasons}
             {hours}
             {moneyFold}
             {luck}

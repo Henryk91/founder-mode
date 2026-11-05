@@ -98,7 +98,6 @@ export function informedPlan(state: GameState): WeekPlan {
     demos,
     bugFixHours,
     chase,
-    outreach:
-      shipped || state.week > 3 ? { [segId]: { channel: 'phone', hours: Math.max(0, free) } } : {},
+    outreach: shipped || state.week > 3 ? { [segId]: { phone: Math.max(0, free) } } : {},
   })
 }
