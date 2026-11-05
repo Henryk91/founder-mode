@@ -1497,7 +1497,7 @@ const labels = {
   'pm.cause.bankrupt_churn_unpaid':
     'The money ran out in week {week}. {lost} of {won} customers left again, {unpaid} of them because they never paid, and revenue ended at {revenue} a month against costs of {costs}.',
   'pm.cause.bankrupt_below_costs':
-    'The money ran out in week {week}. Revenue peaked at {peak} a month, and you and the company cost {costs}.',
+    'The money ran out in week {week}. Revenue peaked at {peak} a month, and at the end you and the company cost {costs} per four-week month.',
   'pm.cause.burnout': 'You burnt out in week {week}, after {over} weeks above {base} hours.',
   'pm.cause.still_searching':
     'Week {week}, and still searching. Revenue covers {percent}% of what you and the company cost each month.',
@@ -1518,7 +1518,8 @@ const labels = {
     'You closed the company in week {week}, while the money was holding up.',
 
   'pm.chain.week': 'Week {week}',
-  'pm.chain.savings_empty': 'Your savings ran out. The company pays your living costs from here.',
+  'pm.chain.savings_empty':
+    'Your savings ran out. After that your living costs came out of the company.',
   'pm.chain.first_customer': 'First paying customer: {name}, at {price} a month.',
   'pm.chain.customer_won': '{name} signed. {customers} paying customers.',
   'pm.chain.customer_lost': '{name} left. {customers} customers, {revenue} a month.',

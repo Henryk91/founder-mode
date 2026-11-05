@@ -2,7 +2,16 @@
 
 Everything planned or discussed that no plan builds yet. When a plan picks an item up, move it to that plan. When a plan leaves something out or opens an issue, add it here.
 
-Last updated: 5 November 2026, completion of plan 7 (channels, reasons for losses, past weeks).
+Last updated: 5 November 2026, plan 8 (fixes from the QA runs).
+
+## 0. Left out of plan 8 (QA findings)
+
+| Item | Notes |
+|---|---|
+| Hosting fatigue (19) and feature effect descriptions (24) | Leinen los QA |
+| What the Kantino price buys (S01), per-customer costs as it scales (S02), bug severity and quality explained (S05), uncertainty in the luck summary (S07) | Kantino QA |
+| Balance observations | Griffig's break-even in its first month, Fabriketage's default prices above willingness to pay, Rückenwind's empty winter weeks, Hinterhof's expansion economics |
+| Plan 8 findings not done | Listed with their state in `docs/autonomous8/reports/final.md` |
 
 ## 1. Left out of plan 4 (the abroad scenarios)
 
