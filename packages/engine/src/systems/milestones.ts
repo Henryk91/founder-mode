@@ -13,10 +13,25 @@ function progress(state: GameState, m: Milestone): { current: number; target: nu
     case 'count':
       return { current: countOf(state, m.of), target: m.target }
     case 'revenue': {
-      const revenue = bookingsRevenueOrSubscriptions(state)
       const living = state.founder.livingCostCentsPerWeek * state.scenario.finance.weeksPerMonth
       const costs = monthlyCompanyCostsCents(state) + (m.covers === 'all' ? living : 0)
-      return { current: revenue, target: costs }
+      if (state.bookings) {
+        // Plan 8 (findings 10, H-03): what guests served earned over the last month, after the
+        // ingredients, shifts, waste and loan payments; deposits count when the guest sails.
+        const month = state.ledger.slice(-state.scenario.finance.weeksPerMonth)
+        const kept = month.reduce(
+          (t, l) =>
+            t +
+            (l.earnedCents ?? 0) -
+            (l.bookingCostsCents - (l.oneOffCents ?? 0)) -
+            l.loanPrincipalCents -
+            l.loanInterestCents -
+            l.loanFeeCents,
+          0,
+        )
+        return { current: Math.max(0, kept), target: costs }
+      }
+      return { current: bookingsRevenueOrSubscriptions(state), target: costs }
     }
     case 'weeks': {
       // The week counts once it is over: at the end of week 26 a run has survived 26 weeks,

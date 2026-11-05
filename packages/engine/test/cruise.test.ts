@@ -158,6 +158,88 @@ describe('cruise weeks', () => {
     })
   })
 
+  it('itemises what a cancelled week cost: deposits back and the partner boat (plan 8, finding 4)', () => {
+    let s = start('min')
+    s = endWeek(s, plan(bp({ minSail: { min: 6, move: true } }))).state
+    const entries = []
+    for (let i = 0; i < 12; i++) {
+      const out = endWeek(s, plan(bp()))
+      entries.push(...out.report.entries)
+      s = out.state
+    }
+    const cancelled = entries.filter((e) => e.kind === 'cruise_cancelled')
+    expect(cancelled.length).toBeGreaterThan(0)
+    for (const e of cancelled) {
+      expect(e.moveCents).toBe(e.cabins * 15_000)
+      expect(e.refundCents! + e.moveCents!).toBe(e.costCents)
+    }
+  })
+
+  it('gives a guest their deposit back when the company cancels the booking (plan 8, finding 8)', () => {
+    const s0 = start('refund')
+    const booking = {
+      id: 'booking_x',
+      segmentId: 'small_offices',
+      productId: 'multi_site',
+      week: s0.week,
+      units: 2,
+      priceCents: 12_750,
+      channel: 'direct' as const,
+      bookedWeek: 1,
+      status: 'booked' as const,
+      depositCents: 25_500,
+    }
+    const s = { ...s0, bookings: { ...s0.bookings!, bookings: [booking] } }
+    // Nobody on the roster: the company cancels.
+    const out = endWeek(s, plan(bp({ shifts: {} })))
+    const refund = out.report.entries.find((e) => e.kind === 'deposits_refunded')
+    expect(refund).toMatchObject({ kind: 'deposits_refunded', amountCents: 25_500, bookings: 1 })
+    expect(out.state.bookings!.bookings.find((b) => b.id === 'booking_x')!.status).toBe(
+      'company_cancelled',
+    )
+  })
+
+  it('settles a cancellation by the policy in force when the booking was made (plan 8, finding 17)', () => {
+    const s0 = start('policy')
+    const cfg = s0.scenario.bookings!
+    const sure = {
+      ...s0.scenario,
+      bookings: {
+        ...cfg,
+        segments: {
+          ...cfg.segments,
+          small_offices: { ...cfg.segments['small_offices']!, cancel: 1, weatherSensitive: false },
+        },
+      },
+    }
+    const booking = (policy?: 'flexible' | 'strict') => ({
+      id: 'booking_p',
+      segmentId: 'small_offices',
+      productId: 'multi_site',
+      week: s0.week,
+      units: 2,
+      priceCents: 12_750,
+      channel: 'direct' as const,
+      bookedWeek: 1,
+      status: 'booked' as const,
+      ...(policy ? { policy } : {}),
+    })
+    const play = (policy?: 'flexible' | 'strict') => {
+      const s = {
+        ...s0,
+        scenario: sure,
+        bookings: { ...s0.bookings!, policy: 'strict' as const, bookings: [booking(policy)] },
+      }
+      return endWeek(s, plan(bp())).state.bookings!.bookings.find((b) => b.id === 'booking_p')!
+        .status
+    }
+    // Made under flexible terms, the guest cancels free although the policy is strict now.
+    expect(play('flexible')).toBe('cancelled')
+    expect(play('strict')).toBe('cancelled_paid')
+    // Bookings with no recorded terms (older saves) use the current policy.
+    expect(play()).toBe('cancelled_paid')
+  })
+
   it('cancels a week below the minimum three weeks out, refunding or moving its guests', () => {
     const refunded = (move: boolean) => {
       let s = start('min')

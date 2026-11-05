@@ -146,6 +146,11 @@ const MADE: { entry: ReportEntry; id: ScenarioId; mode: GameMode }[] = [
     id: 'kantino',
     mode: 'long',
   },
+  {
+    entry: { kind: 'deposits_refunded', amountCents: 25_500, bookings: 1 },
+    id: 'leinenlos',
+    mode: 'long',
+  },
   { entry: { kind: 'friction', groups: 2 }, id: 'leinenlos', mode: 'long' },
   {
     entry: { kind: 'cruise_cancelled', week: 30, cabins: 4, moved: true, costCents: 50_000 },

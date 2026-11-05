@@ -58,19 +58,30 @@ export function applyMinSail(
   if (units === 0) return none
   const cabins = cabinsOf(units, m.perUnit)
   if (cabins >= setting.min) return none
-  let cost = 0
+  let refund = 0
   for (const x of mine) {
     x.status = 'company_cancelled'
-    cost += x.depositCents ?? 0
+    refund += x.depositCents ?? 0
   }
-  if (setting.move) cost += cabins * m.moveCents
+  const moveCost = setting.move ? cabins * m.moveCents : 0
+  const cost = refund + moveCost
   if (!held.includes(t)) held.push(t)
   const lost = mine.reduce((s, x) => s + x.units * x.priceCents, 0)
   return {
     held,
     costsCents: cost,
     badReviews: setting.move ? 0 : mine.length,
-    entries: [{ kind: 'cruise_cancelled', week: t, cabins, moved: setting.move, costCents: cost }],
+    entries: [
+      {
+        kind: 'cruise_cancelled',
+        week: t,
+        cabins,
+        moved: setting.move,
+        costCents: cost,
+        refundCents: refund,
+        moveCents: moveCost,
+      },
+    ],
     cancelled: {
       week: t,
       cabins,

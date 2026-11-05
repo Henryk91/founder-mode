@@ -1707,11 +1707,13 @@ export function finishLeisure(
   for (const [productId, p] of configEntries(c.products))
     for (const { id: slotId } of c.slots) {
       let slot = slots.find((x) => x.productId === productId && x.slotId === slotId)
+      const capacity = leisureCapacity(input, productId, slotId, week)
+      // Plan 8, G-03: a service that is closed or not built has no load to count.
+      if (!slot && capacity <= 0) continue
       if (!slot) {
         slot = { productId, slotId, visits: 0, turnedAway: 0, aggregator: 0, load: 'quiet' }
         slots.push(slot)
       }
-      const capacity = leisureCapacity(input, productId, slotId, week)
       const comfort =
         hallCapacity(input, productId, slotId, week, true) ?? p.comfort?.[slotId] ?? capacity
       const ratio = comfort > 0 ? slot.visits / comfort : 0

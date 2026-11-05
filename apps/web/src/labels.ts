@@ -716,9 +716,13 @@ const labels = {
   'results.entry.asset_haul_out': '{asset} is out of the water for {weeks} weeks: {amount}.',
   'results.entry.asset_taken_back': "{asset}'s owner kept some places back this week.",
   'results.entry.cruise_cancelled.moved':
-    'The cruise of week {week} had {cabins} cabins sold, below your minimum. Its guests move to a partner boat: {amount}.',
+    'The cruise of week {week} had {cabins} cabins sold, below your minimum. Its guests move to a partner boat. Deposits back {refund}, the move {move}, {amount} in all.',
   'results.entry.cruise_cancelled.refunded':
     'The cruise of week {week} had {cabins} cabins sold, below your minimum. Its guests got their money back: {amount}.',
+  'results.entry.deposits_refunded.one':
+    'You cancelled one booking, so its deposit went back: {amount}.',
+  'results.entry.deposits_refunded.other':
+    'You cancelled {n} bookings, so their deposits went back: {amount}.',
   'results.entry.friction':
     'Strangers on one boat: {groups} groups this week, and they did not get on.',
   'results.entry.conditions': '{slot}: {states}.',
@@ -901,11 +905,13 @@ const labels = {
   'cruise.hold': 'Hold for a charter',
   'cruise.release': 'Release for cabins',
   'cruise.minSail': 'Minimum to sail',
-  'cruise.minSail.note': 'Checked {weeks} weeks before each departure',
+  'cruise.minSail.note':
+    'Checked {weeks} weeks before each departure. A week that falls short gives its guests their deposits back.',
   'cruise.minSail.locked': 'Changed lately, fixed for now',
   'cruise.minSail.any': 'Any',
   'cruise.minSail.min': '{n} cabins',
-  'cruise.minSail.move': 'Move guests to a partner boat ({amount} a cabin)',
+  'cruise.minSail.move':
+    'Move guests to a partner boat ({amount} a cabin, and their deposits go back to them)',
   'cruise.hint': 'A held week sells no cabins, only the whole boat.',
   'cruise.calendar': 'The season',
   'tour.ladderLine': 'The ladder: {steps}',

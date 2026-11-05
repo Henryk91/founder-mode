@@ -119,5 +119,6 @@ export const ENTRY_HOMES: Record<ReportEntry['kind'], EntryHome> = {
   gear_worn: at('Plan: the asset card (gear)'),
   gear_replaced: at('Plan: the asset card (gear)', false),
   cruise_cancelled: past(),
+  deposits_refunded: past(),
   friction: past(),
 }

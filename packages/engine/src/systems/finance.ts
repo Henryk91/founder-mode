@@ -48,6 +48,8 @@ export type WeekExtras = {
   bookingCostsCents: number
   /** Plan 8: the part of `bookingCostsCents` that is a one-off buy. */
   oneOffCents?: number
+  /** Plan 8: what guests served this week were worth. */
+  earnedCents?: number
   /** Plan 2: vouchers sold (cash, a liability) and redeemed (earned, paid before). */
   voucherCents?: number
   voucherRedeemedCents?: number
@@ -189,6 +191,7 @@ export function applyFinanceWeek(
       ? { oneOffCents: (extras.oneOffCents ?? 0) + loans.money.itemsCents }
       : {}),
     ...(extras.depositsCents ? { depositsCents: extras.depositsCents } : {}),
+    ...(extras.earnedCents ? { earnedCents: extras.earnedCents } : {}),
     ...(extras.voucherCents ? { voucherCents: extras.voucherCents } : {}),
     ...(extras.voucherRedeemedCents ? { voucherRedeemedCents: extras.voucherRedeemedCents } : {}),
     loanInCents: loans.money.inCents,

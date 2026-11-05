@@ -1,5 +1,7 @@
+import { loadScenario } from '@founder-mode/content'
 import { describe, expect, it } from 'vitest'
-import { buildPostMortem, endWeek, getView, type GameState } from '../src/index'
+import { buildPostMortem, createGame, endWeek, getView, type GameState } from '../src/index'
+import type { WeekLedger } from '../src/types'
 import { checkMilestones } from '../src/systems/milestones'
 import { customer } from './helpers2'
 import { newGame, play, plan, quietKantino, richKantino } from './helpers'
@@ -46,6 +48,36 @@ describe('milestones', () => {
     const fixed = s.company.fixedCosts.reduce((t, c) => t + c.monthlyCents, 0)
     expect(next.target).toBe(fixed)
     expect(next.current).toBe(Math.min(s.customers[0]!.priceCentsPerMonth, fixed))
+  })
+
+  it('counts a booking scenario by what guests served earned after costs, not by deposits (plan 8)', () => {
+    const base = createGame(loadScenario('hinterhof', 'long'), 'ms-earned')
+    const week = (w: number, over: Partial<WeekLedger>): WeekLedger => ({
+      ...(base.ledger[0] ?? ({} as WeekLedger)),
+      week: w,
+      revenueCents: 0,
+      bookingRevenueCents: 0,
+      bookingCostsCents: 0,
+      loanPrincipalCents: 0,
+      loanInterestCents: 0,
+      loanFeeCents: 0,
+      ...over,
+    })
+    const deposits = [1, 2, 3, 4].map((w) => week(w, { bookingRevenueCents: 5_000_000 }))
+    const s = { ...base, week: 4, ledger: deposits }
+    expect(checkMilestones(s).reached.map((m) => m.id)).not.toContain('covers_company_costs')
+    // The same money earned by guests served, with the costs of serving them, does count.
+    const earned = [1, 2, 3, 4].map((w) =>
+      week(w, { bookingRevenueCents: 5_000_000, earnedCents: 5_000_000 }),
+    )
+    expect(
+      checkMilestones({ ...base, week: 4, ledger: earned }).reached.map((m) => m.id),
+    ).toContain('covers_company_costs')
+    // ... but not once ingredients, shifts and loan payments eat it.
+    const eaten = earned.map((l) => ({ ...l, bookingCostsCents: 4_900_000 }))
+    expect(
+      checkMilestones({ ...base, week: 4, ledger: eaten }).reached.map((m) => m.id),
+    ).not.toContain('covers_company_costs')
   })
 
   it('counts survived weeks only when the week is over and did not end the run', () => {

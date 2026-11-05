@@ -213,6 +213,12 @@ export function entryText(entry: ReportEntry, view: PlayerView): string {
         week: entry.week,
         cabins: entry.cabins,
         amount: formatEuro(entry.costCents),
+        refund: formatEuro(entry.refundCents ?? entry.costCents),
+        move: formatEuro(entry.moveCents ?? 0),
+      })
+    case 'deposits_refunded':
+      return count('results.entry.deposits_refunded', stage, entry.bookings, {
+        amount: formatEuro(entry.amountCents),
       })
     case 'friction':
       return label('results.entry.friction', stage, { groups: entry.groups })
@@ -559,6 +565,7 @@ function place(entry: ReportEntry): [Group, number] {
     case 'friction':
       return ['sales', 5]
     case 'cruise_cancelled':
+    case 'deposits_refunded':
       return ['sales', 8]
     case 'term_sheet':
     case 'funding_milestone':

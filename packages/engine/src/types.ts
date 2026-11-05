@@ -218,6 +218,8 @@ export type Booking = {
   channel: BookingChannel
   bookedWeek: number
   status: BookingStatus
+  /** Plan 8, finding 17: the cancellation policy in force when it was booked; it settles by it. */
+  policy?: 'flexible' | 'strict'
   /** Paid when booked (a deposit, step 7); the rest is due at the stay. Absent: none. */
   depositCents?: number
   /** Remaining booking price collected before service; separate from the retained deposit. */
@@ -1007,6 +1009,8 @@ export type WeekLedger = {
   bookingCostsCents: number
   /** Plan 8: the part of `bookingCostsCents` that is a one-off buy (a product, rooms), not a running cost. */
   oneOffCents?: number
+  /** Plan 8: what guests served this week were worth, net of commission (deposits count when the guest sails). */
+  earnedCents?: number
   /** Plan 8: pre-sale and trial deposits within `revenueCents`: owed back, not a recurring income. */
   depositsCents?: number
   /** Plan 2: vouchers sold this week. Cash, but a liability: never revenue, never in runway. */
@@ -2232,7 +2236,19 @@ export type ReportEntry =
   | { kind: 'asset_haul_out'; assetId: string; weeks: number; costCents: number }
   | { kind: 'asset_taken_back'; assetId: string }
   /** Plan 4: a cruise week below the minimum to sail, cancelled three weeks out. */
-  | { kind: 'cruise_cancelled'; week: number; cabins: number; moved: boolean; costCents: number }
+  | {
+      kind: 'cruise_cancelled'
+      week: number
+      cabins: number
+      moved: boolean
+      /** Everything it cost: the deposits refunded and, when the guests move, the transfers. */
+      costCents: number
+      /** Plan 8: the deposits given back, and the partner boat's charge, itemised. */
+      refundCents?: number
+      moveCents?: number
+    }
+  /** Plan 8: deposits given back to guests whose booking the company cancelled. */
+  | { kind: 'deposits_refunded'; amountCents: number; bookings: number }
   /** Plan 4: strangers on one boat did not get on this week. */
   | { kind: 'friction'; groups: number }
   | {

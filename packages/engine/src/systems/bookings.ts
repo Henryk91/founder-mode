@@ -742,6 +742,8 @@ export type BookingsOutcome = {
   costsCents: number
   /** Plan 8: the part of `costsCents` that is a one-off buy (products, rooms, builds). */
   oneOffCents?: number
+  /** Plan 8: what guests served (or kept under a strict policy) this week were worth, net of commission. */
+  earnedCents?: number
   /** Plan 2: what the vouchers redeemed this week were sold for (earned now, paid before). */
   voucherRedeemedCents: number
   voucherCents?: number
@@ -1253,6 +1255,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         channel: platform ? 'platform' : 'direct',
         bookedWeek: week,
         status: 'booked',
+        policy: b.policy,
         ...(levels ? { levels } : {}),
         ...(cfg.leisure?.qualifications && cfg.products[pick.id]?.course
           ? {
@@ -1464,7 +1467,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
     const factor = s.weatherSensitive && cfg.weather ? cfg.weather.cancel[weather] : 1
     if (rng.chance(Math.min(1, s.cancel * factor))) {
-      if (b.policy === 'strict') {
+      if ((x.policy ?? b.policy) === 'strict') {
         x.status = 'cancelled_paid'
         keptUnits += x.units
       } else {
@@ -1931,6 +1934,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
       redeemedVouchers++
       redeemedUnits += x.units
       out.voucherRedeemedCents += v.valueCents
+      out.earnedCents = (out.earnedCents ?? 0) + v.valueCents
     } else if (x.status === 'cancelled' || x.status === 'company_cancelled') {
       voucherWeeks[v.id] = week + 2
     }
@@ -1947,6 +1951,8 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
   // Leisure advances are liabilities until service. Flexible guest cancellations and every
   // company cancellation return them. Strict cancellations keep the agreed payment,
   // or only the advance when the venue explicitly enables deposit-only terms.
+  let refundedCents = 0
+  let refundedBookings = 0
   if (cfg.leisure) {
     for (const x of due) {
       if (x.status === 'cancelled' || x.status === 'company_cancelled') {
@@ -1956,8 +1962,30 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
         )
         out.revenueCents -= refund
         if (x.balancePaidCents) x.refundedCents = (x.refundedCents ?? 0) + refund
+        if (x.status === 'company_cancelled' && refund > 0) {
+          refundedCents += refund
+          refundedBookings++
+        }
       }
     }
+  } else {
+    // Plan 8, finding 8: when the company cancels, the deposit a guest paid goes back.
+    for (const x of due) {
+      if (x.status !== 'company_cancelled' || x.voucherId || x.memberId) continue
+      const refund = Math.max(0, (x.depositCents ?? 0) - (x.refundedCents ?? 0))
+      if (refund === 0) continue
+      out.revenueCents -= refund
+      x.refundedCents = (x.refundedCents ?? 0) + refund
+      refundedCents += refund
+      refundedBookings++
+    }
+  }
+  if (refundedCents > 0) {
+    out.entries.push({
+      kind: 'deposits_refunded',
+      amountCents: refundedCents,
+      bookings: refundedBookings,
+    })
   }
   const noise = cfg.leisure?.noise
   let lateReceiptsCents = 0
@@ -1992,6 +2020,7 @@ export function applyBookings(input: GameState, plan: WeekPlan, rng: Rng): Booki
     }
     const cut = x.channel === 'platform' ? Math.round(gross * cfg.platform.commission) : 0
     commission += cut
+    out.earnedCents = (out.earnedCents ?? 0) + gross - cut
     // What a deposit already paid comes off what is due now.
     const owed = gross - cut - (x.depositCents ?? 0) - (x.balancePaidCents ?? 0)
     if (depositOnly && x.balancePaidCents) x.refundedCents = x.balancePaidCents
@@ -2477,10 +2506,12 @@ export function bookingsView(state: GameState): BookingsView | null {
   const cameLast = new Map<FeatureId, number>()
   const servedLast = new Map<FeatureId, number>()
   const servedIn = new Map<number, number>()
+  // An ended run did not advance its week: the week played last is this one (plan 8, G-04).
+  const through = state.status === 'running' ? state.week : state.week + 1
   let ahead = 0
   for (const x of b.bookings) {
     if (x.status === 'booked' && x.week > state.week && x.week <= state.week + 4) ahead += x.units
-    if (!traffic && x.status === 'served' && x.week >= state.week - 5 && x.week < state.week) {
+    if (!traffic && x.status === 'served' && x.week >= through - 5 && x.week < through) {
       servedIn.set(x.week, (servedIn.get(x.week) ?? 0) + x.units)
     }
     if (!traffic && x.week === state.week - 1) {
@@ -2501,7 +2532,7 @@ export function bookingsView(state: GameState): BookingsView | null {
   }
   if (traffic)
     for (const row of traffic) {
-      if (row.week >= state.week - 5 && row.week < state.week)
+      if (row.week >= through - 5 && row.week < through)
         servedIn.set(
           row.week,
           Object.values(row.served).reduce((n, units) => n + units, 0),
@@ -2742,7 +2773,7 @@ export function bookingsView(state: GameState): BookingsView | null {
     })),
     revenueLast4Cents: bookingRevenueLast4(state),
     bookedAhead: ahead,
-    servedByWeek: Array.from({ length: 5 }, (_, k) => state.week - 5 + k)
+    servedByWeek: Array.from({ length: 5 }, (_, k) => through - 5 + k)
       .filter((w) => w >= 1)
       .map((w) => servedIn.get(w) ?? 0),
   }
@@ -2756,9 +2787,13 @@ export function turnedAwayWeeks(
   const b = state.bookings
   const cfg = state.scenario.bookings
   if (!b || !cfg) return 0
+  // Plan 8, G-06: guests turned away by a venue that has not opened do not count.
+  const opened = b.leisure ? b.leisure.openingWeek : 1
+  if (opened === null || opened === undefined) return 0
   const weeks = new Set(
     b.turnedAway
       .filter((t) => t.units > 0 && t.week > state.week - 8 && t.week < state.week)
+      .filter((t) => t.week >= opened)
       .filter((t) => !peakOnly || cfg.peakMonths.includes(monthOf(state.scenario, t.week)))
       .map((t) => t.week),
   )
