@@ -83,3 +83,10 @@ All scenarios' outcomes changed a little (forecast and loan fixes), so `docs/see
 - `cannot_afford` can stop a bot or player from starting a purchase they could finish later with income; trials and hires are not covered.
 - Rent, wages and other "monthly" amounts are still charged every four weeks (13 times a year); only loan interest was converted.
 - `docs/balancing.md` was not rewritten (no full report).
+
+## Step 3 finish: checks
+
+- `plan8-complete` was set before step 3 was finished; it was not moved. The end of this work is tagged `plan8-screens-complete`.
+- UI checks: the browser tests (axe and no cut-off text at 375, 390, 430 and 1440 px, Chromium and WebKit, all three UI stages) pass in the full `pnpm test`: 91 files, 1,521 tests passed, 30 skipped. The run ends with the known vitest 3.2.7 "Timeout calling onTaskUpdate" worker error (see `docs/decisions.md`); the engine project alone passes cleanly.
+- Proof run: main part, 1,000 seeds, careful bot, all 12 scenarios (`--mode all` for the tourism ones). Every result is identical to the step 2 run. Only the run-time target rows differ (Kantino, Zollstock, Gratwanderung, Seeblick, Leinen los, Fabriketage), because two scenario chains ran in parallel.
+- Not done: batch 3 (20, 22, 25), F-04 (not reproduced), direct entry and apply-to-all (S-02 rest), R-06 per-activity split. All in `docs/BACKLOG.md`.

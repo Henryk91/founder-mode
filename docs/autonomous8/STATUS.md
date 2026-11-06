@@ -1,9 +1,9 @@
 # Autonomous run 8 status
 
 ## Current
-Step: step 3 continued after plan8-complete (Henry asked to finish it in three batches)
-Last commit: Plan 8 step 3 batch 2
-Next action: UI checks (axe, no cut-off, 375/390/430/1440 px, Chromium and WebKit, three stages), main part of every scenario on 1,000 seeds, tag plan8-screens-complete. Batch 3 (20, 22, 25) not done.
+Step: complete (step 3 finished after plan8-complete; tag plan8-screens-complete)
+Last commit: Plan 8 step 3 finished: proof run and final report
+Next action: none. Batch 3 (20, 22, 25) not done; see docs/BACKLOG.md.
 
 ## Checklist
 - [x] Step 0: set up (tag plan8-baseline)
@@ -18,6 +18,6 @@ H-01 reproduced yes, fixed yes (loan buys only unpaid items). G-02/F-02 reproduc
 P-01 (added by Henry mid-run): reproduced yes, fixed yes (engine rule, bots drop unaffordable expenses, disabled controls on build, rooms, landing tests).
 
 ## For Henry to review (non-blocking)
-See docs/autonomous8/reports/final.md. Step 3 is partial; the UI checks were not run.
+See docs/autonomous8/reports/final.md. Step 3 is finished except the items in the backlog. UI checks and the 1,000 seed proof run are in the final report.
 
 ## Stopped
