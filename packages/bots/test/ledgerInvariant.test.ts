@@ -56,12 +56,15 @@ function check(id: string, mode: string, strategyId: string, seed: string, scena
 describe('the week ledger adds up', () => {
   for (const id of SCENARIO_IDS) {
     for (const mode of SCENARIO_MODES[id]) {
-      it(`${id} (${mode})`, () => {
+      it(`${id} (${mode})`, async () => {
         const scenario = loadScenario(id, mode)
         const bots = STRATEGIES.filter((s) => playsIn(s, scenario))
         const perBot = Math.max(1, Math.ceil(RUNS_PER_SCENARIO / bots.length))
         for (const bot of bots) {
           for (let i = 0; i < perBot; i++) {
+            // Yield to the event loop between runs: a file of back to back synchronous runs
+            // blocks the worker past vitest's 60 s RPC timer ("Timeout calling onTaskUpdate").
+            await new Promise((resolve) => setTimeout(resolve, 0))
             check(id, mode, bot.id, `ledger-${i}`, scenario as never)
           }
         }
