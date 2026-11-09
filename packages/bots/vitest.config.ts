@@ -5,5 +5,6 @@ export default defineProject({
     name: 'bots',
     // Full bot runs and browser tests take seconds; CI runners are slower than a laptop.
     testTimeout: 30_000,
+    setupFiles: ['./test/yield.setup.ts'],
   },
 })
