@@ -7,7 +7,7 @@ import {
   weekTotals,
   type GameState,
 } from '@founder-mode/engine'
-import { describe, expect, it } from 'vitest'
+import { expect, it } from 'vitest'
 import { playsIn } from '../src/strategy'
 import { STRATEGIES } from '../src/strategies'
 
@@ -53,24 +53,23 @@ function check(id: string, mode: string, strategyId: string, seed: string, scena
     ])
 }
 
-describe('the week ledger adds up', () => {
-  for (const id of SCENARIO_IDS) {
-    for (const mode of SCENARIO_MODES[id]) {
-      it(`${id} (${mode})`, async () => {
-        const scenario = loadScenario(id, mode)
-        const bots = STRATEGIES.filter((s) => playsIn(s, scenario))
-        const perBot = Math.max(1, Math.ceil(RUNS_PER_SCENARIO / bots.length))
-        for (const bot of bots) {
-          for (let i = 0; i < perBot; i++) {
-            // Yield to the event loop between runs: a file of back to back synchronous runs
-            // blocks the worker past vitest's 60 s RPC timer ("Timeout calling onTaskUpdate").
-            await new Promise((resolve) => setTimeout(resolve, 0))
-            check(id, mode, bot.id, `ledger-${i}`, scenario as never)
-          }
+/** Registers the ledger checks of one scenario (every mode). One test file per scenario keeps
+ * each worker's task under vitest's 60 s RPC timer, even on a slow CI runner. */
+export function ledgerTests(id: (typeof SCENARIO_IDS)[number]) {
+  for (const mode of SCENARIO_MODES[id]) {
+    it(`${id} (${mode})`, async () => {
+      const scenario = loadScenario(id, mode)
+      const bots = STRATEGIES.filter((s) => playsIn(s, scenario))
+      const perBot = Math.max(1, Math.ceil(RUNS_PER_SCENARIO / bots.length))
+      for (const bot of bots) {
+        for (let i = 0; i < perBot; i++) {
+          // Yield between runs so the worker can answer vitest's RPC calls.
+          await new Promise((resolve) => setTimeout(resolve, 0))
+          check(id, mode, bot.id, `ledger-${i}`, scenario as never)
         }
-        const mine = [...failures.entries()].filter(([k]) => k.startsWith(`${id}/${mode}/`))
-        expect(mine.map(([k, v]) => `${k}: ${v[0]}`)).toEqual([])
-      }, 600_000)
-    }
+      }
+      const mine = [...failures.entries()].filter(([k]) => k.startsWith(`${id}/${mode}/`))
+      expect(mine.map(([k, v]) => `${k}: ${v[0]}`)).toEqual([])
+    }, 600_000)
   }
-})
+}
